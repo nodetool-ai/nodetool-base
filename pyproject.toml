@@ -15,3 +15,4 @@ package-mode = true
 python = "^3.10"
 nodetool-core = { git = "https://github.com/nodetool-ai/nodetool-core.git", rev = "main" }
 plyer = "2.1.0"
+jinja2 = "*"
