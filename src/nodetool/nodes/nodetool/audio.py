@@ -1,6 +1,5 @@
 from datetime import datetime
 import io
-from typing import Literal
 from pydantic import Field
 from nodetool.metadata.types import AudioRef
 from nodetool.metadata.types import FolderRef
