@@ -1,7 +1,7 @@
-from typing import Any, Literal
+from typing import Any
 
 from pydantic import Field
-from nodetool.metadata.types import DocumentRef, Message
+from nodetool.metadata.types import DocumentRef
 from nodetool.metadata.types import NPArray
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import AudioRef
