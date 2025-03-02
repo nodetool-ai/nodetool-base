@@ -1,0 +1,17 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "nodetool-base"
+version = "0.6.0"
+description = "Nodetool Base nodes"
+readme = "README.md"
+authors = ["Matthias Georgi <matti.georgi@gmail.com>"]
+packages = [{ include = "nodetool", from = "src" }]
+package-mode = true
+
+[tool.poetry.dependencies]
+python = "^3.10"
+nodetool-core = { git = "https://github.com/nodetool-ai/nodetool-core.git", rev = "main" }
+plyer = "2.1.0"
