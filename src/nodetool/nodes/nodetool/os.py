@@ -19,7 +19,6 @@ from nodetool.metadata.types import (
 )
 
 from enum import Enum
-import tempfile
 from typing import List, Optional
 import os
 import shutil
