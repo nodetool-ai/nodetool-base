@@ -1,7 +1,7 @@
 # src/nodetool/nodes/nodetool/json.py
 
 import json
-from typing import Any, List, Optional, Dict
+from typing import Any, Optional
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -22,7 +22,7 @@ class ParseDict(BaseNode):
         default="", description="JSON string to parse into a dictionary"
     )
 
-    async def process(self, context: ProcessingContext) -> Dict:
+    async def process(self, context: ProcessingContext) -> dict:
         result = json.loads(self.json_string)
         if not isinstance(result, dict):
             raise ValueError("JSON string must represent an object/dictionary")
@@ -42,7 +42,7 @@ class ParseList(BaseNode):
 
     json_string: str = Field(default="", description="JSON string to parse into a list")
 
-    async def process(self, context: ProcessingContext) -> List:
+    async def process(self, context: ProcessingContext) -> list:
         result = json.loads(self.json_string)
         if not isinstance(result, list):
             raise ValueError("JSON string must represent an array/list")
@@ -214,11 +214,11 @@ class FilterJSON(BaseNode):
     - Search JSON data
     """
 
-    array: List[dict] = Field(description="Array of JSON objects to filter")
-    key: str = Field(description="Key to filter on")
-    value: Any = Field(description="Value to match")
+    array: list[dict] = Field(default=[], description="Array of JSON objects to filter")
+    key: str = Field(default="", description="Key to filter on")
+    value: Any = Field(default=None, description="Value to match")
 
-    async def process(self, context: ProcessingContext) -> List[dict]:
+    async def process(self, context: ProcessingContext) -> list[dict]:
         return [item for item in self.array if item.get(self.key) == self.value]
 
 
@@ -245,7 +245,7 @@ class JSONTemplate(BaseNode):
     template: str = Field(
         default="", description="JSON template string with $variable placeholders"
     )
-    values: Dict[str, Any] = Field(
+    values: dict[str, Any] = Field(
         default={},
         description="Dictionary of values to substitute into the template",
     )

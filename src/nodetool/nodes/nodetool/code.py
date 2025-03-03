@@ -1,5 +1,5 @@
 import ast
-from typing import Any, Dict
+from typing import Any
 from pydantic import Field
 from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
@@ -24,7 +24,7 @@ class ExecutePython(BaseNode):
         description="Python code to execute. Input variables are available as locals. Assign the desired output to the 'result' variable.",
     )
 
-    inputs: Dict[str, Any] = Field(
+    inputs: dict[str, Any] = Field(
         default={},
         description="Input variables available to the code as locals.",
     )
@@ -98,7 +98,7 @@ class EvaluateExpression(BaseNode):
         description="Python expression to evaluate. Variables are available as locals.",
     )
 
-    variables: Dict[str, Any] = Field(
+    variables: dict[str, Any] = Field(
         default={}, description="Variables available to the expression"
     )
 

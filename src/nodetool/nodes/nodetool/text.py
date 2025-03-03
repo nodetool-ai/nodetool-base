@@ -509,7 +509,7 @@ class RegexMatch(BaseNode):
 
     text: str = Field(default="", description="Text to search in")
     pattern: str = Field(default="", description="Regular expression pattern")
-    group: Optional[int] = Field(
+    group: int | None = Field(
         default=None, description="Capture group to extract (0 for full match)"
     )
 

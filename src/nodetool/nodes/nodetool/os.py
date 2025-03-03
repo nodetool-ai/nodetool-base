@@ -18,8 +18,6 @@ from nodetool.metadata.types import (
     FolderPath,
 )
 
-from enum import Enum
-from typing import List, Optional
 import os
 import shutil
 from pydantic import Field
@@ -40,11 +38,9 @@ class GetEnvironmentVariable(BaseNode):
     """
 
     name: str = Field(default="", description="Environment variable name")
-    default: Optional[str] = Field(
-        default=None, description="Default value if not found"
-    )
+    default: str | None = Field(default=None, description="Default value if not found")
 
-    async def process(self, context: ProcessingContext) -> Optional[str]:
+    async def process(self, context: ProcessingContext) -> str | None:
         return os.environ.get(self.name, self.default)
 
 
