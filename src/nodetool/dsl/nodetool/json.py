@@ -30,8 +30,8 @@ class GetJSONPathBool(GraphNode):
     json, path, extract, boolean
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Path to the desired value (dot notation)')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
     default: bool | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
 
     @classmethod
@@ -45,8 +45,8 @@ class GetJSONPathDict(GraphNode):
     json, path, extract, object
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Path to the desired value (dot notation)')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
     default: dict | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
 
     @classmethod
@@ -60,8 +60,8 @@ class GetJSONPathFloat(GraphNode):
     json, path, extract, number
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Path to the desired value (dot notation)')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
     default: float | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
 
     @classmethod
@@ -75,8 +75,8 @@ class GetJSONPathInt(GraphNode):
     json, path, extract, number
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Path to the desired value (dot notation)')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
     default: int | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
 
     @classmethod
@@ -90,8 +90,8 @@ class GetJSONPathList(GraphNode):
     json, path, extract, array
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Path to the desired value (dot notation)')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
     default: list | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
 
     @classmethod
@@ -105,8 +105,8 @@ class GetJSONPathStr(GraphNode):
     json, path, extract, string
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Path to the desired value (dot notation)')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
     default: str | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
 
     @classmethod
@@ -202,8 +202,8 @@ class ValidateJSON(GraphNode):
     - Validate configuration files
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON data to validate')
-    schema: dict | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='JSON schema for validation')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON data to validate')
+    schema: dict | GraphNode | tuple[GraphNode, str] = Field(default={}, description='JSON schema for validation')
 
     @classmethod
     def get_node_type(cls): return "nodetool.json.ValidateJSON"

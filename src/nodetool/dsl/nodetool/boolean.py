@@ -39,6 +39,7 @@ class Compare(GraphNode):
     Comparison: typing.ClassVar[type] = nodetool.nodes.nodetool.boolean.Compare.Comparison
     a: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='First value to compare')
     b: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Second value to compare')
+    comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(default=nodetool.nodes.nodetool.boolean.Compare.Comparison.EQUAL, description='Comparison operator to use')
 
     @classmethod
     def get_node_type(cls): return "nodetool.boolean.Compare"
@@ -117,6 +118,7 @@ class LogicalOperator(GraphNode):
     BooleanOperation: typing.ClassVar[type] = nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
     a: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='First boolean input')
     b: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='Second boolean input')
+    operation: nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation = Field(default=nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation.AND, description='Logical operation to perform')
 
     @classmethod
     def get_node_type(cls): return "nodetool.boolean.LogicalOperator"

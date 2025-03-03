@@ -43,6 +43,8 @@ class AddSubtitles(GraphNode):
     SubtitleTextAlignment: typing.ClassVar[type] = nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
     video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to add subtitles to.')
     chunks: list[types.AudioChunk] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='Audio chunks to add as subtitles.')
+    font: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont = Field(default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont.DejaVuSans, description='The font to use.')
+    align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM, description='Vertical alignment of subtitles.')
     font_size: int | GraphNode | tuple[GraphNode, str] = Field(default=24, description='The font size.')
     font_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ColorRef(type='color', value='#FFFFFF'), description='The font color.')
 
@@ -404,6 +406,7 @@ class Transition(GraphNode):
     TransitionType: typing.ClassVar[type] = nodetool.nodes.nodetool.video.Transition.TransitionType
     video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The first video in the transition.')
     video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The second video in the transition.')
+    transition_type: nodetool.nodes.nodetool.video.Transition.TransitionType = Field(default=nodetool.nodes.nodetool.video.Transition.TransitionType.fade, description='Type of transition effect')
     duration: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Duration of the transition effect in seconds.')
 
     @classmethod

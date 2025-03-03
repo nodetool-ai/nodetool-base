@@ -193,6 +193,7 @@ class FilterDictsByNumber(GraphNode):
     FilterDictNumberType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType
     values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
     key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    filter_type: nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType = Field(default=nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType.GREATER_THAN, description=None)
     value: float | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
 
     @classmethod
@@ -237,6 +238,7 @@ class FilterDictsByValue(GraphNode):
     FilterType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType
     values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
     key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The dictionary key to check')
+    filter_type: nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType = Field(default=nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType.CONTAINS, description='The type of filter to apply')
     criteria: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The filtering criteria (text to match, type name, or length as string)')
 
     @classmethod
@@ -318,6 +320,7 @@ class FilterNumbers(GraphNode):
 
     FilterNumberType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType
     values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    filter_type: nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType = Field(default=nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType.GREATER_THAN, description='The type of filter to apply')
     value: float | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The comparison value (for greater_than, less_than, equal_to)')
 
     @classmethod
@@ -360,6 +363,7 @@ class FilterStrings(GraphNode):
 
     FilterType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterStrings.FilterType
     values: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    filter_type: nodetool.nodes.nodetool.list.FilterStrings.FilterType = Field(default=nodetool.nodes.nodetool.list.FilterStrings.FilterType.CONTAINS, description='The type of filter to apply')
     criteria: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The filtering criteria (text to match or length as string)')
 
     @classmethod
@@ -682,6 +686,7 @@ class Sort(GraphNode):
 
     SortOrder: typing.ClassVar[type] = nodetool.nodes.nodetool.list.Sort.SortOrder
     values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    order: nodetool.nodes.nodetool.list.Sort.SortOrder = Field(default=nodetool.nodes.nodetool.list.Sort.SortOrder.ASCENDING, description=None)
 
     @classmethod
     def get_node_type(cls): return "nodetool.list.Sort"
@@ -719,6 +724,7 @@ class Transform(GraphNode):
 
     TransformType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.Transform.TransformType
     values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    transform_type: nodetool.nodes.nodetool.list.Transform.TransformType = Field(default=nodetool.nodes.nodetool.list.Transform.TransformType.TO_STRING, description=None)
 
     @classmethod
     def get_node_type(cls): return "nodetool.list.Transform"

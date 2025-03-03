@@ -81,8 +81,10 @@ class BaseGetJSONPath(BaseNode):
     - Extract specific values from nested JSON with type safety
     """
 
-    data: Any = Field(description="JSON object to extract from")
-    path: str = Field(description="Path to the desired value (dot notation)")
+    data: Any = Field(default=None, description="JSON object to extract from")
+    path: str = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
 
     @classmethod
     def is_visible(cls):
@@ -191,8 +193,8 @@ class ValidateJSON(BaseNode):
     - Validate configuration files
     """
 
-    data: Any = Field(description="JSON data to validate")
-    schema: dict = Field(description="JSON schema for validation")
+    data: Any = Field(default=None, description="JSON data to validate")
+    schema: dict = Field(default={}, description="JSON schema for validation")
 
     async def process(self, context: ProcessingContext) -> bool:
         from jsonschema import validate, ValidationError
