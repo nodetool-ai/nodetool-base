@@ -139,17 +139,20 @@ class Fps(BaseNode):
     """
 
     video: VideoRef = Field(
-        default=VideoRef(), description="The input video to adjust the brightness for."
+        default=VideoRef(), description="The input video to analyze for FPS."
     )
 
     async def process(self, context: ProcessingContext) -> float:
-        import imageio.v3 as iio
-
         video_file = await context.asset_to_io(self.video)
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
             temp.write(video_file.read())
             temp.flush()
-            return iio.immeta(temp.name, plugin="pyav")["fps"]
+
+            cap = cv2.VideoCapture(temp.name)
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            cap.release()
+
+            return fps
 
 
 class CreateVideo(BaseNode):
