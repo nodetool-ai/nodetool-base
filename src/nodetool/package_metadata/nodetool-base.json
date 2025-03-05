@@ -389,7 +389,7 @@
               "positive",
               "negative"
             ],
-            "type_name": "nodetool.list.FilterDictNumberType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterDictNumberType"
           },
           "default": "greater_than",
           "title": "Filter Type"
@@ -557,7 +557,7 @@
               "length_less",
               "exact_length"
             ],
-            "type_name": "nodetool.list.FilterType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterType"
           },
           "default": "contains",
           "title": "Filter Type",
@@ -806,7 +806,7 @@
               "positive",
               "negative"
             ],
-            "type_name": "nodetool.list.FilterNumberType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterNumberType"
           },
           "default": "greater_than",
           "title": "Filter Type",
@@ -944,7 +944,7 @@
               "length_less",
               "exact_length"
             ],
-            "type_name": "nodetool.list.FilterType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterType"
           },
           "default": "contains",
           "title": "Filter Type",
@@ -1743,7 +1743,7 @@
               "ascending",
               "descending"
             ],
-            "type_name": "nodetool.list.SortOrder"
+            "type_name": "nodetool.nodes.nodetool.list.SortOrder"
           },
           "default": "ascending",
           "title": "Order"
@@ -1838,7 +1838,7 @@
               "lowercase",
               "strip"
             ],
-            "type_name": "nodetool.list.TransformType"
+            "type_name": "nodetool.nodes.nodetool.list.TransformType"
           },
           "default": "to_string",
           "title": "Transform Type"
@@ -3776,7 +3776,7 @@
               ">=",
               "<="
             ],
-            "type_name": "nodetool.boolean.Comparison"
+            "type_name": "nodetool.nodes.nodetool.boolean.Comparison"
           },
           "default": "==",
           "title": "Comparison",
@@ -3963,7 +3963,7 @@
               "nand",
               "nor"
             ],
-            "type_name": "nodetool.boolean.BooleanOperation"
+            "type_name": "nodetool.nodes.nodetool.boolean.BooleanOperation"
           },
           "default": "and",
           "title": "Operation",
@@ -5057,7 +5057,7 @@
               "p50k_base",
               "r50k_base"
             ],
-            "type_name": "nodetool.text.TiktokenEncoding"
+            "type_name": "nodetool.nodes.nodetool.text.TiktokenEncoding"
           },
           "default": "cl100k_base",
           "title": "Encoding",
@@ -7723,7 +7723,7 @@
               "last",
               "error"
             ],
-            "type_name": "nodetool.dictionary.ConflictResolution"
+            "type_name": "nodetool.nodes.nodetool.dictionary.ConflictResolution"
           },
           "default": "first",
           "title": "Conflict Resolution",
@@ -8424,7 +8424,7 @@
               "%Y-%m-%dT%H:%M:%S%z",
               "%Y-%m-%dT%H:%M:%S%z"
             ],
-            "type_name": "nodetool.date.DateFormat"
+            "type_name": "nodetool.nodes.nodetool.date.DateFormat"
           },
           "default": "%B %d, %Y",
           "title": "Output Format",
@@ -8786,7 +8786,7 @@
               "%Y-%m-%dT%H:%M:%S%z",
               "%Y-%m-%dT%H:%M:%S%z"
             ],
-            "type_name": "nodetool.date.DateFormat"
+            "type_name": "nodetool.nodes.nodetool.date.DateFormat"
           },
           "default": "%Y-%m-%d",
           "title": "Input Format",
@@ -8840,7 +8840,7 @@
               "%Y-%m-%dT%H:%M:%S%z",
               "%Y-%m-%dT%H:%M:%S%z"
             ],
-            "type_name": "nodetool.date.DateFormat"
+            "type_name": "nodetool.nodes.nodetool.date.DateFormat"
           },
           "default": "%Y-%m-%d",
           "title": "Input Format",
@@ -9720,7 +9720,7 @@
               "DejaVuSans.ttf",
               "FreeSans.ttf"
             ],
-            "type_name": "nodetool.video.SubtitleTextFont"
+            "type_name": "nodetool.nodes.nodetool.video.SubtitleTextFont"
           },
           "default": "DejaVuSans.ttf",
           "title": "Font",
@@ -9735,7 +9735,7 @@
               "center",
               "bottom"
             ],
-            "type_name": "nodetool.video.SubtitleTextAlignment"
+            "type_name": "nodetool.nodes.nodetool.video.SubtitleTextAlignment"
           },
           "default": "bottom",
           "title": "Align",
@@ -10767,7 +10767,7 @@
               "revealup",
               "revealdown"
             ],
-            "type_name": "nodetool.video.TransitionType"
+            "type_name": "nodetool.nodes.nodetool.video.TransitionType"
           },
           "default": "fade",
           "title": "Transition Type",
