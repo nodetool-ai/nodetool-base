@@ -4,12 +4,6 @@ title: nodetool-base Documentation
 ---
 
 # nodetool-base Documentation
-
-<input type="text" class="search-box" placeholder="Search nodes..." id="searchBox">
-
-## Available Node Modules
-
-<div id="content">
 # nodetool.nodes.nodetool.list
 
 ## Append
@@ -4115,16 +4109,3 @@ Use cases:
 
 
 
-
-</div>
-
-<script>
-    // Simple search functionality
-    document.getElementById('searchBox').addEventListener('input', function(e) {
-        const searchTerm = e.target.value.toLowerCase();
-        document.querySelectorAll('#content li').forEach(item => {
-            const text = item.textContent.toLowerCase();
-            item.style.display = text.includes(searchTerm) ? 'block' : 'none';
-        });
-    });
-</script>
