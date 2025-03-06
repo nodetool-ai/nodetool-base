@@ -1,0 +1,32 @@
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>nodetool-base Documentation</title>
+            <meta name="description" content="Documentation for nodetool-base nodes">
+            <link rel="stylesheet" href="styles.css">
+            <link rel="icon" href="data:,">
+        </head>
+        <body>
+            <nav>
+                <h1>nodetool-base</h1>
+                <input type="text" class="search-box" placeholder="Search nodes..." id="searchBox">
+            </nav>
+            <main id="content">
+                <!-- Node documentation will be inserted here -->
+            </main>
+            <script>
+                // Simple search functionality
+                document.getElementById('searchBox').addEventListener('input', function(e) {
+                    const searchTerm = e.target.value.toLowerCase();
+                    document.querySelectorAll('.node-card').forEach(card => {
+                        const text = card.textContent.toLowerCase();
+                        card.style.display = text.includes(searchTerm) ? 'block' : 'none';
+                    });
+                });
+            </script>
+        </body>
+        </html>
+        
