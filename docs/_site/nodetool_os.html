@@ -1,0 +1,1243 @@
+
+
+<!DOCTYPE html>
+
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+
+  <link rel="stylesheet" href="/assets/css/just-the-docs-default.css">
+
+  <link rel="stylesheet" href="/assets/css/just-the-docs-head-nav.css" id="jtd-head-nav-stylesheet">
+
+  <style id="jtd-nav-activation">
+  
+
+    .site-nav > ul.nav-list:first-child > li > a,
+    
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(14)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:not(:first-child) a,
+    .site-nav li.external a {
+      background-image: none;
+    }
+
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(14) > a {
+      font-weight: 600;
+      text-decoration: none;
+    }.site-nav > ul.nav-list:first-child > li:nth-child(2) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(2) > ul > li:nth-child(14) > button svg {
+      transform: rotate(-90deg);
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(2) > ul.nav-list > li.nav-list-item:nth-child(14) > ul.nav-list {
+      display: block;
+    }
+  </style>
+
+  
+
+  
+    <script src="/assets/js/vendor/lunr.min.js"></script>
+  
+
+  <script src="/assets/js/just-the-docs.js"></script>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  
+
+
+
+  <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>nodetool.os | nodetool-base Documentation</title>
+<meta name="generator" content="Jekyll v3.9.5" />
+<meta property="og:title" content="nodetool.os" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Documentation for nodetool-base nodes" />
+<meta property="og:description" content="Documentation for nodetool-base nodes" />
+<link rel="canonical" href="http://localhost:4000/nodetool_os.html" />
+<meta property="og:url" content="http://localhost:4000/nodetool_os.html" />
+<meta property="og:site_name" content="nodetool-base Documentation" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="nodetool.os" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebPage","description":"Documentation for nodetool-base nodes","headline":"nodetool.os","url":"http://localhost:4000/nodetool_os.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+
+  
+
+</head>
+
+<body>
+  <a class="skip-to-main" href="#main-content">Skip to main content</a>
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+  <symbol id="svg-link" viewBox="0 0 24 24">
+  <title>Link</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-link">
+    <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+  </svg>
+</symbol>
+
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+  <title>Menu</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu">
+    <line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line>
+  </svg>
+</symbol>
+
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+  <title>Expand</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+    <polyline points="9 18 15 12 9 6"></polyline>
+  </svg>
+</symbol>
+
+  <!-- Feather. MIT License: https://github.com/feathericons/feather/blob/master/LICENSE -->
+<symbol id="svg-external-link" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-external-link">
+  <title id="svg-external-link-title">(external link)</title>
+  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line>
+</symbol>
+
+  
+    <symbol id="svg-doc" viewBox="0 0 24 24">
+  <title>Document</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file">
+    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline>
+  </svg>
+</symbol>
+
+    <symbol id="svg-search" viewBox="0 0 24 24">
+  <title>Search</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
+    <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+  </svg>
+</symbol>
+
+  
+  
+    <!-- Bootstrap Icons. MIT License: https://github.com/twbs/icons/blob/main/LICENSE.md -->
+<symbol id="svg-copy" viewBox="0 0 16 16">
+  <title>Copy</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard" viewBox="0 0 16 16">
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+    <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+  </svg>
+</symbol>
+<symbol id="svg-copied" viewBox="0 0 16 16">
+  <title>Copied</title>
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-check-fill" viewBox="0 0 16 16">
+    <path d="M6.5 0A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3Zm3 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3Z"/>
+    <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1A2.5 2.5 0 0 1 9.5 5h-3A2.5 2.5 0 0 1 4 2.5v-1Zm6.854 7.354-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 0 1 .708-.708L7.5 10.793l2.646-2.647a.5.5 0 0 1 .708.708Z"/>
+  </svg>
+</symbol>
+
+  
+</svg>
+
+  
+    <div class="side-bar">
+  <div class="site-header" role="banner">
+    <a href="/" class="site-title lh-tight">
+  nodetool-base Documentation
+
+</a>
+    <button id="menu-button" class="site-button btn-reset" aria-label="Toggle menu" aria-pressed="false">
+      <svg viewBox="0 0 24 24" class="icon" aria-hidden="true"><use xlink:href="#svg-menu"></use></svg>
+    </button>
+  </div>
+
+  <nav aria-label="Main" id="site-nav" class="site-nav">
+  
+  
+    <ul class="nav-list"><li class="nav-list-item"><a href="/" class="nav-list-link">nodetool-base Documentation</a></li><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in Nodes category" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/nodes" class="nav-list-link">Nodes</a><ul class="nav-list"><li class="nav-list-item"><a href="/nodetool_video.html" class="nav-list-link">nodetool.video</a></li><li class="nav-list-item"><a href="/nodetool_boolean.html" class="nav-list-link">nodetool.boolean</a></li><li class="nav-list-item"><a href="/nodetool_code.html" class="nav-list-link">nodetool.code</a></li><li class="nav-list-item"><a href="/nodetool_constant.html" class="nav-list-link">nodetool.constant</a></li><li class="nav-list-item"><a href="/nodetool_control.html" class="nav-list-link">nodetool.control</a></li><li class="nav-list-item"><a href="/nodetool_date.html" class="nav-list-link">nodetool.date</a></li><li class="nav-list-item"><a href="/nodetool_dictionary.html" class="nav-list-link">nodetool.dictionary</a></li><li class="nav-list-item"><a href="/nodetool_group.html" class="nav-list-link">nodetool.group</a></li><li class="nav-list-item"><a href="/nodetool_image.html" class="nav-list-link">nodetool.image</a></li><li class="nav-list-item"><a href="/nodetool_input.html" class="nav-list-link">nodetool.input</a></li><li class="nav-list-item"><a href="/nodetool_json.html" class="nav-list-link">nodetool.json</a></li><li class="nav-list-item"><a href="/nodetool_list.html" class="nav-list-link">nodetool.list</a></li><li class="nav-list-item"><a href="/nodetool_math.html" class="nav-list-link">nodetool.math</a></li><li class="nav-list-item"><a href="/nodetool_os.html" class="nav-list-link">nodetool.os</a></li><li class="nav-list-item"><a href="/nodetool_output.html" class="nav-list-link">nodetool.output</a></li><li class="nav-list-item"><a href="/nodetool_text.html" class="nav-list-link">nodetool.text</a></li><li class="nav-list-item"><a href="/nodetool_audio.html" class="nav-list-link">nodetool.audio</a></li></ul></li></ul>
+  
+</nav>
+
+
+
+
+  
+  
+    <footer class="site-footer">
+      This site uses <a href="https://github.com/just-the-docs/just-the-docs">Just the Docs</a>, a documentation theme for Jekyll.
+    </footer>
+  
+</div>
+
+  
+  <div class="main" id="top">
+    <div id="main-header" class="main-header">
+  
+    
+
+<div class="search" role="search">
+  <div class="search-input-wrap">
+    <input type="text" id="search-input" class="search-input" tabindex="0" placeholder="Search nodetool-base Documentation" aria-label="Search nodetool-base Documentation" autocomplete="off">
+    <label for="search-input" class="search-label"><svg viewBox="0 0 24 24" class="search-icon"><use xlink:href="#svg-search"></use></svg></label>
+  </div>
+  <div id="search-results" class="search-results"></div>
+</div>
+
+  
+  
+  
+    <nav aria-label="Auxiliary" class="aux-nav">
+  <ul class="aux-nav-list">
+    
+      <li class="aux-nav-list-item">
+        <a href="https://github.com/nodetool-ai/nodetool-core" class="site-button"
+          
+          target="_blank" rel="noopener noreferrer"
+          
+        >
+          View on GitHub
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+  
+</div>
+
+    <div class="main-content-wrap">
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/nodes">Nodes</a></li>
+    <li class="breadcrumb-nav-list-item"><span>nodetool.os</span></li>
+  </ol>
+</nav>
+
+
+      <div id="main-content" class="main-content">
+        <main>
+          
+            <h1 id="nodetoolnodesnodetoolos">
+  
+  
+    <a href="#nodetoolnodesnodetoolos" class="anchor-heading" aria-labelledby="nodetoolnodesnodetoolos"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> nodetool.nodes.nodetool.os
+  
+  
+</h1>
+    
+<h2 id="absolutepath">
+  
+  
+    <a href="#absolutepath" class="anchor-heading" aria-labelledby="absolutepath"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> AbsolutePath
+  
+  
+</h2>
+    
+
+<p>Return the absolute path of a file or directory.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Convert relative paths to absolute</li>
+  <li>Get full system path</li>
+  <li>Resolve path references</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, absolute</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to convert to absolute (str)</li>
+</ul>
+<h2 id="accessedtime">
+  
+  
+    <a href="#accessedtime" class="anchor-heading" aria-labelledby="accessedtime"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> AccessedTime
+  
+  
+</h2>
+    
+
+<p>Get file last accessed timestamp.</p>
+
+<p><strong>Tags:</strong> files, metadata, accessed, time</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="basename">
+  
+  
+    <a href="#basename" class="anchor-heading" aria-labelledby="basename"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Basename
+  
+  
+</h2>
+    
+
+<p>Get the base name component of a file path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Extract filename from full path</li>
+  <li>Get file name without directory</li>
+  <li>Process file names independently</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, basename</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: File path to get basename from (str)</li>
+  <li><strong>remove_extension</strong>: Remove file extension from basename (bool)</li>
+</ul>
+<h2 id="copyfile">
+  
+  
+    <a href="#copyfile" class="anchor-heading" aria-labelledby="copyfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> CopyFile
+  
+  
+</h2>
+    
+
+<p>Copy a file from source to destination path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Create file backups</li>
+  <li>Duplicate files for processing</li>
+  <li>Copy files to new locations</li>
+</ul>
+
+<p><strong>Tags:</strong> files, copy, manage</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>source_path</strong>: Source file path (FilePath)</li>
+  <li><strong>destination_path</strong>: Destination file path (FilePath)</li>
+</ul>
+<h2 id="createdirectory">
+  
+  
+    <a href="#createdirectory" class="anchor-heading" aria-labelledby="createdirectory"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> CreateDirectory
+  
+  
+</h2>
+    
+
+<p>Create a new directory at specified path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Set up directory structure for file organization</li>
+  <li>Create output directories for processed files</li>
+</ul>
+
+<p><strong>Tags:</strong> files, directory, create</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Directory path to create (FilePath)</li>
+  <li><strong>exist_ok</strong>: Don’t error if directory already exists (bool)</li>
+</ul>
+<h2 id="createdtime">
+  
+  
+    <a href="#createdtime" class="anchor-heading" aria-labelledby="createdtime"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> CreatedTime
+  
+  
+</h2>
+    
+
+<p>Get file creation timestamp.</p>
+
+<p><strong>Tags:</strong> files, metadata, created, time</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="dirname">
+  
+  
+    <a href="#dirname" class="anchor-heading" aria-labelledby="dirname"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Dirname
+  
+  
+</h2>
+    
+
+<p>Get the directory name component of a file path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Extract directory path from full path</li>
+  <li>Get parent directory</li>
+  <li>Process directory paths</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, dirname</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: File path to get dirname from (str)</li>
+</ul>
+<h2 id="fileexists">
+  
+  
+    <a href="#fileexists" class="anchor-heading" aria-labelledby="fileexists"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> FileExists
+  
+  
+</h2>
+    
+
+<p>Check if a file or directory exists at the specified path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Validate file presence before processing</li>
+  <li>Implement conditional logic based on file existence</li>
+</ul>
+
+<p><strong>Tags:</strong> files, check, exists</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to check for existence (FilePath)</li>
+</ul>
+<h2 id="fileextension">
+  
+  
+    <a href="#fileextension" class="anchor-heading" aria-labelledby="fileextension"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> FileExtension
+  
+  
+</h2>
+    
+
+<p>Get file extension.</p>
+
+<p><strong>Tags:</strong> files, metadata, extension</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="filename">
+  
+  
+    <a href="#filename" class="anchor-heading" aria-labelledby="filename"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> FileName
+  
+  
+</h2>
+    
+
+<p>Get file name without path.</p>
+
+<p><strong>Tags:</strong> files, metadata, name</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="filenamematch">
+  
+  
+    <a href="#filenamematch" class="anchor-heading" aria-labelledby="filenamematch"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> FileNameMatch
+  
+  
+</h2>
+    
+
+<p>Match a filename against a pattern using Unix shell-style wildcards.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Filter files by name pattern</li>
+  <li>Validate file naming conventions</li>
+  <li>Match file extensions</li>
+</ul>
+
+<p><strong>Tags:</strong> files, pattern, match, filter</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>filename</strong>: Filename to check (str)</li>
+  <li><strong>pattern</strong>: Pattern to match against (e.g. <em>.txt, data_</em>.csv) (str)</li>
+  <li><strong>case_sensitive</strong>: Whether the pattern matching should be case-sensitive (bool)</li>
+</ul>
+<h2 id="filterfilenames">
+  
+  
+    <a href="#filterfilenames" class="anchor-heading" aria-labelledby="filterfilenames"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> FilterFileNames
+  
+  
+</h2>
+    
+
+<p>Filter a list of filenames using Unix shell-style wildcards.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Filter multiple files by pattern</li>
+  <li>Batch process files matching criteria</li>
+  <li>Select files by extension</li>
+</ul>
+
+<p><strong>Tags:</strong> files, pattern, filter, list</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>filenames</strong>: list of filenames to filter (list[str])</li>
+  <li><strong>pattern</strong>: Pattern to filter by (e.g. <em>.txt, data_</em>.csv) (str)</li>
+  <li><strong>case_sensitive</strong>: Whether the pattern matching should be case-sensitive (bool)</li>
+</ul>
+<h2 id="getdirectory">
+  
+  
+    <a href="#getdirectory" class="anchor-heading" aria-labelledby="getdirectory"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> GetDirectory
+  
+  
+</h2>
+    
+
+<p>Get directory containing the file.</p>
+
+<p><strong>Tags:</strong> files, metadata, directory</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="getenvironmentvariable">
+  
+  
+    <a href="#getenvironmentvariable" class="anchor-heading" aria-labelledby="getenvironmentvariable"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> GetEnvironmentVariable
+  
+  
+</h2>
+    
+
+<p>Gets an environment variable value.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Access configuration</li>
+  <li>Get system settings</li>
+</ul>
+
+<p><strong>Tags:</strong> environment, variable, system</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>name</strong>: Environment variable name (str)</li>
+  <li>
+    <div class="table-wrapper"><table>
+      <tbody>
+        <tr>
+          <td><strong>default</strong>: Default value if not found (str</td>
+          <td>None)</td>
+        </tr>
+      </tbody>
+    </table></div>
+  </li>
+</ul>
+<h2 id="getfilesize">
+  
+  
+    <a href="#getfilesize" class="anchor-heading" aria-labelledby="getfilesize"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> GetFileSize
+  
+  
+</h2>
+    
+
+<p>Get file size in bytes.</p>
+
+<p><strong>Tags:</strong> files, metadata, size</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="getpathinfo">
+  
+  
+    <a href="#getpathinfo" class="anchor-heading" aria-labelledby="getpathinfo"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> GetPathInfo
+  
+  
+</h2>
+    
+
+<p>Gets information about a path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Extract path components</li>
+  <li>Parse file paths</li>
+</ul>
+
+<p><strong>Tags:</strong> path, info, metadata</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to analyze (str)</li>
+</ul>
+<h2 id="getsysteminfo">
+  
+  
+    <a href="#getsysteminfo" class="anchor-heading" aria-labelledby="getsysteminfo"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> GetSystemInfo
+  
+  
+</h2>
+    
+
+<p>Gets system information.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Check system compatibility</li>
+  <li>Platform-specific logic</li>
+</ul>
+
+<p><strong>Tags:</strong> system, info, platform</p>
+
+<p><strong>Fields:</strong></p>
+<h2 id="isdirectory">
+  
+  
+    <a href="#isdirectory" class="anchor-heading" aria-labelledby="isdirectory"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> IsDirectory
+  
+  
+</h2>
+    
+
+<p>Check if path is a directory.</p>
+
+<p><strong>Tags:</strong> files, metadata, type</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to check (FilePath)</li>
+</ul>
+<h2 id="isfile">
+  
+  
+    <a href="#isfile" class="anchor-heading" aria-labelledby="isfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> IsFile
+  
+  
+</h2>
+    
+
+<p>Check if path is a file.</p>
+
+<p><strong>Tags:</strong> files, metadata, type</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to check (FilePath)</li>
+</ul>
+<h2 id="joinpaths">
+  
+  
+    <a href="#joinpaths" class="anchor-heading" aria-labelledby="joinpaths"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> JoinPaths
+  
+  
+</h2>
+    
+
+<p>Joins path components.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Build file paths</li>
+  <li>Create cross-platform paths</li>
+</ul>
+
+<p><strong>Tags:</strong> path, join, combine</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>paths</strong>: Path components to join (list[str])</li>
+</ul>
+<h2 id="listfiles">
+  
+  
+    <a href="#listfiles" class="anchor-heading" aria-labelledby="listfiles"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ListFiles
+  
+  
+</h2>
+    
+
+<p>list files in a directory matching a pattern.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Get files for batch processing</li>
+  <li>Filter files by extension or pattern</li>
+</ul>
+
+<p><strong>Tags:</strong> files, list, directory</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>directory</strong>: Directory to scan (FilePath)</li>
+  <li><strong>pattern</strong>: File pattern to match (e.g. *.txt) (str)</li>
+  <li><strong>recursive</strong>: Search subdirectories (bool)</li>
+</ul>
+<h2 id="loadaudiofile">
+  
+  
+    <a href="#loadaudiofile" class="anchor-heading" aria-labelledby="loadaudiofile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> LoadAudioFile
+  
+  
+</h2>
+    
+
+<p>Read an audio file from disk.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Load audio for processing</li>
+  <li>Import sound files for editing</li>
+  <li>Read audio assets for a workflow</li>
+</ul>
+
+<p><strong>Tags:</strong> audio, input, load, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to the audio file to read (FilePath)</li>
+</ul>
+<h2 id="loadbytesfile">
+  
+  
+    <a href="#loadbytesfile" class="anchor-heading" aria-labelledby="loadbytesfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> LoadBytesFile
+  
+  
+</h2>
+    
+
+<p>Read raw bytes from a file on disk.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Load binary data for processing</li>
+  <li>Read binary files for a workflow</li>
+</ul>
+
+<p><strong>Tags:</strong> files, bytes, read, input, load, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to the file to read (FilePath)</li>
+</ul>
+<h2 id="loadcsvfile">
+  
+  
+    <a href="#loadcsvfile" class="anchor-heading" aria-labelledby="loadcsvfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> LoadCSVFile
+  
+  
+</h2>
+    
+
+<p>Read a CSV file from disk.</p>
+
+<p><strong>Tags:</strong> files, csv, read, input, load, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to the CSV file to read (FilePath)</li>
+</ul>
+<h2 id="loaddocumentfile">
+  
+  
+    <a href="#loaddocumentfile" class="anchor-heading" aria-labelledby="loaddocumentfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> LoadDocumentFile
+  
+  
+</h2>
+    
+
+<p>Read a document from disk.</p>
+
+<p><strong>Tags:</strong> files, document, read, input, load, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to the document to read (FilePath)</li>
+</ul>
+<h2 id="loadimagefile">
+  
+  
+    <a href="#loadimagefile" class="anchor-heading" aria-labelledby="loadimagefile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> LoadImageFile
+  
+  
+</h2>
+    
+
+<p>Read an image file from disk.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Load images for processing</li>
+  <li>Import photos for editing</li>
+  <li>Read image assets for a workflow</li>
+</ul>
+
+<p><strong>Tags:</strong> image, input, load, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to the image file to read (FilePath)</li>
+</ul>
+<h2 id="loadvideofile">
+  
+  
+    <a href="#loadvideofile" class="anchor-heading" aria-labelledby="loadvideofile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> LoadVideoFile
+  
+  
+</h2>
+    
+
+<p>Read a video file from disk.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Load videos for processing</li>
+  <li>Import video files for editing</li>
+  <li>Read video assets for a workflow</li>
+</ul>
+
+<p><strong>Tags:</strong> video, input, load, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to the video file to read (str)</li>
+</ul>
+<h2 id="modifiedtime">
+  
+  
+    <a href="#modifiedtime" class="anchor-heading" aria-labelledby="modifiedtime"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ModifiedTime
+  
+  
+</h2>
+    
+
+<p>Get file last modified timestamp.</p>
+
+<p><strong>Tags:</strong> files, metadata, modified, time</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to file (FilePath)</li>
+</ul>
+<h2 id="movefile">
+  
+  
+    <a href="#movefile" class="anchor-heading" aria-labelledby="movefile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> MoveFile
+  
+  
+</h2>
+    
+
+<p>Move a file from source to destination path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Organize files into directories</li>
+  <li>Process and archive files</li>
+  <li>Relocate completed files</li>
+</ul>
+
+<p><strong>Tags:</strong> files, move, manage</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>source_path</strong>: Source file path (FilePath)</li>
+  <li><strong>destination_path</strong>: Destination file path (FilePath)</li>
+</ul>
+<h2 id="normalizepath">
+  
+  
+    <a href="#normalizepath" class="anchor-heading" aria-labelledby="normalizepath"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> NormalizePath
+  
+  
+</h2>
+    
+
+<p>Normalizes a path.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Standardize paths</li>
+  <li>Remove redundant separators</li>
+</ul>
+
+<p><strong>Tags:</strong> path, normalize, clean</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to normalize (str)</li>
+</ul>
+<h2 id="pathtostring">
+  
+  
+    <a href="#pathtostring" class="anchor-heading" aria-labelledby="pathtostring"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> PathToString
+  
+  
+</h2>
+    
+
+<p>Convert a FilePath object to a string.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Get raw string path from FilePath object</li>
+  <li>Convert FilePath for string operations</li>
+  <li>Extract path string for external use</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, string, convert</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>file_path</strong>: FilePath object to convert to string (FilePath)</li>
+</ul>
+<h2 id="relativepath">
+  
+  
+    <a href="#relativepath" class="anchor-heading" aria-labelledby="relativepath"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> RelativePath
+  
+  
+</h2>
+    
+
+<p>Return a relative path to a target from a start directory.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Create relative path references</li>
+  <li>Generate portable paths</li>
+  <li>Compare file locations</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, relative</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>target_path</strong>: Target path to convert to relative (str)</li>
+  <li><strong>start_path</strong>: Start path for relative conversion (str)</li>
+</ul>
+<h2 id="saveaudiofile">
+  
+  
+    <a href="#saveaudiofile" class="anchor-heading" aria-labelledby="saveaudiofile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveAudioFile
+  
+  
+</h2>
+    
+
+<p>Write an audio file to disk.</p>
+
+<p>The filename can include time and date variables:
+%Y - Year, %m - Month, %d - Day
+%H - Hour, %M - Minute, %S - Second</p>
+
+<p><strong>Tags:</strong> audio, output, save, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>audio</strong>: The audio to save (AudioRef)</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: 
+      Name of the file to save.
+      You can use time and date variables to create unique names:
+      %Y - Year
+      %m - Month
+      %d - Day
+      %H - Hour
+      %M - Minute
+      %S - Second
+       (str)</li>
+</ul>
+<h2 id="savebytesfile">
+  
+  
+    <a href="#savebytesfile" class="anchor-heading" aria-labelledby="savebytesfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveBytesFile
+  
+  
+</h2>
+    
+
+<p>Write raw bytes to a file on disk.</p>
+
+<p>The filename can include time and date variables:
+%Y - Year, %m - Month, %d - Day
+%H - Hour, %M - Minute, %S - Second</p>
+
+<p><strong>Tags:</strong> files, bytes, save, output</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>data</strong>: The bytes to write to file (bytes)</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: Name of the file to save. Supports strftime format codes. (str)</li>
+</ul>
+<h2 id="savecsvdataframefile">
+  
+  
+    <a href="#savecsvdataframefile" class="anchor-heading" aria-labelledby="savecsvdataframefile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveCSVDataframeFile
+  
+  
+</h2>
+    
+
+<p>Write a pandas DataFrame to a CSV file.</p>
+
+<p>The filename can include time and date variables:
+%Y - Year, %m - Month, %d - Day
+%H - Hour, %M - Minute, %S - Second</p>
+
+<p><strong>Tags:</strong> files, csv, write, output, save, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>dataframe</strong>: DataFrame to write to CSV (DataframeRef)</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: Name of the CSV file to save. Supports strftime format codes. (str)</li>
+</ul>
+<h2 id="savecsvfile">
+  
+  
+    <a href="#savecsvfile" class="anchor-heading" aria-labelledby="savecsvfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveCSVFile
+  
+  
+</h2>
+    
+
+<p>Write a list of dictionaries to a CSV file.</p>
+
+<p>The filename can include time and date variables:
+%Y - Year, %m - Month, %d - Day
+%H - Hour, %M - Minute, %S - Second</p>
+
+<p><strong>Tags:</strong> files, csv, write, output, save, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>data</strong>: list of dictionaries to write to CSV (list[dict])</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: Name of the CSV file to save. Supports strftime format codes. (str)</li>
+</ul>
+<h2 id="savedocumentfile">
+  
+  
+    <a href="#savedocumentfile" class="anchor-heading" aria-labelledby="savedocumentfile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveDocumentFile
+  
+  
+</h2>
+    
+
+<p>Write a document to disk.</p>
+
+<p>The filename can include time and date variables:
+%Y - Year, %m - Month, %d - Day
+%H - Hour, %M - Minute, %S - Second</p>
+
+<p><strong>Tags:</strong> files, document, write, output, save, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>document</strong>: The document to save (DocumentRef)</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: Name of the file to save. Supports strftime format codes. (str)</li>
+</ul>
+<h2 id="saveimagefile">
+  
+  
+    <a href="#saveimagefile" class="anchor-heading" aria-labelledby="saveimagefile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveImageFile
+  
+  
+</h2>
+    
+
+<p>Write an image to disk.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Save processed images</li>
+  <li>Export edited photos</li>
+  <li>Archive image results</li>
+</ul>
+
+<p><strong>Tags:</strong> image, output, save, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>image</strong>: The image to save (ImageRef)</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: 
+      The name of the image file.
+      You can use time and date variables to create unique names:
+      %Y - Year
+      %m - Month
+      %d - Day
+      %H - Hour
+      %M - Minute
+      %S - Second
+       (str)</li>
+</ul>
+<h2 id="savevideofile">
+  
+  
+    <a href="#savevideofile" class="anchor-heading" aria-labelledby="savevideofile"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SaveVideoFile
+  
+  
+</h2>
+    
+
+<p>Write a video file to disk.</p>
+
+<p>The filename can include time and date variables:
+%Y - Year, %m - Month, %d - Day
+%H - Hour, %M - Minute, %S - Second</p>
+
+<p><strong>Tags:</strong> video, output, save, file</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>video</strong>: The video to save (VideoRef)</li>
+  <li><strong>folder</strong>: Folder where the file will be saved (FolderPath)</li>
+  <li><strong>filename</strong>: 
+      Name of the file to save.
+      You can use time and date variables to create unique names:
+      %Y - Year
+      %m - Month
+      %d - Day
+      %H - Hour
+      %M - Minute
+      %S - Second
+       (str)</li>
+</ul>
+<h2 id="setenvironmentvariable">
+  
+  
+    <a href="#setenvironmentvariable" class="anchor-heading" aria-labelledby="setenvironmentvariable"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SetEnvironmentVariable
+  
+  
+</h2>
+    
+
+<p>Sets an environment variable.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Configure runtime settings</li>
+  <li>Set up process environment</li>
+</ul>
+
+<p><strong>Tags:</strong> environment, variable, system</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>name</strong>: Environment variable name (str)</li>
+  <li><strong>value</strong>: Environment variable value (str)</li>
+</ul>
+<h2 id="shownotification">
+  
+  
+    <a href="#shownotification" class="anchor-heading" aria-labelledby="shownotification"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ShowNotification
+  
+  
+</h2>
+    
+
+<p>Shows a system notification.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Alert user of completed tasks</li>
+  <li>Show process status</li>
+  <li>Display important messages</li>
+</ul>
+
+<p><strong>Tags:</strong> notification, system, alert</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>title</strong>: Title of the notification (str)</li>
+  <li><strong>message</strong>: Content of the notification (str)</li>
+  <li><strong>timeout</strong>: How long the notification should stay visible (in seconds) (int)</li>
+</ul>
+<h2 id="splitextension">
+  
+  
+    <a href="#splitextension" class="anchor-heading" aria-labelledby="splitextension"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SplitExtension
+  
+  
+</h2>
+    
+
+<p>Split a path into root and extension components.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Extract file extension</li>
+  <li>Process filename without extension</li>
+  <li>Handle file types</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, extension, split</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to split (str)</li>
+</ul>
+<h2 id="splitpath">
+  
+  
+    <a href="#splitpath" class="anchor-heading" aria-labelledby="splitpath"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> SplitPath
+  
+  
+</h2>
+    
+
+<p>Split a path into directory and file components.</p>
+
+<p>Use cases:</p>
+<ul>
+  <li>Separate directory from filename</li>
+  <li>Process path components separately</li>
+  <li>Extract path parts</li>
+</ul>
+
+<p><strong>Tags:</strong> files, path, split</p>
+
+<p><strong>Fields:</strong></p>
+<ul>
+  <li><strong>path</strong>: Path to split (str)</li>
+</ul>
+
+          
+
+          
+            
+          
+        </main>
+        
+
+
+      </div>
+    </div>
+    
+      
+
+<div class="search-overlay"></div>
+
+    
+  </div>
+
+  
+</body>
+</html>
+
