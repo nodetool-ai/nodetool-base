@@ -265,6 +265,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   jekyll
+  jekyll-remote-theme
   just-the-docs (= 0.7.0)
 
 BUNDLED WITH

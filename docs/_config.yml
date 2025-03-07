@@ -1,6 +1,6 @@
 title: nodetool-base Documentation
 description: Documentation for nodetool-base nodes
-remote_theme: just-the-docs/just-the-docs@0.7.0
+remote_theme: just-the-docs/just-the-docs
 baseurl: ""
 url: ""
 
