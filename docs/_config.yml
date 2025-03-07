@@ -8,6 +8,7 @@ url: ""
 markdown: kramdown
 plugins:
   - jekyll-feed
+  - jekyll-theme-time-machine
 
 # Navigation Structure
 nav_sort: case_sensitive
