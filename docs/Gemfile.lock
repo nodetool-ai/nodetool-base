@@ -305,7 +305,7 @@ PLATFORMS
 DEPENDENCIES
   github-pages
   jekyll
-  jekyll-theme-time-machine
+  jekyll-remote-theme
 
 BUNDLED WITH
    2.6.3

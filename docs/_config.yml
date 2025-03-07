@@ -1,14 +1,9 @@
 title: nodetool-base Documentation
 description: Documentation for nodetool-base nodes
-theme: jekyll-theme-time-machine
-baseurl: ""
-url: ""
+remote_theme: pages-themes/midnight@v0.2.0
 
-# Build settings
-markdown: kramdown
 plugins:
-  - jekyll-feed
-  - jekyll-theme-time-machine
+  - jekyll-remote-theme
 
 # Navigation Structure
 nav_sort: case_sensitive
