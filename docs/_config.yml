@@ -1,5 +1,6 @@
 title: nodetool-base Documentation
 description: Documentation for nodetool-base nodes
+remote_theme: just-the-docs/just-the-docs@0.7.0
 baseurl: ""
 url: ""
 
@@ -8,6 +9,7 @@ markdown: kramdown
 theme: just-the-docs
 plugins:
   - jekyll-feed
+  - jekyll-remote-theme
 
 # Navigation Structure
 nav_sort: case_sensitive
@@ -27,7 +29,7 @@ search:
 # Aux links for the upper right navigation
 aux_links:
   "View on GitHub":
-    - "https://github.com/nodetool-ai/nodetool-core"
+    - "https://github.com/nodetool-ai/nodetool-base"
 
 aux_links_new_tab: true
 
