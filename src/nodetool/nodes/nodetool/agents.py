@@ -6,7 +6,6 @@ from nodetool.chat.cot_agent import (
     TaskPlanner,
     TaskExecutor,
     DEFAULT_PLANNING_SYSTEM_PROMPT,
-    DEFAULT_PLANNING_USER_PROMPT_TEMPLATE,
     DEFAULT_EXECUTION_SYSTEM_PROMPT,
 )
 from nodetool.chat.providers import Chunk, AnthropicProvider
@@ -14,7 +13,7 @@ from nodetool.chat.tools.base import get_tool_by_name, Tool
 from nodetool.metadata.types import (
     Message,
     ToolCall,
-    TaskList,
+    TaskPlan,
     FunctionModel,
     AgentModel,
     ToolName,
@@ -76,12 +75,7 @@ class AgentPlanner(BaseNode):
         description="Optional custom system prompt for planning",
     )
 
-    user_prompt: str = Field(
-        default=DEFAULT_PLANNING_USER_PROMPT_TEMPLATE,
-        description="Optional custom user prompt for planning",
-    )
-
-    async def process(self, context: ProcessingContext) -> TaskList:
+    async def process(self, context: ProcessingContext) -> TaskPlan:
         if not self.objective:
             raise ValueError("Objective cannot be empty")
 
@@ -107,8 +101,8 @@ class AgentPlanner(BaseNode):
         )
 
         # Generate the plan
-        task_list = await planner.create_plan()
-        return task_list
+        task_plan = await planner.create_plan()
+        return task_plan
 
 
 class AgentExecutor(BaseNode):
@@ -123,9 +117,9 @@ class AgentExecutor(BaseNode):
     - Solve problems step-by-step with LLM reasoning
     """
 
-    task_list: TaskList = Field(
-        default=TaskList(title="Empty Task List"),
-        description="The task list to execute",
+    task_plan: TaskPlan = Field(
+        default=TaskPlan(title="Empty Plan"),
+        description="The task plan to execute",
     )
 
     model: AgentModel = Field(
@@ -150,12 +144,15 @@ class AgentExecutor(BaseNode):
         default=30, description="Maximum execution steps to prevent infinite loops"
     )
 
-    show_thinking: bool = Field(
-        default=True, description="Whether to include thinking steps in the output"
-    )
+    @classmethod
+    def return_type(cls):
+        return {
+            "task_plan": TaskPlan,
+            "messages": list[Message],
+        }
 
     async def process(self, context: ProcessingContext) -> list[Message]:
-        if not self.task_list or not self.task_list.tasks:
+        if not self.task_plan or not self.task_plan.tasks:
             raise ValueError("Task list cannot be empty")
 
         # Set up provider and function model
@@ -170,18 +167,17 @@ class AgentExecutor(BaseNode):
             model=model,
             workspace_dir=self.workspace_dir,
             tools=[tool for tool in tools if tool is not None],
-            task_list=self.task_list,
+            task_plan=self.task_plan,
             system_prompt=self.system_prompt,
             max_steps=self.max_steps,
         )
 
         # Execute tasks and collect results
         messages = []
-        async for result in executor.execute_tasks(show_thinking=self.show_thinking):
+        async for result in executor.execute_tasks():
             # Convert chunks to messages for easier consumption
             if isinstance(result, Chunk):
                 messages.append(Message(role="assistant", content=result.content))
-                # Send chunk via context.post_message
                 context.post_message(
                     NodeProgress(
                         node_id=self.id,

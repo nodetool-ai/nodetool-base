@@ -4065,15 +4065,15 @@
       "layout": "default",
       "properties": [
         {
-          "name": "task_list",
+          "name": "task_plan",
           "type": {
-            "type": "task_list"
+            "type": "task_plan"
           },
           "default": {
-            "title": "Empty Task List"
+            "title": "Empty Plan"
           },
-          "title": "Task List",
-          "description": "The task list to execute"
+          "title": "Task Plan",
+          "description": "The task plan to execute"
         },
         {
           "name": "model",
@@ -4118,6 +4118,7 @@
             "type": "str",
             "optional": true
           },
+          "default": "\nYou are an agent that executes plans.\n\nAll file operations must be performed within this workspace directory.\n\nEXECUTION INSTRUCTIONS:\n1. Focus on the task at hand and use the tools provided to you to complete the task.\n2. When you need information from a previous tool execution, reference it by its task ID.\n3. DO NOT include the full output of tools in your responses to save context space.\n4. Respect task dependencies - do not execute a task until all its dependencies have been completed.\n5. When working with files:\n   - Always use paths relative to the workspace directory\n   - Do not attempt to access files outside the workspace\n   - Use the workspace tools for file operations\n",
           "title": "System Prompt",
           "description": "Optional custom system prompt for execution"
         },
@@ -4129,15 +4130,6 @@
           "default": 30,
           "title": "Max Steps",
           "description": "Maximum execution steps to prevent infinite loops"
-        },
-        {
-          "name": "show_thinking",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Show Thinking",
-          "description": "Whether to include thinking steps in the output"
         }
       ],
       "outputs": [
@@ -4156,13 +4148,12 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "task_list",
+        "task_plan",
         "model",
         "tools",
         "workspace_dir",
         "system_prompt",
-        "max_steps",
-        "show_thinking"
+        "max_steps"
       ],
       "is_dynamic": false
     },
@@ -4224,7 +4215,7 @@
           "type": {
             "type": "str"
           },
-          "default": "\nYou are a strategic planning assistant that creates clear, organized plans.\nPLANNING INSTRUCTIONS:\n1. Create MINIMAL plans - use only as many tasks as absolutely necessary.\n2. Match plan complexity to objective complexity - simple objectives should have few tasks.\n3. Combine related steps into single tasks whenever possible.\n4. Each top-level task should have 1-3 subtasks for most objectives.\n5. Only create separate subtasks when there's a clear dependency or tool change.\n6. The sub tasks will get executed in the execution phase, in the order they are written.\n7. Each sub task should get a unique id which can be used to reference the task.\n8. Each sub task should reference the tool it will use.\n9. Dependencies are other task IDs that must be completed before the subtask can be executed.\n10. Keep the plan as streamlined as possible while still achieving the objective.\n11. When working with files, always use the workspace directory as the root.\n\nWrite JSON with the following format:\n```json\n{\n    \"type\": \"task_list\",\n    \"title\": \"Write a Simple Note\",\n    \"tasks\": [\n        {\n            \"type\": \"task\",\n            \"title\": \"Create and Write Note\",\n            \"subtasks\": [\n                {\n                    \"type\": \"subtask\",\n                    \"id\": \"note1\",\n                    \"content\": \"Create a new note file 'quick_note.txt' with initial content\",\n                    \"tool\": \"create_workspace_file\",\n                    \"dependencies\": []\n            }\n        ]\n        }\n    ]\n}\n```\n",
+          "default": "\nYou are a strategic planning assistant that creates clear, organized plans.\nPLANNING INSTRUCTIONS:\n1. Create MINIMAL plans - use only as many tasks as absolutely necessary.\n2. Match plan complexity to objective complexity - simple objectives should have few tasks.\n3. Combine related steps into single tasks whenever possible.\n4. Each top-level task should have 1-3 subtasks for most objectives.\n5. Only create separate subtasks when there's a clear dependency or tool change.\n6. The sub tasks will get executed in the execution phase, in the order they are written.\n7. Each sub task should get a unique id which can be used to reference the task.\n8. Each sub task should reference the tool it will use.\n9. Dependencies are other task IDs that must be completed before the subtask can be executed.\n10. Keep the plan as streamlined as possible while still achieving the objective.\n11. When working with files, always use the workspace directory as the root.\n\nWrite JSON with the following format:\n```json\n{\n    \"type\": \"task_plan\",\n    \"title\": \"Write a Simple Note\",\n    \"tasks\": [\n        {\n            \"type\": \"task\",\n            \"title\": \"Create and Write Note\",\n            \"subtasks\": [\n                {\n                    \"type\": \"subtask\",\n                    \"id\": \"note1\",\n                    \"content\": \"Create a new note file 'quick_note.txt' with initial content\",\n                    \"tool\": \"create_workspace_file\",\n                    \"dependencies\": []\n            }\n        ]\n        }\n    ]\n}\n```\n",
           "title": "System Prompt",
           "description": "Optional custom system prompt for planning"
         },
@@ -4241,7 +4232,7 @@
       "outputs": [
         {
           "type": {
-            "type": "task_list"
+            "type": "task_plan"
           },
           "name": "output"
         }
