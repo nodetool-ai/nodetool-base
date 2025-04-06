@@ -4059,7 +4059,7 @@
     },
     {
       "title": "Agent",
-      "description": "Executes tasks using Chain of Thought (CoT) agent\n    agent, execution, tasks\n\n    Use cases:\n    - Automate complex workflows with reasoning\n    - Process tasks with tool calling capabilities\n    - Solve problems step-by-step with LLM reasoning",
+      "description": "Executes tasks using a multi-step agent that can call tools\n    agent, execution, tasks\n\n    Use cases:\n    - Automate complex workflows with reasoning\n    - Process tasks with tool calling capabilities\n    - Solve problems step-by-step with LLM reasoning",
       "namespace": "nodetool.agents",
       "node_type": "nodetool.agents.Agent",
       "layout": "default",
@@ -4087,24 +4087,24 @@
           "type": {
             "type": "enum",
             "values": [
-              "claude-3-5-sonnet-2024102",
+              "claude-3-5-sonnet-20241022",
               "claude-3-7-sonnet-20250219",
-              "gpt-4o"
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
             ],
             "type_name": "nodetool.metadata.types.AgentModel"
           },
           "default": "gpt-4o",
           "title": "Model",
           "description": "Model to use for execution"
-        },
-        {
-          "name": "output_schema",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Output Schema",
-          "description": "Schema for the output of the agent"
         },
         {
           "name": "tools",
@@ -4147,7 +4147,7 @@
       "outputs": [
         {
           "type": {
-            "type": "any"
+            "type": "str"
           },
           "name": "output"
         }
@@ -4158,10 +4158,1082 @@
         "name",
         "objective",
         "model",
-        "output_schema",
         "tools",
         "input_files",
         "max_steps"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Dataframe Agent",
+      "description": "Executes tasks using a multi-step agent that can call tools and return a dataframe\n    agent, execution, tasks\n\n    Use cases:\n    - Automate complex workflows with reasoning\n    - Process tasks with tool calling capabilities\n    - Solve problems step-by-step with LLM reasoning",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.DataframeAgent",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Agent",
+          "title": "Name",
+          "description": "The name of the agent executor"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or problem to create a plan for"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for the agent"
+        },
+        {
+          "name": "max_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Max Steps",
+          "description": "Maximum execution steps to prevent infinite loops"
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {},
+          "title": "Columns",
+          "description": "The columns to use in the dataframe."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "name",
+        "objective",
+        "model",
+        "tools",
+        "input_files",
+        "max_steps",
+        "columns"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Dict Agent",
+      "description": "Executes tasks using a multi-step agent that can call tools and return a dictionary\n    agent, execution, tasks",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.DictAgent",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Agent",
+          "title": "Name",
+          "description": "The name of the agent executor"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or problem to create a plan for"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for the agent"
+        },
+        {
+          "name": "max_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Max Steps",
+          "description": "Maximum execution steps to prevent infinite loops"
+        },
+        {
+          "name": "fields",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {},
+          "title": "Fields",
+          "description": "The fields to use in the dictionary."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "name",
+        "objective",
+        "model",
+        "tools",
+        "input_files",
+        "max_steps",
+        "fields"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "List Agent",
+      "description": "Executes tasks using a multi-step agent that can call tools and return a list\n    agent, execution, tasks, list\n\n    Use cases:\n    - Generate lists of items\n    - Create sequences of steps\n    - Collect multiple results",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.ListAgent",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Agent",
+          "title": "Name",
+          "description": "The name of the agent executor"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or problem to create a plan for"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for the agent"
+        },
+        {
+          "name": "max_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Max Steps",
+          "description": "Maximum execution steps to prevent infinite loops"
+        },
+        {
+          "name": "item_type",
+          "type": {
+            "type": "str"
+          },
+          "default": "string",
+          "title": "Item Type",
+          "description": "The type of items in the list (string, number, object)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "name",
+        "objective",
+        "model",
+        "tools",
+        "input_files",
+        "max_steps",
+        "item_type"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Browser",
+      "description": "Fetches content from a web page using a headless browser.\n    browser, web, scraping, content, fetch\n\n    Use cases:\n    - Extract content from JavaScript-heavy websites\n    - Retrieve text content from web pages\n    - Get metadata from web pages\n    - Save extracted content to files",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.Browser",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to navigate to"
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 20000,
+          "title": "Timeout",
+          "description": "Timeout in milliseconds for page navigation"
+        },
+        {
+          "name": "use_readability",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Use Readability",
+          "description": "Use Python's Readability for better content extraction"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "success"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "content"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "metadata"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "timeout",
+        "use_readability"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Browser Navigation",
+      "description": "Navigates and interacts with web pages in a browser session.\n    browser, navigation, interaction, click, extract\n\n    Use cases:\n    - Perform complex web interactions\n    - Navigate through multi-step web processes\n    - Extract content after interaction",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.BrowserNavigation",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to navigate to (required for 'goto' action)"
+        },
+        {
+          "name": "action",
+          "type": {
+            "type": "enum",
+            "values": [
+              "click",
+              "goto",
+              "back",
+              "forward",
+              "reload",
+              "extract"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.Action"
+          },
+          "default": "goto",
+          "title": "Action",
+          "description": "Navigation or extraction action to perform"
+        },
+        {
+          "name": "selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Selector",
+          "description": "CSS selector for the element to interact with or extract from"
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 30000,
+          "title": "Timeout",
+          "description": "Timeout in milliseconds for the action"
+        },
+        {
+          "name": "wait_for",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Wait For",
+          "description": "Optional selector to wait for after performing the action"
+        },
+        {
+          "name": "extract_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "text",
+              "html",
+              "value",
+              "attribute"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.ExtractType"
+          },
+          "default": "text",
+          "title": "Extract Type",
+          "description": "Type of content to extract (for 'extract' action)"
+        },
+        {
+          "name": "attribute",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Attribute",
+          "description": "Attribute name to extract (when extract_type is 'attribute')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "action",
+        "selector",
+        "timeout",
+        "wait_for",
+        "extract_type",
+        "attribute"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Download File",
+      "description": "Downloads a file from a URL and saves it to disk.\n    download, file, web, save\n\n    Use cases:\n    - Download documents, images, or other files from the web\n    - Save data for further processing\n    - Retrieve file assets for analysis",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.DownloadFile",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL of the file to download"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bytes"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Google Search",
+      "description": "Performs a Google search using Brightdata's API.\n    search, google, brightdata, results\n\n    Use cases:\n    - Research information from the web\n    - Find relevant websites on specific topics\n    - Gather data for analysis from search results",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.GoogleSearch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "The search query to submit to Google"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Number of results to return"
+        },
+        {
+          "name": "site",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Site",
+          "description": "Limit search results to a specific website (e.g., 'example.com')"
+        },
+        {
+          "name": "filetype",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filetype",
+          "description": "Limit search results to specific file types (e.g., 'pdf', 'doc', 'xls')"
+        },
+        {
+          "name": "time_period",
+          "type": {
+            "type": "enum",
+            "optional": true,
+            "values": [
+              "past_24h",
+              "past_week",
+              "past_month",
+              "past_year"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.TimePeriod"
+          },
+          "title": "Time Period",
+          "description": "Limit results to a specific time period"
+        },
+        {
+          "name": "exact_phrase",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Exact Phrase",
+          "description": "Search for an exact phrase (will be enclosed in quotes)"
+        },
+        {
+          "name": "country",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Country",
+          "description": "Country code to localize search results (e.g., 'us', 'uk', 'ca')"
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Language",
+          "description": "Language code to filter results (e.g., 'en', 'es', 'fr')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "query",
+        "num_results",
+        "site",
+        "filetype",
+        "time_period",
+        "exact_phrase",
+        "country",
+        "language"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Screenshot",
+      "description": "Takes a screenshot of a web page or specific element.\n    browser, screenshot, capture, image\n\n    Use cases:\n    - Capture visual representation of web pages\n    - Document specific UI elements\n    - Create visual records of web content",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.Screenshot",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to navigate to before taking screenshot"
+        },
+        {
+          "name": "selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Selector",
+          "description": "Optional CSS selector for capturing a specific element"
+        },
+        {
+          "name": "output_file",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {
+            "path": "screenshot.png"
+          },
+          "title": "Output File",
+          "description": "Path to save the screenshot (relative to workspace)"
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 30000,
+          "title": "Timeout",
+          "description": "Timeout in milliseconds for page navigation"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "selector",
+        "output_file",
+        "timeout"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Web Fetch",
+      "description": "Fetches HTML content from a URL and converts it to text.\n    web, fetch, html, markdown, http\n\n    Use cases:\n    - Extract text content from web pages\n    - Process web content for analysis\n    - Save web content to files",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.WebFetch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to fetch content from"
+        },
+        {
+          "name": "selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "body",
+          "title": "Selector",
+          "description": "CSS selector to extract specific elements"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "selector"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Chart Generator",
+      "description": "LLM Agent to create Plotly Express charts based on natural language descriptions.\n    llm, data visualization, charts\n\n    Use cases:\n    - Generating interactive charts from natural language descriptions\n    - Creating data visualizations with minimal configuration\n    - Converting data analysis requirements into visual representations",
+      "namespace": "nodetool.generators",
+      "node_type": "nodetool.generators.ChartGenerator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "The GPT model to use for chart generation."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Natural language description of the desired chart"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Data",
+          "description": "The data to visualize"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "description": "The maximum number of tokens to generate.",
+          "min": 1.0,
+          "max": 100000.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "plotly_config"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "data",
+        "model"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Data Generator",
+      "description": "LLM Agent to create a dataframe based on a user prompt.\n    llm, dataframe creation, data structuring\n\n    Use cases:\n    - Generating structured data from natural language descriptions\n    - Creating sample datasets for testing or demonstration\n    - Converting unstructured text into tabular format",
+      "namespace": "nodetool.generators",
+      "node_type": "nodetool.generators.DataGenerator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "The GPT model to use for data generation."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The user prompt"
+        },
+        {
+          "name": "input_text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input Text",
+          "description": "The input text to be analyzed by the agent."
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "description": "The maximum number of tokens to generate.",
+          "min": 1.0,
+          "max": 100000.0
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {},
+          "title": "Columns",
+          "description": "The columns to use in the dataframe."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "model",
+        "columns"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "SVGGenerator",
+      "description": "LLM Agent to create SVG elements based on user prompts.\n    svg, generator, vector, graphics\n\n    Use cases:\n    - Creating vector graphics from text descriptions\n    - Generating scalable illustrations\n    - Creating custom icons and diagrams",
+      "namespace": "nodetool.generators",
+      "node_type": "nodetool.generators.SVGGenerator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "The GPT model to use for SVG generation."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The user prompt for SVG generation"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "Image to use for generation"
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "Audio to use for generation"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 8192,
+          "title": "Max Tokens",
+          "description": "The maximum number of tokens to generate.",
+          "min": 1.0,
+          "max": 100000.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "svg_element"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "audio",
+        "model"
       ],
       "is_dynamic": false
     },
@@ -4180,15 +5252,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4233,15 +5296,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "bool"
@@ -4281,15 +5335,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4374,15 +5419,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "collection"
@@ -4423,15 +5459,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4482,15 +5509,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "document"
@@ -4531,15 +5549,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4590,15 +5599,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4678,15 +5678,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "image"
@@ -4727,15 +5718,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4795,15 +5777,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "file_path"
@@ -4844,15 +5817,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -4896,15 +5860,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "text"
@@ -4945,15 +5900,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this input node."
         },
         {
           "name": "value",
@@ -6280,6 +7226,368 @@
       "recommended_models": [],
       "basic_fields": [
         "input"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Data Extractor",
+      "description": "Extract structured data from text content using LLM providers.\n    data-extraction, structured-data, nlp, parsing\n\n    Specialized for extracting structured information:\n    - Converting unstructured text into structured data\n    - Identifying and extracting specific fields from documents\n    - Parsing text according to predefined schemas\n    - Creating structured records from natural language content",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.Extractor",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for data extraction"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to extract data from"
+        },
+        {
+          "name": "extraction_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "Extract the following information from the text:",
+          "title": "Extraction Prompt",
+          "description": "Additional instructions for the extraction process"
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {},
+          "title": "Columns",
+          "description": "The fields to extract from the text"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "description": "The maximum number of tokens to generate.",
+          "min": 1.0,
+          "max": 100000.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "extraction_prompt",
+        "columns",
+        "model"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "LLM",
+      "description": "Generate natural language responses using LLM providers.\n    llm, text-generation, chatbot, question-answering\n\n    Leverages LLM providers to:\n    - Generate human-like text responses\n    - Answer questions\n    - Complete prompts\n    - Engage in conversational interactions\n    - Assist with writing and editing tasks\n    - Perform text analysis and summarization",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.LLM",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "system",
+          "type": {
+            "type": "str"
+          },
+          "default": "You are a friendly assistant.",
+          "title": "System",
+          "description": "The system prompt for the LLM"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The prompt for the LLM"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to analyze"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "messages",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "message"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Messages",
+          "description": "The messages for the LLM"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "min": 1.0,
+          "max": 100000.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "model",
+        "system",
+        "messages"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Text Summarizer",
+      "description": "Generate concise summaries of text content using LLM providers.\n    text, summarization, nlp, content\n\n    Specialized for creating high-quality summaries:\n    - Condensing long documents into key points\n    - Creating executive summaries\n    - Extracting main ideas from text\n    - Maintaining factual accuracy while reducing length",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.Summarizer",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for summarization"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to summarize"
+        },
+        {
+          "name": "max_words",
+          "type": {
+            "type": "int"
+          },
+          "default": 150,
+          "title": "Max Words",
+          "description": "Target maximum number of words for the summary",
+          "min": 50.0,
+          "max": 500.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "max_words",
+        "model"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Text Classifier",
+      "description": "Classify text into predefined or dynamic categories using LLM.\n    classification, nlp, categorization\n\n    Use cases:\n    - Sentiment analysis\n    - Topic classification\n    - Intent detection\n    - Content categorization",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.TextClassifier",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "claude-3-5-sonnet-20241022",
+              "claude-3-7-sonnet-20250219",
+              "gpt-4o",
+              "o3-mini",
+              "o1",
+              "gemini-2.5-pro-exp-03-25",
+              "gemini-2.0-flash",
+              "gemini-2.0-flash-lite",
+              "gemma3:1b",
+              "gemma3:4b",
+              "gemma3:12b",
+              "llama3.2-vision:11b"
+            ],
+            "type_name": "nodetool.metadata.types.AgentModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "Model to use for classification"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "Text to classify"
+        },
+        {
+          "name": "categories",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Categories",
+          "description": "List of possible categories. If empty, LLM will determine categories."
+        },
+        {
+          "name": "multi_label",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Multi Label",
+          "description": "Allow multiple category assignments"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "categories",
+        "multi_label",
+        "model"
       ],
       "is_dynamic": false
     },
@@ -9261,7 +10569,9 @@
           "type": {
             "type": "bool"
           },
-          "title": "Default"
+          "default": false,
+          "title": "Default",
+          "description": "Default value to return if path is not found"
         }
       ],
       "outputs": [
@@ -9311,7 +10621,8 @@
             "type": "dict"
           },
           "default": {},
-          "title": "Default"
+          "title": "Default",
+          "description": "Default value to return if path is not found"
         }
       ],
       "outputs": [
@@ -9360,7 +10671,9 @@
           "type": {
             "type": "float"
           },
-          "title": "Default"
+          "default": 0.0,
+          "title": "Default",
+          "description": "Default value to return if path is not found"
         }
       ],
       "outputs": [
@@ -9409,7 +10722,9 @@
           "type": {
             "type": "int"
           },
-          "title": "Default"
+          "default": 0,
+          "title": "Default",
+          "description": "Default value to return if path is not found"
         }
       ],
       "outputs": [
@@ -9459,7 +10774,8 @@
             "type": "list"
           },
           "default": [],
-          "title": "Default"
+          "title": "Default",
+          "description": "Default value to return if path is not found"
         }
       ],
       "outputs": [
@@ -9508,14 +10824,15 @@
           "type": {
             "type": "str"
           },
-          "title": "Default"
+          "default": "",
+          "title": "Default",
+          "description": "Default value to return if path is not found"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "str"
           },
           "name": "output"
         }
@@ -11428,15 +12745,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "np_array"
@@ -11476,15 +12784,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
         },
         {
           "name": "value",
@@ -11528,15 +12827,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "bool"
@@ -11578,15 +12868,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "dataframe"
@@ -11626,15 +12907,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
         },
         {
           "name": "value",
@@ -11694,15 +12966,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "document"
@@ -11742,15 +13005,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
         },
         {
           "name": "value",
@@ -11829,15 +13083,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "list",
@@ -11890,15 +13135,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "image"
@@ -11940,15 +13176,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "int"
@@ -11988,15 +13215,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
         },
         {
           "name": "value",
@@ -12050,15 +13268,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "model_ref"
@@ -12098,15 +13307,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
         },
         {
           "name": "value",
@@ -12150,15 +13350,6 @@
           "description": "The parameter name for the workflow."
         },
         {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
-        },
-        {
           "name": "value",
           "type": {
             "type": "text"
@@ -12198,15 +13389,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description for this output node."
         },
         {
           "name": "value",

@@ -111,9 +111,11 @@ class GetJSONPathStr(BaseGetJSONPath):
     json, path, extract, string
     """
 
-    default: str = Field(default=None)
+    default: str = Field(
+        default="", description="Default value to return if path is not found"
+    )
 
-    async def process(self, context: ProcessingContext) -> Optional[str]:
+    async def process(self, context: ProcessingContext) -> str:
         result = await self._extract_value()
         return str(result) if result is not None else self.default
 
@@ -124,7 +126,9 @@ class GetJSONPathInt(BaseGetJSONPath):
     json, path, extract, number
     """
 
-    default: int = Field(default=None)
+    default: int = Field(
+        default=0, description="Default value to return if path is not found"
+    )
 
     async def process(self, context: ProcessingContext) -> int:
         result = await self._extract_value()
@@ -137,7 +141,9 @@ class GetJSONPathFloat(BaseGetJSONPath):
     json, path, extract, number
     """
 
-    default: float = Field(default=None)
+    default: float = Field(
+        default=0.0, description="Default value to return if path is not found"
+    )
 
     async def process(self, context: ProcessingContext) -> float:
         result = await self._extract_value()
@@ -150,7 +156,9 @@ class GetJSONPathBool(BaseGetJSONPath):
     json, path, extract, boolean
     """
 
-    default: bool = Field(default=None)
+    default: bool = Field(
+        default=False, description="Default value to return if path is not found"
+    )
 
     async def process(self, context: ProcessingContext) -> bool:
         result = await self._extract_value()
@@ -163,7 +171,9 @@ class GetJSONPathList(BaseGetJSONPath):
     json, path, extract, array
     """
 
-    default: list = Field(default=[])
+    default: list = Field(
+        default=[], description="Default value to return if path is not found"
+    )
 
     async def process(self, context: ProcessingContext) -> list:
         result = await self._extract_value()
@@ -176,7 +186,9 @@ class GetJSONPathDict(BaseGetJSONPath):
     json, path, extract, object
     """
 
-    default: dict = Field(default={})
+    default: dict = Field(
+        default={}, description="Default value to return if path is not found"
+    )
 
     async def process(self, context: ProcessingContext) -> dict:
         result = await self._extract_value()
