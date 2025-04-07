@@ -8,6 +8,1180 @@
   "repo_id": "nodetool-ai/nodetool-base",
   "nodes": [
     {
+      "title": "Chroma",
+      "description": "",
+      "namespace": "chroma.chroma_node",
+      "node_type": "chroma.chroma_node.Chroma",
+      "layout": "default",
+      "properties": [],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [],
+      "is_dynamic": false
+    },
+    {
+      "title": "Hybrid Search",
+      "description": "Hybrid search combining semantic and keyword-based search for better retrieval.\n    Uses reciprocal rank fusion to combine results from both methods.",
+      "namespace": "chroma.query",
+      "node_type": "chroma.query.HybridSearch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to query"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to query"
+        },
+        {
+          "name": "n_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "N Results",
+          "description": "The number of final results to return"
+        },
+        {
+          "name": "k_constant",
+          "type": {
+            "type": "float"
+          },
+          "default": 60.0,
+          "title": "K Constant",
+          "description": "Constant for reciprocal rank fusion (default: 60.0)"
+        },
+        {
+          "name": "min_keyword_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 3,
+          "title": "Min Keyword Length",
+          "description": "Minimum length for keyword tokens"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "ids"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "documents"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "metadatas"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "distances"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "scores"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "text",
+        "n_results",
+        "k_constant",
+        "min_keyword_length"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Query Image",
+      "description": "Query the index for similar images.",
+      "namespace": "chroma.query",
+      "node_type": "chroma.query.QueryImage",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to query"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to query"
+        },
+        {
+          "name": "n_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "N Results",
+          "description": "The number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "ids"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "documents"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "metadatas"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "distances"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "image",
+        "n_results"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Query Text",
+      "description": "Query the index for similar text.",
+      "namespace": "chroma.query",
+      "node_type": "chroma.query.QueryText",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to query"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to query"
+        },
+        {
+          "name": "n_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "N Results",
+          "description": "The number of results to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "ids"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "documents"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "metadatas"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "distances"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "text",
+        "n_results"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Remove Overlap",
+      "description": "Removes overlapping words between consecutive strings in a list.\n    Splits text into words and matches word sequences for more accurate overlap detection.",
+      "namespace": "chroma.query",
+      "node_type": "chroma.query.RemoveOverlap",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "documents",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Documents",
+          "description": "List of strings to process for overlap removal"
+        },
+        {
+          "name": "min_overlap_words",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Min Overlap Words",
+          "description": "Minimum number of words that must overlap to be considered"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "documents"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "documents",
+        "min_overlap_words"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index Aggregated Text",
+      "description": "Index multiple text chunks at once with aggregated embeddings from Ollama.\n    chroma, embedding, collection, RAG, index, text, chunk, batch, ollama",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexAggregatedText",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "document",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document",
+          "description": "The document to index"
+        },
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "The document ID to associate with the text"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Metadata",
+          "description": "The metadata to associate with the text"
+        },
+        {
+          "name": "text_chunks",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "union",
+                "type_args": [
+                  {
+                    "type": "text_chunk"
+                  },
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": [],
+          "title": "Text Chunks",
+          "description": "List of text chunks to index"
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window",
+          "description": "The context window size to use for the model",
+          "min": 1.0
+        },
+        {
+          "name": "aggregation",
+          "type": {
+            "type": "enum",
+            "values": [
+              "mean",
+              "max",
+              "min",
+              "sum"
+            ],
+            "type_name": "nodetool.nodes.chroma.index.EmbeddingAggregation"
+          },
+          "default": "mean",
+          "title": "Aggregation",
+          "description": "The aggregation method to use for the embeddings."
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "document",
+        "document_id",
+        "metadata",
+        "text_chunks",
+        "context_window",
+        "aggregation"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index Embedding",
+      "description": "Index a list of embeddings.",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexEmbedding",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "embedding",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {},
+          "title": "Embedding",
+          "description": "The embedding to index"
+        },
+        {
+          "name": "id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Id",
+          "description": "The ID to associate with the embedding"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Metadata",
+          "description": "The metadata to associate with the embedding"
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "embedding",
+        "id",
+        "metadata"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index Image",
+      "description": "Index a single image asset.\n    chroma, embedding, collection, RAG, index, image",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexImage",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "Image asset to index"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Metadata",
+          "description": "The metadata to associate with the image"
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "image",
+        "metadata"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index Images",
+      "description": "Index a list of image assets or files.\n    chroma, embedding, collection, RAG, index, image, batch",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexImages",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "images",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Images",
+          "description": "List of image assets to index"
+        },
+        {
+          "name": "upsert",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Upsert",
+          "description": "Whether to upsert the images"
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "images",
+        "upsert"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index String",
+      "description": "Index a string with a Document ID to a collection.\n    chroma, embedding, collection, RAG, index, text, string\n\n    Use cases:\n    - Index documents for a vector search",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexString",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "Text content to index"
+        },
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the text content"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Metadata",
+          "description": "The metadata to associate with the text"
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "text",
+        "document_id",
+        "metadata"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index Text Chunk",
+      "description": "Index a single text chunk.\n    chroma, embedding, collection, RAG, index, text, chunk",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexTextChunk",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "text_chunk",
+          "type": {
+            "type": "text_chunk"
+          },
+          "default": {},
+          "title": "Text Chunk",
+          "description": "Text chunk to index"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Metadata",
+          "description": "The metadata to associate with the text chunk"
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "text_chunk",
+        "metadata"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Index Text Chunks",
+      "description": "Index multiple text chunks at once.\n    chroma, embedding, collection, RAG, index, text, chunk, batch",
+      "namespace": "chroma.index",
+      "node_type": "chroma.index.IndexTextChunks",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to index"
+        },
+        {
+          "name": "text_chunks",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Text Chunks",
+          "description": "List of text chunks to index"
+        }
+      ],
+      "outputs": [],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "text_chunks"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Count",
+      "description": "Count the number of documents in a collection.\n    chroma, embedding, collection, RAG",
+      "namespace": "chroma.collections",
+      "node_type": "chroma.collections.Count",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to count"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Get Documents",
+      "description": "Get documents from a chroma collection.\n    chroma, embedding, collection, RAG, retrieve",
+      "namespace": "chroma.collections",
+      "node_type": "chroma.collections.GetDocuments",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to get"
+        },
+        {
+          "name": "ids",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Ids",
+          "description": "The ids of the documents to get"
+        },
+        {
+          "name": "limit",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Limit",
+          "description": "The limit of the documents to get"
+        },
+        {
+          "name": "offset",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Offset",
+          "description": "The offset of the documents to get"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "ids",
+        "limit",
+        "offset"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Get Or Create Collection",
+      "description": "Get or create a collection.\n    chroma, embedding, collection, RAG, get, create",
+      "namespace": "chroma.collections",
+      "node_type": "chroma.collections.GetOrCreateCollection",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The name of the collection to create"
+        },
+        {
+          "name": "embedding_model",
+          "type": {
+            "type": "llama_model"
+          },
+          "default": {},
+          "title": "Embedding Model",
+          "description": "The embedding model to use"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "collection"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "name",
+        "embedding_model"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Peek",
+      "description": "Peek at the documents in a collection.\n    chroma, embedding, collection, RAG, preview",
+      "namespace": "chroma.collections",
+      "node_type": "chroma.collections.Peek",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "collection",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Collection",
+          "description": "The collection to peek"
+        },
+        {
+          "name": "limit",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Limit",
+          "description": "The limit of the documents to peek"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "collection",
+        "limit"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Add Label",
+      "description": "Adds a label to a Gmail message.\n    email, gmail, label",
+      "namespace": "nodetool.mail",
+      "node_type": "nodetool.mail.AddLabel",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "email",
+          "type": {
+            "type": "email"
+          },
+          "default": {},
+          "title": "Email",
+          "description": "Email message to label"
+        },
+        {
+          "name": "label",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Label",
+          "description": "Label to add to the message"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "email"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "email",
+        "label"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Gmail Search",
+      "description": "Searches Gmail using Gmail-specific search operators.\n    email, gmail, search\n\n    Use cases:\n    - Search for emails based on specific criteria\n    - Retrieve emails from a specific sender\n    - Filter emails by subject, sender, or date",
+      "namespace": "nodetool.mail",
+      "node_type": "nodetool.mail.GmailSearch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "from_address",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "From Address",
+          "description": "Sender's email address to search for"
+        },
+        {
+          "name": "to_address",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "To Address",
+          "description": "Recipient's email address to search for"
+        },
+        {
+          "name": "subject",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Subject",
+          "description": "Text to search for in email subject"
+        },
+        {
+          "name": "body",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Body",
+          "description": "Text to search for in email body"
+        },
+        {
+          "name": "date_filter",
+          "type": {
+            "type": "enum",
+            "values": [
+              "SINCE_ONE_HOUR",
+              "SINCE_ONE_DAY",
+              "SINCE_ONE_WEEK",
+              "SINCE_ONE_MONTH",
+              "SINCE_ONE_YEAR"
+            ],
+            "type_name": "nodetool.nodes.nodetool.mail.DateFilter"
+          },
+          "default": "SINCE_ONE_DAY",
+          "title": "Date Filter",
+          "description": "Date filter to search for"
+        },
+        {
+          "name": "keywords",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Keywords",
+          "description": "Custom keywords or labels to search for"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "enum",
+            "values": [
+              "INBOX",
+              "[Gmail]/Sent Mail",
+              "[Gmail]/Drafts",
+              "[Gmail]/Spam",
+              "[Gmail]/Trash"
+            ],
+            "type_name": "nodetool.nodes.nodetool.mail.GmailFolder"
+          },
+          "default": "INBOX",
+          "title": "Folder",
+          "description": "Email folder to search in"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "General text to search for anywhere in the email"
+        },
+        {
+          "name": "max_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 50,
+          "title": "Max Results",
+          "description": "Maximum number of emails to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "email"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "subject",
+        "body",
+        "date_filter",
+        "max_results"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Move To Archive",
+      "description": "Moves specified emails to Gmail archive.\n    email, gmail, archive",
+      "namespace": "nodetool.mail",
+      "node_type": "nodetool.mail.MoveToArchive",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "message_ids",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Message Ids",
+          "description": "List of message IDs to archive"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "message_ids"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Append",
       "description": "Adds a value to the end of a list.\n    list, add, insert, extend\n\n    Use cases:\n    - Grow a list dynamically\n    - Add new elements to an existing list\n    - Implement a stack-like structure",
       "namespace": "nodetool.list",
@@ -3283,7 +4457,15 @@
         {
           "name": "data",
           "type": {
-            "type": "bytes"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "bytes"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "title": "Data",
           "description": "The bytes to write to file"

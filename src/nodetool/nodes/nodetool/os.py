@@ -545,7 +545,7 @@ class SaveBytesFile(BaseNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    data: bytes = Field(default=b"", description="The bytes to write to file")
+    data: bytes | None = Field(default=None, description="The bytes to write to file")
     folder: FolderPath = Field(
         default=FolderPath(), description="Folder where the file will be saved"
     )
