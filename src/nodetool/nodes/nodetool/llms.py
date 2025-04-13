@@ -13,12 +13,12 @@ from nodetool.metadata.types import (
     ToolName,
     ToolCall,
 )
-from nodetool.chat.tools.base import get_tool_by_name, Tool
+from nodetool.agents.tools.base import get_tool_by_name, Tool
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress, ToolCallUpdate
 from nodetool.chat.providers import Chunk
-from nodetool.nodes.nodetool.generators import json_schema_for_dataframe
+from nodetool.chat.dataframes import json_schema_for_dataframe
 from nodetool.metadata.types import DataframeRef, RecordType
 
 from nodetool.nodes.nodetool.agents import provider_from_model
@@ -102,7 +102,6 @@ class LLM(BaseNode):
 
         result_content = ""
 
-        # Use generate_messages instead of process_messages
         while True:
             follow_up_messages = []
             tool_calls_message = None

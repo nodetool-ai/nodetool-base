@@ -5303,6 +5303,33 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "enable_retrieval_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Retrieval Phase",
+          "description": "Whether to enable the retrieval phase"
+        },
+        {
+          "name": "enable_analysis_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Analysis Phase",
+          "description": "Whether to enable the analysis phase"
+        },
+        {
+          "name": "enable_data_contracts_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Data Contracts Phase",
+          "description": "Whether to enable the data contracts phase"
+        },
+        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5337,12 +5364,12 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "objective",
         "model",
         "tools",
-        "input_files",
-        "max_steps"
+        "enable_retrieval_phase",
+        "enable_analysis_phase",
+        "enable_data_contracts_phase"
       ],
       "is_dynamic": false
     },
@@ -5410,6 +5437,33 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "enable_retrieval_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Retrieval Phase",
+          "description": "Whether to enable the retrieval phase"
+        },
+        {
+          "name": "enable_analysis_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Analysis Phase",
+          "description": "Whether to enable the analysis phase"
+        },
+        {
+          "name": "enable_data_contracts_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Data Contracts Phase",
+          "description": "Whether to enable the data contracts phase"
+        },
+        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5453,12 +5507,12 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "objective",
         "model",
         "tools",
-        "input_files",
-        "max_steps",
+        "enable_retrieval_phase",
+        "enable_analysis_phase",
+        "enable_data_contracts_phase",
         "columns"
       ],
       "is_dynamic": false
@@ -5527,6 +5581,33 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "enable_retrieval_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Retrieval Phase",
+          "description": "Whether to enable the retrieval phase"
+        },
+        {
+          "name": "enable_analysis_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Analysis Phase",
+          "description": "Whether to enable the analysis phase"
+        },
+        {
+          "name": "enable_data_contracts_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Data Contracts Phase",
+          "description": "Whether to enable the data contracts phase"
+        },
+        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5578,13 +5659,12 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "objective",
         "model",
         "tools",
-        "input_files",
-        "max_steps",
-        "fields"
+        "enable_retrieval_phase",
+        "enable_analysis_phase",
+        "enable_data_contracts_phase"
       ],
       "is_dynamic": false
     },
@@ -5652,6 +5732,33 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "enable_retrieval_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Retrieval Phase",
+          "description": "Whether to enable the retrieval phase"
+        },
+        {
+          "name": "enable_analysis_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Analysis Phase",
+          "description": "Whether to enable the analysis phase"
+        },
+        {
+          "name": "enable_data_contracts_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Data Contracts Phase",
+          "description": "Whether to enable the data contracts phase"
+        },
+        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5700,464 +5807,13 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "objective",
         "model",
         "tools",
-        "input_files",
-        "max_steps",
+        "enable_retrieval_phase",
+        "enable_analysis_phase",
+        "enable_data_contracts_phase",
         "item_type"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Browser",
-      "description": "Fetches content from a web page using a headless browser.\n    browser, web, scraping, content, fetch\n\n    Use cases:\n    - Extract content from JavaScript-heavy websites\n    - Retrieve text content from web pages\n    - Get metadata from web pages\n    - Save extracted content to files",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.Browser",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "URL to navigate to"
-        },
-        {
-          "name": "timeout",
-          "type": {
-            "type": "int"
-          },
-          "default": 20000,
-          "title": "Timeout",
-          "description": "Timeout in milliseconds for page navigation"
-        },
-        {
-          "name": "use_readability",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Use Readability",
-          "description": "Use Python's Readability for better content extraction"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bool"
-          },
-          "name": "success"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "content"
-        },
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "metadata"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "url",
-        "timeout",
-        "use_readability"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Browser Navigation",
-      "description": "Navigates and interacts with web pages in a browser session.\n    browser, navigation, interaction, click, extract\n\n    Use cases:\n    - Perform complex web interactions\n    - Navigate through multi-step web processes\n    - Extract content after interaction",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.BrowserNavigation",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "URL to navigate to (required for 'goto' action)"
-        },
-        {
-          "name": "action",
-          "type": {
-            "type": "enum",
-            "values": [
-              "click",
-              "goto",
-              "back",
-              "forward",
-              "reload",
-              "extract"
-            ],
-            "type_name": "nodetool.nodes.nodetool.browser.Action"
-          },
-          "default": "goto",
-          "title": "Action",
-          "description": "Navigation or extraction action to perform"
-        },
-        {
-          "name": "selector",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Selector",
-          "description": "CSS selector for the element to interact with or extract from"
-        },
-        {
-          "name": "timeout",
-          "type": {
-            "type": "int"
-          },
-          "default": 30000,
-          "title": "Timeout",
-          "description": "Timeout in milliseconds for the action"
-        },
-        {
-          "name": "wait_for",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Wait For",
-          "description": "Optional selector to wait for after performing the action"
-        },
-        {
-          "name": "extract_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "text",
-              "html",
-              "value",
-              "attribute"
-            ],
-            "type_name": "nodetool.nodes.nodetool.browser.ExtractType"
-          },
-          "default": "text",
-          "title": "Extract Type",
-          "description": "Type of content to extract (for 'extract' action)"
-        },
-        {
-          "name": "attribute",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Attribute",
-          "description": "Attribute name to extract (when extract_type is 'attribute')"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "url",
-        "action",
-        "selector",
-        "timeout",
-        "wait_for",
-        "extract_type",
-        "attribute"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Download File",
-      "description": "Downloads a file from a URL and saves it to disk.\n    download, file, web, save\n\n    Use cases:\n    - Download documents, images, or other files from the web\n    - Save data for further processing\n    - Retrieve file assets for analysis",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.DownloadFile",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "URL of the file to download"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "url"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Google Search",
-      "description": "Performs a Google search using Brightdata's API.\n    search, google, brightdata, results\n\n    Use cases:\n    - Research information from the web\n    - Find relevant websites on specific topics\n    - Gather data for analysis from search results",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.GoogleSearch",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "query",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Query",
-          "description": "The search query to submit to Google"
-        },
-        {
-          "name": "num_results",
-          "type": {
-            "type": "int"
-          },
-          "default": 10,
-          "title": "Num Results",
-          "description": "Number of results to return"
-        },
-        {
-          "name": "site",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Site",
-          "description": "Limit search results to a specific website (e.g., 'example.com')"
-        },
-        {
-          "name": "filetype",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filetype",
-          "description": "Limit search results to specific file types (e.g., 'pdf', 'doc', 'xls')"
-        },
-        {
-          "name": "time_period",
-          "type": {
-            "type": "enum",
-            "optional": true,
-            "values": [
-              "past_24h",
-              "past_week",
-              "past_month",
-              "past_year"
-            ],
-            "type_name": "nodetool.nodes.nodetool.browser.TimePeriod"
-          },
-          "title": "Time Period",
-          "description": "Limit results to a specific time period"
-        },
-        {
-          "name": "exact_phrase",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Exact Phrase",
-          "description": "Search for an exact phrase (will be enclosed in quotes)"
-        },
-        {
-          "name": "country",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Country",
-          "description": "Country code to localize search results (e.g., 'us', 'uk', 'ca')"
-        },
-        {
-          "name": "language",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Language",
-          "description": "Language code to filter results (e.g., 'en', 'es', 'fr')"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "query",
-        "num_results",
-        "site",
-        "filetype",
-        "time_period",
-        "exact_phrase",
-        "country",
-        "language"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Screenshot",
-      "description": "Takes a screenshot of a web page or specific element.\n    browser, screenshot, capture, image\n\n    Use cases:\n    - Capture visual representation of web pages\n    - Document specific UI elements\n    - Create visual records of web content",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.Screenshot",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "URL to navigate to before taking screenshot"
-        },
-        {
-          "name": "selector",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Selector",
-          "description": "Optional CSS selector for capturing a specific element"
-        },
-        {
-          "name": "output_file",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {
-            "path": "screenshot.png"
-          },
-          "title": "Output File",
-          "description": "Path to save the screenshot (relative to workspace)"
-        },
-        {
-          "name": "timeout",
-          "type": {
-            "type": "int"
-          },
-          "default": 30000,
-          "title": "Timeout",
-          "description": "Timeout in milliseconds for page navigation"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "url",
-        "selector",
-        "output_file",
-        "timeout"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Web Fetch",
-      "description": "Fetches HTML content from a URL and converts it to text.\n    web, fetch, html, markdown, http\n\n    Use cases:\n    - Extract text content from web pages\n    - Process web content for analysis\n    - Save web content to files",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.WebFetch",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "URL to fetch content from"
-        },
-        {
-          "name": "selector",
-          "type": {
-            "type": "str"
-          },
-          "default": "body",
-          "title": "Selector",
-          "description": "CSS selector to extract specific elements"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "url",
-        "selector"
       ],
       "is_dynamic": false
     },

@@ -1,8 +1,8 @@
 from typing import Any, List, Optional
 from pydantic import Field
 
-from nodetool.chat.agent import Agent
-from nodetool.chat.tools.base import get_tool_by_name, Tool
+from nodetool.agents.agent import Agent
+from nodetool.agents.tools.base import get_tool_by_name, Tool
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
     json_schema_for_dictionary,
@@ -15,6 +15,7 @@ from nodetool.metadata.types import (
     ToolName,
     FilePath,
     ToolCall,
+    ImageRef,
 )
 from nodetool.metadata.types import (
     Provider,
@@ -79,6 +80,18 @@ class AgentNode(BaseNode):
         default=[], description="List of tools to use for execution"
     )
 
+    enable_retrieval_phase: bool = Field(
+        default=True, description="Whether to enable the retrieval phase"
+    )
+
+    enable_analysis_phase: bool = Field(
+        default=True, description="Whether to enable the analysis phase"
+    )
+
+    enable_data_contracts_phase: bool = Field(
+        default=True, description="Whether to enable the data contracts phase"
+    )
+
     input_files: List[FilePath] = Field(
         default=[], description="List of input files to use for the agent"
     )
@@ -86,6 +99,17 @@ class AgentNode(BaseNode):
     max_steps: int = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
     )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return [
+            "objective",
+            "model",
+            "tools",
+            "enable_retrieval_phase",
+            "enable_analysis_phase",
+            "enable_data_contracts_phase",
+        ]
 
     async def process_agent(
         self,
@@ -106,6 +130,9 @@ class AgentNode(BaseNode):
             provider=provider,
             model=self.model.value,
             tools=[tool for tool in tools if tool is not None],
+            enable_retrieval_phase=self.enable_retrieval_phase,
+            enable_analysis_phase=self.enable_analysis_phase,
+            enable_data_contracts_phase=self.enable_data_contracts_phase,
             output_schema=output_schema,
             output_type=output_type,
             input_files=[file.path for file in self.input_files],
@@ -178,6 +205,10 @@ class DataframeAgent(AgentNode):
         description="The columns to use in the dataframe.",
     )
 
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return super().get_basic_fields() + ["columns"]
+
     async def process(self, context: ProcessingContext) -> DataframeRef:
         json_schema = json_schema_for_dataframe(self.columns.columns)
         result = await self.process_agent(context, json_schema)
@@ -218,6 +249,10 @@ class ListAgent(AgentNode):
         default="string",
         description="The type of items in the list (string, number, object)",
     )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return super().get_basic_fields() + ["item_type"]
 
     async def process(self, context: ProcessingContext) -> List[Any]:
         schema = {"type": "array", "items": {"type": self.item_type}}
