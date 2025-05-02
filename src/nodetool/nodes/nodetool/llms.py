@@ -1,17 +1,23 @@
+import base64
+from enum import Enum
+from io import BytesIO
 import json
+import pydub
 from pydantic import Field
 
 from nodetool.metadata.types import (
     Message,
-    AgentModel,
 )
 from nodetool.metadata.types import (
     Message,
     MessageTextContent,
     MessageImageContent,
+    MessageAudioContent,
     ImageRef,
     ToolName,
     ToolCall,
+    AudioRef,
+    LanguageModel,
 )
 from nodetool.agents.tools.base import get_tool_by_name, Tool
 from nodetool.workflows.base_node import BaseNode
@@ -20,15 +26,15 @@ from nodetool.workflows.types import NodeProgress, ToolCallUpdate
 from nodetool.chat.providers import Chunk
 from nodetool.chat.dataframes import json_schema_for_dataframe
 from nodetool.metadata.types import DataframeRef, RecordType
+from nodetool.metadata.types import Provider
+from nodetool.chat.providers import get_provider
 
-from nodetool.nodes.nodetool.agents import provider_from_model
 
-
-def init_tool(tool: ToolName, workspace_dir: str) -> Tool | None:
+def init_tool(tool: ToolName) -> Tool | None:
     if tool.name:
         tool_class = get_tool_by_name(tool.name)
         if tool_class:
-            return tool_class(workspace_dir)
+            return tool_class()
         else:
             return None
     else:
@@ -49,12 +55,28 @@ class LLM(BaseNode):
     - Perform text analysis and summarization
     """
 
+    class Voice(str, Enum):
+        NONE = "none"
+        ALLOY = "alloy"
+        ECHO = "echo"
+        FABLE = "fable"
+        ONYX = "onyx"
+        NOVA = "nova"
+        SHIMMER = "shimmer"
+
     @classmethod
     def get_title(cls) -> str:
         return "LLM"
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    @classmethod
+    def return_type(cls):
+        return {
+            "text": str,
+            "audio": AudioRef,
+        }
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="Model to use for execution",
     )
     system: str = Field(
@@ -72,6 +94,16 @@ class LLM(BaseNode):
         default=ImageRef(),
         description="The image to analyze",
     )
+    audio: AudioRef = Field(
+        title="Audio",
+        default=AudioRef(),
+        description="The audio to analyze",
+    )
+    voice: Voice = Field(
+        title="Voice",
+        default=Voice.NONE,
+        description="The voice for the audio output (only for OpenAI)",
+    )
     tools: list[ToolName] = Field(
         default=[], description="List of tools to use for execution"
     )
@@ -80,14 +112,20 @@ class LLM(BaseNode):
         title="Messages", default=[], description="The messages for the LLM"
     )
     max_tokens: int = Field(title="Max Tokens", default=4096, ge=1, le=100000)
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
+    )
 
-    async def process(self, context: ProcessingContext) -> str:
+    async def process(self, context: ProcessingContext):
         content = []
 
         content.append(MessageTextContent(text=self.prompt))
 
         if self.image.is_set():
             content.append(MessageImageContent(image=self.image))
+
+        if self.audio.is_set():
+            content.append(MessageAudioContent(audio=self.audio))
 
         messages = [
             Message(role="system", content=self.system),
@@ -97,19 +135,29 @@ class LLM(BaseNode):
             messages.append(message)
 
         messages.append(Message(role="user", content=content))
-        provider = provider_from_model(self.model.value)
-        tools = [init_tool(tool, context.workspace_dir) for tool in self.tools]
-
+        provider = get_provider(self.model.provider)
+        tools = [init_tool(tool) for tool in self.tools]
         result_content = ""
+        result_audio = None
+        audio_chunks = []
+
+        if self.voice != self.Voice.NONE and self.model.provider != Provider.OpenAI:
+            raise ValueError("Voice is only supported for OpenAI")
 
         while True:
             follow_up_messages = []
             tool_calls_message = None
             async for chunk in provider.generate_messages(
                 messages=messages,
-                model=self.model.value,
-                max_tokens=self.max_tokens,
+                model=self.model.id,
                 tools=tools,
+                max_tokens=self.max_tokens,
+                context_window=self.context_window,
+                audio=(
+                    {"voice": self.voice.value, "format": "pcm16"}
+                    if self.voice != self.Voice.NONE
+                    else None
+                ),
             ):  # type: ignore
                 if isinstance(chunk, Chunk):
                     # Send chunk via context.post_message
@@ -117,9 +165,13 @@ class LLM(BaseNode):
                         Chunk(
                             node_id=self.id,
                             content=chunk.content,
+                            content_type=chunk.content_type,
                         )
                     )
-                    result_content += chunk.content
+                    if chunk.content_type == "audio":
+                        audio_chunks.append(chunk.content)
+                    else:
+                        result_content += chunk.content
                 if isinstance(chunk, ToolCall):
                     context.post_message(
                         ToolCallUpdate(
@@ -151,11 +203,28 @@ class LLM(BaseNode):
             else:
                 break
 
-        return result_content
+        # convert audio chunks
+        if len(audio_chunks) > 0:
+            raw_pcm = base64.b64decode("".join(audio_chunks))
+            segment = pydub.AudioSegment.from_raw(
+                BytesIO(raw_pcm),
+                format="pcm",
+                sample_width=2,
+                frame_rate=24000,
+                channels=1,
+            )
+            result_audio = await context.audio_from_segment(
+                segment,
+            )
+
+        return {
+            "text": result_content,
+            "audio": result_audio,
+        }
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["prompt", "model", "system", "messages"]
+        return ["prompt", "model", "messages", "image", "audio"]
 
 
 class Summarizer(BaseNode):
@@ -174,8 +243,8 @@ class Summarizer(BaseNode):
     def get_title(cls) -> str:
         return "Text Summarizer"
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="Model to use for summarization",
     )
     text: str = Field(default="", description="The text to summarize")
@@ -214,13 +283,15 @@ class Summarizer(BaseNode):
             Message(role="user", content=content),
         ]
 
-        provider = provider_from_model(self.model.value)
+        assert self.model.provider != Provider.Empty, "Select a model"
+
+        provider = get_provider(self.model.provider)
 
         result_content = ""
 
         async for chunk in provider.generate_messages(
             messages=messages,
-            model=self.model.value,
+            model=self.model.id,
             max_tokens=8192,
         ):  # type: ignore
             if isinstance(chunk, Chunk):
@@ -253,8 +324,8 @@ class Extractor(BaseNode):
     def get_title(cls) -> str:
         return "Data Extractor"
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="Model to use for data extraction",
     )
     text: str = Field(default="", description="The text to extract data from")
@@ -297,10 +368,10 @@ class Extractor(BaseNode):
             Message(role="user", content=f"{self.extraction_prompt}\n\n{self.text}"),
         ]
 
-        provider = provider_from_model(self.model.value)
+        provider = get_provider(self.model.provider)
 
         assistant_message = await provider.generate_message(
-            model=self.model.value,
+            model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
             response_format={
@@ -340,8 +411,8 @@ class TextClassifier(BaseNode):
     def get_title(cls) -> str:
         return "Text Classifier"
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="Model to use for classification",
     )
     text: str = Field(default="", description="Text to classify")
@@ -372,6 +443,8 @@ class TextClassifier(BaseNode):
         content = []
         content.append(MessageTextContent(text=self.text))
 
+        assert self.model.provider != Provider.Empty, "Select a model"
+
         if len(self.categories) < 2:
             raise ValueError("At least 2 categories are required")
 
@@ -388,7 +461,7 @@ class TextClassifier(BaseNode):
             ),
         ]
 
-        provider = provider_from_model(self.model.value)
+        provider = get_provider(self.model.provider)
 
         classification_schema = {
             "name": "classification_results",
@@ -410,7 +483,7 @@ class TextClassifier(BaseNode):
         }
 
         assistant_message = await provider.generate_message(
-            model=self.model.value,
+            model=self.model.id,
             messages=messages,
             response_format={
                 "type": "json_schema",

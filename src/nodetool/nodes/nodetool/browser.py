@@ -8,13 +8,19 @@ from typing import Any, Dict, List, Optional
 from pydantic import Field
 from playwright.async_api import async_playwright
 from readability import Document
+import asyncio
+from langchain_openai import ChatOpenAI
+from langchain_anthropic import ChatAnthropic
 
+
+# Disable browser_use telemetry
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
 
 from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath, TextRef, FolderRef
-from nodetool.chat.tools.base import resolve_workspace_path
+from browser_use import Agent, Browser as BrowserUse, BrowserConfig
 
 
 class Browser(BaseNode):
@@ -248,9 +254,7 @@ class Screenshot(BaseNode):
             )
 
             # Prepare the output path
-            full_path = resolve_workspace_path(
-                context.workspace_dir, self.output_file.path
-            )
+            full_path = context.resolve_workspace_path(self.output_file.path)
             os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
             # Take screenshot of specific element or full page
@@ -727,3 +731,165 @@ class BrowserNavigation(BaseNode):
             # Always close the browser session
             await browser.close()
             await playwright_instance.stop()
+
+
+class BrowserUseModel(str, Enum):
+    GPT_4O = "gpt-4o"
+    ANTHROPIC_CLAUDE_3_5_SONNET = "claude-3-5-sonnet"
+
+
+class BrowserUseNode(BaseNode):
+    """
+    Browser agent tool that uses browser_use under the hood.
+
+    This module provides a tool for running browser-based agents using the browser_use library.
+    The agent can perform complex web automation tasks like form filling, navigation, data extraction,
+    and multi-step workflows using natural language instructions.
+
+    Use cases:
+    - Perform complex web automation tasks based on natural language.
+    - Automate form filling and data entry.
+    - Scrape data after complex navigation or interaction sequences.
+    - Automate multi-step web workflows.
+    """
+
+    model: BrowserUseModel = Field(
+        default=BrowserUseModel.GPT_4O,
+        description="The model to use for the browser agent.",
+    )
+
+    task: str = Field(
+        default="",
+        description="Natural language description of the browser task to perform. Can include complex multi-step instructions like 'Compare prices between websites', 'Fill out forms', or 'Extract specific data'.",
+    )
+    timeout: int = Field(
+        default=300,
+        description="Maximum time in seconds to allow for task completion. Complex tasks may require longer timeouts.",
+        ge=1,
+        le=3600,
+    )
+    use_remote_browser: bool = Field(
+        default=True,
+        description="Use a remote browser instead of a local one",
+    )
+
+    @classmethod
+    def display_name(cls):
+        return "Browser Agent"  # Provide a user-friendly name
+
+    @classmethod
+    def category(cls):
+        return "Browser"  # Categorize the node
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "success": bool,
+            "task": str,
+            "result": Any,  # Result can be varied
+            "error": Optional[str],  # Include optional error field
+        }
+
+    async def process(self, context: ProcessingContext) -> Dict[str, Any]:
+        """
+        Execute a browser agent task.
+        """
+        if self.model == BrowserUseModel.GPT_4O:
+            openai_api_key = Environment.get("OPENAI_API_KEY")
+            if not openai_api_key:
+                return {
+                    "success": False,
+                    "task": self.task,
+                    "error": "OpenAI API key not found in environment variables (OPENAI_API_KEY).",
+                }
+
+            llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key=openai_api_key)
+        elif self.model == BrowserUseModel.ANTHROPIC_CLAUDE_3_5_SONNET:
+            anthropic_api_key = Environment.get("ANTHROPIC_API_KEY")
+            if not anthropic_api_key:
+                return {
+                    "success": False,
+                    "task": self.task,
+                    "error": "Anthropic API key not found in environment variables (ANTHROPIC_API_KEY).",
+                }
+            llm = ChatAnthropic(
+                model_name="claude-3-5-sonnet",
+                temperature=0,
+                api_key=anthropic_api_key,
+                timeout=self.timeout,
+                stop=["\n\n"],
+            )
+
+        browser_instance = None
+        try:
+            if self.use_remote_browser:
+                browser_endpoint = Environment.get(
+                    "BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT"
+                )
+                if not browser_endpoint:
+                    raise ValueError(
+                        "BrightData scraping browser endpoint not found in environment variables (BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT)."
+                    )
+
+                # Use BrightData CDP endpoint
+                browser_instance = BrowserUse(
+                    config=BrowserConfig(
+                        headless=True,  # Usually required for CDP connection
+                        cdp_url=browser_endpoint,
+                    )
+                )
+            else:
+                # Use local Playwright browser
+                browser_instance = BrowserUse(
+                    config=BrowserConfig(
+                        headless=True,  # Can be set to False for local debugging if needed
+                    )
+                )
+
+            # Create and run the agent
+            agent = Agent(
+                task=self.task,
+                llm=llm,
+                browser=browser_instance,
+            )
+
+            try:
+                result = await asyncio.wait_for(agent.run(), timeout=self.timeout)
+                return {
+                    "success": True,
+                    "task": self.task,
+                    "result": result,
+                    "error": None,
+                }
+            except asyncio.TimeoutError:
+                return {
+                    "success": False,
+                    "task": self.task,
+                    "error": f"Task timed out after {self.timeout} seconds",
+                    "result": None,
+                }
+            except Exception as agent_run_e:
+                # Catch specific errors from agent.run() if possible
+                return {
+                    "success": False,
+                    "task": self.task,
+                    "error": f"Browser agent execution failed: {str(agent_run_e)}",
+                    "result": None,
+                }
+
+        except Exception as setup_e:
+            # Catch errors during setup (browser init, agent init)
+            return {
+                "success": False,
+                "task": self.task,
+                "error": f"Browser agent setup failed: {str(setup_e)}",
+                "result": None,
+            }
+        finally:
+            # Ensure browser is closed if it was initialized
+            if browser_instance and hasattr(browser_instance, "close"):
+                try:
+                    await browser_instance.close()
+                except Exception as close_e:
+                    # Log error during close but don't overwrite primary error
+                    print(f"Error closing browser instance: {close_e}")

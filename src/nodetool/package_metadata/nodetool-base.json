@@ -5267,24 +5267,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for execution"
         },
@@ -5303,13 +5288,22 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "use_single_task",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Single Task",
+          "description": "For straight forward tasks, use a single task execution loop"
+        },
+        {
           "name": "enable_retrieval_phase",
           "type": {
             "type": "bool"
           },
           "default": true,
           "title": "Enable Retrieval Phase",
-          "description": "Whether to enable the retrieval phase"
+          "description": "Whether to use retrieval in the planning phase"
         },
         {
           "name": "enable_analysis_phase",
@@ -5318,7 +5312,7 @@
           },
           "default": true,
           "title": "Enable Analysis Phase",
-          "description": "Whether to enable the analysis phase"
+          "description": "Whether to use analysis in the planning phase"
         },
         {
           "name": "enable_data_contracts_phase",
@@ -5327,7 +5321,7 @@
           },
           "default": true,
           "title": "Enable Data Contracts Phase",
-          "description": "Whether to enable the data contracts phase"
+          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5367,6 +5361,7 @@
         "objective",
         "model",
         "tools",
+        "use_single_task",
         "enable_retrieval_phase",
         "enable_analysis_phase",
         "enable_data_contracts_phase"
@@ -5401,24 +5396,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for execution"
         },
@@ -5437,13 +5417,22 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "use_single_task",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Single Task",
+          "description": "For straight forward tasks, use a single task execution loop"
+        },
+        {
           "name": "enable_retrieval_phase",
           "type": {
             "type": "bool"
           },
           "default": true,
           "title": "Enable Retrieval Phase",
-          "description": "Whether to enable the retrieval phase"
+          "description": "Whether to use retrieval in the planning phase"
         },
         {
           "name": "enable_analysis_phase",
@@ -5452,7 +5441,7 @@
           },
           "default": true,
           "title": "Enable Analysis Phase",
-          "description": "Whether to enable the analysis phase"
+          "description": "Whether to use analysis in the planning phase"
         },
         {
           "name": "enable_data_contracts_phase",
@@ -5461,7 +5450,7 @@
           },
           "default": true,
           "title": "Enable Data Contracts Phase",
-          "description": "Whether to enable the data contracts phase"
+          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5510,6 +5499,7 @@
         "objective",
         "model",
         "tools",
+        "use_single_task",
         "enable_retrieval_phase",
         "enable_analysis_phase",
         "enable_data_contracts_phase",
@@ -5545,24 +5535,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for execution"
         },
@@ -5581,13 +5556,22 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "use_single_task",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Single Task",
+          "description": "For straight forward tasks, use a single task execution loop"
+        },
+        {
           "name": "enable_retrieval_phase",
           "type": {
             "type": "bool"
           },
           "default": true,
           "title": "Enable Retrieval Phase",
-          "description": "Whether to enable the retrieval phase"
+          "description": "Whether to use retrieval in the planning phase"
         },
         {
           "name": "enable_analysis_phase",
@@ -5596,7 +5580,7 @@
           },
           "default": true,
           "title": "Enable Analysis Phase",
-          "description": "Whether to enable the analysis phase"
+          "description": "Whether to use analysis in the planning phase"
         },
         {
           "name": "enable_data_contracts_phase",
@@ -5605,7 +5589,7 @@
           },
           "default": true,
           "title": "Enable Data Contracts Phase",
-          "description": "Whether to enable the data contracts phase"
+          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5662,6 +5646,7 @@
         "objective",
         "model",
         "tools",
+        "use_single_task",
         "enable_retrieval_phase",
         "enable_analysis_phase",
         "enable_data_contracts_phase"
@@ -5696,24 +5681,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for execution"
         },
@@ -5732,13 +5702,22 @@
           "description": "List of tools to use for execution"
         },
         {
+          "name": "use_single_task",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Single Task",
+          "description": "For straight forward tasks, use a single task execution loop"
+        },
+        {
           "name": "enable_retrieval_phase",
           "type": {
             "type": "bool"
           },
           "default": true,
           "title": "Enable Retrieval Phase",
-          "description": "Whether to enable the retrieval phase"
+          "description": "Whether to use retrieval in the planning phase"
         },
         {
           "name": "enable_analysis_phase",
@@ -5747,7 +5726,7 @@
           },
           "default": true,
           "title": "Enable Analysis Phase",
-          "description": "Whether to enable the analysis phase"
+          "description": "Whether to use analysis in the planning phase"
         },
         {
           "name": "enable_data_contracts_phase",
@@ -5756,7 +5735,7 @@
           },
           "default": true,
           "title": "Enable Data Contracts Phase",
-          "description": "Whether to enable the data contracts phase"
+          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5810,10 +5789,550 @@
         "objective",
         "model",
         "tools",
+        "use_single_task",
         "enable_retrieval_phase",
         "enable_analysis_phase",
         "enable_data_contracts_phase",
         "item_type"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Browser",
+      "description": "Fetches content from a web page using a headless browser.\n    browser, web, scraping, content, fetch\n\n    Use cases:\n    - Extract content from JavaScript-heavy websites\n    - Retrieve text content from web pages\n    - Get metadata from web pages\n    - Save extracted content to files",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.Browser",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to navigate to"
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 20000,
+          "title": "Timeout",
+          "description": "Timeout in milliseconds for page navigation"
+        },
+        {
+          "name": "use_readability",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Use Readability",
+          "description": "Use Python's Readability for better content extraction"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "success"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "content"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "metadata"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "timeout",
+        "use_readability"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Browser Navigation",
+      "description": "Navigates and interacts with web pages in a browser session.\n    browser, navigation, interaction, click, extract\n\n    Use cases:\n    - Perform complex web interactions\n    - Navigate through multi-step web processes\n    - Extract content after interaction",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.BrowserNavigation",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to navigate to (required for 'goto' action)"
+        },
+        {
+          "name": "action",
+          "type": {
+            "type": "enum",
+            "values": [
+              "click",
+              "goto",
+              "back",
+              "forward",
+              "reload",
+              "extract"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.Action"
+          },
+          "default": "goto",
+          "title": "Action",
+          "description": "Navigation or extraction action to perform"
+        },
+        {
+          "name": "selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Selector",
+          "description": "CSS selector for the element to interact with or extract from"
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 30000,
+          "title": "Timeout",
+          "description": "Timeout in milliseconds for the action"
+        },
+        {
+          "name": "wait_for",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Wait For",
+          "description": "Optional selector to wait for after performing the action"
+        },
+        {
+          "name": "extract_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "text",
+              "html",
+              "value",
+              "attribute"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.ExtractType"
+          },
+          "default": "text",
+          "title": "Extract Type",
+          "description": "Type of content to extract (for 'extract' action)"
+        },
+        {
+          "name": "attribute",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Attribute",
+          "description": "Attribute name to extract (when extract_type is 'attribute')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "action",
+        "selector",
+        "timeout",
+        "wait_for",
+        "extract_type",
+        "attribute"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Browser Use",
+      "description": "Browser agent tool that uses browser_use under the hood.\n\n    This module provides a tool for running browser-based agents using the browser_use library.\n    The agent can perform complex web automation tasks like form filling, navigation, data extraction,\n    and multi-step workflows using natural language instructions.\n\n    Use cases:\n    - Perform complex web automation tasks based on natural language.\n    - Automate form filling and data entry.\n    - Scrape data after complex navigation or interaction sequences.\n    - Automate multi-step web workflows.",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.BrowserUse",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "gpt-4o",
+              "claude-3-5-sonnet"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.BrowserUseModel"
+          },
+          "default": "gpt-4o",
+          "title": "Model",
+          "description": "The model to use for the browser agent."
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Task",
+          "description": "Natural language description of the browser task to perform. Can include complex multi-step instructions like 'Compare prices between websites', 'Fill out forms', or 'Extract specific data'."
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 300,
+          "title": "Timeout",
+          "description": "Maximum time in seconds to allow for task completion. Complex tasks may require longer timeouts.",
+          "min": 1.0,
+          "max": 3600.0
+        },
+        {
+          "name": "use_remote_browser",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Use Remote Browser",
+          "description": "Use a remote browser instead of a local one"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "success"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "task"
+        },
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "result"
+        },
+        {
+          "type": {
+            "type": "str",
+            "optional": true
+          },
+          "name": "error"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "model",
+        "task",
+        "timeout",
+        "use_remote_browser"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Download File",
+      "description": "Downloads a file from a URL and saves it to disk.\n    download, file, web, save\n\n    Use cases:\n    - Download documents, images, or other files from the web\n    - Save data for further processing\n    - Retrieve file assets for analysis",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.DownloadFile",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL of the file to download"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bytes"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Google Search",
+      "description": "Performs a Google search using Brightdata's API.\n    search, google, brightdata, results\n\n    Use cases:\n    - Research information from the web\n    - Find relevant websites on specific topics\n    - Gather data for analysis from search results",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.GoogleSearch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "The search query to submit to Google"
+        },
+        {
+          "name": "num_results",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Num Results",
+          "description": "Number of results to return"
+        },
+        {
+          "name": "site",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Site",
+          "description": "Limit search results to a specific website (e.g., 'example.com')"
+        },
+        {
+          "name": "filetype",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filetype",
+          "description": "Limit search results to specific file types (e.g., 'pdf', 'doc', 'xls')"
+        },
+        {
+          "name": "time_period",
+          "type": {
+            "type": "enum",
+            "optional": true,
+            "values": [
+              "past_24h",
+              "past_week",
+              "past_month",
+              "past_year"
+            ],
+            "type_name": "nodetool.nodes.nodetool.browser.TimePeriod"
+          },
+          "title": "Time Period",
+          "description": "Limit results to a specific time period"
+        },
+        {
+          "name": "exact_phrase",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Exact Phrase",
+          "description": "Search for an exact phrase (will be enclosed in quotes)"
+        },
+        {
+          "name": "country",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Country",
+          "description": "Country code to localize search results (e.g., 'us', 'uk', 'ca')"
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Language",
+          "description": "Language code to filter results (e.g., 'en', 'es', 'fr')"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "query",
+        "num_results",
+        "site",
+        "filetype",
+        "time_period",
+        "exact_phrase",
+        "country",
+        "language"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Screenshot",
+      "description": "Takes a screenshot of a web page or specific element.\n    browser, screenshot, capture, image\n\n    Use cases:\n    - Capture visual representation of web pages\n    - Document specific UI elements\n    - Create visual records of web content",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.Screenshot",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to navigate to before taking screenshot"
+        },
+        {
+          "name": "selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Selector",
+          "description": "Optional CSS selector for capturing a specific element"
+        },
+        {
+          "name": "output_file",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {
+            "path": "screenshot.png"
+          },
+          "title": "Output File",
+          "description": "Path to save the screenshot (relative to workspace)"
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 30000,
+          "title": "Timeout",
+          "description": "Timeout in milliseconds for page navigation"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "selector",
+        "output_file",
+        "timeout"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Web Fetch",
+      "description": "Fetches HTML content from a URL and converts it to text.\n    web, fetch, html, markdown, http\n\n    Use cases:\n    - Extract text content from web pages\n    - Process web content for analysis\n    - Save web content to files",
+      "namespace": "nodetool.browser",
+      "node_type": "nodetool.browser.WebFetch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL to fetch content from"
+        },
+        {
+          "name": "selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "body",
+          "title": "Selector",
+          "description": "CSS selector to extract specific elements"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "url",
+        "selector"
       ],
       "is_dynamic": false
     },
@@ -5827,24 +6346,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "The GPT model to use for chart generation."
         },
@@ -5905,24 +6409,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "The GPT model to use for data generation."
         },
@@ -5992,26 +6481,11 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
-          "description": "The GPT model to use for SVG generation."
+          "description": "The language model to use for SVG generation."
         },
         {
           "name": "prompt",
@@ -8077,24 +8551,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for data extraction"
         },
@@ -8165,24 +8624,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for execution"
         },
@@ -8212,6 +8656,34 @@
           "default": {},
           "title": "Image",
           "description": "The image to analyze"
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio to analyze"
+        },
+        {
+          "name": "voice",
+          "type": {
+            "type": "enum",
+            "values": [
+              "none",
+              "alloy",
+              "echo",
+              "fable",
+              "onyx",
+              "nova",
+              "shimmer"
+            ],
+            "type_name": "nodetool.nodes.nodetool.llms.Voice"
+          },
+          "default": "none",
+          "title": "Voice",
+          "description": "The voice for the audio output (only for OpenAI)"
         },
         {
           "name": "tools",
@@ -8250,6 +8722,16 @@
           "title": "Max Tokens",
           "min": 1.0,
           "max": 100000.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
         }
       ],
       "outputs": [
@@ -8257,7 +8739,13 @@
           "type": {
             "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
         }
       ],
       "the_model_info": {},
@@ -8265,8 +8753,9 @@
       "basic_fields": [
         "prompt",
         "model",
-        "system",
-        "messages"
+        "messages",
+        "image",
+        "audio"
       ],
       "is_dynamic": false
     },
@@ -8280,24 +8769,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for summarization"
         },
@@ -8349,24 +8823,9 @@
         {
           "name": "model",
           "type": {
-            "type": "enum",
-            "values": [
-              "claude-3-5-sonnet-20241022",
-              "claude-3-7-sonnet-20250219",
-              "gpt-4o",
-              "o3-mini",
-              "o1",
-              "gemini-2.5-pro-exp-03-25",
-              "gemini-2.0-flash",
-              "gemini-2.0-flash-lite",
-              "gemma3:1b",
-              "gemma3:4b",
-              "gemma3:12b",
-              "llama3.2-vision:11b"
-            ],
-            "type_name": "nodetool.metadata.types.AgentModel"
+            "type": "language_model"
           },
-          "default": "gpt-4o",
+          "default": {},
           "title": "Model",
           "description": "Model to use for classification"
         },

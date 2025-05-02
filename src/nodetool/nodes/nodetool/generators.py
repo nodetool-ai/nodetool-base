@@ -8,7 +8,7 @@ from nodetool.metadata.types import (
     Message,
     DataframeRef,
     RecordType,
-    AgentModel,
+    LanguageModel,
     PlotlyConfig,
     ImageRef,
     AudioRef,
@@ -21,7 +21,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-from nodetool.nodes.nodetool.agents import provider_from_model
+from nodetool.chat.providers import get_provider
 
 
 class DataGenerator(BaseNode):
@@ -35,8 +35,8 @@ class DataGenerator(BaseNode):
     - Converting unstructured text into tabular format
     """
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="The GPT model to use for data generation.",
     )
     prompt: str = Field(
@@ -69,10 +69,10 @@ class DataGenerator(BaseNode):
             content=self.prompt + "\n\n" + self.input_text,
         )
         messages = [system_message, user_message]
-        provider = provider_from_model(self.model.value)
+        provider = get_provider(self.model.provider)
 
         assistant_message = await provider.generate_message(
-            model=self.model.value,
+            model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
             response_format={
@@ -311,8 +311,8 @@ class ChartGenerator(BaseNode):
     - Converting data analysis requirements into visual representations
     """
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="The GPT model to use for chart generation.",
     )
     prompt: str = Field(
@@ -353,7 +353,8 @@ When creating charts:
 Always return complete, executable Python code that imports plotly.express as px and any other necessary libraries.
 """,
         )
-        assert self.data.columns is not None
+        assert self.data.columns is not None, "Define columns"
+        assert self.model.provider != Provider.Empty, "Select a model"
 
         user_message = Message(
             role="user",
@@ -388,10 +389,10 @@ Remember to include axis labels, titles, and proper formatting in your code.
         )
 
         messages = [system_message, user_message]
-        provider = provider_from_model(self.model.value)
+        provider = get_provider(self.model.provider)
 
         assistant_message = await provider.generate_message(
-            model=self.model.value,
+            model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
             response_format={
@@ -442,9 +443,9 @@ class SVGGenerator(BaseNode):
     - Creating custom icons and diagrams
     """
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
-        description="The GPT model to use for SVG generation.",
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="The language model to use for SVG generation.",
     )
     prompt: str = Field(
         default="",
@@ -475,6 +476,8 @@ Include width and height attributes in the root SVG element.
 Use clear, semantic element IDs and class names if needed.""",
         )
 
+        assert self.model.provider != Provider.Empty, "Select a model"
+
         # Build the user message content
         content_parts = [self.prompt]
 
@@ -495,10 +498,10 @@ Use clear, semantic element IDs and class names if needed.""",
         )
 
         messages = [system_message, user_message]
-        provider = provider_from_model(self.model.value)
+        provider = get_provider(self.model.provider)
 
         assistant_message = await provider.generate_message(
-            model=self.model.value,
+            model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
             response_format={"type": "text"},

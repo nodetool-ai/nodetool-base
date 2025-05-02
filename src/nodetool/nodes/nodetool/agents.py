@@ -1,7 +1,7 @@
 from typing import Any, List, Optional
 from pydantic import Field
 
-from nodetool.agents.agent import Agent
+from nodetool.agents.agent import Agent, SingleTaskAgent
 from nodetool.agents.tools.base import get_tool_by_name, Tool
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
@@ -11,44 +11,27 @@ from nodetool.workflows.types import TaskUpdate
 from nodetool.metadata.types import (
     DataframeRef,
     RecordType,
-    AgentModel,
+    LanguageModel,
     ToolName,
     FilePath,
     ToolCall,
-    ImageRef,
-)
-from nodetool.metadata.types import (
-    Provider,
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import NodeProgress, ToolCallUpdate
-from nodetool.chat.providers import ChatProvider
+from nodetool.workflows.types import ToolCallUpdate
 from nodetool.chat.providers import get_provider
-from nodetool.metadata.types import Provider
 from nodetool.chat.providers import Chunk
 
 
-def init_tool(tool: ToolName, workspace_dir: str) -> Optional[Tool]:
+def init_tool(tool: ToolName) -> Optional[Tool]:
     if tool.name:
         tool_class = get_tool_by_name(tool.name)
         if tool_class:
-            return tool_class(workspace_dir)
+            return tool_class()
         else:
             return None
     else:
         return None
-
-
-def provider_from_model(model: str) -> ChatProvider:
-    if model.startswith("claude"):
-        return get_provider(Provider.Anthropic)
-    elif model.startswith("gpt") or model.startswith("o1") or model.startswith("o3"):
-        return get_provider(Provider.OpenAI)
-    elif model.startswith("gemini"):
-        return get_provider(Provider.Gemini)
-    else:
-        return get_provider(Provider.Ollama)
 
 
 class AgentNode(BaseNode):
@@ -71,8 +54,8 @@ class AgentNode(BaseNode):
         default="", description="The objective or problem to create a plan for"
     )
 
-    model: AgentModel = Field(
-        default=AgentModel.gpt_4o,
+    model: LanguageModel = Field(
+        default=LanguageModel(),
         description="Model to use for execution",
     )
 
@@ -80,16 +63,21 @@ class AgentNode(BaseNode):
         default=[], description="List of tools to use for execution"
     )
 
+    use_single_task: bool = Field(
+        default=False,
+        description="For straight forward tasks, use a single task execution loop",
+    )
+
     enable_retrieval_phase: bool = Field(
-        default=True, description="Whether to enable the retrieval phase"
+        default=True, description="Whether to use retrieval in the planning phase"
     )
 
     enable_analysis_phase: bool = Field(
-        default=True, description="Whether to enable the analysis phase"
+        default=True, description="Whether to use analysis in the planning phase"
     )
 
     enable_data_contracts_phase: bool = Field(
-        default=True, description="Whether to enable the data contracts phase"
+        default=True, description="Whether to use data contracts in the planning phase"
     )
 
     input_files: List[FilePath] = Field(
@@ -106,6 +94,7 @@ class AgentNode(BaseNode):
             "objective",
             "model",
             "tools",
+            "use_single_task",
             "enable_retrieval_phase",
             "enable_analysis_phase",
             "enable_data_contracts_phase",
@@ -114,29 +103,58 @@ class AgentNode(BaseNode):
     async def process_agent(
         self,
         context: ProcessingContext,
-        output_schema: dict[str, Any] | None,
-        output_type: str | None = None,
+        output_schema: dict[str, Any],
+        output_type: str = "",
     ) -> Any:
         if not self.objective:
             raise ValueError("Objective cannot be empty")
 
-        # Set up provider and function model
-        provider = provider_from_model(self.model.value)
+        if not self.model.provider:
+            raise ValueError("Select a model")
 
-        tools = [init_tool(tool, context.workspace_dir) for tool in self.tools]
-        agent = Agent(
-            name=self.name,
-            objective=self.objective,
-            provider=provider,
-            model=self.model.value,
-            tools=[tool for tool in tools if tool is not None],
-            enable_retrieval_phase=self.enable_retrieval_phase,
-            enable_analysis_phase=self.enable_analysis_phase,
-            enable_data_contracts_phase=self.enable_data_contracts_phase,
-            output_schema=output_schema,
-            output_type=output_type,
-            input_files=[file.path for file in self.input_files],
-        )
+        provider = get_provider(self.model.provider)
+
+        tools = [init_tool(tool) for tool in self.tools]
+
+        if self.use_single_task:
+            if self.enable_retrieval_phase:
+                raise ValueError(
+                    "Retrieval phase is not allowed in single task execution"
+                )
+            if self.enable_analysis_phase:
+                raise ValueError(
+                    "Analysis phase is not allowed in single task execution"
+                )
+            if self.enable_data_contracts_phase:
+                raise ValueError(
+                    "Data contracts phase is not allowed in single task execution"
+                )
+
+            agent = SingleTaskAgent(
+                name=self.name,
+                objective=self.objective,
+                provider=provider,
+                model=self.model.id,
+                tools=[tool for tool in tools if tool is not None],
+                output_schema=output_schema,
+                output_type=output_type,
+                input_files=[file.path for file in self.input_files],
+            )
+        else:
+            agent = Agent(
+                name=self.name,
+                objective=self.objective,
+                provider=provider,
+                model=self.model.id,
+                tools=[tool for tool in tools if tool is not None],
+                enable_retrieval_phase=self.enable_retrieval_phase,
+                enable_analysis_phase=self.enable_analysis_phase,
+                enable_data_contracts_phase=self.enable_data_contracts_phase,
+                output_schema=output_schema,
+                output_type=output_type,
+                input_files=[file.path for file in self.input_files],
+            )
+
         async for item in agent.execute(context):
             if isinstance(item, TaskUpdate):
                 item.node_id = self.id
@@ -178,7 +196,8 @@ class DictAgent(AgentNode):
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         result = await self.process_agent(
-            context, json_schema_for_dictionary(self.fields)
+            context,
+            json_schema_for_dictionary(self.fields),
         )
         if not isinstance(result, dict):
             raise ValueError("Agent did not return a dictionary")
