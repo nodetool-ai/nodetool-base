@@ -29,14 +29,43 @@ from nodetool.metadata.types import DataframeRef, RecordType
 from nodetool.metadata.types import Provider
 from nodetool.chat.providers import get_provider
 
+from nodetool.agents.tools import (
+    GoogleImageGenerationTool,
+    GoogleGroundedSearchTool,
+    GoogleNewsTool,
+    GoogleImagesTool,
+    GoogleSearchTool,
+    BrowserTool,
+    ChromaHybridSearchTool,
+    SearchEmailTool,
+    OpenAIImageGenerationTool,
+    OpenAITextToSpeechTool,
+)
+
+TOOLS = {
+    tool.name: tool
+    for tool in [
+        GoogleImageGenerationTool,
+        GoogleGroundedSearchTool,
+        GoogleNewsTool,
+        GoogleImagesTool,
+        GoogleSearchTool,
+        BrowserTool,
+        ChromaHybridSearchTool,
+        SearchEmailTool,
+        OpenAIImageGenerationTool,
+        OpenAITextToSpeechTool,
+    ]
+}
+
 
 def init_tool(tool: ToolName) -> Tool | None:
     if tool.name:
-        tool_class = get_tool_by_name(tool.name)
+        tool_class = TOOLS.get(tool.name)
         if tool_class:
             return tool_class()
         else:
-            return None
+            raise ValueError(f"Tool {tool.name} not found")
     else:
         return None
 
@@ -73,6 +102,7 @@ class LLM(BaseNode):
         return {
             "text": str,
             "audio": AudioRef,
+            "image": ImageRef,
         }
 
     model: LanguageModel = Field(
@@ -139,6 +169,7 @@ class LLM(BaseNode):
         tools = [init_tool(tool) for tool in self.tools]
         result_content = ""
         result_audio = None
+        result_image = None
         audio_chunks = []
 
         if self.voice != self.Voice.NONE and self.model.provider != Provider.OpenAI:
@@ -170,6 +201,10 @@ class LLM(BaseNode):
                     )
                     if chunk.content_type == "audio":
                         audio_chunks.append(chunk.content)
+                    elif chunk.content_type == "image":
+                        result_image = ImageRef(
+                            data=base64.b64decode(chunk.content),
+                        )
                     else:
                         result_content += chunk.content
                 if isinstance(chunk, ToolCall):
@@ -190,6 +225,19 @@ class LLM(BaseNode):
                     for tool in tools:
                         if tool and tool.name == chunk.name:
                             tool_result = await tool.process(context, chunk.args)
+                            if isinstance(tool_result, dict) and "image" in tool_result:
+                                result_image = await context.image_from_base64(
+                                    tool_result["image"]
+                                )
+                                tool_result = "generated image"
+                            elif (
+                                isinstance(tool_result, dict) and "audio" in tool_result
+                            ):
+                                result_audio = await context.audio_from_base64(
+                                    tool_result["audio"]
+                                )
+                                tool_result = "generated audio"
+
                             follow_up_messages.append(
                                 Message(
                                     role="tool",
@@ -220,11 +268,19 @@ class LLM(BaseNode):
         return {
             "text": result_content,
             "audio": result_audio,
+            "image": result_image,
         }
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["prompt", "model", "messages", "image", "audio"]
+        return [
+            "prompt",
+            "model",
+            "messages",
+            "image",
+            "audio",
+            "tools",
+        ]
 
 
 class Summarizer(BaseNode):

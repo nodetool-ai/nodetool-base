@@ -5274,6 +5274,24 @@
           "description": "Model to use for execution"
         },
         {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning tasks"
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "task"
+          },
+          "default": {},
+          "title": "Task",
+          "description": "Pre-defined task to execute, skipping planning"
+        },
+        {
           "name": "tools",
           "type": {
             "type": "list",
@@ -5295,33 +5313,6 @@
           "default": false,
           "title": "Use Single Task",
           "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
-          "name": "enable_retrieval_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Retrieval Phase",
-          "description": "Whether to use retrieval in the planning phase"
-        },
-        {
-          "name": "enable_analysis_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Analysis Phase",
-          "description": "Whether to use analysis in the planning phase"
-        },
-        {
-          "name": "enable_data_contracts_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Data Contracts Phase",
-          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5360,11 +5351,8 @@
       "basic_fields": [
         "objective",
         "model",
-        "tools",
-        "use_single_task",
-        "enable_retrieval_phase",
-        "enable_analysis_phase",
-        "enable_data_contracts_phase"
+        "task",
+        "tools"
       ],
       "is_dynamic": false
     },
@@ -5403,6 +5391,24 @@
           "description": "Model to use for execution"
         },
         {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning tasks"
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "task"
+          },
+          "default": {},
+          "title": "Task",
+          "description": "Pre-defined task to execute, skipping planning"
+        },
+        {
           "name": "tools",
           "type": {
             "type": "list",
@@ -5424,33 +5430,6 @@
           "default": false,
           "title": "Use Single Task",
           "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
-          "name": "enable_retrieval_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Retrieval Phase",
-          "description": "Whether to use retrieval in the planning phase"
-        },
-        {
-          "name": "enable_analysis_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Analysis Phase",
-          "description": "Whether to use analysis in the planning phase"
-        },
-        {
-          "name": "enable_data_contracts_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Data Contracts Phase",
-          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5498,11 +5477,8 @@
       "basic_fields": [
         "objective",
         "model",
+        "task",
         "tools",
-        "use_single_task",
-        "enable_retrieval_phase",
-        "enable_analysis_phase",
-        "enable_data_contracts_phase",
         "columns"
       ],
       "is_dynamic": false
@@ -5542,6 +5518,24 @@
           "description": "Model to use for execution"
         },
         {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning tasks"
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "task"
+          },
+          "default": {},
+          "title": "Task",
+          "description": "Pre-defined task to execute, skipping planning"
+        },
+        {
           "name": "tools",
           "type": {
             "type": "list",
@@ -5563,33 +5557,6 @@
           "default": false,
           "title": "Use Single Task",
           "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
-          "name": "enable_retrieval_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Retrieval Phase",
-          "description": "Whether to use retrieval in the planning phase"
-        },
-        {
-          "name": "enable_analysis_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Analysis Phase",
-          "description": "Whether to use analysis in the planning phase"
-        },
-        {
-          "name": "enable_data_contracts_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Data Contracts Phase",
-          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5645,11 +5612,9 @@
       "basic_fields": [
         "objective",
         "model",
+        "task",
         "tools",
-        "use_single_task",
-        "enable_retrieval_phase",
-        "enable_analysis_phase",
-        "enable_data_contracts_phase"
+        "fields"
       ],
       "is_dynamic": false
     },
@@ -5688,6 +5653,24 @@
           "description": "Model to use for execution"
         },
         {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning tasks"
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "task"
+          },
+          "default": {},
+          "title": "Task",
+          "description": "Pre-defined task to execute, skipping planning"
+        },
+        {
           "name": "tools",
           "type": {
             "type": "list",
@@ -5709,33 +5692,6 @@
           "default": false,
           "title": "Use Single Task",
           "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
-          "name": "enable_retrieval_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Retrieval Phase",
-          "description": "Whether to use retrieval in the planning phase"
-        },
-        {
-          "name": "enable_analysis_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Analysis Phase",
-          "description": "Whether to use analysis in the planning phase"
-        },
-        {
-          "name": "enable_data_contracts_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Data Contracts Phase",
-          "description": "Whether to use data contracts in the planning phase"
         },
         {
           "name": "input_files",
@@ -5788,12 +5744,165 @@
       "basic_fields": [
         "objective",
         "model",
+        "task",
         "tools",
-        "use_single_task",
+        "item_type"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Task Planner",
+      "description": "Generates a Task execution plan based on an objective, model, and tools.\n    Outputs a Task object that can be used by an Agent executor.\n    planning, task generation, workflow design",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.TaskPlanner",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Task Planner",
+          "title": "Name",
+          "description": "The name of the task planner node"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or problem to create a plan for"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for planning"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of EXECUTION tools available for the planned subtasks"
+        },
+        {
+          "name": "retrieval_tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Retrieval Tools",
+          "description": "List of RETRIEVAL tools available for the planning phase"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for planning"
+        },
+        {
+          "name": "output_schema",
+          "type": {
+            "type": "dict",
+            "optional": true
+          },
+          "title": "Output Schema",
+          "description": "Optional JSON schema for the final task output"
+        },
+        {
+          "name": "output_type",
+          "type": {
+            "type": "str",
+            "optional": true
+          },
+          "title": "Output Type",
+          "description": "Optional type hint for the final task output (e.g., 'json', 'markdown')"
+        },
+        {
+          "name": "enable_retrieval_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Retrieval Phase",
+          "description": "Whether to use retrieval in the planning phase"
+        },
+        {
+          "name": "enable_analysis_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Analysis Phase",
+          "description": "Whether to use analysis in the planning phase"
+        },
+        {
+          "name": "enable_data_contracts_phase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Data Contracts Phase",
+          "description": "Whether to use data contracts in the planning phase"
+        },
+        {
+          "name": "use_structured_output",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Structured Output",
+          "description": "Attempt to use structured output for plan generation"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "task"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "objective",
+        "model",
+        "tools",
+        "retrieval_tools",
+        "input_files",
+        "output_schema",
+        "output_type",
         "enable_retrieval_phase",
         "enable_analysis_phase",
         "enable_data_contracts_phase",
-        "item_type"
+        "use_structured_output"
       ],
       "is_dynamic": false
     },
@@ -8746,6 +8855,12 @@
             "type": "audio"
           },
           "name": "audio"
+        },
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "image"
         }
       ],
       "the_model_info": {},
@@ -8755,7 +8870,8 @@
         "model",
         "messages",
         "image",
-        "audio"
+        "audio",
+        "tools"
       ],
       "is_dynamic": false
     },
@@ -14709,6 +14825,498 @@
       "basic_fields": [
         "name",
         "value"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Image Generation",
+      "description": "Generate an image using Google's Imagen model via the Gemini API.\n    google, image generation, ai, imagen\n\n    Use cases:\n    - Create images from text descriptions\n    - Generate assets for creative projects\n    - Explore AI-powered image synthesis",
+      "namespace": "google.image_generation",
+      "node_type": "google.image_generation.ImageGeneration",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Embedding",
+      "description": "Generate vector representations of text for semantic analysis.\n    embeddings, similarity, search, clustering, classification\n\n    Uses OpenAI's embedding models to create dense vector representations of text.\n    These vectors capture semantic meaning, enabling:\n    - Semantic search\n    - Text clustering\n    - Document classification\n    - Recommendation systems\n    - Anomaly detection\n    - Measuring text similarity and diversity",
+      "namespace": "openai.text",
+      "node_type": "openai.text.Embedding",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "input",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "text-embedding-3-large",
+              "text-embedding-3-small"
+            ],
+            "type_name": "nodetool.nodes.openai.text.EmbeddingModel"
+          },
+          "default": "text-embedding-3-small",
+          "title": "Model"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Chunk Size"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "input",
+        "model",
+        "chunk_size"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Web Search",
+      "description": "\ud83d\udd0d OpenAI Web Search - Searches the web using OpenAI's web search capabilities.\n\n    This node uses an OpenAI model equipped with web search functionality\n    (like gpt-4o with search preview) to answer queries based on current web information.\n    Requires an OpenAI API key.",
+      "namespace": "openai.text",
+      "node_type": "openai.text.WebSearch",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "The search query to execute."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "query"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Text To Speech",
+      "description": "Converts text to speech using OpenAI TTS models.\n    audio, tts, text-to-speech, voice, synthesis\n\n    Use cases:\n    - Generate spoken content for videos or podcasts\n    - Create voice-overs for presentations\n    - Assist visually impaired users with text reading\n    - Produce audio versions of written content",
+      "namespace": "openai.audio",
+      "node_type": "openai.audio.TextToSpeech",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "tts-1",
+              "tts-1-hd",
+              "gpt-4o-mini-tts"
+            ],
+            "type_name": "nodetool.nodes.openai.audio.TtsModel"
+          },
+          "default": "tts-1",
+          "title": "Model"
+        },
+        {
+          "name": "voice",
+          "type": {
+            "type": "enum",
+            "values": [
+              "alloy",
+              "ash",
+              "ballad",
+              "coral",
+              "echo",
+              "fable",
+              "onyx",
+              "nova",
+              "sage",
+              "shimmer",
+              "verse"
+            ],
+            "type_name": "nodetool.nodes.openai.audio.Voice"
+          },
+          "default": "alloy",
+          "title": "Voice"
+        },
+        {
+          "name": "input",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input"
+        },
+        {
+          "name": "speed",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Speed",
+          "min": 0.25,
+          "max": 4.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "input",
+        "model",
+        "voice"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Transcribe",
+      "description": "Converts speech to text using OpenAI's speech-to-text API.\n    audio, transcription, speech-to-text, stt, whisper\n\n    Use cases:\n    - Generate accurate transcriptions of audio content\n    - Create searchable text from audio recordings\n    - Support multiple languages for transcription\n    - Enable automated subtitling and captioning",
+      "namespace": "openai.audio",
+      "node_type": "openai.audio.Transcribe",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to transcribe (max 25 MB)."
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "enum",
+            "values": [
+              "auto_detect",
+              "spanish",
+              "italian",
+              "korean",
+              "portuguese",
+              "english",
+              "japanese",
+              "german",
+              "russian",
+              "dutch",
+              "polish",
+              "catalan",
+              "french",
+              "indonesian",
+              "ukrainian",
+              "turkish",
+              "malay",
+              "swedish",
+              "mandarin",
+              "finnish",
+              "norwegian",
+              "romanian",
+              "thai",
+              "vietnamese",
+              "slovak",
+              "arabic",
+              "czech",
+              "croatian",
+              "greek",
+              "serbian",
+              "danish",
+              "bulgarian",
+              "hungarian",
+              "filipino",
+              "bosnian",
+              "galician",
+              "macedonian",
+              "hindi",
+              "estonian",
+              "slovenian",
+              "tamil",
+              "latvian",
+              "azerbaijani",
+              "urdu",
+              "lithuanian",
+              "hebrew",
+              "welsh",
+              "persian",
+              "icelandic",
+              "kazakh",
+              "afrikaans",
+              "kannada",
+              "marathi",
+              "swahili",
+              "telugu",
+              "maori",
+              "nepali",
+              "armenian",
+              "belarusian",
+              "gujarati",
+              "punjabi",
+              "bengali"
+            ],
+            "type_name": "nodetool.nodes.openai.audio.Language"
+          },
+          "default": "auto_detect",
+          "title": "Language",
+          "description": "The language of the input audio"
+        },
+        {
+          "name": "timestamps",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Timestamps",
+          "description": "Whether to return timestamps for the generated text."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the model's style or continue a previous audio segment."
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Temperature",
+          "description": "The sampling temperature between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+          "min": 0.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "audio_chunk"
+              }
+            ]
+          },
+          "name": "words"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "audio_chunk"
+              }
+            ]
+          },
+          "name": "segments"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "language",
+        "timestamps"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Translate",
+      "description": "Translates speech in audio to English text.\n    audio, translation, speech-to-text, localization\n\n    Use cases:\n    - Translate foreign language audio content to English\n    - Create English transcripts of multilingual recordings\n    - Assist non-English speakers in understanding audio content\n    - Enable cross-language communication in audio formats",
+      "namespace": "openai.audio",
+      "node_type": "openai.audio.Translate",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to translate."
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Temperature",
+          "description": "The temperature to use for the translation."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "temperature"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Create Image",
+      "description": "Generates images from textual descriptions.\n    image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration\n\n    Use cases:\n    1. Create custom illustrations for articles or presentations\n    2. Generate concept art for creative projects\n    3. Produce visual aids for educational content\n    4. Design unique marketing visuals or product mockups\n    5. Explore artistic ideas and styles programmatically",
+      "namespace": "openai.image",
+      "node_type": "openai.image.CreateImage",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The prompt to use."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "gpt-image-1"
+            ],
+            "type_name": "nodetool.nodes.openai.image.Model"
+          },
+          "default": "gpt-image-1",
+          "title": "Model",
+          "description": "The model to use for image generation."
+        },
+        {
+          "name": "size",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1024x1024",
+              "1536x1024",
+              "1024x1536"
+            ],
+            "type_name": "nodetool.nodes.openai.image.Size"
+          },
+          "default": "1024x1024",
+          "title": "Size",
+          "description": "The size of the image to generate."
+        },
+        {
+          "name": "background",
+          "type": {
+            "type": "enum",
+            "values": [
+              "transparent",
+              "opaque",
+              "auto"
+            ],
+            "type_name": "nodetool.nodes.openai.image.Background"
+          },
+          "default": "auto",
+          "title": "Background",
+          "description": "The background of the image to generate."
+        },
+        {
+          "name": "quality",
+          "type": {
+            "type": "enum",
+            "values": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "type_name": "nodetool.nodes.openai.image.Quality"
+          },
+          "default": "high",
+          "title": "Quality",
+          "description": "The quality of the image to generate."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "model",
+        "size",
+        "background",
+        "quality"
       ],
       "is_dynamic": false
     }
