@@ -2,7 +2,7 @@ import os
 from typing import Any, List, Optional
 from pydantic import Field
 
-from nodetool.agents.agent import Agent, SingleTaskAgent
+from nodetool.agents.agent import Agent
 from nodetool.agents.tools.base import get_tool_by_name, Tool
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
@@ -244,11 +244,6 @@ class AgentNode(BaseNode):
         default=[], description="List of tools to use for execution"
     )
 
-    use_single_task: bool = Field(
-        default=False,
-        description="For straight forward tasks, use a single task execution loop",
-    )
-
     input_files: List[FilePath] = Field(
         default=[], description="List of input files to use for the agent"
     )
@@ -291,32 +286,20 @@ class AgentNode(BaseNode):
         tools = [init_tool(tool) for tool in self.tools]
         tools_instances = [tool for tool in tools if tool is not None]
 
-        if self.use_single_task:
-            agent = SingleTaskAgent(
-                name=self.name,
-                objective=self.objective,
-                provider=provider,
-                model=self.model.id,
-                tools=tools_instances,
-                output_schema=output_schema,
-                output_type=output_type,
-                input_files=[file.path for file in self.input_files],
-            )
-        else:
-            agent = Agent(
-                name=self.name,
-                objective=self.objective,
-                provider=provider,
-                model=self.model.id,
-                tools=tools_instances,
-                enable_analysis_phase=True,
-                enable_data_contracts_phase=False,
-                output_schema=output_schema,
-                output_type=output_type,
-                input_files=[file.path for file in self.input_files],
-                reasoning_model=self.reasoning_model.id,
-                task=self.task if self.task.title else None,
-            )
+        agent = Agent(
+            name=self.name,
+            objective=self.objective,
+            provider=provider,
+            model=self.model.id,
+            tools=tools_instances,
+            enable_analysis_phase=True,
+            enable_data_contracts_phase=False,
+            output_schema=output_schema,
+            output_type=output_type,
+            input_files=[file.path for file in self.input_files],
+            reasoning_model=self.reasoning_model.id,
+            task=self.task if self.task.title else None,
+        )
 
         async for item in agent.execute(context):
             if isinstance(item, TaskUpdate):
