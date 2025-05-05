@@ -1,4 +1,8 @@
 import os
+
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
+
+import traceback
 import aiohttp
 import urllib.parse
 import html2text
@@ -12,14 +16,10 @@ import asyncio
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
-
-# Disable browser_use telemetry
-os.environ["ANONYMIZED_TELEMETRY"] = "false"
-
 from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FilePath, TextRef, FolderRef
+from nodetool.metadata.types import FilePath
 from browser_use import Agent, Browser as BrowserUse, BrowserConfig
 
 
@@ -99,6 +99,7 @@ class Browser(BaseNode):
 
                     # Get the HTML content from the page
                     html_content = await page.content()
+                    print(f"HTML content: {html_content}")
 
                     doc = Document(html_content)
 
@@ -106,7 +107,10 @@ class Browser(BaseNode):
                     article_content = doc.summary()
 
                     # Convert to plain text
-                    content = html2text.html2text(article_content)
+                    h = html2text.HTML2Text(baseurl=self.url, bodywidth=1000)
+                    h.ignore_images = True
+                    h.ignore_mailto_links = True
+                    content = h.handle(article_content)
 
                 except Exception as e:
                     print(f"Exception using Python Readability: {str(e)}")
@@ -119,6 +123,8 @@ class Browser(BaseNode):
 
             return result
         except Exception as e:
+            print(f"Error fetching page: {str(e)}")
+            traceback.print_exc()
             raise ValueError(f"Error fetching page: {str(e)}")
 
         finally:

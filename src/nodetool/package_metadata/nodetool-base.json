@@ -5619,6 +5619,123 @@
       "is_dynamic": false
     },
     {
+      "title": "Image Agent",
+      "description": "Executes tasks using a multi-step agent that can call tools and return an image path.\n    agent, execution, tasks, image\n\n    Use cases:\n    - Generate images based on prompts\n    - Find relevant images using search tools",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.ImageAgent",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Agent",
+          "title": "Name",
+          "description": "The name of the agent executor"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or problem to create a plan for"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning tasks"
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "task"
+          },
+          "default": {},
+          "title": "Task",
+          "description": "Pre-defined task to execute, skipping planning"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "use_single_task",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Use Single Task",
+          "description": "For straight forward tasks, use a single task execution loop"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for the agent"
+        },
+        {
+          "name": "max_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Max Steps",
+          "description": "Maximum execution steps to prevent infinite loops"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "objective",
+        "model",
+        "task",
+        "tools"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "List Agent",
       "description": "Executes tasks using a multi-step agent that can call tools and return a list\n    agent, execution, tasks, list\n\n    Use cases:\n    - Generate lists of items\n    - Create sequences of steps\n    - Collect multiple results",
       "namespace": "nodetool.agents",

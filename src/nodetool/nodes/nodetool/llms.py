@@ -208,12 +208,6 @@ class LLM(BaseNode):
                     else:
                         result_content += chunk.content
                 if isinstance(chunk, ToolCall):
-                    context.post_message(
-                        ToolCallUpdate(
-                            name=chunk.name,
-                            args=chunk.args,
-                        )
-                    )
                     if tool_calls_message is None:
                         tool_calls_message = Message(
                             role="assistant",
@@ -224,6 +218,14 @@ class LLM(BaseNode):
                     tool_calls_message.tool_calls.append(chunk)
                     for tool in tools:
                         if tool and tool.name == chunk.name:
+                            context.post_message(
+                                ToolCallUpdate(
+                                    node_id=self.id,
+                                    name=chunk.name,
+                                    args=chunk.args,
+                                    message=tool.user_message(chunk.args),
+                                )
+                            )
                             tool_result = await tool.process(context, chunk.args)
                             if isinstance(tool_result, dict) and "image" in tool_result:
                                 result_image = await context.image_from_base64(

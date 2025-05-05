@@ -1,3 +1,4 @@
+import os
 from typing import Any, List, Optional
 from pydantic import Field
 
@@ -7,7 +8,7 @@ from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
     json_schema_for_dictionary,
 )
-from nodetool.workflows.types import TaskUpdate
+from nodetool.workflows.types import TaskUpdate, PlanningUpdate
 from nodetool.metadata.types import (
     DataframeRef,
     RecordType,
@@ -16,6 +17,7 @@ from nodetool.metadata.types import (
     FilePath,
     ToolCall,
     Task,
+    ImageRef,
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -96,11 +98,6 @@ class TaskPlannerNode(BaseNode):
         description="List of EXECUTION tools available for the planned subtasks",
     )
 
-    retrieval_tools: List[ToolName] = Field(
-        default=[],
-        description="List of RETRIEVAL tools available for the planning phase",
-    )
-
     input_files: List[FilePath] = Field(
         default=[], description="List of input files to use for planning"
     )
@@ -112,10 +109,6 @@ class TaskPlannerNode(BaseNode):
     output_type: Optional[str] = Field(
         default=None,
         description="Optional type hint for the final task output (e.g., 'json', 'markdown')",
-    )
-
-    enable_retrieval_phase: bool = Field(
-        default=True, description="Whether to use retrieval in the planning phase"
     )
 
     enable_analysis_phase: bool = Field(
@@ -137,11 +130,9 @@ class TaskPlannerNode(BaseNode):
             "objective",
             "model",
             "tools",
-            "retrieval_tools",
             "input_files",
             "output_schema",
             "output_type",
-            "enable_retrieval_phase",
             "enable_analysis_phase",
             "enable_data_contracts_phase",
             "use_structured_output",
@@ -167,12 +158,6 @@ class TaskPlannerNode(BaseNode):
         execution_tools_instances: Sequence[Tool] = [
             t for t in (init_tool(tool) for tool in self.tools) if t is not None
         ]
-        retrieval_tools_instances: Sequence[Tool] = [
-            t
-            for t in (init_tool(tool) for tool in self.retrieval_tools)
-            if t is not None
-        ]
-
         input_file_paths = [file.path for file in self.input_files]
 
         # Initialize the TaskPlanner
@@ -182,11 +167,9 @@ class TaskPlannerNode(BaseNode):
             objective=self.objective,
             workspace_dir=context.workspace_dir,
             execution_tools=execution_tools_instances,
-            retrieval_tools=retrieval_tools_instances,
             input_files=input_file_paths,
             output_schema=self.output_schema,
             output_type=self.output_type,
-            enable_retrieval_phase=self.enable_retrieval_phase,
             enable_analysis_phase=self.enable_analysis_phase,
             enable_data_contracts_phase=self.enable_data_contracts_phase,
             use_structured_output=self.use_structured_output,
@@ -195,10 +178,16 @@ class TaskPlannerNode(BaseNode):
 
         # Create the task plan
         # Note: TaskPlanner.create_task now returns a Task directly
-        task_plan: Task = await task_planner.create_task(context, self.objective)
+        async for chunk in task_planner.create_task(context, self.objective):
+            if isinstance(chunk, Chunk):
+                chunk.node_id = self.id
+                context.post_message(chunk)
+            elif isinstance(chunk, PlanningUpdate):
+                chunk.node_id = self.id
+                context.post_message(chunk)
 
-        # Return the generated Task object
-        return task_plan  # Output type is Task
+        assert task_planner.task is not None, "Task was not created"
+        return task_planner.task
 
 
 class AgentNode(BaseNode):
@@ -304,8 +293,7 @@ class AgentNode(BaseNode):
                 provider=provider,
                 model=self.model.id,
                 tools=tools_instances,
-                enable_retrieval_phase=False,
-                enable_analysis_phase=False,
+                enable_analysis_phase=True,
                 enable_data_contracts_phase=False,
                 output_schema=output_schema,
                 output_type=output_type,
@@ -318,23 +306,58 @@ class AgentNode(BaseNode):
             if isinstance(item, TaskUpdate):
                 item.node_id = self.id
                 context.post_message(item)
+            elif isinstance(item, PlanningUpdate):
+                item.node_id = self.id
+                context.post_message(item)
             elif isinstance(item, ToolCall):
                 context.post_message(
                     ToolCallUpdate(
+                        node_id=self.id,
                         name=item.name,
                         args=item.args,
+                        message=item.message,
                     )
                 )
             elif isinstance(item, Chunk):
+                item.node_id = self.id
                 context.post_message(item)
 
         return agent.get_results()
 
     async def process(self, context: ProcessingContext) -> str:
-        schema = {"type": "string"}
+        schema = {"type": "string"}  # Default expectation
         result = await self.process_agent(context, schema, "markdown")
+
+        # Check if the result is a dictionary with a 'path' key
+        if isinstance(result, dict) and "path" in result:
+            result_path = result.get("path")
+            if not result_path:
+                raise ValueError(
+                    f"Agent returned a dictionary with an empty path: {result}"
+                )
+
+            resolved_path = context.resolve_workspace_path(result_path)
+
+            if not isinstance(resolved_path, str):
+                raise ValueError(f"Agent did not return a valid path string: {result}")
+
+            if not os.path.exists(resolved_path):
+                raise ValueError(f"Agent returned path does not exist: {resolved_path}")
+
+            try:
+                with open(resolved_path, "r", encoding="utf-8") as f:
+                    file_content = f.read()
+                return file_content
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to read file content from {resolved_path}: {e}"
+                )
+
+        # Original behavior: expect a string
         if not isinstance(result, str):
-            raise ValueError("Agent did not return a string")
+            raise ValueError(
+                f"Agent did not return a string or a dictionary with a path: {type(result)}"
+            )
         return result
 
 
@@ -442,3 +465,61 @@ class ListAgent(AgentNode):
         if not isinstance(result, list):
             raise ValueError("Agent did not return a list")
         return result
+
+
+class ImageAgent(AgentNode):
+    """
+    Executes tasks using a multi-step agent that can call tools and return an image path.
+    agent, execution, tasks, image
+
+    Use cases:
+    - Generate images based on prompts
+    - Find relevant images using search tools
+    """
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Image Agent"
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        # Inherit basic fields from AgentNode
+        return super().get_basic_fields()
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        # Define a schema expecting a string result (the image path)
+        # Use output_type to guide the agent further.
+        schema = {
+            "type": "object",
+            "properties": {
+                "path": {
+                    "type": "string",
+                    "description": "Path to the generated or retrieved image file.",
+                }
+            },
+            "required": ["path"],
+        }
+        output_type = "png"
+
+        result = await self.process_agent(context, schema, output_type)
+
+        if not isinstance(result, dict):
+            raise ValueError(f"Agent did not return a dictionary: {result}")
+
+        result_path = result.get("path")
+
+        if not result_path:
+            raise ValueError(f"Agent did not return a path: {result}")
+
+        result_path = context.resolve_workspace_path(result_path)
+
+        if not isinstance(result_path, str):
+            raise ValueError(f"Agent did not return a path: {result}")
+
+        if not os.path.exists(result_path):
+            raise ValueError(f"Image file does not exist: {result_path}")
+
+        with open(result_path, "rb") as image_file:
+            image_data = image_file.read()
+            image_ref = await context.image_from_bytes(image_data)
+            return image_ref
