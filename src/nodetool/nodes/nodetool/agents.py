@@ -37,6 +37,11 @@ from nodetool.agents.tools import (
     GoogleNewsTool,
     GoogleImagesTool,
     GoogleSearchTool,
+    GoogleLensTool,
+    GoogleMapsTool,
+    GoogleShoppingTool,
+    GoogleFinanceTool,
+    GoogleJobsTool,
     BrowserTool,
     ChromaHybridSearchTool,
     SearchEmailTool,
@@ -52,6 +57,11 @@ TOOLS = {
         GoogleNewsTool,
         GoogleImagesTool,
         GoogleSearchTool,
+        GoogleLensTool,
+        GoogleMapsTool,
+        GoogleShoppingTool,
+        GoogleFinanceTool,
+        GoogleJobsTool,
         BrowserTool,
         ChromaHybridSearchTool,
         SearchEmailTool,
@@ -91,6 +101,11 @@ class TaskPlannerNode(BaseNode):
     model: LanguageModel = Field(
         default=LanguageModel(),
         description="Model to use for planning",
+    )
+
+    reasoning_model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for reasoning",
     )
 
     tools: List[ToolName] = Field(
@@ -164,6 +179,7 @@ class TaskPlannerNode(BaseNode):
         task_planner = TaskPlanner(
             provider=provider,
             model=self.model.id,
+            reasoning_model=self.reasoning_model.id,
             objective=self.objective,
             workspace_dir=context.workspace_dir,
             execution_tools=execution_tools_instances,
