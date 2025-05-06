@@ -69,9 +69,10 @@ class DataGenerator(BaseNode):
             content=self.prompt + "\n\n" + self.input_text,
         )
         messages = [system_message, user_message]
-        provider = get_provider(self.model.provider)
 
-        assistant_message = await provider.generate_message(
+        assistant_message = await context.generate_message(
+            node_id=self.id,
+            provider=self.model.provider,
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
@@ -84,7 +85,6 @@ class DataGenerator(BaseNode):
                 },
             },
         )
-        print(assistant_message.content)
         data = [
             [
                 (row[col.name] if col.name in row else None)
@@ -389,9 +389,10 @@ Remember to include axis labels, titles, and proper formatting in your code.
         )
 
         messages = [system_message, user_message]
-        provider = get_provider(self.model.provider)
 
-        assistant_message = await provider.generate_message(
+        assistant_message = await context.generate_message(
+            node_id=self.id,
+            provider=self.model.provider,
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
@@ -498,9 +499,10 @@ Use clear, semantic element IDs and class names if needed.""",
         )
 
         messages = [system_message, user_message]
-        provider = get_provider(self.model.provider)
 
-        assistant_message = await provider.generate_message(
+        assistant_message = await context.generate_message(
+            node_id=self.id,
+            provider=self.model.provider,
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,

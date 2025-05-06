@@ -60,7 +60,6 @@ class CreateImage(BaseNode):
     async def process(self, context: ProcessingContext) -> ImageRef:
         params = {
             "prompt": self.prompt,
-            "model": self.model.value,
             "n": 1,
             "size": self.size.value,
             "quality": self.quality.value,

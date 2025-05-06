@@ -5916,20 +5916,6 @@
           "description": "List of EXECUTION tools available for the planned subtasks"
         },
         {
-          "name": "retrieval_tools",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tool_name"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Retrieval Tools",
-          "description": "List of RETRIEVAL tools available for the planning phase"
-        },
-        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5960,15 +5946,6 @@
           },
           "title": "Output Type",
           "description": "Optional type hint for the final task output (e.g., 'json', 'markdown')"
-        },
-        {
-          "name": "enable_retrieval_phase",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Retrieval Phase",
-          "description": "Whether to use retrieval in the planning phase"
         },
         {
           "name": "enable_analysis_phase",
@@ -6012,11 +5989,9 @@
         "objective",
         "model",
         "tools",
-        "retrieval_tools",
         "input_files",
         "output_schema",
         "output_type",
-        "enable_retrieval_phase",
         "enable_analysis_phase",
         "enable_data_contracts_phase",
         "use_structured_output"
@@ -15149,6 +15124,21 @@
       "node_type": "openai.audio.Transcribe",
       "layout": "default",
       "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "whisper-1",
+              "gpt-4o-transcribe",
+              "gpt-4o-mini-transcribe"
+            ],
+            "type_name": "nodetool.nodes.openai.audio.TranscriptionModel"
+          },
+          "default": "whisper-1",
+          "title": "Model",
+          "description": "The model to use for transcription."
+        },
         {
           "name": "audio",
           "type": {

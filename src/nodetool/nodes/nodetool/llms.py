@@ -1,4 +1,5 @@
 import base64
+from datetime import datetime
 from enum import Enum
 from io import BytesIO
 import json
@@ -19,7 +20,7 @@ from nodetool.metadata.types import (
     AudioRef,
     LanguageModel,
 )
-from nodetool.agents.tools.base import get_tool_by_name, Tool
+from nodetool.agents.tools.base import Tool
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress, ToolCallUpdate
@@ -147,6 +148,9 @@ class LLM(BaseNode):
     )
 
     async def process(self, context: ProcessingContext):
+        from nodetool.models.prediction import Prediction as PredictionModel
+        from nodetool.chat.providers.openai_provider import calculate_chat_cost
+
         content = []
 
         content.append(MessageTextContent(text=self.prompt))
@@ -165,22 +169,23 @@ class LLM(BaseNode):
             messages.append(message)
 
         messages.append(Message(role="user", content=content))
-        provider = get_provider(self.model.provider)
         tools = [init_tool(tool) for tool in self.tools]
         result_content = ""
         result_audio = None
         result_image = None
         audio_chunks = []
 
-        if self.voice != self.Voice.NONE and self.model.provider != Provider.OpenAI:
-            raise ValueError("Voice is only supported for OpenAI")
-
         while True:
             follow_up_messages = []
             tool_calls_message = None
-            async for chunk in provider.generate_messages(
+            if self.voice != self.Voice.NONE and self.model.provider != Provider.OpenAI:
+                raise ValueError("Voice is only supported for OpenAI")
+
+            async for chunk in context.generate_messages(
                 messages=messages,
+                provider=self.model.provider,
                 model=self.model.id,
+                node_id=self.id,
                 tools=tools,
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
@@ -343,13 +348,13 @@ class Summarizer(BaseNode):
 
         assert self.model.provider != Provider.Empty, "Select a model"
 
-        provider = get_provider(self.model.provider)
-
         result_content = ""
 
-        async for chunk in provider.generate_messages(
+        async for chunk in context.generate_messages(
             messages=messages,
             model=self.model.id,
+            node_id=self.id,
+            provider=self.model.provider,
             max_tokens=8192,
         ):  # type: ignore
             if isinstance(chunk, Chunk):

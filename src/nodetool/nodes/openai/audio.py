@@ -188,6 +188,10 @@ class Transcribe(BaseNode):
         PUNJABI = "punjabi"
         BENGALI = "bengali"
 
+    model: TranscriptionModel = Field(
+        default=TranscriptionModel.WHISPER_1,
+        description="The model to use for transcription.",
+    )
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to transcribe (max 25 MB)."
     )
@@ -221,58 +225,85 @@ class Transcribe(BaseNode):
     async def process(self, context: ProcessingContext) -> dict:
         audio_bytes = await context.audio_to_base64(self.audio)
 
-        response_format = "verbose_json" if self.timestamps else "text"
-
         params = {
             "file": audio_bytes,
-            "response_format": response_format,
             "temperature": self.temperature,
         }
 
-        if self.language:
-            params["language"] = self.language
+        is_new_model = self.model in [
+            Transcribe.TranscriptionModel.GPT_4O_TRANSCRIBE,
+            Transcribe.TranscriptionModel.GPT_4O_MINI_TRANSCRIBE,
+        ]
+
+        if self.timestamps:
+            if not is_new_model:
+                params["response_format"] = "verbose_json"
+                # Request word and segment granularities for detailed timestamps with whisper-1
+                params["timestamp_granularities"] = ["segment", "word"]
+            else:
+                raise ValueError("New models do not support verbose_json")
+        else:
+            params["response_format"] = "json"
+
+        if self.language.value != "auto_detect":  # Language.NONE.value is "auto_detect"
+            params["language"] = self.language.value
         if self.prompt:
             params["prompt"] = self.prompt
 
         response = await context.run_prediction(
             node_id=self._id,
             provider=Provider.OpenAI,
-            model="whisper-1",
+            model=self.model.value,
             run_prediction_function=run_openai,
             params=params,
         )
 
-        # Handle different response formats
-        if response_format == "verbose_json":
-            transcription = TranscriptionVerbose(**response)
-            segments = []
-            words = []
+        final_text = ""
+        final_words = []
+        final_segments = []
 
-            if transcription.segments:
-                for segment in transcription.segments:
-                    segments.append(
-                        AudioChunk(
-                            timestamp=(segment.start, segment.end),
-                            text=segment.text,
+        current_response_format = params["response_format"]
+
+        if current_response_format == "verbose_json":
+            # Expected for whisper-1 with timestamps=True
+            # The response from run_openai is expected to be a dict
+            if isinstance(response, dict):
+                transcription = TranscriptionVerbose(**response)
+                final_text = transcription.text
+                if transcription.segments:
+                    for segment_data in transcription.segments:
+                        final_segments.append(
+                            AudioChunk(
+                                timestamp=(segment_data.start, segment_data.end),
+                                text=segment_data.text,
+                            )
                         )
-                    )
-            if transcription.words:
-                for word in transcription.words:
-                    words.append(
-                        AudioChunk(timestamp=(word.start, word.end), text=word.word)
-                    )
-
-            return {
-                "text": transcription.text,
-                "words": words,
-                "segments": segments,
-            }
+                if (
+                    transcription.words
+                ):  # Relies on timestamp_granularities including "word"
+                    for word_data in transcription.words:
+                        final_words.append(  # Corrected: was appending to final_segments
+                            AudioChunk(
+                                timestamp=(word_data.start, word_data.end),
+                                text=word_data.word,
+                            )
+                        )
+            else:
+                # Handle unexpected response type for verbose_json
+                if isinstance(response, str):  # Failsafe if API returned raw text
+                    final_text = response
+                # else: final_text remains "", or log error
         else:
-            return {
-                "text": response if isinstance(response, str) else response.text,
-                "words": [],
-                "segments": [],
-            }
+            if isinstance(response, dict):
+                final_text = response.get("text", "")  # Use .get for safety
+            else:
+                raise ValueError(f"Unexpected response type: {type(response)}")
+
+        return {
+            "text": final_text,
+            "words": final_words,
+            "segments": final_segments,
+        }
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
