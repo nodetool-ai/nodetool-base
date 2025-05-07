@@ -202,8 +202,8 @@ class TaskPlannerNode(BaseNode):
                 chunk.node_id = self.id
                 context.post_message(chunk)
 
-        assert task_planner.task is not None, "Task was not created"
-        return task_planner.task
+        assert task_planner.task_plan is not None, "Task was not created"
+        return task_planner.task_plan.tasks[0]
 
 
 class AgentNode(BaseNode):
@@ -324,8 +324,11 @@ class AgentNode(BaseNode):
         return agent.get_results()
 
     async def process(self, context: ProcessingContext) -> str:
-        schema = {"type": "string"}  # Default expectation
-        result = await self.process_agent(context, schema, "markdown")
+        result = await self.process_agent(
+            context=context,
+            output_schema={"type": "string"},
+            output_type="markdown",
+        )
 
         # Check if the result is a dictionary with a 'path' key
         if isinstance(result, dict) and "path" in result:

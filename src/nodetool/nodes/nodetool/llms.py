@@ -109,6 +109,10 @@ class LLM(BaseNode):
         return "LLM"
 
     @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
     def return_type(cls):
         return {
             "text": str,
