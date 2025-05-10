@@ -6605,15 +6605,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "audio"
@@ -6621,6 +6612,15 @@
           "default": {},
           "title": "Value",
           "description": "The audio to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -6634,7 +6634,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6647,6 +6646,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6654,14 +6661,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -6675,7 +6674,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6687,15 +6685,6 @@
       "node_type": "nodetool.input.ChatInput",
       "layout": "default",
       "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
         {
           "name": "value",
           "type": {
@@ -6709,6 +6698,15 @@
           "default": [],
           "title": "Value",
           "description": "The chat message to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -6757,7 +6755,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6770,15 +6767,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "collection"
@@ -6786,6 +6774,15 @@
           "default": {},
           "title": "Value",
           "description": "The collection to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -6799,7 +6796,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6812,15 +6808,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "file_path"
@@ -6828,6 +6815,15 @@
           "default": {},
           "title": "Value",
           "description": "The path to the document file."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -6847,7 +6843,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6860,15 +6855,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "document"
@@ -6876,6 +6862,15 @@
           "default": {},
           "title": "Value",
           "description": "The document to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -6889,7 +6884,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6902,6 +6896,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6909,14 +6911,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value"
         },
         {
           "name": "options",
@@ -6939,7 +6933,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -6952,6 +6945,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6959,14 +6960,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Value"
         },
         {
           "name": "min",
@@ -6996,7 +6989,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -7029,15 +7021,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "image"
@@ -7045,6 +7028,15 @@
           "default": {},
           "title": "Value",
           "description": "The image to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -7058,7 +7050,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -7071,6 +7062,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -7078,14 +7077,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Value"
         },
         {
           "name": "min",
@@ -7115,7 +7106,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -7128,15 +7118,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "file_path"
@@ -7144,6 +7125,15 @@
           "default": {},
           "title": "Value",
           "description": "The path to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -7157,7 +7147,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -7170,6 +7159,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -7177,14 +7174,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -7198,7 +7187,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -7211,15 +7199,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "text"
@@ -7227,6 +7206,15 @@
           "default": {},
           "title": "Value",
           "description": "The text to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -7240,7 +7228,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -7253,15 +7240,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "video"
@@ -7269,6 +7247,15 @@
           "default": {},
           "title": "Value",
           "description": "The video to use as input."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -7282,7 +7269,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14221,6 +14207,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14228,14 +14222,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "np_array"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14249,7 +14235,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14262,6 +14247,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14269,14 +14262,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "audio"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14290,7 +14275,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14303,6 +14287,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14310,14 +14302,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14331,7 +14315,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14344,6 +14327,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14351,14 +14342,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "dataframe"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14372,7 +14355,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14385,15 +14367,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "dict",
@@ -14408,6 +14381,15 @@
           },
           "default": {},
           "title": "Value"
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -14429,7 +14411,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14442,6 +14423,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14449,14 +14438,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "document"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14470,7 +14451,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14483,6 +14463,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14490,14 +14478,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14511,7 +14491,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14559,15 +14538,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "list",
@@ -14580,6 +14550,15 @@
           "default": [],
           "title": "Value",
           "description": "The images to display."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -14598,7 +14577,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14611,6 +14589,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14618,14 +14604,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "image"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14639,7 +14617,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14652,6 +14629,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14659,14 +14644,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14680,7 +14657,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14693,15 +14669,6 @@
       "layout": "default",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "list",
@@ -14713,6 +14680,15 @@
           },
           "default": [],
           "title": "Value"
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
         }
       ],
       "outputs": [
@@ -14731,7 +14707,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14744,6 +14719,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "model_ref"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14751,14 +14734,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "model_ref"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14772,7 +14747,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14785,6 +14759,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14792,14 +14774,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14813,7 +14787,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14826,6 +14799,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "text"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14833,14 +14814,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "text"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14854,7 +14827,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
@@ -14867,6 +14839,14 @@
       "layout": "default",
       "properties": [
         {
+          "name": "value",
+          "type": {
+            "type": "video"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
           "name": "name",
           "type": {
             "type": "str"
@@ -14874,14 +14854,6 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "video"
-          },
-          "default": {},
-          "title": "Value"
         }
       ],
       "outputs": [
@@ -14895,7 +14867,6 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "name",
         "value"
       ],
       "is_dynamic": false
