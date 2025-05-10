@@ -3,6 +3,7 @@ from datetime import datetime
 from enum import Enum
 from io import BytesIO
 import json
+from typing import AsyncGenerator
 import pydub
 from pydantic import Field
 
@@ -246,18 +247,25 @@ class LLM(BaseNode):
                                 )
                             )
                             tool_result = await tool.process(context, chunk.args)
-                            if isinstance(tool_result, dict) and "image" in tool_result:
-                                result_image = await context.image_from_base64(
-                                    tool_result["image"]
-                                )
-                                tool_result = "generated image"
-                            elif (
-                                isinstance(tool_result, dict) and "audio" in tool_result
-                            ):
-                                result_audio = await context.audio_from_base64(
-                                    tool_result["audio"]
-                                )
-                                tool_result = "generated audio"
+                            if isinstance(tool_result, dict) and "type" in tool_result:
+                                if (
+                                    tool_result["type"] == "image"
+                                    and "output_file" in tool_result
+                                ):
+                                    file_path = context.resolve_workspace_path(
+                                        tool_result["output_file"]
+                                    )
+                                    with open(file_path, "rb") as f:
+                                        result_image = await context.image_from_io(f)
+                                elif (
+                                    tool_result["type"] == "audio"
+                                    and "output_file" in tool_result
+                                ):
+                                    file_path = context.resolve_workspace_path(
+                                        tool_result["output_file"]
+                                    )
+                                    with open(file_path, "rb") as f:
+                                        result_audio = await context.audio_from_io(f)
 
                             follow_up_messages.append(
                                 Message(
@@ -582,3 +590,178 @@ class TextClassifier(BaseNode):
 
         except json.JSONDecodeError:
             raise ValueError("Invalid JSON response from model")
+
+
+DEFAULT_SYSTEM_PROMPT = """
+You can call tools to help you answer the user's question.
+You can also call tools to help you generate images, or audio.
+Generated images and audio will be shown to the user above your response.
+DO NOT LINK TO ANY IMAGES OR AUDIO.
+"""
+
+
+class LLMStreaming(BaseNode):
+    """
+    Generate natural language responses using LLM providers and streams output.
+    llm, text-generation, chatbot, question-answering, streaming
+    """
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "LLM (Streaming)"
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "text": str,
+            "image": ImageRef,
+            "audio": AudioRef,
+        }
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for execution",
+    )
+    system: str = Field(
+        title="System",
+        default="You are a friendly assistant.",
+        description="The system prompt for the LLM",
+    )
+    prompt: str = Field(
+        title="Prompt",
+        default="",
+        description="The prompt for the LLM",
+    )
+    image: ImageRef = Field(
+        title="Image",
+        default=ImageRef(),
+        description="The image to analyze",
+    )
+    audio: AudioRef = Field(
+        title="Audio",
+        default=AudioRef(),
+        description="The audio to analyze",
+    )
+    tools: list[ToolName] = Field(
+        default=[], description="List of tools to use for execution"
+    )
+    messages: list[Message] = Field(
+        title="Messages", default=[], description="The messages for the LLM"
+    )
+    max_tokens: int = Field(title="Max Tokens", default=4096, ge=1, le=100000)
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
+    )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return [
+            "prompt",
+            "model",
+            "messages",
+            "image",
+            "audio",
+            "tools",
+        ]
+
+    async def gen_process(self, context: ProcessingContext):
+        content = []
+
+        content.append(MessageTextContent(text=self.prompt))
+
+        if self.image.is_set():
+            content.append(MessageImageContent(image=self.image))
+
+        if self.audio.is_set():
+            content.append(MessageAudioContent(audio=self.audio))
+
+        messages = [
+            Message(role="system", content=self.system + DEFAULT_SYSTEM_PROMPT),
+        ]
+
+        for message in self.messages:
+            messages.append(message)
+
+        messages.append(Message(role="user", content=content))
+        tools = [init_tool(tool) for tool in self.tools]
+
+        while True:
+            follow_up_messages = []
+            tool_calls_message = None
+
+            async for chunk in context.generate_messages(
+                messages=messages,
+                provider=self.model.provider,
+                model=self.model.id,
+                node_id=self.id,
+                tools=tools,
+                max_tokens=self.max_tokens,
+                context_window=self.context_window,
+            ):  # type: ignore
+                if isinstance(chunk, Chunk):
+                    if chunk.content_type == "text" or chunk.content_type is None:
+                        yield "text", chunk.content
+                    elif chunk.content_type == "audio":
+                        yield "audio", chunk.content
+                    elif chunk.content_type == "image":
+                        yield "image", base64.b64decode(chunk.content)
+                if isinstance(chunk, ToolCall):
+                    if tool_calls_message is None:
+                        tool_calls_message = Message(
+                            role="assistant",
+                            tool_calls=[],
+                        )
+                        follow_up_messages.append(tool_calls_message)
+                    assert tool_calls_message.tool_calls is not None
+                    tool_calls_message.tool_calls.append(chunk)
+                    for tool_instance in tools:
+                        if tool_instance and tool_instance.name == chunk.name:
+                            context.post_message(
+                                ToolCallUpdate(
+                                    node_id=self.id,
+                                    name=chunk.name,
+                                    args=chunk.args,
+                                    message=tool_instance.user_message(chunk.args),
+                                )
+                            )
+                            tool_result = await tool_instance.process(
+                                context, chunk.args
+                            )
+                            # Handle tool results that might contain image or audio
+                            if isinstance(tool_result, dict) and "type" in tool_result:
+                                if (
+                                    tool_result["type"] == "image"
+                                    and "output_file" in tool_result
+                                ):
+                                    file_path = context.resolve_workspace_path(
+                                        tool_result["output_file"]
+                                    )
+                                    with open(file_path, "rb") as f:
+                                        image = await context.image_from_io(f)
+                                        yield "image", image
+                                elif (
+                                    tool_result["type"] == "audio"
+                                    and "output_file" in tool_result
+                                ):
+                                    file_path = context.resolve_workspace_path(
+                                        tool_result["output_file"]
+                                    )
+                                    with open(file_path, "rb") as f:
+                                        audio = await context.audio_from_io(f)
+                                        yield "audio", audio
+                            follow_up_messages.append(
+                                Message(
+                                    role="tool",
+                                    tool_call_id=chunk.id,
+                                    name=chunk.name,
+                                    content=json.dumps(tool_result),
+                                )
+                            )
+            if len(follow_up_messages) > 0:
+                messages = messages + follow_up_messages
+            else:
+                break

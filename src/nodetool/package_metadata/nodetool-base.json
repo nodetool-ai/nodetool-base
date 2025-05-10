@@ -5306,15 +5306,6 @@
           "description": "List of tools to use for execution"
         },
         {
-          "name": "use_single_task",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Use Single Task",
-          "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5421,15 +5412,6 @@
           "default": [],
           "title": "Tools",
           "description": "List of tools to use for execution"
-        },
-        {
-          "name": "use_single_task",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Use Single Task",
-          "description": "For straight forward tasks, use a single task execution loop"
         },
         {
           "name": "input_files",
@@ -5548,15 +5530,6 @@
           "default": [],
           "title": "Tools",
           "description": "List of tools to use for execution"
-        },
-        {
-          "name": "use_single_task",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Use Single Task",
-          "description": "For straight forward tasks, use a single task execution loop"
         },
         {
           "name": "input_files",
@@ -5685,15 +5658,6 @@
           "description": "List of tools to use for execution"
         },
         {
-          "name": "use_single_task",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Use Single Task",
-          "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5802,15 +5766,6 @@
           "description": "List of tools to use for execution"
         },
         {
-          "name": "use_single_task",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Use Single Task",
-          "description": "For straight forward tasks, use a single task execution loop"
-        },
-        {
           "name": "input_files",
           "type": {
             "type": "list",
@@ -5900,6 +5855,15 @@
           "default": {},
           "title": "Model",
           "description": "Model to use for planning"
+        },
+        {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning"
         },
         {
           "name": "tools",
@@ -6303,123 +6267,6 @@
       "recommended_models": [],
       "basic_fields": [
         "url"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Google Search",
-      "description": "Performs a Google search using Brightdata's API.\n    search, google, brightdata, results\n\n    Use cases:\n    - Research information from the web\n    - Find relevant websites on specific topics\n    - Gather data for analysis from search results",
-      "namespace": "nodetool.browser",
-      "node_type": "nodetool.browser.GoogleSearch",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "query",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Query",
-          "description": "The search query to submit to Google"
-        },
-        {
-          "name": "num_results",
-          "type": {
-            "type": "int"
-          },
-          "default": 10,
-          "title": "Num Results",
-          "description": "Number of results to return"
-        },
-        {
-          "name": "site",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Site",
-          "description": "Limit search results to a specific website (e.g., 'example.com')"
-        },
-        {
-          "name": "filetype",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filetype",
-          "description": "Limit search results to specific file types (e.g., 'pdf', 'doc', 'xls')"
-        },
-        {
-          "name": "time_period",
-          "type": {
-            "type": "enum",
-            "optional": true,
-            "values": [
-              "past_24h",
-              "past_week",
-              "past_month",
-              "past_year"
-            ],
-            "type_name": "nodetool.nodes.nodetool.browser.TimePeriod"
-          },
-          "title": "Time Period",
-          "description": "Limit results to a specific time period"
-        },
-        {
-          "name": "exact_phrase",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Exact Phrase",
-          "description": "Search for an exact phrase (will be enclosed in quotes)"
-        },
-        {
-          "name": "country",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Country",
-          "description": "Country code to localize search results (e.g., 'us', 'uk', 'ca')"
-        },
-        {
-          "name": "language",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Language",
-          "description": "Language code to filter results (e.g., 'en', 'es', 'fr')"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "query",
-        "num_results",
-        "site",
-        "filetype",
-        "time_period",
-        "exact_phrase",
-        "country",
-        "language"
       ],
       "is_dynamic": false
     },
@@ -8953,6 +8800,139 @@
             "type": "image"
           },
           "name": "image"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "model",
+        "messages",
+        "image",
+        "audio",
+        "tools"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "LLM (Streaming)",
+      "description": "Generate natural language responses using LLM providers and streams output.\n    llm, text-generation, chatbot, question-answering, streaming",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.LLMStreaming",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "system",
+          "type": {
+            "type": "str"
+          },
+          "default": "You are a friendly assistant.",
+          "title": "System",
+          "description": "The system prompt for the LLM"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The prompt for the LLM"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to analyze"
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio to analyze"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "messages",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "message"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Messages",
+          "description": "The messages for the LLM"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "min": 1.0,
+          "max": 100000.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "image"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
         }
       ],
       "the_model_info": {},
