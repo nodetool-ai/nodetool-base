@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,11 +17,13 @@ class AbsolutePath(GraphNode):
     - Resolve path references
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to convert to absolute')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to convert to absolute"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.AbsolutePath"
-
+    def get_node_type(cls):
+        return "nodetool.os.AbsolutePath"
 
 
 class AccessedTime(GraphNode):
@@ -29,11 +32,13 @@ class AccessedTime(GraphNode):
     files, metadata, accessed, time
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.AccessedTime"
-
+    def get_node_type(cls):
+        return "nodetool.os.AccessedTime"
 
 
 class Basename(GraphNode):
@@ -47,12 +52,16 @@ class Basename(GraphNode):
     - Process file names independently
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='File path to get basename from')
-    remove_extension: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='Remove file extension from basename')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="File path to get basename from"
+    )
+    remove_extension: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Remove file extension from basename"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.Basename"
-
+    def get_node_type(cls):
+        return "nodetool.os.Basename"
 
 
 class CopyFile(GraphNode):
@@ -66,12 +75,18 @@ class CopyFile(GraphNode):
     - Copy files to new locations
     """
 
-    source_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Source file path')
-    destination_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Destination file path')
+    source_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Source file path",
+    )
+    destination_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Destination file path",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.CopyFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.CopyFile"
 
 
 class CreateDirectory(GraphNode):
@@ -84,12 +99,17 @@ class CreateDirectory(GraphNode):
     - Create output directories for processed files
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Directory path to create')
-    exist_ok: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description="Don't error if directory already exists")
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Directory path to create",
+    )
+    exist_ok: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Don't error if directory already exists"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.CreateDirectory"
-
+    def get_node_type(cls):
+        return "nodetool.os.CreateDirectory"
 
 
 class CreatedTime(GraphNode):
@@ -98,11 +118,13 @@ class CreatedTime(GraphNode):
     files, metadata, created, time
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.CreatedTime"
-
+    def get_node_type(cls):
+        return "nodetool.os.CreatedTime"
 
 
 class Dirname(GraphNode):
@@ -116,11 +138,13 @@ class Dirname(GraphNode):
     - Process directory paths
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='File path to get dirname from')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="File path to get dirname from"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.Dirname"
-
+    def get_node_type(cls):
+        return "nodetool.os.Dirname"
 
 
 class FileExists(GraphNode):
@@ -133,11 +157,14 @@ class FileExists(GraphNode):
     - Implement conditional logic based on file existence
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to check for existence')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to check for existence",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.FileExists"
-
+    def get_node_type(cls):
+        return "nodetool.os.FileExists"
 
 
 class FileExtension(GraphNode):
@@ -146,11 +173,13 @@ class FileExtension(GraphNode):
     files, metadata, extension
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.FileExtension"
-
+    def get_node_type(cls):
+        return "nodetool.os.FileExtension"
 
 
 class FileName(GraphNode):
@@ -159,11 +188,13 @@ class FileName(GraphNode):
     files, metadata, name
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.FileName"
-
+    def get_node_type(cls):
+        return "nodetool.os.FileName"
 
 
 class FileNameMatch(GraphNode):
@@ -177,13 +208,20 @@ class FileNameMatch(GraphNode):
     - Match file extensions
     """
 
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Filename to check')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='*', description='Pattern to match against (e.g. *.txt, data_*.csv)')
-    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Whether the pattern matching should be case-sensitive')
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Filename to check"
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="*", description="Pattern to match against (e.g. *.txt, data_*.csv)"
+    )
+    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True,
+        description="Whether the pattern matching should be case-sensitive",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.FileNameMatch"
-
+    def get_node_type(cls):
+        return "nodetool.os.FileNameMatch"
 
 
 class FilterFileNames(GraphNode):
@@ -197,13 +235,20 @@ class FilterFileNames(GraphNode):
     - Select files by extension
     """
 
-    filenames: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='list of filenames to filter')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='*', description='Pattern to filter by (e.g. *.txt, data_*.csv)')
-    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Whether the pattern matching should be case-sensitive')
+    filenames: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="list of filenames to filter"
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="*", description="Pattern to filter by (e.g. *.txt, data_*.csv)"
+    )
+    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True,
+        description="Whether the pattern matching should be case-sensitive",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.FilterFileNames"
-
+    def get_node_type(cls):
+        return "nodetool.os.FilterFileNames"
 
 
 class GetDirectory(GraphNode):
@@ -212,11 +257,13 @@ class GetDirectory(GraphNode):
     files, metadata, directory
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.GetDirectory"
-
+    def get_node_type(cls):
+        return "nodetool.os.GetDirectory"
 
 
 class GetEnvironmentVariable(GraphNode):
@@ -229,12 +276,16 @@ class GetEnvironmentVariable(GraphNode):
     - Get system settings
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Environment variable name')
-    default: str | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Default value if not found')
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Environment variable name"
+    )
+    default: str | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Default value if not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.GetEnvironmentVariable"
-
+    def get_node_type(cls):
+        return "nodetool.os.GetEnvironmentVariable"
 
 
 class GetFileSize(GraphNode):
@@ -243,11 +294,13 @@ class GetFileSize(GraphNode):
     files, metadata, size
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.GetFileSize"
-
+    def get_node_type(cls):
+        return "nodetool.os.GetFileSize"
 
 
 class GetPathInfo(GraphNode):
@@ -260,11 +313,13 @@ class GetPathInfo(GraphNode):
     - Parse file paths
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to analyze')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to analyze"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.GetPathInfo"
-
+    def get_node_type(cls):
+        return "nodetool.os.GetPathInfo"
 
 
 class GetSystemInfo(GraphNode):
@@ -277,10 +332,9 @@ class GetSystemInfo(GraphNode):
     - Platform-specific logic
     """
 
-
     @classmethod
-    def get_node_type(cls): return "nodetool.os.GetSystemInfo"
-
+    def get_node_type(cls):
+        return "nodetool.os.GetSystemInfo"
 
 
 class IsDirectory(GraphNode):
@@ -289,11 +343,13 @@ class IsDirectory(GraphNode):
     files, metadata, type
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to check')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to check"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.IsDirectory"
-
+    def get_node_type(cls):
+        return "nodetool.os.IsDirectory"
 
 
 class IsFile(GraphNode):
@@ -302,11 +358,13 @@ class IsFile(GraphNode):
     files, metadata, type
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to check')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to check"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.IsFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.IsFile"
 
 
 class JoinPaths(GraphNode):
@@ -319,11 +377,13 @@ class JoinPaths(GraphNode):
     - Create cross-platform paths
     """
 
-    paths: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='Path components to join')
+    paths: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="Path components to join"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.JoinPaths"
-
+    def get_node_type(cls):
+        return "nodetool.os.JoinPaths"
 
 
 class ListFiles(GraphNode):
@@ -336,13 +396,20 @@ class ListFiles(GraphNode):
     - Filter files by extension or pattern
     """
 
-    directory: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path='~'), description='Directory to scan')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='*', description='File pattern to match (e.g. *.txt)')
-    recursive: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='Search subdirectories')
+    directory: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path="~"),
+        description="Directory to scan",
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="*", description="File pattern to match (e.g. *.txt)"
+    )
+    recursive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Search subdirectories"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.ListFiles"
-
+    def get_node_type(cls):
+        return "nodetool.os.ListFiles"
 
 
 class LoadAudioFile(GraphNode):
@@ -356,11 +423,14 @@ class LoadAudioFile(GraphNode):
     - Read audio assets for a workflow
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to the audio file to read')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the audio file to read",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.LoadAudioFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.LoadAudioFile"
 
 
 class LoadBytesFile(GraphNode):
@@ -373,11 +443,14 @@ class LoadBytesFile(GraphNode):
     - Read binary files for a workflow
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to the file to read')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the file to read",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.LoadBytesFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.LoadBytesFile"
 
 
 class LoadCSVFile(GraphNode):
@@ -386,11 +459,14 @@ class LoadCSVFile(GraphNode):
     files, csv, read, input, load, file
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to the CSV file to read')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the CSV file to read",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.LoadCSVFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.LoadCSVFile"
 
 
 class LoadDocumentFile(GraphNode):
@@ -399,11 +475,14 @@ class LoadDocumentFile(GraphNode):
     files, document, read, input, load, file
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to the document to read')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the document to read",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.LoadDocumentFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.LoadDocumentFile"
 
 
 class LoadImageFile(GraphNode):
@@ -417,11 +496,14 @@ class LoadImageFile(GraphNode):
     - Read image assets for a workflow
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to the image file to read')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the image file to read",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.LoadImageFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.LoadImageFile"
 
 
 class LoadVideoFile(GraphNode):
@@ -435,11 +517,13 @@ class LoadVideoFile(GraphNode):
     - Read video assets for a workflow
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the video file to read')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the video file to read"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.LoadVideoFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.LoadVideoFile"
 
 
 class ModifiedTime(GraphNode):
@@ -448,11 +532,13 @@ class ModifiedTime(GraphNode):
     files, metadata, modified, time
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Path to file')
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.ModifiedTime"
-
+    def get_node_type(cls):
+        return "nodetool.os.ModifiedTime"
 
 
 class MoveFile(GraphNode):
@@ -466,12 +552,18 @@ class MoveFile(GraphNode):
     - Relocate completed files
     """
 
-    source_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Source file path')
-    destination_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='Destination file path')
+    source_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Source file path",
+    )
+    destination_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Destination file path",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.MoveFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.MoveFile"
 
 
 class NormalizePath(GraphNode):
@@ -484,11 +576,13 @@ class NormalizePath(GraphNode):
     - Remove redundant separators
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to normalize')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to normalize"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.NormalizePath"
-
+    def get_node_type(cls):
+        return "nodetool.os.NormalizePath"
 
 
 class PathToString(GraphNode):
@@ -502,11 +596,14 @@ class PathToString(GraphNode):
     - Extract path string for external use
     """
 
-    file_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='FilePath object to convert to string')
+    file_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="FilePath object to convert to string",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.PathToString"
-
+    def get_node_type(cls):
+        return "nodetool.os.PathToString"
 
 
 class RelativePath(GraphNode):
@@ -520,12 +617,16 @@ class RelativePath(GraphNode):
     - Compare file locations
     """
 
-    target_path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Target path to convert to relative')
-    start_path: str | GraphNode | tuple[GraphNode, str] = Field(default='.', description='Start path for relative conversion')
+    target_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Target path to convert to relative"
+    )
+    start_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default=".", description="Start path for relative conversion"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.RelativePath"
-
+    def get_node_type(cls):
+        return "nodetool.os.RelativePath"
 
 
 class SaveAudioFile(GraphNode):
@@ -538,13 +639,22 @@ class SaveAudioFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None), description='The audio to save')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveAudioFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveAudioFile"
 
 
 class SaveBytesFile(GraphNode):
@@ -557,13 +667,21 @@ class SaveBytesFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    data: bytes | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The bytes to write to file')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Name of the file to save. Supports strftime format codes.')
+    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The bytes to write to file"
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the file to save. Supports strftime format codes.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveBytesFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveBytesFile"
 
 
 class SaveCSVDataframeFile(GraphNode):
@@ -576,13 +694,24 @@ class SaveCSVDataframeFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, columns=None), description='DataFrame to write to CSV')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Name of the CSV file to save. Supports strftime format codes.')
+    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="DataFrame to write to CSV",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the CSV file to save. Supports strftime format codes.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveCSVDataframeFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveCSVDataframeFile"
 
 
 class SaveCSVFile(GraphNode):
@@ -595,13 +724,21 @@ class SaveCSVFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    data: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='list of dictionaries to write to CSV')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Name of the CSV file to save. Supports strftime format codes.')
+    data: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="list of dictionaries to write to CSV"
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the CSV file to save. Supports strftime format codes.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveCSVFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveCSVFile"
 
 
 class SaveDocumentFile(GraphNode):
@@ -614,13 +751,22 @@ class SaveDocumentFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None), description='The document to save')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Name of the file to save. Supports strftime format codes.')
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description="The document to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the file to save. Supports strftime format codes.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveDocumentFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveDocumentFile"
 
 
 class SaveImageFile(GraphNode):
@@ -634,13 +780,22 @@ class SaveImageFile(GraphNode):
     - Archive image results
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to save')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveImageFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveImageFile"
 
 
 class SaveVideoFile(GraphNode):
@@ -653,13 +808,24 @@ class SaveVideoFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The video to save')
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderPath(type='folder_path', path=''), description='Folder where the file will be saved')
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The video to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SaveVideoFile"
-
+    def get_node_type(cls):
+        return "nodetool.os.SaveVideoFile"
 
 
 class SetEnvironmentVariable(GraphNode):
@@ -672,12 +838,16 @@ class SetEnvironmentVariable(GraphNode):
     - Set up process environment
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Environment variable name')
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Environment variable value')
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Environment variable name"
+    )
+    value: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Environment variable value"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SetEnvironmentVariable"
-
+    def get_node_type(cls):
+        return "nodetool.os.SetEnvironmentVariable"
 
 
 class ShowNotification(GraphNode):
@@ -691,13 +861,20 @@ class ShowNotification(GraphNode):
     - Display important messages
     """
 
-    title: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Title of the notification')
-    message: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Content of the notification')
-    timeout: int | GraphNode | tuple[GraphNode, str] = Field(default=10, description='How long the notification should stay visible (in seconds)')
+    title: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Title of the notification"
+    )
+    message: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Content of the notification"
+    )
+    timeout: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=10,
+        description="How long the notification should stay visible (in seconds)",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.ShowNotification"
-
+    def get_node_type(cls):
+        return "nodetool.os.ShowNotification"
 
 
 class SplitExtension(GraphNode):
@@ -711,11 +888,13 @@ class SplitExtension(GraphNode):
     - Handle file types
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to split')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to split"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SplitExtension"
-
+    def get_node_type(cls):
+        return "nodetool.os.SplitExtension"
 
 
 class SplitPath(GraphNode):
@@ -729,9 +908,10 @@ class SplitPath(GraphNode):
     - Extract path parts
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to split')
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to split"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.os.SplitPath"
-
-
+    def get_node_type(cls):
+        return "nodetool.os.SplitPath"

@@ -152,12 +152,12 @@ class MoveToArchive(BaseNode):
     email, gmail, archive
     """
 
-    message_ids: List[str] = Field(
+    message_ids: list[str] = Field(
         default=[],
         description="List of message IDs to archive",
     )
 
-    async def process(self, context: ProcessingContext) -> List[str]:
+    async def process(self, context: ProcessingContext) -> list[str]:
         email_address = context.environment.get("GOOGLE_MAIL_USER")
         app_password = context.environment.get("GOOGLE_APP_PASSWORD")
         if not email_address:

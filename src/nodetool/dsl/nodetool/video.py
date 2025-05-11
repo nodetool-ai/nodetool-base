@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,17 +17,33 @@ class AddAudio(GraphNode):
     3. Mix new audio with existing video sound
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to add audio to.')
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None), description='The audio file to add to the video.')
-    volume: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Volume adjustment for the added audio. 1.0 is original volume.')
-    mix: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='If True, mix new audio with existing. If False, replace existing audio.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to add audio to.",
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio file to add to the video.",
+    )
+    volume: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0,
+        description="Volume adjustment for the added audio. 1.0 is original volume.",
+    )
+    mix: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False,
+        description="If True, mix new audio with existing. If False, replace existing audio.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.AddAudio"
+    def get_node_type(cls):
+        return "nodetool.video.AddAudio"
 
 
 import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
+
 
 class AddSubtitles(GraphNode):
     """
@@ -39,18 +56,40 @@ class AddSubtitles(GraphNode):
     3. Create lyric videos for music content
     """
 
-    SubtitleTextFont: typing.ClassVar[type] = nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont
-    SubtitleTextAlignment: typing.ClassVar[type] = nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to add subtitles to.')
-    chunks: list[types.AudioChunk] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='Audio chunks to add as subtitles.')
-    font: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont = Field(default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont.DejaVuSans, description='The font to use.')
-    align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM, description='Vertical alignment of subtitles.')
-    font_size: int | GraphNode | tuple[GraphNode, str] = Field(default=24, description='The font size.')
-    font_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ColorRef(type='color', value='#FFFFFF'), description='The font color.')
+    SubtitleTextFont: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont
+    )
+    SubtitleTextAlignment: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
+    )
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to add subtitles to.",
+    )
+    chunks: list[types.AudioChunk] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="Audio chunks to add as subtitles."
+    )
+    font: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont = Field(
+        default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont.DejaVuSans,
+        description="The font to use.",
+    )
+    align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(
+        default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM,
+        description="Vertical alignment of subtitles.",
+    )
+    font_size: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=24, description="The font size."
+    )
+    font_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ColorRef(type="color", value="#FFFFFF"),
+        description="The font color.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.AddSubtitles"
-
+    def get_node_type(cls):
+        return "nodetool.video.AddSubtitles"
 
 
 class Blur(GraphNode):
@@ -64,12 +103,20 @@ class Blur(GraphNode):
     3. Reduce noise or grain in low-quality footage
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to apply blur effect.')
-    strength: float | GraphNode | tuple[GraphNode, str] = Field(default=5.0, description='The strength of the blur effect. Higher values create a stronger blur.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to apply blur effect.",
+    )
+    strength: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=5.0,
+        description="The strength of the blur effect. Higher values create a stronger blur.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Blur"
-
+    def get_node_type(cls):
+        return "nodetool.video.Blur"
 
 
 class ChromaKey(GraphNode):
@@ -83,14 +130,26 @@ class ChromaKey(GraphNode):
     3. Produce professional-looking videos for presentations or marketing
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to apply chroma key effect.')
-    key_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ColorRef(type='color', value='#00FF00'), description="The color to key out (e.g., '#00FF00' for green).")
-    similarity: float | GraphNode | tuple[GraphNode, str] = Field(default=0.3, description='Similarity threshold for the key color.')
-    blend: float | GraphNode | tuple[GraphNode, str] = Field(default=0.1, description='Blending of the keyed area edges.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to apply chroma key effect.",
+    )
+    key_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ColorRef(type="color", value="#00FF00"),
+        description="The color to key out (e.g., '#00FF00' for green).",
+    )
+    similarity: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.3, description="Similarity threshold for the key color."
+    )
+    blend: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.1, description="Blending of the keyed area edges."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.ChromaKey"
-
+    def get_node_type(cls):
+        return "nodetool.video.ChromaKey"
 
 
 class ColorBalance(GraphNode):
@@ -104,14 +163,25 @@ class ColorBalance(GraphNode):
     3. Normalize color balance across multiple video clips
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to adjust color balance.')
-    red_adjust: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Red channel adjustment factor.')
-    green_adjust: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Green channel adjustment factor.')
-    blue_adjust: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Blue channel adjustment factor.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to adjust color balance.",
+    )
+    red_adjust: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="Red channel adjustment factor."
+    )
+    green_adjust: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="Green channel adjustment factor."
+    )
+    blue_adjust: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="Blue channel adjustment factor."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.ColorBalance"
-
+    def get_node_type(cls):
+        return "nodetool.video.ColorBalance"
 
 
 class Concat(GraphNode):
@@ -120,12 +190,22 @@ class Concat(GraphNode):
     video, concat, merge, combine, audio, +
     """
 
-    video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The first video to concatenate.')
-    video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The second video to concatenate.')
+    video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The first video to concatenate.",
+    )
+    video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The second video to concatenate.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Concat"
-
+    def get_node_type(cls):
+        return "nodetool.video.Concat"
 
 
 class CreateVideo(GraphNode):
@@ -139,12 +219,16 @@ class CreateVideo(GraphNode):
     3. Generate animations from individual images
     """
 
-    frames: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='The frames to combine into a video.')
-    fps: float | GraphNode | tuple[GraphNode, str] = Field(default=30, description='The FPS of the output video.')
+    frames: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The frames to combine into a video."
+    )
+    fps: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="The FPS of the output video."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.CreateVideo"
-
+    def get_node_type(cls):
+        return "nodetool.video.CreateVideo"
 
 
 class Denoise(GraphNode):
@@ -158,12 +242,20 @@ class Denoise(GraphNode):
     3. Prepare video for further processing or compression
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to denoise.')
-    strength: float | GraphNode | tuple[GraphNode, str] = Field(default=5.0, description='Strength of the denoising effect. Higher values mean more denoising.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to denoise.",
+    )
+    strength: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=5.0,
+        description="Strength of the denoising effect. Higher values mean more denoising.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Denoise"
-
+    def get_node_type(cls):
+        return "nodetool.video.Denoise"
 
 
 class ExtractAudio(GraphNode):
@@ -172,11 +264,16 @@ class ExtractAudio(GraphNode):
     video, audio, extract, separate
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to separate.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to separate.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.ExtractAudio"
-
+    def get_node_type(cls):
+        return "nodetool.video.ExtractAudio"
 
 
 class ExtractFrames(GraphNode):
@@ -190,13 +287,22 @@ class ExtractFrames(GraphNode):
     3. Create thumbnails or previews from video content
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to extract frames from.')
-    start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The frame to start extracting from.')
-    end: int | GraphNode | tuple[GraphNode, str] = Field(default=-1, description='The frame to stop extracting from.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to extract frames from.",
+    )
+    start: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The frame to start extracting from."
+    )
+    end: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="The frame to stop extracting from."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.ExtractFrames"
-
+    def get_node_type(cls):
+        return "nodetool.video.ExtractFrames"
 
 
 class Fps(GraphNode):
@@ -210,11 +316,16 @@ class Fps(GraphNode):
     3. Ensure compatibility with target display systems
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to adjust the brightness for.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to analyze for FPS.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Fps"
-
+    def get_node_type(cls):
+        return "nodetool.video.Fps"
 
 
 class Overlay(GraphNode):
@@ -223,16 +334,35 @@ class Overlay(GraphNode):
     video, overlay, composite, picture-in-picture, audio
     """
 
-    main_video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The main (background) video.')
-    overlay_video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The video to overlay on top.')
-    x: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='X-coordinate for overlay placement.')
-    y: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Y-coordinate for overlay placement.')
-    scale: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Scale factor for the overlay video.')
-    overlay_audio_volume: float | GraphNode | tuple[GraphNode, str] = Field(default=0.5, description='Volume of the overlay audio relative to the main audio.')
+    main_video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The main (background) video.",
+    )
+    overlay_video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The video to overlay on top.",
+    )
+    x: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="X-coordinate for overlay placement."
+    )
+    y: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Y-coordinate for overlay placement."
+    )
+    scale: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="Scale factor for the overlay video."
+    )
+    overlay_audio_volume: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.5,
+        description="Volume of the overlay audio relative to the main audio.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Overlay"
-
+    def get_node_type(cls):
+        return "nodetool.video.Overlay"
 
 
 class ResizeNode(GraphNode):
@@ -246,13 +376,22 @@ class ResizeNode(GraphNode):
     3. Prepare videos for specific platforms with size constraints
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to resize.')
-    width: int | GraphNode | tuple[GraphNode, str] = Field(default=-1, description='The target width. Use -1 to maintain aspect ratio.')
-    height: int | GraphNode | tuple[GraphNode, str] = Field(default=-1, description='The target height. Use -1 to maintain aspect ratio.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to resize.",
+    )
+    width: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="The target width. Use -1 to maintain aspect ratio."
+    )
+    height: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="The target height. Use -1 to maintain aspect ratio."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Resize"
-
+    def get_node_type(cls):
+        return "nodetool.video.Resize"
 
 
 class Reverse(GraphNode):
@@ -266,11 +405,16 @@ class Reverse(GraphNode):
     3. Generate unique transitions or intros for video projects
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to reverse.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to reverse.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Reverse"
-
+    def get_node_type(cls):
+        return "nodetool.video.Reverse"
 
 
 class Rotate(GraphNode):
@@ -284,12 +428,19 @@ class Rotate(GraphNode):
     3. Adjust video for different display orientations
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to rotate.')
-    angle: float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description='The angle of rotation in degrees.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to rotate.",
+    )
+    angle: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description="The angle of rotation in degrees."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Rotate"
-
+    def get_node_type(cls):
+        return "nodetool.video.Rotate"
 
 
 class Saturation(GraphNode):
@@ -303,12 +454,20 @@ class Saturation(GraphNode):
     3. Correct oversaturated footage from certain cameras
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to adjust saturation.')
-    saturation: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Saturation level. 1.0 is original, <1 decreases saturation, >1 increases saturation.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to adjust saturation.",
+    )
+    saturation: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0,
+        description="Saturation level. 1.0 is original, <1 decreases saturation, >1 increases saturation.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Saturation"
-
+    def get_node_type(cls):
+        return "nodetool.video.Saturation"
 
 
 class SaveVideo(GraphNode):
@@ -322,13 +481,24 @@ class SaveVideo(GraphNode):
     3. Create a copy of a video in a different location
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The video to save.')
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None), description='Name of the output folder.')
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='%Y-%m-%d-%H-%M-%S.mp4', description='\n        Name of the output video.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The video to save.",
+    )
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="Name of the output folder.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="%Y-%m-%d-%H-%M-%S.mp4",
+        description="\n        Name of the output video.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.SaveVideo"
-
+    def get_node_type(cls):
+        return "nodetool.video.SaveVideo"
 
 
 class SetSpeed(GraphNode):
@@ -342,12 +512,20 @@ class SetSpeed(GraphNode):
     3. Synchronize video duration with audio or other timing requirements
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to adjust speed.')
-    speed_factor: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='The speed adjustment factor. Values > 1 speed up, < 1 slow down.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to adjust speed.",
+    )
+    speed_factor: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0,
+        description="The speed adjustment factor. Values > 1 speed up, < 1 slow down.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.SetSpeed"
-
+    def get_node_type(cls):
+        return "nodetool.video.SetSpeed"
 
 
 class Sharpness(GraphNode):
@@ -361,13 +539,24 @@ class Sharpness(GraphNode):
     3. Create stylistic effects by over-sharpening
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to sharpen.')
-    luma_amount: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Amount of sharpening to apply to luma (brightness) channel.')
-    chroma_amount: float | GraphNode | tuple[GraphNode, str] = Field(default=0.5, description='Amount of sharpening to apply to chroma (color) channels.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to sharpen.",
+    )
+    luma_amount: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0,
+        description="Amount of sharpening to apply to luma (brightness) channel.",
+    )
+    chroma_amount: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.5,
+        description="Amount of sharpening to apply to chroma (color) channels.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Sharpness"
-
+    def get_node_type(cls):
+        return "nodetool.video.Sharpness"
 
 
 class Stabilize(GraphNode):
@@ -381,15 +570,28 @@ class Stabilize(GraphNode):
     3. Enhance viewer experience by reducing motion sickness
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to stabilize.')
-    smoothing: float | GraphNode | tuple[GraphNode, str] = Field(default=10.0, description='Smoothing strength. Higher values result in smoother but potentially more cropped video.')
-    crop_black: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Whether to crop black borders that may appear after stabilization.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to stabilize.",
+    )
+    smoothing: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=10.0,
+        description="Smoothing strength. Higher values result in smoother but potentially more cropped video.",
+    )
+    crop_black: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True,
+        description="Whether to crop black borders that may appear after stabilization.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Stabilize"
+    def get_node_type(cls):
+        return "nodetool.video.Stabilize"
 
 
 import nodetool.nodes.nodetool.video
+
 
 class Transition(GraphNode):
     """
@@ -403,15 +605,32 @@ class Transition(GraphNode):
     4. Smoothly transition between audio tracks of different video clips
     """
 
-    TransitionType: typing.ClassVar[type] = nodetool.nodes.nodetool.video.Transition.TransitionType
-    video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The first video in the transition.')
-    video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The second video in the transition.')
-    transition_type: nodetool.nodes.nodetool.video.Transition.TransitionType = Field(default=nodetool.nodes.nodetool.video.Transition.TransitionType.fade, description='Type of transition effect')
-    duration: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='Duration of the transition effect in seconds.')
+    TransitionType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.Transition.TransitionType
+    )
+    video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The first video in the transition.",
+    )
+    video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The second video in the transition.",
+    )
+    transition_type: nodetool.nodes.nodetool.video.Transition.TransitionType = Field(
+        default=nodetool.nodes.nodetool.video.Transition.TransitionType.fade,
+        description="Type of transition effect",
+    )
+    duration: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="Duration of the transition effect in seconds."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Transition"
-
+    def get_node_type(cls):
+        return "nodetool.video.Transition"
 
 
 class Trim(GraphNode):
@@ -425,11 +644,20 @@ class Trim(GraphNode):
     3. Create shorter clips from a full-length video
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The input video to trim.')
-    start_time: float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description='The start time in seconds for the trimmed video.')
-    end_time: float | GraphNode | tuple[GraphNode, str] = Field(default=-1.0, description='The end time in seconds for the trimmed video. Use -1 for the end of the video.')
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to trim.",
+    )
+    start_time: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description="The start time in seconds for the trimmed video."
+    )
+    end_time: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1.0,
+        description="The end time in seconds for the trimmed video. Use -1 for the end of the video.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.video.Trim"
-
-
+    def get_node_type(cls):
+        return "nodetool.video.Trim"

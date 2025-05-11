@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -15,11 +16,14 @@ class Audio(GraphNode):
     - Set default audio for testing or demonstration purposes
     """
 
-    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None), description=None)
+    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Audio"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Audio"
 
 
 class Bool(GraphNode):
@@ -32,18 +36,20 @@ class Bool(GraphNode):
     - Set default boolean values for configuration
     """
 
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    value: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Bool"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Bool"
 
 
 class Constant(GraphNode):
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Constant"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Constant"
 
 
 class DataFrame(GraphNode):
@@ -56,11 +62,16 @@ class DataFrame(GraphNode):
     - Set sample data for testing or demonstration
     """
 
-    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, columns=None), description=None)
+    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.DataFrame"
-
+    def get_node_type(cls):
+        return "nodetool.constant.DataFrame"
 
 
 class Date(GraphNode):
@@ -69,13 +80,19 @@ class Date(GraphNode):
     date, make, create
     """
 
-    year: int | GraphNode | tuple[GraphNode, str] = Field(default=1900, description='Year of the date')
-    month: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Month of the date')
-    day: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Day of the date')
+    year: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1900, description="Year of the date"
+    )
+    month: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Month of the date"
+    )
+    day: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Day of the date"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Date"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Date"
 
 
 class DateTime(GraphNode):
@@ -84,19 +101,37 @@ class DateTime(GraphNode):
     datetime, make, create
     """
 
-    year: int | GraphNode | tuple[GraphNode, str] = Field(default=1900, description='Year of the datetime')
-    month: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Month of the datetime')
-    day: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Day of the datetime')
-    hour: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Hour of the datetime')
-    minute: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Minute of the datetime')
-    second: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Second of the datetime')
-    microsecond: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Microsecond of the datetime')
-    tzinfo: str | GraphNode | tuple[GraphNode, str] = Field(default='UTC', description='Timezone of the datetime')
-    utc_offset: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='UTC offset of the datetime')
+    year: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1900, description="Year of the datetime"
+    )
+    month: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Month of the datetime"
+    )
+    day: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Day of the datetime"
+    )
+    hour: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Hour of the datetime"
+    )
+    minute: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Minute of the datetime"
+    )
+    second: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Second of the datetime"
+    )
+    microsecond: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Microsecond of the datetime"
+    )
+    tzinfo: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="UTC", description="Timezone of the datetime"
+    )
+    utc_offset: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="UTC offset of the datetime"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.DateTime"
-
+    def get_node_type(cls):
+        return "nodetool.constant.DateTime"
 
 
 class Dict(GraphNode):
@@ -109,11 +144,13 @@ class Dict(GraphNode):
     - Define parameter sets for other nodes
     """
 
-    value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
+    value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Dict"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Dict"
 
 
 class Document(GraphNode):
@@ -121,11 +158,14 @@ class Document(GraphNode):
     document, pdf, word, docx
     """
 
-    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None), description=None)
+    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Document"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Document"
 
 
 class Float(GraphNode):
@@ -138,11 +178,13 @@ class Float(GraphNode):
     - Provide fixed numerical inputs for processing
     """
 
-    value: float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Float"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Float"
 
 
 class Image(GraphNode):
@@ -155,11 +197,14 @@ class Image(GraphNode):
     - Set default image for testing or demonstration purposes
     """
 
-    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description=None)
+    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Image"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Image"
 
 
 class Integer(GraphNode):
@@ -175,8 +220,8 @@ class Integer(GraphNode):
     value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Integer"
-
+    def get_node_type(cls):
+        return "nodetool.constant.Integer"
 
 
 class JSON(GraphNode):
@@ -184,11 +229,14 @@ class JSON(GraphNode):
     json, object, dictionary
     """
 
-    value: types.JSONRef | GraphNode | tuple[GraphNode, str] = Field(default=types.JSONRef(type='json', uri='', asset_id=None, data=None), description=None)
+    value: types.JSONRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.JSONRef(type="json", uri="", asset_id=None, data=None),
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.JSON"
-
+    def get_node_type(cls):
+        return "nodetool.constant.JSON"
 
 
 class List(GraphNode):
@@ -201,11 +249,13 @@ class List(GraphNode):
     - Define sequences for iteration in other nodes
     """
 
-    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.List"
-
+    def get_node_type(cls):
+        return "nodetool.constant.List"
 
 
 class String(GraphNode):
@@ -218,11 +268,11 @@ class String(GraphNode):
     - Set default text values for configuration
     """
 
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.String"
-
+    def get_node_type(cls):
+        return "nodetool.constant.String"
 
 
 class Video(GraphNode):
@@ -235,9 +285,13 @@ class Video(GraphNode):
     - Set default video for testing or demonstration purposes
     """
 
-    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description=None)
+    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.constant.Video"
-
-
+    def get_node_type(cls):
+        return "nodetool.constant.Video"

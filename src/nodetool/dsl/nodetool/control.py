@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,10 +17,13 @@ class If(GraphNode):
     - Implement decision logic
     """
 
-    condition: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='The condition to evaluate')
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The value to pass to the next node')
+    condition: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="The condition to evaluate"
+    )
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value to pass to the next node"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.control.If"
-
-
+    def get_node_type(cls):
+        return "nodetool.control.If"

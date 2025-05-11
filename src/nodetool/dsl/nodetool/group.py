@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -13,10 +14,9 @@ class GroupNode(GraphNode):
     This node type allows for hierarchical structuring of workflows.
     """
 
-
     @classmethod
-    def get_node_type(cls): return "nodetool.workflows.base_node.Group"
-
+    def get_node_type(cls):
+        return "nodetool.workflows.base_node.Group"
 
 
 class Loop(GraphNode):
@@ -28,9 +28,10 @@ class Loop(GraphNode):
     - Loop over a list of items and process the nodes inside the group
     """
 
-    input: Any | GraphNode | tuple[GraphNode, str] = Field(default=[], description='The input data to loop over.')
+    input: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The input data to loop over."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.group.Loop"
-
-
+    def get_node_type(cls):
+        return "nodetool.group.Loop"

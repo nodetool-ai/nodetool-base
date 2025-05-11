@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -17,13 +18,17 @@ class All(GraphNode):
     - Validate multiple criteria simultaneously
     """
 
-    values: list[bool] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='List of boolean values to check')
+    values: list[bool] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="List of boolean values to check"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.All"
+    def get_node_type(cls):
+        return "nodetool.boolean.All"
 
 
 import nodetool.nodes.nodetool.boolean
+
 
 class Compare(GraphNode):
     """
@@ -36,14 +41,23 @@ class Compare(GraphNode):
     - Create dynamic thresholds or limits
     """
 
-    Comparison: typing.ClassVar[type] = nodetool.nodes.nodetool.boolean.Compare.Comparison
-    a: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='First value to compare')
-    b: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Second value to compare')
-    comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(default=nodetool.nodes.nodetool.boolean.Compare.Comparison.EQUAL, description='Comparison operator to use')
+    Comparison: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.boolean.Compare.Comparison
+    )
+    a: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="First value to compare"
+    )
+    b: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Second value to compare"
+    )
+    comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(
+        default=nodetool.nodes.nodetool.boolean.Compare.Comparison.EQUAL,
+        description="Comparison operator to use",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.Compare"
-
+    def get_node_type(cls):
+        return "nodetool.boolean.Compare"
 
 
 class ConditionalSwitch(GraphNode):
@@ -57,13 +71,19 @@ class ConditionalSwitch(GraphNode):
     - Implement decision points in workflows
     """
 
-    condition: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='The condition to check')
-    if_true: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The value to return if the condition is true')
-    if_false: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The value to return if the condition is false')
+    condition: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="The condition to check"
+    )
+    if_true: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value to return if the condition is true"
+    )
+    if_false: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value to return if the condition is false"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.ConditionalSwitch"
-
+    def get_node_type(cls):
+        return "nodetool.boolean.ConditionalSwitch"
 
 
 class IsIn(GraphNode):
@@ -77,12 +97,16 @@ class IsIn(GraphNode):
     - Filter data based on inclusion criteria
     """
 
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The value to check for membership')
-    options: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='The list of options to check against')
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value to check for membership"
+    )
+    options: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The list of options to check against"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.IsIn"
-
+    def get_node_type(cls):
+        return "nodetool.boolean.IsIn"
 
 
 class IsNone(GraphNode):
@@ -96,13 +120,17 @@ class IsNone(GraphNode):
     - Implement null checks in data processing
     """
 
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The value to check for None')
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value to check for None"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.IsNone"
+    def get_node_type(cls):
+        return "nodetool.boolean.IsNone"
 
 
 import nodetool.nodes.nodetool.boolean
+
 
 class LogicalOperator(GraphNode):
     """
@@ -115,14 +143,23 @@ class LogicalOperator(GraphNode):
     - Create advanced filters or triggers
     """
 
-    BooleanOperation: typing.ClassVar[type] = nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
-    a: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='First boolean input')
-    b: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='Second boolean input')
-    operation: nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation = Field(default=nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation.AND, description='Logical operation to perform')
+    BooleanOperation: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
+    )
+    a: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="First boolean input"
+    )
+    b: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Second boolean input"
+    )
+    operation: nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation = Field(
+        default=nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation.AND,
+        description="Logical operation to perform",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.LogicalOperator"
-
+    def get_node_type(cls):
+        return "nodetool.boolean.LogicalOperator"
 
 
 class Not(GraphNode):
@@ -136,11 +173,13 @@ class Not(GraphNode):
     - Create opposite logic branches
     """
 
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='Boolean input to negate')
+    value: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Boolean input to negate"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.Not"
-
+    def get_node_type(cls):
+        return "nodetool.boolean.Not"
 
 
 class Some(GraphNode):
@@ -154,9 +193,10 @@ class Some(GraphNode):
     - Create flexible validation rules
     """
 
-    values: list[bool] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='List of boolean values to check')
+    values: list[bool] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="List of boolean values to check"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.boolean.Some"
-
-
+    def get_node_type(cls):
+        return "nodetool.boolean.Some"

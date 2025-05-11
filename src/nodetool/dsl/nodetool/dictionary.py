@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,11 +17,14 @@ class ArgMax(GraphNode):
     - Identify the winner in a voting/ranking system
     """
 
-    scores: dict[str, float] | GraphNode | tuple[GraphNode, str] = Field(default={}, description='Dictionary mapping labels to their corresponding scores/values')
+    scores: dict[str, float] | GraphNode | tuple[GraphNode, str] = Field(
+        default={},
+        description="Dictionary mapping labels to their corresponding scores/values",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.ArgMax"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.ArgMax"
 
 
 class Combine(GraphNode):
@@ -34,12 +38,16 @@ class Combine(GraphNode):
     - Create aggregate data structures
     """
 
-    dict_a: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
-    dict_b: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
+    dict_a: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
+    dict_b: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.Combine"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.Combine"
 
 
 class Filter(GraphNode):
@@ -53,12 +61,16 @@ class Filter(GraphNode):
     - Prepare specific data subsets for processing
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
-    keys: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
+    keys: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.Filter"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.Filter"
 
 
 class GetValue(GraphNode):
@@ -72,13 +84,17 @@ class GetValue(GraphNode):
     - Extract a particular field from a data structure
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    default: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    default: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.GetValue"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.GetValue"
 
 
 class MakeDictionary(GraphNode):
@@ -92,10 +108,9 @@ class MakeDictionary(GraphNode):
     - Build basic key-value mappings
     """
 
-
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.MakeDictionary"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.MakeDictionary"
 
 
 class ParseJSON(GraphNode):
@@ -109,13 +124,17 @@ class ParseJSON(GraphNode):
     - Deserialize stored data
     """
 
-    json_string: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    json_string: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.ParseJSON"
+    def get_node_type(cls):
+        return "nodetool.dictionary.ParseJSON"
 
 
 import nodetool.nodes.nodetool.dictionary
+
 
 class ReduceDictionaries(GraphNode):
     """
@@ -128,15 +147,30 @@ class ReduceDictionaries(GraphNode):
     - Combine multiple data points into a single structure
     """
 
-    ConflictResolution: typing.ClassVar[type] = nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
-    dictionaries: list[dict[str, Any]] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='List of dictionaries to be reduced')
-    key_field: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The field to use as the key in the resulting dictionary')
-    value_field: str | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value.')
-    conflict_resolution: nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution = Field(default=nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution.FIRST, description='How to handle conflicts when the same key appears multiple times')
+    ConflictResolution: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
+    )
+    dictionaries: list[dict[str, Any]] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="List of dictionaries to be reduced"
+    )
+    key_field: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="The field to use as the key in the resulting dictionary",
+    )
+    value_field: str | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None,
+        description="Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value.",
+    )
+    conflict_resolution: (
+        nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
+    ) = Field(
+        default=nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution.FIRST,
+        description="How to handle conflicts when the same key appears multiple times",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.ReduceDictionaries"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.ReduceDictionaries"
 
 
 class Remove(GraphNode):
@@ -150,12 +184,14 @@ class Remove(GraphNode):
     - Clean up temporary entries in a data structure
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.Remove"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.Remove"
 
 
 class Update(GraphNode):
@@ -169,12 +205,16 @@ class Update(GraphNode):
     - Merge user input with existing data
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
-    new_pairs: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
+    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
+    new_pairs: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.Update"
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.Update"
 
 
 class Zip(GraphNode):
@@ -188,10 +228,13 @@ class Zip(GraphNode):
     - Transform list data into associative arrays
     """
 
-    keys: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    keys: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.dictionary.Zip"
-
-
+    def get_node_type(cls):
+        return "nodetool.dictionary.Zip"

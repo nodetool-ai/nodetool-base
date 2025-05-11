@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -18,12 +19,17 @@ class EvaluateExpression(GraphNode):
     IMPORTANT: Only enabled in non-production environments
     """
 
-    expression: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Python expression to evaluate. Variables are available as locals.')
-    variables: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description='Variables available to the expression')
+    expression: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Python expression to evaluate. Variables are available as locals.",
+    )
+    variables: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="Variables available to the expression"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.code.EvaluateExpression"
-
+    def get_node_type(cls):
+        return "nodetool.code.EvaluateExpression"
 
 
 class ExecutePython(GraphNode):
@@ -39,10 +45,14 @@ class ExecutePython(GraphNode):
     IMPORTANT: Only enabled in non-production environments
     """
 
-    code: str | GraphNode | tuple[GraphNode, str] = Field(default='', description="Python code to execute. Input variables are available as locals. Assign the desired output to the 'result' variable.")
-    inputs: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description='Input variables available to the code as locals.')
+    code: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Python code to execute. Input variables are available as locals. Assign the desired output to the 'result' variable.",
+    )
+    inputs: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="Input variables available to the code as locals."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.code.ExecutePython"
-
-
+    def get_node_type(cls):
+        return "nodetool.code.ExecutePython"

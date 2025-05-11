@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -14,11 +15,14 @@ class BatchToList(GraphNode):
     - Convert comfy batch outputs to list format
     """
 
-    batch: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The batch of images to convert.')
+    batch: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The batch of images to convert.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.BatchToList"
-
+    def get_node_type(cls):
+        return "nodetool.image.BatchToList"
 
 
 class Crop(GraphNode):
@@ -31,15 +35,26 @@ class Crop(GraphNode):
     - Simplify images by removing distractions
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to crop.')
-    left: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The left coordinate.')
-    top: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The top coordinate.')
-    right: int | GraphNode | tuple[GraphNode, str] = Field(default=512, description='The right coordinate.')
-    bottom: int | GraphNode | tuple[GraphNode, str] = Field(default=512, description='The bottom coordinate.')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to crop.",
+    )
+    left: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The left coordinate."
+    )
+    top: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The top coordinate."
+    )
+    right: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="The right coordinate."
+    )
+    bottom: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="The bottom coordinate."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.Crop"
-
+    def get_node_type(cls):
+        return "nodetool.image.Crop"
 
 
 class Fit(GraphNode):
@@ -52,13 +67,20 @@ class Fit(GraphNode):
     - Control image display sizes for web development
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to fit.')
-    width: int | GraphNode | tuple[GraphNode, str] = Field(default=512, description='Width to fit to.')
-    height: int | GraphNode | tuple[GraphNode, str] = Field(default=512, description='Height to fit to.')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to fit.",
+    )
+    width: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="Width to fit to."
+    )
+    height: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="Height to fit to."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.Fit"
-
+    def get_node_type(cls):
+        return "nodetool.image.Fit"
 
 
 class GetMetadata(GraphNode):
@@ -72,11 +94,14 @@ class GetMetadata(GraphNode):
     - Gather information for image cataloging or organization
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The input image.')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The input image.",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.GetMetadata"
-
+    def get_node_type(cls):
+        return "nodetool.image.GetMetadata"
 
 
 class Paste(GraphNode):
@@ -90,14 +115,24 @@ class Paste(GraphNode):
     - Create collages or montages
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to paste into.')
-    paste: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to paste.')
-    left: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The left coordinate.')
-    top: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The top coordinate.')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to paste into.",
+    )
+    paste: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to paste.",
+    )
+    left: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The left coordinate."
+    )
+    top: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The top coordinate."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.Paste"
-
+    def get_node_type(cls):
+        return "nodetool.image.Paste"
 
 
 class Resize(GraphNode):
@@ -110,13 +145,20 @@ class Resize(GraphNode):
     - Create uniform image sizes for layouts
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to resize.')
-    width: int | GraphNode | tuple[GraphNode, str] = Field(default=512, description='The target width.')
-    height: int | GraphNode | tuple[GraphNode, str] = Field(default=512, description='The target height.')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to resize.",
+    )
+    width: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="The target width."
+    )
+    height: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="The target height."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.Resize"
-
+    def get_node_type(cls):
+        return "nodetool.image.Resize"
 
 
 class SaveImage(GraphNode):
@@ -130,13 +172,22 @@ class SaveImage(GraphNode):
     - Create backups of processed images
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to save.')
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None), description='The folder to save the image in.')
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='%Y-%m-%d_%H-%M-%S.png', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to save.",
+    )
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The folder to save the image in.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="%Y-%m-%d_%H-%M-%S.png",
+        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.SaveImage"
-
+    def get_node_type(cls):
+        return "nodetool.image.SaveImage"
 
 
 class Scale(GraphNode):
@@ -149,10 +200,14 @@ class Scale(GraphNode):
     - Create thumbnail versions of images
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to scale.')
-    scale: float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description='The scale factor.')
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to scale.",
+    )
+    scale: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="The scale factor."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.image.Scale"
-
-
+    def get_node_type(cls):
+        return "nodetool.image.Scale"

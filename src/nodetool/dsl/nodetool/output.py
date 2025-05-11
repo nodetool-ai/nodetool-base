@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -15,13 +16,17 @@ class ArrayOutput(GraphNode):
     - Representing complex numerical data structures
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description=None)
+    value: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.ArrayOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.ArrayOutput"
 
 
 class AudioOutput(GraphNode):
@@ -35,13 +40,17 @@ class AudioOutput(GraphNode):
     - Returning results of audio analysis
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None), description=None)
+    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.AudioOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.AudioOutput"
 
 
 class BooleanOutput(GraphNode):
@@ -55,13 +64,16 @@ class BooleanOutput(GraphNode):
     - Indicating success/failure of operations
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    value: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.BooleanOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.BooleanOutput"
 
 
 class DataframeOutput(GraphNode):
@@ -75,13 +87,19 @@ class DataframeOutput(GraphNode):
     - Displaying data in table format
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DataframeRef(type='dataframe', uri='', asset_id=None, data=None, columns=None), description=None)
+    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.DataframeOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.DataframeOutput"
 
 
 class DictionaryOutput(GraphNode):
@@ -95,13 +113,16 @@ class DictionaryOutput(GraphNode):
     - Organizing heterogeneous output data
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
+    value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.DictionaryOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.DictionaryOutput"
 
 
 class DocumentOutput(GraphNode):
@@ -115,13 +136,17 @@ class DocumentOutput(GraphNode):
     - Returning results of document analysis
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None), description=None)
+    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.DocumentOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.DocumentOutput"
 
 
 class FloatOutput(GraphNode):
@@ -135,13 +160,16 @@ class FloatOutput(GraphNode):
     - Displaying numeric metrics with decimal precision
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.FloatOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.FloatOutput"
 
 
 class GroupOutput(GraphNode):
@@ -155,11 +183,13 @@ class GroupOutput(GraphNode):
     - Organizing related outputs in workflows
     """
 
-    input: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    input: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.GroupOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.GroupOutput"
 
 
 class ImageListOutput(GraphNode):
@@ -172,13 +202,16 @@ class ImageListOutput(GraphNode):
     - Returning image search results
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='The images to display.')
+    value: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The images to display."
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.ImageListOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.ImageListOutput"
 
 
 class ImageOutput(GraphNode):
@@ -192,13 +225,17 @@ class ImageOutput(GraphNode):
     - Returning image analysis results
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description=None)
+    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.ImageOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.ImageOutput"
 
 
 class IntegerOutput(GraphNode):
@@ -212,13 +249,14 @@ class IntegerOutput(GraphNode):
     - Displaying numeric metrics
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
     value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.IntegerOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.IntegerOutput"
 
 
 class ListOutput(GraphNode):
@@ -231,13 +269,16 @@ class ListOutput(GraphNode):
     - Aggregating outputs from multiple nodes
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.ListOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.ListOutput"
 
 
 class ModelOutput(GraphNode):
@@ -251,13 +292,17 @@ class ModelOutput(GraphNode):
     - Referencing models for later use in the workflow
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.ModelRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ModelRef(type='model_ref', uri='', asset_id=None, data=None), description=None)
+    value: types.ModelRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ModelRef(type="model_ref", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.ModelOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.ModelOutput"
 
 
 class StringOutput(GraphNode):
@@ -271,13 +316,14 @@ class StringOutput(GraphNode):
     - Displaying short text outputs
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.StringOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.StringOutput"
 
 
 class TextOutput(GraphNode):
@@ -291,13 +337,17 @@ class TextOutput(GraphNode):
     - Displaying rich text output
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(default=types.TextRef(type='text', uri='', asset_id=None, data=None), description=None)
+    value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.TextRef(type="text", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.TextOutput"
-
+    def get_node_type(cls):
+        return "nodetool.output.TextOutput"
 
 
 class VideoOutput(GraphNode):
@@ -311,11 +361,16 @@ class VideoOutput(GraphNode):
     - Returning results of video analysis
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this output node.')
-    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description=None)
+    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description=None,
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.output.VideoOutput"
-
-
+    def get_node_type(cls):
+        return "nodetool.output.VideoOutput"

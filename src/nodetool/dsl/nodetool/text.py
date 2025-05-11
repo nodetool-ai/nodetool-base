@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,14 +17,20 @@ class Chunk(GraphNode):
     - Generating summaries of text sections
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    length: int | GraphNode | tuple[GraphNode, str] = Field(default=100, description=None)
-    overlap: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    separator: str | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    length: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=100, description=None
+    )
+    overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description=None
+    )
+    separator: str | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Chunk"
-
+    def get_node_type(cls):
+        return "nodetool.text.Chunk"
 
 
 class Concat(GraphNode):
@@ -37,12 +44,12 @@ class Concat(GraphNode):
     - Merging text data from different sources
     """
 
-    a: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    b: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    a: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    b: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Concat"
-
+    def get_node_type(cls):
+        return "nodetool.text.Concat"
 
 
 class Contains(GraphNode):
@@ -56,15 +63,21 @@ class Contains(GraphNode):
     - Validating text content
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    substring: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    substring: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
+    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Contains"
+    def get_node_type(cls):
+        return "nodetool.text.Contains"
 
 
 import nodetool.nodes.nodetool.text
+
 
 class CountTokens(GraphNode):
     """
@@ -77,13 +90,18 @@ class CountTokens(GraphNode):
     - Managing token budgets in text processing
     """
 
-    TiktokenEncoding: typing.ClassVar[type] = nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    encoding: nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding = Field(default=nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding.CL100K_BASE, description='The tiktoken encoding to use for token counting')
+    TiktokenEncoding: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding
+    )
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    encoding: nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding = Field(
+        default=nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding.CL100K_BASE,
+        description="The tiktoken encoding to use for token counting",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.CountTokens"
-
+    def get_node_type(cls):
+        return "nodetool.text.CountTokens"
 
 
 class EndsWith(GraphNode):
@@ -97,12 +115,14 @@ class EndsWith(GraphNode):
     - Filtering text based on ending content
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    suffix: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    suffix: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.EndsWith"
-
+    def get_node_type(cls):
+        return "nodetool.text.EndsWith"
 
 
 class Extract(GraphNode):
@@ -116,13 +136,13 @@ class Extract(GraphNode):
     - Focusing on relevant sections of longer documents
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
     start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     end: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Extract"
-
+    def get_node_type(cls):
+        return "nodetool.text.Extract"
 
 
 class ExtractJSON(GraphNode):
@@ -136,13 +156,17 @@ class ExtractJSON(GraphNode):
     - Extracting nested data from API responses or configurations
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    json_path: str | GraphNode | tuple[GraphNode, str] = Field(default='$.*', description=None)
-    find_all: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    json_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="$.*", description=None
+    )
+    find_all: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.ExtractJSON"
-
+    def get_node_type(cls):
+        return "nodetool.text.ExtractJSON"
 
 
 class ExtractRegex(GraphNode):
@@ -156,15 +180,21 @@ class ExtractRegex(GraphNode):
     - Isolating relevant information from complex text formats
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    regex: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    dotall: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
-    ignorecase: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
-    multiline: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    regex: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    dotall: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
+    ignorecase: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
+    multiline: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.ExtractRegex"
-
+    def get_node_type(cls):
+        return "nodetool.text.ExtractRegex"
 
 
 class FindAllRegex(GraphNode):
@@ -178,15 +208,21 @@ class FindAllRegex(GraphNode):
     - Analyzing frequency and distribution of specific text patterns
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    regex: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    dotall: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
-    ignorecase: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
-    multiline: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    regex: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    dotall: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
+    ignorecase: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
+    multiline: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.FindAllRegex"
-
+    def get_node_type(cls):
+        return "nodetool.text.FindAllRegex"
 
 
 class FormatText(GraphNode):
@@ -219,11 +255,14 @@ class FormatText(GraphNode):
     - join(delimiter): Joins list with delimiter
     """
 
-    template: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}" \n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n')
+    template: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}" \n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n',
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.FormatText"
-
+    def get_node_type(cls):
+        return "nodetool.text.FormatText"
 
 
 class HasLength(GraphNode):
@@ -237,14 +276,20 @@ class HasLength(GraphNode):
     - Checking content size constraints
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    min_length: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
-    max_length: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
-    exact_length: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    min_length: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
+    max_length: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
+    exact_length: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.HasLength"
-
+    def get_node_type(cls):
+        return "nodetool.text.HasLength"
 
 
 class IsEmpty(GraphNode):
@@ -258,12 +303,14 @@ class IsEmpty(GraphNode):
     - Checking for meaningful input
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    trim_whitespace: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    trim_whitespace: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.IsEmpty"
-
+    def get_node_type(cls):
+        return "nodetool.text.IsEmpty"
 
 
 class Join(GraphNode):
@@ -277,12 +324,16 @@ class Join(GraphNode):
     - Assembling formatted text from array elements
     """
 
-    strings: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    separator: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    strings: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    separator: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Join"
-
+    def get_node_type(cls):
+        return "nodetool.text.Join"
 
 
 class ParseJSON(GraphNode):
@@ -296,11 +347,11 @@ class ParseJSON(GraphNode):
     - Extracting configuration or settings from JSON files
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.ParseJSON"
-
+    def get_node_type(cls):
+        return "nodetool.text.ParseJSON"
 
 
 class RegexMatch(GraphNode):
@@ -314,13 +365,19 @@ class RegexMatch(GraphNode):
     - Find all occurrences of a pattern
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Text to search in')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Regular expression pattern')
-    group: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Capture group to extract (0 for full match)')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text to search in"
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Regular expression pattern"
+    )
+    group: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Capture group to extract (0 for full match)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.RegexMatch"
-
+    def get_node_type(cls):
+        return "nodetool.text.RegexMatch"
 
 
 class RegexReplace(GraphNode):
@@ -334,14 +391,22 @@ class RegexReplace(GraphNode):
     - Transform text formats
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Text to perform replacements on')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Regular expression pattern')
-    replacement: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Replacement text')
-    count: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Maximum replacements (0 for unlimited)')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text to perform replacements on"
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Regular expression pattern"
+    )
+    replacement: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Replacement text"
+    )
+    count: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Maximum replacements (0 for unlimited)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.RegexReplace"
-
+    def get_node_type(cls):
+        return "nodetool.text.RegexReplace"
 
 
 class RegexSplit(GraphNode):
@@ -355,13 +420,19 @@ class RegexSplit(GraphNode):
     - Tokenize text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Text to split')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Regular expression pattern to split on')
-    maxsplit: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Maximum number of splits (0 for unlimited)')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text to split"
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Regular expression pattern to split on"
+    )
+    maxsplit: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Maximum number of splits (0 for unlimited)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.RegexSplit"
-
+    def get_node_type(cls):
+        return "nodetool.text.RegexSplit"
 
 
 class RegexValidate(GraphNode):
@@ -375,12 +446,16 @@ class RegexValidate(GraphNode):
     - Filter text based on patterns
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Text to validate')
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Regular expression pattern')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text to validate"
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Regular expression pattern"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.RegexValidate"
-
+    def get_node_type(cls):
+        return "nodetool.text.RegexValidate"
 
 
 class Replace(GraphNode):
@@ -394,13 +469,13 @@ class Replace(GraphNode):
     - Implementing simple text transformations
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    old: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    new: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    old: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    new: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Replace"
-
+    def get_node_type(cls):
+        return "nodetool.text.Replace"
 
 
 class SaveText(GraphNode):
@@ -414,13 +489,19 @@ class SaveText(GraphNode):
     - Archiving text data within the workflow
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None), description='Name of the output folder.')
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='%Y-%m-%d-%H-%M-%S.txt', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="Name of the output folder.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="%Y-%m-%d-%H-%M-%S.txt",
+        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.SaveText"
-
+    def get_node_type(cls):
+        return "nodetool.text.SaveText"
 
 
 class Slice(GraphNode):
@@ -440,14 +521,20 @@ class Slice(GraphNode):
     - step=-1: reverse the text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    start: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
-    stop: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
-    step: int | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    start: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
+    stop: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
+    step: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Slice"
-
+    def get_node_type(cls):
+        return "nodetool.text.Slice"
 
 
 class Split(GraphNode):
@@ -461,12 +548,14 @@ class Split(GraphNode):
     - Extracting specific elements from structured text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    delimiter: str | GraphNode | tuple[GraphNode, str] = Field(default=',', description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    delimiter: str | GraphNode | tuple[GraphNode, str] = Field(
+        default=",", description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Split"
-
+    def get_node_type(cls):
+        return "nodetool.text.Split"
 
 
 class StartsWith(GraphNode):
@@ -480,12 +569,14 @@ class StartsWith(GraphNode):
     - Checking file name patterns
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    prefix: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    prefix: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.StartsWith"
-
+    def get_node_type(cls):
+        return "nodetool.text.StartsWith"
 
 
 class Template(GraphNode):
@@ -518,10 +609,17 @@ class Template(GraphNode):
     - join(delimiter): Joins list with delimiter
     """
 
-    string: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n')
-    values: str | list | dict[str, typing.Any] | object | GraphNode | tuple[GraphNode, str] = Field(default={}, description="\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        ")
+    string: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n',
+    )
+    values: (
+        str | list | dict[str, typing.Any] | object | GraphNode | tuple[GraphNode, str]
+    ) = Field(
+        default={},
+        description="\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.text.Template"
-
-
+    def get_node_type(cls):
+        return "nodetool.text.Template"

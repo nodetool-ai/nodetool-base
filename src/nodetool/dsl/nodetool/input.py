@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,13 +17,17 @@ class AudioInput(GraphNode):
     - Provide audio input to models
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None), description='The audio to use as input.')
+    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.AudioInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.AudioInput"
 
 
 class BooleanInput(GraphNode):
@@ -36,13 +41,16 @@ class BooleanInput(GraphNode):
     - Control conditional logic
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    value: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.BooleanInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.BooleanInput"
 
 
 class ChatInput(GraphNode):
@@ -56,13 +64,16 @@ class ChatInput(GraphNode):
     - Provide instructions to language models
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='The chat message to use as input.')
+    value: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The chat message to use as input."
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.ChatInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.ChatInput"
 
 
 class CollectionInput(GraphNode):
@@ -76,13 +87,17 @@ class CollectionInput(GraphNode):
     - Choose collection for similarity search
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.Collection | GraphNode | tuple[GraphNode, str] = Field(default=types.Collection(type='collection', name=''), description='The collection to use as input.')
+    value: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Collection(type="collection", name=""),
+        description="The collection to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.CollectionInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.CollectionInput"
 
 
 class DocumentFileInput(GraphNode):
@@ -97,13 +112,17 @@ class DocumentFileInput(GraphNode):
     - Index documents for search
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='The path to the document file.')
+    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="The path to the document file.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.DocumentFileInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.DocumentFileInput"
 
 
 class DocumentInput(GraphNode):
@@ -117,13 +136,17 @@ class DocumentInput(GraphNode):
     - Provide document input to models
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None), description='The document to use as input.')
+    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description="The document to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.DocumentInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.DocumentInput"
 
 
 class EnumInput(GraphNode):
@@ -137,14 +160,17 @@ class EnumInput(GraphNode):
     - Configure categorical parameters
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    options: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Comma-separated list of valid options')
+    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    options: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Comma-separated list of valid options"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.EnumInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.EnumInput"
 
 
 class FloatInput(GraphNode):
@@ -158,15 +184,20 @@ class FloatInput(GraphNode):
     - Configure continuous parameters like opacity or volume
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     min: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    max: float | GraphNode | tuple[GraphNode, str] = Field(default=100, description=None)
+    max: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=100, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.FloatInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.FloatInput"
 
 
 class GroupInput(GraphNode):
@@ -179,10 +210,9 @@ class GroupInput(GraphNode):
     - iterates over a group of items
     """
 
-
     @classmethod
-    def get_node_type(cls): return "nodetool.input.GroupInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.GroupInput"
 
 
 class ImageInput(GraphNode):
@@ -196,13 +226,17 @@ class ImageInput(GraphNode):
     - Select images for manipulation
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None), description='The image to use as input.')
+    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.ImageInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.ImageInput"
 
 
 class IntegerInput(GraphNode):
@@ -216,15 +250,16 @@ class IntegerInput(GraphNode):
     - Configure discrete numeric parameters
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
     value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     min: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     max: int | GraphNode | tuple[GraphNode, str] = Field(default=100, description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.IntegerInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.IntegerInput"
 
 
 class PathInput(GraphNode):
@@ -238,13 +273,17 @@ class PathInput(GraphNode):
     - Load local data for analysis
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(default=types.FilePath(type='file_path', path=''), description='The path to use as input.')
+    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="The path to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.PathInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.PathInput"
 
 
 class StringInput(GraphNode):
@@ -258,13 +297,14 @@ class StringInput(GraphNode):
     - Specify file paths or URLs
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
+    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.StringInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.StringInput"
 
 
 class TextInput(GraphNode):
@@ -278,13 +318,17 @@ class TextInput(GraphNode):
     - Analyze large text bodies
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(default=types.TextRef(type='text', uri='', asset_id=None, data=None), description='The text to use as input.')
+    value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.TextRef(type="text", uri="", asset_id=None, data=None),
+        description="The text to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.TextInput"
-
+    def get_node_type(cls):
+        return "nodetool.input.TextInput"
 
 
 class VideoInput(GraphNode):
@@ -298,11 +342,16 @@ class VideoInput(GraphNode):
     - Extract frames or audio from videos
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The parameter name for the workflow.')
-    description: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The description for this input node.')
-    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, duration=None, format=None), description='The video to use as input.')
+    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The video to use as input.",
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.input.VideoInput"
-
-
+    def get_node_type(cls):
+        return "nodetool.input.VideoInput"

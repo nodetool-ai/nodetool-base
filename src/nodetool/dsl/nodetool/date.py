@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -15,14 +16,34 @@ class AddTimeDelta(GraphNode):
     - Generate date ranges
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Starting datetime')
-    days: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Number of days to add (negative to subtract)')
-    hours: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Number of hours to add (negative to subtract)')
-    minutes: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description='Number of minutes to add (negative to subtract)')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Starting datetime",
+    )
+    days: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Number of days to add (negative to subtract)"
+    )
+    hours: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Number of hours to add (negative to subtract)"
+    )
+    minutes: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Number of minutes to add (negative to subtract)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.AddTimeDelta"
-
+    def get_node_type(cls):
+        return "nodetool.date.AddTimeDelta"
 
 
 class DateDifference(GraphNode):
@@ -35,12 +56,40 @@ class DateDifference(GraphNode):
     - Measure durations
     """
 
-    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Start datetime')
-    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='End datetime')
+    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Start datetime",
+    )
+    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="End datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.DateDifference"
-
+    def get_node_type(cls):
+        return "nodetool.date.DateDifference"
 
 
 class DateRange(GraphNode):
@@ -53,13 +102,43 @@ class DateRange(GraphNode):
     - Create date-based iterations
     """
 
-    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Start date of the range')
-    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='End date of the range')
-    step_days: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of days between each date')
+    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Start date of the range",
+    )
+    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="End date of the range",
+    )
+    step_days: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of days between each date"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.DateRange"
-
+    def get_node_type(cls):
+        return "nodetool.date.DateRange"
 
 
 class DateToDatetime(GraphNode):
@@ -68,11 +147,14 @@ class DateToDatetime(GraphNode):
     date, datetime, convert
     """
 
-    input_date: types.Date | GraphNode | tuple[GraphNode, str] = Field(default=types.Date(type='date', year=0, month=0, day=0), description='Date to convert')
+    input_date: types.Date | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Date(type="date", year=0, month=0, day=0),
+        description="Date to convert",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.DateToDatetime"
-
+    def get_node_type(cls):
+        return "nodetool.date.DateToDatetime"
 
 
 class DatetimeToDate(GraphNode):
@@ -81,11 +163,25 @@ class DatetimeToDate(GraphNode):
     date, datetime, convert
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Datetime to convert')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Datetime to convert",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.DatetimeToDate"
-
+    def get_node_type(cls):
+        return "nodetool.date.DatetimeToDate"
 
 
 class DaysAgo(GraphNode):
@@ -94,11 +190,13 @@ class DaysAgo(GraphNode):
     datetime, past, days
     """
 
-    days: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of days ago')
+    days: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of days ago"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.DaysAgo"
-
+    def get_node_type(cls):
+        return "nodetool.date.DaysAgo"
 
 
 class DaysFromNow(GraphNode):
@@ -107,11 +205,13 @@ class DaysFromNow(GraphNode):
     datetime, future, days
     """
 
-    days: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of days in the future')
+    days: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of days in the future"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.DaysFromNow"
-
+    def get_node_type(cls):
+        return "nodetool.date.DaysFromNow"
 
 
 class EndOfDay(GraphNode):
@@ -120,11 +220,25 @@ class EndOfDay(GraphNode):
     datetime, day, end
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.EndOfDay"
-
+    def get_node_type(cls):
+        return "nodetool.date.EndOfDay"
 
 
 class EndOfMonth(GraphNode):
@@ -133,11 +247,25 @@ class EndOfMonth(GraphNode):
     datetime, month, end
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.EndOfMonth"
-
+    def get_node_type(cls):
+        return "nodetool.date.EndOfMonth"
 
 
 class EndOfWeek(GraphNode):
@@ -146,12 +274,28 @@ class EndOfWeek(GraphNode):
     datetime, week, end
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
-    start_monday: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Consider Monday as start of week (False for Sunday)')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
+    start_monday: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Consider Monday as start of week (False for Sunday)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.EndOfWeek"
-
+    def get_node_type(cls):
+        return "nodetool.date.EndOfWeek"
 
 
 class EndOfYear(GraphNode):
@@ -160,13 +304,29 @@ class EndOfYear(GraphNode):
     datetime, year, end
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.EndOfYear"
+    def get_node_type(cls):
+        return "nodetool.date.EndOfYear"
 
 
 import nodetool.nodes.nodetool.date
+
 
 class FormatDateTime(GraphNode):
     """
@@ -179,12 +339,29 @@ class FormatDateTime(GraphNode):
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.date.DateFormat
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Datetime object to format')
-    output_format: nodetool.nodes.nodetool.date.DateFormat = Field(default=nodetool.nodes.nodetool.date.DateFormat.HUMAN_READABLE, description='Desired output format')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Datetime object to format",
+    )
+    output_format: nodetool.nodes.nodetool.date.DateFormat = Field(
+        default=nodetool.nodes.nodetool.date.DateFormat.HUMAN_READABLE,
+        description="Desired output format",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.FormatDateTime"
-
+    def get_node_type(cls):
+        return "nodetool.date.FormatDateTime"
 
 
 class GetQuarter(GraphNode):
@@ -197,11 +374,25 @@ class GetQuarter(GraphNode):
     - Quarterly analytics
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.GetQuarter"
-
+    def get_node_type(cls):
+        return "nodetool.date.GetQuarter"
 
 
 class GetWeekday(GraphNode):
@@ -214,12 +405,28 @@ class GetWeekday(GraphNode):
     - Filter events by weekday
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
-    as_name: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Return weekday name instead of number (0-6)')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
+    as_name: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Return weekday name instead of number (0-6)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.GetWeekday"
-
+    def get_node_type(cls):
+        return "nodetool.date.GetWeekday"
 
 
 class HoursAgo(GraphNode):
@@ -228,11 +435,13 @@ class HoursAgo(GraphNode):
     datetime, past, hours
     """
 
-    hours: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of hours ago')
+    hours: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of hours ago"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.HoursAgo"
-
+    def get_node_type(cls):
+        return "nodetool.date.HoursAgo"
 
 
 class HoursFromNow(GraphNode):
@@ -241,11 +450,13 @@ class HoursFromNow(GraphNode):
     datetime, future, hours
     """
 
-    hours: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of hours in the future')
+    hours: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of hours in the future"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.HoursFromNow"
-
+    def get_node_type(cls):
+        return "nodetool.date.HoursFromNow"
 
 
 class IsDateInRange(GraphNode):
@@ -258,14 +469,58 @@ class IsDateInRange(GraphNode):
     - Filter date-based data
     """
 
-    check_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Date to check')
-    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Start of date range')
-    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='End of date range')
-    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Include start and end dates in range')
+    check_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Date to check",
+    )
+    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Start of date range",
+    )
+    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="End of date range",
+    )
+    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Include start and end dates in range"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.IsDateInRange"
-
+    def get_node_type(cls):
+        return "nodetool.date.IsDateInRange"
 
 
 class MonthsAgo(GraphNode):
@@ -274,11 +529,13 @@ class MonthsAgo(GraphNode):
     datetime, past, months
     """
 
-    months: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of months ago')
+    months: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of months ago"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.MonthsAgo"
-
+    def get_node_type(cls):
+        return "nodetool.date.MonthsAgo"
 
 
 class MonthsFromNow(GraphNode):
@@ -287,11 +544,13 @@ class MonthsFromNow(GraphNode):
     datetime, future, months
     """
 
-    months: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description='Number of months in the future')
+    months: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of months in the future"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.MonthsFromNow"
-
+    def get_node_type(cls):
+        return "nodetool.date.MonthsFromNow"
 
 
 class Now(GraphNode):
@@ -300,12 +559,13 @@ class Now(GraphNode):
     datetime, current, now
     """
 
-
     @classmethod
-    def get_node_type(cls): return "nodetool.date.Now"
+    def get_node_type(cls):
+        return "nodetool.date.Now"
 
 
 import nodetool.nodes.nodetool.date
+
 
 class ParseDate(GraphNode):
     """
@@ -314,14 +574,21 @@ class ParseDate(GraphNode):
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.date.DateFormat
-    date_string: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The date string to parse')
-    input_format: nodetool.nodes.nodetool.date.DateFormat = Field(default=nodetool.nodes.nodetool.date.DateFormat.ISO, description='Format of the input date string')
+    date_string: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The date string to parse"
+    )
+    input_format: nodetool.nodes.nodetool.date.DateFormat = Field(
+        default=nodetool.nodes.nodetool.date.DateFormat.ISO,
+        description="Format of the input date string",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.ParseDate"
+    def get_node_type(cls):
+        return "nodetool.date.ParseDate"
 
 
 import nodetool.nodes.nodetool.date
+
 
 class ParseDateTime(GraphNode):
     """
@@ -334,12 +601,17 @@ class ParseDateTime(GraphNode):
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.date.DateFormat
-    datetime_string: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The datetime string to parse')
-    input_format: nodetool.nodes.nodetool.date.DateFormat = Field(default=nodetool.nodes.nodetool.date.DateFormat.ISO, description='Format of the input datetime string')
+    datetime_string: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The datetime string to parse"
+    )
+    input_format: nodetool.nodes.nodetool.date.DateFormat = Field(
+        default=nodetool.nodes.nodetool.date.DateFormat.ISO,
+        description="Format of the input datetime string",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.ParseDateTime"
-
+    def get_node_type(cls):
+        return "nodetool.date.ParseDateTime"
 
 
 class StartOfDay(GraphNode):
@@ -348,11 +620,25 @@ class StartOfDay(GraphNode):
     datetime, day, start
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.StartOfDay"
-
+    def get_node_type(cls):
+        return "nodetool.date.StartOfDay"
 
 
 class StartOfMonth(GraphNode):
@@ -361,11 +647,25 @@ class StartOfMonth(GraphNode):
     datetime, month, start
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.StartOfMonth"
-
+    def get_node_type(cls):
+        return "nodetool.date.StartOfMonth"
 
 
 class StartOfWeek(GraphNode):
@@ -374,12 +674,28 @@ class StartOfWeek(GraphNode):
     datetime, week, start
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
-    start_monday: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='Consider Monday as start of week (False for Sunday)')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
+    start_monday: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Consider Monday as start of week (False for Sunday)"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.StartOfWeek"
-
+    def get_node_type(cls):
+        return "nodetool.date.StartOfWeek"
 
 
 class StartOfYear(GraphNode):
@@ -388,11 +704,25 @@ class StartOfYear(GraphNode):
     datetime, year, start
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(default=types.Datetime(type='datetime', year=0, month=0, day=0, hour=0, minute=0, second=0, microsecond=0, tzinfo='UTC', utc_offset=0), description='Input datetime')
+    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Datetime(
+            type="datetime",
+            year=0,
+            month=0,
+            day=0,
+            hour=0,
+            minute=0,
+            second=0,
+            microsecond=0,
+            tzinfo="UTC",
+            utc_offset=0,
+        ),
+        description="Input datetime",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.date.StartOfYear"
-
+    def get_node_type(cls):
+        return "nodetool.date.StartOfYear"
 
 
 class Today(GraphNode):
@@ -401,8 +731,6 @@ class Today(GraphNode):
     date, today, now
     """
 
-
     @classmethod
-    def get_node_type(cls): return "nodetool.date.Today"
-
-
+    def get_node_type(cls):
+        return "nodetool.date.Today"

@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -15,13 +16,19 @@ class FilterJSON(GraphNode):
     - Search JSON data
     """
 
-    array: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='Array of JSON objects to filter')
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Key to filter on')
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Value to match')
+    array: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="Array of JSON objects to filter"
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Key to filter on"
+    )
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Value to match"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.FilterJSON"
-
+    def get_node_type(cls):
+        return "nodetool.json.FilterJSON"
 
 
 class GetJSONPathBool(GraphNode):
@@ -30,13 +37,19 @@ class GetJSONPathBool(GraphNode):
     json, path, extract, boolean
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
-    default: bool | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON object to extract from"
+    )
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Default value to return if path is not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.GetJSONPathBool"
-
+    def get_node_type(cls):
+        return "nodetool.json.GetJSONPathBool"
 
 
 class GetJSONPathDict(GraphNode):
@@ -45,13 +58,19 @@ class GetJSONPathDict(GraphNode):
     json, path, extract, object
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
-    default: dict | GraphNode | tuple[GraphNode, str] = Field(default={}, description=None)
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON object to extract from"
+    )
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: dict | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="Default value to return if path is not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.GetJSONPathDict"
-
+    def get_node_type(cls):
+        return "nodetool.json.GetJSONPathDict"
 
 
 class GetJSONPathFloat(GraphNode):
@@ -60,13 +79,19 @@ class GetJSONPathFloat(GraphNode):
     json, path, extract, number
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
-    default: float | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON object to extract from"
+    )
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description="Default value to return if path is not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.GetJSONPathFloat"
-
+    def get_node_type(cls):
+        return "nodetool.json.GetJSONPathFloat"
 
 
 class GetJSONPathInt(GraphNode):
@@ -75,13 +100,19 @@ class GetJSONPathInt(GraphNode):
     json, path, extract, number
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
-    default: int | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON object to extract from"
+    )
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Default value to return if path is not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.GetJSONPathInt"
-
+    def get_node_type(cls):
+        return "nodetool.json.GetJSONPathInt"
 
 
 class GetJSONPathList(GraphNode):
@@ -90,13 +121,19 @@ class GetJSONPathList(GraphNode):
     json, path, extract, array
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
-    default: list | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON object to extract from"
+    )
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: list | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="Default value to return if path is not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.GetJSONPathList"
-
+    def get_node_type(cls):
+        return "nodetool.json.GetJSONPathList"
 
 
 class GetJSONPathStr(GraphNode):
@@ -105,13 +142,19 @@ class GetJSONPathStr(GraphNode):
     json, path, extract, string
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON object to extract from')
-    path: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Path to the desired value (dot notation)')
-    default: str | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON object to extract from"
+    )
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Default value to return if path is not found"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.GetJSONPathStr"
-
+    def get_node_type(cls):
+        return "nodetool.json.GetJSONPathStr"
 
 
 class JSONTemplate(GraphNode):
@@ -130,12 +173,16 @@ class JSONTemplate(GraphNode):
     - Build API request templates
     """
 
-    template: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='JSON template string with $variable placeholders')
-    values: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(default={}, description='Dictionary of values to substitute into the template')
+    template: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="JSON template string with $variable placeholders"
+    )
+    values: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="Dictionary of values to substitute into the template"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.JSONTemplate"
-
+    def get_node_type(cls):
+        return "nodetool.json.JSONTemplate"
 
 
 class ParseDict(GraphNode):
@@ -149,11 +196,13 @@ class ParseDict(GraphNode):
     - Parse object-like JSON data
     """
 
-    json_string: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='JSON string to parse into a dictionary')
+    json_string: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="JSON string to parse into a dictionary"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.ParseDict"
-
+    def get_node_type(cls):
+        return "nodetool.json.ParseDict"
 
 
 class ParseList(GraphNode):
@@ -167,11 +216,13 @@ class ParseList(GraphNode):
     - Parse array-like JSON data
     """
 
-    json_string: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='JSON string to parse into a list')
+    json_string: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="JSON string to parse into a list"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.ParseList"
-
+    def get_node_type(cls):
+        return "nodetool.json.ParseList"
 
 
 class StringifyJSON(GraphNode):
@@ -184,12 +235,16 @@ class StringifyJSON(GraphNode):
     - Save data in JSON format
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default={}, description='Data to convert to JSON')
-    indent: int | GraphNode | tuple[GraphNode, str] = Field(default=2, description='Number of spaces for indentation')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="Data to convert to JSON"
+    )
+    indent: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=2, description="Number of spaces for indentation"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.StringifyJSON"
-
+    def get_node_type(cls):
+        return "nodetool.json.StringifyJSON"
 
 
 class ValidateJSON(GraphNode):
@@ -202,10 +257,13 @@ class ValidateJSON(GraphNode):
     - Validate configuration files
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description='JSON data to validate')
-    schema: dict | GraphNode | tuple[GraphNode, str] = Field(default={}, description='JSON schema for validation')
+    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="JSON data to validate"
+    )
+    schema: dict | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="JSON schema for validation"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.json.ValidateJSON"
-
-
+    def get_node_type(cls):
+        return "nodetool.json.ValidateJSON"

@@ -129,12 +129,12 @@ class TaskPlannerNode(BaseNode):
         description="Model to use for reasoning",
     )
 
-    tools: List[ToolName] = Field(
+    tools: list[ToolName] = Field(
         default=[],
         description="List of EXECUTION tools available for the planned subtasks",
     )
 
-    input_files: List[FilePath] = Field(
+    input_files: list[FilePath] = Field(
         default=[], description="List of input files to use for planning"
     )
 
@@ -142,8 +142,8 @@ class TaskPlannerNode(BaseNode):
         default=None, description="Optional JSON schema for the final task output"
     )
 
-    output_type: Optional[OutputFormatEnum] = Field(
-        default=None,
+    output_type: OutputFormatEnum = Field(
+        default=OutputFormatEnum.MARKDOWN,
         description="Optional type hint for the final task output (e.g., 'markdown', 'json', 'csv')",
     )
 
@@ -279,11 +279,11 @@ class AgentNode(BaseNode):
         default=Task(), description="Pre-defined task to execute, skipping planning"
     )
 
-    tools: List[ToolName] = Field(
+    tools: list[ToolName] = Field(
         default=[], description="List of tools to use for execution"
     )
 
-    input_files: List[FilePath] = Field(
+    input_files: list[FilePath] = Field(
         default=[], description="List of input files to use for the agent"
     )
 
@@ -595,11 +595,11 @@ class SimpleAgentNode(BaseNode):
         description="Model to use for execution",
     )
 
-    tools: List[ToolName] = Field(
+    tools: list[ToolName] = Field(
         default=[], description="List of tools to use for execution"
     )
 
-    input_files: List[FilePath] = Field(
+    input_files: list[FilePath] = Field(
         default=[], description="List of input files to use for the agent"
     )
 

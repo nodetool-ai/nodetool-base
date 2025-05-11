@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -11,21 +12,29 @@ class Add(GraphNode):
     math, plus, add, addition, sum, +
     """
 
-    a: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
-    b: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    a: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    b: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Add"
-
+    def get_node_type(cls):
+        return "nodetool.math.Add"
 
 
 class BinaryOperation(GraphNode):
-    a: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
-    b: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    a: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    b: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.BinaryOperation"
-
+    def get_node_type(cls):
+        return "nodetool.math.BinaryOperation"
 
 
 class Cosine(GraphNode):
@@ -39,11 +48,13 @@ class Cosine(GraphNode):
     - Phase calculations in signal processing
     """
 
-    angle_rad: float | int | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    angle_rad: float | int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Cosine"
-
+    def get_node_type(cls):
+        return "nodetool.math.Cosine"
 
 
 class Divide(GraphNode):
@@ -52,12 +63,16 @@ class Divide(GraphNode):
     math, division, arithmetic, quotient, /
     """
 
-    a: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
-    b: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    a: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    b: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Divide"
-
+    def get_node_type(cls):
+        return "nodetool.math.Divide"
 
 
 class Modulus(GraphNode):
@@ -71,12 +86,16 @@ class Modulus(GraphNode):
     - Limiting values to a specific range
     """
 
-    a: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
-    b: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    a: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    b: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Modulus"
-
+    def get_node_type(cls):
+        return "nodetool.math.Modulus"
 
 
 class Multiply(GraphNode):
@@ -85,12 +104,16 @@ class Multiply(GraphNode):
     math, product, times, *
     """
 
-    a: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
-    b: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    a: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    b: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Multiply"
-
+    def get_node_type(cls):
+        return "nodetool.math.Multiply"
 
 
 class Power(GraphNode):
@@ -104,12 +127,16 @@ class Power(GraphNode):
     - Applying non-linear transformations to data
     """
 
-    base: float | int | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description=None)
-    exponent: float | int | GraphNode | tuple[GraphNode, str] = Field(default=2.0, description=None)
+    base: float | int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description=None
+    )
+    exponent: float | int | GraphNode | tuple[GraphNode, str] = Field(
+        default=2.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Power"
-
+    def get_node_type(cls):
+        return "nodetool.math.Power"
 
 
 class Sine(GraphNode):
@@ -123,11 +150,13 @@ class Sine(GraphNode):
     - Audio signal processing
     """
 
-    angle_rad: float | int | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    angle_rad: float | int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Sine"
-
+    def get_node_type(cls):
+        return "nodetool.math.Sine"
 
 
 class Sqrt(GraphNode):
@@ -141,11 +170,13 @@ class Sqrt(GraphNode):
     - Finding intermediate values in binary search
     """
 
-    x: int | float | GraphNode | tuple[GraphNode, str] = Field(default=1.0, description=None)
+    x: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Sqrt"
-
+    def get_node_type(cls):
+        return "nodetool.math.Sqrt"
 
 
 class Subtract(GraphNode):
@@ -154,10 +185,13 @@ class Subtract(GraphNode):
     math, minus, difference, -
     """
 
-    a: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
-    b: int | float | GraphNode | tuple[GraphNode, str] = Field(default=0.0, description=None)
+    a: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
+    b: int | float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.math.Subtract"
-
-
+    def get_node_type(cls):
+        return "nodetool.math.Subtract"

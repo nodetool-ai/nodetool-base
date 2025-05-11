@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -16,12 +17,16 @@ class Append(GraphNode):
     - Implement a stack-like structure
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Append"
-
+    def get_node_type(cls):
+        return "nodetool.list.Append"
 
 
 class Average(GraphNode):
@@ -34,11 +39,13 @@ class Average(GraphNode):
     - Calculate mean of numeric data
     """
 
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Average"
-
+    def get_node_type(cls):
+        return "nodetool.list.Average"
 
 
 class Chunk(GraphNode):
@@ -52,12 +59,16 @@ class Chunk(GraphNode):
     - Creating sublists of fixed size
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Chunk"
-
+    def get_node_type(cls):
+        return "nodetool.list.Chunk"
 
 
 class Dedupe(GraphNode):
@@ -71,11 +82,13 @@ class Dedupe(GraphNode):
     - Ensure list elements are unique
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Dedupe"
-
+    def get_node_type(cls):
+        return "nodetool.list.Dedupe"
 
 
 class Difference(GraphNode):
@@ -89,12 +102,16 @@ class Difference(GraphNode):
     - Identify distinct elements
     """
 
-    list1: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    list2: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    list1: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    list2: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Difference"
-
+    def get_node_type(cls):
+        return "nodetool.list.Difference"
 
 
 class Extend(GraphNode):
@@ -107,12 +124,16 @@ class Extend(GraphNode):
     - Add all elements from one list to another
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    other_values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    other_values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Extend"
-
+    def get_node_type(cls):
+        return "nodetool.list.Extend"
 
 
 class FilterDicts(GraphNode):
@@ -170,14 +191,21 @@ class FilterDicts(GraphNode):
     - Clean data by removing unwanted entries
     """
 
-    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    condition: str | GraphNode | tuple[GraphNode, str] = Field(default='', description="\n        The filtering condition using pandas query syntax.\n\n        Basic Operators:\n        - Comparison: >, <, >=, <=, ==, !=\n        - Logical: and, or, not\n        - Membership: in, not in\n        \n        Example Conditions:\n        # Basic comparisons\n        age > 30\n        price <= 100\n        status == 'active'\n        \n        See node documentation for more examples.\n        ")
+    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    condition: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        The filtering condition using pandas query syntax.\n\n        Basic Operators:\n        - Comparison: >, <, >=, <=, ==, !=\n        - Logical: and, or, not\n        - Membership: in, not in\n        \n        Example Conditions:\n        # Basic comparisons\n        age > 30\n        price <= 100\n        status == 'active'\n        \n        See node documentation for more examples.\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterDicts"
+    def get_node_type(cls):
+        return "nodetool.list.FilterDicts"
 
 
 import nodetool.nodes.nodetool.list
+
 
 class FilterDictsByNumber(GraphNode):
     """
@@ -190,15 +218,26 @@ class FilterDictsByNumber(GraphNode):
     - Filter entries with positive/negative numbers
     """
 
-    FilterDictNumberType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType
-    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    filter_type: nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType = Field(default=nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType.GREATER_THAN, description=None)
-    value: float | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    FilterDictNumberType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType
+    )
+    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    filter_type: (
+        nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType
+    ) = Field(
+        default=nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType.GREATER_THAN,
+        description=None,
+    )
+    value: float | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterDictsByNumber"
-
+    def get_node_type(cls):
+        return "nodetool.list.FilterDictsByNumber"
 
 
 class FilterDictsByRange(GraphNode):
@@ -212,17 +251,30 @@ class FilterDictsByRange(GraphNode):
     - Filter data sets based on numeric criteria
     """
 
-    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The dictionary key to check for the range')
-    min_value: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The minimum value (inclusive) of the range')
-    max_value: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description='The maximum value (inclusive) of the range')
-    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description='If True, includes the min and max values in the results')
+    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The dictionary key to check for the range"
+    )
+    min_value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The minimum value (inclusive) of the range"
+    )
+    max_value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="The maximum value (inclusive) of the range"
+    )
+    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True,
+        description="If True, includes the min and max values in the results",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterDictsByRange"
+    def get_node_type(cls):
+        return "nodetool.list.FilterDictsByRange"
 
 
 import nodetool.nodes.nodetool.list
+
 
 class FilterDictsByValue(GraphNode):
     """
@@ -235,15 +287,27 @@ class FilterDictsByValue(GraphNode):
     - Filter dictionaries by value patterns
     """
 
-    FilterType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType
-    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The dictionary key to check')
-    filter_type: nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType = Field(default=nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType.CONTAINS, description='The type of filter to apply')
-    criteria: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The filtering criteria (text to match, type name, or length as string)')
+    FilterType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType
+    )
+    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The dictionary key to check"
+    )
+    filter_type: nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType = Field(
+        default=nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType.CONTAINS,
+        description="The type of filter to apply",
+    )
+    criteria: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="The filtering criteria (text to match, type name, or length as string)",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterDictsByValue"
-
+    def get_node_type(cls):
+        return "nodetool.list.FilterDictsByValue"
 
 
 class FilterDictsRegex(GraphNode):
@@ -257,14 +321,20 @@ class FilterDictsRegex(GraphNode):
     - Advanced text pattern matching across dictionary values
     """
 
-    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    full_match: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description=None)
+    values: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    key: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
+    full_match: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterDictsRegex"
-
+    def get_node_type(cls):
+        return "nodetool.list.FilterDictsRegex"
 
 
 class FilterNone(GraphNode):
@@ -278,11 +348,13 @@ class FilterNone(GraphNode):
     - Remove placeholder values
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterNone"
-
+    def get_node_type(cls):
+        return "nodetool.list.FilterNone"
 
 
 class FilterNumberRange(GraphNode):
@@ -296,16 +368,26 @@ class FilterNumberRange(GraphNode):
     - Implement range-based filtering
     """
 
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    min_value: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    max_value: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(default=True, description=None)
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    min_value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description=None
+    )
+    max_value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description=None
+    )
+    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterNumberRange"
+    def get_node_type(cls):
+        return "nodetool.list.FilterNumberRange"
 
 
 import nodetool.nodes.nodetool.list
+
 
 class FilterNumbers(GraphNode):
     """
@@ -318,14 +400,24 @@ class FilterNumbers(GraphNode):
     - Filter positive/negative numbers
     """
 
-    FilterNumberType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    filter_type: nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType = Field(default=nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType.GREATER_THAN, description='The type of filter to apply')
-    value: float | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='The comparison value (for greater_than, less_than, equal_to)')
+    FilterNumberType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType
+    )
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    filter_type: nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType = Field(
+        default=nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType.GREATER_THAN,
+        description="The type of filter to apply",
+    )
+    value: float | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None,
+        description="The comparison value (for greater_than, less_than, equal_to)",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterNumbers"
-
+    def get_node_type(cls):
+        return "nodetool.list.FilterNumbers"
 
 
 class FilterRegex(GraphNode):
@@ -339,15 +431,24 @@ class FilterRegex(GraphNode):
     - Advanced text pattern matching
     """
 
-    values: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The regular expression pattern to match against.')
-    full_match: bool | GraphNode | tuple[GraphNode, str] = Field(default=False, description='Whether to match the entire string or find pattern anywhere in string')
+    values: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The regular expression pattern to match against."
+    )
+    full_match: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False,
+        description="Whether to match the entire string or find pattern anywhere in string",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterRegex"
+    def get_node_type(cls):
+        return "nodetool.list.FilterRegex"
 
 
 import nodetool.nodes.nodetool.list
+
 
 class FilterStrings(GraphNode):
     """
@@ -361,14 +462,24 @@ class FilterStrings(GraphNode):
     - Filter strings using regex patterns
     """
 
-    FilterType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.FilterStrings.FilterType
-    values: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    filter_type: nodetool.nodes.nodetool.list.FilterStrings.FilterType = Field(default=nodetool.nodes.nodetool.list.FilterStrings.FilterType.CONTAINS, description='The type of filter to apply')
-    criteria: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='The filtering criteria (text to match or length as string)')
+    FilterType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.list.FilterStrings.FilterType
+    )
+    values: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    filter_type: nodetool.nodes.nodetool.list.FilterStrings.FilterType = Field(
+        default=nodetool.nodes.nodetool.list.FilterStrings.FilterType.CONTAINS,
+        description="The type of filter to apply",
+    )
+    criteria: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="The filtering criteria (text to match or length as string)",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.FilterStrings"
-
+    def get_node_type(cls):
+        return "nodetool.list.FilterStrings"
 
 
 class Flatten(GraphNode):
@@ -386,12 +497,16 @@ class Flatten(GraphNode):
     [[1, [2, 3]], [4, [5, 6]]] -> [1, 2, 3, 4, 5, 6]
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    max_depth: int | GraphNode | tuple[GraphNode, str] = Field(default=-1, description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    max_depth: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Flatten"
-
+    def get_node_type(cls):
+        return "nodetool.list.Flatten"
 
 
 class GenerateSequence(GraphNode):
@@ -410,8 +525,8 @@ class GenerateSequence(GraphNode):
     step: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.GenerateSequence"
-
+    def get_node_type(cls):
+        return "nodetool.list.GenerateSequence"
 
 
 class GetElement(GraphNode):
@@ -425,12 +540,14 @@ class GetElement(GraphNode):
     - Extract the first or last element
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
     index: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.GetElement"
-
+    def get_node_type(cls):
+        return "nodetool.list.GetElement"
 
 
 class Intersection(GraphNode):
@@ -444,12 +561,16 @@ class Intersection(GraphNode):
     - Filter for matching elements
     """
 
-    list1: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    list2: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    list1: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    list2: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Intersection"
-
+    def get_node_type(cls):
+        return "nodetool.list.Intersection"
 
 
 class Length(GraphNode):
@@ -463,11 +584,13 @@ class Length(GraphNode):
     - Validate list size constraints
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Length"
-
+    def get_node_type(cls):
+        return "nodetool.list.Length"
 
 
 class MapField(GraphNode):
@@ -481,13 +604,17 @@ class MapField(GraphNode):
     - Collect values for a particular key across multiple dictionaries
     """
 
-    values: list[dict | object] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    field: str | GraphNode | tuple[GraphNode, str] = Field(default='', description=None)
-    default: Any | GraphNode | tuple[GraphNode, str] = Field(default=None, description=None)
+    values: list[dict | object] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    field: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    default: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.MapField"
-
+    def get_node_type(cls):
+        return "nodetool.list.MapField"
 
 
 class MapTemplate(GraphNode):
@@ -520,12 +647,17 @@ class MapTemplate(GraphNode):
     - join(delimiter): Joins list with delimiter
     """
 
-    template: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='\n        Template string with Jinja2 placeholders for formatting\n        Examples:\n        - "Name: {{ name }}, Age: {{ age }}"\n        - "{{ title|truncate(20) }}"\n        - "{{ name|upper }}"\n        ')
-    values: list[dict[str, typing.Any] | object] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    template: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description='\n        Template string with Jinja2 placeholders for formatting\n        Examples:\n        - "Name: {{ name }}, Age: {{ age }}"\n        - "{{ title|truncate(20) }}"\n        - "{{ name|upper }}"\n        ',
+    )
+    values: list[dict[str, typing.Any] | object] | GraphNode | tuple[GraphNode, str] = (
+        Field(default=[], description=None)
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.MapTemplate"
-
+    def get_node_type(cls):
+        return "nodetool.list.MapTemplate"
 
 
 class Maximum(GraphNode):
@@ -538,11 +670,13 @@ class Maximum(GraphNode):
     - Get largest number in dataset
     """
 
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Maximum"
-
+    def get_node_type(cls):
+        return "nodetool.list.Maximum"
 
 
 class Minimum(GraphNode):
@@ -555,11 +689,13 @@ class Minimum(GraphNode):
     - Get smallest number in dataset
     """
 
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Minimum"
-
+    def get_node_type(cls):
+        return "nodetool.list.Minimum"
 
 
 class Product(GraphNode):
@@ -572,11 +708,13 @@ class Product(GraphNode):
     - Calculate compound values
     """
 
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Product"
-
+    def get_node_type(cls):
+        return "nodetool.list.Product"
 
 
 class Randomize(GraphNode):
@@ -590,11 +728,13 @@ class Randomize(GraphNode):
     - Create randomized data sets for testing
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Randomize"
-
+    def get_node_type(cls):
+        return "nodetool.list.Randomize"
 
 
 class Reverse(GraphNode):
@@ -606,11 +746,13 @@ class Reverse(GraphNode):
     - Reverse the order of a sequence
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Reverse"
-
+    def get_node_type(cls):
+        return "nodetool.list.Reverse"
 
 
 class SaveList(GraphNode):
@@ -624,12 +766,17 @@ class SaveList(GraphNode):
     - Generate line-separated output
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    name: str | GraphNode | tuple[GraphNode, str] = Field(default='text.txt', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="text.txt",
+        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.SaveList"
-
+    def get_node_type(cls):
+        return "nodetool.list.SaveList"
 
 
 class SelectElements(GraphNode):
@@ -643,12 +790,16 @@ class SelectElements(GraphNode):
     - Create a new list from selected indices
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    indices: list[int] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    indices: list[int] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.SelectElements"
-
+    def get_node_type(cls):
+        return "nodetool.list.SelectElements"
 
 
 class Slice(GraphNode):
@@ -662,16 +813,20 @@ class Slice(GraphNode):
     - Extract every nth element
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
     start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     stop: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     step: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description=None)
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Slice"
+    def get_node_type(cls):
+        return "nodetool.list.Slice"
 
 
 import nodetool.nodes.nodetool.list
+
 
 class Sort(GraphNode):
     """
@@ -685,12 +840,16 @@ class Sort(GraphNode):
     """
 
     SortOrder: typing.ClassVar[type] = nodetool.nodes.nodetool.list.Sort.SortOrder
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    order: nodetool.nodes.nodetool.list.Sort.SortOrder = Field(default=nodetool.nodes.nodetool.list.Sort.SortOrder.ASCENDING, description=None)
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    order: nodetool.nodes.nodetool.list.Sort.SortOrder = Field(
+        default=nodetool.nodes.nodetool.list.Sort.SortOrder.ASCENDING, description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Sort"
-
+    def get_node_type(cls):
+        return "nodetool.list.Sort"
 
 
 class Sum(GraphNode):
@@ -703,13 +862,17 @@ class Sum(GraphNode):
     - Add up all elements in a list
     """
 
-    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    values: list[float] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Sum"
+    def get_node_type(cls):
+        return "nodetool.list.Sum"
 
 
 import nodetool.nodes.nodetool.list
+
 
 class Transform(GraphNode):
     """
@@ -722,13 +885,20 @@ class Transform(GraphNode):
     - Mathematical operations
     """
 
-    TransformType: typing.ClassVar[type] = nodetool.nodes.nodetool.list.Transform.TransformType
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    transform_type: nodetool.nodes.nodetool.list.Transform.TransformType = Field(default=nodetool.nodes.nodetool.list.Transform.TransformType.TO_STRING, description=None)
+    TransformType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.list.Transform.TransformType
+    )
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    transform_type: nodetool.nodes.nodetool.list.Transform.TransformType = Field(
+        default=nodetool.nodes.nodetool.list.Transform.TransformType.TO_STRING,
+        description=None,
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Transform"
-
+    def get_node_type(cls):
+        return "nodetool.list.Transform"
 
 
 class Union(GraphNode):
@@ -742,10 +912,13 @@ class Union(GraphNode):
     - Create comprehensive set of items
     """
 
-    list1: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
-    list2: list[Any] | GraphNode | tuple[GraphNode, str] = Field(default=[], description=None)
+    list1: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+    list2: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.list.Union"
-
-
+    def get_node_type(cls):
+        return "nodetool.list.Union"
