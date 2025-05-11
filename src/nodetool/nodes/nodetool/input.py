@@ -19,6 +19,7 @@ from nodetool.metadata.types import TextRef
 from nodetool.workflows.base_node import BaseNode, InputNode
 from nodetool.metadata.types import VideoRef
 from nodetool.metadata.types import Collection
+from nodetool.common.environment import Environment
 
 
 class FloatInput(InputNode):
@@ -118,6 +119,9 @@ class ChatInput(InputNode):
         }
 
     async def process(self, context: ProcessingContext):
+        if not self.value:
+            raise ValueError("Chat input is empty, use the workflow chat bottom right")
+
         history = self.value[:-1]
 
         last_message = self.value[-1] if self.value else None
@@ -164,6 +168,8 @@ class TextInput(InputNode):
     value: TextRef = Field(TextRef(), description="The text to use as input.")
 
     async def process(self, context: ProcessingContext) -> TextRef:
+        if self.value.is_empty():
+            raise ValueError("Text input is empty, please provide a text")
         return self.value
 
 
@@ -183,6 +189,8 @@ class DocumentInput(InputNode):
     )
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
+        if self.value.is_empty():
+            raise ValueError("Document input is empty, please provide a document")
         return self.value
 
 
@@ -200,6 +208,8 @@ class ImageInput(InputNode):
     value: ImageRef = Field(ImageRef(), description="The image to use as input.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        if self.value.is_empty():
+            raise ValueError("Image input is empty, please upload an image")
         return self.value
 
 
@@ -217,6 +227,8 @@ class VideoInput(InputNode):
     value: VideoRef = Field(VideoRef(), description="The video to use as input.")
 
     async def process(self, context: ProcessingContext) -> VideoRef:
+        if self.value.is_empty():
+            raise ValueError("Video input is empty, please upload a video")
         return self.value
 
 
@@ -234,6 +246,8 @@ class AudioInput(InputNode):
     value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
 
     async def process(self, context: ProcessingContext) -> AudioRef:
+        if self.value.is_empty():
+            raise ValueError("Audio input is empty, please upload an audio file")
         return self.value
 
 
@@ -251,6 +265,10 @@ class PathInput(InputNode):
     value: FilePath = Field(FilePath(), description="The path to use as input.")
 
     async def process(self, context: ProcessingContext) -> FilePath:
+        if Environment.is_production():
+            raise ValueError("Path input is not available in production")
+        if self.value.path == "":
+            raise ValueError("Path input is empty, please provide a path")
         return self.value
 
 
@@ -276,6 +294,10 @@ class DocumentFileInput(InputNode):
         }
 
     async def process(self, context: ProcessingContext):
+        if Environment.is_production():
+            raise ValueError("Document file input is not available in production")
+        if self.value.path == "":
+            raise ValueError("Document file input is empty, please provide a document")
         return {
             "document": DocumentRef(uri=f"file://{self.value.path}"),
             "path": self.value,
@@ -321,7 +343,9 @@ class EnumInput(InputNode):
         if not valid_options:
             return self.value
         if self.value not in valid_options:
-            return valid_options[0]
+            raise ValueError(
+                f"Invalid option: {self.value}, please select from {valid_options}"
+            )
         return self.value
 
 
@@ -341,4 +365,6 @@ class CollectionInput(InputNode):
     )
 
     async def process(self, context: ProcessingContext) -> Collection:
+        if not self.value:
+            raise ValueError("Collection input is empty, please select a collection")
         return self.value
