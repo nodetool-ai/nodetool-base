@@ -14,6 +14,7 @@ from nodetool.metadata.types import (
     AudioRef,
     SVGElement,
     Provider,
+    ToolCall,
 )
 from nodetool.metadata.types import (
     Message,
@@ -21,7 +22,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-from nodetool.chat.providers import get_provider
+from nodetool.chat.dataframes import GenerateDataTool, GenerateStringTool
 
 
 class DataGenerator(BaseNode):
@@ -97,6 +98,130 @@ class DataGenerator(BaseNode):
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return ["prompt", "model", "columns"]
+
+
+class DataStreamer(BaseNode):
+    """
+    LLM Agent to create a stream of data based on a user prompt.
+    llm, data streaming, data structuring
+
+    Use cases:
+    - Generating structured data from natural language descriptions
+    - Creating sample datasets for testing or demonstration
+    """
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="The GPT model to use for data generation.",
+    )
+    prompt: str = Field(
+        default="",
+        description="The user prompt",
+    )
+    input_text: str = Field(
+        default="",
+        description="The input text to be analyzed by the agent.",
+    )
+    max_tokens: int = Field(
+        default=4096,
+        ge=1,
+        le=100000,
+        description="The maximum number of tokens to generate.",
+    )
+    columns: RecordType = Field(
+        default=RecordType(),
+        description="The columns to use in the dataframe.",
+    )
+
+    async def gen_process(self, context: ProcessingContext):
+        system_message = Message(
+            role="system",
+            content="You are an assistant with access to tools. Use generate_data to emit each row of the data.",
+        )
+
+        user_message = Message(
+            role="user",
+            content=self.prompt + "\n\n" + self.input_text,
+        )
+        messages = [system_message, user_message]
+
+        async for chunk in context.generate_messages(
+            node_id=self.id,
+            provider=self.model.provider,
+            model=self.model.id,
+            messages=messages,
+            max_tokens=self.max_tokens,
+            tools=[
+                GenerateDataTool(
+                    description="Generate a record according to the schema",
+                    columns=self.columns.columns,
+                )
+            ],
+        ):
+            if isinstance(chunk, ToolCall):
+                print(chunk.args)
+                yield "output", chunk.args
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["prompt", "model", "columns"]
+
+
+class StringStreamer(BaseNode):
+    """
+    LLM Agent to create a stream of strings based on a user prompt.
+    llm, text streaming
+
+    Use cases:
+    - Generating text from natural language descriptions
+    - Streaming responses from an LLM
+    """
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="The GPT model to use for string generation.",
+    )
+    prompt: str = Field(
+        default="",
+        description="The user prompt",
+    )
+    input_text: str = Field(
+        default="",
+        description="The input text to be analyzed by the agent.",
+    )
+    max_tokens: int = Field(
+        default=4096,
+        ge=1,
+        le=100000,
+        description="The maximum number of tokens to generate.",
+    )
+
+    async def gen_process(self, context: ProcessingContext):
+        system_message = Message(
+            role="system",
+            content="You are an assistant that generates text.",
+        )
+
+        user_message = Message(
+            role="user",
+            content=self.prompt + "\n\n" + self.input_text,
+        )
+        messages = [system_message, user_message]
+
+        async for chunk in context.generate_messages(
+            node_id=self.id,
+            provider=self.model.provider,
+            model=self.model.id,
+            messages=messages,
+            max_tokens=self.max_tokens,
+            tools=[GenerateStringTool(description="Generate a string")],
+        ):
+            if isinstance(chunk, ToolCall):
+                yield "output", chunk.args["string"]
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["prompt", "model"]
 
 
 PLOTLY_CHART_CONFIG_SCHEMA = {

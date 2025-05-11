@@ -83,6 +83,44 @@ class DataGenerator(GraphNode):
         return "nodetool.generators.DataGenerator"
 
 
+class DataStreamer(GraphNode):
+    """
+    LLM Agent to create a stream of data based on a user prompt.
+    llm, data streaming, data structuring
+
+    Use cases:
+    - Generating structured data from natural language descriptions
+    - Creating sample datasets for testing or demonstration
+    """
+
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="The GPT model to use for data generation.",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The user prompt"
+    )
+    input_text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The input text to be analyzed by the agent."
+    )
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description="The maximum number of tokens to generate."
+    )
+    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.RecordType(type="record_type", columns=[]),
+        description="The columns to use in the dataframe.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.generators.DataStreamer"
+
+
 class SVGGenerator(GraphNode):
     """
     LLM Agent to create SVG elements based on user prompts.
@@ -121,3 +159,37 @@ class SVGGenerator(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.SVGGenerator"
+
+
+class StringStreamer(GraphNode):
+    """
+    LLM Agent to create a stream of strings based on a user prompt.
+    llm, text streaming
+
+    Use cases:
+    - Generating text from natural language descriptions
+    - Streaming responses from an LLM
+    """
+
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="The GPT model to use for string generation.",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The user prompt"
+    )
+    input_text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The input text to be analyzed by the agent."
+    )
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description="The maximum number of tokens to generate."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.generators.StringStreamer"
