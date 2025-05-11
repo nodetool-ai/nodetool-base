@@ -5320,6 +5320,31 @@
           "description": "List of input files to use for the agent"
         },
         {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
           "name": "max_steps",
           "type": {
             "type": "int"
@@ -5343,7 +5368,154 @@
         "objective",
         "model",
         "task",
-        "tools"
+        "tools",
+        "output_type"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Agent (Streaming)",
+      "description": "Executes tasks using a multi-step agent that streams results as they're generated.\n    agent, execution, tasks, streaming\n\n    Use cases:\n    - Real-time interactive applications\n    - Progressive rendering of agent responses\n    - Streaming AI interfaces\n    - Live-updating workflows",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.AgentStreaming",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Agent",
+          "title": "Name",
+          "description": "The name of the agent executor"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or problem to create a plan for"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "reasoning_model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Reasoning Model",
+          "description": "Model to use for reasoning tasks"
+        },
+        {
+          "name": "task",
+          "type": {
+            "type": "task"
+          },
+          "default": {},
+          "title": "Task",
+          "description": "Pre-defined task to execute, skipping planning"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for the agent"
+        },
+        {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
+          "name": "max_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Max Steps",
+          "description": "Maximum execution steps to prevent infinite loops"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "image"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "objective",
+        "model",
+        "task",
+        "tools",
+        "output_type"
       ],
       "is_dynamic": false
     },
@@ -5428,6 +5600,31 @@
           "description": "List of input files to use for the agent"
         },
         {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
           "name": "max_steps",
           "type": {
             "type": "int"
@@ -5461,6 +5658,7 @@
         "model",
         "task",
         "tools",
+        "output_type",
         "columns"
       ],
       "is_dynamic": false
@@ -5546,6 +5744,31 @@
           "description": "List of input files to use for the agent"
         },
         {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
           "name": "max_steps",
           "type": {
             "type": "int"
@@ -5587,6 +5810,7 @@
         "model",
         "task",
         "tools",
+        "output_type",
         "fields"
       ],
       "is_dynamic": false
@@ -5672,6 +5896,31 @@
           "description": "List of input files to use for the agent"
         },
         {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
           "name": "max_steps",
           "type": {
             "type": "int"
@@ -5695,7 +5944,8 @@
         "objective",
         "model",
         "task",
-        "tools"
+        "tools",
+        "output_type"
       ],
       "is_dynamic": false
     },
@@ -5780,6 +6030,31 @@
           "description": "List of input files to use for the agent"
         },
         {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
           "name": "max_steps",
           "type": {
             "type": "int"
@@ -5818,7 +6093,135 @@
         "model",
         "task",
         "tools",
+        "output_type",
         "item_type"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Simple Agent",
+      "description": "Executes a single task using a simple agent that can call tools.\n    agent, execution, tasks, simple\n\n    Use cases:\n    - Simple, focused tasks with a clear objective\n    - Tasks that don't require complex planning\n    - Quick responses with tool calling capabilities",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.SimpleAgent",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "Simple Agent",
+          "title": "Name",
+          "description": "The name of the simple agent executor"
+        },
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The objective or task to complete"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for execution"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
+          "name": "input_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "file_path"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input Files",
+          "description": "List of input files to use for the agent"
+        },
+        {
+          "name": "output_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
+          },
+          "default": "markdown",
+          "title": "Output Type",
+          "description": "The type of output format for the agent result"
+        },
+        {
+          "name": "output_schema",
+          "type": {
+            "type": "dict",
+            "optional": true
+          },
+          "title": "Output Schema",
+          "description": "Optional JSON schema for the output"
+        },
+        {
+          "name": "max_iterations",
+          "type": {
+            "type": "int"
+          },
+          "default": 20,
+          "title": "Max Iterations",
+          "description": "Maximum execution iterations to prevent infinite loops"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "objective",
+        "model",
+        "tools",
+        "input_files",
+        "output_type",
+        "output_schema",
+        "max_iterations"
       ],
       "is_dynamic": false
     },
@@ -5905,11 +6308,27 @@
         {
           "name": "output_type",
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "enum",
+            "optional": true,
+            "values": [
+              "markdown",
+              "json",
+              "csv",
+              "txt",
+              "html",
+              "xml",
+              "yaml",
+              "python",
+              "javascript",
+              "typescript",
+              "svg",
+              "sql",
+              "xlsx"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.OutputFormatEnum"
           },
           "title": "Output Type",
-          "description": "Optional type hint for the final task output (e.g., 'json', 'markdown')"
+          "description": "Optional type hint for the final task output (e.g., 'markdown', 'json', 'csv')"
         },
         {
           "name": "enable_analysis_phase",

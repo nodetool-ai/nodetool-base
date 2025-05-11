@@ -1,6 +1,8 @@
+import json
 import os
-from typing import Any, List, Optional
+from typing import Any, List, Optional, AsyncGenerator
 from pydantic import Field
+from enum import Enum
 
 from nodetool.agents.agent import Agent
 from nodetool.agents.tools.base import get_tool_by_name, Tool
@@ -8,7 +10,7 @@ from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
     json_schema_for_dictionary,
 )
-from nodetool.workflows.types import TaskUpdate, PlanningUpdate
+from nodetool.workflows.types import TaskUpdate, PlanningUpdate, SubTaskResult
 from nodetool.metadata.types import (
     DataframeRef,
     RecordType,
@@ -18,6 +20,7 @@ from nodetool.metadata.types import (
     ToolCall,
     Task,
     ImageRef,
+    AudioRef,
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -89,6 +92,24 @@ class TaskPlannerNode(BaseNode):
     planning, task generation, workflow design
     """
 
+    class OutputFormatEnum(str, Enum):
+        """Enum for output formats supported by agents"""
+
+        # Text formats
+        MARKDOWN = "markdown"
+        JSON = "json"
+        CSV = "csv"
+        TXT = "txt"
+        HTML = "html"
+        XML = "xml"
+        YAML = "yaml"
+        PYTHON = "python"
+        JAVASCRIPT = "javascript"
+        TYPESCRIPT = "typescript"
+        SVG = "svg"
+        SQL = "sql"
+        EXCEL = "xlsx"
+
     name: str = Field(
         default="Task Planner",
         description="The name of the task planner node",
@@ -121,9 +142,9 @@ class TaskPlannerNode(BaseNode):
         default=None, description="Optional JSON schema for the final task output"
     )
 
-    output_type: Optional[str] = Field(
+    output_type: Optional[OutputFormatEnum] = Field(
         default=None,
-        description="Optional type hint for the final task output (e.g., 'json', 'markdown')",
+        description="Optional type hint for the final task output (e.g., 'markdown', 'json', 'csv')",
     )
 
     enable_analysis_phase: bool = Field(
@@ -217,6 +238,24 @@ class AgentNode(BaseNode):
     - Solve problems step-by-step with LLM reasoning
     """
 
+    class OutputFormatEnum(str, Enum):
+        """Enum for output formats supported by agents"""
+
+        # Text formats
+        MARKDOWN = "markdown"
+        JSON = "json"
+        CSV = "csv"
+        TXT = "txt"
+        HTML = "html"
+        XML = "xml"
+        YAML = "yaml"
+        PYTHON = "python"
+        JAVASCRIPT = "javascript"
+        TYPESCRIPT = "typescript"
+        SVG = "svg"
+        SQL = "sql"
+        EXCEL = "xlsx"
+
     name: str = Field(
         default="Agent",
         description="The name of the agent executor",
@@ -248,6 +287,11 @@ class AgentNode(BaseNode):
         default=[], description="List of input files to use for the agent"
     )
 
+    output_type: OutputFormatEnum = Field(
+        default=OutputFormatEnum.MARKDOWN,
+        description="The type of output format for the agent result",
+    )
+
     max_steps: int = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
     )
@@ -259,6 +303,7 @@ class AgentNode(BaseNode):
             "model",
             "task",
             "tools",
+            "output_type",
         ]
 
     async def process_agent(
@@ -327,7 +372,7 @@ class AgentNode(BaseNode):
         result = await self.process_agent(
             context=context,
             output_schema={"type": "string"},
-            output_type="markdown",
+            output_type=self.output_type.value,
         )
 
         # Check if the result is a dictionary with a 'path' key
@@ -525,3 +570,348 @@ class ImageAgent(AgentNode):
             image_data = image_file.read()
             image_ref = await context.image_from_bytes(image_data)
             return image_ref
+
+
+class SimpleAgentNode(BaseNode):
+    """
+    Executes a single task using a simple agent that can call tools.
+    agent, execution, tasks, simple
+
+    Use cases:
+    - Simple, focused tasks with a clear objective
+    - Tasks that don't require complex planning
+    - Quick responses with tool calling capabilities
+    """
+
+    name: str = Field(
+        default="Simple Agent",
+        description="The name of the simple agent executor",
+    )
+
+    objective: str = Field(default="", description="The objective or task to complete")
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for execution",
+    )
+
+    tools: List[ToolName] = Field(
+        default=[], description="List of tools to use for execution"
+    )
+
+    input_files: List[FilePath] = Field(
+        default=[], description="List of input files to use for the agent"
+    )
+
+    class OutputFormatEnum(str, Enum):
+        """Enum for output formats supported by agents"""
+
+        # Text formats
+        MARKDOWN = "markdown"
+        JSON = "json"
+        CSV = "csv"
+        TXT = "txt"
+        HTML = "html"
+        XML = "xml"
+        YAML = "yaml"
+        PYTHON = "python"
+        JAVASCRIPT = "javascript"
+        TYPESCRIPT = "typescript"
+        SVG = "svg"
+        SQL = "sql"
+        EXCEL = "xlsx"
+
+    output_type: OutputFormatEnum = Field(
+        default=OutputFormatEnum.MARKDOWN,
+        description="The type of output format for the agent result",
+    )
+
+    output_schema: Optional[dict] = Field(
+        default=None, description="Optional JSON schema for the output"
+    )
+
+    max_iterations: int = Field(
+        default=20, description="Maximum execution iterations to prevent infinite loops"
+    )
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Simple Agent"
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return [
+            "objective",
+            "model",
+            "tools",
+            "input_files",
+            "output_type",
+            "output_schema",
+            "max_iterations",
+        ]
+
+    async def process(self, context: ProcessingContext) -> str:
+        if not self.model.provider:
+            raise ValueError("Select a model")
+
+        if not self.objective:
+            raise ValueError("Objective cannot be empty")
+
+        provider = get_provider(self.model.provider)
+
+        tools = [init_tool(tool) for tool in self.tools]
+        tools_instances = [tool for tool in tools if tool is not None]
+
+        # Use default string schema if none provided
+        output_schema = self.output_schema or {"type": "string"}
+
+        # Initialize SimpleAgent
+        from nodetool.agents.simple_agent import SimpleAgent
+
+        agent = SimpleAgent(
+            name=self.name,
+            objective=self.objective,
+            provider=provider,
+            model=self.model.id,
+            tools=tools_instances,
+            output_type=self.output_type,
+            output_schema=output_schema,
+            input_files=[file.path for file in self.input_files],
+            max_iterations=self.max_iterations,
+        )
+
+        # Execute the agent and yield updates
+        async for item in agent.execute(context):
+            if isinstance(item, TaskUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, PlanningUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, ToolCall):
+                context.post_message(
+                    ToolCallUpdate(
+                        node_id=self.id,
+                        name=item.name,
+                        args=item.args,
+                        message=item.message,
+                    )
+                )
+            elif isinstance(item, Chunk):
+                item.node_id = self.id
+                context.post_message(item)
+
+        # Get the results
+        result = agent.get_results()
+
+        # Handle different result types
+        if isinstance(result, dict) and "path" in result:
+            result_path = result.get("path")
+            if not result_path:
+                raise ValueError(
+                    f"Agent returned a dictionary with an empty path: {result}"
+                )
+
+            resolved_path = context.resolve_workspace_path(result_path)
+            if not os.path.exists(resolved_path):
+                raise ValueError(f"Agent returned path does not exist: {resolved_path}")
+
+            try:
+                with open(resolved_path, "r", encoding="utf-8") as f:
+                    file_content = f.read()
+                return file_content
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to read file content from {resolved_path}: {e}"
+                )
+
+        # Return result as string
+        if not isinstance(result, str):
+            if isinstance(result, dict):
+                return json.dumps(result, indent=2)
+            return str(result)
+        return result
+
+
+class AgentStreaming(AgentNode):
+    """
+    Executes tasks using a multi-step agent that streams results as they're generated.
+    agent, execution, tasks, streaming
+
+    Use cases:
+    - Real-time interactive applications
+    - Progressive rendering of agent responses
+    - Streaming AI interfaces
+    - Live-updating workflows
+    """
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Agent (Streaming)"
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "text": str,
+            "image": ImageRef,
+            "audio": AudioRef,
+        }
+
+    async def gen_process_agent(
+        self,
+        context: ProcessingContext,
+        output_schema: dict[str, Any],
+        output_type: str = "",
+    ) -> AsyncGenerator[tuple[str, Any], None]:
+        if not self.model.provider:
+            raise ValueError("Select a model")
+
+        if self.task.title:
+            if self.objective:
+                raise ValueError(
+                    "Objective cannot be provided if a pre-defined Task is used"
+                )
+            self.objective = self.task.title
+        elif not self.objective:
+            raise ValueError(
+                "Objective cannot be empty if no pre-defined Task is provided"
+            )
+
+        provider = get_provider(self.model.provider)
+
+        tools = [init_tool(tool) for tool in self.tools]
+        tools_instances = [tool for tool in tools if tool is not None]
+
+        agent = Agent(
+            name=self.name,
+            objective=self.objective,
+            provider=provider,
+            model=self.model.id,
+            tools=tools_instances,
+            enable_analysis_phase=True,
+            enable_data_contracts_phase=False,
+            output_schema=output_schema,
+            output_type=output_type,
+            input_files=[file.path for file in self.input_files],
+            reasoning_model=self.reasoning_model.id,
+            task=self.task if self.task.title else None,
+        )
+
+        async for item in agent.execute(context):
+            if isinstance(item, TaskUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, PlanningUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, ToolCall):
+                context.post_message(
+                    ToolCallUpdate(
+                        node_id=self.id,
+                        name=item.name,
+                        args=item.args,
+                        message=item.message,
+                    )
+                )
+                for tool in tools:
+                    if tool and tool.name == item.name:
+                        context.post_message(
+                            ToolCallUpdate(
+                                node_id=self.id,
+                                name=item.name,
+                                args=item.args,
+                                message=tool.user_message(item.args),
+                            )
+                        )
+                        tool_result = await tool.process(context, item.args)
+                        if isinstance(tool_result, dict) and "type" in tool_result:
+                            if (
+                                tool_result["type"] == "image"
+                                and "output_file" in tool_result
+                            ):
+                                file_path = context.resolve_workspace_path(
+                                    tool_result["output_file"]
+                                )
+                                with open(file_path, "rb") as f:
+                                    image = await context.image_from_io(f)
+                                    yield "image", image
+                            elif (
+                                tool_result["type"] == "audio"
+                                and "output_file" in tool_result
+                            ):
+                                file_path = context.resolve_workspace_path(
+                                    tool_result["output_file"]
+                                )
+                                with open(file_path, "rb") as f:
+                                    audio = await context.audio_from_io(f)
+                                    yield "audio", audio
+
+            elif isinstance(item, Chunk):
+                item.node_id = self.id
+                context.post_message(item)
+                if item.content_type == "text" or item.content_type is None:
+                    yield "text", item.content
+                elif item.content_type == "image":
+                    yield "image", item
+            elif isinstance(item, SubTaskResult):
+                workspace_path = context.resolve_workspace_path(item.result["path"])
+                if os.path.exists(workspace_path):
+                    with open(workspace_path, "r", encoding="utf-8") as f:
+                        yield "text", f.read()
+                else:
+                    raise ValueError(
+                        f"SubTaskResult path does not exist: {item.result['path']}"
+                    )
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[tuple[str, Any], None]:
+        async for data_type, data in self.gen_process_agent(
+            context=context,
+            output_schema={"type": "string"},
+            output_type=self.output_type.value,
+        ):
+            yield data_type, data
+
+    async def process(self, context: ProcessingContext) -> str:
+        result = await self.process_agent(
+            context=context,
+            output_schema={"type": "string"},
+            output_type=self.output_type.value,
+        )
+
+        # Check if the result is a dictionary with a 'path' key
+        if isinstance(result, dict) and "path" in result:
+            result_path = result.get("path")
+            if not result_path:
+                raise ValueError(
+                    f"Agent returned a dictionary with an empty path: {result}"
+                )
+
+            resolved_path = context.resolve_workspace_path(result_path)
+
+            if not isinstance(resolved_path, str):
+                raise ValueError(f"Agent did not return a valid path string: {result}")
+
+            if not os.path.exists(resolved_path):
+                raise ValueError(f"Agent returned path does not exist: {resolved_path}")
+
+            try:
+                with open(resolved_path, "r", encoding="utf-8") as f:
+                    file_content = f.read()
+                return file_content
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to read file content from {resolved_path}: {e}"
+                )
+
+        # Original behavior: expect a string
+        if not isinstance(result, str):
+            raise ValueError(
+                f"Agent did not return a string or a dictionary with a path: {type(result)}"
+            )
+        return result
