@@ -326,7 +326,19 @@ class Summarizer(BaseNode):
 
     @classmethod
     def get_title(cls) -> str:
-        return "Text Summarizer"
+        return "Summarizer"
+
+    system_prompt: str = Field(
+        default="""
+        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. 
+        Follow these guidelines:
+        1. Identify and include only the most important information.
+        2. Maintain factual accuracy - do not add or modify information.
+        3. Use clear, direct language.
+        4. Aim for approximately {self.max_words} words.
+        """,
+        description="The system prompt for the summarizer",
+    )
 
     model: LanguageModel = Field(
         default=LanguageModel(),
@@ -345,26 +357,11 @@ class Summarizer(BaseNode):
         return ["text", "max_words", "model"]
 
     async def process(self, context: ProcessingContext) -> str:
-        system_prompt = f"""
-        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries.
-        Follow these guidelines:
-        1. Identify and include only the most important information
-        2. Maintain factual accuracy - do not add or modify information
-        3. Use clear, direct language
-        4. Aim for approximately {self.max_words} words
-        5. Preserve the original meaning and tone
-        6. Include key details, dates, and figures when relevant
-        7. Focus on the main points and conclusions
-        8. Avoid redundancy and unnecessary elaboration
-
-        RESPOND ONLY WITH THE SUMMARY TEXT. NO ADDITIONAL COMMENTARY.
-        """
-
         content = []
         content.append(MessageTextContent(text=self.text))
 
         messages = [
-            Message(role="system", content=system_prompt),
+            Message(role="system", content=self.system_prompt),
             Message(role="user", content=content),
         ]
 
@@ -407,7 +404,14 @@ class Extractor(BaseNode):
 
     @classmethod
     def get_title(cls) -> str:
-        return "Data Extractor"
+        return "Extractor"
+
+    system_prompt: str = Field(
+        default="""
+        You are an expert data extractor. Your task is to extract specific information from text according to a defined schema.
+        """,
+        description="The system prompt for the data extractor",
+    )
 
     model: LanguageModel = Field(
         default=LanguageModel(),
@@ -436,20 +440,8 @@ class Extractor(BaseNode):
     async def process(self, context: ProcessingContext) -> DataframeRef:
         import json
 
-        system_prompt = """
-        You are a precise data extraction assistant. Your task is to extract specific information from text according to a defined schema.
-        Follow these guidelines:
-        1. Extract ONLY the information requested in the schema
-        2. Maintain factual accuracy - do not add or modify information
-        3. If information is not present in the text, leave the field empty
-        4. Extract ALL instances of the requested data (multiple records)
-        5. Be precise and thorough in your extraction
-        
-        Return ONLY valid JSON that matches the provided schema.
-        """
-
         messages = [
-            Message(role="system", content=system_prompt),
+            Message(role="system", content=self.system_prompt),
             Message(role="user", content=f"{self.extraction_prompt}\n\n{self.text}"),
         ]
 
@@ -480,7 +472,7 @@ class Extractor(BaseNode):
         return DataframeRef(columns=self.columns.columns, data=data)
 
 
-class TextClassifier(BaseNode):
+class Classifier(BaseNode):
     """
     Classify text into predefined or dynamic categories using LLM.
     classification, nlp, categorization
@@ -494,7 +486,14 @@ class TextClassifier(BaseNode):
 
     @classmethod
     def get_title(cls) -> str:
-        return "Text Classifier"
+        return "Classifier"
+
+    system_prompt: str = Field(
+        default="""
+        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.
+        """,
+        description="The system prompt for the classifier",
+    )
 
     model: LanguageModel = Field(
         default=LanguageModel(),
@@ -515,16 +514,6 @@ class TextClassifier(BaseNode):
         return ["text", "categories", "multi_label", "model"]
 
     async def process(self, context: ProcessingContext) -> dict[str, float]:
-        system_prompt = """You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.
-
-        Guidelines:
-        1. Assign confidence scores between 0.0 and 1.0 for each category
-        2. Be decisive - assign high scores (>0.8) only when very confident
-        3. If no categories are provided, identify 2-5 relevant categories
-        4. For single-label classification, ensure one category has a significantly higher score
-        5. For multi-label classification, assign independent scores to each category
-        """
-
         content = []
         content.append(MessageTextContent(text=self.text))
 
@@ -539,7 +528,7 @@ class TextClassifier(BaseNode):
 
         label_type = "multi-label" if self.multi_label else "single-label"
         messages = [
-            Message(role="system", content=system_prompt),
+            Message(role="system", content=self.system_prompt),
             Message(
                 role="user",
                 content=f"Perform {label_type} classification on the following text:{category_info}\n\nText: {self.text}",

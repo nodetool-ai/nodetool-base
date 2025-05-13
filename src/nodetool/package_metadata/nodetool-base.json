@@ -1132,6 +1132,7 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
+        "from_address",
         "subject",
         "body",
         "date_filter",
@@ -9140,12 +9141,105 @@
       "is_dynamic": false
     },
     {
-      "title": "Data Extractor",
+      "title": "Classifier",
+      "description": "Classify text into predefined or dynamic categories using LLM.\n    classification, nlp, categorization\n\n    Use cases:\n    - Sentiment analysis\n    - Topic classification\n    - Intent detection\n    - Content categorization",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.Classifier",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "\n        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.\n        ",
+          "title": "System Prompt",
+          "description": "The system prompt for the classifier"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for classification"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "Text to classify"
+        },
+        {
+          "name": "categories",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Categories",
+          "description": "List of possible categories. If empty, LLM will determine categories."
+        },
+        {
+          "name": "multi_label",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Multi Label",
+          "description": "Allow multiple category assignments"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "categories",
+        "multi_label",
+        "model"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extractor",
       "description": "Extract structured data from text content using LLM providers.\n    data-extraction, structured-data, nlp, parsing\n\n    Specialized for extracting structured information:\n    - Converting unstructured text into structured data\n    - Identifying and extracting specific fields from documents\n    - Parsing text according to predefined schemas\n    - Creating structured records from natural language content",
       "namespace": "nodetool.llms",
       "node_type": "nodetool.llms.Extractor",
       "layout": "default",
       "properties": [
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "\n        You are an expert data extractor. Your task is to extract specific information from text according to a defined schema.\n        ",
+          "title": "System Prompt",
+          "description": "The system prompt for the data extractor"
+        },
         {
           "name": "model",
           "type": {
@@ -9498,12 +9592,21 @@
       "is_dynamic": false
     },
     {
-      "title": "Text Summarizer",
+      "title": "Summarizer",
       "description": "Generate concise summaries of text content using LLM providers.\n    text, summarization, nlp, content\n\n    Specialized for creating high-quality summaries:\n    - Condensing long documents into key points\n    - Creating executive summaries\n    - Extracting main ideas from text\n    - Maintaining factual accuracy while reducing length",
       "namespace": "nodetool.llms",
       "node_type": "nodetool.llms.Summarizer",
       "layout": "default",
       "properties": [
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_words} words.\n        ",
+          "title": "System Prompt",
+          "description": "The system prompt for the summarizer"
+        },
         {
           "name": "model",
           "type": {
@@ -9547,81 +9650,6 @@
       "basic_fields": [
         "text",
         "max_words",
-        "model"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Text Classifier",
-      "description": "Classify text into predefined or dynamic categories using LLM.\n    classification, nlp, categorization\n\n    Use cases:\n    - Sentiment analysis\n    - Topic classification\n    - Intent detection\n    - Content categorization",
-      "namespace": "nodetool.llms",
-      "node_type": "nodetool.llms.TextClassifier",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "language_model"
-          },
-          "default": {},
-          "title": "Model",
-          "description": "Model to use for classification"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "Text to classify"
-        },
-        {
-          "name": "categories",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Categories",
-          "description": "List of possible categories. If empty, LLM will determine categories."
-        },
-        {
-          "name": "multi_label",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Multi Label",
-          "description": "Allow multiple category assignments"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "text",
-        "categories",
-        "multi_label",
         "model"
       ],
       "is_dynamic": false
