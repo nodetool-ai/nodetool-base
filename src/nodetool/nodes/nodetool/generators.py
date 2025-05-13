@@ -196,6 +196,10 @@ class StringStreamer(BaseNode):
         description="The maximum number of tokens to generate.",
     )
 
+    @classmethod
+    def return_type(cls):
+        return str
+
     async def gen_process(self, context: ProcessingContext):
         system_message = Message(
             role="system",

@@ -7137,7 +7137,7 @@
       "outputs": [
         {
           "type": {
-            "type": "any"
+            "type": "str"
           },
           "name": "output"
         }
