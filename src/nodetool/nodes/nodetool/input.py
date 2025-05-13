@@ -18,7 +18,7 @@ from nodetool.metadata.types import ImageRef
 from nodetool.metadata.types import TextRef
 from nodetool.workflows.base_node import BaseNode, InputNode
 from nodetool.metadata.types import VideoRef
-from nodetool.metadata.types import Collection
+from nodetool.metadata.types import Collection, ToolName
 from nodetool.common.environment import Environment
 
 
@@ -116,6 +116,7 @@ class ChatInput(InputNode):
             "audio": AudioRef,
             "video": VideoRef,
             "document": DocumentRef,
+            "tools": list[ToolName],
         }
 
     async def process(self, context: ProcessingContext):
@@ -130,6 +131,7 @@ class ChatInput(InputNode):
         audio = AudioRef()
         video = VideoRef()
         document = DocumentRef()
+
         if last_message and last_message.content:
             # Check all content items, taking the first instance of each type
             for content in last_message.content:
@@ -144,6 +146,9 @@ class ChatInput(InputNode):
                 elif isinstance(content, MessageDocumentContent):
                     document = content.document
 
+        def tool_name(name: str) -> ToolName:
+            return ToolName(name=name)
+
         return {
             "history": history,
             "text": text,
@@ -151,6 +156,11 @@ class ChatInput(InputNode):
             "audio": audio,
             "video": video,
             "document": document,
+            "tools": (
+                [tool_name(tool) for tool in last_message.tools]
+                if last_message and last_message.tools
+                else []
+            ),
         }
 
 

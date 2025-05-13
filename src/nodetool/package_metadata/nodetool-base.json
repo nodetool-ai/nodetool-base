@@ -7303,6 +7303,17 @@
             "type": "document"
           },
           "name": "document"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "name": "tools"
         }
       ],
       "the_model_info": {},
