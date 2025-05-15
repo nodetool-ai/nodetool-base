@@ -1,8 +1,9 @@
+import asyncio
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import List, Optional
+from typing import AsyncGenerator
 from pydantic import Field
-from nodetool.common.imap import search_emails
+from nodetool.common.imap import search_emails, fetch_email
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
@@ -11,40 +12,10 @@ from nodetool.metadata.types import (
     Datetime,
     Email,
     EmailSearchCriteria,
-    IMAPConnection,
 )
-import imaplib
 
 
 KEYWORD_SEPARATOR_REGEX = r"\s+|,|;"
-
-
-def create_gmail_connection(email_address: str, app_password: str) -> IMAPConnection:
-    """
-    Creates a Gmail connection configuration.
-
-    Args:
-        email_address: Gmail address to connect to
-        app_password: Google App Password for authentication
-
-    Returns:
-        IMAPConnection configured for Gmail
-
-    Raises:
-        ValueError: If email_address or app_password is empty
-    """
-    if not email_address:
-        raise ValueError("Email address is required")
-    if not app_password:
-        raise ValueError("App password is required")
-
-    return IMAPConnection(
-        host="imap.gmail.com",
-        port=993,
-        username=email_address,
-        password=app_password,
-        use_ssl=True,
-    )
 
 
 class GmailSearch(BaseNode):
@@ -113,14 +84,7 @@ class GmailSearch(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["from_address", "subject", "body", "date_filter", "max_results"]
 
-    async def process(self, context: ProcessingContext) -> list[Email]:
-        email_address = context.environment.get("GOOGLE_MAIL_USER")
-        app_password = context.environment.get("GOOGLE_APP_PASSWORD")
-        if not email_address:
-            raise ValueError("GOOGLE_MAIL_USER is not set")
-        if not app_password:
-            raise ValueError("GOOGLE_APP_PASSWORD is not set")
-
+    async def process(self, context: ProcessingContext) -> list[str]:
         search_criteria = EmailSearchCriteria(
             from_address=(
                 self.from_address.strip() if self.from_address.strip() else None
@@ -142,8 +106,33 @@ class GmailSearch(BaseNode):
             text=self.text.strip() if self.text and self.text.strip() else None,
         )
 
-        connection = create_gmail_connection(email_address, app_password)
-        return search_emails(connection, search_criteria, self.max_results)
+        return search_emails(
+            context.get_gmail_connection(), search_criteria, self.max_results
+        )
+
+
+class EmailIterator(BaseNode):
+    """
+    Iterates over a list of email message IDs.
+    email, gmail, iterate
+    """
+
+    message_ids: list[str] = Field(
+        default=[],
+        description="List of message IDs to iterate over",
+    )
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "output": Email | None,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
+        for message_id in self.message_ids:
+            yield "output", await asyncio.to_thread(
+                fetch_email, context.get_gmail_connection(), message_id
+            )
 
 
 class MoveToArchive(BaseNode):
@@ -152,37 +141,18 @@ class MoveToArchive(BaseNode):
     email, gmail, archive
     """
 
-    message_ids: list[str] = Field(
-        default=[],
-        description="List of message IDs to archive",
+    message_id: str = Field(
+        default="",
+        description="Message ID to archive",
     )
 
-    async def process(self, context: ProcessingContext) -> list[str]:
-        email_address = context.environment.get("GOOGLE_MAIL_USER")
-        app_password = context.environment.get("GOOGLE_APP_PASSWORD")
-        if not email_address:
-            raise ValueError("GOOGLE_MAIL_USER is not set")
-        if not app_password:
-            raise ValueError("GOOGLE_APP_PASSWORD is not set")
+    async def process(self, context: ProcessingContext) -> bool:
+        imap = context.get_gmail_connection()
+        imap.select("INBOX")
 
-        connection = create_gmail_connection(email_address, app_password)
-
-        imap = imaplib.IMAP4_SSL(connection.host, connection.port)
-        try:
-            imap.login(connection.username, connection.password)
-            imap.select("INBOX")
-
-            # Moving to archive in Gmail is done by removing the INBOX label
-            for message_id in self.message_ids:
-                result = imap.store(message_id, "-X-GM-LABELS", "\\Inbox")
-                if result[0] != "OK":
-                    raise ValueError(
-                        f"Failed to archive message {message_id}: {result}"
-                    )
-
-            return self.message_ids
-        finally:
-            imap.logout()
+        # Moving to archive in Gmail is done by removing the INBOX label
+        result = imap.store(self.message_id, "-X-GM-LABELS", "\\Inbox")
+        return result[0] == "OK"
 
 
 class AddLabel(BaseNode):
@@ -191,9 +161,9 @@ class AddLabel(BaseNode):
     email, gmail, label
     """
 
-    email: Email = Field(
-        default=Email(),
-        description="Email message to label",
+    message_id: str = Field(
+        default="",
+        description="Message ID to label",
     )
 
     label: str = Field(
@@ -201,30 +171,12 @@ class AddLabel(BaseNode):
         description="Label to add to the message",
     )
 
-    async def process(self, context: ProcessingContext) -> Email:
-        email_address = context.environment.get("GOOGLE_MAIL_USER")
-        app_password = context.environment.get("GOOGLE_APP_PASSWORD")
-        if not email_address:
-            raise ValueError("GOOGLE_MAIL_USER is not set")
-        if not app_password:
-            raise ValueError("GOOGLE_APP_PASSWORD is not set")
+    async def process(self, context: ProcessingContext) -> bool:
+        imap = context.get_gmail_connection()
+        imap.select("INBOX")
 
-        connection = create_gmail_connection(email_address, app_password)
-
-        imap = imaplib.IMAP4_SSL(connection.host, connection.port)
-        try:
-            imap.login(connection.username, connection.password)
-            imap.select("INBOX")
-
-            result = imap.store(self.email.id, "+X-GM-LABELS", self.label)
-            if result[0] != "OK":
-                raise ValueError(
-                    f"Failed to add label {self.label} to message {self.email.id}: {result}"
-                )
-
-            return self.email
-        finally:
-            imap.logout()
+        result = imap.store(self.message_id, "+X-GM-LABELS", self.label)
+        return result[0] == "OK"
 
 
 def get_date_condition(date_filter: GmailSearch.DateFilter) -> DateSearchCondition:

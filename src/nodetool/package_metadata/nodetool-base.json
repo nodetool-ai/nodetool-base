@@ -977,13 +977,13 @@
       "layout": "default",
       "properties": [
         {
-          "name": "email",
+          "name": "message_id",
           "type": {
-            "type": "email"
+            "type": "str"
           },
-          "default": {},
-          "title": "Email",
-          "description": "Email message to label"
+          "default": "",
+          "title": "Message Id",
+          "description": "Message ID to label"
         },
         {
           "name": "label",
@@ -998,7 +998,7 @@
       "outputs": [
         {
           "type": {
-            "type": "email"
+            "type": "bool"
           },
           "name": "output"
         }
@@ -1006,8 +1006,53 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "email",
+        "message_id",
         "label"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Email Iterator",
+      "description": "Iterates over a list of email message IDs.\n    email, gmail, iterate",
+      "namespace": "nodetool.mail",
+      "node_type": "nodetool.mail.EmailIterator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "message_ids",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Message Ids",
+          "description": "List of message IDs to iterate over"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "email"
+              },
+              {
+                "type": "none"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "message_ids"
       ],
       "is_dynamic": false
     },
@@ -1122,7 +1167,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "email"
+                "type": "str"
               }
             ]
           },
@@ -1148,29 +1193,19 @@
       "layout": "default",
       "properties": [
         {
-          "name": "message_ids",
+          "name": "message_id",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
+            "type": "str"
           },
-          "default": [],
-          "title": "Message Ids",
-          "description": "List of message IDs to archive"
+          "default": "",
+          "title": "Message Id",
+          "description": "Message ID to archive"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
+            "type": "bool"
           },
           "name": "output"
         }
@@ -1178,7 +1213,7 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "message_ids"
+        "message_id"
       ],
       "is_dynamic": false
     },
