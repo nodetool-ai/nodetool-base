@@ -132,7 +132,13 @@ class FormatText(BaseNode):
         try:
             # Create Jinja2 environment
             env = Environment(loader=BaseLoader())
-            template = env.from_string(self.template)
+
+            # Convert template variables to lowercase
+            template_str = self.template
+            for var in re.findall(r"{{\s*([^|}]+)", template_str):
+                template_str = template_str.replace(var, var.lower())
+
+            template = env.from_string(template_str)
 
             # Convert all dynamic property keys to lowercase for consistency
             lowercase_properties = {
