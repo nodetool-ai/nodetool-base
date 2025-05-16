@@ -19,7 +19,7 @@ from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef, T
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
-from nodetool.metadata.types import VideoRef
+from nodetool.metadata.types import VideoRef, FontRef
 import tempfile
 
 
@@ -1246,20 +1246,13 @@ class AddSubtitles(BaseNode):
         CENTER = "center"
         BOTTOM = "bottom"
 
-    class SubtitleTextFont(str, enum.Enum):
-        DejaVuSansBold = "DejaVuSans-Bold.ttf"
-        DejaVuSans = "DejaVuSans.ttf"
-        FreeSans = "FreeSans.ttf"
-
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to add subtitles to."
     )
     chunks: list[AudioChunk] = Field(
         default=[], description="Audio chunks to add as subtitles."
     )
-    font: SubtitleTextFont = Field(
-        default=SubtitleTextFont.DejaVuSans, description="The font to use."
-    )
+    font: FontRef = Field(default=FontRef(name=""), description="The font to use.")
     align: SubtitleTextAlignment = Field(
         default=SubtitleTextAlignment.BOTTOM,
         description="Vertical alignment of subtitles.",
@@ -1298,7 +1291,7 @@ class AddSubtitles(BaseNode):
                 out = cv2.VideoWriter(temp_output.name, fourcc, fps, (width, height))
 
                 # Load font
-                font_path = context.get_system_font_path(self.font.value)
+                font_path = context.get_system_font_path(self.font.name)
                 font = PIL.ImageFont.truetype(font_path, self.font_size)
 
                 def wrap_text(

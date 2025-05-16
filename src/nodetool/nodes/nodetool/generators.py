@@ -16,6 +16,7 @@ from nodetool.metadata.types import (
     Provider,
     ToolCall,
 )
+from nodetool.workflows.types import Chunk
 from nodetool.metadata.types import (
     Message,
 )
@@ -201,9 +202,13 @@ class StringStreamer(BaseNode):
         return str
 
     async def gen_process(self, context: ProcessingContext):
+        delimiter = "---"
         system_message = Message(
             role="system",
-            content="You are an assistant that generates text.",
+            content=f"""You are an assistant that generates text. 
+            Each separate string record should be separated by the delimiter: 
+            {delimiter}
+            """,
         )
 
         user_message = Message(
@@ -212,20 +217,33 @@ class StringStreamer(BaseNode):
         )
         messages = [system_message, user_message]
 
+        buffer = ""
         async for chunk in context.generate_messages(
             node_id=self.id,
             provider=self.model.provider,
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
-            tools=[GenerateStringTool(description="Generate a string")],
         ):
-            if isinstance(chunk, ToolCall):
-                yield "output", chunk.args["string"]
+            if isinstance(chunk, Chunk):
+                buffer += chunk.content
+                if delimiter in buffer:
+                    parts = buffer.split(delimiter)
+                    # Yield all complete parts except the last one
+                    for part in parts[:-1]:
+                        if part.strip():
+                            print(part.strip())
+                            yield "output", part.strip()
+                    # Keep the remainder in the buffer
+                    buffer = parts[-1]
+
+        # Yield any remaining content in the buffer
+        if buffer.strip():
+            yield "output", buffer.strip()
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["prompt", "model"]
+        return ["prompt", "model", "delimiter"]
 
 
 PLOTLY_CHART_CONFIG_SCHEMA = {

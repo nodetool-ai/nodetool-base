@@ -7182,7 +7182,8 @@
       "recommended_models": [],
       "basic_fields": [
         "prompt",
-        "model"
+        "model",
+        "delimiter"
       ],
       "is_dynamic": false
     },
@@ -13238,15 +13239,11 @@
         {
           "name": "font",
           "type": {
-            "type": "enum",
-            "values": [
-              "DejaVuSans-Bold.ttf",
-              "DejaVuSans.ttf",
-              "FreeSans.ttf"
-            ],
-            "type_name": "nodetool.nodes.nodetool.video.SubtitleTextFont"
+            "type": "font"
           },
-          "default": "DejaVuSans.ttf",
+          "default": {
+            "name": "Arial.ttf"
+          },
           "title": "Font",
           "description": "The font to use."
         },
