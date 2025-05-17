@@ -323,6 +323,17 @@ class Fps(GraphNode):
         return "nodetool.video.Fps"
 
 
+class LoadVideoFolder(GraphNode):
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The asset folder to load the video files from.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.video.LoadVideoFolder"
+
+
 class Overlay(GraphNode):
     """
     Overlay one video on top of another, including audio overlay when available.
@@ -467,11 +478,11 @@ class Saturation(GraphNode):
 
 class SaveVideo(GraphNode):
     """
-    Save a video to a file.
+    Save a video to an asset folder.
     video, save, file, output
 
     Use cases:
-    1. Export processed video to a specific folder
+    1. Export processed video to a specific asset folder
     2. Save video with a custom name
     3. Create a copy of a video in a different location
     """
@@ -484,7 +495,7 @@ class SaveVideo(GraphNode):
     )
     folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
-        description="Name of the output folder.",
+        description="The asset folder to save the video in.",
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="%Y-%m-%d-%H-%M-%S.mp4",

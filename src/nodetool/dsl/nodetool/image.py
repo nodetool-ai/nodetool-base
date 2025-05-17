@@ -104,6 +104,22 @@ class GetMetadata(GraphNode):
         return "nodetool.image.GetMetadata"
 
 
+class LoadImageFolder(GraphNode):
+    """
+    Load images from an asset folder.
+    load, image, file, import
+    """
+
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The asset folder to load the images from.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.image.LoadImageFolder"
+
+
 class Paste(GraphNode):
     """
     Paste one image onto another at specified coordinates.
@@ -163,7 +179,7 @@ class Resize(GraphNode):
 
 class SaveImage(GraphNode):
     """
-    Save an image to specified folder with customizable name format.
+    Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
 
     Use cases:
@@ -178,7 +194,7 @@ class SaveImage(GraphNode):
     )
     folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
-        description="The folder to save the image in.",
+        description="The asset folder to save the image in.",
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="%Y-%m-%d_%H-%M-%S.png",

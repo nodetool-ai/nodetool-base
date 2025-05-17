@@ -1,5 +1,5 @@
 from typing import Any
-from nodetool.metadata.types import FolderRef, NPArray
+from nodetool.metadata.types import FolderRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -7,16 +7,44 @@ from datetime import datetime
 from pydantic import Field
 import PIL
 import PIL.Image
-from nodetool.agents.tools.google_tools import GoogleImageGenerationTool
-from google.genai.client import AsyncClient
-from google.genai.types import GenerateImagesConfig
-from nodetool.common.environment import Environment
-from google.genai import Client
+
+
+class LoadImageFolder(BaseNode):
+    """
+    Load images from an asset folder.
+    load, image, file, import
+    """
+
+    folder: FolderRef = Field(
+        default=FolderRef(), description="The asset folder to load the images from."
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load Image Folder"
+
+    @classmethod
+    def return_type(cls):
+        return ImageRef
+
+    async def gen_process(self, context: ProcessingContext):
+        if self.folder.is_empty():
+            raise ValueError("Please select an asset folder.")
+
+        parent_id = self.folder.asset_id
+        list_assets = await context.list_assets(parent_id=parent_id, mime_type="image")
+
+        for asset in list_assets.assets:
+            yield ImageRef(
+                type="image",
+                uri=await context.get_asset_url(asset.id),
+                asset_id=asset.id,
+            )
 
 
 class SaveImage(BaseNode):
     """
-    Save an image to specified folder with customizable name format.
+    Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
 
     Use cases:
@@ -27,7 +55,7 @@ class SaveImage(BaseNode):
 
     image: ImageRef = Field(default=ImageRef(), description="The image to save.")
     folder: FolderRef = Field(
-        default=FolderRef(), description="The folder to save the image in."
+        default=FolderRef(), description="The asset folder to save the image in."
     )
     name: str = Field(
         default="%Y-%m-%d_%H-%M-%S.png",
@@ -42,6 +70,10 @@ class SaveImage(BaseNode):
         %S - Second
         """,
     )
+
+    @classmethod
+    def get_title(cls):
+        return "Save Image Asset"
 
     def required_inputs(self):
         return ["image"]

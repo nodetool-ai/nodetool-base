@@ -6,9 +6,25 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
+class LoadAudioFolder(GraphNode):
+    """
+    Load audio files from an asset folder.
+    load, audio, file, import
+    """
+
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The asset folder to load the audio files from.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.LoadAudioFolder"
+
+
 class SaveAudio(GraphNode):
     """
-    Save an audio file to a specified folder.
+    Save an audio file to a specified asset folder.
     audio, folder, name
 
     Use cases:
@@ -23,7 +39,7 @@ class SaveAudio(GraphNode):
     )
     folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
-        description="The folder to save the audio file to. ",
+        description="The asset folder to save the audio file to. ",
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="%Y-%m-%d-%H-%M-%S.opus",

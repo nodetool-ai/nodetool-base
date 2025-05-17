@@ -9696,8 +9696,40 @@
       "is_dynamic": false
     },
     {
-      "title": "Save Audio",
-      "description": "Save an audio file to a specified folder.\n    audio, folder, name\n\n    Use cases:\n    - Save generated audio files with timestamps\n    - Organize outputs into specific folders\n    - Create backups of generated audio",
+      "title": "Load Audio Folder",
+      "description": "Load audio files from an asset folder.\n    load, audio, file, import",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.LoadAudioFolder",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The asset folder to load the audio files from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "folder"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Save Audio Asset",
+      "description": "Save an audio file to a specified asset folder.\n    audio, folder, name\n\n    Use cases:\n    - Save generated audio files with timestamps\n    - Organize outputs into specific folders\n    - Create backups of generated audio",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.SaveAudio",
       "layout": "default",
@@ -9717,7 +9749,7 @@
           },
           "default": {},
           "title": "Folder",
-          "description": "The folder to save the audio file to. "
+          "description": "The asset folder to save the audio file to. "
         },
         {
           "name": "name",
@@ -13743,6 +13775,38 @@
       "is_dynamic": false
     },
     {
+      "title": "Load Video Folder",
+      "description": "",
+      "namespace": "nodetool.video",
+      "node_type": "nodetool.video.LoadVideoFolder",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The asset folder to load the video files from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "folder"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Overlay",
       "description": "Overlay one video on top of another, including audio overlay when available.\n    video, overlay, composite, picture-in-picture, audio",
       "namespace": "nodetool.video",
@@ -13999,8 +14063,8 @@
       "is_dynamic": false
     },
     {
-      "title": "Save Video",
-      "description": "Save a video to a file.\n    video, save, file, output\n\n    Use cases:\n    1. Export processed video to a specific folder\n    2. Save video with a custom name\n    3. Create a copy of a video in a different location",
+      "title": "Save Video Asset",
+      "description": "Save a video to an asset folder.\n    video, save, file, output\n\n    Use cases:\n    1. Export processed video to a specific asset folder\n    2. Save video with a custom name\n    3. Create a copy of a video in a different location",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.SaveVideo",
       "layout": "default",
@@ -14021,7 +14085,7 @@
           },
           "default": {},
           "title": "Folder",
-          "description": "Name of the output folder."
+          "description": "The asset folder to save the video in."
         },
         {
           "name": "name",
@@ -14609,6 +14673,38 @@
       "is_dynamic": false
     },
     {
+      "title": "Load Image Folder",
+      "description": "Load images from an asset folder.\n    load, image, file, import",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.LoadImageFolder",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The asset folder to load the images from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "folder"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Paste",
       "description": "Paste one image onto another at specified coordinates.\n    paste, composite, positioning, overlay\n\n    Use cases:\n    - Add watermarks or logos to images\n    - Combine multiple image elements\n    - Create collages or montages",
       "namespace": "nodetool.image",
@@ -14731,8 +14827,8 @@
       "is_dynamic": false
     },
     {
-      "title": "Save Image",
-      "description": "Save an image to specified folder with customizable name format.\n    save, image, folder, naming\n\n    Use cases:\n    - Save generated images with timestamps\n    - Organize outputs into specific folders\n    - Create backups of processed images",
+      "title": "Save Image Asset",
+      "description": "Save an image to specified asset folder with customizable name format.\n    save, image, folder, naming\n\n    Use cases:\n    - Save generated images with timestamps\n    - Organize outputs into specific folders\n    - Create backups of processed images",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.SaveImage",
       "layout": "default",
@@ -14753,7 +14849,7 @@
           },
           "default": {},
           "title": "Folder",
-          "description": "The folder to save the image in."
+          "description": "The asset folder to save the image in."
         },
         {
           "name": "name",

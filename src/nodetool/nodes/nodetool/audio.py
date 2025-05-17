@@ -7,9 +7,42 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 
+class LoadAudioFolder(BaseNode):
+    """
+    Load audio files from an asset folder.
+    load, audio, file, import
+    """
+
+    folder: FolderRef = Field(
+        default=FolderRef(),
+        description="The asset folder to load the audio files from.",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load Audio Folder"
+
+    @classmethod
+    def return_type(cls):
+        return AudioRef
+
+    async def gen_process(self, context: ProcessingContext):
+        if self.folder.is_empty():
+            raise ValueError("Please select an asset folder.")
+
+        parent_id = self.folder.asset_id
+        list_assets = await context.list_assets(parent_id=parent_id, mime_type="audio")
+        for asset in list_assets.assets:
+            yield AudioRef(
+                type="audio",
+                uri=await context.get_asset_url(asset.id),
+                asset_id=asset.id,
+            )
+
+
 class SaveAudio(BaseNode):
     """
-    Save an audio file to a specified folder.
+    Save an audio file to a specified asset folder.
     audio, folder, name
 
     Use cases:
@@ -20,7 +53,7 @@ class SaveAudio(BaseNode):
 
     audio: AudioRef = AudioRef()
     folder: FolderRef = Field(
-        FolderRef(), description="The folder to save the audio file to. "
+        FolderRef(), description="The asset folder to save the audio file to. "
     )
     name: str = Field(
         default="%Y-%m-%d-%H-%M-%S.opus",
@@ -35,6 +68,10 @@ class SaveAudio(BaseNode):
         %S - Second
         """,
     )
+
+    @classmethod
+    def get_title(cls):
+        return "Save Audio Asset"
 
     def required_inputs(self):
         return ["audio"]

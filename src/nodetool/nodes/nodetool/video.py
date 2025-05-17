@@ -30,20 +30,48 @@ def safe_unlink(path: str):
         pass
 
 
+class LoadVideoFolder(BaseNode):
+
+    folder: FolderRef = Field(
+        default=FolderRef(),
+        description="The asset folder to load the video files from.",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load Video Folder"
+
+    def required_inputs(self):
+        return ["folder"]
+
+    async def gen_process(self, context: ProcessingContext):
+        if self.folder.is_empty():
+            raise ValueError("Please select an asset folder.")
+
+        parent_id = self.folder.asset_id
+        list_assets = await context.list_assets(parent_id=parent_id, mime_type="video")
+        for asset in list_assets.assets:
+            yield VideoRef(
+                type="video",
+                uri=await context.get_asset_url(asset.id),
+                asset_id=asset.id,
+            )
+
+
 class SaveVideo(BaseNode):
     """
-    Save a video to a file.
+    Save a video to an asset folder.
     video, save, file, output
 
     Use cases:
-    1. Export processed video to a specific folder
+    1. Export processed video to a specific asset folder
     2. Save video with a custom name
     3. Create a copy of a video in a different location
     """
 
     video: VideoRef = Field(default=VideoRef(), description="The video to save.")
     folder: FolderRef = Field(
-        default=FolderRef(), description="Name of the output folder."
+        default=FolderRef(), description="The asset folder to save the video in."
     )
     name: str = Field(
         default="%Y-%m-%d-%H-%M-%S.mp4",
@@ -58,6 +86,10 @@ class SaveVideo(BaseNode):
         %S - Second
         """,
     )
+
+    @classmethod
+    def get_title(cls):
+        return "Save Video Asset"
 
     def required_inputs(self):
         return ["video"]
