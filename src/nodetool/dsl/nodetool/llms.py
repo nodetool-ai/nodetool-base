@@ -6,6 +6,47 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
+class Classifier(GraphNode):
+    """
+    Classify text into predefined or dynamic categories using LLM.
+    classification, nlp, categorization
+
+    Use cases:
+    - Sentiment analysis
+    - Topic classification
+    - Intent detection
+    - Content categorization
+    """
+
+    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\n        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.\n        ",
+        description="The system prompt for the classifier",
+    )
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="Model to use for classification",
+    )
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text to classify"
+    )
+    categories: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[],
+        description="List of possible categories. If empty, LLM will determine categories.",
+    )
+    multi_label: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Allow multiple category assignments"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.llms.Classifier"
+
+
 class Extractor(GraphNode):
     """
     Extract structured data from text content using LLM providers.
@@ -18,6 +59,10 @@ class Extractor(GraphNode):
     - Creating structured records from natural language content
     """
 
+    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\n        You are an expert data extractor. Your task is to extract specific information from text according to a defined schema.\n        ",
+        description="The system prompt for the data extractor",
+    )
     model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
         default=types.LanguageModel(
             type="language_model",
@@ -171,6 +216,10 @@ class Summarizer(GraphNode):
     - Maintaining factual accuracy while reducing length
     """
 
+    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_words} words.\n        ",
+        description="The system prompt for the summarizer",
+    )
     model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
         default=types.LanguageModel(
             type="language_model",
@@ -190,40 +239,3 @@ class Summarizer(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.llms.Summarizer"
-
-
-class TextClassifier(GraphNode):
-    """
-    Classify text into predefined or dynamic categories using LLM.
-    classification, nlp, categorization
-
-    Use cases:
-    - Sentiment analysis
-    - Topic classification
-    - Intent detection
-    - Content categorization
-    """
-
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-        ),
-        description="Model to use for classification",
-    )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Text to classify"
-    )
-    categories: list[str] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[],
-        description="List of possible categories. If empty, LLM will determine categories.",
-    )
-    multi_label: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description="Allow multiple category assignments"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.llms.TextClassifier"

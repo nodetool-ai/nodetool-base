@@ -12,27 +12,8 @@ class AddLabel(GraphNode):
     email, gmail, label
     """
 
-    email: types.Email | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Email(
-            type="email",
-            id="",
-            sender="",
-            subject="",
-            date=types.Datetime(
-                type="datetime",
-                year=0,
-                month=0,
-                day=0,
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo="UTC",
-                utc_offset=0,
-            ),
-            body="",
-        ),
-        description="Email message to label",
+    message_id: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Message ID to label"
     )
     label: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Label to add to the message"
@@ -41,6 +22,21 @@ class AddLabel(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.mail.AddLabel"
+
+
+class EmailIterator(GraphNode):
+    """
+    Iterates over a list of email message IDs.
+    email, gmail, iterate
+    """
+
+    message_ids: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="List of message IDs to iterate over"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.mail.EmailIterator"
 
 
 import nodetool.nodes.nodetool.mail
@@ -105,8 +101,8 @@ class MoveToArchive(GraphNode):
     email, gmail, archive
     """
 
-    message_ids: list[str] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of message IDs to archive"
+    message_id: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Message ID to archive"
     )
 
     @classmethod

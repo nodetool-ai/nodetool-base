@@ -42,7 +42,6 @@ class AddAudio(GraphNode):
 
 
 import nodetool.nodes.nodetool.video
-import nodetool.nodes.nodetool.video
 
 
 class AddSubtitles(GraphNode):
@@ -56,9 +55,6 @@ class AddSubtitles(GraphNode):
     3. Create lyric videos for music content
     """
 
-    SubtitleTextFont: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont
-    )
     SubtitleTextAlignment: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
     )
@@ -71,9 +67,8 @@ class AddSubtitles(GraphNode):
     chunks: list[types.AudioChunk] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="Audio chunks to add as subtitles."
     )
-    font: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont = Field(
-        default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextFont.DejaVuSans,
-        description="The font to use.",
+    font: types.FontRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FontRef(type="font", name=""), description="The font to use."
     )
     align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(
         default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM,
