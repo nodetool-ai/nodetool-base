@@ -7047,6 +7047,74 @@
       "is_dynamic": false
     },
     {
+      "title": "List Generator",
+      "description": "LLM Agent to create a stream of strings based on a user prompt.\n    llm, text streaming\n\n    Use cases:\n    - Generating text from natural language descriptions\n    - Streaming responses from an LLM",
+      "namespace": "nodetool.generators",
+      "node_type": "nodetool.generators.ListGenerator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "The GPT model to use for string generation."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The user prompt"
+        },
+        {
+          "name": "input_text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input Text",
+          "description": "The input text to be analyzed by the agent."
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "description": "The maximum number of tokens to generate.",
+          "min": 1.0,
+          "max": 100000.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "item"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "prompt",
+        "model"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "SVGGenerator",
       "description": "LLM Agent to create SVG elements based on user prompts.\n    svg, generator, vector, graphics\n\n    Use cases:\n    - Creating vector graphics from text descriptions\n    - Generating scalable illustrations\n    - Creating custom icons and diagrams",
       "namespace": "nodetool.generators",
@@ -7121,69 +7189,6 @@
         "image",
         "audio",
         "model"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "String Streamer",
-      "description": "LLM Agent to create a stream of strings based on a user prompt.\n    llm, text streaming\n\n    Use cases:\n    - Generating text from natural language descriptions\n    - Streaming responses from an LLM",
-      "namespace": "nodetool.generators",
-      "node_type": "nodetool.generators.StringStreamer",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "language_model"
-          },
-          "default": {},
-          "title": "Model",
-          "description": "The GPT model to use for string generation."
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "The user prompt"
-        },
-        {
-          "name": "input_text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Input Text",
-          "description": "The input text to be analyzed by the agent."
-        },
-        {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Max Tokens",
-          "description": "The maximum number of tokens to generate.",
-          "min": 1.0,
-          "max": 100000.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "prompt",
-        "model",
-        "delimiter"
       ],
       "is_dynamic": false
     },
@@ -13241,9 +13246,7 @@
           "type": {
             "type": "font"
           },
-          "default": {
-            "name": "Arial.ttf"
-          },
+          "default": {},
           "title": "Font",
           "description": "The font to use."
         },

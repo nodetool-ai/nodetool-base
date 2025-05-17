@@ -168,7 +168,7 @@ class DataStreamer(BaseNode):
         return ["prompt", "model", "columns"]
 
 
-class StringStreamer(BaseNode):
+class ListGenerator(BaseNode):
     """
     LLM Agent to create a stream of strings based on a user prompt.
     llm, text streaming
@@ -199,15 +199,25 @@ class StringStreamer(BaseNode):
 
     @classmethod
     def return_type(cls):
-        return str
+        return {
+            "item": str,
+            "index": int,
+        }
 
     async def gen_process(self, context: ProcessingContext):
-        delimiter = "---"
         system_message = Message(
             role="system",
-            content=f"""You are an assistant that generates text. 
-            Each separate string record should be separated by the delimiter: 
-            {delimiter}
+            content=f"""You are an assistant that generates lists.
+            If the user asks for a specific number of items, generate that many.
+            The output should be a numbered list.
+            Example:
+            User: Generate 5 movie titles
+            Assistant: 
+            1. The Dark Knight
+            2. Inception
+            3. The Matrix
+            4. Interstellar
+            5. The Lord of the Rings
             """,
         )
 
@@ -218,6 +228,10 @@ class StringStreamer(BaseNode):
         messages = [system_message, user_message]
 
         buffer = ""
+        current_item = ""
+        current_index = 0
+        in_item = False
+
         async for chunk in context.generate_messages(
             node_id=self.id,
             provider=self.model.provider,
@@ -227,23 +241,58 @@ class StringStreamer(BaseNode):
         ):
             if isinstance(chunk, Chunk):
                 buffer += chunk.content
-                if delimiter in buffer:
-                    parts = buffer.split(delimiter)
-                    # Yield all complete parts except the last one
-                    for part in parts[:-1]:
-                        if part.strip():
-                            print(part.strip())
-                            yield "output", part.strip()
-                    # Keep the remainder in the buffer
-                    buffer = parts[-1]
 
-        # Yield any remaining content in the buffer
-        if buffer.strip():
-            yield "output", buffer.strip()
+                # Process the buffer line by line
+                lines = buffer.split("\n")
+                buffer = lines.pop()  # Keep the last partial line in the buffer
+
+                for line in lines:
+                    line = line.strip()
+                    if not line:
+                        continue
+
+                    # Check if this line starts a new numbered item
+                    import re
+
+                    match = re.match(r"^\s*(\d+)\.\s*(.*)", line)
+
+                    if match:
+                        # If we were processing a previous item, yield it
+                        if in_item and current_item:
+                            yield "item", current_item
+                            yield "index", current_index
+
+                        # Start a new item
+                        current_index = int(match.group(1))
+                        current_item = match.group(2)
+                        in_item = True
+                    elif in_item:
+                        # Continue with the current item
+                        current_item += " " + line
+
+        # Process any remaining complete lines in the buffer
+        if buffer:
+            match = re.match(r"^\s*(\d+)\.\s*(.*)", buffer.strip())
+            if match:
+                # If we were processing a previous item, yield it
+                if in_item and current_item:
+                    yield "item", current_item
+                    yield "index", current_index
+
+                # Process the final item
+                current_index = int(match.group(1))
+                current_item = match.group(2)
+                yield "item", current_item
+                yield "index", current_index
+            elif in_item:
+                # Add to the current item and yield it
+                current_item += " " + buffer.strip()
+                yield "item", current_item
+                yield "index", current_index
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["prompt", "model", "delimiter"]
+        return ["prompt", "model"]
 
 
 PLOTLY_CHART_CONFIG_SCHEMA = {
