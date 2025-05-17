@@ -9717,7 +9717,13 @@
           "type": {
             "type": "audio"
           },
-          "name": "output"
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
         }
       ],
       "the_model_info": {},
@@ -13796,7 +13802,13 @@
           "type": {
             "type": "video"
           },
-          "name": "output"
+          "name": "video"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
         }
       ],
       "the_model_info": {},
@@ -14694,7 +14706,13 @@
           "type": {
             "type": "image"
           },
-          "name": "output"
+          "name": "image"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
         }
       ],
       "the_model_info": {},

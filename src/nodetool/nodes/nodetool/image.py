@@ -25,7 +25,10 @@ class LoadImageFolder(BaseNode):
 
     @classmethod
     def return_type(cls):
-        return ImageRef
+        return {
+            "image": ImageRef,
+            "name": str,
+        }
 
     async def gen_process(self, context: ProcessingContext):
         if self.folder.is_empty():
@@ -35,11 +38,13 @@ class LoadImageFolder(BaseNode):
         list_assets = await context.list_assets(parent_id=parent_id, mime_type="image")
 
         for asset in list_assets.assets:
-            yield ImageRef(
-                type="image",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            if asset.content_type.startswith("image/"):
+                yield "name", asset.name
+                yield "image", ImageRef(
+                    type="image",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                )
 
 
 class SaveImage(BaseNode):

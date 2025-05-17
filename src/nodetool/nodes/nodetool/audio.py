@@ -24,7 +24,10 @@ class LoadAudioFolder(BaseNode):
 
     @classmethod
     def return_type(cls):
-        return AudioRef
+        return {
+            "audio": AudioRef,
+            "name": str,
+        }
 
     async def gen_process(self, context: ProcessingContext):
         if self.folder.is_empty():
@@ -33,11 +36,13 @@ class LoadAudioFolder(BaseNode):
         parent_id = self.folder.asset_id
         list_assets = await context.list_assets(parent_id=parent_id, mime_type="audio")
         for asset in list_assets.assets:
-            yield AudioRef(
-                type="audio",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            if asset.content_type.startswith("audio/"):
+                yield "name", asset.name
+                yield "audio", AudioRef(
+                    type="audio",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                )
 
 
 class SaveAudio(BaseNode):

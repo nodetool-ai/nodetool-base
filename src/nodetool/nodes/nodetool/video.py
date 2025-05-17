@@ -44,6 +44,13 @@ class LoadVideoFolder(BaseNode):
     def required_inputs(self):
         return ["folder"]
 
+    @classmethod
+    def return_type(cls):
+        return {
+            "video": VideoRef,
+            "name": str,
+        }
+
     async def gen_process(self, context: ProcessingContext):
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
@@ -51,11 +58,13 @@ class LoadVideoFolder(BaseNode):
         parent_id = self.folder.asset_id
         list_assets = await context.list_assets(parent_id=parent_id, mime_type="video")
         for asset in list_assets.assets:
-            yield VideoRef(
-                type="video",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            if asset.content_type.startswith("video/"):
+                yield "name", asset.name
+                yield "video", VideoRef(
+                    type="video",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                )
 
 
 class SaveVideo(BaseNode):
