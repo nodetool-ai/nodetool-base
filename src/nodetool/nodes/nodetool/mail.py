@@ -18,9 +18,47 @@ from nodetool.metadata.types import (
 KEYWORD_SEPARATOR_REGEX = r"\s+|,|;"
 
 
+class EmailFields(BaseNode):
+    """
+    Decomposes an email into its individual components.
+    email, decompose, extract
+
+    Takes an Email object and returns its individual fields:
+    - id: Message ID
+    - subject: Email subject
+    - sender: Sender address
+    - date: Datetime of email
+    - body: Email body content
+    """
+
+    email: Email = Field(default=Email(), description="Email object to decompose")
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "id": str,
+            "subject": str,
+            "sender": str,
+            "date": Datetime,
+            "body": str,
+        }
+
+    async def process(self, context: ProcessingContext):
+        if not self.email:
+            raise ValueError("Email is required")
+
+        return {
+            "id": self.email.id,
+            "subject": self.email.subject,
+            "sender": self.email.sender,
+            "date": self.email.date,
+            "body": self.email.body,
+        }
+
+
 class GmailSearch(BaseNode):
     """
-    Searches Gmail using Gmail-specific search operators.
+    Searches Gmail using Gmail-specific search operators and yields matching emails.
     email, gmail, search
 
     Use cases:
@@ -84,7 +122,14 @@ class GmailSearch(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["from_address", "subject", "body", "date_filter", "max_results"]
 
-    async def process(self, context: ProcessingContext) -> list[str]:
+    @classmethod
+    def return_type(cls):
+        return {
+            "email": Email,
+            "message_id": str,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
         search_criteria = EmailSearchCriteria(
             from_address=(
                 self.from_address.strip() if self.from_address.strip() else None
@@ -106,33 +151,17 @@ class GmailSearch(BaseNode):
             text=self.text.strip() if self.text and self.text.strip() else None,
         )
 
-        return search_emails(
+        message_ids = search_emails(
             context.get_gmail_connection(), search_criteria, self.max_results
         )
 
-
-class EmailIterator(BaseNode):
-    """
-    Iterates over a list of email message IDs.
-    email, gmail, iterate
-    """
-
-    message_ids: list[str] = Field(
-        default=[],
-        description="List of message IDs to iterate over",
-    )
-
-    @classmethod
-    def return_type(cls):
-        return {
-            "output": Email | None,
-        }
-
-    async def gen_process(self, context: ProcessingContext):
-        for message_id in self.message_ids:
-            yield "output", await asyncio.to_thread(
+        for message_id in message_ids:
+            email = await asyncio.to_thread(
                 fetch_email, context.get_gmail_connection(), message_id
             )
+            if email:
+                yield "email", email
+                yield "message_id", message_id
 
 
 class MoveToArchive(BaseNode):
@@ -172,6 +201,12 @@ class AddLabel(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> bool:
+        if not self.message_id:
+            raise ValueError("Message ID is required")
+
+        if not self.label:
+            raise ValueError("Label is required")
+
         imap = context.get_gmail_connection()
         imap.select("INBOX")
 

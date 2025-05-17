@@ -1012,53 +1012,64 @@
       "is_dynamic": false
     },
     {
-      "title": "Email Iterator",
-      "description": "Iterates over a list of email message IDs.\n    email, gmail, iterate",
+      "title": "Email Fields",
+      "description": "Decomposes an email into its individual components.\n    email, decompose, extract\n\n    Takes an Email object and returns its individual fields:\n    - id: Message ID\n    - subject: Email subject\n    - sender: Sender address\n    - date: Datetime of email\n    - body: Email body content",
       "namespace": "nodetool.mail",
-      "node_type": "nodetool.mail.EmailIterator",
+      "node_type": "nodetool.mail.EmailFields",
       "layout": "default",
       "properties": [
         {
-          "name": "message_ids",
+          "name": "email",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
+            "type": "email"
           },
-          "default": [],
-          "title": "Message Ids",
-          "description": "List of message IDs to iterate over"
+          "default": {},
+          "title": "Email",
+          "description": "Email object to decompose"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "email"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str"
           },
-          "name": "output"
+          "name": "id"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "subject"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "sender"
+        },
+        {
+          "type": {
+            "type": "datetime"
+          },
+          "name": "date"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "body"
         }
       ],
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "message_ids"
+        "email"
       ],
       "is_dynamic": false
     },
     {
       "title": "Gmail Search",
-      "description": "Searches Gmail using Gmail-specific search operators.\n    email, gmail, search\n\n    Use cases:\n    - Search for emails based on specific criteria\n    - Retrieve emails from a specific sender\n    - Filter emails by subject, sender, or date",
+      "description": "Searches Gmail using Gmail-specific search operators and yields matching emails.\n    email, gmail, search\n\n    Use cases:\n    - Search for emails based on specific criteria\n    - Retrieve emails from a specific sender\n    - Filter emails by subject, sender, or date",
       "namespace": "nodetool.mail",
       "node_type": "nodetool.mail.GmailSearch",
       "layout": "default",
@@ -1164,14 +1175,15 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
+            "type": "email"
           },
-          "name": "output"
+          "name": "email"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "message_id"
         }
       ],
       "the_model_info": {},
@@ -9228,29 +9240,12 @@
           "default": [],
           "title": "Categories",
           "description": "List of possible categories. If empty, LLM will determine categories."
-        },
-        {
-          "name": "multi_label",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Multi Label",
-          "description": "Allow multiple category assignments"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "float"
-              }
-            ]
+            "type": "str"
           },
           "name": "output"
         }
@@ -9260,7 +9255,6 @@
       "basic_fields": [
         "text",
         "categories",
-        "multi_label",
         "model"
       ],
       "is_dynamic": false

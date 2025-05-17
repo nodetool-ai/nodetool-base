@@ -504,16 +504,12 @@ class Classifier(BaseNode):
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
     )
-    multi_label: bool = Field(
-        default=False,
-        description="Allow multiple category assignments",
-    )
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["text", "categories", "multi_label", "model"]
+        return ["text", "categories", "model"]
 
-    async def process(self, context: ProcessingContext) -> dict[str, float]:
+    async def process(self, context: ProcessingContext) -> str:
         content = []
         content.append(MessageTextContent(text=self.text))
 
@@ -526,12 +522,11 @@ class Classifier(BaseNode):
             f"\nClassify into these categories: {', '.join(self.categories)}"
         )
 
-        label_type = "multi-label" if self.multi_label else "single-label"
         messages = [
             Message(role="system", content=self.system_prompt),
             Message(
                 role="user",
-                content=f"Perform {label_type} classification on the following text:{category_info}\n\nText: {self.text}",
+                content=f"Perform classification on the following text:{category_info}\n\nText: {self.text}",
             ),
         ]
 
@@ -544,13 +539,13 @@ class Classifier(BaseNode):
                 "title": "Classification Results",
                 "description": "Category confidence scores between 0 and 1",
                 "additionalProperties": False,
-                "required": self.categories,
+                "required": ["category"],
                 "properties": {
-                    category: {
-                        "type": "number",
-                        "description": f"Confidence score between 0 and 1 for category '{category}'",
+                    "category": {
+                        "type": "string",
+                        "description": "The category of the text",
+                        "enum": self.categories,
                     }
-                    for category in self.categories
                 },
             },
             "strict": True,
@@ -565,20 +560,9 @@ class Classifier(BaseNode):
             },
         )
 
-        # Parse the response and ensure it's in the correct format
-        try:
-            classifications = json.loads(str(assistant_message.content))
+        classification = json.loads(str(assistant_message.content))
 
-            # For single-label classification, normalize scores to sum to 1.0
-            if not self.multi_label:
-                total = sum(classifications.values())
-                if total > 0:
-                    classifications = {k: v / total for k, v in classifications.items()}
-
-            return classifications
-
-        except json.JSONDecodeError:
-            raise ValueError("Invalid JSON response from model")
+        return classification["category"]
 
 
 DEFAULT_SYSTEM_PROMPT = """

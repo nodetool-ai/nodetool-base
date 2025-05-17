@@ -24,19 +24,45 @@ class AddLabel(GraphNode):
         return "nodetool.mail.AddLabel"
 
 
-class EmailIterator(GraphNode):
+class EmailFields(GraphNode):
     """
-    Iterates over a list of email message IDs.
-    email, gmail, iterate
+    Decomposes an email into its individual components.
+    email, decompose, extract
+
+    Takes an Email object and returns its individual fields:
+    - id: Message ID
+    - subject: Email subject
+    - sender: Sender address
+    - date: Datetime of email
+    - body: Email body content
     """
 
-    message_ids: list[str] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of message IDs to iterate over"
+    email: types.Email | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Email(
+            type="email",
+            id="",
+            sender="",
+            subject="",
+            date=types.Datetime(
+                type="datetime",
+                year=0,
+                month=0,
+                day=0,
+                hour=0,
+                minute=0,
+                second=0,
+                microsecond=0,
+                tzinfo="UTC",
+                utc_offset=0,
+            ),
+            body="",
+        ),
+        description="Email object to decompose",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.mail.EmailIterator"
+        return "nodetool.mail.EmailFields"
 
 
 import nodetool.nodes.nodetool.mail
@@ -45,7 +71,7 @@ import nodetool.nodes.nodetool.mail
 
 class GmailSearch(GraphNode):
     """
-    Searches Gmail using Gmail-specific search operators.
+    Searches Gmail using Gmail-specific search operators and yields matching emails.
     email, gmail, search
 
     Use cases:

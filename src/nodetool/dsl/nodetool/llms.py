@@ -38,9 +38,6 @@ class Classifier(GraphNode):
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
     )
-    multi_label: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description="Allow multiple category assignments"
-    )
 
     @classmethod
     def get_node_type(cls):
