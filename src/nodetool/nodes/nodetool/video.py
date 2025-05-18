@@ -2,6 +2,7 @@ from datetime import datetime
 import enum
 import os
 import tempfile
+import uuid
 import ffmpeg
 import cv2
 
@@ -17,7 +18,7 @@ import numpy as np
 from pydantic import Field
 from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef, TextRef
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef
+from nodetool.metadata.types import ImageRef, Event
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import VideoRef, FontRef
 import tempfile
@@ -113,7 +114,7 @@ class SaveVideo(BaseNode):
         )
 
 
-class ExtractFrames(BaseNode):
+class FrameIterator(BaseNode):
     """
     Extract frames from a video file using OpenCV.
     video, frames, extract, sequence
@@ -130,9 +131,21 @@ class ExtractFrames(BaseNode):
     start: int = Field(default=0, description="The frame to start extracting from.")
     end: int = Field(default=-1, description="The frame to stop extracting from.")
 
-    async def process(self, context: ProcessingContext) -> list[ImageRef]:
+    @classmethod
+    def get_title(cls):
+        return "Frame Iterator"
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "frame": ImageRef,
+            "index": int,
+            "fps": float,
+            "event": Event,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
         video_file = await context.asset_to_io(self.video)
-        images = []
 
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
             temp.write(video_file.read())
@@ -140,6 +153,7 @@ class ExtractFrames(BaseNode):
 
             cap = cv2.VideoCapture(temp.name, apiPreference=0, params=[])
             frame_count = 0
+            fps = await self.get_fps(context)
 
             while True:
                 ret, frame = cap.read()
@@ -153,7 +167,10 @@ class ExtractFrames(BaseNode):
                     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     img = PIL.Image.fromarray(rgb_frame)
                     img_ref = await context.image_from_pil(img)
-                    images.append(img_ref)
+                    yield "frame", img_ref
+                    yield "index", frame_count
+                    yield "fps", fps
+                    yield "event", Event(name="frame")
 
                 if self.end > -1 and frame_count >= self.end:
                     break
@@ -162,10 +179,19 @@ class ExtractFrames(BaseNode):
 
             cap.release()
 
-        return images
+        yield "event", Event(name="done")
 
-    def result_for_client(self, result: dict[str, Any]) -> dict[str, Any]:
-        return {}
+    async def get_fps(self, context: ProcessingContext) -> float:
+        video_file = await context.asset_to_io(self.video)
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
+            temp.write(video_file.read())
+            temp.flush()
+
+            cap = cv2.VideoCapture(temp.name)
+            fps = cap.get(cv2.CAP_PROP_FPS)
+            cap.release()
+
+            return fps
 
 
 class Fps(BaseNode):
@@ -196,7 +222,7 @@ class Fps(BaseNode):
             return fps
 
 
-class CreateVideo(BaseNode):
+class FrameToVideo(BaseNode):
     """
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
@@ -207,56 +233,50 @@ class CreateVideo(BaseNode):
     3. Generate animations from individual images
     """
 
-    frames: list[ImageRef] = Field(
-        default=[], description="The frames to combine into a video."
+    frame: ImageRef = Field(default=ImageRef(), description="Collect input frames")
+    index: int = Field(
+        default=0, description="Index of the current frame. -1 signals end of stream."
     )
     fps: float = Field(default=30, description="The FPS of the output video.")
+    event: Event = Field(default=Event(name="done"), description="Signal end of stream")
 
-    async def process(self, context: ProcessingContext) -> VideoRef:
-        if not self.frames:
+    async def handle_event(self, context: ProcessingContext, event: Event):
+        if not self.frame:
             raise ValueError("No frames provided to create video.")
 
-        with tempfile.TemporaryDirectory() as temp_dir, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
-            temp_output.close()
-
+        if event.name == "done":
+            yield "output", await self.create_video(context)
+        elif event.name == "frame":
             # Save all frames as images in the temporary directory
-            frame_paths = []
-            for i, img_ref in enumerate(self.frames):
-                img = await context.image_to_pil(img_ref)
-                frame_path = os.path.join(temp_dir, f"frame_{i:05d}.png")
-                img.save(frame_path)
-                frame_paths.append(frame_path)
+            img = await context.image_to_pil(self.frame)
+            frame_path = context.resolve_workspace_path(f"frame_{self.index:05d}.png")
+            img.save(frame_path)
+            print(f"Saved frame {self.index} to {frame_path}")
+        else:
+            raise ValueError(f"Unknown event: {event.name}")
 
-            # Create a temporary file for the output video
-            try:
-                # Use FFmpeg to create video from frames
-                (
-                    ffmpeg.input(
-                        os.path.join(temp_dir, "frame_%05d.png"), framerate=self.fps
-                    )
-                    .output(temp_output.name, vcodec="libx264", pix_fmt="yuv420p")
-                    .overwrite_output()
-                    .run(capture_stdout=True, capture_stderr=True)
-                )
+    async def create_video(self, context: ProcessingContext) -> VideoRef:
+        # Create a temporary file for the output video
+        video_path = context.resolve_workspace_path(f"video_{str(uuid.uuid4())}.mp4")
+        try:
+            # Use FFmpeg to create video from frames
+            frame_path = context.resolve_workspace_path("frame_%05d.png")
+            print(f"Creating video from {frame_path}")
+            (
+                ffmpeg.input(frame_path, framerate=self.fps)
+                .output(video_path, vcodec="libx264", pix_fmt="yuv420p")
+                .overwrite_output()
+                .run(capture_stdout=True, capture_stderr=True)
+            )
 
-                # Read the created video and return as VideoRef
-                with open(temp_output.name, "rb") as f:
-                    return await context.video_from_io(f)
+            # Read the created video and return as VideoRef
+            with open(video_path, "rb") as f:
+                return await context.video_from_io(f)
 
-            except ffmpeg.Error as e:
-                print(f"FFmpeg stdout:\n{e.stdout.decode('utf8')}")
-                print(f"FFmpeg stderr:\n{e.stderr.decode('utf8')}")
-                raise RuntimeError(f"Error creating video: {e.stderr.decode('utf8')}")
-            finally:
-                for frame_path in frame_paths:
-                    safe_unlink(frame_path)
-                safe_unlink(temp_output.name)
-                try:
-                    os.rmdir(temp_dir)
-                except Exception:
-                    pass
+        except ffmpeg.Error as e:
+            print(f"FFmpeg stdout:\n{e.stdout.decode('utf8')}")
+            print(f"FFmpeg stderr:\n{e.stderr.decode('utf8')}")
+            raise RuntimeError(f"Error creating video: {e.stderr.decode('utf8')}")
 
 
 class Concat(BaseNode):

@@ -207,3 +207,293 @@ class ToList(BaseNode):
     async def process(self, context: ProcessingContext) -> list[dict]:
         df = await context.dataframe_to_pandas(self.dataframe)
         return df.to_dict("records")
+
+
+class SelectColumn(BaseNode):
+    """
+    Select specific columns from dataframe.
+    dataframe, columns, filter
+
+    Use cases:
+    - Extract relevant features for analysis
+    - Reduce dataframe size by removing unnecessary columns
+    - Prepare data for specific visualizations or models
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(),
+        description="a dataframe from which columns are to be selected",
+    )
+    columns: str = Field("", description="comma separated list of column names")
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        columns = self.columns.split(",")
+        df = await context.dataframe_to_pandas(self.dataframe)
+        return await context.dataframe_from_pandas(df[columns])  # type: ignore
+
+
+class ExtractColumn(BaseNode):
+    """
+    Convert dataframe column to list.
+    dataframe, column, list
+
+    Use cases:
+    - Extract data for use in other processing steps
+    - Prepare column data for plotting or analysis
+    - Convert categorical data to list for encoding
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The input dataframe."
+    )
+    column_name: str = Field(
+        default="", description="The name of the column to be converted to a list."
+    )
+
+    async def process(self, context: ProcessingContext) -> list[Any]:
+        df = await context.dataframe_to_pandas(self.dataframe)
+        return df[self.column_name].tolist()
+
+
+class AddColumn(BaseNode):
+    """
+    Add list of values as new column to dataframe.
+    dataframe, column, list
+
+    Use cases:
+    - Incorporate external data into existing dataframe
+    - Add calculated results as new column
+    - Augment dataframe with additional features
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(),
+        description="Dataframe object to add a new column to.",
+    )
+    column_name: str = Field(
+        default="",
+        description="The name of the new column to be added to the dataframe.",
+    )
+    values: list[Any] = Field(
+        default=[],
+        description="A list of any type of elements which will be the new column's values.",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.dataframe)
+        df[self.column_name] = self.values
+        return await context.dataframe_from_pandas(df)
+
+
+class Merge(BaseNode):
+    """
+    Merge two dataframes along columns.
+    merge, concat, columns
+
+    Use cases:
+    - Combine data from multiple sources
+    - Add new features to existing dataframe
+    - Merge time series data from different periods
+    """
+
+    dataframe_a: DataframeRef = Field(
+        default=DataframeRef(), description="First DataFrame to be merged."
+    )
+    dataframe_b: DataframeRef = Field(
+        default=DataframeRef(), description="Second DataFrame to be merged."
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df_a = await context.dataframe_to_pandas(self.dataframe_a)
+        df_b = await context.dataframe_to_pandas(self.dataframe_b)
+        df = pd.concat([df_a, df_b], axis=1)
+        return await context.dataframe_from_pandas(df)
+
+
+class Append(BaseNode):
+    """
+    Append two dataframes along rows.
+    append, concat, rows
+
+    Use cases:
+    - Combine data from multiple time periods
+    - Merge datasets with same structure
+    - Aggregate data from different sources
+    """
+
+    dataframe_a: DataframeRef = Field(
+        default=DataframeRef(), description="First DataFrame to be appended."
+    )
+    dataframe_b: DataframeRef = Field(
+        default=DataframeRef(), description="Second DataFrame to be appended."
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df_a = await context.dataframe_to_pandas(self.dataframe_a)
+        df_b = await context.dataframe_to_pandas(self.dataframe_b)
+
+        # Handle empty dataframes
+        if df_a.empty:
+            return await context.dataframe_from_pandas(df_b)
+        if df_b.empty:
+            return await context.dataframe_from_pandas(df_a)
+
+        # Check column compatibility only if both dataframes are non-empty
+        if not df_a.columns.equals(df_b.columns):
+            raise ValueError(
+                f"Columns in dataframe A ({df_a.columns}) do not match columns in dataframe B ({df_b.columns})"
+            )
+
+        df = pd.concat([df_a, df_b], axis=0)
+        return await context.dataframe_from_pandas(df)
+
+
+class Join(BaseNode):
+    """
+    Join two dataframes on specified column.
+    join, merge, column
+
+    Use cases:
+    - Combine data from related tables
+    - Enrich dataset with additional information
+    - Link data based on common identifiers
+    """
+
+    dataframe_a: DataframeRef = Field(
+        default=DataframeRef(), description="First DataFrame to be merged."
+    )
+    dataframe_b: DataframeRef = Field(
+        default=DataframeRef(), description="Second DataFrame to be merged."
+    )
+    join_on: str = Field(
+        default="",
+        description="The column name on which to join the two dataframes.",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df_a = await context.dataframe_to_pandas(self.dataframe_a)
+        df_b = await context.dataframe_to_pandas(self.dataframe_b)
+        if not df_a.columns.equals(df_b.columns):
+            raise ValueError(
+                f"Columns in dataframe A ({df_a.columns}) do not match columns in dataframe B ({df_b.columns})"
+            )
+        df = pd.merge(df_a, df_b, on=self.join_on)
+        return await context.dataframe_from_pandas(df)
+
+
+class RowIterator(BaseNode):
+    """
+    Iterate over rows of a dataframe.
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The input dataframe."
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Row Iterator"
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "dict": dict,
+            "index": int,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
+        df = await context.dataframe_to_pandas(self.dataframe)
+        for index, row in df.iterrows():
+            yield "dict", row.to_dict()
+            yield "index", index
+
+
+class FindRow(BaseNode):
+    """
+    Find the first row in a dataframe that matches a given condition.
+    filter, query, condition, single row
+
+    Example conditions:
+    age > 30
+    age > 30 and salary < 50000
+    name == 'John Doe'
+    100 <= price <= 200
+    status in ['Active', 'Pending']
+    not (age < 18)
+
+    Use cases:
+    - Retrieve specific record based on criteria
+    - Find first occurrence of a particular condition
+    - Extract single data point for further analysis
+    """
+
+    df: DataframeRef = Field(
+        default=DataframeRef(), description="The DataFrame to search."
+    )
+    condition: str = Field(
+        default="",
+        description="The condition to filter the DataFrame, e.g. 'column_name == value'.",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.df)
+        result = df.query(self.condition).head(1)
+        return await context.dataframe_from_pandas(result)
+
+
+class SortByColumn(BaseNode):
+    """
+    Sort dataframe by specified column.
+    sort, order, column
+
+    Use cases:
+    - Arrange data in ascending or descending order
+    - Identify top or bottom values in dataset
+    - Prepare data for rank-based analysis
+    """
+
+    df: DataframeRef = Field(default=DataframeRef())
+    column: str = Field(default="", description="The column to sort the DataFrame by.")
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.df)
+        res = df.sort_values(self.column)
+        return await context.dataframe_from_pandas(res)
+
+
+class DropDuplicates(BaseNode):
+    """
+    Remove duplicate rows from dataframe.
+    duplicates, unique, clean
+
+    Use cases:
+    - Clean dataset by removing redundant entries
+    - Ensure data integrity in analysis
+    - Prepare data for unique value operations
+    """
+
+    df: DataframeRef = Field(default=DataframeRef(), description="The input DataFrame.")
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.df)
+        res = df.drop_duplicates()
+        return await context.dataframe_from_pandas(res)
+
+
+class DropNA(BaseNode):
+    """
+    Remove rows with NA values from dataframe.
+    na, missing, clean
+
+    Use cases:
+    - Clean dataset by removing incomplete entries
+    - Prepare data for analysis requiring complete cases
+    - Improve data quality for modeling
+    """
+
+    df: DataframeRef = Field(default=DataframeRef(), description="The input DataFrame.")
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.df)
+        res = df.dropna()
+        return await context.dataframe_from_pandas(res)

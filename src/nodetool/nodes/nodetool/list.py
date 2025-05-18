@@ -1066,78 +1066,6 @@ class MapField(BaseNode):
         return [get_value(item) for item in self.values]
 
 
-class MapTemplate(BaseNode):
-    """
-    Maps a template string over a list of dictionaries or objects using Jinja2 templating.
-    list, template, map, formatting
-
-    Use cases:
-    - Formatting multiple records into strings
-    - Generating text from structured data
-    - Creating text representations of data collections
-
-    Examples:
-    - template: "Name: {{ name }}, Age: {{ age }}"
-      values: [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}]
-      -> ["Name: Alice, Age: 30", "Name: Bob, Age: 25"]
-
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
-    """
-
-    template: str = Field(
-        default="",
-        description="""
-        Template string with Jinja2 placeholders for formatting
-        Examples:
-        - "Name: {{ name }}, Age: {{ age }}"
-        - "{{ title|truncate(20) }}"
-        - "{{ name|upper }}"
-        """,
-    )
-    values: list[dict[str, Any] | object] = Field(default=[])
-
-    async def process(self, context: ProcessingContext) -> list[str]:
-        from jinja2 import Environment, BaseLoader
-
-        if not self.values:
-            return []
-
-        # Create Jinja2 environment
-        env = Environment(loader=BaseLoader())
-        template = env.from_string(self.template)
-
-        results = []
-        for item in self.values:
-            try:
-                if isinstance(item, dict):
-                    results.append(template.render(**item))
-                elif isinstance(item, object):
-                    # Convert object attributes to dict
-                    item_dict = {
-                        attr: getattr(item, attr)
-                        for attr in dir(item)
-                        if not attr.startswith("_")
-                    }
-                    results.append(template.render(**item_dict))
-            except Exception as e:
-                # Skip items that don't match the template
-                continue
-
-        return results
-
-
 class Flatten(BaseNode):
     """
     Flattens a nested list structure into a single flat list.
@@ -1171,3 +1099,27 @@ class Flatten(BaseNode):
         if not isinstance(self.values, list):
             raise ValueError("Input must be a list")
         return self._flatten(self.values)
+
+
+class ListIterator(BaseNode):
+    """
+    Iterate over rows of a dataframe.
+    """
+
+    values: list[Any] = Field(default=[])
+
+    @classmethod
+    def get_title(cls):
+        return "List Iterator"
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "value": Any,
+            "index": int,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
+        for index, value in enumerate(self.values):
+            yield "value", value
+            yield "index", index

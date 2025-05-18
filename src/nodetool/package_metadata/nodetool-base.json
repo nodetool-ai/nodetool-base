@@ -2447,6 +2447,48 @@
       "is_dynamic": false
     },
     {
+      "title": "List Iterator",
+      "description": "Iterate over rows of a dataframe.",
+      "namespace": "nodetool.list",
+      "node_type": "nodetool.list.ListIterator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Values"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "value"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "values"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Map Field",
       "description": "Extracts a specific field from a list of dictionaries or objects.\n    list, map, field, extract, pluck\n\n    Use cases:\n    - Extract specific fields from a list of objects\n    - Transform complex data structures into simple lists\n    - Collect values for a particular key across multiple dictionaries",
       "namespace": "nodetool.list",
@@ -2509,73 +2551,6 @@
         "values",
         "field",
         "default"
-      ],
-      "is_dynamic": false
-    },
-    {
-      "title": "Map Template",
-      "description": "Maps a template string over a list of dictionaries or objects using Jinja2 templating.\n    list, template, map, formatting\n\n    Use cases:\n    - Formatting multiple records into strings\n    - Generating text from structured data\n    - Creating text representations of data collections\n\n    Examples:\n    - template: \"Name: {{ name }}, Age: {{ age }}\"\n      values: [{\"name\": \"Alice\", \"age\": 30}, {\"name\": \"Bob\", \"age\": 25}]\n      -> [\"Name: Alice, Age: 30\", \"Name: Bob, Age: 25\"]\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.MapTemplate",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "template",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Template",
-          "description": "\n        Template string with Jinja2 placeholders for formatting\n        Examples:\n        - \"Name: {{ name }}, Age: {{ age }}\"\n        - \"{{ title|truncate(20) }}\"\n        - \"{{ name|upper }}\"\n        "
-        },
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "union",
-                "type_args": [
-                  {
-                    "type": "dict",
-                    "type_args": [
-                      {
-                        "type": "str"
-                      },
-                      {
-                        "type": "any"
-                      }
-                    ]
-                  },
-                  {
-                    "type": "object"
-                  }
-                ]
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "template",
-        "values"
       ],
       "is_dynamic": false
     },
@@ -9162,38 +9137,6 @@
       "is_dynamic": false
     },
     {
-      "title": "Loop",
-      "description": "Loops over a list of items and processes the remaining nodes for each item.\n    loop, itereate, repeat, for, each, batch\n\n    Use cases:\n    - Loop over a list of items and process the nodes inside the group",
-      "namespace": "nodetool.group",
-      "node_type": "nodetool.group.Loop",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "input",
-          "type": {
-            "type": "any"
-          },
-          "default": [],
-          "title": "Input",
-          "description": "The input data to loop over."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "input"
-      ],
-      "is_dynamic": false
-    },
-    {
       "title": "Classifier",
       "description": "Classify text into predefined or dynamic categories using LLM.\n    classification, nlp, categorization\n\n    Use cases:\n    - Sentiment analysis\n    - Topic classification\n    - Intent detection\n    - Content categorization",
       "namespace": "nodetool.llms",
@@ -13563,53 +13506,6 @@
       "is_dynamic": false
     },
     {
-      "title": "Create Video",
-      "description": "Combine a sequence of frames into a single video file.\n    video, frames, combine, sequence\n\n    Use cases:\n    1. Create time-lapse videos from image sequences\n    2. Compile processed frames back into a video\n    3. Generate animations from individual images",
-      "namespace": "nodetool.video",
-      "node_type": "nodetool.video.CreateVideo",
-      "layout": "default",
-      "properties": [
-        {
-          "name": "frames",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Frames",
-          "description": "The frames to combine into a video."
-        },
-        {
-          "name": "fps",
-          "type": {
-            "type": "float"
-          },
-          "default": 30,
-          "title": "Fps",
-          "description": "The FPS of the output video."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "output"
-        }
-      ],
-      "the_model_info": {},
-      "recommended_models": [],
-      "basic_fields": [
-        "frames",
-        "fps"
-      ],
-      "is_dynamic": false
-    },
-    {
       "title": "Denoise",
       "description": "Apply noise reduction to a video.\n    video, denoise, clean, enhance\n\n    Use cases:\n    1. Improve video quality by reducing unwanted noise\n    2. Enhance low-light footage\n    3. Prepare video for further processing or compression",
       "namespace": "nodetool.video",
@@ -13686,10 +13582,42 @@
       "is_dynamic": false
     },
     {
-      "title": "Extract Frames",
+      "title": "Fps",
+      "description": "Get the frames per second (FPS) of a video file.\n    video, analysis, frames, fps\n\n    Use cases:\n    1. Analyze video properties for quality assessment\n    2. Determine appropriate playback speed for video editing\n    3. Ensure compatibility with target display systems",
+      "namespace": "nodetool.video",
+      "node_type": "nodetool.video.Fps",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {},
+          "title": "Video",
+          "description": "The input video to analyze for FPS."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "video"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Frame Iterator",
       "description": "Extract frames from a video file using OpenCV.\n    video, frames, extract, sequence\n\n    Use cases:\n    1. Generate image sequences for further processing\n    2. Extract specific frame ranges from a video\n    3. Create thumbnails or previews from video content",
       "namespace": "nodetool.video",
-      "node_type": "nodetool.video.ExtractFrames",
+      "node_type": "nodetool.video.FrameIterator",
       "layout": "default",
       "properties": [
         {
@@ -13723,14 +13651,27 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "name": "output"
+          "name": "frame"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
+        },
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "fps"
+        },
+        {
+          "type": {
+            "type": "event"
+          },
+          "name": "event"
         }
       ],
       "the_model_info": {},
@@ -13743,26 +13684,55 @@
       "is_dynamic": false
     },
     {
-      "title": "Fps",
-      "description": "Get the frames per second (FPS) of a video file.\n    video, analysis, frames, fps\n\n    Use cases:\n    1. Analyze video properties for quality assessment\n    2. Determine appropriate playback speed for video editing\n    3. Ensure compatibility with target display systems",
+      "title": "Frame To Video",
+      "description": "Combine a sequence of frames into a single video file.\n    video, frames, combine, sequence\n\n    Use cases:\n    1. Create time-lapse videos from image sequences\n    2. Compile processed frames back into a video\n    3. Generate animations from individual images",
       "namespace": "nodetool.video",
-      "node_type": "nodetool.video.Fps",
+      "node_type": "nodetool.video.FrameToVideo",
       "layout": "default",
       "properties": [
         {
-          "name": "video",
+          "name": "frame",
           "type": {
-            "type": "video"
+            "type": "image"
           },
           "default": {},
-          "title": "Video",
-          "description": "The input video to analyze for FPS."
+          "title": "Frame",
+          "description": "Collect input frames"
+        },
+        {
+          "name": "index",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Index",
+          "description": "Index of the current frame. -1 signals end of stream."
+        },
+        {
+          "name": "fps",
+          "type": {
+            "type": "float"
+          },
+          "default": 30,
+          "title": "Fps",
+          "description": "The FPS of the output video."
+        },
+        {
+          "name": "event",
+          "type": {
+            "type": "event"
+          },
+          "default": {
+            "name": "done"
+          },
+          "title": "Event",
+          "description": "Signal end of stream"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "float"
+            "type": "any"
           },
           "name": "output"
         }
@@ -13770,7 +13740,10 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "video"
+        "frame",
+        "index",
+        "fps",
+        "event"
       ],
       "is_dynamic": false
     },
@@ -14935,6 +14908,216 @@
       "is_dynamic": false
     },
     {
+      "title": "Add Column",
+      "description": "Add list of values as new column to dataframe.\n    dataframe, column, list\n\n    Use cases:\n    - Incorporate external data into existing dataframe\n    - Add calculated results as new column\n    - Augment dataframe with additional features",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.AddColumn",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "Dataframe object to add a new column to."
+        },
+        {
+          "name": "column_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Column Name",
+          "description": "The name of the new column to be added to the dataframe."
+        },
+        {
+          "name": "values",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Values",
+          "description": "A list of any type of elements which will be the new column's values."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe",
+        "column_name",
+        "values"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Append",
+      "description": "Append two dataframes along rows.\n    append, concat, rows\n\n    Use cases:\n    - Combine data from multiple time periods\n    - Merge datasets with same structure\n    - Aggregate data from different sources",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.Append",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe_a",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe A",
+          "description": "First DataFrame to be appended."
+        },
+        {
+          "name": "dataframe_b",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe B",
+          "description": "Second DataFrame to be appended."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe_a",
+        "dataframe_b"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Drop Duplicates",
+      "description": "Remove duplicate rows from dataframe.\n    duplicates, unique, clean\n\n    Use cases:\n    - Clean dataset by removing redundant entries\n    - Ensure data integrity in analysis\n    - Prepare data for unique value operations",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.DropDuplicates",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "df",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Df",
+          "description": "The input DataFrame."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "df"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Drop NA",
+      "description": "Remove rows with NA values from dataframe.\n    na, missing, clean\n\n    Use cases:\n    - Clean dataset by removing incomplete entries\n    - Prepare data for analysis requiring complete cases\n    - Improve data quality for modeling",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.DropNA",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "df",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Df",
+          "description": "The input DataFrame."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "df"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Column",
+      "description": "Convert dataframe column to list.\n    dataframe, column, list\n\n    Use cases:\n    - Extract data for use in other processing steps\n    - Prepare column data for plotting or analysis\n    - Convert categorical data to list for encoding",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.ExtractColumn",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "The input dataframe."
+        },
+        {
+          "name": "column_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Column Name",
+          "description": "The name of the column to be converted to a list."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe",
+        "column_name"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Filter",
       "description": "Filter dataframe based on condition.\n    filter, query, condition\n\n    Example conditions:\n    age > 30\n    age > 30 and salary < 50000\n    name == 'John Doe'\n    100 <= price <= 200\n    status in ['Active', 'Pending']\n    not (age < 18)\n\n    Use cases:\n    - Extract subset of data meeting specific criteria\n    - Remove outliers or invalid data points\n    - Focus analysis on relevant data segments",
       "namespace": "nodetool.data",
@@ -14958,6 +15141,48 @@
           "default": "",
           "title": "Condition",
           "description": "The filtering condition to be applied to the DataFrame, e.g. column_name > 5."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "df",
+        "condition"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Find Row",
+      "description": "Find the first row in a dataframe that matches a given condition.\n    filter, query, condition, single row\n\n    Example conditions:\n    age > 30\n    age > 30 and salary < 50000\n    name == 'John Doe'\n    100 <= price <= 200\n    status in ['Active', 'Pending']\n    not (age < 18)\n\n    Use cases:\n    - Retrieve specific record based on criteria\n    - Find first occurrence of a particular condition\n    - Extract single data point for further analysis",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.FindRow",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "df",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Df",
+          "description": "The DataFrame to search."
+        },
+        {
+          "name": "condition",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Condition",
+          "description": "The condition to filter the DataFrame, e.g. 'column_name == value'."
         }
       ],
       "outputs": [
@@ -15077,6 +15302,138 @@
       "is_dynamic": false
     },
     {
+      "title": "Join",
+      "description": "Join two dataframes on specified column.\n    join, merge, column\n\n    Use cases:\n    - Combine data from related tables\n    - Enrich dataset with additional information\n    - Link data based on common identifiers",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.Join",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe_a",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe A",
+          "description": "First DataFrame to be merged."
+        },
+        {
+          "name": "dataframe_b",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe B",
+          "description": "Second DataFrame to be merged."
+        },
+        {
+          "name": "join_on",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Join On",
+          "description": "The column name on which to join the two dataframes."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe_a",
+        "dataframe_b",
+        "join_on"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Merge",
+      "description": "Merge two dataframes along columns.\n    merge, concat, columns\n\n    Use cases:\n    - Combine data from multiple sources\n    - Add new features to existing dataframe\n    - Merge time series data from different periods",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.Merge",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe_a",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe A",
+          "description": "First DataFrame to be merged."
+        },
+        {
+          "name": "dataframe_b",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe B",
+          "description": "Second DataFrame to be merged."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe_a",
+        "dataframe_b"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Row Iterator",
+      "description": "Iterate over rows of a dataframe.",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.RowIterator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "The input dataframe."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "dict"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Save Dataframe",
       "description": "Save dataframe in specified folder.\n    csv, folder, save\n\n    Use cases:\n    - Export processed data for external use\n    - Create backups of dataframes",
       "namespace": "nodetool.data",
@@ -15124,6 +15481,48 @@
         "df",
         "folder",
         "name"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Select Column",
+      "description": "Select specific columns from dataframe.\n    dataframe, columns, filter\n\n    Use cases:\n    - Extract relevant features for analysis\n    - Reduce dataframe size by removing unnecessary columns\n    - Prepare data for specific visualizations or models",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.SelectColumn",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "a dataframe from which columns are to be selected"
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Columns",
+          "description": "comma separated list of column names"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe",
+        "columns"
       ],
       "is_dynamic": false
     },
@@ -15176,6 +15575,47 @@
         "dataframe",
         "start_index",
         "end_index"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Sort By Column",
+      "description": "Sort dataframe by specified column.\n    sort, order, column\n\n    Use cases:\n    - Arrange data in ascending or descending order\n    - Identify top or bottom values in dataset\n    - Prepare data for rank-based analysis",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.SortByColumn",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "df",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Df"
+        },
+        {
+          "name": "column",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Column",
+          "description": "The column to sort the DataFrame by."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "df",
+        "column"
       ],
       "is_dynamic": false
     },
@@ -17713,7 +18153,7 @@
       "tags": []
     },
     {
-      "id": "343ded70132611f09ba7000022fe790f",
+      "id": "64bac2e8340f11f097f000007d22ea5d",
       "name": "Chat with Docs",
       "description": "An intelligent document retrieval and question-answering system that leverages vector search and local LLMs to provide accurate, context-aware responses based on your document collection.",
       "tags": [
