@@ -1,8 +1,8 @@
 {
-  "id": "343ded70132611f09ba7000022fe790f",
+  "id": "64bac2e8340f11f097f000007d22ea5d",
   "access": "public",
-  "created_at": "2025-04-06T22:37:35.603805",
-  "updated_at": "2025-04-06T22:37:35.603818",
+  "created_at": "2025-05-18T19:46:29.112992",
+  "updated_at": "2025-05-18T19:46:29.113015",
   "name": "Chat with Docs",
   "description": "An intelligent document retrieval and question-answering system that leverages vector search and local LLMs to provide accurate, context-aware responses based on your document collection.",
   "tags": [
@@ -58,8 +58,8 @@
         },
         "ui_properties": {
           "position": {
-            "x": 1046,
-            "y": 244
+            "x": 1104,
+            "y": 235
           },
           "zIndex": 0,
           "width": 395,
@@ -233,7 +233,6 @@
           ]
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 30,
             "y": -236
@@ -241,28 +240,6 @@
           "zIndex": 0,
           "width": 930,
           "height": 212,
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "67c3231e-d2ef-465b-bf8d-cbc1f8a8f11d",
-        "parent_id": null,
-        "type": "nodetool.llms.LLM",
-        "data": {
-          "model": "gemini-2.0-flash",
-          "system": "You are a friendly assistant.",
-          "image": {},
-          "messages": [],
-          "max_tokens": 4096
-        },
-        "ui_properties": {
-          "position": {
-            "x": 856,
-            "y": 204
-          },
-          "zIndex": 0,
-          "width": 160,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -287,10 +264,9 @@
           ]
         },
         "ui_properties": {
-          "selected": false,
           "position": {
-            "x": 890,
-            "y": 470
+            "x": 886,
+            "y": 625
           },
           "zIndex": 0,
           "width": 527,
@@ -338,7 +314,6 @@
           ]
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": -184,
             "y": -6
@@ -346,6 +321,35 @@
           "zIndex": 0,
           "width": 464,
           "height": 119,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "92df5e6c-f50c-48be-bc67-fb339c96146f",
+        "parent_id": null,
+        "type": "nodetool.llms.LLMStreaming",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "id": "qwen3:1.7b",
+            "provider": "ollama"
+          },
+          "system": "You are a friendly assistant.",
+          "image": {},
+          "audio": {},
+          "tools": [],
+          "messages": [],
+          "max_tokens": 4096,
+          "context_window": 4096
+        },
+        "ui_properties": {
+          "position": {
+            "x": 854,
+            "y": 189
+          },
+          "zIndex": 0,
+          "width": 200,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -377,17 +381,17 @@
         "ui_properties": null
       },
       {
-        "id": "5e096543-995d-4ac2-946a-4d0373fd60f8",
+        "id": "58a01e16-feac-4931-83cd-37d57ca51a10",
         "source": "9",
         "sourceHandle": "output",
-        "target": "67c3231e-d2ef-465b-bf8d-cbc1f8a8f11d",
+        "target": "92df5e6c-f50c-48be-bc67-fb339c96146f",
         "targetHandle": "prompt",
         "ui_properties": null
       },
       {
-        "id": "abbb5e9f-52f9-43cf-b035-2637b04d4bae",
-        "source": "67c3231e-d2ef-465b-bf8d-cbc1f8a8f11d",
-        "sourceHandle": "output",
+        "id": "3a6e393b-4db8-466d-92e4-1afc07571987",
+        "source": "92df5e6c-f50c-48be-bc67-fb339c96146f",
+        "sourceHandle": "text",
         "target": "6",
         "targetHandle": "value",
         "ui_properties": null
@@ -396,5 +400,7 @@
   },
   "input_schema": null,
   "output_schema": null,
-  "settings": null
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null
 }
