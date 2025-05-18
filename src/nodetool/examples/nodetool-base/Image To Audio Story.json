@@ -1,8 +1,8 @@
 {
   "id": "43a125a6124611f0b49100005eb1b543",
   "access": "public",
-  "created_at": "2025-04-05T19:56:53.475079",
-  "updated_at": "2025-04-05T19:56:53.475093",
+  "created_at": "2025-05-18T09:35:42.352638",
+  "updated_at": "2025-05-18T09:35:42.352661",
   "name": "Image To Audio Story",
   "description": "Generate and narrate creative stories from images using AI",
   "tags": [
@@ -10,7 +10,7 @@
     "multimodal"
   ],
   "thumbnail": null,
-  "thumbnail_url": "https://app.nodetool.ai/examples/porcelain_sculpture.jpg",
+  "thumbnail_url": null,
   "graph": {
     "nodes": [
       {
@@ -24,7 +24,6 @@
           }
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 50,
             "y": 79
@@ -43,7 +42,6 @@
           "name": ""
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 522,
             "y": 64
@@ -56,29 +54,6 @@
         "dynamic_properties": {}
       },
       {
-        "id": "4",
-        "parent_id": null,
-        "type": "huggingface.text_to_speech.TextToSpeech",
-        "data": {
-          "model": {
-            "type": "hf.text_to_speech",
-            "repo_id": "facebook/mms-tts-eng"
-          },
-          "prompt": ""
-        },
-        "ui_properties": {
-          "selected": false,
-          "position": {
-            "x": 575,
-            "y": 269
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
         "id": "5",
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Preview",
@@ -86,14 +61,13 @@
           "name": "audio_output_2024-07-06"
         },
         "ui_properties": {
-          "selected": false,
           "position": {
-            "x": 858,
-            "y": 274
+            "x": 784,
+            "y": 243
           },
           "zIndex": 0,
-          "width": 150,
-          "height": 150,
+          "width": 245,
+          "height": 232,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -112,6 +86,16 @@
                   "text": "Image-to-Story-to-Speech Pipeline",
                   "bold": true,
                   "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "bold": true,
+                  "size": "+",
+                  "text": ""
                 }
               ]
             },
@@ -143,7 +127,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "- Output 2: Narrated audio via Facebook/MMS-TTS-ENG "
+                  "text": "- Output 2: Narrated audio via OpenAI TTS "
                 }
               ]
             },
@@ -154,34 +138,17 @@
                   "text": "- Purpose: Transforms visual art into narrative storytelling and spoken word"
                 }
               ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "- Application: Can be used for museum exhibits, art interpretation, accessibility features, or creative multimedia projects"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "- Note: Adjust system prompt to influence storytelling style"
-                }
-              ]
             }
           ]
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 12,
             "y": -171
           },
           "zIndex": 0,
-          "width": 866,
-          "height": 169,
+          "width": 505,
+          "height": 148,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -198,7 +165,6 @@
           "max_tokens": 4096
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 280,
             "y": 50
@@ -208,19 +174,29 @@
           "selectable": true
         },
         "dynamic_properties": {}
+      },
+      {
+        "id": "7c0562d8-a8dc-4922-abd9-ce53006097d2",
+        "parent_id": null,
+        "type": "openai.audio.TextToSpeech",
+        "data": {
+          "model": "tts-1",
+          "voice": "alloy",
+          "speed": 1
+        },
+        "ui_properties": {
+          "position": {
+            "x": 542,
+            "y": 251
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
       }
     ],
     "edges": [
-      {
-        "id": "67119",
-        "source": "4",
-        "sourceHandle": "output",
-        "target": "5",
-        "targetHandle": "value",
-        "ui_properties": {
-          "className": "audio"
-        }
-      },
       {
         "id": "15db2a09-693e-4931-8273-fa64a60b6d52",
         "source": "1",
@@ -230,24 +206,34 @@
         "ui_properties": null
       },
       {
-        "id": "db746e40-c839-44dd-8b0e-00474653c134",
+        "id": "5b3fe00a-79c6-48ae-beae-afb5770072d0",
         "source": "77a9cf98-c4c6-4585-930b-badbe641a662",
+        "sourceHandle": "text",
+        "target": "7c0562d8-a8dc-4922-abd9-ce53006097d2",
+        "targetHandle": "input",
+        "ui_properties": null
+      },
+      {
+        "id": "b4b0eea4-8f01-4f76-9b0f-9cf0ec7183dc",
+        "source": "7c0562d8-a8dc-4922-abd9-ce53006097d2",
         "sourceHandle": "output",
-        "target": "3",
+        "target": "5",
         "targetHandle": "value",
         "ui_properties": null
       },
       {
-        "id": "36a6bbd4-0a04-48c4-abe2-361b476bf97b",
+        "id": "441d374f-942a-4cb1-ae55-f47e428573c2",
         "source": "77a9cf98-c4c6-4585-930b-badbe641a662",
-        "sourceHandle": "output",
-        "target": "4",
-        "targetHandle": "text",
+        "sourceHandle": "text",
+        "target": "3",
+        "targetHandle": "value",
         "ui_properties": null
       }
     ]
   },
   "input_schema": null,
   "output_schema": null,
-  "settings": null
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": "/Users/mg/dev/nodetool-base/src/nodetool/examples/nodetool-base/Image To Audio Story.json"
 }

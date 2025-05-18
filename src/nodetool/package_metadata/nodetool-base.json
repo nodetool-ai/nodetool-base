@@ -16113,5 +16113,53 @@
       ],
       "is_dynamic": false
     }
+  ],
+  "assets": [
+    {
+      "package_name": "nodetool-base",
+      "name": "email_digest.jpg",
+      "path": "/examples/nodetool-base/email_digest.jpg"
+    }
+  ],
+  "examples": [
+    {
+      "id": "43a125a6124611f0b49100005eb1b543",
+      "name": "Image To Audio Story",
+      "description": "Generate and narrate creative stories from images using AI",
+      "tags": [
+        "start",
+        "multimodal"
+      ],
+      "thumbnail_url": "https://app.nodetool.ai/examples/porcelain_sculpture.jpg"
+    },
+    {
+      "id": "601f0f48f3c611ef828d0000081e6c6c",
+      "name": "Daily Digest",
+      "description": "Summarize daily emails using LLMs",
+      "tags": [
+        "agents",
+        "email"
+      ],
+      "thumbnail_url": "/examples/email_digest.jpg"
+    },
+    {
+      "id": "f905ed2212f611f0b622000001bffa9d",
+      "name": "Simple Chat",
+      "description": "Basic chat interface with tools",
+      "tags": [
+        "chat",
+        "start"
+      ],
+      "thumbnail_url": "/examples/android.png"
+    },
+    {
+      "id": "f1a11024132411f0b12f000053c522ea",
+      "name": "Data Generator",
+      "description": "Generate structured data using AI agents",
+      "tags": [
+        "agents"
+      ],
+      "thumbnail_url": "/examples/data_generator.png"
+    }
   ]
 }
