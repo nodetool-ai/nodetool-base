@@ -1,8 +1,8 @@
 {
-  "id": "9810b7a012ff11f09b6200005663cdeb",
+  "id": "9759819033e111f0935900003bf156d2",
   "access": "public",
-  "created_at": "2025-04-06T18:00:55.998387",
-  "updated_at": "2025-04-06T18:00:55.998402",
+  "created_at": "2025-05-18T17:25:02.819043",
+  "updated_at": "2025-05-18T17:25:02.819058",
   "name": "Data Visualization Pipeline",
   "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
   "tags": [
@@ -20,14 +20,13 @@
           "name": "Final Chart Visualization"
         },
         "ui_properties": {
-          "selected": false,
           "position": {
-            "x": 469,
+            "x": 770,
             "y": 50
           },
           "zIndex": 0,
-          "width": 826,
-          "height": 453,
+          "width": 359,
+          "height": 382,
           "title": "Preview of the rendered chart image output. Displays the final visualization created by the workflow.",
           "selectable": true
         },
@@ -61,7 +60,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "This workflow generates synthetic historical GDP data for the United States from 1900 to 2000 using the Data Generator node powered by the llama3.2:3b model. It creates a dataset with two columns:"
+                  "text": "This workflow pulls historical GDP data from an HTTP source."
                 }
               ]
             },
@@ -69,7 +68,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "\t\u2022\tYear (int): Represents the years from 1900 to 2000."
+                  "text": "The file is converted to a Dataframe and then passed to the Chart Generator node."
                 }
               ]
             },
@@ -77,7 +76,7 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": "\t\u2022\tGDP (int): Corresponding GDP values."
+                  "text": "The Chart Generator configures the data into a line chart format. "
                 }
               ]
             },
@@ -85,87 +84,115 @@
               "type": "paragraph",
               "children": [
                 {
-                  "text": ""
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "The generated data is then passed to the Chart Generator node, which configures the data into a line chart format. The model is instructed to create a line chart showing GDP trends over the century."
+                  "text": "The model is instructed to create a line chart showing GDP trends over the century."
                 }
               ]
             }
           ]
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 20,
             "y": -212
           },
           "zIndex": 0,
-          "width": 743,
-          "height": 186,
+          "width": 553,
+          "height": 149,
           "selectable": true
         },
         "dynamic_properties": {}
       },
       {
-        "id": "c55c6970-e1b9-4da5-b1eb-464733535a5b",
+        "id": "ccd77a00-6d16-4f91-9c69-b36ebafc7084",
         "parent_id": null,
-        "type": "nodetool.generators.DataGenerator",
+        "type": "lib.network.http.GetRequest",
         "data": {
-          "model": "gpt-4o",
-          "prompt": "GDP for USA 1900 - 2000",
-          "input_text": "",
-          "max_tokens": 4096,
-          "columns": {
-            "type": "record_type",
-            "columns": [
-              {
-                "name": "gdp",
-                "data_type": "float",
-                "description": ""
-              },
-              {
-                "name": "year",
-                "data_type": "int",
-                "description": ""
-              }
-            ]
-          }
+          "url": "https://raw.githubusercontent.com/datasets/gdp/refs/heads/main/data/gdp.csv"
         },
         "ui_properties": {
-          "selected": false,
           "position": {
             "x": 50,
-            "y": 99
+            "y": 219
           },
           "zIndex": 0,
-          "width": 209,
+          "width": 200,
           "selectable": true
         },
         "dynamic_properties": {}
       },
       {
-        "id": "d047302d-0395-4a38-915e-7ba96d124ccf",
+        "id": "bbf8780d-4184-49af-be71-b361d3c22499",
+        "parent_id": null,
+        "type": "nodetool.data.ImportCSV",
+        "data": {},
+        "ui_properties": {
+          "position": {
+            "x": 280,
+            "y": 227
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "fdbb9003-b2e6-4493-835c-9e7aa6d97ff1",
+        "parent_id": null,
+        "type": "nodetool.data.Filter",
+        "data": {
+          "condition": "`Country Code` == 'USA'"
+        },
+        "ui_properties": {
+          "position": {
+            "x": 510,
+            "y": 202
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "d6a24f85-9177-4a3f-98d2-e0e638945f89",
         "parent_id": null,
         "type": "nodetool.generators.ChartGenerator",
         "data": {
-          "model": "gpt-4o",
-          "prompt": "make a line chart",
+          "model": {
+            "type": "language_model",
+            "id": "qwen3:4b",
+            "provider": "ollama"
+          },
+          "prompt": "make a line graph of Value over Year",
           "max_tokens": 4096
         },
         "ui_properties": {
-          "selected": false,
           "position": {
-            "x": 289,
-            "y": 123
+            "x": 877,
+            "y": 490
           },
           "zIndex": 0,
-          "width": 150,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "2e9fd814-61bb-4e47-965f-ce14f300976a",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "plotly_config_output"
+        },
+        "ui_properties": {
+          "position": {
+            "x": 1214,
+            "y": 269
+          },
+          "zIndex": 0,
+          "width": 1003,
+          "height": 646,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -173,24 +200,54 @@
     ],
     "edges": [
       {
-        "id": "7244c0b2-e7a3-4c89-827a-4a577aebcba5",
-        "source": "c55c6970-e1b9-4da5-b1eb-464733535a5b",
+        "id": "a7b29e34-f4ca-450f-98a9-14f5157c6a28",
+        "source": "ccd77a00-6d16-4f91-9c69-b36ebafc7084",
         "sourceHandle": "output",
-        "target": "d047302d-0395-4a38-915e-7ba96d124ccf",
-        "targetHandle": "data",
+        "target": "bbf8780d-4184-49af-be71-b361d3c22499",
+        "targetHandle": "csv_data",
         "ui_properties": null
       },
       {
-        "id": "8beee5b0-7901-420c-b0a1-2ddac574517e",
-        "source": "d047302d-0395-4a38-915e-7ba96d124ccf",
+        "id": "fc465c36-ed03-4f9d-9e52-af1b0136aa78",
+        "source": "bbf8780d-4184-49af-be71-b361d3c22499",
+        "sourceHandle": "output",
+        "target": "fdbb9003-b2e6-4493-835c-9e7aa6d97ff1",
+        "targetHandle": "df",
+        "ui_properties": {
+          "className": "dataframe"
+        }
+      },
+      {
+        "id": "e826ed39-8e48-4f74-89bc-b430ef59a801",
+        "source": "fdbb9003-b2e6-4493-835c-9e7aa6d97ff1",
         "sourceHandle": "output",
         "target": "4",
         "targetHandle": "value",
         "ui_properties": null
+      },
+      {
+        "id": "7dc0b333-4ca1-4474-82d5-e632cd5c3324",
+        "source": "fdbb9003-b2e6-4493-835c-9e7aa6d97ff1",
+        "sourceHandle": "output",
+        "target": "d6a24f85-9177-4a3f-98d2-e0e638945f89",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "1ace5f01-ecfd-406b-a9cf-8cb2bb0f5c13",
+        "source": "d6a24f85-9177-4a3f-98d2-e0e638945f89",
+        "sourceHandle": "output",
+        "target": "2e9fd814-61bb-4e47-965f-ce14f300976a",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "plotly_config"
+        }
       }
     ]
   },
   "input_schema": null,
   "output_schema": null,
-  "settings": null
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null
 }

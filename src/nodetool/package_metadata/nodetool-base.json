@@ -17677,27 +17677,27 @@
     {
       "package_name": "nodetool-base",
       "name": "Categorize Mails.jpg",
-      "path": "/Users/mg/dev/nodetool-base/src/nodetool/assets/nodetool-base/Categorize Mails.jpg"
+      "path": "src/nodetool/assets/nodetool-base/Categorize Mails.jpg"
     },
     {
       "package_name": "nodetool-base",
       "name": "Simple Chat.jpg",
-      "path": "/Users/mg/dev/nodetool-base/src/nodetool/assets/nodetool-base/Simple Chat.jpg"
+      "path": "src/nodetool/assets/nodetool-base/Simple Chat.jpg"
     },
     {
       "package_name": "nodetool-base",
       "name": "Daily Digest.jpg",
-      "path": "/Users/mg/dev/nodetool-base/src/nodetool/assets/nodetool-base/Daily Digest.jpg"
+      "path": "src/nodetool/assets/nodetool-base/Daily Digest.jpg"
     },
     {
       "package_name": "nodetool-base",
       "name": "Image To Audio Story.jpg",
-      "path": "/Users/mg/dev/nodetool-base/src/nodetool/assets/nodetool-base/Image To Audio Story.jpg"
+      "path": "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg"
     },
     {
       "package_name": "nodetool-base",
       "name": "Data Generator.jpg",
-      "path": "/Users/mg/dev/nodetool-base/src/nodetool/assets/nodetool-base/Data Generator.jpg"
+      "path": "src/nodetool/assets/nodetool-base/Data Generator.jpg"
     }
   ],
   "examples": [
@@ -17705,8 +17705,7 @@
       "id": "66a76fbad01511ef97f9000025dd7c17",
       "name": "Summarize Newsletters",
       "description": "",
-      "tags": [],
-      "thumbnail_url": ""
+      "tags": []
     },
     {
       "id": "343ded70132611f09ba7000022fe790f",
@@ -17715,8 +17714,7 @@
       "tags": [
         "chat",
         "rag"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "43a125a6124611f0b49100005eb1b543",
@@ -17725,22 +17723,19 @@
       "tags": [
         "start",
         "multimodal"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "email_classifier",
       "name": "Email Classifier",
       "description": "Automatically categorize emails using AI classification",
-      "tags": [],
-      "thumbnail_url": ""
+      "tags": []
     },
     {
       "id": "01170228d0c411efaac30000491f150f",
       "name": "Paper2Podcast",
       "description": "",
-      "tags": [],
-      "thumbnail_url": ""
+      "tags": []
     },
     {
       "id": "601f0f48f3c611ef828d0000081e6c6c",
@@ -17749,15 +17744,13 @@
       "tags": [
         "agents",
         "email"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "4967c0b0d07b11efb3dc000010283958",
       "name": "Summarize RSS",
       "description": "",
-      "tags": [],
-      "thumbnail_url": ""
+      "tags": []
     },
     {
       "id": "5d2e4a22f33211ef9a370000764c777a",
@@ -17766,15 +17759,13 @@
       "tags": [
         "email",
         "start"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "862d1018c43211efae4f00000de8b754",
       "name": "Index PDFs",
       "description": "Create searchable vector database from PDF documents",
-      "tags": [],
-      "thumbnail_url": ""
+      "tags": []
     },
     {
       "id": "78483f1ce4d611ef849100004ef921c4",
@@ -17782,8 +17773,7 @@
       "description": "",
       "tags": [
         "llm"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "9810b7a012ff11f09b6200005663cdeb",
@@ -17791,8 +17781,7 @@
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
       "tags": [
         "agents"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "f905ed2212f611f0b622000001bffa9d",
@@ -17801,8 +17790,7 @@
       "tags": [
         "chat",
         "start"
-      ],
-      "thumbnail_url": ""
+      ]
     },
     {
       "id": "f1a11024132411f0b12f000053c522ea",
@@ -17810,8 +17798,7 @@
       "description": "Generate structured data using AI agents",
       "tags": [
         "agents"
-      ],
-      "thumbnail_url": ""
+      ]
     }
   ]
 }
