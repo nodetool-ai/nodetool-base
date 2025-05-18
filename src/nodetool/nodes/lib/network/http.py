@@ -1,7 +1,7 @@
 import asyncio
 from enum import Enum
 import os
-from typing import Any
+from typing import Any, List
 from urllib.parse import urljoin
 import aiohttp
 from pydantic import Field
@@ -14,6 +14,7 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+import datetime
 
 from pydantic import Field
 from nodetool.metadata.types import DataframeRef, ImageRef
@@ -26,6 +27,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 from nodetool.workflows.types import NodeProgress
+from nodetool.metadata.types import RecordType
 
 
 class HTTPBaseNode(BaseNode):
@@ -393,6 +395,10 @@ class DownloadDataframe(HTTPBaseNode):
     def get_title(cls):
         return "Download Dataframe"
 
+    @classmethod
+    def get_basic_fields(cls):
+        return super().get_basic_fields() + ["columns", "file_format"]
+
     class FileFormat(str, Enum):
         CSV = "csv"
         JSON = "json"
@@ -401,6 +407,10 @@ class DownloadDataframe(HTTPBaseNode):
     file_format: FileFormat = Field(
         default=FileFormat.CSV,
         description="The format of the data file (csv, json, tsv).",
+    )
+    columns: RecordType = Field(
+        default=RecordType(),
+        description="The columns of the dataframe.",
     )
     encoding: str = Field(
         default="utf-8",
@@ -411,60 +421,181 @@ class DownloadDataframe(HTTPBaseNode):
         description="The delimiter for CSV/TSV files.",
     )
 
+    @staticmethod
+    def _cast_value(value: Any, target_type_str: str) -> Any:
+        if value is None:
+            return None
+
+        # If the value is an empty string and the target is not string,
+        # it often means 'missing' or 'null' in tabular data.
+        # Casting "" to int/float will fail. Treat as None.
+        if (
+            isinstance(value, str)
+            and value == ""
+            and target_type_str not in ["string", "object"]
+        ):
+            return None
+
+        try:
+            if target_type_str == "int":
+                return int(float(value))  # Use float(value) first to handle "1.0" -> 1
+            elif target_type_str == "float":
+                return float(value)
+            elif target_type_str == "string":
+                return str(value)
+            elif target_type_str == "datetime":
+                if isinstance(value, (datetime.datetime, datetime.date)):
+                    return value
+                if isinstance(
+                    value, (int, float)
+                ):  # handle timestamps (assume seconds since epoch)
+                    try:
+                        # OSError can be raised for out-of-range timestamps on some systems
+                        return datetime.datetime.fromtimestamp(
+                            value, tz=datetime.timezone.utc
+                        )  # Assume UTC
+                    except (ValueError, TypeError, OSError):
+                        print(
+                            f"Warning: Could not parse numeric value '{value}' as a timestamp for datetime. Returning original value."
+                        )
+                        return value
+
+                if isinstance(value, str):
+                    original_value_for_warning = value
+                    try:
+                        if value.endswith(
+                            "Z"
+                        ):  # Python's fromisoformat doesn't like 'Z' before 3.11
+                            value = value[:-1] + "+00:00"
+                        # Add more robust parsing or alternative formats if needed in the future
+                        return datetime.datetime.fromisoformat(value)
+                    except ValueError:
+                        print(
+                            f"Warning: Could not parse datetime string '{original_value_for_warning}' to datetime object. Returning original string."
+                        )
+                        return original_value_for_warning
+                # If not a string, or already a datetime, or a convertible numeric, return as is or let it be handled by final catch-all
+                return value
+            elif target_type_str == "object":
+                return value  # No casting needed
+            else:  # Unknown target_type_str
+                print(
+                    f"Warning: Unknown target data type '{target_type_str}' for casting. Returning original value."
+                )
+                return value
+        except (ValueError, TypeError) as e:
+            # General catch for casting errors like int('abc') or float(None) if not caught earlier
+            print(
+                f"Warning: Could not cast value '{str(value)[:50]}' (type: {type(value).__name__}) to type '{target_type_str}': {e}. Returning None."
+            )
+            return None
+
     async def process(self, context: ProcessingContext) -> DataframeRef:
         import csv
         import json
         import io
+        from nodetool.metadata.types import (
+            ColumnDef,
+        )  # Ensure ColumnDef is in scope for the helper
+        from typing import List, Any  # For type hints in helper
 
         res = await context.http_get(self.url, **self.get_request_kwargs())
         content = res.content.decode(self.encoding)
 
-        if self.file_format == "csv":
+        # If no columns are defined in self.columns.columns, return an empty dataframe.
+        # This means the user expects a dataframe shaped by these definitions,
+        # and an empty definition list results in an empty (no columns, no data) dataframe.
+        if not self.columns.columns:
+            return DataframeRef(columns=[], data=[])
+
+        # Helper function to map parsed data to the defined columns
+        def _map_data_to_defined_columns(
+            parsed_cols_from_file: List[str],
+            parsed_rows_from_file: List[List[Any]],
+            target_column_definitions: List[ColumnDef],
+        ) -> tuple[List[ColumnDef], List[List[Any]]]:
+
+            file_col_name_to_idx_map: dict[str, int] = {
+                name: i for i, name in enumerate(parsed_cols_from_file)
+            }
+
+            reordered_data_rows: List[List[Any]] = []
+
+            for original_row in parsed_rows_from_file:
+                new_row = [None] * len(target_column_definitions)
+                for i, target_col_def in enumerate(target_column_definitions):
+                    target_col_name = target_col_def.name
+                    target_col_type = (
+                        target_col_def.data_type
+                    )  # Get the target data type
+
+                    if target_col_name in file_col_name_to_idx_map:
+                        original_col_idx = file_col_name_to_idx_map[target_col_name]
+                        if original_col_idx < len(original_row):
+                            raw_value = original_row[original_col_idx]
+                            # Cast the value to the defined column type
+                            casted_value = self._cast_value(raw_value, target_col_type)
+                            new_row[i] = casted_value
+                reordered_data_rows.append(new_row)
+
+            return target_column_definitions, reordered_data_rows
+
+        if self.file_format == self.FileFormat.CSV:
             reader = csv.reader(io.StringIO(content), delimiter=self.delimiter)
             data = list(reader)
-            if data:
-                columns = data[0]
-                rows = data[1:]
-                column_defs = [
-                    ColumnDef(name=col, data_type="string") for col in columns
-                ]
-                return DataframeRef(columns=column_defs, data=rows)
-            raise ValueError("No data found")
+            if data:  # Ensure there's at least a header row
+                cols_from_file = data[0]
+                rows_from_file = data[1:]
+                mapped_definitions, mapped_rows = _map_data_to_defined_columns(
+                    cols_from_file, rows_from_file, self.columns.columns
+                )
+                return DataframeRef(columns=mapped_definitions, data=mapped_rows)
+            raise ValueError("No data found in CSV")
 
-        elif self.file_format == "tsv":
-            reader = csv.reader(io.StringIO(content), delimiter="\t")
+        elif self.file_format == self.FileFormat.TSV:
+            reader = csv.reader(io.StringIO(content), delimiter="\\t")  # TSV delimiter
             data = list(reader)
-            if data:
-                columns = data[0]
-                rows = data[1:]
-                column_defs = [
-                    ColumnDef(name=col, data_type="string") for col in columns
-                ]
-                return DataframeRef(columns=column_defs, data=rows)
-            raise ValueError("No data found")
+            if data:  # Ensure there's at least a header row
+                cols_from_file = data[0]
+                rows_from_file = data[1:]
+                mapped_definitions, mapped_rows = _map_data_to_defined_columns(
+                    cols_from_file, rows_from_file, self.columns.columns
+                )
+                return DataframeRef(columns=mapped_definitions, data=mapped_rows)
+            raise ValueError("No data found in TSV")
 
-        elif self.file_format == "json":
+        elif self.file_format == self.FileFormat.JSON:
             json_data = json.loads(content)
             if isinstance(json_data, list) and json_data:
-                # If list of dictionaries, extract columns from the first item
+                cols_from_file: List[str] = []
+                rows_from_file: List[List[Any]] = []
+
                 if isinstance(json_data[0], dict):
-                    columns = list(json_data[0].keys())
-                    rows = [
-                        [item.get(col, None) for col in columns] for item in json_data
+                    # Assuming all dicts in the list have similar keys, use the first one for headers
+                    cols_from_file = list(json_data[0].keys())
+                    rows_from_file = [
+                        [item.get(col, None) for col in cols_from_file]
+                        for item in json_data
                     ]
-                    column_defs = [
-                        ColumnDef(name=col, data_type="string") for col in columns
-                    ]
-                    return DataframeRef(columns=column_defs, data=rows)
-                # If list of lists, first item is columns
                 elif isinstance(json_data[0], list):
-                    columns = json_data[0]
-                    rows = json_data[1:]
-                    column_defs = [
-                        ColumnDef(name=col, data_type="string") for col in columns
-                    ]
-                    return DataframeRef(columns=column_defs, data=rows)
-            raise ValueError("No data found")
+                    # Assuming the first list is the header row
+                    cols_from_file = json_data[0]
+                    rows_from_file = json_data[1:]
+                else:
+                    raise ValueError(
+                        "JSON data is a list, but items are not dictionaries or lists."
+                    )
+
+                if (
+                    not cols_from_file and not rows_from_file and not json_data[0]
+                ):  # Handles cases like [[]] or [{}]
+                    raise ValueError("JSON data parsed to empty columns and rows.")
+
+                mapped_definitions, mapped_rows = _map_data_to_defined_columns(
+                    cols_from_file, rows_from_file, self.columns.columns
+                )
+                return DataframeRef(columns=mapped_definitions, data=mapped_rows)
+            raise ValueError("No data found or data is not a list of records in JSON")
 
         else:
             raise ValueError(f"Unsupported file format: {self.file_format}")

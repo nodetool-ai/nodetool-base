@@ -14935,6 +14935,288 @@
       "is_dynamic": false
     },
     {
+      "title": "Filter",
+      "description": "Filter dataframe based on condition.\n    filter, query, condition\n\n    Example conditions:\n    age > 30\n    age > 30 and salary < 50000\n    name == 'John Doe'\n    100 <= price <= 200\n    status in ['Active', 'Pending']\n    not (age < 18)\n\n    Use cases:\n    - Extract subset of data meeting specific criteria\n    - Remove outliers or invalid data points\n    - Focus analysis on relevant data segments",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.Filter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "df",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Df",
+          "description": "The DataFrame to filter."
+        },
+        {
+          "name": "condition",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Condition",
+          "description": "The filtering condition to be applied to the DataFrame, e.g. column_name > 5."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "df",
+        "condition"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "From List",
+      "description": "Convert list of dicts to dataframe.\n    list, dataframe, convert\n\n    Use cases:\n    - Transform list data into structured dataframe\n    - Prepare list data for analysis or visualization\n    - Convert API responses to dataframe format",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.FromList",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Values",
+          "description": "List of values to be converted, each value will be a row."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "values"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Import CSV",
+      "description": "Convert CSV string to dataframe.\n    csv, dataframe, import\n\n    Use cases:\n    - Import CSV data from string input\n    - Convert CSV responses from APIs to dataframe",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.ImportCSV",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "csv_data",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "CSV Data",
+          "description": "String input of CSV formatted text."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "csv_data"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Convert JSON to DataFrame",
+      "description": "Transforms a JSON string into a pandas DataFrame.\n    json, dataframe, conversion\n\n    Use cases:\n    - Converting API responses to tabular format\n    - Preparing JSON data for analysis or visualization\n    - Structuring unstructured JSON data for further processing",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.JSONToDataframe",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "JSON"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Save Dataframe",
+      "description": "Save dataframe in specified folder.\n    csv, folder, save\n\n    Use cases:\n    - Export processed data for external use\n    - Create backups of dataframes",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.SaveDataframe",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "df",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Df"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Name of the output folder."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "output.csv",
+          "title": "Name",
+          "description": "\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "df",
+        "folder",
+        "name"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Slice",
+      "description": "Slice a dataframe by rows using start and end indices.\n    slice, subset, rows\n\n    Use cases:\n    - Extract a specific range of rows from a large dataset\n    - Create training and testing subsets for machine learning\n    - Analyze data in smaller chunks",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.Slice",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "The input dataframe to be sliced."
+        },
+        {
+          "name": "start_index",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Index",
+          "description": "The starting index of the slice (inclusive)."
+        },
+        {
+          "name": "end_index",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "End Index",
+          "description": "The ending index of the slice (exclusive). Use -1 for the last row."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe",
+        "start_index",
+        "end_index"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "To List",
+      "description": "Convert dataframe to list of dictionaries.\n    dataframe, list, convert\n\n    Use cases:\n    - Convert dataframe data for API consumption\n    - Transform data for JSON serialization\n    - Prepare data for document-based storage",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.ToList",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "The input dataframe to convert."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "dataframe"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Array Output",
       "description": "Output node for generic array data.\n    array, numerical\n\n    Use cases:\n    - Outputting results from machine learning models\n    - Representing complex numerical data structures",
       "namespace": "nodetool.output",
@@ -16147,6 +16429,15 @@
           "description": "The format of the data file (csv, json, tsv)."
         },
         {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {},
+          "title": "Columns",
+          "description": "The columns of the dataframe."
+        },
+        {
           "name": "encoding",
           "type": {
             "type": "str"
@@ -16176,7 +16467,9 @@
       "the_model_info": {},
       "recommended_models": [],
       "basic_fields": [
-        "url"
+        "url",
+        "columns",
+        "file_format"
       ],
       "is_dynamic": false
     },
