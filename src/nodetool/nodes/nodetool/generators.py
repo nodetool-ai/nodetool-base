@@ -529,24 +529,24 @@ class ChartGenerator(BaseNode):
     async def process(self, context: ProcessingContext) -> PlotlyConfig:
         system_message = Message(
             role="system",
-            content="""You are an expert data visualization assistant specializing in Plotly Express charts.
+            content="""You are an expert data visualization assistant specializing in creating Plotly chart configurations.
 
 Your task is to:
-1. Analyze the data schema and user's request to create the most appropriate visualization
-2. Generate complete, ready-to-use Plotly Express Python code
-3. Choose chart types that best represent the relationships in the data
-4. Apply best practices for data visualization (appropriate colors, labels, legends)
-5. Explain your chart choices and highlight insights the visualization reveals
+1. Analyze the data schema and user's request to determine the most appropriate visualization.
+2. Generate a single, complete, ready-to-use JSON object that defines the Plotly chart. This JSON object must conform to the provided schema.
+3. Choose chart types that best represent the relationships in the data.
+4. Apply best practices for data visualization (e.g., appropriate colors, labels, legends) within the JSON structure.
+5. Explain your chart choices and highlight insights the visualization reveals in a separate thought process (not part of the JSON output).
 
-When creating charts:
-- Select appropriate visual encodings based on data types (categorical vs continuous)
-- Use multiple traces when comparative analysis would be valuable
-- Set reasonable figure dimensions, margins, and formatting
-- Include helpful annotations or trendlines when they add value
-- Configure interactive elements effectively (tooltips, hover data)
-- Consider color accessibility and choose colorblind-friendly palettes
+When creating the JSON chart configuration:
+- Select appropriate visual encodings based on data types (categorical vs continuous).
+- Use multiple traces when comparative analysis would be valuable.
+- Set reasonable figure dimensions, margins, and formatting.
+- Include helpful annotations or trendlines when they add value.
+- Configure interactive elements effectively (tooltips, hover data).
+- Consider color accessibility and choose colorblind-friendly palettes.
 
-Always return complete, executable Python code that imports plotly.express as px and any other necessary libraries.
+Always return a single JSON object as your primary output, conforming to the schema. Do not include any other text, explanations, or Python code outside of this JSON object.
 """,
         )
         assert self.data.columns is not None, "Define columns"
@@ -561,26 +561,26 @@ Input data:
 {json.dumps(self.data.data if self.data.data else [], indent=2)}
 
 User request: {self.prompt}
+
 # Instructions
-Please create complete Plotly Express Python code that best visualizes this data according to the user's request.
+Please create a complete Plotly JSON configuration object that best visualizes this data according to the user's request and the provided schema.
 
-Your response should include:
-1. A recommendation for the most appropriate chart type(s)
-2. Complete Python code using plotly.express
-3. A brief explanation of why this visualization works well for the data and request
-4. Any insights that can be observed from the visualization
+Your response must be a single JSON object with 'data' and 'layout' properties, conforming to the following structure:
+- The 'data' property should be an array of trace objects (e.g., scatter, bar, pie).
+- The 'layout' property should define chart aesthetics like title, axis labels, and legend.
 
-Focus on these chart types as appropriate:
-- px.scatter: For relationships between variables
-- px.line: For trends over time or sequences
-- px.bar: For comparing categories
-- px.histogram: For distributions
-- px.box: For statistical summaries
-- px.violin: For probability distributions
-- px.heatmap: For correlation matrices
-- px.pie: For part-to-whole relationships
+Focus on these chart types when defining traces in the JSON:
+- "scatter": For relationships between variables
+- "line": For trends over time or sequences
+- "bar": For comparing categories
+- "histogram": For distributions
+- "box": For statistical summaries
+- "violin": For probability distributions
+- "heatmap": For correlation matrices
+- "pie": For part-to-whole relationships
 
-Remember to include axis labels, titles, and proper formatting in your code.
+Remember to include axis labels, titles, and proper formatting within the JSON 'layout' object.
+Ensure the generated JSON is valid and strictly adheres to the schema provided for the 'plotly_config' tool.
             """,
         )
 

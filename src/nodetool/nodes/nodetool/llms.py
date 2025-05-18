@@ -166,6 +166,9 @@ class LLM(BaseNode):
         from nodetool.models.prediction import Prediction as PredictionModel
         from nodetool.chat.providers.openai_provider import calculate_chat_cost
 
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
         content = []
 
         content.append(MessageTextContent(text=self.prompt))
@@ -357,6 +360,9 @@ class Summarizer(BaseNode):
         return ["text", "max_words", "model"]
 
     async def process(self, context: ProcessingContext) -> str:
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
         content = []
         content.append(MessageTextContent(text=self.text))
 
@@ -440,6 +446,9 @@ class Extractor(BaseNode):
     async def process(self, context: ProcessingContext) -> DataframeRef:
         import json
 
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
         messages = [
             Message(role="system", content=self.system_prompt),
             Message(role="user", content=f"{self.extraction_prompt}\n\n{self.text}"),
@@ -510,6 +519,9 @@ class Classifier(BaseNode):
         return ["text", "categories", "model"]
 
     async def process(self, context: ProcessingContext) -> str:
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
         content = []
         content.append(MessageTextContent(text=self.text))
 
@@ -642,6 +654,9 @@ class LLMStreaming(BaseNode):
         ]
 
     async def gen_process(self, context: ProcessingContext):
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
         content = []
 
         content.append(MessageTextContent(text=self.prompt))
@@ -738,3 +753,4 @@ class LLMStreaming(BaseNode):
                 messages = messages + follow_up_messages
             else:
                 break
+        yield "text", "<nodetool_end_of_stream>"
