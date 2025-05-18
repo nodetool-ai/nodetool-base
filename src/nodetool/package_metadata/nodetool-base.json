@@ -17677,27 +17677,32 @@
     {
       "package_name": "nodetool-base",
       "name": "Categorize Mails.jpg",
-      "path": "src/nodetool/assets/nodetool-base/Categorize Mails.jpg"
+      "path": ""
     },
     {
       "package_name": "nodetool-base",
       "name": "Simple Chat.jpg",
-      "path": "src/nodetool/assets/nodetool-base/Simple Chat.jpg"
+      "path": ""
     },
     {
       "package_name": "nodetool-base",
       "name": "Daily Digest.jpg",
-      "path": "src/nodetool/assets/nodetool-base/Daily Digest.jpg"
+      "path": ""
     },
     {
       "package_name": "nodetool-base",
       "name": "Image To Audio Story.jpg",
-      "path": "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg"
+      "path": ""
     },
     {
       "package_name": "nodetool-base",
       "name": "Data Generator.jpg",
-      "path": "src/nodetool/assets/nodetool-base/Data Generator.jpg"
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Data Visualization Pipeline.jpg",
+      "path": ""
     }
   ],
   "examples": [
@@ -17776,7 +17781,7 @@
       ]
     },
     {
-      "id": "9810b7a012ff11f09b6200005663cdeb",
+      "id": "9759819033e111f0935900003bf156d2",
       "name": "Data Visualization Pipeline",
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
       "tags": [
