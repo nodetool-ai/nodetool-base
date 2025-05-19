@@ -5,6 +5,7 @@ from typing import Any, Optional
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.metadata.types import FolderRef
 
 
 class ParseDict(BaseNode):
@@ -276,3 +277,43 @@ class JSONTemplate(BaseNode):
             return res
         except json.JSONDecodeError as e:
             raise ValueError(f"Resulting JSON is invalid: {e} \n {result}")
+
+
+class LoadJSONAssets(BaseNode):
+    """
+    Load JSON files from an asset folder.
+    load, json, file, import
+    """
+
+    folder: FolderRef = Field(
+        default=FolderRef(), description="The asset folder to load the JSON files from."
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load JSON Folder"
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "json": dict,
+            "name": str,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
+        if self.folder.is_empty():
+            raise ValueError("Please select an asset folder.")
+
+        parent_id = self.folder.asset_id
+        list_assets = await context.list_assets(
+            parent_id=parent_id, content_type="json"
+        )
+
+        for asset in list_assets.assets:
+            yield "name", asset.name
+            content = await context.download_asset(asset.id)
+            try:
+                json_data = json.load(content)
+                yield "json", json_data
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Invalid JSON in file {asset.name}: {e}")

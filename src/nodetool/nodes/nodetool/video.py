@@ -31,7 +31,7 @@ def safe_unlink(path: str):
         pass
 
 
-class LoadVideoFolder(BaseNode):
+class LoadVideoAssets(BaseNode):
 
     folder: FolderRef = Field(
         default=FolderRef(),
@@ -57,15 +57,16 @@ class LoadVideoFolder(BaseNode):
             raise ValueError("Please select an asset folder.")
 
         parent_id = self.folder.asset_id
-        list_assets = await context.list_assets(parent_id=parent_id, mime_type="video")
+        list_assets = await context.list_assets(
+            parent_id=parent_id, content_type="video"
+        )
         for asset in list_assets.assets:
-            if asset.content_type.startswith("video/"):
-                yield "name", asset.name
-                yield "video", VideoRef(
-                    type="video",
-                    uri=await context.get_asset_url(asset.id),
-                    asset_id=asset.id,
-                )
+            yield "name", asset.name
+            yield "video", VideoRef(
+                type="video",
+                uri=await context.get_asset_url(asset.id),
+                asset_id=asset.id,
+            )
 
 
 class SaveVideo(BaseNode):

@@ -3119,6 +3119,58 @@
       "is_dynamic": false
     },
     {
+      "title": "Collector",
+      "description": "Collects items from the input and yields a list once the \"done\" event is received.\n    This is the opposite of IteratorNode - it collects items into a list rather than\n    iterating over a list.\n\n    Use cases:\n    1. Gather results from multiple processing steps into a single list\n    2. Collect streaming data into batches for batch processing\n    3. Aggregate results from parallel operations",
+      "namespace": "nodetool.control",
+      "node_type": "nodetool.control.Collector",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "input_item",
+          "type": {
+            "type": "any"
+          },
+          "title": "Input Item",
+          "description": "The input item to collect."
+        },
+        {
+          "name": "event",
+          "type": {
+            "type": "event"
+          },
+          "default": {},
+          "title": "Event",
+          "description": "Signal end of stream"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        },
+        {
+          "type": {
+            "type": "event"
+          },
+          "name": "event"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "input_item",
+        "event"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "If",
       "description": "Conditionally executes one of two branches based on a condition.\n    control, flow, condition, logic, else, true, false, switch, toggle, flow-control\n\n    Use cases:\n    - Branch workflow based on conditions\n    - Handle different cases in data processing\n    - Implement decision logic",
       "namespace": "nodetool.control",
@@ -3162,6 +3214,54 @@
       "basic_fields": [
         "condition",
         "value"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Iterator",
+      "description": "Iterates over a list of items and triggers downstream execution for each item\n    by yielding them one by one using `gen_process`.",
+      "namespace": "nodetool.control",
+      "node_type": "nodetool.control.Iterator",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "input_list",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "title": "Input List",
+          "description": "The list of items to iterate over."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
+        },
+        {
+          "type": {
+            "type": "event"
+          },
+          "name": "event"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "input_list"
       ],
       "is_dynamic": false
     },
@@ -8553,6 +8653,44 @@
       "is_dynamic": false
     },
     {
+      "title": "Load Text Assets",
+      "description": "Load text files from an asset folder.\n    load, text, file, import\n\n    Use cases:\n    - Loading multiple text files for batch processing\n    - Importing text content from a directory\n    - Processing collections of text documents",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.LoadTextAssets",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The asset folder to load the text files from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "text"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "folder"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Parse JSON String",
       "description": "Parses a JSON string into a Python object.\n    json, parse, convert\n\n    Use cases:\n    - Converting JSON API responses for further processing\n    - Preparing structured data for analysis or storage\n    - Extracting configuration or settings from JSON files",
       "namespace": "nodetool.text",
@@ -9633,10 +9771,10 @@
       "is_dynamic": false
     },
     {
-      "title": "Load Audio Folder",
+      "title": "Load Audio Assets",
       "description": "Load audio files from an asset folder.\n    load, audio, file, import",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.LoadAudioFolder",
+      "node_type": "nodetool.audio.LoadAudioAssets",
       "layout": "default",
       "properties": [
         {
@@ -12976,6 +13114,44 @@
       "is_dynamic": false
     },
     {
+      "title": "Load JSON Folder",
+      "description": "Load JSON files from an asset folder.\n    load, json, file, import",
+      "namespace": "nodetool.json",
+      "node_type": "nodetool.json.LoadJSONAssets",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The asset folder to load the JSON files from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "json"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "folder"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Parse Dict",
       "description": "Parse a JSON string into a Python dictionary.\n    json, parse, decode, dictionary\n\n    Use cases:\n    - Convert JSON API responses to Python dictionaries\n    - Process JSON configuration files\n    - Parse object-like JSON data",
       "namespace": "nodetool.json",
@@ -13751,7 +13927,7 @@
       "title": "Load Video Folder",
       "description": "",
       "namespace": "nodetool.video",
-      "node_type": "nodetool.video.LoadVideoFolder",
+      "node_type": "nodetool.video.LoadVideoAssets",
       "layout": "default",
       "properties": [
         {
@@ -14652,10 +14828,10 @@
       "is_dynamic": false
     },
     {
-      "title": "Load Image Folder",
+      "title": "Load Image Assets",
       "description": "Load images from an asset folder.\n    load, image, file, import",
       "namespace": "nodetool.image",
-      "node_type": "nodetool.image.LoadImageFolder",
+      "node_type": "nodetool.image.LoadImageAssets",
       "layout": "default",
       "properties": [
         {
@@ -15350,6 +15526,44 @@
         "dataframe_a",
         "dataframe_b",
         "join_on"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Load CSV Assets",
+      "description": "Load dataframes from an asset folder.\n    load, dataframe, file, import\n\n    Use cases:\n    - Load multiple dataframes from a folder\n    - Process multiple datasets in sequence\n    - Batch import of data files",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.LoadCSVAssets",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The asset folder to load the dataframes from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "dataframe"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "folder"
       ],
       "is_dynamic": false
     },
@@ -18205,6 +18419,12 @@
         "email",
         "start"
       ]
+    },
+    {
+      "id": "310d885a341811f0942e0000191c0ba5",
+      "name": "Color Boost Video",
+      "description": "",
+      "tags": []
     },
     {
       "id": "862d1018c43211efae4f00000de8b754",

@@ -800,3 +800,47 @@ class CountTokens(BaseNode):
 
         encoding = tiktoken.get_encoding(self.encoding.value)
         return len(encoding.encode(self.text))
+
+
+class LoadTextAssets(BaseNode):
+    """
+    Load text files from an asset folder.
+    load, text, file, import
+
+    Use cases:
+    - Loading multiple text files for batch processing
+    - Importing text content from a directory
+    - Processing collections of text documents
+    """
+
+    folder: FolderRef = Field(
+        default=FolderRef(), description="The asset folder to load the text files from."
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load Text Assets"
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "text": TextRef,
+            "name": str,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
+        if self.folder.is_empty():
+            raise ValueError("Please select an asset folder.")
+
+        parent_id = self.folder.asset_id
+        list_assets = await context.list_assets(
+            parent_id=parent_id, content_type="text"
+        )
+
+        for asset in list_assets.assets:
+            yield "name", asset.name
+            yield "text", TextRef(
+                type="text",
+                uri=await context.get_asset_url(asset.id),
+                asset_id=asset.id,
+            )
