@@ -10,9 +10,7 @@ from nodetool.metadata.types import (
     AudioRef,
 )
 from nodetool.nodes.nodetool.video import (
-    ExtractFrames,
     Fps,
-    CreateVideo,
     Concat,
     Trim,
     Rotate,
@@ -57,17 +55,9 @@ def context():
 
 
 @pytest.mark.asyncio
-async def test_create_video(context: ProcessingContext):
-    frames = [dummy_image for _ in range(10)]
-    result = await CreateVideo(frames=frames, fps=24).process(context)
-    assert isinstance(result, VideoRef)
-
-
-@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "node, expected_type",
     [
-        (ExtractFrames(video=dummy_video, start=0, end=10), list),
         (Fps(video=dummy_video), float),
         (Concat(video_a=dummy_video, video_b=dummy_video), VideoRef),
         (Trim(video=dummy_video, start_time=0, end_time=10), VideoRef),
