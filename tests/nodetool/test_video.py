@@ -28,7 +28,6 @@ from nodetool.nodes.nodetool.video import (
     ChromaKey,
 )
 from io import BytesIO
-from pydub import AudioSegment
 import os
 
 test_mp4 = os.path.join(
@@ -36,9 +35,8 @@ test_mp4 = os.path.join(
     "test.mp4",
 )
 
-buffer = BytesIO()
-AudioSegment.silent(5000, 44_100).export(buffer, format="mp3")
-dummy_audio = AudioRef(data=buffer.getvalue())
+with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "test.mp3"), "rb") as f:
+    dummy_audio = AudioRef(data=f.read())
 dummy_video = VideoRef(
     uri=f"data:video/mp4;base64,{base64.b64encode(open(test_mp4, 'rb').read()).decode()}"
 )
