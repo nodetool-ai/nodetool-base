@@ -124,7 +124,8 @@ async def test_input_nodes(
 
     try:
         result = await node.process(context)
-        assert isinstance(result, expected_type)
+        assert isinstance(result, list)
+        assert isinstance(result[0], expected_type)
 
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")

@@ -70,6 +70,7 @@ def context():
 async def test_boolean_nodes(context: ProcessingContext, node, expected_result):
     try:
         result = await node.process(context)
-        assert result == expected_result
+        assert isinstance(result, list)
+        assert result[0] == expected_result
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")
