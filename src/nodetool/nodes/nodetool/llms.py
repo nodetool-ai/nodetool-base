@@ -694,9 +694,11 @@ class LLMStreaming(BaseNode):
                     if chunk.content_type == "text" or chunk.content_type is None:
                         yield "text", chunk.content
                     elif chunk.content_type == "audio":
-                        yield "audio", chunk.content
+                        data = base64.b64decode(chunk.content)
+                        yield "audio", AudioRef(data=data)
                     elif chunk.content_type == "image":
-                        yield "image", base64.b64decode(chunk.content)
+                        data = base64.b64decode(chunk.content)
+                        yield "image", ImageRef(data=data)
                 if isinstance(chunk, ToolCall):
                     if tool_calls_message is None:
                         tool_calls_message = Message(
