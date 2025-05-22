@@ -5,6 +5,8 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class BinaryOperation(BaseNode):
+    """Common base for binary math operations."""
+
     _layout = "small"
     a: int | float = Field(title="A", default=0.0)
     b: int | float = Field(title="B", default=0.0)

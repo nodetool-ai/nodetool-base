@@ -31,6 +31,16 @@ from nodetool.metadata.types import RecordType
 
 
 class HTTPBaseNode(BaseNode):
+    """Base node for HTTP requests.
+
+    http, network, request
+
+    Use cases:
+    - Share common fields for HTTP nodes
+    - Add custom request parameters in subclasses
+    - Control visibility of specific request types
+    """
+
     url: str = Field(
         default="",
         description="The URL to make the request to.",

@@ -13,7 +13,16 @@ from datetime import date
 
 
 class Constant(BaseNode):
-    pass
+    """Base class for fixed-value nodes.
+
+    constant, parameter, default
+
+    Use cases:
+    - Provide static inputs to a workflow
+    - Hold configuration values
+    - Simplify testing with deterministic outputs
+    """
+
 
 
 class Audio(Constant):
