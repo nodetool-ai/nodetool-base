@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.text
 
+Text processing tools including chunking, regex searches and templating.
+
 ## Chunk
 
 Splits text into chunks of specified word length.

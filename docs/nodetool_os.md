@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.os
 
+File system utilities for working with paths, files and directories.
+
 ## AbsolutePath
 
 Return the absolute path of a file or directory.

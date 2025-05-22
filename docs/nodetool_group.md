@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.group
 
+Nodes for grouping or repeating operations. Provides a loop node for iterating over data.
+
 ## Loop
 
 Loops over a list of items and processes the remaining nodes for each item.

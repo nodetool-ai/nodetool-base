@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.image
 
+Image manipulation utilities such as cropping, resizing and saving images.
+
 ## BatchToList
 
 Convert an image batch to a list of image references.

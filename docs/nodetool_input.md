@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.input
 
+Input nodes for gathering user-provided data of various types.
+
 ## AudioInput
 
 Audio asset input for workflows.

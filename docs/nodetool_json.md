@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.json
 
+Parse, query and validate JSON data using JSONPath and related utilities.
+
 ## BaseGetJSONPath
 
 Base class for extracting typed data from a JSON object using a path expression.

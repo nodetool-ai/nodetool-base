@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.dictionary
 
+Tools for working with dictionaries: combine, filter, update and more.
+
 ## ArgMax
 
 Returns the label associated with the highest value in a dictionary.

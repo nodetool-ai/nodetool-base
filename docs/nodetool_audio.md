@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.audio
 
+Utilities for handling audio data. Provides a node for saving audio files to a specified folder.
+
 ## SaveAudio
 
 Save an audio file to a specified folder.

@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.list
 
+Utilities for manipulating lists: filtering, sorting and generating sequences.
+
 ## Append
 
 Adds a value to the end of a list.

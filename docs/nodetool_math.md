@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.math
 
+Mathematical operations including arithmetic and trigonometry functions.
+
 ## Add
 
 Performs addition on two inputs.
