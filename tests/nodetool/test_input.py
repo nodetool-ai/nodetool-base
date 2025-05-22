@@ -34,7 +34,6 @@ def context():
     [
         (
             FloatInput(
-                description="Float",
                 name="float_input",
                 value=3.14,
             ),
@@ -43,7 +42,6 @@ def context():
         ),
         (
             BooleanInput(
-                description="Boolean",
                 name="bool_input",
                 value=True,
             ),
@@ -52,7 +50,6 @@ def context():
         ),
         (
             IntegerInput(
-                description="Integer",
                 name="int_input",
                 value=42,
             ),
@@ -61,7 +58,6 @@ def context():
         ),
         (
             StringInput(
-                description="String",
                 name="string_input",
                 value="test",
             ),
@@ -70,7 +66,6 @@ def context():
         ),
         (
             ChatInput(
-                description="Chat",
                 name="chat_input",
                 value=[],
             ),
@@ -79,7 +74,6 @@ def context():
         ),
         (
             TextInput(
-                description="Text",
                 name="text_input",
                 value=TextRef(uri="test.txt"),
             ),
@@ -88,7 +82,6 @@ def context():
         ),
         (
             ImageInput(
-                description="Image",
                 name="image_input",
                 value=ImageRef(uri="test.jpg"),
             ),
@@ -97,7 +90,6 @@ def context():
         ),
         (
             VideoInput(
-                description="Video",
                 name="video_input",
                 value=VideoRef(uri="test.mp4"),
             ),
@@ -106,7 +98,6 @@ def context():
         ),
         (
             AudioInput(
-                description="Audio",
                 name="audio_input",
                 value=AudioRef(uri="test.mp3"),
             ),
@@ -124,8 +115,7 @@ async def test_input_nodes(
 
     try:
         result = await node.process(context)
-        assert isinstance(result, list)
-        assert isinstance(result[0], expected_type)
+        assert result == expected_type
 
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")

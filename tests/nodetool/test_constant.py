@@ -60,8 +60,6 @@ async def test_constant_node(context: ProcessingContext, node_class):
 
     try:
         result = await node.process(context)
-        assert isinstance(result, list)
-        result = result[0]
         assert result is not None, f"{node_class.__name__} returned None"
 
         # Additional type checks based on the expected return type

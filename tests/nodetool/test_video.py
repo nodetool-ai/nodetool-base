@@ -35,7 +35,9 @@ test_mp4 = os.path.join(
     "test.mp4",
 )
 
-with open(os.path.join(os.path.dirname(os.path.dirname(__file__)), "test.mp3"), "rb") as f:
+with open(
+    os.path.join(os.path.dirname(os.path.dirname(__file__)), "test.mp3"), "rb"
+) as f:
     dummy_audio = AudioRef(data=f.read())
 dummy_video = VideoRef(
     uri=f"data:video/mp4;base64,{base64.b64encode(open(test_mp4, 'rb').read()).decode()}"
@@ -95,7 +97,6 @@ def context():
 async def test_video_nodes(context: ProcessingContext, node, expected_type):
     try:
         result = await node.process(context)
-        assert isinstance(result, list)
-        assert isinstance(result[0], expected_type)
+        assert result == expected_type
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")

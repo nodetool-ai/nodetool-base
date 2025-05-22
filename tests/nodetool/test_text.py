@@ -60,21 +60,18 @@ async def test_text_nodes(context: ProcessingContext, node, expected_type, mocke
 async def test_extract_regex(context: ProcessingContext):
     node = ExtractRegex(text="The year is 2023", regex=r"(\d{4})")
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert result[0] == ["2023"]
+    assert result == ["2023"]
 
 
 @pytest.mark.asyncio
 async def test_parse_json(context: ProcessingContext):
     node = ParseJSON(text='{"a": 1, "b": [2, 3]}')
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert result[0] == {"a": 1, "b": [2, 3]}
+    assert result == {"a": 1, "b": [2, 3]}
 
 
 @pytest.mark.asyncio
 async def test_extract_json(context: ProcessingContext):
     node = ExtractJSON(text='{"a": {"b": {"c": 42}}}', json_path="$.a.b.c")
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert result[0] == 42
+    assert result == 42

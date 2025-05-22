@@ -54,21 +54,18 @@ async def test_trigonometric_functions(
 ):
     node = NodeClass(angle_rad=input_value)
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert np.isclose(result[0], expected)
+    assert result == expected
 
 
 @pytest.mark.asyncio
 async def test_power_function(context: ProcessingContext):
     node = Power(base=2, exponent=3)
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert result[0] == 8
+    assert result == 8
 
 
 @pytest.mark.asyncio
 async def test_sqrt_function(context: ProcessingContext):
     node = Sqrt(x=9)
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert result[0] == 3
+    assert result == 3
