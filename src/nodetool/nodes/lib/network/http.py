@@ -1,33 +1,29 @@
 import asyncio
-from enum import Enum
+import datetime
 import os
+from enum import Enum
 from typing import Any, List
 from urllib.parse import urljoin
+
 import aiohttp
 from pydantic import Field
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
+
 from nodetool.metadata.types import (
     ColumnDef,
     DataframeRef,
     DocumentRef,
     FilePath,
     ImageRef,
+    RecordType,
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-import datetime
-
-from pydantic import Field
-from nodetool.metadata.types import DataframeRef, ImageRef
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
 from nodetool.workflows.types import NodeProgress
-from nodetool.metadata.types import RecordType
 
 
 class HTTPBaseNode(BaseNode):
