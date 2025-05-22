@@ -113,9 +113,15 @@ async def test_input_nodes(
     if isinstance(node, GroupInput):
         node._value = input_value
 
+    if isinstance(node, ChatInput):
+        with pytest.raises(ValueError):
+            await node.process(context)
+        return
+
     try:
         result = await node.process(context)
-        assert result == expected_type
+        assert result == input_value
+        assert isinstance(result, expected_type)
 
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")

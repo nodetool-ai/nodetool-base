@@ -50,8 +50,7 @@ dummy_text = TextRef(data=b"Hello, world!")
 async def test_text_nodes(context: ProcessingContext, node, expected_type, mocker):
     try:
         result = await node.process(context)
-        assert isinstance(result, list)
-        assert isinstance(result[0], expected_type)
+        assert isinstance(result, expected_type)
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")
 

@@ -97,6 +97,6 @@ def context():
 async def test_video_nodes(context: ProcessingContext, node, expected_type):
     try:
         result = await node.process(context)
-        assert result == expected_type
+        assert isinstance(result, expected_type)
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")
