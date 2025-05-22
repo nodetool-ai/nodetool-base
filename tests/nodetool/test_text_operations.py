@@ -54,28 +54,33 @@ contains_check = BooleanOutput(
 @pytest.mark.asyncio
 async def test_text_concat():
     result = await graph_result(text_concat)
-    assert result == "Hello, World!"
+    assert isinstance(result, list)
+    assert result[0] == "Hello, World!"
 
 
 @pytest.mark.asyncio
 async def test_template_text():
     result = await graph_result(template_text)
-    assert result == "Hello, Alice! Today is Monday."
+    assert isinstance(result, list)
+    assert result[0] == "Hello, Alice! Today is Monday."
 
 
 @pytest.mark.asyncio
 async def test_regex_replace():
     result = await graph_result(regex_replace)
-    assert result == "The color is blue and gray"
+    assert isinstance(result, list)
+    assert result[0] == "The color is blue and gray"
 
 
 @pytest.mark.asyncio
 async def test_split_join():
     result = await graph_result(split_join)
-    assert result == "apple | banana | orange"
+    assert isinstance(result, list)
+    assert result[0] == "apple | banana | orange"
 
 
 @pytest.mark.asyncio
 async def test_contains_check():
     result = await graph_result(contains_check)
-    assert result is True
+    assert isinstance(result, list)
+    assert result[0] is True

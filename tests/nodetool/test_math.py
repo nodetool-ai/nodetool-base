@@ -35,7 +35,8 @@ async def test_basic_math_operations(
 ):
     node = NodeClass(a=a, b=b)
     result = await node.process(context)
-    assert result == expected
+    assert isinstance(result, list)
+    assert result[0] == expected
 
 
 @pytest.mark.asyncio
@@ -53,18 +54,21 @@ async def test_trigonometric_functions(
 ):
     node = NodeClass(angle_rad=input_value)
     result = await node.process(context)
-    assert np.isclose(result, expected)
+    assert isinstance(result, list)
+    assert np.isclose(result[0], expected)
 
 
 @pytest.mark.asyncio
 async def test_power_function(context: ProcessingContext):
     node = Power(base=2, exponent=3)
     result = await node.process(context)
-    assert result == 8
+    assert isinstance(result, list)
+    assert result[0] == 8
 
 
 @pytest.mark.asyncio
 async def test_sqrt_function(context: ProcessingContext):
     node = Sqrt(x=9)
     result = await node.process(context)
-    assert result == 3
+    assert isinstance(result, list)
+    assert result[0] == 3
