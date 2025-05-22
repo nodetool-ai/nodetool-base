@@ -35,8 +35,7 @@ async def test_basic_math_operations(
 ):
     node = NodeClass(a=a, b=b)
     result = await node.process(context)
-    assert isinstance(result, list)
-    assert result[0] == expected
+    assert result == expected
 
 
 @pytest.mark.asyncio

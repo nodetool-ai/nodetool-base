@@ -8,6 +8,8 @@ from nodetool.metadata.types import (
     VideoRef,
     FolderRef,
     AssetRef,
+    Message,
+    MessageTextContent,
 )
 from nodetool.nodes.nodetool.input import (
     FloatInput,
@@ -67,9 +69,19 @@ def context():
         (
             ChatInput(
                 name="chat_input",
-                value=[],
+                value=[
+                    Message(
+                        role="user",
+                        content=[MessageTextContent(text="hello")],
+                    )
+                ],
             ),
-            [],
+            [
+                Message(
+                    role="user",
+                    content=[MessageTextContent(text="hello")],
+                )
+            ],
             dict,
         ),
         (
@@ -115,7 +127,7 @@ async def test_input_nodes(
 
     try:
         result = await node.process(context)
-        assert result == expected_type
+        assert isinstance(result, expected_type)
 
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")
