@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.boolean
 
+Boolean logic helpers such as comparisons, conditionals and logical operations.
+
 ## All
 
 Checks if all boolean values in a list are True.

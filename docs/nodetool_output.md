@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.output
 
+Nodes for returning results to the user such as text, images or audio files.
+
 ## ArrayOutput
 
 Output node for generic array data.

@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.control
 
+Control flow utilities. Includes a basic if/else node for branching execution.
+
 ## If
 
 Conditionally executes one of two branches based on a condition.

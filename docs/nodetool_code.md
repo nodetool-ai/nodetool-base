@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.code
 
+Execute small pieces of Python code or evaluate expressions in a controlled environment.
+
 ## EvaluateExpression
 
 Evaluates a Python expression with safety restrictions.

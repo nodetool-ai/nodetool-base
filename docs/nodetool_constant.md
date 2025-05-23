@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.constant
 
+Nodes that output constant values such as numbers, strings, images and more.
+
 ## Audio
 
 Represents an audio file constant in the workflow.

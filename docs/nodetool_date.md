@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.date
 
+Date and time utilities for formatting, arithmetic and range checks.
+
 ## AddTimeDelta
 
 Add or subtract time from a datetime.

@@ -8,6 +8,8 @@ nav_order: 2
 
 # nodetool.nodes.nodetool.video
 
+Video editing nodes for tasks like concatenation, resizing and saving videos.
+
 ## AddAudio
 
 Add an audio track to a video, replacing or mixing with existing audio.
