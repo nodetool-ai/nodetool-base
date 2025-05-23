@@ -7,10 +7,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: FedericoCarboni/setup-ffmpeg@v3.1
-        id: setup-ffmpeg
-        with:
-          ffmpeg-version: release
+      - name: Install FFmpeg via apt-get
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          echo "FFmpeg version:"
+          ffmpeg -version
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
