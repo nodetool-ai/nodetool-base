@@ -23,6 +23,7 @@ from nodetool.nodes.nodetool.input import (
     AudioInput,
     GroupInput,
 )
+from nodetool.metadata.types import Message, MessageTextContent
 
 
 @pytest.fixture
