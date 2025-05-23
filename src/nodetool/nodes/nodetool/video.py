@@ -32,6 +32,15 @@ def safe_unlink(path: str):
 
 
 class LoadVideoAssets(BaseNode):
+    """Load video files from an asset folder.
+
+    video, assets, load
+
+    Use cases:
+    - Provide videos for batch processing
+    - Iterate over stored video assets
+    - Prepare clips for editing or analysis
+    """
 
     folder: FolderRef = Field(
         default=FolderRef(),

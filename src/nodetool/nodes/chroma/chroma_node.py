@@ -9,6 +9,16 @@ from nodetool.workflows.processing_context import ProcessingContext
 
 
 class ChromaNode(BaseNode):
+    """Base class for Chroma vector database nodes.
+
+    chroma, base, database
+
+    Use cases:
+    - Provide shared helpers for Chroma indexing and queries
+    - Disable caching for subclasses
+    - Convert result IDs into asset references
+    """
+
     @classmethod
     def is_cacheable(cls):
         return False
