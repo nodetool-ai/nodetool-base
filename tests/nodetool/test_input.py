@@ -8,6 +8,8 @@ from nodetool.metadata.types import (
     VideoRef,
     FolderRef,
     AssetRef,
+    Message,
+    MessageTextContent,
 )
 from nodetool.nodes.nodetool.input import (
     FloatInput,
@@ -68,9 +70,19 @@ def context():
         (
             ChatInput(
                 name="chat_input",
-                value=[Message(role="user", content=[MessageTextContent(text="hi")])],
+                value=[
+                    Message(
+                        role="user",
+                        content=[MessageTextContent(text="hello")],
+                    )
+                ],
             ),
-            [Message(role="user", content=[MessageTextContent(text="hi")])],
+            [
+                Message(
+                    role="user",
+                    content=[MessageTextContent(text="hello")],
+                )
+            ],
             dict,
         ),
         (
