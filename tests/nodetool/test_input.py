@@ -8,6 +8,8 @@ from nodetool.metadata.types import (
     VideoRef,
     FolderRef,
     AssetRef,
+    Message,
+    MessageTextContent,
 )
 from nodetool.nodes.nodetool.input import (
     FloatInput,
@@ -21,6 +23,7 @@ from nodetool.nodes.nodetool.input import (
     AudioInput,
     GroupInput,
 )
+from nodetool.metadata.types import Message, MessageTextContent
 
 
 @pytest.fixture
@@ -67,9 +70,19 @@ def context():
         (
             ChatInput(
                 name="chat_input",
-                value=[],
+                value=[
+                    Message(
+                        role="user",
+                        content=[MessageTextContent(text="hello")],
+                    )
+                ],
             ),
-            [],
+            [
+                Message(
+                    role="user",
+                    content=[MessageTextContent(text="hello")],
+                )
+            ],
             dict,
         ),
         (
