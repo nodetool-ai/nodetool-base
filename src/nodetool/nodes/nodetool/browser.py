@@ -1,10 +1,5 @@
-import os
-
-os.environ["ANONYMIZED_TELEMETRY"] = "false"
-
 import traceback
 import aiohttp
-import urllib.parse
 import html2text
 from bs4 import BeautifulSoup
 from enum import Enum
@@ -20,7 +15,10 @@ from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath
-from browser_use import Agent, Browser as BrowserUse, BrowserConfig
+import os
+
+# Browser Use
+os.environ["ANONYMIZED_TELEMETRY"] = "false"
 
 
 class Browser(BaseNode):
@@ -60,7 +58,7 @@ class Browser(BaseNode):
 
         # Initialize browser
         playwright_instance = await async_playwright().start()
-        browser_endpoint = Environment.get("BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT")
+        browser_endpoint = Environment.get("BROWSER_URL")
 
         if browser_endpoint:
             browser = await playwright_instance.chromium.connect_over_cdp(
@@ -240,7 +238,7 @@ class Screenshot(BaseNode):
 
         # Initialize browser
         playwright_instance = await async_playwright().start()
-        browser_endpoint = Environment.get("BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT")
+        browser_endpoint = Environment.get("BROWSER_URL")
 
         if browser_endpoint:
             browser = await playwright_instance.chromium.connect_over_cdp(
@@ -455,7 +453,7 @@ class BrowserNavigation(BaseNode):
 
         # Initialize browser
         playwright_instance = await async_playwright().start()
-        browser_endpoint = Environment.get("BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT")
+        browser_endpoint = Environment.get("BROWSER_URL")
 
         try:
             if browser_endpoint:
@@ -627,6 +625,8 @@ class BrowserUseNode(BaseNode):
         """
         Execute a browser agent task.
         """
+        from browser_use import Agent, Browser as BrowserUse, BrowserConfig
+
         if self.model == BrowserUseModel.GPT_4O:
             openai_api_key = Environment.get("OPENAI_API_KEY")
             if not openai_api_key:
@@ -656,19 +656,17 @@ class BrowserUseNode(BaseNode):
         browser_instance = None
         try:
             if self.use_remote_browser:
-                browser_endpoint = Environment.get(
-                    "BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT"
-                )
+                browser_endpoint = Environment.get("BROWSER_URL")
                 if not browser_endpoint:
                     raise ValueError(
-                        "BrightData scraping browser endpoint not found in environment variables (BRIGHTDATA_SCRAPING_BROWSER_ENDPOINT)."
+                        "BrightData scraping browser endpoint not found in environment variables (BROWSER_URL)."
                     )
 
                 # Use BrightData CDP endpoint
                 browser_instance = BrowserUse(
                     config=BrowserConfig(
                         headless=True,  # Usually required for CDP connection
-                        cdp_url=browser_endpoint,
+                        wss_url=browser_endpoint,
                     )
                 )
             else:

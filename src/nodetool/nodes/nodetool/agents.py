@@ -1,6 +1,7 @@
 import json
 import os
 from typing import Any, List, Optional, AsyncGenerator
+from nodetool.common.environment import Environment
 from pydantic import Field
 from enum import Enum
 
@@ -344,6 +345,7 @@ class AgentNode(BaseNode):
             input_files=[file.path for file in self.input_files],
             reasoning_model=self.reasoning_model.id,
             task=self.task if self.task.title else None,
+            docker_image="nodetool" if Environment.is_production() else None,
         )
 
         async for item in agent.execute(context):
@@ -799,6 +801,7 @@ class AgentStreaming(AgentNode):
             input_files=[file.path for file in self.input_files],
             reasoning_model=self.reasoning_model.id,
             task=self.task if self.task.title else None,
+            docker_image="nodetool" if Environment.is_production() else None,
         )
 
         async for item in agent.execute(context):
