@@ -127,8 +127,11 @@ async def test_input_nodes(
         node._value = input_value
 
     if isinstance(node, ChatInput):
-        with pytest.raises(ValueError):
-            await node.process(context)
+        result = await node.process(context)
+        assert isinstance(result, dict)
+        assert result["history"] == input_value[:-1]
+        assert "text" in result
+        assert "tools" in result
         return
 
     try:
