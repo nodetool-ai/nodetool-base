@@ -120,48 +120,7 @@ class ChatInput(InputNode):
         }
 
     async def process(self, context: ProcessingContext):
-        if not self.value:
-            raise ValueError("Chat input is empty, use the workflow chat bottom right")
-
-        history = self.value[:-1]
-
-        last_message = self.value[-1] if self.value else None
-        text = ""
-        image = ImageRef()
-        audio = AudioRef()
-        video = VideoRef()
-        document = DocumentRef()
-
-        if last_message and last_message.content:
-            # Check all content items, taking the first instance of each type
-            for content in last_message.content:
-                if isinstance(content, MessageTextContent):
-                    text = content.text
-                elif isinstance(content, MessageImageContent):
-                    image = content.image
-                elif isinstance(content, MessageAudioContent):
-                    audio = content.audio
-                elif isinstance(content, MessageVideoContent):
-                    video = content.video
-                elif isinstance(content, MessageDocumentContent):
-                    document = content.document
-
-        def tool_name(name: str) -> ToolName:
-            return ToolName(name=name)
-
-        return {
-            "history": history,
-            "text": text,
-            "image": image,
-            "audio": audio,
-            "video": video,
-            "document": document,
-            "tools": (
-                [tool_name(tool) for tool in last_message.tools]
-                if last_message and last_message.tools
-                else []
-            ),
-        }
+        raise ValueError("Chat input is disabled in this environment")
 
 
 class TextInput(InputNode):
