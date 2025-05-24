@@ -18397,6 +18397,119 @@
         "quality"
       ],
       "is_dynamic": false
+    },
+    {
+      "title": "List Scheduled Events",
+      "description": "Fetch scheduled events for a Calendly user.\n    calendly, calendar, events",
+      "namespace": "calendly.events",
+      "node_type": "calendly.events.ListScheduledEvents",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "user",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "User",
+          "description": "User URI to fetch events for"
+        },
+        {
+          "name": "count",
+          "type": {
+            "type": "int"
+          },
+          "default": 20,
+          "title": "Count",
+          "description": "Number of events to return"
+        },
+        {
+          "name": "status",
+          "type": {
+            "type": "str"
+          },
+          "default": "active",
+          "title": "Status",
+          "description": "Event status filter"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "calendly_event"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "user",
+        "count",
+        "status"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Scheduled Event Fields",
+      "description": "Extract fields from a CalendlyEvent.\n    calendly, event, fields",
+      "namespace": "calendly.events",
+      "node_type": "calendly.events.ScheduledEventFields",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "event",
+          "type": {
+            "type": "calendly_event"
+          },
+          "default": {},
+          "title": "Event",
+          "description": "The Calendly event to extract"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "uri"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
+        },
+        {
+          "type": {
+            "type": "datetime"
+          },
+          "name": "start_time"
+        },
+        {
+          "type": {
+            "type": "datetime"
+          },
+          "name": "end_time"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "location"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "event"
+      ],
+      "is_dynamic": false
     }
   ],
   "assets": [
