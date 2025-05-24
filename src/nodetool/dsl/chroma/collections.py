@@ -6,6 +6,33 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
+class CollectionNode(GraphNode):
+    """
+    Get or create a collection.
+    chroma, embedding, collection, RAG, get, create
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The name of the collection to create"
+    )
+    embedding_model: types.LlamaModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LlamaModel(
+            type="llama_model",
+            name="",
+            repo_id="",
+            modified_at="",
+            size=0,
+            digest="",
+            details={},
+        ),
+        description="The embedding model to use",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "chroma.collections.Collection"
+
+
 class Count(GraphNode):
     """
     Count the number of documents in a collection.
@@ -45,33 +72,6 @@ class GetDocuments(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "chroma.collections.GetDocuments"
-
-
-class GetOrCreateCollection(GraphNode):
-    """
-    Get or create a collection.
-    chroma, embedding, collection, RAG, get, create
-    """
-
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The name of the collection to create"
-    )
-    embedding_model: types.LlamaModel | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.LlamaModel(
-            type="llama_model",
-            name="",
-            repo_id="",
-            modified_at="",
-            size=0,
-            digest="",
-            details={},
-        ),
-        description="The embedding model to use",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "chroma.collections.GetOrCreateCollection"
 
 
 class Peek(GraphNode):

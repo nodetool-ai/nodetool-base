@@ -9,7 +9,7 @@ permalink: /
 
 ## Available Nodes
 
-- **[nodetool.audio](nodetool_audio.md)** - Save audio files to the assets directory.
+- **[lib.audio](nodetool_audio.md)** - Save audio files to the assets directory.
 - **[nodetool.boolean](nodetool_boolean.md)** - Logical operators, comparisons and flow control helpers.
 - **[nodetool.code](nodetool_code.md)** - Evaluate expressions or run small Python snippets (development use).
 - **[nodetool.constant](nodetool_constant.md)** - Provide constant values like numbers, strings and images.

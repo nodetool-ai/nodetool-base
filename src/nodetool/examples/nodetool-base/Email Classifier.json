@@ -13,7 +13,7 @@
       {
         "id": "9",
         "parent_id": null,
-        "type": "nodetool.group.Loop",
+        "type": "nodetool.workflows.base_node.Group",
         "data": {},
         "ui_properties": {
           "selected": false,
@@ -30,7 +30,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "google.mail.GmailSearch",
+        "type": "nodetool.mail.GmailSearch",
         "data": {
           "search_query": "",
           "max_results": 10
@@ -137,7 +137,7 @@
       {
         "id": "14",
         "parent_id": "9",
-        "type": "nodetool.text.HTMLToText",
+        "type": "nodetool.text.HtmlToText",
         "data": {
           "preserve_linebreaks": true
         },
@@ -155,7 +155,7 @@
       {
         "id": "15",
         "parent_id": "9",
-        "type": "ollama.text.Ollama",
+        "type": "nodetool.llms.LLM",
         "data": {
           "model": {
             "type": "llama_model",

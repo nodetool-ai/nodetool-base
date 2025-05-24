@@ -8,7 +8,7 @@ from nodetool.nodes.chroma.chroma_node import ChromaNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 
-class GetOrCreateCollection(ChromaNode):
+class CollectionNode(ChromaNode):
     """
     Get or create a collection.
     chroma, embedding, collection, RAG, get, create

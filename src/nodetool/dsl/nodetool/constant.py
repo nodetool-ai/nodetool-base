@@ -46,6 +46,15 @@ class Bool(GraphNode):
 
 
 class Constant(GraphNode):
+    """Base class for fixed-value nodes.
+
+    constant, parameter, default
+
+    Use cases:
+    - Provide static inputs to a workflow
+    - Hold configuration values
+    - Simplify testing with deterministic outputs
+    """
 
     @classmethod
     def get_node_type(cls):

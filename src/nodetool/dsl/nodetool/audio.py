@@ -6,7 +6,7 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
-class LoadAudioFolder(GraphNode):
+class LoadAudioAssets(GraphNode):
     """
     Load audio files from an asset folder.
     load, audio, file, import
@@ -19,7 +19,7 @@ class LoadAudioFolder(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.audio.LoadAudioFolder"
+        return "nodetool.audio.LoadAudioAssets"
 
 
 class SaveAudio(GraphNode):

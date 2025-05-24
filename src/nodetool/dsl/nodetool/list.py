@@ -593,6 +593,20 @@ class Length(GraphNode):
         return "nodetool.list.Length"
 
 
+class ListIterator(GraphNode):
+    """
+    Iterate over rows of a dataframe.
+    """
+
+    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description=None
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.list.ListIterator"
+
+
 class MapField(GraphNode):
     """
     Extracts a specific field from a list of dictionaries or objects.
@@ -615,49 +629,6 @@ class MapField(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.MapField"
-
-
-class MapTemplate(GraphNode):
-    """
-    Maps a template string over a list of dictionaries or objects using Jinja2 templating.
-    list, template, map, formatting
-
-    Use cases:
-    - Formatting multiple records into strings
-    - Generating text from structured data
-    - Creating text representations of data collections
-
-    Examples:
-    - template: "Name: {{ name }}, Age: {{ age }}"
-      values: [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}]
-      -> ["Name: Alice, Age: 30", "Name: Bob, Age: 25"]
-
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
-    """
-
-    template: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description='\n        Template string with Jinja2 placeholders for formatting\n        Examples:\n        - "Name: {{ name }}, Age: {{ age }}"\n        - "{{ title|truncate(20) }}"\n        - "{{ name|upper }}"\n        ',
-    )
-    values: list[dict[str, typing.Any] | object] | GraphNode | tuple[GraphNode, str] = (
-        Field(default=[], description=None)
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.list.MapTemplate"
 
 
 class Maximum(GraphNode):

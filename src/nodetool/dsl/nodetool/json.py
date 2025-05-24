@@ -185,6 +185,22 @@ class JSONTemplate(GraphNode):
         return "nodetool.json.JSONTemplate"
 
 
+class LoadJSONAssets(GraphNode):
+    """
+    Load JSON files from an asset folder.
+    load, json, file, import
+    """
+
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The asset folder to load the JSON files from.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.json.LoadJSONAssets"
+
+
 class ParseDict(GraphNode):
     """
     Parse a JSON string into a Python dictionary.

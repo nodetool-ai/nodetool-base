@@ -292,6 +292,39 @@ class HasLength(GraphNode):
         return "nodetool.text.HasLength"
 
 
+class HtmlToText(GraphNode):
+    """
+    Converts HTML content to plain text using html2text.
+    html, convert, text, parse, extract
+
+    Use cases:
+    - Converting HTML documents to readable plain text
+    - Extracting text content from web pages
+    - Cleaning HTML markup from text data
+    - Processing HTML emails or documents
+    """
+
+    html: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="HTML content to convert"
+    )
+    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Base URL for resolving relative links"
+    )
+    body_width: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1000, description="Width for text wrapping"
+    )
+    ignore_images: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Whether to ignore image tags"
+    )
+    ignore_mailto_links: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Whether to ignore mailto links"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.text.HtmlToText"
+
+
 class IsEmpty(GraphNode):
     """
     Checks if text is empty or contains only whitespace.
@@ -334,6 +367,27 @@ class Join(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Join"
+
+
+class LoadTextAssets(GraphNode):
+    """
+    Load text files from an asset folder.
+    load, text, file, import
+
+    Use cases:
+    - Loading multiple text files for batch processing
+    - Importing text content from a directory
+    - Processing collections of text documents
+    """
+
+    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The asset folder to load the text files from.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.text.LoadTextAssets"
 
 
 class ParseJSON(GraphNode):

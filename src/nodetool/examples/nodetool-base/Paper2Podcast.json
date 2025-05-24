@@ -52,7 +52,7 @@
       {
         "id": "4",
         "parent_id": null,
-        "type": "nodetool.file.pdf.ExtractText",
+        "type": "lib.file.pymupdf.ExtractText",
         "data": {
           "start_page": 0,
           "end_page": 4
@@ -71,7 +71,7 @@
       {
         "id": "5",
         "parent_id": null,
-        "type": "nodetool.network.http.GetRequestDocument",
+        "type": "lib.network.http.GetRequestDocument",
         "data": {
           "url": "https://arxiv.org/pdf/1706.03762",
           "headers": null,
@@ -91,7 +91,7 @@
       {
         "id": "6",
         "parent_id": null,
-        "type": "ollama.agents.Summarizer",
+        "type": "nodetool.llms.Summarizer",
         "data": {
           "model": {
             "type": "llama_model",

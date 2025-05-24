@@ -13,7 +13,7 @@
       {
         "id": "9",
         "parent_id": null,
-        "type": "nodetool.group.Loop",
+        "type": "nodetool.workflows.base_node.Group",
         "data": {},
         "ui_properties": {
           "position": {
@@ -29,7 +29,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "nodetool.network.rss.FetchRSSFeed",
+        "type": "lib.network.rss.FetchRSSFeed",
         "data": {
           "url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
         },
@@ -129,7 +129,7 @@
       {
         "id": "12",
         "parent_id": "9",
-        "type": "nodetool.network.rss.RSSEntryFields",
+        "type": "lib.network.rss.RSSEntryFields",
         "data": {},
         "ui_properties": {
           "position": {
@@ -144,7 +144,7 @@
       {
         "id": "13",
         "parent_id": "9",
-        "type": "nodetool.network.http.GetRequest",
+        "type": "lib.network.http.GetRequest",
         "data": {
           "headers": null,
           "auth": null
@@ -162,7 +162,7 @@
       {
         "id": "14",
         "parent_id": "9",
-        "type": "nodetool.text.HTMLToText",
+        "type": "nodetool.text.HtmlToText",
         "data": {
           "preserve_linebreaks": true
         },
@@ -216,7 +216,7 @@
       {
         "id": "19",
         "parent_id": null,
-        "type": "ollama.agents.Summarizer",
+        "type": "nodetool.llms.Summarizer",
         "data": {
           "model": {
             "type": "llama_model",
@@ -278,7 +278,7 @@
       {
         "id": "22",
         "parent_id": "9",
-        "type": "ollama.agents.Summarizer",
+        "type": "nodetool.llms.Summarizer",
         "data": {
           "model": {
             "type": "llama_model",

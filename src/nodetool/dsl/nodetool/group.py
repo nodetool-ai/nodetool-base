@@ -34,4 +34,4 @@ class Loop(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.group.Loop"
+        return "nodetool.workflows.base_node.Group"

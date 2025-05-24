@@ -13,7 +13,7 @@
       {
         "id": "3",
         "parent_id": null,
-        "type": "nodetool.group.Loop",
+        "type": "nodetool.workflows.base_node.Group",
         "data": {},
         "ui_properties": {
           "position": {
@@ -29,7 +29,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "nodetool.file.ListFiles",
+        "type": "nodetool.os.ListFiles",
         "data": {
           "directory": {
             "type": "file_path",
@@ -81,26 +81,9 @@
         }
       },
       {
-        "id": "16",
-        "parent_id": null,
-        "type": "chroma.embedding_functions.SentenceTransformerEmbeddingFunction",
-        "data": {
-          "model": "all-MiniLM-L6-v2"
-        },
-        "ui_properties": {
-          "position": {
-            "x": 50,
-            "y": 510
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        }
-      },
-      {
         "id": "17",
         "parent_id": "3",
-        "type": "nodetool.file.LoadDocument",
+        "type": "nodetool.os.LoadDocumentFile",
         "data": {},
         "ui_properties": {
           "position": {
@@ -115,7 +98,7 @@
       {
         "id": "18",
         "parent_id": "3",
-        "type": "nodetool.file.pdf.ExtractText",
+        "type": "lib.file.pymupdf.ExtractText",
         "data": {
           "start_page": 0,
           "end_page": 4
@@ -165,7 +148,7 @@
       {
         "id": "22",
         "parent_id": "3",
-        "type": "nodetool.file.PathToString",
+        "type": "nodetool.os.PathToString",
         "data": {},
         "ui_properties": {
           "position": {
@@ -179,16 +162,6 @@
       }
     ],
     "edges": [
-      {
-        "id": "74cc72e6-8c74-4d08-834e-262e08cfa0c1",
-        "source": "16",
-        "sourceHandle": "output",
-        "target": "14",
-        "targetHandle": "embedding_function",
-        "ui_properties": {
-          "className": "chroma_embedding_function"
-        }
-      },
       {
         "id": "8a8e17e3-3154-4751-b864-b1c3896bf42a",
         "source": "18",

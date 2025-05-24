@@ -18,6 +18,7 @@ from nodetool.metadata.types import TextRef
 from nodetool.workflows.base_node import BaseNode
 from typing import Optional
 from enum import Enum
+import html2text
 
 
 class Concat(BaseNode):
@@ -800,6 +801,49 @@ class CountTokens(BaseNode):
 
         encoding = tiktoken.get_encoding(self.encoding.value)
         return len(encoding.encode(self.text))
+
+
+class HtmlToText(BaseNode):
+    """
+    Converts HTML content to plain text using html2text.
+    html, convert, text, parse, extract
+
+    Use cases:
+    - Converting HTML documents to readable plain text
+    - Extracting text content from web pages
+    - Cleaning HTML markup from text data
+    - Processing HTML emails or documents
+    """
+
+    html: str = Field(title="HTML", default="", description="HTML content to convert")
+    base_url: str = Field(
+        title="Base URL",
+        default="",
+        description="Base URL for resolving relative links",
+    )
+    body_width: int = Field(
+        title="Body Width", default=1000, description="Width for text wrapping"
+    )
+    ignore_images: bool = Field(
+        title="Ignore Images", default=True, description="Whether to ignore image tags"
+    )
+    ignore_mailto_links: bool = Field(
+        title="Ignore Mailto Links",
+        default=True,
+        description="Whether to ignore mailto links",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "HTML to Text"
+
+    async def process(self, context: ProcessingContext) -> str:
+        # Convert to plain text
+        h = html2text.HTML2Text(baseurl=self.base_url, bodywidth=self.body_width)
+        h.ignore_images = self.ignore_images
+        h.ignore_mailto_links = self.ignore_mailto_links
+        content = h.handle(self.html)
+        return content
 
 
 class LoadTextAssets(BaseNode):

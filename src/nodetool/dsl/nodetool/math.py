@@ -25,6 +25,8 @@ class Add(GraphNode):
 
 
 class BinaryOperation(GraphNode):
+    """Common base for binary math operations."""
+
     a: int | float | GraphNode | tuple[GraphNode, str] = Field(
         default=0.0, description=None
     )

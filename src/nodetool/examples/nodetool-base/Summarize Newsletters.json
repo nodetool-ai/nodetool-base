@@ -13,7 +13,7 @@
       {
         "id": "12",
         "parent_id": null,
-        "type": "nodetool.group.Loop",
+        "type": "nodetool.workflows.base_node.Group",
         "data": {},
         "ui_properties": {
           "position": {
@@ -78,7 +78,7 @@
       {
         "id": "20",
         "parent_id": null,
-        "type": "google.mail.GmailSearch",
+        "type": "nodetool.mail.GmailSearch",
         "data": {
           "email_address": "matti.georgi@gmail.com",
           "search_query": "",
@@ -97,7 +97,7 @@
       {
         "id": "22",
         "parent_id": "12",
-        "type": "nodetool.network.imap.EmailFields",
+        "type": "nodetool.mail.EmailFields",
         "data": {},
         "ui_properties": {
           "position": {
@@ -149,7 +149,7 @@
       {
         "id": "35",
         "parent_id": null,
-        "type": "ollama.agents.Summarizer",
+        "type": "nodetool.llms.Summarizer",
         "data": {
           "model": {
             "type": "llama_model",
@@ -183,7 +183,7 @@
       {
         "id": "36",
         "parent_id": "12",
-        "type": "ollama.agents.Summarizer",
+        "type": "nodetool.llms.Summarizer",
         "data": {
           "model": {
             "type": "llama_model",
@@ -210,32 +210,6 @@
           },
           "zIndex": 0,
           "width": 288,
-          "selectable": true
-        }
-      },
-      {
-        "id": "38",
-        "parent_id": null,
-        "type": "google.mail.EmailSearchCriteria",
-        "data": {
-          "from_address": "",
-          "to_address": "",
-          "subject": "AINews",
-          "body": "",
-          "date_filter": "SINCE_ONE_MONTH",
-          "flags": null,
-          "keywords": "",
-          "folder": "INBOX",
-          "text": null
-        },
-        "ui_properties": {
-          "selected": false,
-          "position": {
-            "x": 50,
-            "y": 50
-          },
-          "zIndex": 0,
-          "width": 162,
           "selectable": true
         }
       },
@@ -326,16 +300,6 @@
         "targetHandle": "text",
         "ui_properties": {
           "className": "str"
-        }
-      },
-      {
-        "id": "96a69b90-9c7a-4c77-acfe-74f947b8ce38",
-        "source": "38",
-        "sourceHandle": "output",
-        "target": "20",
-        "targetHandle": "search_criteria",
-        "ui_properties": {
-          "className": "email_search_criteria"
         }
       },
       {

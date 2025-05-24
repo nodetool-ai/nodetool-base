@@ -104,7 +104,7 @@ class GetMetadata(GraphNode):
         return "nodetool.image.GetMetadata"
 
 
-class LoadImageFolder(GraphNode):
+class LoadImageAssets(GraphNode):
     """
     Load images from an asset folder.
     load, image, file, import
@@ -117,7 +117,7 @@ class LoadImageFolder(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.LoadImageFolder"
+        return "nodetool.image.LoadImageAssets"
 
 
 class Paste(GraphNode):

@@ -203,29 +203,6 @@ class Concat(GraphNode):
         return "nodetool.video.Concat"
 
 
-class CreateVideo(GraphNode):
-    """
-    Combine a sequence of frames into a single video file.
-    video, frames, combine, sequence
-
-    Use cases:
-    1. Create time-lapse videos from image sequences
-    2. Compile processed frames back into a video
-    3. Generate animations from individual images
-    """
-
-    frames: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The frames to combine into a video."
-    )
-    fps: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=30, description="The FPS of the output video."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.video.CreateVideo"
-
-
 class Denoise(GraphNode):
     """
     Apply noise reduction to a video.
@@ -271,7 +248,30 @@ class ExtractAudio(GraphNode):
         return "nodetool.video.ExtractAudio"
 
 
-class ExtractFrames(GraphNode):
+class Fps(GraphNode):
+    """
+    Get the frames per second (FPS) of a video file.
+    video, analysis, frames, fps
+
+    Use cases:
+    1. Analyze video properties for quality assessment
+    2. Determine appropriate playback speed for video editing
+    3. Ensure compatibility with target display systems
+    """
+
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The input video to analyze for FPS.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.video.Fps"
+
+
+class FrameIterator(GraphNode):
     """
     Extract frames from a video file using OpenCV.
     video, frames, extract, sequence
@@ -297,33 +297,51 @@ class ExtractFrames(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.video.ExtractFrames"
+        return "nodetool.video.FrameIterator"
 
 
-class Fps(GraphNode):
+class FrameToVideo(GraphNode):
     """
-    Get the frames per second (FPS) of a video file.
-    video, analysis, frames, fps
+    Combine a sequence of frames into a single video file.
+    video, frames, combine, sequence
 
     Use cases:
-    1. Analyze video properties for quality assessment
-    2. Determine appropriate playback speed for video editing
-    3. Ensure compatibility with target display systems
+    1. Create time-lapse videos from image sequences
+    2. Compile processed frames back into a video
+    3. Generate animations from individual images
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
-        ),
-        description="The input video to analyze for FPS.",
+    frame: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="Collect input frames",
+    )
+    index: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Index of the current frame. -1 signals end of stream."
+    )
+    fps: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="The FPS of the output video."
+    )
+    event: types.Event | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Event(type="event", name="done", payload={}),
+        description="Signal end of stream",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.video.Fps"
+        return "nodetool.video.FrameToVideo"
 
 
-class LoadVideoFolder(GraphNode):
+class LoadVideoAssets(GraphNode):
+    """Load video files from an asset folder.
+
+    video, assets, load
+
+    Use cases:
+    - Provide videos for batch processing
+    - Iterate over stored video assets
+    - Prepare clips for editing or analysis
+    """
+
     folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The asset folder to load the video files from.",
@@ -331,7 +349,7 @@ class LoadVideoFolder(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.video.LoadVideoFolder"
+        return "nodetool.video.LoadVideoAssets"
 
 
 class Overlay(GraphNode):
