@@ -18397,6 +18397,47 @@
         "quality"
       ],
       "is_dynamic": false
+    },
+    {
+      "title": "Send SMS",
+      "description": "Send an SMS message using the Twilio API.\n    twilio, sms, message, send\n\n    Use cases:\n    - Notify via text messages\n    - Send two-factor authentication codes\n    - Deliver alerts and reminders",
+      "namespace": "twilio.sms",
+      "node_type": "twilio.sms.SendSMS",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "to_number",
+          "type": {"type": "str"},
+          "default": "",
+          "title": "To Number",
+          "description": "Destination phone number."
+        },
+        {
+          "name": "from_number",
+          "type": {"type": "str"},
+          "default": "",
+          "title": "From Number",
+          "description": "Twilio phone number to send from."
+        },
+        {
+          "name": "body",
+          "type": {"type": "str"},
+          "default": "",
+          "title": "Body",
+          "description": "Message body to send."
+        }
+      ],
+      "outputs": [
+        {"type": {"type": "str"}, "name": "sid"}
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "to_number",
+        "from_number",
+        "body"
+      ],
+      "is_dynamic": false
     }
   ],
   "assets": [
