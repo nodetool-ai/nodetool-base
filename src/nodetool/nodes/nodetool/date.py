@@ -35,7 +35,8 @@ class Now(BaseNode):
     """
 
     async def process(self, context: ProcessingContext) -> Datetime:
-        return Datetime.from_datetime(datetime.now())
+        from datetime import timezone
+        return Datetime.from_datetime(datetime.now(timezone.utc))
 
 
 class ParseDate(BaseNode):

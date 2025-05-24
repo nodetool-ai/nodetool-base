@@ -144,20 +144,20 @@ class TestNormalize:
     async def test_normalize(self, mock_context):
         """Test that Normalize correctly normalizes an audio file."""
         # Setup
-        node = Normalize(audio=AudioRef())
-
-        # Execute
         with patch(
-            "nodetool.nodes.lib.audio.audio_helpers.normalize_audio"
+            "nodetool.nodes.nodetool.audio.normalize_audio"
         ) as mock_normalize:
             mock_normalize.return_value = AudioSegment.silent(duration=1000)
+            node = Normalize(audio=AudioRef())
+            
+            # Execute
             result = await node.process(mock_context)
 
-        # Verify
-        assert mock_context.audio_to_audio_segment.call_count == 1
-        assert mock_context.audio_from_segment.call_count == 1
-        assert isinstance(result, AudioRef)
-        mock_normalize.assert_called_once()
+            # Verify
+            assert mock_context.audio_to_audio_segment.call_count == 1
+            assert mock_context.audio_from_segment.call_count == 1
+            assert isinstance(result, AudioRef)
+            mock_normalize.assert_called_once()
 
 
 class TestOverlayAudio:
@@ -184,41 +184,42 @@ class TestRemoveSilence:
     async def test_remove_silence(self, mock_context):
         """Test that RemoveSilence correctly removes silence from an audio file."""
         # Setup
-        node = RemoveSilence(
-            audio=AudioRef(),
-            min_length=200,
-            threshold=-40,
-            reduction_factor=1.0,
-            crossfade=10,
-            min_silence_between_parts=100,
-        )
-
-        # Execute
         with patch(
-            "nodetool.nodes.lib.audio.audio_helpers.remove_silence"
+            "nodetool.nodes.nodetool.audio.remove_silence"
         ) as mock_remove_silence:
             mock_remove_silence.return_value = AudioSegment.silent(duration=500)
+            
+            node = RemoveSilence(
+                audio=AudioRef(),
+                min_length=200,
+                threshold=-40,
+                reduction_factor=1.0,
+                crossfade=10,
+                min_silence_between_parts=100,
+            )
+
+            # Execute
             result = await node.process(mock_context)
 
-        # Verify
-        assert mock_context.audio_to_audio_segment.call_count == 1
-        assert mock_context.audio_from_segment.call_count == 1
-        assert isinstance(result, AudioRef)
+            # Verify
+            assert mock_context.audio_to_audio_segment.call_count == 1
+            assert mock_context.audio_from_segment.call_count == 1
+            assert isinstance(result, AudioRef)
 
-        # Use a more flexible assertion that doesn't check the exact audio segment object
-        mock_remove_silence.assert_called_once()
-        args, kwargs = mock_remove_silence.call_args
-        assert len(args) == 1  # Should have one positional argument (the audio segment)
-        assert isinstance(
-            args[0], AudioSegment
-        )  # The first arg should be an AudioSegment
-        assert kwargs == {
-            "min_length": 200,
-            "threshold": -40,
-            "reduction_factor": 1.0,
-            "crossfade": 10,
-            "min_silence_between_parts": 100,
-        }
+            # Use a more flexible assertion that doesn't check the exact audio segment object
+            mock_remove_silence.assert_called_once()
+            args, kwargs = mock_remove_silence.call_args
+            assert len(args) == 1  # Should have one positional argument (the audio segment)
+            assert isinstance(
+                args[0], AudioSegment
+            )  # The first arg should be an AudioSegment
+            assert kwargs == {
+                "min_length": 200,
+                "threshold": -40,
+                "reduction_factor": 1.0,
+                "crossfade": 10,
+                "min_silence_between_parts": 100,
+            }
 
 
 class TestSliceAudio:
