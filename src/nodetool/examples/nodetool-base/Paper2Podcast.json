@@ -52,7 +52,7 @@
       {
         "id": "4",
         "parent_id": null,
-        "type": "lib.file.pymupdf.ExtractText",
+        "type": "lib.pymupdf.ExtractText",
         "data": {
           "start_page": 0,
           "end_page": 4
@@ -71,7 +71,7 @@
       {
         "id": "5",
         "parent_id": null,
-        "type": "lib.network.http.GetRequestDocument",
+        "type": "lib.http.GetRequestDocument",
         "data": {
           "url": "https://arxiv.org/pdf/1706.03762",
           "headers": null,

@@ -15,7 +15,7 @@
       {
         "id": "2",
         "parent_id": null,
-        "type": "lib.file.pymupdf.ExtractMarkdown",
+        "type": "lib.pymupdf.ExtractMarkdown",
         "data": {
           "start_page": 0,
           "end_page": -1
@@ -61,7 +61,7 @@
       {
         "id": "9",
         "parent_id": null,
-        "type": "lib.data.langchain.RecursiveTextSplitter",
+        "type": "lib.langchain.RecursiveTextSplitter",
         "data": {
           "source_id": "",
           "chunk_size": 800,

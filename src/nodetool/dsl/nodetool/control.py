@@ -8,14 +8,13 @@ from nodetool.dsl.graph import GraphNode
 
 class CollectorNode(GraphNode):
     """
-    Collects items from the input and yields a list once the "done" event is received.
-    This is the opposite of IteratorNode - it collects items into a list rather than
-    iterating over a list.
+    Collect items until a "done" event and return them as a list.
+    collector, aggregate, list, stream
 
     Use cases:
-    1. Gather results from multiple processing steps into a single list
-    2. Collect streaming data into batches for batch processing
-    3. Aggregate results from parallel operations
+    - Gather results from multiple processing steps
+    - Collect streaming data into batches
+    - Aggregate outputs from parallel operations
     """
 
     input_item: Any | GraphNode | tuple[GraphNode, str] = Field(
@@ -56,8 +55,12 @@ class If(GraphNode):
 
 class IteratorNode(GraphNode):
     """
-    Iterates over a list of items and triggers downstream execution for each item
-    by yielding them one by one using `gen_process`.
+    Iterate over a list and emit each item sequentially.
+    iterator, loop, list, sequence
+
+    Use cases:
+    - Process each item of a collection in order
+    - Drive downstream nodes with individual elements
     """
 
     input_list: list[Any] | GraphNode | tuple[GraphNode, str] = Field(

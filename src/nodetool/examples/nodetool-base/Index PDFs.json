@@ -98,7 +98,7 @@
       {
         "id": "18",
         "parent_id": "3",
-        "type": "lib.file.pymupdf.ExtractText",
+        "type": "lib.pymupdf.ExtractText",
         "data": {
           "start_page": 0,
           "end_page": 4
@@ -131,7 +131,7 @@
       {
         "id": "21",
         "parent_id": "3",
-        "type": "lib.data.langchain.SentenceSplitter",
+        "type": "lib.langchain.SentenceSplitter",
         "data": {
           "min_length": 1024
         },

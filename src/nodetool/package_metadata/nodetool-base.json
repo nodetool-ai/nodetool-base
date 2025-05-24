@@ -9843,6 +9843,368 @@
       "is_dynamic": false
     },
     {
+      "title": "Audio Mixer",
+      "description": "Mix up to 5 audio tracks together with individual volume controls.\n    audio, mix, volume, combine, blend, layer, add, overlay\n\n    Use cases:\n    - Mix multiple audio tracks into a single output\n    - Create layered soundscapes\n    - Combine music, voice, and sound effects\n    - Adjust individual track volumes",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.AudioMixer",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "track1",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Track1",
+          "description": "First audio track to mix."
+        },
+        {
+          "name": "track2",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Track2",
+          "description": "Second audio track to mix."
+        },
+        {
+          "name": "track3",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Track3",
+          "description": "Third audio track to mix."
+        },
+        {
+          "name": "track4",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Track4",
+          "description": "Fourth audio track to mix."
+        },
+        {
+          "name": "track5",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Track5",
+          "description": "Fifth audio track to mix."
+        },
+        {
+          "name": "volume1",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume1",
+          "description": "Volume for track 1. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume2",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume2",
+          "description": "Volume for track 2. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume3",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume3",
+          "description": "Volume for track 3. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume4",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume4",
+          "description": "Volume for track 4. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume5",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume5",
+          "description": "Volume for track 5. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "track1",
+        "track2",
+        "track3",
+        "track4",
+        "track5",
+        "volume1",
+        "volume2",
+        "volume3",
+        "volume4",
+        "volume5"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Concat",
+      "description": "Concatenates two audio files together.\n    audio, edit, join, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from shorter segments",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Concat",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "A",
+          "description": "The first audio file."
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "B",
+          "description": "The second audio file."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "a",
+        "b"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Concat List",
+      "description": "Concatenates multiple audio files together in sequence.\n    audio, edit, join, multiple, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from multiple segments\n    - Chain multiple audio files in order",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.ConcatList",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "audio"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Audio Files",
+          "description": "List of audio files to concatenate in sequence."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio_files"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Convert To Array",
+      "description": "Converts an audio file to a Array for further processing.\n    audio, conversion, tensor\n\n    Use cases:\n    - Prepare audio data for machine learning models\n    - Enable signal processing operations on audio\n    - Convert audio to a format suitable for spectral analysisr",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.ConvertToArray",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to convert to a tensor."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Create Silence",
+      "description": "Creates a silent audio file with a specified duration.\n    audio, silence, empty\n\n    Use cases:\n    - Generate placeholder audio files\n    - Create audio segments for padding or spacing\n    - Add silence to the beginning or end of audio files",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.CreateSilence",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "The duration of the silence in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "duration"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Fade In",
+      "description": "Applies a fade-in effect to the beginning of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth introductions to audio tracks\n    - Gradually increase volume at the start of a clip",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.FadeIn",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to apply fade-in to."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "Duration of the fade-in effect in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "duration"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Fade Out",
+      "description": "Applies a fade-out effect to the end of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth endings to audio tracks\n    - Gradually decrease volume at the end of a clip",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.FadeOut",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to apply fade-out to."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "Duration of the fade-out effect in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "duration"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Load Audio Assets",
       "description": "Load audio files from an asset folder.\n    load, audio, file, import",
       "namespace": "nodetool.audio",
@@ -9877,6 +10239,280 @@
       "recommended_models": [],
       "basic_fields": [
         "folder"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Mono To Stereo",
+      "description": "Converts a mono audio signal to stereo.\n    audio, convert, channels\n\n    Use cases:\n    - Expand mono recordings for stereo playback systems\n    - Prepare audio for further stereo processing",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.MonoToStereo",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The mono audio file to convert."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Normalize",
+      "description": "Normalizes the volume of an audio file.\n    audio, fix, dynamics, volume\n\n    Use cases:\n    - Ensure consistent volume across multiple audio files\n    - Adjust overall volume level before further processing",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Normalize",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to normalize."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Overlay Audio",
+      "description": "Overlays two audio files together.\n    audio, edit, transform\n\n    Use cases:\n    - Mix background music with voice recording\n    - Layer sound effects over an existing audio track",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.OverlayAudio",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "A",
+          "description": "The first audio file."
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "B",
+          "description": "The second audio file."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "a",
+        "b"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Remove Silence",
+      "description": "Removes or shortens silence in an audio file with smooth transitions.\n    audio, edit, clean\n\n    Use cases:\n    - Trim silent parts from beginning/end of recordings\n    - Remove or shorten long pauses between speech segments\n    - Apply crossfade for smooth transitions",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.RemoveSilence",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to process."
+        },
+        {
+          "name": "min_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 200,
+          "title": "Min Length",
+          "description": "Minimum length of silence to be processed (in milliseconds).",
+          "min": 0.0,
+          "max": 10000.0
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": -40,
+          "title": "Threshold",
+          "description": "Silence threshold in dB (relative to full scale). Higher values detect more silence.",
+          "min": -60.0,
+          "max": 0.0
+        },
+        {
+          "name": "reduction_factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Reduction Factor",
+          "description": "Factor to reduce silent parts (0.0 to 1.0). 0.0 keeps silence as is, 1.0 removes it completely.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "crossfade",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Crossfade",
+          "description": "Duration of crossfade in milliseconds to apply between segments for smooth transitions.",
+          "min": 0.0,
+          "max": 50.0
+        },
+        {
+          "name": "min_silence_between_parts",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Min Silence Between Parts",
+          "description": "Minimum silence duration in milliseconds to maintain between non-silent segments",
+          "min": 0.0,
+          "max": 500.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "min_length",
+        "threshold",
+        "reduction_factor",
+        "crossfade",
+        "min_silence_between_parts"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Repeat",
+      "description": "Loops an audio file a specified number of times.\n    audio, edit, repeat\n\n    Use cases:\n    - Create repeating background sounds or music\n    - Extend short audio clips to fill longer durations\n    - Generate rhythmic patterns from short samples",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Repeat",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to loop."
+        },
+        {
+          "name": "loops",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Loops",
+          "description": "Number of times to loop the audio. Minimum 1 (plays once), maximum 100.",
+          "min": 1.0,
+          "max": 100.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "loops"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Reverse",
+      "description": "Reverses an audio file.\n    audio, edit, transform\n\n    Use cases:\n    - Create reverse audio effects\n    - Generate backwards speech or music",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Reverse",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to reverse."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio"
       ],
       "is_dynamic": false
     },
@@ -9928,6 +10564,220 @@
         "audio",
         "folder",
         "name"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Slice Audio",
+      "description": "Extracts a section of an audio file.\n    audio, edit, trim\n\n    Use cases:\n    - Cut out a specific clip from a longer audio file\n    - Remove unwanted portions from beginning or end",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.SliceAudio",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file."
+        },
+        {
+          "name": "start",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Start",
+          "description": "The start time in seconds.",
+          "min": 0.0
+        },
+        {
+          "name": "end",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "End",
+          "description": "The end time in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "start",
+        "end"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Stereo To Mono",
+      "description": "Converts a stereo audio signal to mono.\n    audio, convert, channels\n\n    Use cases:\n    - Reduce file size for mono-only applications\n    - Simplify audio for certain processing tasks",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.StereoToMono",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The stereo audio file to convert."
+        },
+        {
+          "name": "method",
+          "type": {
+            "type": "str"
+          },
+          "default": "average",
+          "title": "Method",
+          "description": "Method to use for conversion: 'average', 'left', or 'right'."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "method"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Tone",
+      "description": "Generates a constant tone signal.\n    audio, generate, sound\n\n    Use cases:\n    - Create test tones for audio equipment calibration\n    - Produce reference pitches for musical applications",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Tone",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "frequency",
+          "type": {
+            "type": "float"
+          },
+          "default": 440.0,
+          "title": "Frequency",
+          "description": "Frequency of the tone in Hertz."
+        },
+        {
+          "name": "sampling_rate",
+          "type": {
+            "type": "int"
+          },
+          "default": 44100,
+          "title": "Sampling Rate",
+          "description": "Sampling rate.",
+          "min": 0.0,
+          "max": 44100.0
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "Duration of the tone in seconds."
+        },
+        {
+          "name": "phi",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Phi",
+          "description": "Initial phase of the waveform in radians."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "frequency",
+        "sampling_rate",
+        "duration",
+        "phi"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Trim",
+      "description": "Trim an audio file to a specified duration.\n    audio, trim, cut\n\n    Use cases:\n    - Remove silence from the beginning or end of audio files\n    - Extract specific segments from audio files\n    - Prepare audio data for machine learning models",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Trim",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio file to trim."
+        },
+        {
+          "name": "start",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Start",
+          "description": "The start time of the trimmed audio in seconds.",
+          "min": 0.0
+        },
+        {
+          "name": "end",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "End",
+          "description": "The end time of the trimmed audio in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "audio",
+        "start",
+        "end"
       ],
       "is_dynamic": false
     },
@@ -16649,8 +17499,8 @@
     {
       "title": "Extract Feed Metadata",
       "description": "Extracts metadata from an RSS feed.\n    rss, metadata, feed\n    \n    Use cases:\n    - Get feed information\n    - Validate feed details\n    - Extract feed metadata",
-      "namespace": "lib.network.rss",
-      "node_type": "lib.network.rss.ExtractFeedMetadata",
+      "namespace": "lib.rss",
+      "node_type": "lib.rss.ExtractFeedMetadata",
       "layout": "default",
       "properties": [
         {
@@ -16681,8 +17531,8 @@
     {
       "title": "Fetch RSS Feed",
       "description": "Fetches and parses an RSS feed from a URL.\n    rss, feed, network\n    \n    Use cases:\n    - Monitor news feeds\n    - Aggregate content from multiple sources\n    - Process blog updates",
-      "namespace": "lib.network.rss",
-      "node_type": "lib.network.rss.FetchRSSFeed",
+      "namespace": "lib.rss",
+      "node_type": "lib.rss.FetchRSSFeed",
       "layout": "default",
       "properties": [
         {
@@ -16718,8 +17568,8 @@
     {
       "title": "Extract RSS Entry Fields",
       "description": "Extracts fields from an RSS entry.\n    rss, entry, fields",
-      "namespace": "lib.network.rss",
-      "node_type": "lib.network.rss.RSSEntryFields",
+      "namespace": "lib.rss",
+      "node_type": "lib.rss.RSSEntryFields",
       "layout": "default",
       "properties": [
         {
@@ -16772,10 +17622,237 @@
       "is_dynamic": false
     },
     {
+      "title": "HTMLSplitter",
+      "description": "Split HTML content into semantic chunks based on HTML tags.\n    html, text, semantic, tags, parsing",
+      "namespace": "lib.llama_index",
+      "node_type": "lib.llama_index.HTMLSplitter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the HTML content"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "HTML content to split"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "document_id",
+        "text"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "JSONSplitter",
+      "description": "Split JSON content into semantic chunks.\n    json, parsing, semantic, structured",
+      "namespace": "lib.llama_index",
+      "node_type": "lib.llama_index.JSONSplitter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the JSON content"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "JSON content to split"
+        },
+        {
+          "name": "include_metadata",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Include Metadata",
+          "description": "Whether to include metadata in nodes"
+        },
+        {
+          "name": "include_prev_next_rel",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Include Prev Next Rel",
+          "description": "Whether to include prev/next relationships"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "document_id",
+        "text",
+        "include_metadata",
+        "include_prev_next_rel"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Semantic Splitter",
+      "description": "Split text semantically.\n    chroma, embedding, collection, RAG, index, text, markdown, semantic",
+      "namespace": "lib.llama_index",
+      "node_type": "lib.llama_index.SemanticSplitter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "embed_model",
+          "type": {
+            "type": "llama_model"
+          },
+          "default": {},
+          "title": "Embed Model",
+          "description": "Embedding model to use"
+        },
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the text content"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "Text content to split"
+        },
+        {
+          "name": "buffer_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Buffer Size",
+          "description": "Buffer size for semantic splitting",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": 95,
+          "title": "Threshold",
+          "description": "Breakpoint percentile threshold for semantic splitting",
+          "min": 0.0,
+          "max": 100.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "embed_model",
+        "document_id",
+        "text",
+        "buffer_size",
+        "threshold"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Convert To Markdown",
+      "description": "Converts various document formats to markdown using MarkItDown.\n    markdown, convert, document\n\n    Use cases:\n    - Convert Word documents to markdown\n    - Convert Excel files to markdown tables\n    - Convert PowerPoint to markdown content",
+      "namespace": "lib.markitdown",
+      "node_type": "lib.markitdown.ConvertToMarkdown",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document",
+          "description": "The document to convert to markdown"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "document"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "Base Url",
       "description": "Extract the base URL from a given URL.\n    url parsing, domain extraction, web utilities\n\n    Use cases:\n    - Get domain name from full URLs\n    - Clean up URLs for comparison\n    - Extract root website addresses\n    - Standardize URL formats",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.BaseUrl",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.BaseUrl",
       "layout": "default",
       "properties": [
         {
@@ -16806,8 +17883,8 @@
     {
       "title": "Extract Audio",
       "description": "Extract audio elements from HTML content.\n    extract, audio, src\n\n    Use cases:\n    - Collect audio sources from web pages\n    - Analyze audio usage on websites\n    - Create audio playlists",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.ExtractAudio",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.ExtractAudio",
       "layout": "default",
       "properties": [
         {
@@ -16853,8 +17930,8 @@
     {
       "title": "Extract Images",
       "description": "Extract images from HTML content.\n    extract, images, src\n\n    Use cases:\n    - Collect images from web pages\n    - Analyze image usage on websites\n    - Create image galleries",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.ExtractImages",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.ExtractImages",
       "layout": "default",
       "properties": [
         {
@@ -16900,8 +17977,8 @@
     {
       "title": "Extract Links",
       "description": "Extract links from HTML content.\n    extract, links, urls\n\n    Use cases:\n    - Analyze website structure\n    - Discover related content\n    - Build sitemaps",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.ExtractLinks",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.ExtractLinks",
       "layout": "default",
       "properties": [
         {
@@ -16942,8 +18019,8 @@
     {
       "title": "Extract Metadata",
       "description": "Extract metadata from HTML content.\n    extract, metadata, seo\n\n    Use cases:\n    - Analyze SEO elements\n    - Gather page information\n    - Extract structured data",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.ExtractMetadata",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.ExtractMetadata",
       "layout": "default",
       "properties": [
         {
@@ -16974,8 +18051,8 @@
     {
       "title": "Extract Videos",
       "description": "Extract videos from HTML content.\n    extract, videos, src\n\n    Use cases:\n    - Collect video sources from web pages\n    - Analyze video usage on websites\n    - Create video playlists",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.ExtractVideos",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.ExtractVideos",
       "layout": "default",
       "properties": [
         {
@@ -17021,8 +18098,8 @@
     {
       "title": "Convert HTML to Text",
       "description": "Converts HTML to plain text by removing tags and decoding entities using BeautifulSoup.\n    html, text, convert\n\n    Use cases:\n    - Cleaning HTML content for text analysis\n    - Extracting readable content from web pages\n    - Preparing HTML data for natural language processing",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.HTMLToText",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.HTMLToText",
       "layout": "default",
       "properties": [
         {
@@ -17062,8 +18139,8 @@
     {
       "title": "Website Content Extractor",
       "description": "Extract main content from a website, removing navigation, ads, and other non-essential elements.\n    scrape, web scraping, content extraction, text analysis\n\n    Use cases:\n    - Clean web content for further analysis\n    - Extract article text from news websites\n    - Prepare web content for summarization",
-      "namespace": "lib.network.beautifulsoup",
-      "node_type": "lib.network.beautifulsoup.WebsiteContentExtractor",
+      "namespace": "lib.beautifulsoup",
+      "node_type": "lib.beautifulsoup.WebsiteContentExtractor",
       "layout": "default",
       "properties": [
         {
@@ -17092,10 +18169,281 @@
       "is_dynamic": false
     },
     {
+      "title": "Extract Bullet Lists",
+      "description": "Extracts bulleted lists from markdown.\n    markdown, lists, bullets, extraction\n\n    Use cases:\n    - Extract unordered list items\n    - Analyze bullet point structures\n    - Convert bullet lists to structured data",
+      "namespace": "lib.markdown",
+      "node_type": "lib.markdown.ExtractBulletLists",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "markdown",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown",
+          "description": "The markdown text to analyze"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "markdown"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Code Blocks",
+      "description": "Extracts code blocks and their languages from markdown.\n    markdown, code, extraction\n\n    Use cases:\n    - Extract code samples for analysis\n    - Collect programming examples\n    - Analyze code snippets in documentation",
+      "namespace": "lib.markdown",
+      "node_type": "lib.markdown.ExtractCodeBlocks",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "markdown",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown",
+          "description": "The markdown text to analyze"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "markdown"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Headers",
+      "description": "Extracts headers and creates a document structure/outline.\n    markdown, headers, structure\n\n    Use cases:\n    - Generate table of contents\n    - Analyze document structure\n    - Extract main topics from documents",
+      "namespace": "lib.markdown",
+      "node_type": "lib.markdown.ExtractHeaders",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "markdown",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown",
+          "description": "The markdown text to analyze"
+        },
+        {
+          "name": "max_level",
+          "type": {
+            "type": "int"
+          },
+          "default": 6,
+          "title": "Max Level",
+          "description": "Maximum header level to extract (1-6)",
+          "min": 1.0,
+          "max": 6.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "markdown",
+        "max_level"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Links",
+      "description": "Extracts all links from markdown text.\n    markdown, links, extraction\n\n    Use cases:\n    - Extract references and citations from academic documents\n    - Build link graphs from markdown documentation\n    - Analyze external resources referenced in markdown files",
+      "namespace": "lib.markdown",
+      "node_type": "lib.markdown.ExtractLinks",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "markdown",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown",
+          "description": "The markdown text to analyze"
+        },
+        {
+          "name": "include_titles",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Include Titles",
+          "description": "Whether to include link titles in output"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "markdown",
+        "include_titles"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Numbered Lists",
+      "description": "Extracts numbered lists from markdown.\n    markdown, lists, numbered, extraction\n\n    Use cases:\n    - Extract ordered list items\n    - Analyze enumerated structures\n    - Convert numbered lists to structured data",
+      "namespace": "lib.markdown",
+      "node_type": "lib.markdown.ExtractNumberedLists",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "markdown",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown",
+          "description": "The markdown text to analyze"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "markdown"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Tables",
+      "description": "Extracts tables from markdown and converts them to structured data.\n    markdown, tables, data\n\n    Use cases:\n    - Extract tabular data from markdown\n    - Convert markdown tables to structured formats\n    - Analyze tabulated information",
+      "namespace": "lib.markdown",
+      "node_type": "lib.markdown.ExtractTables",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "markdown",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown",
+          "description": "The markdown text to analyze"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "markdown"
+      ],
+      "is_dynamic": false
+    },
+    {
       "title": "DELETE Request",
       "description": "Remove a resource from a server using an HTTP DELETE request.\n    http, delete, request, url\n\n    Use cases:\n    - Delete user accounts\n    - Remove API resources\n    - Cancel subscriptions\n    - Clear cache entries",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.DeleteRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.DeleteRequest",
       "layout": "default",
       "properties": [
         {
@@ -17126,8 +18474,8 @@
     {
       "title": "Download Dataframe",
       "description": "Download data from a URL and return as a dataframe.\n    http, get, request, url, dataframe, csv, json, data\n\n    Use cases:\n    - Download CSV data and convert to dataframe\n    - Fetch JSON data and convert to dataframe\n    - Retrieve tabular data from APIs\n    - Process data files from URLs",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.DownloadDataframe",
+      "namespace": "lib.http",
+      "node_type": "lib.http.DownloadDataframe",
       "layout": "default",
       "properties": [
         {
@@ -17148,7 +18496,7 @@
               "json",
               "tsv"
             ],
-            "type_name": "nodetool.nodes.lib.network.http.FileFormat"
+            "type_name": "nodetool.nodes.lib.http.FileFormat"
           },
           "default": "csv",
           "title": "File Format",
@@ -17202,8 +18550,8 @@
     {
       "title": "Download Files",
       "description": "Download files from a list of URLs into a local folder.\n    download, files, urls, batch\n\n    Use cases:\n    - Batch download files from multiple URLs\n    - Create local copies of remote resources\n    - Archive web content\n    - Download datasets",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.DownloadFiles",
+      "namespace": "lib.http",
+      "node_type": "lib.http.DownloadFiles",
       "layout": "default",
       "properties": [
         {
@@ -17277,8 +18625,8 @@
     {
       "title": "Fetch Page",
       "description": "Fetch a web page using Selenium and return its content.\n    selenium, fetch, webpage, http\n\n    Use cases:\n    - Retrieve content from dynamic websites\n    - Capture JavaScript-rendered content\n    - Interact with web applications",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.FetchPage",
+      "namespace": "lib.http",
+      "node_type": "lib.http.FetchPage",
       "layout": "default",
       "properties": [
         {
@@ -17339,8 +18687,8 @@
     {
       "title": "Filter Valid URLs",
       "description": "Filter a list of URLs by checking their validity using HEAD requests.\n    url validation, http, head request\n\n    Use cases:\n    - Clean URL lists by removing broken links\n    - Verify resource availability\n    - Validate website URLs before processing",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.FilterValidURLs",
+      "namespace": "lib.http",
+      "node_type": "lib.http.FilterValidURLs",
       "layout": "default",
       "properties": [
         {
@@ -17399,8 +18747,8 @@
     {
       "title": "GET Request",
       "description": "Perform an HTTP GET request to retrieve data from a specified URL.\n    http, get, request, url\n\n    Use cases:\n    - Fetch web page content\n    - Retrieve API data\n    - Download files\n    - Check website availability",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.GetRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.GetRequest",
       "layout": "default",
       "properties": [
         {
@@ -17431,8 +18779,8 @@
     {
       "title": "GET Binary",
       "description": "Perform an HTTP GET request and return raw binary data.\n    http, get, request, url, binary, download\n\n    Use cases:\n    - Download binary files\n    - Fetch images or media\n    - Retrieve PDF documents\n    - Download any non-text content",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.GetRequestBinary",
+      "namespace": "lib.http",
+      "node_type": "lib.http.GetRequestBinary",
       "layout": "default",
       "properties": [
         {
@@ -17463,8 +18811,8 @@
     {
       "title": "GET Document",
       "description": "Perform an HTTP GET request and return a document\n    http, get, request, url, document\n\n    Use cases:\n    - Download PDF documents\n    - Retrieve Word documents\n    - Fetch Excel files\n    - Download any document format",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.GetRequestDocument",
+      "namespace": "lib.http",
+      "node_type": "lib.http.GetRequestDocument",
       "layout": "default",
       "properties": [
         {
@@ -17495,8 +18843,8 @@
     {
       "title": "HTTPBase",
       "description": "Base node for HTTP requests.\n\n    http, network, request\n\n    Use cases:\n    - Share common fields for HTTP nodes\n    - Add custom request parameters in subclasses\n    - Control visibility of specific request types",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.HTTPBase",
+      "namespace": "lib.http",
+      "node_type": "lib.http.HTTPBase",
       "layout": "default",
       "properties": [
         {
@@ -17527,8 +18875,8 @@
     {
       "title": "HEAD Request",
       "description": "Retrieve headers from a resource using an HTTP HEAD request.\n    http, head, request, url\n\n    Use cases:\n    - Check resource existence\n    - Get metadata without downloading content\n    - Verify authentication or permissions",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.HeadRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.HeadRequest",
       "layout": "default",
       "properties": [
         {
@@ -17567,8 +18915,8 @@
     {
       "title": "Image Downloader",
       "description": "Download images from list of URLs and return a list of ImageRefs.\n    image download, web scraping, data processing\n\n    Use cases:\n    - Prepare image datasets for machine learning tasks\n    - Archive images from web pages\n    - Process and analyze images extracted from websites",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.ImageDownloader",
+      "namespace": "lib.http",
+      "node_type": "lib.http.ImageDownloader",
       "layout": "default",
       "properties": [
         {
@@ -17640,8 +18988,8 @@
     {
       "title": "GET JSON",
       "description": "Perform an HTTP GET request and parse the response as JSON.\n    http, get, request, url, json, api\n\n    Use cases:\n    - Fetch data from REST APIs\n    - Retrieve JSON-formatted responses\n    - Interface with JSON web services",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.JSONGetRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.JSONGetRequest",
       "layout": "default",
       "properties": [
         {
@@ -17672,8 +19020,8 @@
     {
       "title": "PATCH JSON",
       "description": "Partially update resources with JSON data using an HTTP PATCH request.\n    http, patch, request, url, json, api\n\n    Use cases:\n    - Partial updates to API resources\n    - Modify specific fields without full replacement\n    - Efficient updates for large objects",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.JSONPatchRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.JSONPatchRequest",
       "layout": "default",
       "properties": [
         {
@@ -17713,8 +19061,8 @@
     {
       "title": "POST JSON",
       "description": "Send JSON data to a server using an HTTP POST request.\n    http, post, request, url, json, api\n\n    Use cases:\n    - Send structured data to REST APIs\n    - Create resources with JSON payloads\n    - Interface with modern web services",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.JSONPostRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.JSONPostRequest",
       "layout": "default",
       "properties": [
         {
@@ -17754,8 +19102,8 @@
     {
       "title": "PUT JSON",
       "description": "Update resources with JSON data using an HTTP PUT request.\n    http, put, request, url, json, api\n\n    Use cases:\n    - Update existing API resources\n    - Replace complete objects in REST APIs\n    - Set configuration with JSON data",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.JSONPutRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.JSONPutRequest",
       "layout": "default",
       "properties": [
         {
@@ -17795,8 +19143,8 @@
     {
       "title": "POST Request",
       "description": "Send data to a server using an HTTP POST request.\n    http, post, request, url, data\n\n    Use cases:\n    - Submit form data\n    - Create new resources on an API\n    - Upload files\n    - Authenticate users",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.PostRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.PostRequest",
       "layout": "default",
       "properties": [
         {
@@ -17836,8 +19184,8 @@
     {
       "title": "POST Binary",
       "description": "Send data using an HTTP POST request and return raw binary data.\n    http, post, request, url, data, binary\n\n    Use cases:\n    - Upload and receive binary files\n    - Interact with binary APIs\n    - Process image or media uploads\n    - Handle binary file transformations",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.PostRequestBinary",
+      "namespace": "lib.http",
+      "node_type": "lib.http.PostRequestBinary",
       "layout": "default",
       "properties": [
         {
@@ -17885,8 +19233,8 @@
     {
       "title": "PUT Request",
       "description": "Update existing resources on a server using an HTTP PUT request.\n    http, put, request, url, data\n\n    Use cases:\n    - Update user profiles\n    - Modify existing API resources\n    - Replace file contents\n    - Set configuration values",
-      "namespace": "lib.network.http",
-      "node_type": "lib.network.http.PutRequest",
+      "namespace": "lib.http",
+      "node_type": "lib.http.PutRequest",
       "layout": "default",
       "properties": [
         {
@@ -17920,6 +19268,561 @@
       "recommended_models": [],
       "basic_fields": [
         "url"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Split Markdown",
+      "description": "Splits markdown text by headers while preserving header hierarchy in metadata.\n    markdown, split, headers\n\n    Use cases:\n    - Splitting markdown documentation while preserving structure\n    - Processing markdown files for semantic search\n    - Creating context-aware chunks from markdown content",
+      "namespace": "lib.langchain",
+      "node_type": "lib.langchain.MarkdownSplitter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Markdown Text"
+        },
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the text"
+        },
+        {
+          "name": "headers_to_split_on",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tuple",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": [
+            [
+              "#",
+              "Header 1"
+            ],
+            [
+              "##",
+              "Header 2"
+            ],
+            [
+              "###",
+              "Header 3"
+            ]
+          ],
+          "title": "Headers To Split On",
+          "description": "List of tuples containing (header_symbol, header_name)"
+        },
+        {
+          "name": "strip_headers",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Strip Headers",
+          "description": "Whether to remove headers from the output content"
+        },
+        {
+          "name": "return_each_line",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Return Each Line",
+          "description": "Whether to split into individual lines instead of header sections"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "none"
+              }
+            ]
+          },
+          "title": "Chunk Size",
+          "description": "Optional maximum chunk size for further splitting"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Chunk Overlap",
+          "description": "Overlap size when using chunk_size"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "document_id",
+        "headers_to_split_on",
+        "strip_headers",
+        "return_each_line",
+        "chunk_size",
+        "chunk_overlap"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Split Recursively",
+      "description": "Splits text recursively using LangChain's RecursiveCharacterTextSplitter.\n    text, split, chunks\n\n    Use cases:\n    - Splitting documents while preserving semantic relationships\n    - Creating chunks for language model processing\n    - Handling text in languages with/without word boundaries",
+      "namespace": "lib.langchain",
+      "node_type": "lib.langchain.RecursiveTextSplitter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the text"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 1000,
+          "title": "Chunk Size",
+          "description": "Maximum size of each chunk in characters"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 200,
+          "title": "Chunk Overlap",
+          "description": "Number of characters to overlap between chunks"
+        },
+        {
+          "name": "separators",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            "\n\n",
+            "\n",
+            "."
+          ],
+          "title": "Separators",
+          "description": "List of separators to use for splitting, in order of preference"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "document_id",
+        "chunk_size",
+        "chunk_overlap",
+        "separators"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Split into Sentences",
+      "description": "Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.\n    sentences, split, nlp\n\n    Use cases:\n    - Natural sentence-based text splitting\n    - Creating semantically meaningful chunks\n    - Processing text for sentence-level analysis",
+      "namespace": "lib.langchain",
+      "node_type": "lib.langchain.SentenceSplitter",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "document_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Document Id",
+          "description": "Document ID to associate with the text"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 40,
+          "title": "Chunk Size",
+          "description": "Maximum number of tokens per chunk"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Chunk Overlap",
+          "description": "Number of tokens to overlap between chunks"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "text",
+        "document_id",
+        "chunk_size",
+        "chunk_overlap"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Markdown",
+      "description": "Convert PDF to Markdown format using pymupdf4llm.\n    pdf, markdown, convert\n\n    Use cases:\n    - Convert PDF documents to markdown format\n    - Preserve document structure in markdown\n    - Create editable markdown from PDFs",
+      "namespace": "lib.pymupdf",
+      "node_type": "lib.pymupdf.ExtractMarkdown",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "pdf",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Pdf",
+          "description": "The PDF document to convert to markdown"
+        },
+        {
+          "name": "start_page",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Page",
+          "description": "First page to extract (0-based index)"
+        },
+        {
+          "name": "end_page",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "End Page",
+          "description": "Last page to extract (-1 for last page)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "pdf",
+        "start_page",
+        "end_page"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Tables",
+      "description": "Extract tables from a PDF document using PyMuPDF.\n    pdf, tables, extract, structured\n\n    Use cases:\n    - Extract tabular data from PDFs\n    - Convert PDF tables to structured formats\n    - Analyze table layouts and content",
+      "namespace": "lib.pymupdf",
+      "node_type": "lib.pymupdf.ExtractTables",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "pdf",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Pdf",
+          "description": "The PDF document to extract tables from"
+        },
+        {
+          "name": "start_page",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Page",
+          "description": "First page to extract (0-based index)"
+        },
+        {
+          "name": "end_page",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "End Page",
+          "description": "Last page to extract (-1 for last page)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "pdf",
+        "start_page",
+        "end_page"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Text",
+      "description": "Extract plain text from a PDF document using PyMuPDF.\n    pdf, text, extract\n\n    Use cases:\n    - Extract raw text content from PDFs\n    - Convert PDF documents to plain text\n    - Prepare text for further processing",
+      "namespace": "lib.pymupdf",
+      "node_type": "lib.pymupdf.ExtractText",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "pdf",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Pdf",
+          "description": "The PDF document to extract text from"
+        },
+        {
+          "name": "start_page",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Page",
+          "description": "First page to extract (0-based index)"
+        },
+        {
+          "name": "end_page",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "End Page",
+          "description": "Last page to extract (-1 for last page)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "pdf",
+        "start_page",
+        "end_page"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Text Blocks",
+      "description": "Extract text blocks with their bounding boxes from a PDF.\n    pdf, text, blocks, layout\n\n    Use cases:\n    - Analyze text layout and structure\n    - Extract text while preserving block-level formatting\n    - Get text position information",
+      "namespace": "lib.pymupdf",
+      "node_type": "lib.pymupdf.ExtractTextBlocks",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "pdf",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Pdf",
+          "description": "The PDF document to extract text blocks from"
+        },
+        {
+          "name": "start_page",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Page",
+          "description": "First page to extract (0-based index)"
+        },
+        {
+          "name": "end_page",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "End Page",
+          "description": "Last page to extract (-1 for last page)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "pdf",
+        "start_page",
+        "end_page"
+      ],
+      "is_dynamic": false
+    },
+    {
+      "title": "Extract Text With Style",
+      "description": "Extract text with style information (font, size, color) from a PDF.\n    pdf, text, style, formatting\n\n    Use cases:\n    - Preserve text formatting during extraction\n    - Analyze document styling\n    - Extract text with font information",
+      "namespace": "lib.pymupdf",
+      "node_type": "lib.pymupdf.ExtractTextWithStyle",
+      "layout": "default",
+      "properties": [
+        {
+          "name": "pdf",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Pdf",
+          "description": "The PDF document to extract styled text from"
+        },
+        {
+          "name": "start_page",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Page",
+          "description": "First page to extract (0-based index)"
+        },
+        {
+          "name": "end_page",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "End Page",
+          "description": "Last page to extract (-1 for last page)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "the_model_info": {},
+      "recommended_models": [],
+      "basic_fields": [
+        "pdf",
+        "start_page",
+        "end_page"
       ],
       "is_dynamic": false
     },
@@ -18525,7 +20428,7 @@
     },
     {
       "package_name": "nodetool-base",
-      "name": "Chat with docs.jpg",
+      "name": "Chat with Docs.jpg",
       "path": ""
     },
     {
@@ -18606,6 +20509,14 @@
       "name": "Color Boost Video",
       "description": "",
       "tags": []
+    },
+    {
+      "id": "remove_silence",
+      "name": "Remove Silence",
+      "description": "Remove silence from audio files.",
+      "tags": [
+        "audio"
+      ]
     },
     {
       "id": "862d1018c43211efae4f00000de8b754",

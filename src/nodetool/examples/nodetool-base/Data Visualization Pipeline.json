@@ -105,7 +105,7 @@
       {
         "id": "ccd77a00-6d16-4f91-9c69-b36ebafc7084",
         "parent_id": null,
-        "type": "lib.network.http.GetRequest",
+        "type": "lib.http.GetRequest",
         "data": {
           "url": "https://raw.githubusercontent.com/datasets/gdp/refs/heads/main/data/gdp.csv"
         },

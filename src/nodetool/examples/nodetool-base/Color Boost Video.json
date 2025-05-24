@@ -54,7 +54,7 @@
       {
         "id": "b14f7601-b826-4b1c-8298-90f55b6022e1",
         "parent_id": null,
-        "type": "lib.image.pillow.enhance.Color",
+        "type": "lib.pillow.enhance.Color",
         "data": {
           "factor": 3
         },

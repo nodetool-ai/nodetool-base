@@ -10,7 +10,16 @@ readme = "README.md"
 authors = ["Matthias Georgi <matti.georgi@gmail.com>"]
 packages = [{ include = "nodetool", from = "src" }]
 package-mode = true
-include = ["src/nodetool/package_metadata/nodetool-base.json"]
+include = [
+    "src/nodetool/package_metadata/nodetool-base.json",
+    "src/nodetool/assets/nodetool-base/Categorize Mails.jpg",
+    "src/nodetool/assets/nodetool-base/Simple Chat.jpg",
+    "src/nodetool/assets/nodetool-base/Chat with Docs.jpg",
+    "src/nodetool/assets/nodetool-base/Daily Digest.jpg",
+    "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg",
+    "src/nodetool/assets/nodetool-base/Data Generator.jpg",
+    "src/nodetool/assets/nodetool-base/Data Visualization Pipeline.jpg",
+]
 repository = "https://github.com/nodetool-ai/nodetool-base"
 
 [tool.poetry.dependencies]

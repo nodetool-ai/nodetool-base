@@ -29,7 +29,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "lib.network.rss.FetchRSSFeed",
+        "type": "lib.rss.FetchRSSFeed",
         "data": {
           "url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
         },
@@ -129,7 +129,7 @@
       {
         "id": "12",
         "parent_id": "9",
-        "type": "lib.network.rss.RSSEntryFields",
+        "type": "lib.rss.RSSEntryFields",
         "data": {},
         "ui_properties": {
           "position": {
@@ -144,7 +144,7 @@
       {
         "id": "13",
         "parent_id": "9",
-        "type": "lib.network.http.GetRequest",
+        "type": "lib.http.GetRequest",
         "data": {
           "headers": null,
           "auth": null
