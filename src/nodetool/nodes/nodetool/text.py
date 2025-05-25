@@ -3,20 +3,13 @@ from io import BytesIO
 import json
 
 from typing import Any
-import pandas as pd
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DataframeRef, FolderRef, LlamaModel, TextChunk
+from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
-import json
 import re
 from jsonpath_ng import parse
-from typing import Any
-from pydantic import Field
-from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import TextRef
-from nodetool.workflows.base_node import BaseNode
-from typing import Optional
 from enum import Enum
 import html2text
 

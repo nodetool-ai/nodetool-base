@@ -1,8 +1,6 @@
 import pytest
-from io import BytesIO
-from PIL import Image
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef, TextRef
+from nodetool.metadata.types import ImageRef
 from nodetool.nodes.nodetool.list import (
     Length,
     GenerateSequence,

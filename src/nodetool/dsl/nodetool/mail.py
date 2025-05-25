@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
+import nodetool.nodes.nodetool.mail
 
 
 class AddLabel(GraphNode):
@@ -63,10 +63,6 @@ class EmailFields(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.mail.EmailFields"
-
-
-import nodetool.nodes.nodetool.mail
-import nodetool.nodes.nodetool.mail
 
 
 class GmailSearch(GraphNode):

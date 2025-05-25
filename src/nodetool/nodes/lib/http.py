@@ -500,10 +500,7 @@ class DownloadDataframe(HTTPBaseNode):
         import csv
         import json
         import io
-        from nodetool.metadata.types import (
-            ColumnDef,
-        )  # Ensure ColumnDef is in scope for the helper
-        from typing import List, Any  # For type hints in helper
+        from typing import Any  # For type hints in helper
 
         res = await context.http_get(self.url, **self.get_request_kwargs())
         content = res.content.decode(self.encoding)
@@ -732,7 +729,7 @@ class DownloadFiles(BaseNode):
                     return filepath
                 else:
                     return ""
-        except Exception as e:
+        except Exception:
             return ""
 
     @classmethod

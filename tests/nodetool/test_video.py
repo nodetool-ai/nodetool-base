@@ -1,10 +1,8 @@
-import numpy as np
 import base64
 import pytest
 import PIL.Image
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
-    TextRef,
     VideoRef,
     ImageRef,
     AudioRef,

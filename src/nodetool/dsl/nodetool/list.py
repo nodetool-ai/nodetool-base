@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
 from typing import Any
 import nodetool.metadata.types
-import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
+import nodetool.nodes.nodetool.list
 
 
 class Append(GraphNode):
@@ -204,9 +204,6 @@ class FilterDicts(GraphNode):
         return "nodetool.list.FilterDicts"
 
 
-import nodetool.nodes.nodetool.list
-
-
 class FilterDictsByNumber(GraphNode):
     """
     Filters a list of dictionaries based on numeric values for a specified key.
@@ -271,9 +268,6 @@ class FilterDictsByRange(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.FilterDictsByRange"
-
-
-import nodetool.nodes.nodetool.list
 
 
 class FilterDictsByValue(GraphNode):
@@ -386,9 +380,6 @@ class FilterNumberRange(GraphNode):
         return "nodetool.list.FilterNumberRange"
 
 
-import nodetool.nodes.nodetool.list
-
-
 class FilterNumbers(GraphNode):
     """
     Filters a list of numbers based on various numerical conditions.
@@ -445,9 +436,6 @@ class FilterRegex(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.FilterRegex"
-
-
-import nodetool.nodes.nodetool.list
 
 
 class FilterStrings(GraphNode):
@@ -796,9 +784,6 @@ class Slice(GraphNode):
         return "nodetool.list.Slice"
 
 
-import nodetool.nodes.nodetool.list
-
-
 class Sort(GraphNode):
     """
     Sorts the elements of a list in ascending or descending order.
@@ -840,9 +825,6 @@ class Sum(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.Sum"
-
-
-import nodetool.nodes.nodetool.list
 
 
 class Transform(GraphNode):

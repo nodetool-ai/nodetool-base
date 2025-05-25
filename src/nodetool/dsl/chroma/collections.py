@@ -1,7 +1,4 @@
-from pydantic import BaseModel, Field
-import typing
-from typing import Any
-import nodetool.metadata.types
+from pydantic import Field
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 

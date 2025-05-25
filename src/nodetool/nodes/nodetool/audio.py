@@ -10,10 +10,6 @@ from nodetool.common.audio_helpers import normalize_audio, remove_silence
 import numpy as np
 from pydub import AudioSegment
 from nodetool.metadata.types import NPArray
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import AudioRef
-from nodetool.workflows.base_node import BaseNode
-from pydantic import Field
 
 
 class LoadAudioAssets(BaseNode):
@@ -529,7 +525,6 @@ class AudioMixer(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> AudioRef:
-        from pydub import AudioSegment
 
         # Initialize mixed track
         mixed_track = None

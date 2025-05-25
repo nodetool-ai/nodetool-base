@@ -6,7 +6,7 @@ from pydantic import Field
 from enum import Enum
 
 from nodetool.agents.agent import Agent
-from nodetool.agents.tools.base import get_tool_by_name, Tool
+from nodetool.agents.tools.base import Tool
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
     json_schema_for_dictionary,
@@ -29,10 +29,7 @@ from nodetool.workflows.types import ToolCallUpdate
 from nodetool.chat.providers import get_provider
 from nodetool.chat.providers import Chunk
 
-from nodetool.workflows.types import TaskUpdate
-from nodetool.metadata.types import LanguageModel, ToolName, FilePath, Task
-from pydantic import Field
-from typing import List, Optional, Any, Sequence
+from typing import Sequence
 from nodetool.agents.task_planner import TaskPlanner
 
 from nodetool.agents.tools import (

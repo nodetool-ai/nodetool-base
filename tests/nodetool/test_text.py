@@ -1,7 +1,6 @@
 import pytest
-import json
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import TextRef, DataframeRef
+from nodetool.metadata.types import TextRef
 from nodetool.nodes.nodetool.text import (
     Concat,
     Join,

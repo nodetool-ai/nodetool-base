@@ -3,7 +3,7 @@ import aiohttp
 import html2text
 from bs4 import BeautifulSoup
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 from pydantic import Field
 from playwright.async_api import async_playwright
 from readability import Document

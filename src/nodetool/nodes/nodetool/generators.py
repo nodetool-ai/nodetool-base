@@ -17,13 +17,10 @@ from nodetool.metadata.types import (
     ToolCall,
 )
 from nodetool.workflows.types import Chunk
-from nodetool.metadata.types import (
-    Message,
-)
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-from nodetool.chat.dataframes import GenerateDataTool, GenerateStringTool
+from nodetool.chat.dataframes import GenerateDataTool
 
 
 class DataGenerator(BaseNode):
@@ -207,7 +204,7 @@ class ListGenerator(BaseNode):
     async def gen_process(self, context: ProcessingContext):
         system_message = Message(
             role="system",
-            content=f"""You are an assistant that generates lists.
+            content="""You are an assistant that generates lists.
             If the user asks for a specific number of items, generate that many.
             The output should be a numbered list.
             Example:
@@ -680,12 +677,12 @@ Use clear, semantic element IDs and class names if needed.""",
 
         # Add image description if provided
         if self.image.is_set():
-            image = await context.image_to_pil(self.image)
+            await context.image_to_pil(self.image)  # Validate image can be loaded
             content_parts.append("[Image provided for reference]")
 
         # Add audio description if provided
         if self.audio.is_set():
-            audio = await context.asset_to_bytes(self.audio)
+            await context.asset_to_bytes(self.audio)  # Validate audio can be loaded
             content_parts.append("[Audio provided for reference]")
 
         user_message = Message(

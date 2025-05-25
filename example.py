@@ -8,6 +8,17 @@ from openai.types.shared_params.response_format_json_schema import (
 )
 
 
+def load_metadata_json():
+    """Load node metadata from the package metadata JSON file."""
+    metadata_path = os.path.join(
+        os.path.dirname(__file__), 
+        "src/nodetool/package_metadata/nodetool-base.json"
+    )
+    with open(metadata_path, "r") as f:
+        data = json.load(f)
+    return data.get("nodes", [])
+
+
 JSON_SCHEMA = {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "Workflow Schema",
@@ -178,7 +189,7 @@ def generate_workflow(user_prompt, examples):
         str: The generated workflow from the API.
     """
     nodes_metadata = load_metadata_json()
-    assert type(nodes_metadata) == list
+    assert isinstance(nodes_metadata, list)
     nodes_metadata = [
         {
             "node_type": node["node_type"],
@@ -186,7 +197,6 @@ def generate_workflow(user_prompt, examples):
         }
         for node in nodes_metadata
     ]
-    properties_metadata = [node["properties"] for node in nodes_metadata]
     context_message = build_context_message(examples, nodes_metadata)
     # Combine the JSON context with the user prompt.
     full_prompt = (

@@ -1,4 +1,3 @@
-from unittest.mock import AsyncMock
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
@@ -6,8 +5,6 @@ from nodetool.metadata.types import (
     ImageRef,
     TextRef,
     VideoRef,
-    FolderRef,
-    AssetRef,
     Message,
     MessageTextContent,
 )
@@ -23,7 +20,6 @@ from nodetool.nodes.nodetool.input import (
     AudioInput,
     GroupInput,
 )
-from nodetool.metadata.types import Message, MessageTextContent
 
 
 @pytest.fixture

@@ -1,5 +1,4 @@
 import pytest
-from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.dictionary import (
     GetValue,

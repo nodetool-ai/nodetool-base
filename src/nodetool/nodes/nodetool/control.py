@@ -1,8 +1,6 @@
-from enum import Enum
-from typing import Any, AsyncGenerator, Optional, List
+from typing import Any, AsyncGenerator
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import Event
 
 

@@ -1,5 +1,4 @@
 import pytest
-import numpy as np
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
     AudioRef,

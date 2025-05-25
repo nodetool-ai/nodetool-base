@@ -1,8 +1,7 @@
 from io import BytesIO
-import os
 import pytest
 import numpy as np
-from unittest.mock import AsyncMock, MagicMock, patch, ANY
+from unittest.mock import AsyncMock, MagicMock, patch
 from pydub import AudioSegment
 
 from nodetool.metadata.types import AudioRef, NPArray

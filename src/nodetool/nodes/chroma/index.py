@@ -5,7 +5,6 @@ from nodetool.metadata.types import (
     Collection,
     ImageRef,
     NPArray,
-    Provider,
     TextChunk,
 )
 from nodetool.nodes.chroma.chroma_node import ChromaNode
@@ -15,8 +14,6 @@ from nodetool.workflows.types import NodeProgress
 import numpy as np
 from pydantic import Field
 
-import numpy as np
-from pydantic import Field
 from ollama import AsyncClient
 
 from enum import Enum

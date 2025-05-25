@@ -19,12 +19,6 @@ from nodetool.metadata.types import (
     FolderPath,
 )
 
-import os
-import shutil
-from pydantic import Field
-from nodetool.metadata.types import ImageRef
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
 import subprocess
 
 

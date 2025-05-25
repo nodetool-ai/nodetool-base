@@ -1,14 +1,11 @@
-from base64 import b64decode
 import PIL.Image
 from io import BytesIO
-from nodetool.common.environment import Environment
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef, Provider
 from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
 from enum import Enum
 
-from openai.types.images_response import ImagesResponse
 from nodetool.chat.providers.openai_prediction import run_openai
 
 

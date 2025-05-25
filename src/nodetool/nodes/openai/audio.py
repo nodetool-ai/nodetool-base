@@ -6,7 +6,6 @@ from io import BytesIO
 from pydub import AudioSegment
 from nodetool.metadata.types import AudioChunk, AudioRef, Provider
 from nodetool.workflows.processing_context import ProcessingContext
-from openai.types.audio.transcription import Transcription
 from openai.types.audio.transcription_verbose import TranscriptionVerbose
 from openai.types.audio.translation import Translation
 

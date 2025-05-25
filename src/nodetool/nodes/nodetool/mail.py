@@ -1,7 +1,6 @@
 import asyncio
 from datetime import datetime, timedelta
 from enum import Enum
-from typing import AsyncGenerator
 from pydantic import Field
 from nodetool.common.imap import search_emails, fetch_email
 from nodetool.workflows.base_node import BaseNode

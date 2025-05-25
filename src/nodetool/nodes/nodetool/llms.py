@@ -1,9 +1,7 @@
 import base64
-from datetime import datetime
 from enum import Enum
 from io import BytesIO
 import json
-from typing import AsyncGenerator
 import pydub
 from pydantic import Field
 
@@ -11,7 +9,6 @@ from nodetool.metadata.types import (
     Message,
 )
 from nodetool.metadata.types import (
-    Message,
     MessageTextContent,
     MessageImageContent,
     MessageAudioContent,
@@ -163,8 +160,6 @@ class LLM(BaseNode):
     )
 
     async def process(self, context: ProcessingContext):
-        from nodetool.models.prediction import Prediction as PredictionModel
-        from nodetool.chat.providers.openai_provider import calculate_chat_cost
 
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")

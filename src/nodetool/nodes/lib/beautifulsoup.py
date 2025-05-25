@@ -11,10 +11,6 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-from pydantic import Field
-from nodetool.metadata.types import ColumnDef, DataframeRef, ImageRef
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
 from bs4 import BeautifulSoup, Tag
 from nodetool.common.convert_html import convert_html_to_text
 
@@ -91,7 +87,7 @@ class ExtractLinks(BaseNode):
                 ColumnDef(name="text", data_type="string"),
                 ColumnDef(name="type", data_type="string"),
             ],
-            data=[[l["href"], l["text"], l["type"]] for l in links],
+            data=[[link["href"], link["text"], link["type"]] for link in links],
         )
 
 

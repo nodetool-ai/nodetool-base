@@ -3,8 +3,8 @@ from enum import Enum
 from functools import reduce
 from io import BytesIO
 import random
-from pydantic import BaseModel, Field
-from nodetool.metadata.types import TextRef, DataframeRef
+from pydantic import Field
+from nodetool.metadata.types import TextRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from typing import Any

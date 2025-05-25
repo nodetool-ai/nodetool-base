@@ -3,15 +3,12 @@ from llama_index.core.node_parser import (
     HTMLNodeParser,
     JSONNodeParser,
 )
-import langchain_core.documents
-import langchain_text_splitters
 from llama_index.core.schema import Document, TextNode
 from llama_index.embeddings.ollama import OllamaEmbedding
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import LlamaModel, TextChunk
 from nodetool.workflows.processing_context import ProcessingContext
-from typing import List
 
 
 class SemanticSplitter(BaseNode):

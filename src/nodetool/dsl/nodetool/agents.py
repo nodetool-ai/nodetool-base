@@ -1,10 +1,8 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-
 import nodetool.nodes.nodetool.agents
 
 
@@ -69,9 +67,6 @@ class AgentNode(GraphNode):
         return "nodetool.agents.Agent"
 
 
-import nodetool.nodes.nodetool.agents
-
-
 class AgentStreaming(GraphNode):
     """
     Executes tasks using a multi-step agent that streams results as they're generated.
@@ -132,9 +127,6 @@ class AgentStreaming(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.agents.AgentStreaming"
-
-
-import nodetool.nodes.nodetool.agents
 
 
 class DataframeAgent(GraphNode):
@@ -202,9 +194,6 @@ class DataframeAgent(GraphNode):
         return "nodetool.agents.DataframeAgent"
 
 
-import nodetool.nodes.nodetool.agents
-
-
 class DictAgent(GraphNode):
     """
     Executes tasks using a multi-step agent that can call tools and return a dictionary
@@ -265,9 +254,6 @@ class DictAgent(GraphNode):
         return "nodetool.agents.DictAgent"
 
 
-import nodetool.nodes.nodetool.agents
-
-
 class ImageAgent(GraphNode):
     """
     Executes tasks using a multi-step agent that can call tools and return an image path.
@@ -326,9 +312,6 @@ class ImageAgent(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.agents.ImageAgent"
-
-
-import nodetool.nodes.nodetool.agents
 
 
 class ListAgent(GraphNode):
@@ -396,9 +379,6 @@ class ListAgent(GraphNode):
         return "nodetool.agents.ListAgent"
 
 
-import nodetool.nodes.nodetool.agents
-
-
 class SimpleAgentNode(GraphNode):
     """
     Executes a single task using a simple agent that can call tools.
@@ -450,9 +430,6 @@ class SimpleAgentNode(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.agents.SimpleAgent"
-
-
-import nodetool.nodes.nodetool.agents
 
 
 class TaskPlannerNode(GraphNode):

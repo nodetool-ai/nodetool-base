@@ -1,5 +1,5 @@
 import re
-from typing import Any, List, Dict, Optional
+from typing import Any, List, Dict
 from pydantic import Field
 from nodetool.metadata.types import ColumnDef, DataframeRef
 from nodetool.workflows.base_node import BaseNode

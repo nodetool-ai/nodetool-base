@@ -1,8 +1,4 @@
-import os
-import PIL.Image
-from datetime import datetime
 from pydantic import Field
-from nodetool.agents.tools.google_tools import GoogleImageGenerationTool
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext

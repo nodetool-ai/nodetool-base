@@ -6,22 +6,19 @@ import uuid
 import ffmpeg
 import cv2
 
-from typing import Any
 import PIL.ImageFilter
 import PIL.ImageOps
 import PIL.Image
 import PIL.ImageFont
 import PIL.ImageEnhance
 import PIL.ImageDraw
-from nodetool.workflows.types import NodeProgress
 import numpy as np
 from pydantic import Field
-from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef, TextRef
+from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef, Event
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import VideoRef, FontRef
-import tempfile
 
 
 def safe_unlink(path: str):
@@ -822,7 +819,6 @@ class ColorBalance(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
         import tempfile
-        import os
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -915,7 +911,6 @@ class Denoise(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
         import tempfile
-        import os
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -999,7 +994,6 @@ class Stabilize(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
         import tempfile
-        import os
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1084,7 +1078,6 @@ class Sharpness(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
         import tempfile
-        import os
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1169,7 +1162,6 @@ class Blur(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
         import tempfile
-        import os
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1248,7 +1240,6 @@ class Saturation(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         import ffmpeg
         import tempfile
-        import os
 
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
@@ -1355,7 +1346,6 @@ class AddSubtitles(BaseNode):
                 fps = cap.get(cv2.CAP_PROP_FPS)
                 width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                 height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-                total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
                 # Create VideoWriter
                 fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # type: ignore

@@ -7,7 +7,6 @@ from nodetool.metadata.types import AudioRef, Datetime, DocumentRef, JSONRef
 from nodetool.metadata.types import Date as DateType
 from nodetool.metadata.types import DataframeRef as DataFrameRef
 from nodetool.metadata.types import ImageRef
-from nodetool.metadata.types import TextRef
 from nodetool.metadata.types import VideoRef
 from datetime import date
 

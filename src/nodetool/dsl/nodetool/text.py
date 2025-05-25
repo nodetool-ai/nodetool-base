@@ -1,9 +1,9 @@
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
+import nodetool.nodes.nodetool.text
 
 
 class Chunk(GraphNode):
@@ -74,9 +74,6 @@ class Contains(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Contains"
-
-
-import nodetool.nodes.nodetool.text
 
 
 class CountTokens(GraphNode):

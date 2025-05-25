@@ -155,9 +155,9 @@ class FromList(BaseNode):
                 raise ValueError("List must contain dicts.")
             row = {}
             for k, v in value.items():
-                if type(v) == dict:
+                if isinstance(v, dict):
                     row[k] = v["value"]
-                elif type(v) in [int, float, str, bool]:
+                elif isinstance(v, (int, float, str, bool)):
                     row[k] = v
                 else:
                     row[k] = str(v)
