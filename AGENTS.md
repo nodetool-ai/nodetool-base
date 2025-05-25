@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Install dependencies:**
 
 ```bash
-poetry install
+pip install .
 ```
 
 **Run tests:**

@@ -7,7 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Install dependencies:**
 
 ```bash
-poetry install
+pip install .
 ```
 
 **Run tests:**
@@ -32,10 +32,14 @@ flake8
 ```
 
 **Generating node metadata**
-This MUST BE RUNaAfter changing or adding nodes.
 
 ```bash
 nodetool package scan
+```
+
+**Generating DSL code**
+
+```bash
 nodetool codegen
 ```
 
