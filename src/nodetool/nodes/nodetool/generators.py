@@ -1,4 +1,5 @@
 import json
+import logging
 from pydantic import Field
 
 from nodetool.chat.dataframes import (
@@ -21,6 +22,8 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 from nodetool.chat.dataframes import GenerateDataTool
+
+logger = logging.getLogger(__name__)
 
 
 class DataGenerator(BaseNode):
@@ -157,7 +160,7 @@ class DataStreamer(BaseNode):
             ],
         ):
             if isinstance(chunk, ToolCall):
-                print(chunk.args)
+                logger.debug("Tool call args: %s", chunk.args)
                 yield "output", chunk.args
 
     @classmethod
@@ -616,7 +619,7 @@ def _extract_svg_content(text: str) -> str:
 
     # Extract the SVG content including the closing tag
     svg_content = text[svg_start : svg_end + 6]
-    print(svg_content)
+    logger.debug("Extracted SVG content: %s", svg_content)
     return svg_content
 
 

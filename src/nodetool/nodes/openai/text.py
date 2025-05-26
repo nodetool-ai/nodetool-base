@@ -6,12 +6,14 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+import logging
 
 from openai.types.create_embedding_response import CreateEmbeddingResponse
 from pydantic import Field
 
 from enum import Enum
 
+logger = logging.getLogger(__name__)
 
 
 class ResponseFormat(str, Enum):
@@ -111,11 +113,11 @@ class WebSearch(BaseNode):
                 return response["choices"][0]["message"]["content"]
             except (KeyError, IndexError, TypeError) as e:
                 # Fallback or error handling if the expected structure isn't found
-                print(f"Could not extract content from response: {e}")
+                logger.warning("Could not extract content from response: %s", e)
                 return str(response)  # Return the raw response as string
         else:
             # Handle unexpected response types
-            print(f"Unexpected response type: {type(response)}")
+            logger.warning("Unexpected response type: %s", type(response))
             return str(response)  # Return the raw response as string
 
     @classmethod

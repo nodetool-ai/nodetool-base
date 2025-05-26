@@ -6,6 +6,7 @@ from typing import Any, List
 from urllib.parse import urljoin
 
 import aiohttp
+import logging
 from pydantic import Field
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -24,6 +25,8 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress
+
+logger = logging.getLogger(__name__)
 
 
 class HTTPBaseNode(BaseNode):
@@ -274,11 +277,11 @@ class ImageDownloader(BaseNode):
                     return image_ref, None
                 else:
                     error_msg = f"Failed to download image from {url}. Status code: {response.status}"
-                    print(error_msg)
+                    logger.warning(error_msg)
                     return None, url
         except Exception as e:
             error_msg = f"Error downloading image from {url}: {str(e)}"
-            print(error_msg)
+            logger.warning(error_msg)
             return None, url
 
     async def process(self, context: ProcessingContext):
@@ -461,8 +464,9 @@ class DownloadDataframe(HTTPBaseNode):
                             value, tz=datetime.timezone.utc
                         )  # Assume UTC
                     except (ValueError, TypeError, OSError):
-                        print(
-                            f"Warning: Could not parse numeric value '{value}' as a timestamp for datetime. Returning original value."
+                        logger.warning(
+                            "Could not parse numeric value '%s' as a timestamp for datetime. Returning original value.",
+                            value,
                         )
                         return value
 
@@ -476,8 +480,9 @@ class DownloadDataframe(HTTPBaseNode):
                         # Add more robust parsing or alternative formats if needed in the future
                         return datetime.datetime.fromisoformat(value)
                     except ValueError:
-                        print(
-                            f"Warning: Could not parse datetime string '{original_value_for_warning}' to datetime object. Returning original string."
+                        logger.warning(
+                            "Could not parse datetime string '%s' to datetime object. Returning original string.",
+                            original_value_for_warning,
                         )
                         return original_value_for_warning
                 # If not a string, or already a datetime, or a convertible numeric, return as is or let it be handled by final catch-all
@@ -485,14 +490,19 @@ class DownloadDataframe(HTTPBaseNode):
             elif target_type_str == "object":
                 return value  # No casting needed
             else:  # Unknown target_type_str
-                print(
-                    f"Warning: Unknown target data type '{target_type_str}' for casting. Returning original value."
+                logger.warning(
+                    "Unknown target data type '%s' for casting. Returning original value.",
+                    target_type_str,
                 )
                 return value
         except (ValueError, TypeError) as e:
             # General catch for casting errors like int('abc') or float(None) if not caught earlier
-            print(
-                f"Warning: Could not cast value '{str(value)[:50]}' (type: {type(value).__name__}) to type '{target_type_str}': {e}. Returning None."
+            logger.warning(
+                "Could not cast value '%s' (type: %s) to type '%s': %s. Returning None.",
+                str(value)[:50],
+                type(value).__name__,
+                target_type_str,
+                e,
             )
             return None
 

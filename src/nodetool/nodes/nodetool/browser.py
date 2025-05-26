@@ -1,6 +1,7 @@
 import traceback
 import aiohttp
 import html2text
+import logging
 from bs4 import BeautifulSoup
 from enum import Enum
 from typing import Any, Dict, Optional
@@ -16,6 +17,8 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath
 import os
+
+logger = logging.getLogger(__name__)
 
 # Browser Use
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
@@ -93,11 +96,11 @@ class Browser(BaseNode):
             # Extract content using Readability or plain HTML
             if self.use_readability:
                 try:
-                    print(f"Using Python Readability for URL: {self.url}")
+                    logger.debug("Using Python Readability for URL: %s", self.url)
 
                     # Get the HTML content from the page
                     html_content = await page.content()
-                    print(f"HTML content: {html_content}")
+                    logger.debug("HTML content: %s", html_content)
 
                     doc = Document(html_content)
 
@@ -111,7 +114,7 @@ class Browser(BaseNode):
                     content = h.handle(article_content)
 
                 except Exception as e:
-                    print(f"Exception using Python Readability: {str(e)}")
+                    logger.warning("Exception using Python Readability: %s", e)
                     # Fallback to using regular HTML content on exception
                     content = html2text.html2text(await page.content())
             else:
@@ -121,7 +124,7 @@ class Browser(BaseNode):
 
             return result
         except Exception as e:
-            print(f"Error fetching page: {str(e)}")
+            logger.error("Error fetching page: %s", e)
             traceback.print_exc()
             raise ValueError(f"Error fetching page: {str(e)}")
 
@@ -723,4 +726,4 @@ class BrowserUseNode(BaseNode):
                     await browser_instance.close()
                 except Exception as close_e:
                     # Log error during close but don't overwrite primary error
-                    print(f"Error closing browser instance: {close_e}")
+                    logger.warning("Error closing browser instance: %s", close_e)
