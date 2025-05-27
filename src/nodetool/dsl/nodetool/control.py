@@ -8,7 +8,7 @@ from nodetool.dsl.graph import GraphNode
 class CollectorNode(GraphNode):
     """
     Collect items until a "done" event and return them as a list.
-    collector, aggregate, list, stream
+    collector, aggregate, list, stream, iterator, foreach, batch
 
     Use cases:
     - Gather results from multiple processing steps
@@ -55,10 +55,11 @@ class If(GraphNode):
 class IteratorNode(GraphNode):
     """
     Iterate over a list and emit each item sequentially.
-    iterator, loop, list, sequence
+    iterator, loop, list, sequence, foreach, batch
 
     Use cases:
     - Process each item of a collection in order
+    - Batch process files from a folder
     - Drive downstream nodes with individual elements
     """
 
