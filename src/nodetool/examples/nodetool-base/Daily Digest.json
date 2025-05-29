@@ -1,0 +1,165 @@
+{
+  "id": "1234567890abcdef1234567890abcdef",
+  "access": "public",
+  "created_at": "2025-05-29T00:00:00.000000",
+  "updated_at": "2025-05-29T00:00:00.000000",
+  "name": "Daily Digest",
+  "description": "Summarize recent emails and news headlines",
+  "tags": ["start"],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.mail.GmailSearch",
+        "data": {
+          "from_address": "",
+          "subject": "",
+          "body": "",
+          "date_filter": "SINCE_ONE_DAY",
+          "keywords": "",
+          "folder": "INBOX",
+          "text": "",
+          "max_results": 5
+        },
+        "ui_properties": {
+          "position": {"x": 50, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.mail.EmailFields",
+        "data": {},
+        "ui_properties": {
+          "position": {"x": 270, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.llms.Summarizer",
+        "data": {
+          "text": "",
+          "max_words": 150
+        },
+        "ui_properties": {
+          "position": {"x": 490, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "lib.rss.FetchRSSFeed",
+        "data": {
+          "url": "https://feeds.bbci.co.uk/news/world/rss.xml"
+        },
+        "ui_properties": {
+          "position": {"x": 50, "y": 250},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "lib.rss.RSSEntryFields",
+        "data": {},
+        "ui_properties": {
+          "position": {"x": 270, "y": 250},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.llms.Summarizer",
+        "data": {
+          "text": "",
+          "max_words": 150
+        },
+        "ui_properties": {
+          "position": {"x": 490, "y": 250},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "7",
+        "parent_id": null,
+        "type": "nodetool.text.Join",
+        "data": {
+          "separator": "\n\n---\n\n"
+        },
+        "ui_properties": {
+          "position": {"x": 710, "y": 150},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "8",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "digest"
+        },
+        "ui_properties": {
+          "position": {"x": 930, "y": 150},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        }
+      },
+      {
+        "id": "9",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "headline": "Daily Digest",
+          "comment": [
+            {"type": "paragraph", "children": [{"text": "1. Search recent emails"}]},
+            {"type": "paragraph", "children": [{"text": "2. Fetch RSS headlines"}]},
+            {"type": "paragraph", "children": [{"text": "3. Summarize each source"}]},
+            {"type": "paragraph", "children": [{"text": "4. Combine summaries"}]}
+          ]
+        },
+        "ui_properties": {
+          "position": {"x": 50, "y": -150},
+          "zIndex": 0,
+          "width": 600,
+          "height": 120,
+          "selectable": true
+        }
+      }
+    ],
+    "edges": [
+      {"id": "e1", "source": "1", "sourceHandle": "email", "target": "2", "targetHandle": "email", "ui_properties": null},
+      {"id": "e2", "source": "2", "sourceHandle": "body", "target": "3", "targetHandle": "text", "ui_properties": null},
+      {"id": "e3", "source": "4", "sourceHandle": "output", "target": "5", "targetHandle": "entry", "ui_properties": null},
+      {"id": "e4", "source": "5", "sourceHandle": "summary", "target": "6", "targetHandle": "text", "ui_properties": null},
+      {"id": "e5", "source": "3", "sourceHandle": "output", "target": "7", "targetHandle": "values", "ui_properties": null},
+      {"id": "e6", "source": "6", "sourceHandle": "output", "target": "7", "targetHandle": "values", "ui_properties": null},
+      {"id": "e7", "source": "7", "sourceHandle": "output", "target": "8", "targetHandle": "value", "ui_properties": null}
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null
+}
