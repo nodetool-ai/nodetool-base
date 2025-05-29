@@ -1,0 +1,79 @@
+{
+  "id": "9f6e60ec46ab47499dd10088d6375b99",
+  "access": "public",
+  "created_at": "2025-05-29T23:42:09.454279",
+  "updated_at": "2025-05-29T23:42:09.454279",
+  "name": "Filter JSON Data",
+  "description": "Parse JSON, filter by condition and preview results",
+  "tags": ["json"],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {"type": "paragraph", "children": [{"text": "Filter JSON Data Workflow", "bold": true}]}
+          ]
+        },
+        "ui_properties": {"position": {"x": 20, "y": -150}, "zIndex": 0, "width": 300, "selectable": true},
+        "dynamic_properties": {}
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "json_string",
+          "description": "Input JSON array",
+          "value": "[{\"name\": \"Alice\", \"age\": 25}, {\"name\": \"Bob\", \"age\": 35}]"
+        },
+        "ui_properties": {"position": {"x": 20, "y": 50}, "zIndex": 0, "width": 300, "selectable": true},
+        "dynamic_properties": {}
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.json.ParseList",
+        "data": {"json_string": ""},
+        "ui_properties": {"position": {"x": 350, "y": 50}, "zIndex": 0, "width": 250, "selectable": true},
+        "dynamic_properties": {}
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.list.FilterDicts",
+        "data": {"values": [], "condition": "age > 30"},
+        "ui_properties": {"position": {"x": 620, "y": 50}, "zIndex": 0, "width": 250, "selectable": true},
+        "dynamic_properties": {}
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.json.StringifyJSON",
+        "data": {"data": {}, "indent": 2},
+        "ui_properties": {"position": {"x": 890, "y": 50}, "zIndex": 0, "width": 250, "selectable": true},
+        "dynamic_properties": {}
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {"name": "Filtered JSON"},
+        "ui_properties": {"position": {"x": 1160, "y": 50}, "zIndex": 0, "width": 250, "height": 250, "selectable": true},
+        "dynamic_properties": {}
+      }
+    ],
+    "edges": [
+      {"id": "e2-3", "source": "2", "sourceHandle": "output", "target": "3", "targetHandle": "json_string", "ui_properties": null},
+      {"id": "e3-4", "source": "3", "sourceHandle": "output", "target": "4", "targetHandle": "values", "ui_properties": null},
+      {"id": "e4-5", "source": "4", "sourceHandle": "output", "target": "5", "targetHandle": "data", "ui_properties": null},
+      {"id": "e5-6", "source": "5", "sourceHandle": "output", "target": "6", "targetHandle": "value", "ui_properties": null}
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null
+}
