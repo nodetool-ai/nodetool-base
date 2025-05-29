@@ -1099,27 +1099,3 @@ class Flatten(BaseNode):
         if not isinstance(self.values, list):
             raise ValueError("Input must be a list")
         return self._flatten(self.values)
-
-
-class ListIterator(BaseNode):
-    """
-    Iterate over rows of a dataframe.
-    """
-
-    values: list[Any] = Field(default=[])
-
-    @classmethod
-    def get_title(cls):
-        return "List Iterator"
-
-    @classmethod
-    def return_type(cls):
-        return {
-            "value": Any,
-            "index": int,
-        }
-
-    async def gen_process(self, context: ProcessingContext):
-        for index, value in enumerate(self.values):
-            yield "value", value
-            yield "index", index
