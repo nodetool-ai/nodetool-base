@@ -10,6 +10,7 @@ permalink: /
 ## Available Nodes
 
 - **[lib.audio](nodetool_audio.md)** - Save audio files to the assets directory.
+- **[lib.html](nodetool_html.md)** - HTML utility nodes.
 - **[nodetool.boolean](nodetool_boolean.md)** - Logical operators, comparisons and flow control helpers.
 - **[nodetool.base64](nodetool_base64.md)** - Base64 encoding and decoding utilities.
 - **[nodetool.code](nodetool_code.md)** - Evaluate expressions or run small Python snippets (development use).
