@@ -20,6 +20,7 @@ from nodetool.metadata.types import (
 )
 
 import subprocess
+import tempfile
 
 
 class GetEnvironmentVariable(BaseNode):
@@ -226,6 +227,54 @@ class CreateDirectory(BaseNode):
             raise ValueError("This node is not available in production")
         expanded_path = os.path.expanduser(self.path.path)
         os.makedirs(expanded_path, exist_ok=self.exist_ok)
+
+
+class CreateTemporaryFile(BaseNode):
+    """
+    Create a temporary file on disk.
+    files, temporary, create
+
+    Use cases:
+    - Provide scratch storage for workflows
+    - Generate unique filenames for intermediate data
+    """
+
+    prefix: str = Field(default="", description="Prefix for the temp file name")
+    suffix: str = Field(default="", description="Suffix for the temp file name")
+    dir: str = Field(default="", description="Directory where the file is created")
+
+    async def process(self, context: ProcessingContext) -> FilePath:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        tmp_dir = os.path.expanduser(self.dir) if self.dir else None
+        tmp = tempfile.NamedTemporaryFile(
+            prefix=self.prefix, suffix=self.suffix, dir=tmp_dir, delete=False
+        )
+        path = tmp.name
+        tmp.close()
+        return FilePath(path=path)
+
+
+class CreateTemporaryDirectory(BaseNode):
+    """
+    Create a temporary directory on disk.
+    files, directory, temporary, create
+
+    Use cases:
+    - Provide working directories for intermediate results
+    - Store ephemeral data across nodes
+    """
+
+    prefix: str = Field(default="", description="Prefix for the directory name")
+    suffix: str = Field(default="", description="Suffix for the directory name")
+    dir: str = Field(default="", description="Parent directory for the temp directory")
+
+    async def process(self, context: ProcessingContext) -> FilePath:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        tmp_dir = os.path.expanduser(self.dir) if self.dir else None
+        path = tempfile.mkdtemp(prefix=self.prefix, suffix=self.suffix, dir=tmp_dir)
+        return FilePath(path=path)
 
 
 class GetFileSize(BaseNode):

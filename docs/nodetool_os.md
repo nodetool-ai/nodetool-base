@@ -82,6 +82,36 @@ Use cases:
 - **exist_ok**: Don't error if directory already exists (bool)
 
 
+## CreateTemporaryDirectory
+
+Create a temporary directory on disk.
+
+Use cases:
+- Provide working directories for intermediate results
+- Store ephemeral data across nodes
+
+**Tags:** files, directory, temporary, create
+
+**Fields:**
+- **prefix**: Prefix for the directory name (str)
+- **suffix**: Suffix for the directory name (str)
+- **dir**: Parent directory for the temp directory (str)
+
+## CreateTemporaryFile
+
+Create a temporary file on disk.
+
+Use cases:
+- Provide scratch storage for workflows
+- Generate unique filenames for intermediate data
+
+**Tags:** files, temporary, create
+
+**Fields:**
+- **prefix**: Prefix for the temp file name (str)
+- **suffix**: Suffix for the temp file name (str)
+- **dir**: Directory where the file is created (str)
+
 ## CreatedTime
 
 Get file creation timestamp.

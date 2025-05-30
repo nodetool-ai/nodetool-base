@@ -7,7 +7,10 @@ from nodetool.nodes.nodetool.os import (
     FileExists,
     ListFiles,
     CreateDirectory,
+    CreateTemporaryFile,
+    CreateTemporaryDirectory,
 )
+import os
 
 
 @pytest.fixture
@@ -39,3 +42,18 @@ async def test_file_operations(context: ProcessingContext, tmp_path):
     files = await list_node.process(context)
     assert len(files) == 1
     assert files[0].path == str(file_path)
+
+
+@pytest.mark.asyncio
+async def test_tempfile_nodes(context: ProcessingContext, tmp_path):
+    file_node = CreateTemporaryFile(prefix="test_", suffix=".txt", dir=str(tmp_path))
+    temp_file = await file_node.process(context)
+    assert os.path.exists(temp_file.path)
+    assert temp_file.path.startswith(os.path.join(str(tmp_path), "test_"))
+    assert temp_file.path.endswith(".txt")
+
+    dir_node = CreateTemporaryDirectory(prefix="dir_", suffix="_tmp", dir=str(tmp_path))
+    temp_dir = await dir_node.process(context)
+    assert os.path.isdir(temp_dir.path)
+    assert temp_dir.path.startswith(os.path.join(str(tmp_path), "dir_"))
+    assert temp_dir.path.endswith("_tmp")
