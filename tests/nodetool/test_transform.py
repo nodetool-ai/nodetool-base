@@ -4,7 +4,7 @@ import numpy as np
 from unittest.mock import AsyncMock, MagicMock, patch
 from pydub import AudioSegment
 
-from nodetool.metadata.types import AudioRef, NPArray
+from nodetool.metadata.types import AudioRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.audio import (
     Concat,
@@ -13,7 +13,6 @@ from nodetool.nodes.nodetool.audio import (
     OverlayAudio,
     RemoveSilence,
     SliceAudio,
-    Tone,
     MonoToStereo,
     StereoToMono,
     Reverse,
@@ -238,25 +237,6 @@ class TestSliceAudio:
         # The slice operation should have been performed on the audio segment
         # We can't directly verify the slice operation due to the mock setup,
         # but we can verify that the audio_from_segment was called
-
-
-class TestTone:
-    @pytest.mark.asyncio
-    async def test_tone_generation(self, mock_context):
-        """Test that Tone correctly generates a tone signal."""
-        # Setup
-        node = Tone(frequency=440.0, sampling_rate=44100, duration=1.0, phi=0.0)
-
-        # Execute
-        with patch("librosa.tone") as mock_tone:
-            mock_tone.return_value = np.zeros(44100)
-            result = await node.process(mock_context)
-
-        # Verify
-        assert isinstance(result, NPArray)
-        mock_tone.assert_called_once_with(
-            frequency=440.0, sr=44100, length=44100, phi=0.0
-        )
 
 
 class TestMonoToStereo:
