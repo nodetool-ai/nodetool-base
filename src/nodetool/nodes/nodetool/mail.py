@@ -213,6 +213,74 @@ class AddLabel(BaseNode):
         return result[0] == "OK"
 
 
+class SendEmail(BaseNode):
+    """Send a plain text email via SMTP.
+    email, smtp, send
+
+    Use cases:
+    - Send simple notification messages
+    - Automate email reports
+    """
+
+    smtp_server: str = Field(
+        default="smtp.gmail.com",
+        description="SMTP server hostname",
+    )
+    smtp_port: int = Field(
+        default=587,
+        description="SMTP server port",
+    )
+    username: str = Field(
+        default="",
+        description="SMTP username",
+    )
+    password: str = Field(
+        default="",
+        description="SMTP password",
+    )
+    from_address: str = Field(
+        default="",
+        description="Sender email address",
+    )
+    to_address: str = Field(
+        default="",
+        description="Recipient email address",
+    )
+    subject: str = Field(
+        default="",
+        description="Email subject",
+    )
+    body: str = Field(
+        default="",
+        description="Email body",
+    )
+
+    async def process(self, context: ProcessingContext) -> bool:
+        import smtplib
+        from email.message import EmailMessage
+
+        if not self.to_address:
+            raise ValueError("Recipient email address is required")
+
+        sender = self.from_address or self.username
+
+        msg = EmailMessage()
+        msg["Subject"] = self.subject
+        msg["From"] = sender
+        msg["To"] = self.to_address
+        msg.set_content(self.body)
+
+        def _send():
+            with smtplib.SMTP(self.smtp_server, self.smtp_port) as smtp:
+                smtp.starttls()
+                if self.username:
+                    smtp.login(self.username, self.password)
+                smtp.send_message(msg)
+
+        await asyncio.to_thread(_send)
+        return True
+
+
 def get_date_condition(date_filter: GmailSearch.DateFilter) -> DateSearchCondition:
     """
     Creates a DateSearchCondition based on the specified DateFilter.
