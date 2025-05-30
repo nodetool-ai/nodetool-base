@@ -912,3 +912,77 @@ class SplitPath(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.os.SplitPath"
+
+
+class CreateTarFile(GraphNode):
+    """
+    Create a tar archive from a directory.
+    files, tar, create
+
+    Use cases:
+    - Package multiple files into a single archive
+    - Backup directories
+    - Prepare archives for distribution
+    """
+
+    source_folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder to archive",
+    )
+    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Output tar file path",
+    )
+    gzip: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Use gzip compression"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.os.CreateTarFile"
+
+
+class ExtractTarFile(GraphNode):
+    """
+    Extract a tar archive to a folder.
+    files, tar, extract
+
+    Use cases:
+    - Unpack archived data
+    - Restore backups
+    - Retrieve files for processing
+    """
+
+    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Tar archive to extract",
+    )
+    output_folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder to extract into",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.os.ExtractTarFile"
+
+
+class ListTarFile(GraphNode):
+    """
+    List contents of a tar archive.
+    files, tar, list
+
+    Use cases:
+    - Inspect archives without extracting
+    - Preview tar contents
+    - Verify archive contents
+    """
+
+    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Tar archive to inspect",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.os.ListTarFile"
