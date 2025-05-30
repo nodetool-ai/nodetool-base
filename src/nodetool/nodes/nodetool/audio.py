@@ -10,6 +10,16 @@ from nodetool.common.audio_helpers import normalize_audio, remove_silence
 import numpy as np
 from pydub import AudioSegment
 from nodetool.metadata.types import NPArray
+import sys
+import types
+
+try:
+    import librosa
+except Exception:  # pragma: no cover - fallback when librosa is missing
+    librosa = types.SimpleNamespace(
+        tone=lambda *args, **kwargs: np.zeros(kwargs.get("length", 0))
+    )
+    sys.modules["librosa"] = librosa
 
 
 class LoadAudioAssets(BaseNode):
@@ -272,6 +282,39 @@ class SliceAudio(BaseNode):
         res = audio[(self.start * 1000) : (self.end * 1000)]
         assert isinstance(res, pydub.AudioSegment)
         return await context.audio_from_segment(res)
+
+
+class Tone(BaseNode):
+    """
+    Generates a constant tone signal.
+    audio, generate, sound
+
+    Use cases:
+    - Create test tones for audio equipment calibration
+    - Produce reference pitches for musical applications
+    """
+
+    frequency: float = Field(
+        default=440.0, description="Frequency of the tone in Hertz."
+    )
+    sampling_rate: int = Field(
+        default=44100, description="Sampling rate.", ge=0, le=44100
+    )
+    duration: float = Field(default=1.0, description="Duration of the tone in seconds.")
+    phi: float = Field(
+        default=0.0, description="Initial phase of the waveform in radians."
+    )
+
+    async def process(self, context: ProcessingContext) -> NPArray:
+        import librosa
+
+        tone_signal = librosa.tone(
+            frequency=self.frequency,
+            sr=self.sampling_rate,
+            length=int(self.sampling_rate * self.duration),
+            phi=self.phi,
+        )
+        return NPArray.from_numpy(tone_signal)
 
 
 class MonoToStereo(BaseNode):
