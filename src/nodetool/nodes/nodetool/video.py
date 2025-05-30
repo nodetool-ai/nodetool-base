@@ -5,6 +5,7 @@ import tempfile
 import uuid
 import ffmpeg
 import cv2
+import logging
 
 import PIL.ImageFilter
 import PIL.ImageOps
@@ -19,6 +20,8 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef, Event
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import VideoRef, FontRef
+
+logger = logging.getLogger(__name__)
 
 
 def safe_unlink(path: str):
@@ -258,7 +261,7 @@ class FrameToVideo(BaseNode):
             img = await context.image_to_pil(self.frame)
             frame_path = context.resolve_workspace_path(f"frame_{self.index:05d}.png")
             img.save(frame_path)
-            print(f"Saved frame {self.index} to {frame_path}")
+            logger.debug("Saved frame %s to %s", self.index, frame_path)
         else:
             raise ValueError(f"Unknown event: {event.name}")
 
@@ -268,7 +271,7 @@ class FrameToVideo(BaseNode):
         try:
             # Use FFmpeg to create video from frames
             frame_path = context.resolve_workspace_path("frame_%05d.png")
-            print(f"Creating video from {frame_path}")
+            logger.debug("Creating video from %s", frame_path)
             (
                 ffmpeg.input(frame_path, framerate=self.fps)
                 .output(video_path, vcodec="libx264", pix_fmt="yuv420p")
@@ -281,8 +284,8 @@ class FrameToVideo(BaseNode):
                 return await context.video_from_io(f)
 
         except ffmpeg.Error as e:
-            print(f"FFmpeg stdout:\n{e.stdout.decode('utf8')}")
-            print(f"FFmpeg stderr:\n{e.stderr.decode('utf8')}")
+            logger.error("FFmpeg stdout:\n%s", e.stdout.decode("utf8"))
+            logger.error("FFmpeg stderr:\n%s", e.stderr.decode("utf8"))
             raise RuntimeError(f"Error creating video: {e.stderr.decode('utf8')}")
 
 
@@ -358,8 +361,8 @@ class Concat(BaseNode):
                 with open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             except ffmpeg.Error as e:
-                print(f"FFmpeg stdout:\n{e.stdout.decode('utf8')}")
-                print(f"FFmpeg stderr:\n{e.stderr.decode('utf8')}")
+                logger.error("FFmpeg stdout:\n%s", e.stdout.decode("utf8"))
+                logger.error("FFmpeg stderr:\n%s", e.stderr.decode("utf8"))
                 raise RuntimeError(
                     f"Error concatenating videos: {e.stderr.decode('utf8')}"
                 )
@@ -783,8 +786,8 @@ class Overlay(BaseNode):
                 with open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             except ffmpeg.Error as e:
-                print(f"stdout: {e.stdout.decode('utf8')}")
-                print(f"stderr: {e.stderr.decode('utf8')}")
+                logger.error("stdout: %s", e.stdout.decode("utf8"))
+                logger.error("stderr: %s", e.stderr.decode("utf8"))
                 raise RuntimeError(f"ffmpeg error: {e.stderr.decode('utf8')}")
             finally:
                 safe_unlink(main_temp.name)

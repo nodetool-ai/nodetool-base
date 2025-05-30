@@ -1,9 +1,12 @@
 from enum import Enum
 import json
+import logging
 from typing import Any
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
+
+logger = logging.getLogger(__name__)
 
 
 class GetValue(BaseNode):
@@ -233,7 +236,7 @@ class MakeDictionary(BaseNode):
     _is_dynamic = True
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
-        print(self._dynamic_properties)
+        logger.debug("Dynamic properties: %s", self._dynamic_properties)
         return self._dynamic_properties.copy()
 
 
