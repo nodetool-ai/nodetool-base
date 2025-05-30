@@ -24,6 +24,41 @@ class AddLabel(GraphNode):
         return "nodetool.mail.AddLabel"
 
 
+class SendEmail(GraphNode):
+    """Send a plain text email via SMTP.
+    email, smtp, send
+    """
+
+    smtp_server: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="smtp.gmail.com", description="SMTP server hostname"
+    )
+    smtp_port: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=587, description="SMTP server port"
+    )
+    username: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="SMTP username"
+    )
+    password: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="SMTP password"
+    )
+    from_address: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Sender email address"
+    )
+    to_address: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Recipient email address"
+    )
+    subject: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Email subject"
+    )
+    body: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Email body"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.mail.SendEmail"
+
+
 class EmailFields(GraphNode):
     """
     Decomposes an email into its individual components.
