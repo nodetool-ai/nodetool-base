@@ -24,6 +24,7 @@ permalink: /
 - **[nodetool.json](nodetool_json.md)** - Parse, query and validate JSON data.
 - **[nodetool.list](nodetool_list.md)** - List processing utilities.
 - **[nodetool.math](nodetool_math.md)** - Basic arithmetic and math functions.
+- **[nodetool.random](nodetool_random.md)** - Generate random numbers and selections.
 - **[nodetool.os](nodetool_os.md)** - File system and path helpers.
 - **[nodetool.output](nodetool_output.md)** - Output nodes to return results to the user.
 - **[nodetool.text](nodetool_text.md)** - Text processing nodes with regex and templating.
