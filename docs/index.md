@@ -11,6 +11,7 @@ permalink: /
 
 - **[lib.audio](nodetool_audio.md)** - Save audio files to the assets directory.
 - **[nodetool.boolean](nodetool_boolean.md)** - Logical operators, comparisons and flow control helpers.
+- **[nodetool.base64](nodetool_base64.md)** - Base64 encoding and decoding utilities.
 - **[nodetool.code](nodetool_code.md)** - Evaluate expressions or run small Python snippets (development use).
 - **[nodetool.constant](nodetool_constant.md)** - Provide constant values like numbers, strings and images.
 - **[nodetool.control](nodetool_control.md)** - Basic branching with an if node.
