@@ -52,10 +52,16 @@ class FTPDownloadFile(FTPBaseNode):
             raise ValueError("remote_path cannot be empty")
 
         def _download() -> bytes:
-            with self._connect() as ftp:
+            ftp = self._connect()
+            try:
                 buffer = io.BytesIO()
                 ftp.retrbinary(f"RETR {self.remote_path}", buffer.write)
                 return buffer.getvalue()
+            finally:
+                try:
+                    ftp.quit()
+                except Exception:
+                    ftp.close()
 
         data = await asyncio.to_thread(_download)
         return DocumentRef(data=data)
@@ -87,8 +93,14 @@ class FTPUploadFile(FTPBaseNode):
         data = await context.asset_to_bytes(self.document)
 
         def _upload() -> None:
-            with self._connect() as ftp:
+            ftp = self._connect()
+            try:
                 ftp.storbinary(f"STOR {self.remote_path}", io.BytesIO(data))
+            finally:
+                try:
+                    ftp.quit()
+                except Exception:
+                    ftp.close()
 
         await asyncio.to_thread(_upload)
         return None
@@ -112,9 +124,15 @@ class FTPListDirectory(FTPBaseNode):
 
     async def process(self, context: ProcessingContext) -> list[str]:
         def _list() -> list[str]:
-            with self._connect() as ftp:
+            ftp = self._connect()
+            try:
                 if self.directory:
                     ftp.cwd(self.directory)
                 return ftp.nlst()
+            finally:
+                try:
+                    ftp.quit()
+                except Exception:
+                    ftp.close()
 
         return await asyncio.to_thread(_list)

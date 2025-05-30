@@ -18,7 +18,10 @@ class Escape(BaseNode):
     text: str = Field(default="", description="The text to escape")
 
     async def process(self, context: ProcessingContext) -> str:
-        return html.escape(self.text)
+        escaped = html.escape(self.text)
+        # html.escape uses hex value for single quotes (&#x27;)
+        # but tests expect the decimal representation
+        return escaped.replace("&#x27;", "&#39;")
 
 
 class Unescape(BaseNode):
