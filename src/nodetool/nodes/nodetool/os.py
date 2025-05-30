@@ -2,6 +2,7 @@ import csv
 import os
 import shutil
 import glob
+import zipfile
 from datetime import datetime
 import pandas as pd
 from pydantic import Field
@@ -861,6 +862,105 @@ class SaveVideoFile(BaseNode):
             f.write(video_data)
 
         return VideoRef(uri="file://" + expanded_path, data=video_data)
+
+
+class ZipFiles(BaseNode):
+    """
+    Create a zip archive from a list of files.
+    files, zip, archive, compress
+
+    Use cases:
+    - Archive workflow outputs
+    - Bundle files for download
+    - Create backups
+    """
+
+    files: list[FilePath] = Field(default=[], description="Files to include in the zip")
+    zip_path: FilePath = Field(
+        default=FilePath(), description="Path to the output zip file"
+    )
+
+    async def process(self, context: ProcessingContext) -> FilePath:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.files:
+            raise ValueError("files cannot be empty")
+        if not self.zip_path.path:
+            raise ValueError("zip_path cannot be empty")
+
+        expanded_zip = os.path.expanduser(self.zip_path.path)
+        os.makedirs(os.path.dirname(expanded_zip), exist_ok=True)
+        with zipfile.ZipFile(expanded_zip, "w") as zipf:
+            for file in self.files:
+                if not file.path:
+                    continue
+                expanded_file = os.path.expanduser(file.path)
+                zipf.write(expanded_file, arcname=os.path.basename(expanded_file))
+        return FilePath(path=expanded_zip)
+
+
+class UnzipFile(BaseNode):
+    """
+    Extract a zip archive into a folder.
+    files, zip, archive, extract
+
+    Use cases:
+    - Unpack downloaded archives
+    - Prepare datasets from zipped files
+    - Access individual files from an archive
+    """
+
+    zip_path: FilePath = Field(default=FilePath(), description="Path to the zip file")
+    output_folder: FolderPath = Field(
+        default=FolderPath(), description="Destination folder"
+    )
+
+    async def process(self, context: ProcessingContext) -> list[FilePath]:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.zip_path.path:
+            raise ValueError("zip_path cannot be empty")
+        if not self.output_folder.path:
+            raise ValueError("output_folder cannot be empty")
+
+        expanded_zip = os.path.expanduser(self.zip_path.path)
+        expanded_folder = os.path.expanduser(self.output_folder.path)
+        if not os.path.exists(expanded_zip):
+            raise ValueError(f"Zip file not found: {expanded_zip}")
+        os.makedirs(expanded_folder, exist_ok=True)
+        with zipfile.ZipFile(expanded_zip, "r") as zipf:
+            zipf.extractall(path=expanded_folder)
+            file_paths = [
+                FilePath(path=os.path.join(expanded_folder, name))
+                for name in zipf.namelist()
+            ]
+        return file_paths
+
+
+class ListZipContents(BaseNode):
+    """
+    List the files inside a zip archive.
+    files, zip, archive, list
+
+    Use cases:
+    - Inspect archive contents
+    - Validate zipped datasets
+    """
+
+    zip_path: FilePath = Field(default=FilePath(), description="Path to the zip file")
+
+    async def process(self, context: ProcessingContext) -> list[str]:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.zip_path.path:
+            raise ValueError("zip_path cannot be empty")
+
+        expanded_zip = os.path.expanduser(self.zip_path.path)
+        if not os.path.exists(expanded_zip):
+            raise ValueError(f"Zip file not found: {expanded_zip}")
+
+        with zipfile.ZipFile(expanded_zip, "r") as zipf:
+            return zipf.namelist()
 
 
 class FileNameMatch(BaseNode):

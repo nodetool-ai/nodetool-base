@@ -1,12 +1,16 @@
+import os
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FilePath
+from nodetool.metadata.types import FilePath, FolderPath
 from nodetool.nodes.nodetool.os import (
     SetEnvironmentVariable,
     GetEnvironmentVariable,
     FileExists,
     ListFiles,
     CreateDirectory,
+    ZipFiles,
+    UnzipFile,
+    ListZipContents,
 )
 
 
@@ -39,3 +43,33 @@ async def test_file_operations(context: ProcessingContext, tmp_path):
     files = await list_node.process(context)
     assert len(files) == 1
     assert files[0].path == str(file_path)
+
+
+@pytest.mark.asyncio
+async def test_zipfile_nodes(context: ProcessingContext, tmp_path):
+    file1 = tmp_path / "a.txt"
+    file1.write_text("one")
+    file2 = tmp_path / "b.txt"
+    file2.write_text("two")
+
+    zip_path = tmp_path / "archive.zip"
+    zip_node = ZipFiles(
+        files=[FilePath(path=str(file1)), FilePath(path=str(file2))],
+        zip_path=FilePath(path=str(zip_path)),
+    )
+    result_path = await zip_node.process(context)
+    assert result_path.path == str(zip_path)
+    assert zip_path.exists()
+
+    list_node = ListZipContents(zip_path=FilePath(path=str(zip_path)))
+    contents = await list_node.process(context)
+    assert sorted(contents) == ["a.txt", "b.txt"]
+
+    out_dir = tmp_path / "out"
+    unzip_node = UnzipFile(
+        zip_path=FilePath(path=str(zip_path)),
+        output_folder=FolderPath(path=str(out_dir)),
+    )
+    extracted = await unzip_node.process(context)
+    extracted_names = {os.path.basename(fp.path) for fp in extracted}
+    assert extracted_names == {"a.txt", "b.txt"}
