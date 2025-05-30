@@ -57,7 +57,7 @@ Refer to the individual markdown files for usage details and examples of each no
 pytest -q
 ```
 
-Most tests run without network access. Some optional features may require additional libraries such as `librosa`.
+Most tests run without network access.
 
 ## Contributing
 
