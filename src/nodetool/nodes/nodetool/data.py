@@ -1,6 +1,7 @@
 from datetime import datetime
 from io import StringIO
 import json
+import csv
 import pandas as pd
 from typing import Any
 from pydantic import Field
@@ -129,6 +130,30 @@ class ImportCSV(BaseNode):
     async def process(self, context: ProcessingContext) -> DataframeRef:
         df = pd.read_csv(StringIO(self.csv_data))
         return await context.dataframe_from_pandas(df)
+
+
+class CSVRowIterator(BaseNode):
+    """
+    Iterate over rows of a CSV string.
+    csv, iterator, stream
+    """
+
+    csv_data: str = Field(default="", description="CSV formatted text to iterate over.")
+    delimiter: str = Field(default=",", description="Delimiter used in the CSV data")
+
+    @classmethod
+    def get_title(cls):
+        return "CSV Row Iterator"
+
+    @classmethod
+    def return_type(cls):
+        return {"dict": dict, "index": int}
+
+    async def gen_process(self, context: ProcessingContext):
+        reader = csv.DictReader(StringIO(self.csv_data), delimiter=self.delimiter)
+        for index, row in enumerate(reader):
+            yield "dict", row
+            yield "index", index
 
 
 class FromList(BaseNode):

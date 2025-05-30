@@ -471,6 +471,38 @@ class LoadCSVFile(BaseNode):
             return [row for row in reader]
 
 
+class LoadCSVFileStream(BaseNode):
+    """
+    Stream rows from a CSV file on disk one by one.
+    csv, read, iterator, file, stream
+    """
+
+    path: FilePath = Field(
+        default=FilePath(), description="Path to the CSV file to read"
+    )
+    delimiter: str = Field(default=",", description="Delimiter used in the CSV file")
+
+    @classmethod
+    def get_title(cls):
+        return "Load CSV File Stream"
+
+    @classmethod
+    def return_type(cls):
+        return {"dict": dict, "index": int}
+
+    async def gen_process(self, context: ProcessingContext):
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.path.path:
+            raise ValueError("path cannot be empty")
+        expanded_path = os.path.expanduser(self.path.path)
+        with open(expanded_path, "r") as f:
+            reader = csv.DictReader(f, delimiter=self.delimiter)
+            for index, row in enumerate(reader):
+                yield "dict", row
+                yield "index", index
+
+
 class SaveCSVFile(BaseNode):
     """
     Write a list of dictionaries to a CSV file.
