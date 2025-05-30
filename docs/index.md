@@ -16,6 +16,7 @@ permalink: /
 - **[nodetool.control](nodetool_control.md)** - Basic branching with an if node.
 - **[nodetool.date](nodetool_date.md)** - Utilities for manipulating dates and times.
 - **[nodetool.dictionary](nodetool_dictionary.md)** - Manipulate key/value data and dictionaries.
+- **[nodetool.data](nodetool_data.md)** - CSV helpers and dataframe utilities.
 - **[nodetool.group](nodetool_group.md)** - Group operations such as looping over inputs.
 - **[nodetool.image](nodetool_image.md)** - Image manipulation including crop, resize and save.
 - **[nodetool.input](nodetool_input.md)** - Nodes for collecting user input of various types.
