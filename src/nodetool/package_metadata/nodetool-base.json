@@ -20556,6 +20556,12 @@
       "tags": [
         "agents"
       ]
+    },
+    {
+      "id": "daily_digest",
+      "name": "Daily Digest",
+      "description": "Generate a short news digest from an RSS feed.",
+      "tags": []
     }
   ]
 }

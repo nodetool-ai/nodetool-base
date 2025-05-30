@@ -1,0 +1,118 @@
+{
+  "id": "daily_digest",
+  "access": "public",
+  "created_at": "2025-05-18T20:00:00.000000",
+  "updated_at": "2025-05-18T20:00:00.000000",
+  "name": "Daily Digest",
+  "description": "Generate a short news digest from an RSS feed.",
+  "tags": [],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "label": "Feed URL",
+          "name": "feed_url",
+          "description": "",
+          "value": "https://feeds.bbci.co.uk/news/world/rss.xml"
+        },
+        "ui_properties": {
+          "position": {"x": 50, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "lib.rss.FetchRSSFeed",
+        "data": {"url": ""},
+        "ui_properties": {
+          "position": {"x": 300, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.list.Slice",
+        "data": {"start": 0, "stop": 5, "step": 1},
+        "ui_properties": {
+          "position": {"x": 550, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.text.Template",
+        "data": {
+          "string": "{% for e in values %}{{ e.title }}: {{ e.summary }}\n{% endfor %}",
+          "values": []
+        },
+        "ui_properties": {
+          "position": {"x": 800, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.llms.Summarizer",
+        "data": {
+          "model": {"type": "llama_model", "repo_id": "llama3.2:3b"},
+          "text": "",
+          "max_words": 150
+        },
+        "ui_properties": {
+          "position": {"x": 1050, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "label": "Digest",
+          "name": "digest",
+          "description": ""
+        },
+        "ui_properties": {
+          "position": {"x": 1300, "y": 50},
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      }
+    ],
+    "edges": [
+      {"id": "e1", "source": "1", "sourceHandle": "output", "target": "2", "targetHandle": "url", "ui_properties": null},
+      {"id": "e2", "source": "2", "sourceHandle": "output", "target": "3", "targetHandle": "values", "ui_properties": null},
+      {"id": "e3", "source": "3", "sourceHandle": "output", "target": "4", "targetHandle": "values", "ui_properties": null},
+      {"id": "e4", "source": "4", "sourceHandle": "output", "target": "5", "targetHandle": "text", "ui_properties": null},
+      {"id": "e5", "source": "5", "sourceHandle": "output", "target": "6", "targetHandle": "value", "ui_properties": null}
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null
+}
