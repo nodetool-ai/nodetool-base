@@ -1215,8 +1215,8 @@ class CreateTarFile(BaseNode):
     - Prepare archives for distribution
     """
 
-    source_folder: FolderPath = Field(
-        default=FolderPath(), description="Folder to archive"
+    source_folder: FilePath = Field(
+        default=FilePath(), description="Folder to archive"
     )
     tar_path: FilePath = Field(default=FilePath(), description="Output tar file path")
     gzip: bool = Field(default=False, description="Use gzip compression")
@@ -1249,11 +1249,11 @@ class ExtractTarFile(BaseNode):
     """
 
     tar_path: FilePath = Field(default=FilePath(), description="Tar archive to extract")
-    output_folder: FolderPath = Field(
-        default=FolderPath(), description="Folder to extract into"
+    output_folder: FilePath = Field(
+        default=FilePath(), description="Folder to extract into"
     )
 
-    async def process(self, context: ProcessingContext) -> FolderPath:
+    async def process(self, context: ProcessingContext) -> FilePath:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.tar_path.path:
@@ -1266,7 +1266,7 @@ class ExtractTarFile(BaseNode):
         os.makedirs(expanded_folder, exist_ok=True)
         with tarfile.open(expanded_tar, "r:*") as tar:
             tar.extractall(expanded_folder)
-        return FolderPath(path=expanded_folder)
+        return FilePath(path=expanded_folder)
 
 
 class ListTarFile(BaseNode):
