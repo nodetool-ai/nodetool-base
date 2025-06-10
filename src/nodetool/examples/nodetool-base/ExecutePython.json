@@ -1,0 +1,1285 @@
+{
+  "id": "",
+  "access": "private",
+  "created_at": "2025-06-10T14:49:44.102358",
+  "updated_at": "2025-06-10T16:49:23.480562",
+  "name": "ExecutePython",
+  "description": "",
+  "tags": null,
+  "thumbnail": "",
+  "thumbnail_url": null,
+  "graph": {
+    "edges": [
+      {
+        "id": "6b96bbda-ff86-4efc-b9e0-3661f85a28c8",
+        "source": "5b8f30f9-8e4c-4beb-ad35-1664ee024e9d",
+        "sourceHandle": "output",
+        "target": "5459a304-a8b0-4420-96cc-0b9ae1fa2b13",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      },
+      {
+        "id": "b2629bb1-87a5-4cee-a69c-3171a405b0d2",
+        "source": "77451c7b-f2a7-481c-bc34-3785cd23c434",
+        "sourceHandle": "output",
+        "target": "5b8f30f9-8e4c-4beb-ad35-1664ee024e9d",
+        "targetHandle": "inputs",
+        "ui_properties": {
+          "className": "dict"
+        }
+      },
+      {
+        "id": "423c3f14-6e4d-4fdd-a5a6-9d8993e59ee8",
+        "source": "6ebec436-bd15-43c0-a49e-69834ffd9493",
+        "sourceHandle": "output",
+        "target": "8f11e814-9009-4764-a411-09d43a9d5f78",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      },
+      {
+        "id": "a523ba25-ce21-40e7-bea2-0b9da9fcc3f4",
+        "source": "9aa5f19e-d1a2-49dd-8c30-b65bf405eacd",
+        "sourceHandle": "output",
+        "target": "6ebec436-bd15-43c0-a49e-69834ffd9493",
+        "targetHandle": "code",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "edffa49e-7aad-431a-809c-f8c13f0e2643",
+        "source": "ddd3722f-233c-4a59-8ae4-cf6dafec2f3b",
+        "sourceHandle": "output",
+        "target": "3c3e1e56-e3cc-4702-b6d1-6d9cded953af",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      },
+      {
+        "id": "7402867a-4f0d-438a-a714-f36978e8ce16",
+        "source": "3f0007a4-205b-43ae-8ad2-690985281f11",
+        "sourceHandle": "output",
+        "target": "a7262012-f76b-4dcc-9398-9589f2b812cf",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      },
+      {
+        "id": "044054b5-5bc8-4f0a-a0b3-0daa604e961a",
+        "source": "ae1bdd7d-3a9c-4ab1-850e-13a2f75dec3d",
+        "sourceHandle": "output",
+        "target": "c455e5a0-ea2d-469c-9c6e-b12911a63f57",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      },
+      {
+        "id": "e7455153-a0ae-4680-9d64-4f879b43a5f9",
+        "source": "ddf6aa65-72d3-4aef-9d62-5ee641c8a38a",
+        "sourceHandle": "output",
+        "target": "ddd3722f-233c-4a59-8ae4-cf6dafec2f3b",
+        "targetHandle": "code",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "72b77c3c-039a-4c59-b3e2-57400d98c4cf",
+        "source": "124fff47-bbb5-46fb-909f-1c93b33451ec",
+        "sourceHandle": "output",
+        "target": "3f0007a4-205b-43ae-8ad2-690985281f11",
+        "targetHandle": "code",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "3bf24607-42e8-4972-94ce-2f2050111740",
+        "source": "bcc0eb98-fea4-4dab-9564-b889b135b962",
+        "sourceHandle": "output",
+        "target": "ae1bdd7d-3a9c-4ab1-850e-13a2f75dec3d",
+        "targetHandle": "code",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "21233937-4e20-4fa0-b2cc-e90e64eb33e5",
+        "source": "467c4c9a-a2fa-43b0-91e8-0e722016429a",
+        "sourceHandle": "output",
+        "target": "6d27a214-fe49-4ed7-a08d-5cb1fc199add",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      },
+      {
+        "id": "cccdbfdc-b961-43a9-bfdf-52d0eff128a5",
+        "source": "923d9bb6-7a1b-4f27-9743-1cd83ca17804",
+        "sourceHandle": "output",
+        "target": "467c4c9a-a2fa-43b0-91e8-0e722016429a",
+        "targetHandle": "inputs",
+        "ui_properties": {
+          "className": "dict"
+        }
+      },
+      {
+        "id": "e45e838e-79e9-45bd-9fb9-e742a9aa3372",
+        "source": "e7c26964-3dc0-4ec7-b674-5f6a3c3c9fd9",
+        "sourceHandle": "output",
+        "target": "467c4c9a-a2fa-43b0-91e8-0e722016429a",
+        "targetHandle": "code",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "1a8fda3b-e966-4067-be8f-22a07f0c7cf6",
+        "source": "9a327cc8-f643-4625-9f24-f88d260c8ecc",
+        "sourceHandle": "output",
+        "target": "5b8f30f9-8e4c-4beb-ad35-1664ee024e9d",
+        "targetHandle": "code",
+        "ui_properties": {
+          "className": "str"
+        }
+      }
+    ],
+    "nodes": [
+      {
+        "id": "5b8f30f9-8e4c-4beb-ad35-1664ee024e9d",
+        "type": "nodetool.code.ExecutePython",
+        "data": {},
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1362,
+            "y": 207
+          },
+          "zIndex": 0,
+          "width": 293,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "5459a304-a8b0-4420-96cc-0b9ae1fa2b13",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1695,
+            "y": 207
+          },
+          "zIndex": 0,
+          "width": 150,
+          "height": 150,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "9aa5f19e-d1a2-49dd-8c30-b65bf405eacd",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "point = (3.14159, 2.71828)\nx, y = point\nresult = round(x + y, 2)"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 72,
+            "y": 201
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "round values",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "ddf6aa65-72d3-4aef-9d62-5ee641c8a38a",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "matrix = [[1, 2], [3, 4]]\nflattened = []\nfor row in matrix:\n    for item in row:\n        if item % 2 == 0:\n            flattened.append(item)\nresult = flattened"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 72,
+            "y": 425
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "modulo",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "124fff47-bbb5-46fb-909f-1c93b33451ec",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "flags = [True, True, False]\nresult = all(flags) or any(flags)"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 72,
+            "y": 674
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "use all or any",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "bcc0eb98-fea4-4dab-9564-b889b135b962",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "s = \"hello nodetool\"\nwords = s.split()\ncapitalized = [w.capitalize() for w in words]\nresult = \" \".join(capitalized)"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 72,
+            "y": 887
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "join and capitalize",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "77451c7b-f2a7-481c-bc34-3785cd23c434",
+        "type": "nodetool.constant.Dict",
+        "data": {
+          "value": {
+            "key1": "Hello",
+            "key2": "Nodetool"
+          }
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1371,
+            "y": 393
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "9a327cc8-f643-4625-9f24-f88d260c8ecc",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = key1 + \" \" + key2"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1050,
+            "y": 201
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "concatenate",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "6ebec436-bd15-43c0-a49e-69834ffd9493",
+        "type": "nodetool.code.ExecutePython",
+        "data": {
+          "inputs": {}
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 354,
+            "y": 201
+          },
+          "zIndex": 0,
+          "width": 293,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "8f11e814-9009-4764-a411-09d43a9d5f78",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 687,
+            "y": 201
+          },
+          "zIndex": 0,
+          "width": 150,
+          "height": 150,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "ddd3722f-233c-4a59-8ae4-cf6dafec2f3b",
+        "type": "nodetool.code.ExecutePython",
+        "data": {
+          "inputs": {}
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 354,
+            "y": 425
+          },
+          "zIndex": 0,
+          "width": 293,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "3c3e1e56-e3cc-4702-b6d1-6d9cded953af",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 687,
+            "y": 425
+          },
+          "zIndex": 0,
+          "width": 150,
+          "height": 150,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "3f0007a4-205b-43ae-8ad2-690985281f11",
+        "type": "nodetool.code.ExecutePython",
+        "data": {
+          "inputs": {}
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 354,
+            "y": 674
+          },
+          "zIndex": 0,
+          "width": 293,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "a7262012-f76b-4dcc-9398-9589f2b812cf",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 687,
+            "y": 674
+          },
+          "zIndex": 0,
+          "width": 150,
+          "height": 150,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "ae1bdd7d-3a9c-4ab1-850e-13a2f75dec3d",
+        "type": "nodetool.code.ExecutePython",
+        "data": {
+          "inputs": {}
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 354,
+            "y": 887
+          },
+          "zIndex": 0,
+          "width": 293,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "c455e5a0-ea2d-469c-9c6e-b12911a63f57",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 687,
+            "y": 887
+          },
+          "zIndex": 0,
+          "width": 150,
+          "height": 150,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "deb05387-55c8-4522-8bdc-fc832c87a37d",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = len(key1) < len(key2)\n\n\n\n"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1050,
+            "y": 388
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "compare length",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "d862f7a8-e3ef-4b15-b107-869773c96d15",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = key2[::-1] + \" \" + key1[::-1]"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1053,
+            "y": 602
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "reverse",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "467c4c9a-a2fa-43b0-91e8-0e722016429a",
+        "type": "nodetool.code.ExecutePython",
+        "data": {},
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2535,
+            "y": 223
+          },
+          "zIndex": 0,
+          "width": 293,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "6d27a214-fe49-4ed7-a08d-5cb1fc199add",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2868,
+            "y": 223
+          },
+          "zIndex": 0,
+          "width": 150,
+          "height": 150,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "923d9bb6-7a1b-4f27-9743-1cd83ca17804",
+        "type": "nodetool.constant.Dict",
+        "data": {
+          "value": {
+            "key1": "Hello",
+            "key2": "Nodetool",
+            "key3": "!"
+          }
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2538,
+            "y": 379
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "1e220a96-180a-46f0-8325-9dfb142702f8",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = {k: len(v) for k, v in locals().items() if isinstance(v, str)}"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2043,
+            "y": 195
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "count characters",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "f7e65013-fe86-407e-af4c-82b688bbce4e",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Iterate over all Keys with locals().items()",
+                  "bold": "b",
+                  "size": "+"
+                }
+              ]
+            }
+          ],
+          "comment_color": "#073642"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2043,
+            "y": 87
+          },
+          "zIndex": 0,
+          "width": 260,
+          "height": 66,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "27f2712a-9094-4702-8dd2-f9707b47c7c1",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = {k: v[::-1] for k, v in list(locals().items()) if isinstance(v, str)}"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2049,
+            "y": 540
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "reverse strings",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "a7482e61-f99b-4f08-837d-54eab0c01dec",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = {k: v.strip().lower() for k, v in locals().items() if isinstance(v, str)}"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2046,
+            "y": 369
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "to lower case",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "80f1603b-62e6-4801-9409-af04f31a7f76",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "string_items = [(k, v) for k, v in locals().items() if isinstance(v, str)]\nsorted_items = sorted(string_items, key=lambda x: len(x[1]))\nresult = dict(sorted_items)"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2043,
+            "y": 723
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "sort by length",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "3076a91c-f4c6-4225-b7b9-8ba1766da4a6",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "# Math & numeric utilities",
+                  "bold": true
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"abs\": abs,               # Absolute value"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"divmod\": divmod,         # Clean int division and remainder"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"float\": float,           # Convert to a decimal number"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"int\": int,               # Convert to a whole number"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"max\": max,               # Maximum of iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"min\": min,               # Minimum of iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"pow\": pow,               # Exponentiation"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"round\": round,           # Round a number"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"sum\": sum,               # Sum iterable of numbers"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "# Iterable and transformation utilities",
+                  "bold": true
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"all\": all,               # True if all elements are true"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"any\": any,               # True if any element is true"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"enumerate\": enumerate,   # Get index-value pairs from iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"filter\": filter,         # Functional programming"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"len\": len,               # Length of iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"map\": map,               # Functional programming"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"range\": range,           # Generate integer ranges"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"reversed\": reversed,     # Reverse list or string"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"sorted\": sorted,         # Sort iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"zip\": zip,               # Combine multiple iterables"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "# Type checks and logic",
+                  "bold": true
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"bool\": bool,             # Convert value to True or False"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"isinstance\": isinstance, # Safe type check"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"type\": type,             # Get type of object"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "# Built-in data types",
+                  "bold": true
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"dict\": dict,             # Create a dictionary"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"frozenset\": frozenset,   # Create an immutable set"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"list\": list,             # Create a list"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"set\": set,               # Create a set"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"str\": str,               # Convert to string"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"tuple\": tuple,           # Create a tuple"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "# Debugging & Introspection",
+                  "bold": true
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"hash\": hash,             # Get hash value of an object"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"repr\": repr,             # Get string representation of an object"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "# Local variable access",
+                  "bold": true
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"locals\": lambda: self.inputs,  # Use values from Dictionary input"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": -447,
+            "y": 58
+          },
+          "zIndex": 0,
+          "width": 394,
+          "height": 585,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "38081b04-3162-4348-b8b9-24861b04aece",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "AVAILABLE OPERATORS",
+                  "size": "+",
+                  "bold": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": -447,
+            "y": -6
+          },
+          "zIndex": 0,
+          "width": 229,
+          "height": 50,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "28a3fab4-6df0-4267-80d1-ae1d79b71fba",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "The ",
+                  "size": "+"
+                },
+                {
+                  "text": "ExecutePython",
+                  "bold": true,
+                  "size": "+"
+                },
+                {
+                  "text": " node can run custom Python code directly within your workflow.",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Think of it as a versatile multi-tool, perfect for when you need a specific data transformation that isn't covered by other nodes, want to quickly prototype a new idea, or need to inspect your data during a workflow run.",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "To use it, you can write any Python code in the code field.",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Any data you connect to the node's inputs will be available in a dictionary named ",
+                  "size": "+"
+                },
+                {
+                  "text": "inputs",
+                  "bold": "b",
+                  "size": "+"
+                },
+                {
+                  "text": ".",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "To send a result to the next node in your workflow, simply assign your desired output to a variable named ",
+                  "size": "+"
+                },
+                {
+                  "text": "result",
+                  "bold": true,
+                  "italic": "i",
+                  "size": "+"
+                },
+                {
+                  "text": ".",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Note",
+                  "bold": true,
+                  "size": "+"
+                },
+                {
+                  "text": ": you can't perform certain actions like importing new libraries or accessing the file system, but you have access to a wide range of safe, built-in Python functions for common data manipulation tasks.",
+                  "size": "+"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 0,
+            "y": -351
+          },
+          "zIndex": 0,
+          "width": 600,
+          "height": 336,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "e7c26964-3dc0-4ec7-b674-5f6a3c3c9fd9",
+        "type": "nodetool.constant.String",
+        "data": {
+          "value": "result = {k: v for k, v in locals().items() if isinstance(v, str) and len(v) > 3}\n"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 2043,
+            "y": 918
+          },
+          "zIndex": 0,
+          "width": 380,
+          "title": "filter by length",
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "bb94fcea-ea10-4e44-aaf6-a42ba377565f",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment_color": "#073642",
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Connect different inputs to test them.",
+                  "size": "+"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1053,
+            "y": 87
+          },
+          "zIndex": 0,
+          "width": 194,
+          "height": 40,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "7fd50435-2a9e-40cf-9004-47f416af37fe",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment_color": "#073642",
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Use without Inputs",
+                  "size": "+"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 75,
+            "y": 87
+          },
+          "zIndex": 0,
+          "width": 194,
+          "height": 40,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      }
+    ]
+  },
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "settings": {},
+  "package_name": null,
+  "path": null
+}
