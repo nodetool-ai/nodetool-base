@@ -1,0 +1,366 @@
+{
+  "id": "",
+  "access": "private",
+  "created_at": "2025-06-10T16:23:25.084534",
+  "updated_at": "2025-06-10T16:42:45.948184",
+  "name": "Evaluate Expression",
+  "description": "",
+  "tags": [
+    "node",
+    "advanced"
+  ],
+  "thumbnail": "",
+  "thumbnail_url": null,
+  "graph": {
+    "edges": [
+      {
+        "id": "6be03d51-82d1-4faa-8896-46ec91e56f94",
+        "source": "723769f5-0a53-4c4e-8239-8289971dbb26",
+        "sourceHandle": "output",
+        "target": "7cc777ee-22cc-44c1-ae95-fe086406304a",
+        "targetHandle": "variables",
+        "ui_properties": {
+          "className": "dict"
+        }
+      },
+      {
+        "id": "3c818eff-625c-4a20-9254-7296abe450e4",
+        "source": "7cc777ee-22cc-44c1-ae95-fe086406304a",
+        "sourceHandle": "output",
+        "target": "727aecd6-c612-4d06-a93a-c089e9f06c63",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "any"
+        }
+      }
+    ],
+    "nodes": [
+      {
+        "id": "7cc777ee-22cc-44c1-ae95-fe086406304a",
+        "type": "nodetool.code.EvaluateExpression",
+        "data": {
+          "expression": "(celsius * 9/5) + 32"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 312,
+            "y": 78
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "9260d2cb-949d-4e37-ba3c-7d18c842f3a1",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Use the ",
+                  "size": "+"
+                },
+                {
+                  "text": "EvaluateExpression",
+                  "bold": true,
+                  "size": "+"
+                },
+                {
+                  "text": " node when you need to perform a quick calculation or check a condition.",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Useful for simple, one-line operations like:",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Math: (celsius * 9/5) + 32",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Logic: order_total > 100",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "Data checks: len(name) > 0",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "",
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "This node is a simplified and safer alternative to the full ",
+                  "size": "+"
+                },
+                {
+                  "text": "ExecutePython",
+                  "bold": true,
+                  "size": "+"
+                },
+                {
+                  "text": " node.",
+                  "size": "+"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 6,
+            "y": -234
+          },
+          "zIndex": 0,
+          "width": 600,
+          "height": 192,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "723769f5-0a53-4c4e-8239-8289971dbb26",
+        "type": "nodetool.constant.Dict",
+        "data": {
+          "value": {
+            "celsius": 32
+          }
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 72,
+            "y": 78
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "727aecd6-c612-4d06-a93a-c089e9f06c63",
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {
+          "name": "any_output"
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 552,
+            "y": 78
+          },
+          "zIndex": 0,
+          "width": 160,
+          "height": 160,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "28c71751-fe05-4bc4-930c-5c7ac91fed30",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"abs\": abs,      # Absolute value"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"all\": all,      # True if all elements are true"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"any\": any,      # True if any element is true"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"bool\": bool,    # Convert value to True or False"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"float\": float,  # Convert to a decimal number"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"int\": int,      # Convert to a whole number"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"len\": len,      # Length of an object"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"max\": max,      # Maximum of an iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"min\": min,      # Minimum of an iterable"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"round\": round,  # Round a number"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"str\": str,      # Convert to string"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\"sum\": sum,      # Sum an iterable"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": -375,
+            "y": 78
+          },
+          "zIndex": 0,
+          "width": 290,
+          "height": 202,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "8277f689-b475-465d-8ecf-48c4d95c0509",
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "AVAILABLE OPERATORS",
+                  "size": "+",
+                  "bold": "b"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": -375,
+            "y": 3
+          },
+          "zIndex": 0,
+          "width": 232,
+          "height": 50,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      }
+    ]
+  },
+  "input_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "output_schema": {
+    "type": "object",
+    "properties": {},
+    "required": []
+  },
+  "settings": {},
+  "package_name": null,
+  "path": null
+}
