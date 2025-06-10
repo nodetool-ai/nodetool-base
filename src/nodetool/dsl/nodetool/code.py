@@ -6,7 +6,7 @@ from nodetool.dsl.graph import GraphNode
 class EvaluateExpression(GraphNode):
     """
     Evaluates a Python expression with safety restrictions.
-    python, expression, evaluate
+    python, expression, evaluate, code
 
     Use cases:
     - Calculate values dynamically
