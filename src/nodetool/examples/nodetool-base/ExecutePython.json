@@ -4,7 +4,7 @@
   "created_at": "2025-06-10T14:49:44.102358",
   "updated_at": "2025-06-10T16:49:23.480562",
   "name": "ExecutePython",
-  "description": "",
+  "description": "The ExecutePython node can run custom Python code directly within your workflow.",
   "tags": null,
   "thumbnail": "",
   "thumbnail_url": null,
