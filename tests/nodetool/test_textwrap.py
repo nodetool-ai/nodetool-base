@@ -16,7 +16,7 @@ def context():
         (Wrap(text="hello world", width=5), ["hello", "world"]),
         (
             Shorten(text="hello wonderful world", width=10, placeholder="..."),
-            "hello ...",
+            "hello...",
         ),
         (Indent(text="a\nb", prefix="*>"), "*>a\n*>b"),
         (Dedent(text="    a\n    b"), "a\nb"),
