@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.list
 
 
 class Append(GraphNode):
@@ -204,6 +204,9 @@ class FilterDicts(GraphNode):
         return "nodetool.list.FilterDicts"
 
 
+import nodetool.nodes.nodetool.list
+
+
 class FilterDictsByNumber(GraphNode):
     """
     Filters a list of dictionaries based on numeric values for a specified key.
@@ -268,6 +271,9 @@ class FilterDictsByRange(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.FilterDictsByRange"
+
+
+import nodetool.nodes.nodetool.list
 
 
 class FilterDictsByValue(GraphNode):
@@ -380,6 +386,9 @@ class FilterNumberRange(GraphNode):
         return "nodetool.list.FilterNumberRange"
 
 
+import nodetool.nodes.nodetool.list
+
+
 class FilterNumbers(GraphNode):
     """
     Filters a list of numbers based on various numerical conditions.
@@ -436,6 +445,9 @@ class FilterRegex(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.FilterRegex"
+
+
+import nodetool.nodes.nodetool.list
 
 
 class FilterStrings(GraphNode):
@@ -579,20 +591,6 @@ class Length(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.Length"
-
-
-class ListIterator(GraphNode):
-    """
-    Iterate over rows of a dataframe.
-    """
-
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description=None
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.list.ListIterator"
 
 
 class MapField(GraphNode):
@@ -761,6 +759,21 @@ class SelectElements(GraphNode):
         return "nodetool.list.SelectElements"
 
 
+class SequenceIterator(GraphNode):
+    """
+    Iterates over a sequence of numbers.
+    list, range, sequence, numbers
+    """
+
+    start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    stop: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    step: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description=None)
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.list.SequenceIterator"
+
+
 class Slice(GraphNode):
     """
     Extracts a subset from a list using start, stop, and step indices.
@@ -782,6 +795,9 @@ class Slice(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.Slice"
+
+
+import nodetool.nodes.nodetool.list
 
 
 class Sort(GraphNode):
@@ -825,6 +841,9 @@ class Sum(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.Sum"
+
+
+import nodetool.nodes.nodetool.list
 
 
 class Transform(GraphNode):

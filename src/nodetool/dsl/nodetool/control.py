@@ -1,6 +1,7 @@
-from pydantic import Field
-from pydantic_core import PydanticUndefined
+from pydantic import BaseModel, Field
+import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -8,7 +9,7 @@ from nodetool.dsl.graph import GraphNode
 class CollectorNode(GraphNode):
     """
     Collect items until a "done" event and return them as a list.
-    collector, aggregate, list, stream, iterator, foreach, batch
+    collector, aggregate, list, stream
 
     Use cases:
     - Gather results from multiple processing steps
@@ -55,16 +56,15 @@ class If(GraphNode):
 class IteratorNode(GraphNode):
     """
     Iterate over a list and emit each item sequentially.
-    iterator, loop, list, sequence, foreach, batch
+    iterator, loop, list, sequence
 
     Use cases:
     - Process each item of a collection in order
-    - Batch process files from a folder
     - Drive downstream nodes with individual elements
     """
 
     input_list: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
-        default=PydanticUndefined, description="The list of items to iterate over."
+        default=[], description="The list of items to iterate over."
     )
 
     @classmethod

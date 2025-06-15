@@ -40,7 +40,7 @@ class IteratorNode(BaseNode):
     """
 
     input_list: list[Any] = Field(
-        default_factory=list, description="The list of items to iterate over."
+        default=[], description="The list of items to iterate over."
     )
 
     @classmethod

@@ -1,17 +1,20 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
 class ArrayOutput(GraphNode):
     """
-    Output node for generic array data.
-    array, numerical
+    Output node for generic array data, typically numerical ('NPArray').
+    array, numerical, list, tensor, vector, matrix
 
     Use cases:
-    - Outputting results from machine learning models
-    - Representing complex numerical data structures
+    - Outputting results from machine learning models (e.g., embeddings, predictions).
+    - Representing complex numerical data structures.
+    - Passing arrays of numbers between processing steps.
     """
 
     value: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
@@ -21,6 +24,9 @@ class ArrayOutput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
 
     @classmethod
     def get_node_type(cls):
@@ -29,13 +35,13 @@ class ArrayOutput(GraphNode):
 
 class AudioOutput(GraphNode):
     """
-    Output node for audio content references.
-    audio, sound, media
+    Output node for audio content references ('AudioRef').
+    audio, sound, media, voice, speech, asset, reference
 
     Use cases:
-    - Displaying processed or generated audio
-    - Passing audio data between workflow nodes
-    - Returning results of audio analysis
+    - Displaying or returning processed or generated audio.
+    - Passing audio data (as an 'AudioRef') between workflow nodes.
+    - Returning results of audio analysis (e.g., transcription reference, audio features).
     """
 
     value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
@@ -44,6 +50,9 @@ class AudioOutput(GraphNode):
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod
@@ -54,7 +63,7 @@ class AudioOutput(GraphNode):
 class BooleanOutput(GraphNode):
     """
     Output node for a single boolean value.
-    boolean, true, false, flag, condition, flow-control, branch, else, true, false, switch, toggle
+    boolean, true, false, flag, condition, flow-control, branch, else, switch, toggle
 
     Use cases:
     - Returning binary results (yes/no, true/false)
@@ -68,6 +77,9 @@ class BooleanOutput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
 
     @classmethod
     def get_node_type(cls):
@@ -76,13 +88,13 @@ class BooleanOutput(GraphNode):
 
 class DataframeOutput(GraphNode):
     """
-    Output node for structured data references.
-    dataframe, table, structured
+    Output node for structured data references, typically tabular ('DataframeRef').
+    dataframe, table, structured, csv, tabular_data, rows, columns
 
     Use cases:
-    - Outputting tabular data results
-    - Passing structured data between analysis steps
-    - Displaying data in table format
+    - Outputting tabular data results from analysis or queries.
+    - Passing structured datasets between processing or analysis steps.
+    - Displaying data in a table format or making it available for download.
     """
 
     value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
@@ -94,6 +106,9 @@ class DataframeOutput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
 
     @classmethod
     def get_node_type(cls):
@@ -102,13 +117,13 @@ class DataframeOutput(GraphNode):
 
 class DictionaryOutput(GraphNode):
     """
-    Output node for key-value pair data.
-    dictionary, key-value, mapping
+    Output node for key-value pair data (dictionary).
+    dictionary, key-value, mapping, object, json_object, struct
 
     Use cases:
-    - Returning multiple named values
-    - Passing complex data structures between nodes
-    - Organizing heterogeneous output data
+    - Returning multiple named values as a single structured output.
+    - Passing complex data structures or configurations between nodes.
+    - Organizing heterogeneous output data into a named map.
     """
 
     value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
@@ -116,6 +131,9 @@ class DictionaryOutput(GraphNode):
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod
@@ -125,13 +143,13 @@ class DictionaryOutput(GraphNode):
 
 class DocumentOutput(GraphNode):
     """
-    Output node for document content references.
-    document, pdf, file
+    Output node for document content references ('DocumentRef').
+    document, file, pdf, text_file, asset, reference
 
     Use cases:
-    - Displaying processed or generated documents
-    - Passing document data between workflow nodes
-    - Returning results of document analysis
+    - Displaying or returning processed or generated documents.
+    - Passing document data (as a 'DocumentRef') between workflow nodes.
+    - Returning results of document analysis or manipulation.
     """
 
     value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
@@ -140,6 +158,9 @@ class DocumentOutput(GraphNode):
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod
@@ -164,63 +185,24 @@ class FloatOutput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.FloatOutput"
 
 
-class GroupOutput(GraphNode):
-    """
-    Generic output node for grouped data from any node.
-    group, composite, multi-output
-
-    Use cases:
-    - Aggregating multiple outputs from a single node
-    - Passing varied data types as a single unit
-    - Organizing related outputs in workflows
-    """
-
-    input: Any | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description=None
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.output.GroupOutput"
-
-
-class ImageListOutput(GraphNode):
-    """
-    Output node for a list of image references.
-    images, list, gallery
-
-    Use cases:
-    - Displaying multiple images in a grid
-    - Returning image search results
-    """
-
-    value: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The images to display."
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.output.ImageListOutput"
-
-
 class ImageOutput(GraphNode):
     """
-    Output node for a single image reference.
-    image, picture, visual
+    Output node for a single image reference ('ImageRef').
+    image, picture, visual, asset, reference
 
     Use cases:
-    - Displaying a single processed or generated image
-    - Passing image data between workflow nodes
-    - Returning image analysis results
+    - Displaying a single processed or generated image.
+    - Passing image data (as an 'ImageRef') between workflow nodes.
+    - Returning image analysis results encapsulated in an 'ImageRef'.
     """
 
     value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
@@ -229,6 +211,9 @@ class ImageOutput(GraphNode):
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod
@@ -250,6 +235,9 @@ class IntegerOutput(GraphNode):
     value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod
@@ -273,50 +261,33 @@ class ListOutput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.ListOutput"
 
 
-class ModelOutput(GraphNode):
-    """
-    Output node for machine learning model references.
-    model, ml, ai
-
-    Use cases:
-    - Passing trained models between workflow steps
-    - Outputting newly created or fine-tuned models
-    - Referencing models for later use in the workflow
-    """
-
-    value: types.ModelRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.ModelRef(type="model_ref", uri="", asset_id=None, data=None),
-        description=None,
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.output.ModelOutput"
-
-
 class StringOutput(GraphNode):
     """
-    Output node for a single string value.
-    string, text, output
+    Output node for a string value.
+    string, text, output, label, name
 
     Use cases:
-    - Returning text results or messages
-    - Passing string parameters between nodes
-    - Displaying short text outputs
+    - Returning short text results or messages.
+    - Passing concise string parameters or identifiers between nodes.
+    - Displaying brief textual outputs.
+    - For multi-line text or structured document content, use appropriate output nodes if available or consider how data is structured.
     """
 
     value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod
@@ -324,39 +295,15 @@ class StringOutput(GraphNode):
         return "nodetool.output.StringOutput"
 
 
-class TextOutput(GraphNode):
-    """
-    Output node for structured text content.
-    text, content, document
-
-    Use cases:
-    - Returning longer text content or documents
-    - Passing formatted text between processing steps
-    - Displaying rich text output
-    """
-
-    value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.TextRef(type="text", uri="", asset_id=None, data=None),
-        description=None,
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.output.TextOutput"
-
-
 class VideoOutput(GraphNode):
     """
-    Output node for video content references.
-    video, media, clip
+    Output node for video content references ('VideoRef').
+    video, media, clip, asset, reference
 
     Use cases:
-    - Displaying processed or generated video content
-    - Passing video data between workflow steps
-    - Returning results of video analysis
+    - Displaying processed or generated video content.
+    - Passing video data (as a 'VideoRef') between workflow steps.
+    - Returning results of video analysis encapsulated in a 'VideoRef'.
     """
 
     value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
@@ -367,6 +314,9 @@ class VideoOutput(GraphNode):
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
     )
 
     @classmethod

@@ -1,6 +1,6 @@
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.textwrap import Fill, Wrap, Shorten, Indent, Dedent
+from nodetool.nodes.lib.textwrap import Fill, Wrap, Shorten, Indent, Dedent
 
 
 @pytest.fixture

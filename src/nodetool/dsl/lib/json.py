@@ -1,5 +1,7 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -26,7 +28,7 @@ class FilterJSON(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.FilterJSON"
+        return "lib.json.FilterJSON"
 
 
 class GetJSONPathBool(GraphNode):
@@ -47,7 +49,7 @@ class GetJSONPathBool(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.GetJSONPathBool"
+        return "lib.json.GetJSONPathBool"
 
 
 class GetJSONPathDict(GraphNode):
@@ -68,7 +70,7 @@ class GetJSONPathDict(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.GetJSONPathDict"
+        return "lib.json.GetJSONPathDict"
 
 
 class GetJSONPathFloat(GraphNode):
@@ -89,7 +91,7 @@ class GetJSONPathFloat(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.GetJSONPathFloat"
+        return "lib.json.GetJSONPathFloat"
 
 
 class GetJSONPathInt(GraphNode):
@@ -110,7 +112,7 @@ class GetJSONPathInt(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.GetJSONPathInt"
+        return "lib.json.GetJSONPathInt"
 
 
 class GetJSONPathList(GraphNode):
@@ -131,7 +133,7 @@ class GetJSONPathList(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.GetJSONPathList"
+        return "lib.json.GetJSONPathList"
 
 
 class GetJSONPathStr(GraphNode):
@@ -152,7 +154,7 @@ class GetJSONPathStr(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.GetJSONPathStr"
+        return "lib.json.GetJSONPathStr"
 
 
 class JSONTemplate(GraphNode):
@@ -180,7 +182,7 @@ class JSONTemplate(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.JSONTemplate"
+        return "lib.json.JSONTemplate"
 
 
 class LoadJSONAssets(GraphNode):
@@ -196,7 +198,7 @@ class LoadJSONAssets(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.LoadJSONAssets"
+        return "lib.json.LoadJSONAssets"
 
 
 class ParseDict(GraphNode):
@@ -216,7 +218,7 @@ class ParseDict(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.ParseDict"
+        return "lib.json.ParseDict"
 
 
 class ParseList(GraphNode):
@@ -236,7 +238,7 @@ class ParseList(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.ParseList"
+        return "lib.json.ParseList"
 
 
 class StringifyJSON(GraphNode):
@@ -258,7 +260,7 @@ class StringifyJSON(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.StringifyJSON"
+        return "lib.json.StringifyJSON"
 
 
 class ValidateJSON(GraphNode):
@@ -274,10 +276,10 @@ class ValidateJSON(GraphNode):
     data: Any | GraphNode | tuple[GraphNode, str] = Field(
         default=None, description="JSON data to validate"
     )
-    schema: dict | GraphNode | tuple[GraphNode, str] = Field(
+    json_schema: dict | GraphNode | tuple[GraphNode, str] = Field(
         default={}, description="JSON schema for validation"
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.json.ValidateJSON"
+        return "lib.json.ValidateJSON"

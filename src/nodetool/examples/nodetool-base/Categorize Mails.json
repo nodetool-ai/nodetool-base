@@ -200,7 +200,7 @@
       {
         "id": "6633542c-e07a-4847-845d-49c5d079647e",
         "parent_id": null,
-        "type": "nodetool.mail.AddLabel",
+        "type": "lib.mail.AddLabel",
         "data": {},
         "ui_properties": {
           "position": {
@@ -216,7 +216,7 @@
       {
         "id": "b776a8c2-1aea-42be-8961-bff617538ad2",
         "parent_id": null,
-        "type": "nodetool.mail.GmailSearch",
+        "type": "lib.mail.GmailSearch",
         "data": {
           "from_address": "",
           "to_address": "",

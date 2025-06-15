@@ -1,7 +1,7 @@
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath
-from nodetool.nodes.nodetool.os import (
+from nodetool.nodes.lib.os import (
     SetEnvironmentVariable,
     GetEnvironmentVariable,
     FileExists,

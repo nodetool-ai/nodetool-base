@@ -1215,9 +1215,7 @@ class CreateTarFile(BaseNode):
     - Prepare archives for distribution
     """
 
-    source_folder: FilePath = Field(
-        default=FilePath(), description="Folder to archive"
-    )
+    source_folder: FilePath = Field(default=FilePath(), description="Folder to archive")
     tar_path: FilePath = Field(default=FilePath(), description="Output tar file path")
     gzip: bool = Field(default=False, description="Use gzip compression")
 

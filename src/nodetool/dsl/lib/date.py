@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.date
 
 
 class AddTimeDelta(GraphNode):
@@ -43,7 +43,7 @@ class AddTimeDelta(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.AddTimeDelta"
+        return "lib.date.AddTimeDelta"
 
 
 class DateDifference(GraphNode):
@@ -89,7 +89,7 @@ class DateDifference(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.DateDifference"
+        return "lib.date.DateDifference"
 
 
 class DateRange(GraphNode):
@@ -138,7 +138,7 @@ class DateRange(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.DateRange"
+        return "lib.date.DateRange"
 
 
 class DateToDatetime(GraphNode):
@@ -154,7 +154,7 @@ class DateToDatetime(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.DateToDatetime"
+        return "lib.date.DateToDatetime"
 
 
 class DatetimeToDate(GraphNode):
@@ -181,7 +181,7 @@ class DatetimeToDate(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.DatetimeToDate"
+        return "lib.date.DatetimeToDate"
 
 
 class DaysAgo(GraphNode):
@@ -196,7 +196,7 @@ class DaysAgo(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.DaysAgo"
+        return "lib.date.DaysAgo"
 
 
 class DaysFromNow(GraphNode):
@@ -211,7 +211,7 @@ class DaysFromNow(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.DaysFromNow"
+        return "lib.date.DaysFromNow"
 
 
 class EndOfDay(GraphNode):
@@ -238,7 +238,7 @@ class EndOfDay(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.EndOfDay"
+        return "lib.date.EndOfDay"
 
 
 class EndOfMonth(GraphNode):
@@ -265,7 +265,7 @@ class EndOfMonth(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.EndOfMonth"
+        return "lib.date.EndOfMonth"
 
 
 class EndOfWeek(GraphNode):
@@ -295,7 +295,7 @@ class EndOfWeek(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.EndOfWeek"
+        return "lib.date.EndOfWeek"
 
 
 class EndOfYear(GraphNode):
@@ -322,7 +322,10 @@ class EndOfYear(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.EndOfYear"
+        return "lib.date.EndOfYear"
+
+
+import nodetool.nodes.lib.date
 
 
 class FormatDateTime(GraphNode):
@@ -335,7 +338,7 @@ class FormatDateTime(GraphNode):
     - Prepare dates for different systems
     """
 
-    DateFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.date.DateFormat
+    DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
     input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
         default=types.Datetime(
             type="datetime",
@@ -351,14 +354,14 @@ class FormatDateTime(GraphNode):
         ),
         description="Datetime object to format",
     )
-    output_format: nodetool.nodes.nodetool.date.DateFormat = Field(
-        default=nodetool.nodes.nodetool.date.DateFormat.HUMAN_READABLE,
+    output_format: nodetool.nodes.lib.date.DateFormat = Field(
+        default=nodetool.nodes.lib.date.DateFormat.HUMAN_READABLE,
         description="Desired output format",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.FormatDateTime"
+        return "lib.date.FormatDateTime"
 
 
 class GetQuarter(GraphNode):
@@ -389,7 +392,7 @@ class GetQuarter(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.GetQuarter"
+        return "lib.date.GetQuarter"
 
 
 class GetWeekday(GraphNode):
@@ -423,7 +426,7 @@ class GetWeekday(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.GetWeekday"
+        return "lib.date.GetWeekday"
 
 
 class HoursAgo(GraphNode):
@@ -438,7 +441,7 @@ class HoursAgo(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.HoursAgo"
+        return "lib.date.HoursAgo"
 
 
 class HoursFromNow(GraphNode):
@@ -453,7 +456,7 @@ class HoursFromNow(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.HoursFromNow"
+        return "lib.date.HoursFromNow"
 
 
 class IsDateInRange(GraphNode):
@@ -517,7 +520,7 @@ class IsDateInRange(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.IsDateInRange"
+        return "lib.date.IsDateInRange"
 
 
 class MonthsAgo(GraphNode):
@@ -532,7 +535,7 @@ class MonthsAgo(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.MonthsAgo"
+        return "lib.date.MonthsAgo"
 
 
 class MonthsFromNow(GraphNode):
@@ -547,7 +550,7 @@ class MonthsFromNow(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.MonthsFromNow"
+        return "lib.date.MonthsFromNow"
 
 
 class Now(GraphNode):
@@ -558,7 +561,10 @@ class Now(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.Now"
+        return "lib.date.Now"
+
+
+import nodetool.nodes.lib.date
 
 
 class ParseDate(GraphNode):
@@ -567,18 +573,21 @@ class ParseDate(GraphNode):
     date, parse, format
     """
 
-    DateFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.date.DateFormat
+    DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
     date_string: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The date string to parse"
     )
-    input_format: nodetool.nodes.nodetool.date.DateFormat = Field(
-        default=nodetool.nodes.nodetool.date.DateFormat.ISO,
+    input_format: nodetool.nodes.lib.date.DateFormat = Field(
+        default=nodetool.nodes.lib.date.DateFormat.ISO,
         description="Format of the input date string",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.ParseDate"
+        return "lib.date.ParseDate"
+
+
+import nodetool.nodes.lib.date
 
 
 class ParseDateTime(GraphNode):
@@ -591,18 +600,18 @@ class ParseDateTime(GraphNode):
     - Convert between date formats
     """
 
-    DateFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.date.DateFormat
+    DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
     datetime_string: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The datetime string to parse"
     )
-    input_format: nodetool.nodes.nodetool.date.DateFormat = Field(
-        default=nodetool.nodes.nodetool.date.DateFormat.ISO,
+    input_format: nodetool.nodes.lib.date.DateFormat = Field(
+        default=nodetool.nodes.lib.date.DateFormat.ISO,
         description="Format of the input datetime string",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.ParseDateTime"
+        return "lib.date.ParseDateTime"
 
 
 class StartOfDay(GraphNode):
@@ -629,7 +638,7 @@ class StartOfDay(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.StartOfDay"
+        return "lib.date.StartOfDay"
 
 
 class StartOfMonth(GraphNode):
@@ -656,7 +665,7 @@ class StartOfMonth(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.StartOfMonth"
+        return "lib.date.StartOfMonth"
 
 
 class StartOfWeek(GraphNode):
@@ -686,7 +695,7 @@ class StartOfWeek(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.StartOfWeek"
+        return "lib.date.StartOfWeek"
 
 
 class StartOfYear(GraphNode):
@@ -713,7 +722,7 @@ class StartOfYear(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.StartOfYear"
+        return "lib.date.StartOfYear"
 
 
 class Today(GraphNode):
@@ -724,4 +733,4 @@ class Today(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.date.Today"
+        return "lib.date.Today"

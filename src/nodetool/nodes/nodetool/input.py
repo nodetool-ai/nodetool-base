@@ -1,6 +1,8 @@
 from typing import Any
+import inspect
 from pydantic import Field
 from nodetool.metadata.types import (
+    DataframeRef,
     DocumentRef,
     FilePath,
     Message,
@@ -11,12 +13,12 @@ from nodetool.metadata.types import (
 from nodetool.metadata.types import (
     MessageImageContent,
     MessageTextContent,
+    TextRef,
 )
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import AudioRef
 from nodetool.metadata.types import ImageRef
-from nodetool.metadata.types import TextRef
-from nodetool.workflows.base_node import BaseNode, InputNode
+from nodetool.workflows.base_node import InputNode
 from nodetool.metadata.types import VideoRef
 from nodetool.metadata.types import Collection, ToolName
 from nodetool.common.environment import Environment
@@ -24,13 +26,13 @@ from nodetool.common.environment import Environment
 
 class FloatInput(InputNode):
     """
-    Float parameter input for workflows.
-    input, parameter, float, number
+    Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
+    input, parameter, float, number, decimal, range
 
     Use cases:
-    - Specify a numeric value within a defined range
-    - Set thresholds or scaling factors
-    - Configure continuous parameters like opacity or volume
+    - Specify a numeric value within a defined range (e.g., 0.0 to 1.0).
+    - Set thresholds, confidence scores, or scaling factors.
+    - Configure continuous parameters like opacity, volume, or temperature.
     """
 
     value: float = 0.0
@@ -43,13 +45,13 @@ class FloatInput(InputNode):
 
 class BooleanInput(InputNode):
     """
-    Boolean parameter input for workflows.
-    input, parameter, boolean, bool
+    Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.
+    input, parameter, boolean, bool, toggle, switch, flag
 
     Use cases:
-    - Toggle features on/off
-    - Set binary flags
-    - Control conditional logic
+    - Toggle features or settings on or off.
+    - Set binary flags to control workflow behavior.
+    - Make conditional choices within a workflow (e.g., proceed if true).
     """
 
     value: bool = False
@@ -60,13 +62,13 @@ class BooleanInput(InputNode):
 
 class IntegerInput(InputNode):
     """
-    Integer parameter input for workflows.
-    input, parameter, integer, number
+    Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
+    input, parameter, integer, number, count, index, whole_number
 
     Use cases:
-    - Specify counts or quantities
-    - Set index values
-    - Configure discrete numeric parameters
+    - Specify counts or quantities (e.g., number of items, iterations).
+    - Set index values for accessing elements in a list or array.
+    - Configure discrete numeric parameters like age, steps, or quantity.
     """
 
     value: int = 0
@@ -79,13 +81,15 @@ class IntegerInput(InputNode):
 
 class StringInput(InputNode):
     """
-    String parameter input for workflows.
-    input, parameter, string, text
+    Accepts a string value as a parameter for workflows.
+    input, parameter, string, text, label, name, value
 
     Use cases:
-    - Provide text labels or names
-    - Enter search queries
-    - Specify file paths or URLs
+    - Define a name for an entity or process.
+    - Specify a label for a component or output.
+    - Enter a short keyword or search term.
+    - Provide a simple configuration value (e.g., an API key, a model name).
+    - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.
     """
 
     value: str = ""
@@ -96,13 +100,14 @@ class StringInput(InputNode):
 
 class ChatInput(InputNode):
     """
-    Chat message input for workflows.
-    input, parameter, chat, message
+    Accepts a list of chat messages as input for workflows, typically representing a conversation history.  The input is structured as a sequence of 'Message' objects. The node processes this list to extract elements like the latest message content (text, image, audio, video, document), the history, and any associated tool calls.
+    input, parameter, chat, message, conversation, prompt, history
 
     Use cases:
-    - Accept user prompts or queries
-    - Capture conversational input
-    - Provide instructions to language models
+    - Provide user prompts or queries to a language model.
+    - Supply conversational context (history) for multi-turn interactions.
+    - Capture complex inputs that include text alongside other media types or tool requests.
+    - Initiate or continue a chat-based workflow.
     """
 
     value: list[Message] = Field([], description="The chat message to use as input.")
@@ -164,34 +169,16 @@ class ChatInput(InputNode):
         }
 
 
-class TextInput(InputNode):
-    """
-    Text content input for workflows.
-    input, parameter, text
-
-    Use cases:
-    - Load text documents or articles
-    - Process multi-line text content
-    - Analyze large text bodies
-    """
-
-    value: TextRef = Field(TextRef(), description="The text to use as input.")
-
-    async def process(self, context: ProcessingContext) -> TextRef:
-        if self.value.is_empty():
-            raise ValueError("Text input is empty, please provide a text")
-        return self.value
-
-
 class DocumentInput(InputNode):
     """
-    Document asset input for workflows.
-    input, parameter, document
+    Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.
+    input, parameter, document, file, asset, reference
 
     Use cases:
-    - Load documents for processing
-    - Analyze document content
-    - Provide document input to models
+    - Load a specific document (e.g., PDF, Word, text file) for content extraction or analysis.
+    - Pass a document to models that are designed to process specific document formats.
+    - Manage documents as distinct assets within a workflow.
+    - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.
     """
 
     value: DocumentRef = Field(
@@ -206,13 +193,14 @@ class DocumentInput(InputNode):
 
 class ImageInput(InputNode):
     """
-    Image asset input for workflows.
-    input, parameter, image
+    Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.
+    input, parameter, image, picture, graphic, visual, asset
 
     Use cases:
-    - Load images for processing or analysis
-    - Provide visual input to models
-    - Select images for manipulation
+    - Load an image for visual processing or analysis.
+    - Provide an image as input to computer vision models (e.g., object detection, image classification).
+    - Select an image for manipulation, enhancement, or inclusion in a document.
+    - Display an image within a workflow interface.
     """
 
     value: ImageRef = Field(ImageRef(), description="The image to use as input.")
@@ -225,13 +213,14 @@ class ImageInput(InputNode):
 
 class VideoInput(InputNode):
     """
-    Video asset input for workflows.
-    input, parameter, video
+    Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
+    input, parameter, video, movie, clip, visual, asset
 
     Use cases:
-    - Load video files for processing
-    - Analyze video content
-    - Extract frames or audio from videos
+    - Load a video file for processing or content analysis.
+    - Analyze video content for events, objects, or speech.
+    - Extract frames or audio tracks from a video.
+    - Provide video input to models that understand video data.
     """
 
     value: VideoRef = Field(VideoRef(), description="The video to use as input.")
@@ -244,13 +233,14 @@ class VideoInput(InputNode):
 
 class AudioInput(InputNode):
     """
-    Audio asset input for workflows.
-    input, parameter, audio
+    Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
+    input, parameter, audio, sound, voice, speech, asset
 
     Use cases:
-    - Load audio files for processing
-    - Analyze sound or speech content
-    - Provide audio input to models
+    - Load an audio file for speech-to-text transcription.
+    - Analyze sound for specific events or characteristics.
+    - Provide audio input to models for tasks like voice recognition or music generation.
+    - Process audio for enhancement or feature extraction.
     """
 
     value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
@@ -263,13 +253,14 @@ class AudioInput(InputNode):
 
 class PathInput(InputNode):
     """
-    Local path input for workflows.
-    input, parameter, path
+    Accepts a local filesystem path (to a file or directory) as input for workflows.  This input provides a 'FilePath' object. Its usage is typically restricted to non-production environments due to security considerations around direct filesystem access.
+    input, parameter, path, filepath, directory, local_file, filesystem
 
     Use cases:
-    - Provide a local path to a file or directory
-    - Specify a file or directory for processing
-    - Load local data for analysis
+    - Provide a local path to a specific file or directory for processing.
+    - Specify an input or output location on the local filesystem for a development task.
+    - Load local datasets or configuration files not managed as assets.
+    - Not available in production: raises an error if used in a production environment.
     """
 
     value: FilePath = Field(FilePath(), description="The path to use as input.")
@@ -284,14 +275,14 @@ class PathInput(InputNode):
 
 class DocumentFileInput(InputNode):
     """
-    Document file input for workflows.
-    input, parameter, document, text
+    Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.  This node is a utility for loading a document directly from the local filesystem for use in workflows. It outputs both the 'DocumentRef' for the loaded document and the original 'FilePath'.  Note: This input type is generally not available in production environments due to filesystem access restrictions.
+    input, parameter, document, file, path, local_file, load
 
     Use cases:
-    - Load text documents for processing
-    - Analyze document content
-    - Extract text for NLP tasks
-    - Index documents for search
+    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.
+    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.
+    - Useful for development or workflows that have legitimate access to the local filesystem.
+    - To provide an existing 'DocumentRef', use 'DocumentInput'.
     """
 
     value: FilePath = Field(FilePath(), description="The path to the document file.")
@@ -314,60 +305,48 @@ class DocumentFileInput(InputNode):
         }
 
 
-class GroupInput(BaseNode):
+class DataframeInput(InputNode):
     """
-    Generic group input for loops.
-    input, group, collection, loop
+    Accepts a pandas DataFrame as input for workflows.
+    input, parameter, dataframe, table, structured, csv, tabular_data, rows, columns
 
     Use cases:
-    - provides input for a loop
-    - iterates over a group of items
+    - Provide a pandas DataFrame as input to a workflow.
     """
 
-    _value: Any = None
+    value: DataframeRef = Field(
+        DataframeRef(), description="The dataframe to use as input."
+    )
 
-    async def process(self, context: Any) -> Any:
-        return self._value
-
-    @classmethod
-    def is_cacheable(cls):
-        return False
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        return self.value
 
 
-class EnumInput(InputNode):
+class ListInput(InputNode):
     """
-    Enumeration parameter input for workflows.
-    input, parameter, enum, options, select
+    Accepts a list of items as input for workflows.
+    input, parameter, list, array, sequence, collection
 
     Use cases:
-    - Select from predefined options
-    - Enforce choice from valid values
-    - Configure categorical parameters
+    - Provide a list of items to a workflow.
     """
 
-    value: str = ""
-    options: str = Field("", description="Comma-separated list of valid options")
+    value: list[Any] = Field([], description="The list of items to use as input.")
 
-    async def process(self, context: ProcessingContext) -> str:
-        valid_options = [opt.strip() for opt in self.options.split(",") if opt.strip()]
-        if not valid_options:
-            return self.value
-        if self.value not in valid_options:
-            raise ValueError(
-                f"Invalid option: {self.value}, please select from {valid_options}"
-            )
+    async def process(self, context: ProcessingContext) -> list[Any]:
         return self.value
 
 
 class CollectionInput(InputNode):
     """
-    Collection input for workflows.
-    input, parameter, collection, chroma
+    Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
+    The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.
+    Keywords: input, parameter, collection, database, vector_store, chroma, index
 
     Use cases:
-    - Select a vector database collection
-    - Specify target collection for indexing
-    - Choose collection for similarity search
+    - Select a target vector database collection for indexing new documents.
+    - Specify a collection to perform a similarity search or query against.
+    - Choose a data source or destination that is represented as a named collection.
     """
 
     value: Collection = Field(
@@ -378,3 +357,42 @@ class CollectionInput(InputNode):
         if not self.value:
             raise ValueError("Collection input is empty, please select a collection")
         return self.value
+
+
+class TextInput(InputNode):
+    """Accepts a single line of text (``TextRef``) as a parameter for workflows.
+    input, parameter, text, string, line, reference
+
+    This node is a convenience wrapper around ``StringInput`` when the text value
+    should be treated as a standalone asset reference (``TextRef``) rather than
+    a raw ``str``.
+    """
+
+    value: TextRef = Field(TextRef(), description="The text asset to use as input.")
+
+    async def process(self, context: ProcessingContext) -> TextRef:  # type: ignore[override]
+        if self.value.is_empty():
+            raise ValueError("Text input is empty, please provide a text asset")
+        return self.value
+
+
+class GroupInput(InputNode):
+    """A flexible input that can forward any value provided at runtime.
+
+    This node exists mainly for compatibility with older workflows that expect a
+    "group" input placeholder whose value is supplied programmatically (e.g. in
+    tests).  Internally it just returns the value assigned to the private
+    ``_value`` attribute that tests manipulate directly.
+    """
+
+    # Deliberately store the payload outside of Pydantic fields so that tests can
+    # patch it dynamically via ``node._value = ...`` without validation errors.
+    _value: Any = None  # noqa: ANN401 – intentionally accepting Any
+
+    async def process(self, context: ProcessingContext) -> Any:  # type: ignore[override]
+        return self._value
+
+    @classmethod
+    def is_cacheable(cls) -> bool:  # noqa: D401, ANN101 – match test expectations
+        """GroupInput is never cached."""
+        return False

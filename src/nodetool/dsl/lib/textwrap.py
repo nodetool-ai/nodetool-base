@@ -16,7 +16,7 @@ class Dedent(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.textwrap.Dedent"
+        return "lib.textwrap.Dedent"
 
 
 class Fill(GraphNode):
@@ -30,7 +30,7 @@ class Fill(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.textwrap.Fill"
+        return "lib.textwrap.Fill"
 
 
 class Indent(GraphNode):
@@ -46,7 +46,7 @@ class Indent(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.textwrap.Indent"
+        return "lib.textwrap.Indent"
 
 
 class Shorten(GraphNode):
@@ -63,7 +63,7 @@ class Shorten(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.textwrap.Shorten"
+        return "lib.textwrap.Shorten"
 
 
 class Wrap(GraphNode):
@@ -77,4 +77,4 @@ class Wrap(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.textwrap.Wrap"
+        return "lib.textwrap.Wrap"

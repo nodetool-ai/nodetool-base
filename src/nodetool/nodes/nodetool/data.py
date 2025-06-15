@@ -6,7 +6,7 @@ from typing import Any
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DataframeRef, FolderRef
+from nodetool.metadata.types import DataframeRef, FilePath, FolderRef
 
 
 class Filter(BaseNode):
@@ -128,6 +128,21 @@ class ImportCSV(BaseNode):
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
         df = pd.read_csv(StringIO(self.csv_data))
+        return await context.dataframe_from_pandas(df)
+
+
+class LoadCSVFile(BaseNode):
+    """
+    Load CSV file from file path.
+    csv, dataframe, import
+    """
+
+    file_path: FilePath = Field(
+        default=FilePath(), description="The path to the CSV file to load."
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = pd.read_csv(self.file_path.path)
         return await context.dataframe_from_pandas(df)
 
 
@@ -539,3 +554,214 @@ class LoadCSVAssets(BaseNode):
             df = pd.read_csv(bytes_io)
             yield "name", asset.name
             yield "dataframe", await context.dataframe_from_pandas(df)
+
+
+class Aggregate(BaseNode):
+    """
+    Aggregate dataframe by one or more columns.
+    aggregate, groupby, group, sum, mean, count, min, max, std, var, median, first, last
+
+    Use cases:
+    - Prepare data for aggregation operations
+    - Analyze data by categories
+    - Create summary statistics by groups
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The DataFrame to group."
+    )
+    columns: str = Field(
+        default="",
+        description="Comma-separated column names to group by.",
+    )
+    aggregation: str = Field(
+        default="sum",
+        description="Aggregation function: sum, mean, count, min, max, std, var, median, first, last",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.dataframe)
+        group_columns = [col.strip() for col in self.columns.split(",")]
+
+        # Apply aggregation
+        if self.aggregation == "sum":
+            result = df.groupby(group_columns).sum()
+        elif self.aggregation == "mean":
+            result = df.groupby(group_columns).mean()
+        elif self.aggregation == "count":
+            result = df.groupby(group_columns).count()
+        elif self.aggregation == "min":
+            result = df.groupby(group_columns).min()
+        elif self.aggregation == "max":
+            result = df.groupby(group_columns).max()
+        elif self.aggregation == "std":
+            result = df.groupby(group_columns).std()
+        elif self.aggregation == "var":
+            result = df.groupby(group_columns).var()
+        elif self.aggregation == "median":
+            result = df.groupby(group_columns).median()
+        elif self.aggregation == "first":
+            result = df.groupby(group_columns).first()
+        elif self.aggregation == "last":
+            result = df.groupby(group_columns).last()
+        else:
+            raise ValueError(f"Unknown aggregation function: {self.aggregation}")
+
+        # Reset index to convert group columns back to regular columns
+        result = result.reset_index()
+        return await context.dataframe_from_pandas(result)
+
+
+class Pivot(BaseNode):
+    """
+    Pivot dataframe to reshape data.
+    pivot, reshape, transform
+
+    Use cases:
+    - Transform long data to wide format
+    - Create cross-tabulation tables
+    - Reorganize data for visualization
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The DataFrame to pivot."
+    )
+    index: str = Field(
+        default="",
+        description="Column name to use as index (rows).",
+    )
+    columns: str = Field(
+        default="",
+        description="Column name to use as columns.",
+    )
+    values: str = Field(
+        default="",
+        description="Column name to use as values.",
+    )
+    aggfunc: str = Field(
+        default="sum",
+        description="Aggregation function: sum, mean, count, min, max, first, last",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.dataframe)
+
+        # Map string aggfunc to pandas function
+        agg_map = {
+            "sum": "sum",
+            "mean": "mean",
+            "count": "count",
+            "min": "min",
+            "max": "max",
+            "first": "first",
+            "last": "last",
+        }
+
+        if self.aggfunc not in agg_map:
+            raise ValueError(f"Unknown aggregation function: {self.aggfunc}")
+
+        result = df.pivot_table(
+            index=self.index,
+            columns=self.columns,
+            values=self.values,
+            aggfunc=agg_map[self.aggfunc],
+        )
+
+        # Flatten column names if multi-level
+        if isinstance(result.columns, pd.MultiIndex):
+            result.columns = [
+                "_".join(map(str, col)).strip() for col in result.columns.values
+            ]
+
+        result = result.reset_index()
+        return await context.dataframe_from_pandas(result)
+
+
+class Rename(BaseNode):
+    """
+    Rename columns in dataframe.
+    rename, columns, names
+
+    Use cases:
+    - Standardize column names
+    - Make column names more descriptive
+    - Prepare data for specific requirements
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The DataFrame to rename columns."
+    )
+    rename_map: str = Field(
+        default="",
+        description="Column rename mapping in format: old1:new1,old2:new2",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.dataframe)
+
+        # Parse rename mapping
+        rename_dict = {}
+        for mapping in self.rename_map.split(","):
+            if ":" in mapping:
+                old_name, new_name = mapping.strip().split(":", 1)
+                rename_dict[old_name.strip()] = new_name.strip()
+
+        if rename_dict:
+            df = df.rename(columns=rename_dict)
+
+        return await context.dataframe_from_pandas(df)
+
+
+class FillNA(BaseNode):
+    """
+    Fill missing values in dataframe.
+    fillna, missing, impute
+
+    Use cases:
+    - Handle missing data
+    - Prepare data for analysis
+    - Improve data quality
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The DataFrame with missing values."
+    )
+    value: Any = Field(
+        default=0,
+        description="Value to use for filling missing values.",
+    )
+    method: str = Field(
+        default="value",
+        description="Method for filling: value, forward, backward, mean, median",
+    )
+    columns: str = Field(
+        default="",
+        description="Comma-separated column names to fill. Leave empty for all columns.",
+    )
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        df = await context.dataframe_to_pandas(self.dataframe)
+
+        if self.columns:
+            cols = [col.strip() for col in self.columns.split(",")]
+        else:
+            cols = df.columns.tolist()
+
+        if self.method == "value":
+            df[cols] = df[cols].fillna(self.value)
+        elif self.method == "forward":
+            df[cols] = df[cols].fillna(method="ffill")  # type: ignore
+        elif self.method == "backward":
+            df[cols] = df[cols].fillna(method="bfill")  # type: ignore
+        elif self.method == "mean":
+            for col in cols:
+                if df[col].dtype in ["float64", "int64"]:
+                    df[col] = df[col].fillna(df[col].mean())
+        elif self.method == "median":
+            for col in cols:
+                if df[col].dtype in ["float64", "int64"]:
+                    df[col] = df[col].fillna(df[col].median())
+        else:
+            raise ValueError(f"Unknown fill method: {self.method}")
+
+        return await context.dataframe_from_pandas(df)

@@ -1,4 +1,8 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
@@ -17,7 +21,7 @@ class Add(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Add"
+        return "lib.math.Add"
 
 
 class BinaryOperation(GraphNode):
@@ -32,7 +36,7 @@ class BinaryOperation(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.BinaryOperation"
+        return "lib.math.BinaryOperation"
 
 
 class Cosine(GraphNode):
@@ -52,7 +56,7 @@ class Cosine(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Cosine"
+        return "lib.math.Cosine"
 
 
 class Divide(GraphNode):
@@ -70,7 +74,7 @@ class Divide(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Divide"
+        return "lib.math.Divide"
 
 
 class Modulus(GraphNode):
@@ -93,7 +97,7 @@ class Modulus(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Modulus"
+        return "lib.math.Modulus"
 
 
 class Multiply(GraphNode):
@@ -111,7 +115,7 @@ class Multiply(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Multiply"
+        return "lib.math.Multiply"
 
 
 class Power(GraphNode):
@@ -134,7 +138,7 @@ class Power(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Power"
+        return "lib.math.Power"
 
 
 class Sine(GraphNode):
@@ -154,7 +158,7 @@ class Sine(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Sine"
+        return "lib.math.Sine"
 
 
 class Sqrt(GraphNode):
@@ -174,7 +178,7 @@ class Sqrt(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Sqrt"
+        return "lib.math.Sqrt"
 
 
 class Subtract(GraphNode):
@@ -192,4 +196,4 @@ class Subtract(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.math.Subtract"
+        return "lib.math.Subtract"

@@ -29,7 +29,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "nodetool.os.ListFiles",
+        "type": "lib.os.ListFiles",
         "data": {
           "directory": {
             "type": "file_path",
@@ -83,7 +83,7 @@
       {
         "id": "17",
         "parent_id": "3",
-        "type": "nodetool.os.LoadDocumentFile",
+        "type": "lib.os.LoadDocumentFile",
         "data": {},
         "ui_properties": {
           "position": {
@@ -148,7 +148,7 @@
       {
         "id": "22",
         "parent_id": "3",
-        "type": "nodetool.os.PathToString",
+        "type": "lib.os.PathToString",
         "data": {},
         "ui_properties": {
           "position": {

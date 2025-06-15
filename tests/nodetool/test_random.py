@@ -1,6 +1,6 @@
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.random import (
+from nodetool.nodes.lib.random import (
     RandomInt,
     RandomFloat,
     RandomChoice,

@@ -1,4 +1,7 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -430,34 +433,6 @@ class StereoToMono(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.audio.StereoToMono"
-
-
-class Tone(GraphNode):
-    """
-    Generates a constant tone signal.
-    audio, generate, sound
-
-    Use cases:
-    - Create test tones for audio equipment calibration
-    - Produce reference pitches for musical applications
-    """
-
-    frequency: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=440.0, description="Frequency of the tone in Hertz."
-    )
-    sampling_rate: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=44100, description="Sampling rate."
-    )
-    duration: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=1.0, description="Duration of the tone in seconds."
-    )
-    phi: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0.0, description="Initial phase of the waveform in radians."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.audio.Tone"
 
 
 class Trim(GraphNode):

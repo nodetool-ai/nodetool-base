@@ -1,4 +1,8 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
@@ -17,7 +21,7 @@ class Decode(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.base64.Decode"
+        return "lib.base64.Decode"
 
 
 class Encode(GraphNode):
@@ -35,4 +39,4 @@ class Encode(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.base64.Encode"
+        return "lib.base64.Encode"

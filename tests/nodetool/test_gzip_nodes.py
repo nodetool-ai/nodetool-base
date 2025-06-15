@@ -1,7 +1,7 @@
 import gzip
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.compression import GzipCompress, GzipDecompress
+from nodetool.nodes.lib.gzip import GzipCompress, GzipDecompress
 
 
 @pytest.fixture

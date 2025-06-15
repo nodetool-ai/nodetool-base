@@ -47,6 +47,21 @@ class GenerateSequence(BaseNode):
         return list(range(self.start, self.stop, self.step))
 
 
+class SequenceIterator(BaseNode):
+    """
+    Iterates over a sequence of numbers.
+    list, range, sequence, numbers
+    """
+
+    start: int = 0
+    stop: int = 0
+    step: int = 1
+
+    async def process(self, context: ProcessingContext):
+        for i in range(self.start, self.stop, self.step):
+            yield i
+
+
 class Slice(BaseNode):
     """
     Extracts a subset from a list using start, stop, and step indices.

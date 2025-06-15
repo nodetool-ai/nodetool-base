@@ -18,11 +18,13 @@ class EncodeQueryParams(GraphNode):
     - Convert parameters to query strings
     """
 
-    params: dict[str, str] | GraphNode | tuple[GraphNode, str] = Field(default=PydanticUndefined, description='Parameters to encode')
+    params: dict[str, str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=PydanticUndefined, description="Parameters to encode"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.urllib.EncodeQueryParams"
-
+    def get_node_type(cls):
+        return "lib.urllib.EncodeQueryParams"
 
 
 class JoinURL(GraphNode):
@@ -36,12 +38,16 @@ class JoinURL(GraphNode):
     - Resolve resources from a base URL
     """
 
-    base: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Base URL')
-    url: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Relative or absolute URL')
+    base: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Base URL"
+    )
+    url: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Relative or absolute URL"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.urllib.JoinURL"
-
+    def get_node_type(cls):
+        return "lib.urllib.JoinURL"
 
 
 class ParseURL(GraphNode):
@@ -55,11 +61,13 @@ class ParseURL(GraphNode):
     - Analyze query parameters
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='URL to parse')
+    url: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="URL to parse"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.urllib.ParseURL"
-
+    def get_node_type(cls):
+        return "lib.urllib.ParseURL"
 
 
 class QuoteURL(GraphNode):
@@ -73,11 +81,13 @@ class QuoteURL(GraphNode):
     - Encode file names in URLs
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Text to quote')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text to quote"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.urllib.QuoteURL"
-
+    def get_node_type(cls):
+        return "lib.urllib.QuoteURL"
 
 
 class UnquoteURL(GraphNode):
@@ -91,9 +101,10 @@ class UnquoteURL(GraphNode):
     - Display unescaped paths
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Encoded text')
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Encoded text"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.urllib.UnquoteURL"
-
-
+    def get_node_type(cls):
+        return "lib.urllib.UnquoteURL"

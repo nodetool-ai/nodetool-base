@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.browser
 
 
 class Browser(GraphNode):
@@ -31,7 +31,11 @@ class Browser(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.browser.Browser"
+        return "lib.browser.Browser"
+
+
+import nodetool.nodes.lib.browser
+import nodetool.nodes.lib.browser
 
 
 class BrowserNavigation(GraphNode):
@@ -45,17 +49,15 @@ class BrowserNavigation(GraphNode):
     - Extract content after interaction
     """
 
-    Action: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.browser.BrowserNavigation.Action
-    )
+    Action: typing.ClassVar[type] = nodetool.nodes.lib.browser.BrowserNavigation.Action
     ExtractType: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.browser.BrowserNavigation.ExtractType
+        nodetool.nodes.lib.browser.BrowserNavigation.ExtractType
     )
     url: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="URL to navigate to (required for 'goto' action)"
     )
-    action: nodetool.nodes.nodetool.browser.BrowserNavigation.Action = Field(
-        default=nodetool.nodes.nodetool.browser.BrowserNavigation.Action.GOTO,
+    action: nodetool.nodes.lib.browser.BrowserNavigation.Action = Field(
+        default=nodetool.nodes.lib.browser.BrowserNavigation.Action.GOTO,
         description="Navigation or extraction action to perform",
     )
     selector: str | GraphNode | tuple[GraphNode, str] = Field(
@@ -69,8 +71,8 @@ class BrowserNavigation(GraphNode):
         default="",
         description="Optional selector to wait for after performing the action",
     )
-    extract_type: nodetool.nodes.nodetool.browser.BrowserNavigation.ExtractType = Field(
-        default=nodetool.nodes.nodetool.browser.BrowserNavigation.ExtractType.TEXT,
+    extract_type: nodetool.nodes.lib.browser.BrowserNavigation.ExtractType = Field(
+        default=nodetool.nodes.lib.browser.BrowserNavigation.ExtractType.TEXT,
         description="Type of content to extract (for 'extract' action)",
     )
     attribute: str | GraphNode | tuple[GraphNode, str] = Field(
@@ -80,7 +82,10 @@ class BrowserNavigation(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.browser.BrowserNavigation"
+        return "lib.browser.BrowserNavigation"
+
+
+import nodetool.nodes.lib.browser
 
 
 class BrowserUseNode(GraphNode):
@@ -98,11 +103,9 @@ class BrowserUseNode(GraphNode):
     - Automate multi-step web workflows.
     """
 
-    BrowserUseModel: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.browser.BrowserUseModel
-    )
-    model: nodetool.nodes.nodetool.browser.BrowserUseModel = Field(
-        default=nodetool.nodes.nodetool.browser.BrowserUseModel.GPT_4O,
+    BrowserUseModel: typing.ClassVar[type] = nodetool.nodes.lib.browser.BrowserUseModel
+    model: nodetool.nodes.lib.browser.BrowserUseModel = Field(
+        default=nodetool.nodes.lib.browser.BrowserUseModel.GPT_4O,
         description="The model to use for the browser agent.",
     )
     task: str | GraphNode | tuple[GraphNode, str] = Field(
@@ -119,7 +122,7 @@ class BrowserUseNode(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.browser.BrowserUse"
+        return "lib.browser.BrowserUse"
 
 
 class DownloadFile(GraphNode):
@@ -139,7 +142,7 @@ class DownloadFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.browser.DownloadFile"
+        return "lib.browser.DownloadFile"
 
 
 class Screenshot(GraphNode):
@@ -169,7 +172,7 @@ class Screenshot(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.browser.Screenshot"
+        return "lib.browser.Screenshot"
 
 
 class WebFetch(GraphNode):
@@ -192,4 +195,4 @@ class WebFetch(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.browser.WebFetch"
+        return "lib.browser.WebFetch"

@@ -1,4 +1,7 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -20,7 +23,7 @@ class AbsolutePath(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.AbsolutePath"
+        return "lib.os.AbsolutePath"
 
 
 class AccessedTime(GraphNode):
@@ -35,7 +38,7 @@ class AccessedTime(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.AccessedTime"
+        return "lib.os.AccessedTime"
 
 
 class Basename(GraphNode):
@@ -58,7 +61,7 @@ class Basename(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.Basename"
+        return "lib.os.Basename"
 
 
 class CopyFile(GraphNode):
@@ -83,7 +86,7 @@ class CopyFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.CopyFile"
+        return "lib.os.CopyFile"
 
 
 class CreateDirectory(GraphNode):
@@ -106,7 +109,35 @@ class CreateDirectory(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.CreateDirectory"
+        return "lib.os.CreateDirectory"
+
+
+class CreateTarFile(GraphNode):
+    """
+    Create a tar archive from a directory.
+    files, tar, create
+
+    Use cases:
+    - Package multiple files into a single archive
+    - Backup directories
+    - Prepare archives for distribution
+    """
+
+    source_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Folder to archive",
+    )
+    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Output tar file path",
+    )
+    gzip: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Use gzip compression"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "lib.os.CreateTarFile"
 
 
 class CreatedTime(GraphNode):
@@ -121,7 +152,7 @@ class CreatedTime(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.CreatedTime"
+        return "lib.os.CreatedTime"
 
 
 class Dirname(GraphNode):
@@ -141,7 +172,32 @@ class Dirname(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.Dirname"
+        return "lib.os.Dirname"
+
+
+class ExtractTarFile(GraphNode):
+    """
+    Extract a tar archive to a folder.
+    files, tar, extract
+
+    Use cases:
+    - Unpack archived data
+    - Restore backups
+    - Retrieve files for processing
+    """
+
+    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Tar archive to extract",
+    )
+    output_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Folder to extract into",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "lib.os.ExtractTarFile"
 
 
 class FileExists(GraphNode):
@@ -161,7 +217,7 @@ class FileExists(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.FileExists"
+        return "lib.os.FileExists"
 
 
 class FileExtension(GraphNode):
@@ -176,7 +232,7 @@ class FileExtension(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.FileExtension"
+        return "lib.os.FileExtension"
 
 
 class FileName(GraphNode):
@@ -191,7 +247,7 @@ class FileName(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.FileName"
+        return "lib.os.FileName"
 
 
 class FileNameMatch(GraphNode):
@@ -218,7 +274,7 @@ class FileNameMatch(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.FileNameMatch"
+        return "lib.os.FileNameMatch"
 
 
 class FilterFileNames(GraphNode):
@@ -245,7 +301,7 @@ class FilterFileNames(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.FilterFileNames"
+        return "lib.os.FilterFileNames"
 
 
 class GetDirectory(GraphNode):
@@ -260,7 +316,7 @@ class GetDirectory(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.GetDirectory"
+        return "lib.os.GetDirectory"
 
 
 class GetEnvironmentVariable(GraphNode):
@@ -282,7 +338,7 @@ class GetEnvironmentVariable(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.GetEnvironmentVariable"
+        return "lib.os.GetEnvironmentVariable"
 
 
 class GetFileSize(GraphNode):
@@ -297,7 +353,7 @@ class GetFileSize(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.GetFileSize"
+        return "lib.os.GetFileSize"
 
 
 class GetPathInfo(GraphNode):
@@ -316,7 +372,7 @@ class GetPathInfo(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.GetPathInfo"
+        return "lib.os.GetPathInfo"
 
 
 class GetSystemInfo(GraphNode):
@@ -331,7 +387,7 @@ class GetSystemInfo(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.GetSystemInfo"
+        return "lib.os.GetSystemInfo"
 
 
 class IsDirectory(GraphNode):
@@ -346,7 +402,7 @@ class IsDirectory(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.IsDirectory"
+        return "lib.os.IsDirectory"
 
 
 class IsFile(GraphNode):
@@ -361,7 +417,7 @@ class IsFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.IsFile"
+        return "lib.os.IsFile"
 
 
 class JoinPaths(GraphNode):
@@ -380,7 +436,7 @@ class JoinPaths(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.JoinPaths"
+        return "lib.os.JoinPaths"
 
 
 class ListFiles(GraphNode):
@@ -406,7 +462,28 @@ class ListFiles(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.ListFiles"
+        return "lib.os.ListFiles"
+
+
+class ListTarFile(GraphNode):
+    """
+    List contents of a tar archive.
+    files, tar, list
+
+    Use cases:
+    - Inspect archives without extracting
+    - Preview tar contents
+    - Verify archive contents
+    """
+
+    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Tar archive to inspect",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "lib.os.ListTarFile"
 
 
 class LoadAudioFile(GraphNode):
@@ -427,7 +504,7 @@ class LoadAudioFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.LoadAudioFile"
+        return "lib.os.LoadAudioFile"
 
 
 class LoadBytesFile(GraphNode):
@@ -447,7 +524,7 @@ class LoadBytesFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.LoadBytesFile"
+        return "lib.os.LoadBytesFile"
 
 
 class LoadCSVFile(GraphNode):
@@ -463,7 +540,7 @@ class LoadCSVFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.LoadCSVFile"
+        return "lib.os.LoadCSVFile"
 
 
 class LoadDocumentFile(GraphNode):
@@ -479,7 +556,7 @@ class LoadDocumentFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.LoadDocumentFile"
+        return "lib.os.LoadDocumentFile"
 
 
 class LoadImageFile(GraphNode):
@@ -500,7 +577,7 @@ class LoadImageFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.LoadImageFile"
+        return "lib.os.LoadImageFile"
 
 
 class LoadVideoFile(GraphNode):
@@ -520,7 +597,7 @@ class LoadVideoFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.LoadVideoFile"
+        return "lib.os.LoadVideoFile"
 
 
 class ModifiedTime(GraphNode):
@@ -535,7 +612,7 @@ class ModifiedTime(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.ModifiedTime"
+        return "lib.os.ModifiedTime"
 
 
 class MoveFile(GraphNode):
@@ -560,7 +637,7 @@ class MoveFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.MoveFile"
+        return "lib.os.MoveFile"
 
 
 class NormalizePath(GraphNode):
@@ -579,7 +656,7 @@ class NormalizePath(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.NormalizePath"
+        return "lib.os.NormalizePath"
 
 
 class PathToString(GraphNode):
@@ -600,7 +677,7 @@ class PathToString(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.PathToString"
+        return "lib.os.PathToString"
 
 
 class RelativePath(GraphNode):
@@ -623,7 +700,7 @@ class RelativePath(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.RelativePath"
+        return "lib.os.RelativePath"
 
 
 class SaveAudioFile(GraphNode):
@@ -651,7 +728,7 @@ class SaveAudioFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveAudioFile"
+        return "lib.os.SaveAudioFile"
 
 
 class SaveBytesFile(GraphNode):
@@ -678,7 +755,7 @@ class SaveBytesFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveBytesFile"
+        return "lib.os.SaveBytesFile"
 
 
 class SaveCSVDataframeFile(GraphNode):
@@ -708,7 +785,7 @@ class SaveCSVDataframeFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveCSVDataframeFile"
+        return "lib.os.SaveCSVDataframeFile"
 
 
 class SaveCSVFile(GraphNode):
@@ -735,7 +812,7 @@ class SaveCSVFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveCSVFile"
+        return "lib.os.SaveCSVFile"
 
 
 class SaveDocumentFile(GraphNode):
@@ -763,7 +840,7 @@ class SaveDocumentFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveDocumentFile"
+        return "lib.os.SaveDocumentFile"
 
 
 class SaveImageFile(GraphNode):
@@ -792,7 +869,7 @@ class SaveImageFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveImageFile"
+        return "lib.os.SaveImageFile"
 
 
 class SaveVideoFile(GraphNode):
@@ -822,7 +899,7 @@ class SaveVideoFile(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SaveVideoFile"
+        return "lib.os.SaveVideoFile"
 
 
 class SetEnvironmentVariable(GraphNode):
@@ -844,7 +921,7 @@ class SetEnvironmentVariable(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SetEnvironmentVariable"
+        return "lib.os.SetEnvironmentVariable"
 
 
 class ShowNotification(GraphNode):
@@ -871,7 +948,7 @@ class ShowNotification(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.ShowNotification"
+        return "lib.os.ShowNotification"
 
 
 class SplitExtension(GraphNode):
@@ -891,7 +968,7 @@ class SplitExtension(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SplitExtension"
+        return "lib.os.SplitExtension"
 
 
 class SplitPath(GraphNode):
@@ -911,78 +988,4 @@ class SplitPath(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.os.SplitPath"
-
-
-class CreateTarFile(GraphNode):
-    """
-    Create a tar archive from a directory.
-    files, tar, create
-
-    Use cases:
-    - Package multiple files into a single archive
-    - Backup directories
-    - Prepare archives for distribution
-    """
-
-    source_folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder to archive",
-    )
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Output tar file path",
-    )
-    gzip: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description="Use gzip compression"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.os.CreateTarFile"
-
-
-class ExtractTarFile(GraphNode):
-    """
-    Extract a tar archive to a folder.
-    files, tar, extract
-
-    Use cases:
-    - Unpack archived data
-    - Restore backups
-    - Retrieve files for processing
-    """
-
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Tar archive to extract",
-    )
-    output_folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder to extract into",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.os.ExtractTarFile"
-
-
-class ListTarFile(GraphNode):
-    """
-    List contents of a tar archive.
-    files, tar, list
-
-    Use cases:
-    - Inspect archives without extracting
-    - Preview tar contents
-    - Verify archive contents
-    """
-
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Tar archive to inspect",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.os.ListTarFile"
+        return "lib.os.SplitPath"

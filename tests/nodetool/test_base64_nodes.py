@@ -1,6 +1,6 @@
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.base64 import Encode, Decode
+from nodetool.nodes.lib.base64 import Encode, Decode
 
 
 @pytest.fixture

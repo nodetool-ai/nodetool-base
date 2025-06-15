@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.video
 
 
 class AddAudio(GraphNode):
@@ -39,6 +39,9 @@ class AddAudio(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.AddAudio"
+
+
+import nodetool.nodes.nodetool.video
 
 
 class AddSubtitles(GraphNode):
@@ -609,6 +612,9 @@ class Stabilize(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Stabilize"
+
+
+import nodetool.nodes.nodetool.video
 
 
 class Transition(GraphNode):

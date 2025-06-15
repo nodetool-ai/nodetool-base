@@ -1,4 +1,5 @@
 from typing import Any
+import inspect
 
 from pydantic import Field
 from nodetool.metadata.types import DocumentRef
@@ -29,25 +30,6 @@ class ListOutput(OutputNode):
     value: list[Any] = []
 
     async def process(self, context: ProcessingContext) -> list[Any]:
-        return self.value
-
-
-class ImageListOutput(OutputNode):
-    """
-    Output node for a list of image references.
-    images, list, gallery
-
-    Use cases:
-    - Displaying multiple images in a grid
-    - Returning image search results
-    """
-
-    value: list[ImageRef] = Field(
-        default=[],
-        description="The images to display.",
-    )
-
-    async def process(self, context: ProcessingContext) -> list[ImageRef]:
         return self.value
 
 
@@ -88,7 +70,7 @@ class FloatOutput(OutputNode):
 class BooleanOutput(OutputNode):
     """
     Output node for a single boolean value.
-    boolean, true, false, flag, condition, flow-control, branch, else, true, false, switch, toggle
+    boolean, true, false, flag, condition, flow-control, branch, else, switch, toggle
 
     Use cases:
     - Returning binary results (yes/no, true/false)
@@ -104,13 +86,14 @@ class BooleanOutput(OutputNode):
 
 class StringOutput(OutputNode):
     """
-    Output node for a single string value.
-    string, text, output
+    Output node for a string value.
+    string, text, output, label, name
 
     Use cases:
-    - Returning text results or messages
-    - Passing string parameters between nodes
-    - Displaying short text outputs
+    - Returning short text results or messages.
+    - Passing concise string parameters or identifiers between nodes.
+    - Displaying brief textual outputs.
+    - For multi-line text or structured document content, use appropriate output nodes if available or consider how data is structured.
     """
 
     value: str = ""
@@ -119,32 +102,15 @@ class StringOutput(OutputNode):
         return self.value
 
 
-class TextOutput(OutputNode):
-    """
-    Output node for structured text content.
-    text, content, document
-
-    Use cases:
-    - Returning longer text content or documents
-    - Passing formatted text between processing steps
-    - Displaying rich text output
-    """
-
-    value: TextRef = TextRef()
-
-    async def process(self, context: ProcessingContext) -> TextRef:
-        return self.value
-
-
 class ImageOutput(OutputNode):
     """
-    Output node for a single image reference.
-    image, picture, visual
+    Output node for a single image reference ('ImageRef').
+    image, picture, visual, asset, reference
 
     Use cases:
-    - Displaying a single processed or generated image
-    - Passing image data between workflow nodes
-    - Returning image analysis results
+    - Displaying a single processed or generated image.
+    - Passing image data (as an 'ImageRef') between workflow nodes.
+    - Returning image analysis results encapsulated in an 'ImageRef'.
     """
 
     value: ImageRef = ImageRef()
@@ -155,13 +121,13 @@ class ImageOutput(OutputNode):
 
 class VideoOutput(OutputNode):
     """
-    Output node for video content references.
-    video, media, clip
+    Output node for video content references ('VideoRef').
+    video, media, clip, asset, reference
 
     Use cases:
-    - Displaying processed or generated video content
-    - Passing video data between workflow steps
-    - Returning results of video analysis
+    - Displaying processed or generated video content.
+    - Passing video data (as a 'VideoRef') between workflow steps.
+    - Returning results of video analysis encapsulated in a 'VideoRef'.
     """
 
     value: VideoRef = VideoRef()
@@ -172,12 +138,13 @@ class VideoOutput(OutputNode):
 
 class ArrayOutput(OutputNode):
     """
-    Output node for generic array data.
-    array, numerical
+    Output node for generic array data, typically numerical ('NPArray').
+    array, numerical, list, tensor, vector, matrix
 
     Use cases:
-    - Outputting results from machine learning models
-    - Representing complex numerical data structures
+    - Outputting results from machine learning models (e.g., embeddings, predictions).
+    - Representing complex numerical data structures.
+    - Passing arrays of numbers between processing steps.
     """
 
     value: NPArray = NPArray()
@@ -186,32 +153,15 @@ class ArrayOutput(OutputNode):
         return self.value
 
 
-class ModelOutput(OutputNode):
-    """
-    Output node for machine learning model references.
-    model, ml, ai
-
-    Use cases:
-    - Passing trained models between workflow steps
-    - Outputting newly created or fine-tuned models
-    - Referencing models for later use in the workflow
-    """
-
-    value: ModelRef = ModelRef()
-
-    async def process(self, context: ProcessingContext) -> ModelRef:
-        return self.value
-
-
 class AudioOutput(OutputNode):
     """
-    Output node for audio content references.
-    audio, sound, media
+    Output node for audio content references ('AudioRef').
+    audio, sound, media, voice, speech, asset, reference
 
     Use cases:
-    - Displaying processed or generated audio
-    - Passing audio data between workflow nodes
-    - Returning results of audio analysis
+    - Displaying or returning processed or generated audio.
+    - Passing audio data (as an 'AudioRef') between workflow nodes.
+    - Returning results of audio analysis (e.g., transcription reference, audio features).
     """
 
     value: AudioRef = AudioRef()
@@ -222,13 +172,13 @@ class AudioOutput(OutputNode):
 
 class DataframeOutput(OutputNode):
     """
-    Output node for structured data references.
-    dataframe, table, structured
+    Output node for structured data references, typically tabular ('DataframeRef').
+    dataframe, table, structured, csv, tabular_data, rows, columns
 
     Use cases:
-    - Outputting tabular data results
-    - Passing structured data between analysis steps
-    - Displaying data in table format
+    - Outputting tabular data results from analysis or queries.
+    - Passing structured datasets between processing or analysis steps.
+    - Displaying data in a table format or making it available for download.
     """
 
     value: DataframeRef = DataframeRef()
@@ -239,13 +189,13 @@ class DataframeOutput(OutputNode):
 
 class DictionaryOutput(OutputNode):
     """
-    Output node for key-value pair data.
-    dictionary, key-value, mapping
+    Output node for key-value pair data (dictionary).
+    dictionary, key-value, mapping, object, json_object, struct
 
     Use cases:
-    - Returning multiple named values
-    - Passing complex data structures between nodes
-    - Organizing heterogeneous output data
+    - Returning multiple named values as a single structured output.
+    - Passing complex data structures or configurations between nodes.
+    - Organizing heterogeneous output data into a named map.
     """
 
     value: dict[str, Any] = {}
@@ -254,37 +204,15 @@ class DictionaryOutput(OutputNode):
         return self.value
 
 
-class GroupOutput(BaseNode):
-    """
-    Generic output node for grouped data from any node.
-    group, composite, multi-output
-
-    Use cases:
-    - Aggregating multiple outputs from a single node
-    - Passing varied data types as a single unit
-    - Organizing related outputs in workflows
-    """
-
-    input: Any = None
-    _value: Any = None
-
-    async def process(self, context: Any) -> list[Any]:
-        return self._value
-
-    @classmethod
-    def is_cacheable(cls):
-        return False
-
-
 class DocumentOutput(OutputNode):
     """
-    Output node for document content references.
-    document, pdf, file
+    Output node for document content references ('DocumentRef').
+    document, file, pdf, text_file, asset, reference
 
     Use cases:
-    - Displaying processed or generated documents
-    - Passing document data between workflow nodes
-    - Returning results of document analysis
+    - Displaying or returning processed or generated documents.
+    - Passing document data (as a 'DocumentRef') between workflow nodes.
+    - Returning results of document analysis or manipulation.
     """
 
     value: DocumentRef = DocumentRef()

@@ -1,5 +1,7 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
 from typing import Any
+import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
@@ -33,6 +35,36 @@ class AddColumn(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.AddColumn"
+
+
+class Aggregate(GraphNode):
+    """
+    Aggregate dataframe by one or more columns.
+    aggregate, groupby, group, sum, mean, count, min, max, std, var, median, first, last
+
+    Use cases:
+    - Prepare data for aggregation operations
+    - Analyze data by categories
+    - Create summary statistics by groups
+    """
+
+    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="The DataFrame to group.",
+    )
+    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Comma-separated column names to group by."
+    )
+    aggregation: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="sum",
+        description="Aggregation function: sum, mean, count, min, max, std, var, median, first, last",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.Aggregate"
 
 
 class Append(GraphNode):
@@ -134,6 +166,40 @@ class ExtractColumn(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.ExtractColumn"
+
+
+class FillNA(GraphNode):
+    """
+    Fill missing values in dataframe.
+    fillna, missing, impute
+
+    Use cases:
+    - Handle missing data
+    - Prepare data for analysis
+    - Improve data quality
+    """
+
+    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="The DataFrame with missing values.",
+    )
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=0, description="Value to use for filling missing values."
+    )
+    method: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="value",
+        description="Method for filling: value, forward, backward, mean, median",
+    )
+    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Comma-separated column names to fill. Leave empty for all columns.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.FillNA"
 
 
 class Filter(GraphNode):
@@ -317,6 +383,22 @@ class LoadCSVAssets(GraphNode):
         return "nodetool.data.LoadCSVAssets"
 
 
+class LoadCSVFile(GraphNode):
+    """
+    Load CSV file from file path.
+    csv, dataframe, import
+    """
+
+    file_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="The path to the CSV file to load.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.LoadCSVFile"
+
+
 class Merge(GraphNode):
     """
     Merge two dataframes along columns.
@@ -344,6 +426,68 @@ class Merge(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Merge"
+
+
+class Pivot(GraphNode):
+    """
+    Pivot dataframe to reshape data.
+    pivot, reshape, transform
+
+    Use cases:
+    - Transform long data to wide format
+    - Create cross-tabulation tables
+    - Reorganize data for visualization
+    """
+
+    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="The DataFrame to pivot.",
+    )
+    index: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Column name to use as index (rows)."
+    )
+    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Column name to use as columns."
+    )
+    values: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Column name to use as values."
+    )
+    aggfunc: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="sum",
+        description="Aggregation function: sum, mean, count, min, max, first, last",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.Pivot"
+
+
+class Rename(GraphNode):
+    """
+    Rename columns in dataframe.
+    rename, columns, names
+
+    Use cases:
+    - Standardize column names
+    - Make column names more descriptive
+    - Prepare data for specific requirements
+    """
+
+    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="The DataFrame to rename columns.",
+    )
+    rename_map: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Column rename mapping in format: old1:new1,old2:new2"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.Rename"
 
 
 class RowIterator(GraphNode):

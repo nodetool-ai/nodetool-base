@@ -1,6 +1,6 @@
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.secret import SetSecret, GetSecret
+from nodetool.nodes.lib.secret import SetSecret, GetSecret
 
 
 @pytest.fixture

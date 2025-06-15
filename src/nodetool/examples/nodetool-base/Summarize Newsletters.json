@@ -78,7 +78,7 @@
       {
         "id": "20",
         "parent_id": null,
-        "type": "nodetool.mail.GmailSearch",
+        "type": "lib.mail.GmailSearch",
         "data": {
           "email_address": "matti.georgi@gmail.com",
           "search_query": "",
@@ -97,7 +97,7 @@
       {
         "id": "22",
         "parent_id": "12",
-        "type": "nodetool.mail.EmailFields",
+        "type": "lib.mail.EmailFields",
         "data": {},
         "ui_properties": {
           "position": {

@@ -1,4 +1,8 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
@@ -14,8 +18,7 @@ class Escape(GraphNode):
     """
 
     text: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="The text to escape",
+        default="", description="The text to escape"
     )
 
     @classmethod
@@ -35,8 +38,7 @@ class Unescape(GraphNode):
     """
 
     text: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="The HTML text to unescape",
+        default="", description="The HTML text to unescape"
     )
 
     @classmethod

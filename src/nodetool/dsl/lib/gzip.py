@@ -17,11 +17,13 @@ class GzipCompress(GraphNode):
     - Prepare data for network transfer
     """
 
-    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Data to compress')
+    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Data to compress"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.compression.GzipCompress"
-
+    def get_node_type(cls):
+        return "lib.gzip.GzipCompress"
 
 
 class GzipDecompress(GraphNode):
@@ -35,9 +37,10 @@ class GzipDecompress(GraphNode):
     - Process network payloads
     """
 
-    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(default=None, description='Gzip data to decompress')
+    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Gzip data to decompress"
+    )
 
     @classmethod
-    def get_node_type(cls): return "nodetool.compression.GzipDecompress"
-
-
+    def get_node_type(cls):
+        return "lib.gzip.GzipDecompress"

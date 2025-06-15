@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.text
 
 
 class Chunk(GraphNode):
@@ -74,6 +74,9 @@ class Contains(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Contains"
+
+
+import nodetool.nodes.nodetool.text
 
 
 class CountTokens(GraphNode):
@@ -226,6 +229,8 @@ class FormatText(GraphNode):
     """
     Replaces placeholders in a string with dynamic inputs using Jinja2 templating.
     text, template, formatting
+
+    This node is dynamic and can be used to format text with dynamic properties.
 
     Use cases:
     - Generating personalized messages with dynamic content

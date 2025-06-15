@@ -65,6 +65,8 @@ class FormatText(BaseNode):
     Replaces placeholders in a string with dynamic inputs using Jinja2 templating.
     text, template, formatting
 
+    This node is dynamic and can be used to format text with dynamic properties.
+
     Use cases:
     - Generating personalized messages with dynamic content
     - Creating parameterized queries or commands

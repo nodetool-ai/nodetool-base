@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.lib.http
 
 
 class DeleteRequest(GraphNode):
@@ -25,6 +25,9 @@ class DeleteRequest(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "lib.http.DeleteRequest"
+
+
+import nodetool.nodes.lib.http
 
 
 class DownloadDataframe(GraphNode):

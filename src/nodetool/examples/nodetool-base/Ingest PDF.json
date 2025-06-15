@@ -88,7 +88,7 @@
       {
         "id": "10",
         "parent_id": null,
-        "type": "nodetool.os.PathToString",
+        "type": "lib.os.PathToString",
         "data": {},
         "ui_properties": {
           "selected": false,

@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.dictionary
 
 
 class ArgMax(GraphNode):
@@ -131,6 +131,9 @@ class ParseJSON(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.ParseJSON"
+
+
+import nodetool.nodes.nodetool.dictionary
 
 
 class ReduceDictionaries(GraphNode):

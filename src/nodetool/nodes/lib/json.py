@@ -207,13 +207,13 @@ class ValidateJSON(BaseNode):
     """
 
     data: Any = Field(default=None, description="JSON data to validate")
-    schema: dict = Field(default={}, description="JSON schema for validation")
+    json_schema: dict = Field(default={}, description="JSON schema for validation")
 
     async def process(self, context: ProcessingContext) -> bool:
         from jsonschema import validate, ValidationError
 
         try:
-            validate(instance=self.data, schema=self.schema)
+            validate(instance=self.data, schema=self.json_schema)
             return True
         except ValidationError:
             return False

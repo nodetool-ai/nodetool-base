@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.mail
 
 
 class AddLabel(GraphNode):
@@ -21,42 +21,7 @@ class AddLabel(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.mail.AddLabel"
-
-
-class SendEmail(GraphNode):
-    """Send a plain text email via SMTP.
-    email, smtp, send
-    """
-
-    smtp_server: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="smtp.gmail.com", description="SMTP server hostname"
-    )
-    smtp_port: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=587, description="SMTP server port"
-    )
-    username: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="SMTP username"
-    )
-    password: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="SMTP password"
-    )
-    from_address: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Sender email address"
-    )
-    to_address: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Recipient email address"
-    )
-    subject: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Email subject"
-    )
-    body: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Email body"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.mail.SendEmail"
+        return "lib.mail.AddLabel"
 
 
 class EmailFields(GraphNode):
@@ -97,7 +62,11 @@ class EmailFields(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.mail.EmailFields"
+        return "lib.mail.EmailFields"
+
+
+import nodetool.nodes.lib.mail
+import nodetool.nodes.lib.mail
 
 
 class GmailSearch(GraphNode):
@@ -111,12 +80,8 @@ class GmailSearch(GraphNode):
     - Filter emails by subject, sender, or date
     """
 
-    DateFilter: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.mail.GmailSearch.DateFilter
-    )
-    GmailFolder: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.mail.GmailSearch.GmailFolder
-    )
+    DateFilter: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.DateFilter
+    GmailFolder: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.GmailFolder
     from_address: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Sender's email address to search for"
     )
@@ -129,15 +94,15 @@ class GmailSearch(GraphNode):
     body: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Text to search for in email body"
     )
-    date_filter: nodetool.nodes.nodetool.mail.GmailSearch.DateFilter = Field(
-        default=nodetool.nodes.nodetool.mail.GmailSearch.DateFilter.SINCE_ONE_DAY,
+    date_filter: nodetool.nodes.lib.mail.GmailSearch.DateFilter = Field(
+        default=nodetool.nodes.lib.mail.GmailSearch.DateFilter.SINCE_ONE_DAY,
         description="Date filter to search for",
     )
     keywords: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Custom keywords or labels to search for"
     )
-    folder: nodetool.nodes.nodetool.mail.GmailSearch.GmailFolder = Field(
-        default=nodetool.nodes.nodetool.mail.GmailSearch.GmailFolder.INBOX,
+    folder: nodetool.nodes.lib.mail.GmailSearch.GmailFolder = Field(
+        default=nodetool.nodes.lib.mail.GmailSearch.GmailFolder.INBOX,
         description="Email folder to search in",
     )
     text: str | GraphNode | tuple[GraphNode, str] = Field(
@@ -149,7 +114,7 @@ class GmailSearch(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.mail.GmailSearch"
+        return "lib.mail.GmailSearch"
 
 
 class MoveToArchive(GraphNode):
@@ -164,4 +129,43 @@ class MoveToArchive(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.mail.MoveToArchive"
+        return "lib.mail.MoveToArchive"
+
+
+class SendEmail(GraphNode):
+    """Send a plain text email via SMTP.
+    email, smtp, send
+
+    Use cases:
+    - Send simple notification messages
+    - Automate email reports
+    """
+
+    smtp_server: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="smtp.gmail.com", description="SMTP server hostname"
+    )
+    smtp_port: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=587, description="SMTP server port"
+    )
+    username: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="SMTP username"
+    )
+    password: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="SMTP password"
+    )
+    from_address: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Sender email address"
+    )
+    to_address: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Recipient email address"
+    )
+    subject: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Email subject"
+    )
+    body: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Email body"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "lib.mail.SendEmail"

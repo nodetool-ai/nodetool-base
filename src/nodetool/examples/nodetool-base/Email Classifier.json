@@ -30,7 +30,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "nodetool.mail.GmailSearch",
+        "type": "lib.mail.GmailSearch",
         "data": {
           "search_query": "",
           "max_results": 10

@@ -1,4 +1,8 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
@@ -13,14 +17,22 @@ class GetCloseMatches(GraphNode):
     - Provide recommendations based on partial text
     """
 
-    word: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Word to match')
-    possibilities: list[str] | GraphNode | tuple[GraphNode, str] = Field(default=[], description='List of possible words')
-    n: int | GraphNode | tuple[GraphNode, str] = Field(default=3, description='Maximum number of matches to return')
-    cutoff: float | GraphNode | tuple[GraphNode, str] = Field(default=0.6, description='Minimum similarity ratio')
+    word: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Word to match"
+    )
+    possibilities: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="List of possible words"
+    )
+    n: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=3, description="Maximum number of matches to return"
+    )
+    cutoff: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.6, description="Minimum similarity ratio"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.difflib.GetCloseMatches"
-
+    def get_node_type(cls):
+        return "lib.difflib.GetCloseMatches"
 
 
 class SimilarityRatio(GraphNode):
@@ -34,12 +46,16 @@ class SimilarityRatio(GraphNode):
     - Evaluate similarity of user input
     """
 
-    a: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='First string to compare')
-    b: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Second string to compare')
+    a: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="First string to compare"
+    )
+    b: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Second string to compare"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.difflib.SimilarityRatio"
-
+    def get_node_type(cls):
+        return "lib.difflib.SimilarityRatio"
 
 
 class UnifiedDiff(GraphNode):
@@ -53,13 +69,22 @@ class UnifiedDiff(GraphNode):
     - Compare code snippets
     """
 
-    a: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Original text')
-    b: str | GraphNode | tuple[GraphNode, str] = Field(default='', description='Modified text')
-    fromfile: str | GraphNode | tuple[GraphNode, str] = Field(default='a', description='Name of the original file')
-    tofile: str | GraphNode | tuple[GraphNode, str] = Field(default='b', description='Name of the modified file')
-    lineterm: str | GraphNode | tuple[GraphNode, str] = Field(default='\n', description='Line terminator')
+    a: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Original text"
+    )
+    b: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Modified text"
+    )
+    fromfile: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="a", description="Name of the original file"
+    )
+    tofile: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="b", description="Name of the modified file"
+    )
+    lineterm: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\n", description="Line terminator"
+    )
 
     @classmethod
-    def get_node_type(cls): return "lib.difflib.UnifiedDiff"
-
-
+    def get_node_type(cls):
+        return "lib.difflib.UnifiedDiff"

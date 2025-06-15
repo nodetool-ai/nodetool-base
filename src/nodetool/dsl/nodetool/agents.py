@@ -1,9 +1,9 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
-import nodetool.nodes.nodetool.agents
 
 
 class AgentNode(GraphNode):
@@ -17,9 +17,6 @@ class AgentNode(GraphNode):
     - Solve problems step-by-step with LLM reasoning
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Agent", description="The name of the agent executor"
     )
@@ -45,7 +42,7 @@ class AgentNode(GraphNode):
         description="Model to use for reasoning tasks",
     )
     task: types.Task | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Task(type="task", title="", description="", subtasks=[]),
+        default=types.Task(type="task", id="", title="", description="", subtasks=[]),
         description="Pre-defined task to execute, skipping planning",
     )
     tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
@@ -53,10 +50,6 @@ class AgentNode(GraphNode):
     )
     input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum = Field(
-        default=nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum.MARKDOWN,
-        description="The type of output format for the agent result",
     )
     max_steps: int | GraphNode | tuple[GraphNode, str] = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
@@ -79,9 +72,6 @@ class AgentStreaming(GraphNode):
     - Live-updating workflows
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Agent", description="The name of the agent executor"
     )
@@ -107,7 +97,7 @@ class AgentStreaming(GraphNode):
         description="Model to use for reasoning tasks",
     )
     task: types.Task | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Task(type="task", title="", description="", subtasks=[]),
+        default=types.Task(type="task", id="", title="", description="", subtasks=[]),
         description="Pre-defined task to execute, skipping planning",
     )
     tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
@@ -115,10 +105,6 @@ class AgentStreaming(GraphNode):
     )
     input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum = Field(
-        default=nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum.MARKDOWN,
-        description="The type of output format for the agent result",
     )
     max_steps: int | GraphNode | tuple[GraphNode, str] = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
@@ -140,9 +126,6 @@ class DataframeAgent(GraphNode):
     - Solve problems step-by-step with LLM reasoning
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Agent", description="The name of the agent executor"
     )
@@ -168,7 +151,7 @@ class DataframeAgent(GraphNode):
         description="Model to use for reasoning tasks",
     )
     task: types.Task | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Task(type="task", title="", description="", subtasks=[]),
+        default=types.Task(type="task", id="", title="", description="", subtasks=[]),
         description="Pre-defined task to execute, skipping planning",
     )
     tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
@@ -176,10 +159,6 @@ class DataframeAgent(GraphNode):
     )
     input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum = Field(
-        default=nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum.MARKDOWN,
-        description="The type of output format for the agent result",
     )
     max_steps: int | GraphNode | tuple[GraphNode, str] = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
@@ -200,9 +179,6 @@ class DictAgent(GraphNode):
     agent, execution, tasks
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Agent", description="The name of the agent executor"
     )
@@ -228,7 +204,7 @@ class DictAgent(GraphNode):
         description="Model to use for reasoning tasks",
     )
     task: types.Task | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Task(type="task", title="", description="", subtasks=[]),
+        default=types.Task(type="task", id="", title="", description="", subtasks=[]),
         description="Pre-defined task to execute, skipping planning",
     )
     tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
@@ -236,10 +212,6 @@ class DictAgent(GraphNode):
     )
     input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum = Field(
-        default=nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum.MARKDOWN,
-        description="The type of output format for the agent result",
     )
     max_steps: int | GraphNode | tuple[GraphNode, str] = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
@@ -254,66 +226,6 @@ class DictAgent(GraphNode):
         return "nodetool.agents.DictAgent"
 
 
-class ImageAgent(GraphNode):
-    """
-    Executes tasks using a multi-step agent that can call tools and return an image path.
-    agent, execution, tasks, image
-
-    Use cases:
-    - Generate images based on prompts
-    - Find relevant images using search tools
-    """
-
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="Agent", description="The name of the agent executor"
-    )
-    objective: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The objective or problem to create a plan for"
-    )
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-        ),
-        description="Model to use for execution",
-    )
-    reasoning_model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-        ),
-        description="Model to use for reasoning tasks",
-    )
-    task: types.Task | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Task(type="task", title="", description="", subtasks=[]),
-        description="Pre-defined task to execute, skipping planning",
-    )
-    tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of tools to use for execution"
-    )
-    input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum = Field(
-        default=nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum.MARKDOWN,
-        description="The type of output format for the agent result",
-    )
-    max_steps: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=30, description="Maximum execution steps to prevent infinite loops"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.agents.ImageAgent"
-
-
 class ListAgent(GraphNode):
     """
     Executes tasks using a multi-step agent that can call tools and return a list
@@ -325,9 +237,6 @@ class ListAgent(GraphNode):
     - Collect multiple results
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Agent", description="The name of the agent executor"
     )
@@ -353,7 +262,7 @@ class ListAgent(GraphNode):
         description="Model to use for reasoning tasks",
     )
     task: types.Task | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Task(type="task", title="", description="", subtasks=[]),
+        default=types.Task(type="task", id="", title="", description="", subtasks=[]),
         description="Pre-defined task to execute, skipping planning",
     )
     tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
@@ -361,10 +270,6 @@ class ListAgent(GraphNode):
     )
     input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum = Field(
-        default=nodetool.nodes.nodetool.agents.AgentNode.OutputFormatEnum.MARKDOWN,
-        description="The type of output format for the agent result",
     )
     max_steps: int | GraphNode | tuple[GraphNode, str] = Field(
         default=30, description="Maximum execution steps to prevent infinite loops"
@@ -390,9 +295,6 @@ class SimpleAgentNode(GraphNode):
     - Quick responses with tool calling capabilities
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.SimpleAgentNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Simple Agent", description="The name of the simple agent executor"
     )
@@ -410,15 +312,6 @@ class SimpleAgentNode(GraphNode):
     )
     tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of tools to use for execution"
-    )
-    input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of input files to use for the agent"
-    )
-    output_type: nodetool.nodes.nodetool.agents.SimpleAgentNode.OutputFormatEnum = (
-        Field(
-            default=nodetool.nodes.nodetool.agents.SimpleAgentNode.OutputFormatEnum.MARKDOWN,
-            description="The type of output format for the agent result",
-        )
     )
     output_schema: dict | None | GraphNode | tuple[GraphNode, str] = Field(
         default=None, description="Optional JSON schema for the output"
@@ -439,9 +332,6 @@ class TaskPlannerNode(GraphNode):
     planning, task generation, workflow design
     """
 
-    OutputFormatEnum: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.agents.TaskPlannerNode.OutputFormatEnum
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Task Planner", description="The name of the task planner node"
     )
@@ -470,17 +360,8 @@ class TaskPlannerNode(GraphNode):
         default=[],
         description="List of EXECUTION tools available for the planned subtasks",
     )
-    input_files: list[types.FilePath] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of input files to use for planning"
-    )
     output_schema: dict | None | GraphNode | tuple[GraphNode, str] = Field(
         default=None, description="Optional JSON schema for the final task output"
-    )
-    output_type: nodetool.nodes.nodetool.agents.TaskPlannerNode.OutputFormatEnum = (
-        Field(
-            default=nodetool.nodes.nodetool.agents.TaskPlannerNode.OutputFormatEnum.MARKDOWN,
-            description="Optional type hint for the final task output (e.g., 'markdown', 'json', 'csv')",
-        )
     )
     enable_analysis_phase: bool | GraphNode | tuple[GraphNode, str] = Field(
         default=True, description="Whether to use analysis in the planning phase"

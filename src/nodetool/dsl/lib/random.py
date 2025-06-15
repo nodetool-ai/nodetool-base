@@ -1,5 +1,8 @@
+from pydantic import BaseModel, Field
+import typing
 from typing import Any
-from pydantic import Field
+import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
@@ -16,7 +19,7 @@ class RandomBool(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.random.RandomBool"
+        return "lib.random.RandomBool"
 
 
 class RandomChoice(GraphNode):
@@ -36,7 +39,7 @@ class RandomChoice(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.random.RandomChoice"
+        return "lib.random.RandomChoice"
 
 
 class RandomFloat(GraphNode):
@@ -59,7 +62,7 @@ class RandomFloat(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.random.RandomFloat"
+        return "lib.random.RandomFloat"
 
 
 class RandomInt(GraphNode):
@@ -82,4 +85,4 @@ class RandomInt(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.random.RandomInt"
+        return "lib.random.RandomInt"

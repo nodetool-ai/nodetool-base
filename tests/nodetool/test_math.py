@@ -1,7 +1,7 @@
 import pytest
 import numpy as np
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.math import (
+from nodetool.nodes.lib.math import (
     Add,
     Subtract,
     Multiply,

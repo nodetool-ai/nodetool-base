@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import patch
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.mail import SendEmail
+from nodetool.nodes.lib.mail import SendEmail
 
 
 @pytest.fixture

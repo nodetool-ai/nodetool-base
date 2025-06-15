@@ -143,7 +143,9 @@ class IndexEmbedding(ChromaNode):
         default=Collection(), description="The collection to index"
     )
     embedding: NPArray = Field(default=NPArray(), description="The embedding to index")
-    id: str = Field(default="", description="The ID to associate with the embedding")
+    index_id: str = Field(
+        default="", description="The ID to associate with the embedding"
+    )
     metadata: dict = Field(
         default={}, description="The metadata to associate with the embedding"
     )

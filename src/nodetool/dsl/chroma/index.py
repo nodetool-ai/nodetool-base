@@ -1,5 +1,6 @@
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
@@ -60,7 +61,7 @@ class IndexEmbedding(GraphNode):
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The embedding to index",
     )
-    id: str | GraphNode | tuple[GraphNode, str] = Field(
+    index_id: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The ID to associate with the embedding"
     )
     metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
