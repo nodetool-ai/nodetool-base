@@ -1,6 +1,6 @@
 import pytest
 from nodetool.dsl.graph import graph_result
-from nodetool.dsl.nodetool.math import Add, Multiply, Sine, Power, Sqrt, Divide
+from nodetool.dsl.lib.math import Add, Multiply, Sine, Power, Sqrt, Divide
 from nodetool.dsl.nodetool.output import FloatOutput
 
 # Example 1: Basic arithmetic (2 + 3) * 4
@@ -37,33 +37,28 @@ combined_operations = FloatOutput(
 @pytest.mark.asyncio
 async def test_basic_arithmetic():
     result = await graph_result(basic_arithmetic)
-    assert isinstance(result, list)
-    assert result[0] == 20  # (2 + 3) * 4 = 20
+    assert result == 20  # (2 + 3) * 4 = 20
 
 
 @pytest.mark.asyncio
 async def test_pythagorean():
     result = await graph_result(pythagorean)
-    assert isinstance(result, list)
-    assert pytest.approx(result[0], 0.0001) == 5.0  # √(3² + 4²) = 5
+    assert pytest.approx(result, 0.0001) == 5.0  # √(3² + 4²) = 5
 
 
 @pytest.mark.asyncio
 async def test_nested_operations():
     result = await graph_result(nested_operations)
-    assert isinstance(result, list)
-    assert result[0] == 2.5  # (10 + 5) / (2 * 3) = 15 / 6 = 2.5
+    assert result == 2.5  # (10 + 5) / (2 * 3) = 15 / 6 = 2.5
 
 
 @pytest.mark.asyncio
 async def test_trig_calculation():
     result = await graph_result(trig_calculation)
-    assert isinstance(result, list)
-    assert pytest.approx(result[0], 0.0001) == 0.5  # sin(π/4)² ≈ 0.5
+    assert pytest.approx(result, 0.0001) == 0.5  # sin(π/4)² ≈ 0.5
 
 
 @pytest.mark.asyncio
 async def test_combined_operations():
     result = await graph_result(combined_operations)
-    assert isinstance(result, list)
-    assert result[0] > 0
+    assert result > 0

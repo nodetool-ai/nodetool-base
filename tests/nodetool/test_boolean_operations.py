@@ -44,26 +44,22 @@ membership = BooleanOutput(
 @pytest.mark.asyncio
 async def test_basic_comparison():
     result = await graph_result(basic_comparison)
-    assert isinstance(result, list)
-    assert result[0] is True  # 5 > 3
+    assert result is True  # 5 > 3
 
 
 @pytest.mark.asyncio
 async def test_logical_ops():
     result = await graph_result(logical_ops)
-    assert isinstance(result, list)
-    assert result[0] is True  # (10 > 5) and (20 > 15)
+    assert result is True  # (10 > 5) and (20 > 15)
 
 
 @pytest.mark.asyncio
 async def test_conditional():
     result = await graph_result(conditional)
-    assert isinstance(result, list)
-    assert result[0] == "Values are equal"
+    assert result == "Values are equal"
 
 
 @pytest.mark.asyncio
 async def test_membership():
     result = await graph_result(membership)
-    assert isinstance(result, list)
-    assert result[0] is True  # 5 in [1, 3, 5, 7, 9]
+    assert result is True  # 5 in [1, 3, 5, 7, 9]

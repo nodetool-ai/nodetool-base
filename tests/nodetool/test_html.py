@@ -18,12 +18,10 @@ unescape_node = StringOutput(
 @pytest.mark.asyncio
 async def test_escape():
     result = await graph_result(escape_node)
-    assert isinstance(result, list)
-    assert result[0] == "Hello &lt;world&gt; &amp; &#39;AI&#39;"
+    assert result == "Hello &lt;world&gt; &amp; &#39;AI&#39;"
 
 
 @pytest.mark.asyncio
 async def test_unescape():
     result = await graph_result(unescape_node)
-    assert isinstance(result, list)
-    assert result[0] == "Hello <world> & 'AI'"
+    assert result == "Hello <world> & 'AI'"

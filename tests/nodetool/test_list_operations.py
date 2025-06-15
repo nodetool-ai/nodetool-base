@@ -85,15 +85,14 @@ dict_list_ops = ListOutput(
 @pytest.mark.asyncio
 async def test_basic_list_ops():
     result = await graph_result(basic_list_ops)
-    assert isinstance(result, list)
-    assert result[0] == "apple, banana, cherry, date"
+    assert result == "apple, banana, cherry, date"
 
 
 @pytest.mark.asyncio
 async def test_list_transform():
     result = await graph_result(list_transform)
     assert isinstance(result, list)
-    assert all(x > 2.5 for x in result[0])
+    assert all(x > 2.5 for x in result)
 
 
 # @pytest.mark.asyncio
@@ -109,11 +108,11 @@ async def test_list_transform():
 async def test_list_sets():
     result = await graph_result(list_sets)
     assert isinstance(result, list)
-    assert set(result[0]) == {1, 2, 3, 4, 5, 6}
+    assert set(result) == {1, 2, 3, 4, 5, 6}
 
 
 @pytest.mark.asyncio
 async def test_complex_list():
     result = await graph_result(complex_list)
     assert isinstance(result, list)
-    assert result[0] == [[1, 2], [3, 4], [5]]
+    assert result == [[1, 2], [3, 4], [5]]
