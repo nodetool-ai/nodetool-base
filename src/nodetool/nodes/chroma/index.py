@@ -136,7 +136,8 @@ class IndexImages(ChromaNode):
 
 class IndexEmbedding(ChromaNode):
     """
-    Index a list of embeddings.
+    Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
+    chroma, index, embedding, vector, storage, RAG
     """
 
     collection: Collection = Field(
