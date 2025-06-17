@@ -85,8 +85,7 @@ def init_tool(tool: ToolName) -> Tool | None:
 
 class TaskPlannerNode(BaseNode):
     """
-    Generates a Task execution plan based on an objective, model, and tools.
-    Outputs a Task object that can be used by an Agent executor.
+    Generates a Task execution plan based on an objective, model, and tools. Outputs a Task object that can be used by an Agent executor.
     planning, task generation, workflow design
     """
 
