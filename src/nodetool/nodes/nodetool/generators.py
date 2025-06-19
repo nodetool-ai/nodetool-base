@@ -39,7 +39,7 @@ class DataGenerator(BaseNode):
 
     model: LanguageModel = Field(
         default=LanguageModel(),
-        description="The GPT model to use for data generation.",
+        description="The model to use for data generation.",
     )
     prompt: str = Field(
         default="",
@@ -113,7 +113,7 @@ class DataStreamer(BaseNode):
 
     model: LanguageModel = Field(
         default=LanguageModel(),
-        description="The GPT model to use for data generation.",
+        description="The model to use for data generation.",
     )
     prompt: str = Field(
         default="",
@@ -180,7 +180,7 @@ class ListGenerator(BaseNode):
 
     model: LanguageModel = Field(
         default=LanguageModel(),
-        description="The GPT model to use for string generation.",
+        description="The model to use for string generation.",
     )
     prompt: str = Field(
         default="",
@@ -509,7 +509,7 @@ class ChartGenerator(BaseNode):
 
     model: LanguageModel = Field(
         default=LanguageModel(),
-        description="The GPT model to use for chart generation.",
+        description="The model to use for chart generation.",
     )
     prompt: str = Field(
         default="",

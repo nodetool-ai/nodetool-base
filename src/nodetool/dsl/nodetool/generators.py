@@ -24,7 +24,7 @@ class ChartGenerator(GraphNode):
             id="",
             name="",
         ),
-        description="The GPT model to use for chart generation.",
+        description="The model to use for chart generation.",
     )
     prompt: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Natural language description of the desired chart"
@@ -62,7 +62,7 @@ class DataGenerator(GraphNode):
             id="",
             name="",
         ),
-        description="The GPT model to use for data generation.",
+        description="The model to use for data generation.",
     )
     prompt: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The user prompt"
@@ -100,7 +100,7 @@ class DataStreamer(GraphNode):
             id="",
             name="",
         ),
-        description="The GPT model to use for data generation.",
+        description="The model to use for data generation.",
     )
     prompt: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The user prompt"
@@ -138,7 +138,7 @@ class ListGenerator(GraphNode):
             id="",
             name="",
         ),
-        description="The GPT model to use for string generation.",
+        description="The model to use for string generation.",
     )
     prompt: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The user prompt"
