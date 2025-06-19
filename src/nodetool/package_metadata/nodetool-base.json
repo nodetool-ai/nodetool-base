@@ -6372,29 +6372,7 @@
         {
           "name": "values",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "list"
-              },
-              {
-                "type": "dict",
-                "type_args": [
-                  {
-                    "type": "str"
-                  },
-                  {
-                    "type": "any"
-                  }
-                ]
-              },
-              {
-                "type": "object"
-              }
-            ]
+            "type": "any"
           },
           "default": {},
           "title": "Values",

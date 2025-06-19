@@ -200,7 +200,7 @@ class Template(BaseNode):
     - join(delimiter): Joins list with delimiter
 """,
     )
-    values: str | list | dict[str, Any] | object = Field(
+    values: Any = Field(
         title="Values",
         default={},
         description="""
