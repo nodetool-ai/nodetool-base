@@ -461,7 +461,7 @@
     },
     {
       "title": "Index Embedding",
-      "description": "Index a list of embeddings.",
+      "description": "Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.\n    chroma, index, embedding, vector, storage, RAG",
       "namespace": "chroma.index",
       "node_type": "chroma.index.IndexEmbedding",
       "properties": [
@@ -3860,7 +3860,7 @@
     },
     {
       "title": "Task Planner",
-      "description": "Generates a Task execution plan based on an objective, model, and tools.\n    Outputs a Task object that can be used by an Agent executor.\n    planning, task generation, workflow design",
+      "description": "Generates a Task execution plan based on an objective, model, and tools. Outputs a Task object that can be used by an Agent executor.\n    planning, task generation, workflow design",
       "namespace": "nodetool.agents",
       "node_type": "nodetool.agents.TaskPlanner",
       "properties": [
@@ -3984,7 +3984,7 @@
           },
           "default": {},
           "title": "Model",
-          "description": "The GPT model to use for chart generation."
+          "description": "The model to use for chart generation."
         },
         {
           "name": "prompt",
@@ -4043,7 +4043,7 @@
           },
           "default": {},
           "title": "Model",
-          "description": "The GPT model to use for data generation."
+          "description": "The model to use for data generation."
         },
         {
           "name": "prompt",
@@ -4111,7 +4111,7 @@
           },
           "default": {},
           "title": "Model",
-          "description": "The GPT model to use for data generation."
+          "description": "The model to use for data generation."
         },
         {
           "name": "prompt",
@@ -4180,7 +4180,7 @@
           },
           "default": {},
           "title": "Model",
-          "description": "The GPT model to use for string generation."
+          "description": "The model to use for string generation."
         },
         {
           "name": "prompt",
@@ -4737,51 +4737,6 @@
         {
           "type": {
             "type": "float"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "value"
-      ]
-    },
-    {
-      "title": "Group Input",
-      "description": "A flexible input that can forward any value provided at runtime.\n\n    This node exists mainly for compatibility with older workflows that expect a\n    \"group\" input placeholder whose value is supplied programmatically (e.g. in\n    tests).  Internally it just returns the value assigned to the private\n    ``_value`` attribute that tests manipulate directly.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.GroupInput",
-      "properties": [
-        {
-          "name": "value",
-          "type": {
-            "type": "any"
-          },
-          "title": "Value",
-          "description": "The value of the input."
-        },
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
           },
           "name": "output"
         }

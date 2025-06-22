@@ -50,7 +50,8 @@ class IndexAggregatedText(GraphNode):
 
 class IndexEmbedding(GraphNode):
     """
-    Index a list of embeddings.
+    Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
+    chroma, index, embedding, vector, storage, RAG
     """
 
     collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(

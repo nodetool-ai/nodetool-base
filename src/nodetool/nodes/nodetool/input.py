@@ -374,25 +374,3 @@ class TextInput(InputNode):
         if self.value.is_empty():
             raise ValueError("Text input is empty, please provide a text asset")
         return self.value
-
-
-class GroupInput(InputNode):
-    """A flexible input that can forward any value provided at runtime.
-
-    This node exists mainly for compatibility with older workflows that expect a
-    "group" input placeholder whose value is supplied programmatically (e.g. in
-    tests).  Internally it just returns the value assigned to the private
-    ``_value`` attribute that tests manipulate directly.
-    """
-
-    # Deliberately store the payload outside of Pydantic fields so that tests can
-    # patch it dynamically via ``node._value = ...`` without validation errors.
-    _value: Any = None  # noqa: ANN401 – intentionally accepting Any
-
-    async def process(self, context: ProcessingContext) -> Any:  # type: ignore[override]
-        return self._value
-
-    @classmethod
-    def is_cacheable(cls) -> bool:  # noqa: D401, ANN101 – match test expectations
-        """GroupInput is never cached."""
-        return False

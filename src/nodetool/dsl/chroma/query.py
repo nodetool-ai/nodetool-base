@@ -8,8 +8,8 @@ from nodetool.dsl.graph import GraphNode
 
 class HybridSearch(GraphNode):
     """
-    Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.
-    search, query, semantic, text, vector, similarity
+    Hybrid search combining semantic and keyword-based search for better retrieval.
+    Uses reciprocal rank fusion to combine results from both methods.
     """
 
     collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
@@ -37,7 +37,6 @@ class HybridSearch(GraphNode):
 class QueryImage(GraphNode):
     """
     Query the index for similar images.
-    image, search, similarity, vector
     """
 
     collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
@@ -60,7 +59,6 @@ class QueryImage(GraphNode):
 class QueryText(GraphNode):
     """
     Query the index for similar text.
-    text, search, similarity, vector
     """
 
     collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
@@ -81,8 +79,8 @@ class QueryText(GraphNode):
 
 class RemoveOverlap(GraphNode):
     """
-    Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.
-    text, processing, overlap, deduplication
+    Removes overlapping words between consecutive strings in a list.
+    Splits text into words and matches word sequences for more accurate overlap detection.
     """
 
     documents: list[str] | GraphNode | tuple[GraphNode, str] = Field(
