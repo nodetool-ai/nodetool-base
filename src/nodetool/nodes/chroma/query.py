@@ -15,6 +15,7 @@ from chromadb.api.types import IncludeEnum
 class QueryImage(ChromaNode):
     """
     Query the index for similar images.
+    RAG, query, image, search, similarity, vector
     """
 
     collection: Collection = Field(
@@ -73,6 +74,7 @@ class QueryImage(ChromaNode):
 class QueryText(ChromaNode):
     """
     Query the index for similar text.
+    RAG, query, text, search, similarity, vector
     """
 
     collection: Collection = Field(
@@ -125,8 +127,8 @@ class QueryText(ChromaNode):
 
 class RemoveOverlap(ChromaNode):
     """
-    Removes overlapping words between consecutive strings in a list.
-    Splits text into words and matches word sequences for more accurate overlap detection.
+    Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.
+    RAG, query, text, processing, overlap, deduplication
     """
 
     documents: list[str] = Field(
@@ -184,8 +186,8 @@ class RemoveOverlap(ChromaNode):
 
 class HybridSearch(ChromaNode):
     """
-    Hybrid search combining semantic and keyword-based search for better retrieval.
-    Uses reciprocal rank fusion to combine results from both methods.
+    Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.
+    RAG, query, semantic, text, vector, similarity
     """
 
     collection: Collection = Field(
