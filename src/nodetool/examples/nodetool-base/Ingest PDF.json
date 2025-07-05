@@ -6,7 +6,7 @@
   "name": "Ingest PDF",
   "description": "",
   "tags": [
-    "llm"
+    "rag"
   ],
   "thumbnail": null,
   "thumbnail_url": null,

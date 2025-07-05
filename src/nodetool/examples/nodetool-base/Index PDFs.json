@@ -5,7 +5,10 @@
   "updated_at": "2024-12-30T21:21:19.229323",
   "name": "Index PDFs",
   "description": "Create searchable vector database from PDF documents",
-  "tags": null,
+  "tags": [
+    "rag",
+    "start"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {

@@ -5,7 +5,10 @@
   "updated_at": "2025-01-12T10:53:36.693315",
   "name": "Paper2Podcast",
   "description": "",
-  "tags": null,
+  "tags": [
+    "audio",
+    "start"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {

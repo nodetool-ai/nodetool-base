@@ -5,7 +5,10 @@
   "updated_at": "2024-12-30T16:11:13.537102",
   "name": "Email Classifier",
   "description": "Automatically categorize emails using AI classification",
-  "tags": null,
+  "tags": [
+    "email",
+    "start"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {

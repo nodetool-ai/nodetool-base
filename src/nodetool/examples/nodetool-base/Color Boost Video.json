@@ -5,7 +5,10 @@
   "updated_at": "2025-05-19T06:50:36.746400",
   "name": "Color Boost Video",
   "description": "",
-  "tags": null,
+  "tags": [
+    "video",
+    "start"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {

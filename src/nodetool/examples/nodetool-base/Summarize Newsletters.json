@@ -5,7 +5,10 @@
   "updated_at": "2025-01-12T01:20:42.665186",
   "name": "Summarize Newsletters",
   "description": "",
-  "tags": null,
+  "tags": [
+    "email",
+    "start"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
