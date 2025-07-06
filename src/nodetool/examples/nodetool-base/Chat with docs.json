@@ -332,7 +332,7 @@
         "data": {
           "model": {
             "type": "language_model",
-            "id": "qwen3:1.7b",
+            "id": "gemma3n:latest",
             "provider": "ollama"
           },
           "system": "You are a friendly assistant.",

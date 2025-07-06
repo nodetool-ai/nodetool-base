@@ -1,15 +1,15 @@
 {
-  "id": "9759819033e111f0935900003bf156d2",
+  "id": "data_visualization_pipeline",
   "access": "public",
-  "created_at": "2025-05-18T17:25:02.819043",
-  "updated_at": "2025-05-18T17:25:02.819058",
+  "created_at": "2025-07-06T19:16:07.310781",
+  "updated_at": "2025-07-06T19:16:07.310796",
   "name": "Data Visualization Pipeline",
   "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
   "tags": [
     "agents"
   ],
   "thumbnail": null,
-  "thumbnail_url": null,
+  "thumbnail_url": "/examples/data_visualization_pipeline.png",
   "graph": {
     "nodes": [
       {
@@ -25,8 +25,8 @@
             "y": 50
           },
           "zIndex": 0,
-          "width": 359,
-          "height": 382,
+          "width": 227,
+          "height": 228,
           "title": "Preview of the rendered chart image output. Displays the final visualization created by the workflow.",
           "selectable": true
         },
@@ -112,7 +112,7 @@
         "ui_properties": {
           "position": {
             "x": 50,
-            "y": 219
+            "y": 125
           },
           "zIndex": 0,
           "width": 200,
@@ -128,7 +128,7 @@
         "ui_properties": {
           "position": {
             "x": 280,
-            "y": 227
+            "y": 146
           },
           "zIndex": 0,
           "width": 200,
@@ -146,7 +146,7 @@
         "ui_properties": {
           "position": {
             "x": 510,
-            "y": 202
+            "y": 112
           },
           "zIndex": 0,
           "width": 200,
@@ -161,16 +161,17 @@
         "data": {
           "model": {
             "type": "language_model",
-            "id": "qwen3:4b",
+            "id": "gemma3n:latest",
             "provider": "ollama"
           },
           "prompt": "make a line graph of Value over Year",
           "max_tokens": 4096
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 877,
-            "y": 490
+            "x": 783.5,
+            "y": 328
           },
           "zIndex": 0,
           "width": 200,
@@ -187,12 +188,12 @@
         },
         "ui_properties": {
           "position": {
-            "x": 1214,
-            "y": 269
+            "x": 1027,
+            "y": 135
           },
           "zIndex": 0,
-          "width": 1003,
-          "height": 646,
+          "width": 1032,
+          "height": 465,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -249,5 +250,6 @@
   "output_schema": null,
   "settings": null,
   "package_name": "nodetool-base",
-  "path": null
+  "path": null,
+  "run_mode": null
 }

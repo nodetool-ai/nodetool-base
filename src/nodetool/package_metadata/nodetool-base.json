@@ -23,7 +23,7 @@
     },
     {
       "title": "Hybrid Search",
-      "description": "Hybrid search combining semantic and keyword-based search for better retrieval.\n    Uses reciprocal rank fusion to combine results from both methods.",
+      "description": "Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.\n    RAG, query, semantic, text, vector, similarity",
       "namespace": "chroma.query",
       "node_type": "chroma.query.HybridSearch",
       "properties": [
@@ -140,7 +140,7 @@
     },
     {
       "title": "Query Image",
-      "description": "Query the index for similar images.",
+      "description": "Query the index for similar images.\n    RAG, query, image, search, similarity, vector",
       "namespace": "chroma.query",
       "node_type": "chroma.query.QueryImage",
       "properties": [
@@ -226,7 +226,7 @@
     },
     {
       "title": "Query Text",
-      "description": "Query the index for similar text.",
+      "description": "Query the index for similar text.\n    RAG, query, text, search, similarity, vector",
       "namespace": "chroma.query",
       "node_type": "chroma.query.QueryText",
       "properties": [
@@ -312,7 +312,7 @@
     },
     {
       "title": "Remove Overlap",
-      "description": "Removes overlapping words between consecutive strings in a list.\n    Splits text into words and matches word sequences for more accurate overlap detection.",
+      "description": "Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.\n    RAG, query, text, processing, overlap, deduplication",
       "namespace": "chroma.query",
       "node_type": "chroma.query.RemoveOverlap",
       "properties": [
@@ -20780,7 +20780,10 @@
       "id": "66a76fbad01511ef97f9000025dd7c17",
       "name": "Summarize Newsletters",
       "description": "",
-      "tags": []
+      "tags": [
+        "email",
+        "start"
+      ]
     },
     {
       "id": "64bac2e8340f11f097f000007d22ea5d",
@@ -20804,19 +20807,19 @@
       "id": "email_classifier",
       "name": "Email Classifier",
       "description": "Automatically categorize emails using AI classification",
-      "tags": []
+      "tags": [
+        "email",
+        "start"
+      ]
     },
     {
       "id": "01170228d0c411efaac30000491f150f",
       "name": "Paper2Podcast",
       "description": "",
-      "tags": []
-    },
-    {
-      "id": "daily_digest",
-      "name": "Daily Digest",
-      "description": "Generate a short news digest from an RSS feed.",
-      "tags": []
+      "tags": [
+        "audio",
+        "start"
+      ]
     },
     {
       "id": "4967c0b0d07b11efb3dc000010283958",
@@ -20846,7 +20849,10 @@
       "id": "310d885a341811f0942e0000191c0ba5",
       "name": "Color Boost Video",
       "description": "",
-      "tags": []
+      "tags": [
+        "video",
+        "start"
+      ]
     },
     {
       "id": "remove_silence",
@@ -20860,7 +20866,10 @@
       "id": "862d1018c43211efae4f00000de8b754",
       "name": "Index PDFs",
       "description": "Create searchable vector database from PDF documents",
-      "tags": []
+      "tags": [
+        "rag",
+        "start"
+      ]
     },
     {
       "id": "",
@@ -20876,11 +20885,11 @@
       "name": "Ingest PDF",
       "description": "",
       "tags": [
-        "llm"
+        "rag"
       ]
     },
     {
-      "id": "9759819033e111f0935900003bf156d2",
+      "id": "data_visualization_pipeline",
       "name": "Data Visualization Pipeline",
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
       "tags": [
@@ -20906,7 +20915,7 @@
       ]
     },
     {
-      "id": "f1a11024132411f0b12f000053c522ea",
+      "id": "data_generator",
       "name": "Data Generator",
       "description": "Generate structured data using AI agents",
       "tags": [

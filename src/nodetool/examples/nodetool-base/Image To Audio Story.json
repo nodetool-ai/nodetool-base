@@ -158,7 +158,11 @@
         "parent_id": null,
         "type": "nodetool.llms.LLM",
         "data": {
-          "model": "gpt-4o",
+          "model": {
+            "type": "language_model",
+            "id": "gemma3n:latest",
+            "provider": "ollama"
+          },
           "system": "You are a friendly assistant.",
           "prompt": "Write a short story about the image.",
           "messages": [],
