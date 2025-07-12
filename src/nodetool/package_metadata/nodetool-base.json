@@ -8,6 +8,741 @@
   "repo_id": "nodetool-ai/nodetool-base",
   "nodes": [
     {
+      "title": "Audio Classification",
+      "description": "Audio classification node using HuggingFace Inference API.\n    Assigns a label or class to audio data.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.AudioClassification",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_audio_classification_model"
+          },
+          "default": {
+            "provider": "fal-ai",
+            "model_id": "superb/hubert-base-superb-er"
+          },
+          "title": "Model",
+          "description": "The model to use for audio classification"
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio to classify"
+        },
+        {
+          "name": "function_to_apply",
+          "type": {
+            "type": "enum",
+            "values": [
+              "sigmoid",
+              "softmax",
+              "none"
+            ],
+            "type_name": "nodetool.nodes.huggingface_hub.OutputTransform"
+          },
+          "default": "none",
+          "title": "Function To Apply",
+          "description": "The function to apply to the model outputs"
+        },
+        {
+          "name": "top_k",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Top K",
+          "description": "The number of top predictions to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "audio",
+        "function_to_apply",
+        "top_k"
+      ]
+    },
+    {
+      "title": "Automatic Speech Recognition",
+      "description": "Automatic speech recognition node.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.AutomaticSpeechRecognition",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_automatic_speech_recognition_model"
+          },
+          "default": {
+            "provider": "fal-ai",
+            "model_id": "openai/whisper-large-v3"
+          },
+          "title": "Model"
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio to transcribe"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "audio_chunk"
+              }
+            ]
+          },
+          "name": "chunks"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "audio"
+      ]
+    },
+    {
+      "title": "Hugging Face Inference",
+      "description": "HuggingFace inference node.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.HuggingFaceInference",
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ]
+    },
+    {
+      "title": "Image Classification",
+      "description": "Image classification node using HuggingFace Inference API.\n    Assigns a label or class to image data.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.ImageClassification",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_image_classification_model"
+          },
+          "default": {
+            "model_id": "google/vit-base-patch16-224"
+          },
+          "title": "Model",
+          "description": "The model to use for image classification"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to classify"
+        },
+        {
+          "name": "function_to_apply",
+          "type": {
+            "type": "enum",
+            "values": [
+              "sigmoid",
+              "softmax",
+              "none"
+            ],
+            "type_name": "nodetool.nodes.huggingface_hub.OutputTransform"
+          },
+          "default": "none",
+          "title": "Function To Apply",
+          "description": "The function to apply to the model outputs"
+        },
+        {
+          "name": "top_k",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Top K",
+          "description": "The number of top predictions to return"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "image",
+        "function_to_apply",
+        "top_k"
+      ]
+    },
+    {
+      "title": "Image Segmentation",
+      "description": "Image segmentation node using HuggingFace Inference API.\n    Divides an image into segments where each pixel is mapped to an object.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.ImageSegmentation",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_image_segmentation_model"
+          },
+          "default": {
+            "model_id": "openmmlab/upernet-convnext-small"
+          },
+          "title": "Model",
+          "description": "The model to use for image segmentation"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to segment"
+        },
+        {
+          "name": "mask_threshold",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Mask Threshold",
+          "description": "Threshold to use when turning the predicted masks into binary values"
+        },
+        {
+          "name": "overlap_mask_area_threshold",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Overlap Mask Area Threshold",
+          "description": "Mask overlap threshold to eliminate small, disconnected segments"
+        },
+        {
+          "name": "subtask",
+          "type": {
+            "type": "enum",
+            "values": [
+              "instance",
+              "panoptic",
+              "semantic"
+            ],
+            "type_name": "nodetool.nodes.huggingface_hub.Subtask"
+          },
+          "default": "semantic",
+          "title": "Subtask",
+          "description": "The segmentation subtask to perform"
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Threshold",
+          "description": "Probability threshold to filter out predicted masks"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image_segmentation_result"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "image",
+        "mask_threshold",
+        "overlap_mask_area_threshold",
+        "subtask",
+        "threshold"
+      ]
+    },
+    {
+      "title": "Image To Image",
+      "description": "Image-to-image node using HuggingFace Inference API.\n    Transforms a source image to match the characteristics of a target image or domain.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.ImageToImage",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_image_to_image_model"
+          },
+          "default": {
+            "provider": "black-forest-labs",
+            "model_id": "black-forest-labs/FLUX.1-Kontext-dev"
+          },
+          "title": "Model",
+          "description": "The model to use for image-to-image transformation"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The input image to transform"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt to guide the image transformation"
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "A higher guidance scale value encourages the model to generate images closely linked to the text prompt at the expense of lower image quality"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "One prompt to guide what NOT to include in image generation"
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "The number of denoising steps. More denoising steps usually lead to a higher quality image at the expense of slower inference"
+        },
+        {
+          "name": "target_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Target Width",
+          "description": "The target width in pixels of the output image"
+        },
+        {
+          "name": "target_height",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Target Height",
+          "description": "The target height in pixels of the output image"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "image",
+        "prompt",
+        "guidance_scale",
+        "negative_prompt",
+        "num_inference_steps",
+        "target_width",
+        "target_height"
+      ]
+    },
+    {
+      "title": "Summarization",
+      "description": "Summarization node using HuggingFace Inference API.\n    Produces a shorter version of a document while preserving its important information.\n    Some models can extract text from the original input, while others can generate entirely new text.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.Summarization",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_summarization_model"
+          },
+          "default": {
+            "model_id": "facebook/bart-large-cnn"
+          },
+          "title": "Model",
+          "description": "The model to use for summarization"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The input text to summarize"
+        },
+        {
+          "name": "clean_up_tokenization_spaces",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Clean Up Tokenization Spaces",
+          "description": "Whether to clean up the potential extra spaces in the text output"
+        },
+        {
+          "name": "truncation",
+          "type": {
+            "type": "enum",
+            "values": [
+              "do_not_truncate",
+              "longest_first",
+              "only_first",
+              "only_second"
+            ],
+            "type_name": "nodetool.nodes.huggingface_hub.Truncation"
+          },
+          "default": "do_not_truncate",
+          "title": "Truncation",
+          "description": "Truncation strategy for the input text"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "text",
+        "clean_up_tokenization_spaces",
+        "truncation"
+      ]
+    },
+    {
+      "title": "Text Classification",
+      "description": "Text classification node using HuggingFace Inference API.\n    Assigns a label or class to given text. Use cases include sentiment analysis,\n    natural language inference, and assessing grammatical correctness.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.TextClassification",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_text_classification_model"
+          },
+          "default": {
+            "model_id": "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
+          },
+          "title": "Model",
+          "description": "The model to use for text classification"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to classify"
+        },
+        {
+          "name": "function_to_apply",
+          "type": {
+            "type": "enum",
+            "values": [
+              "sigmoid",
+              "softmax",
+              "none"
+            ],
+            "type_name": "nodetool.nodes.huggingface_hub.OutputTransform"
+          },
+          "default": "none",
+          "title": "Function To Apply",
+          "description": "The function to apply to the model outputs"
+        },
+        {
+          "name": "top_k",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Top K",
+          "description": "When specified, limits the output to the top K most probable classes"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "text",
+        "function_to_apply",
+        "top_k"
+      ]
+    },
+    {
+      "title": "Text To Image",
+      "description": "Text-to-image node using HuggingFace Inference API.\n    Generates an image based on a given text prompt.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.TextToImage",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_text_to_image_model"
+          },
+          "default": {
+            "provider": "",
+            "model_id": "black-forest-labs/FLUX.1-dev"
+          },
+          "title": "Model",
+          "description": "The model to use for text-to-image generation"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The input text prompt to generate an image from"
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "A higher guidance scale value encourages the model to generate images closely linked to the text prompt, but values too high may cause saturation and other artifacts"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "One prompt to guide what NOT to include in image generation"
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "The number of denoising steps. More denoising steps usually lead to a higher quality image at the expense of slower inference"
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Width",
+          "description": "The width in pixels of the output image"
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Height",
+          "description": "The height in pixels of the output image"
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Seed for the random number generator. Use -1 for random seed"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "prompt",
+        "guidance_scale",
+        "negative_prompt",
+        "num_inference_steps",
+        "width",
+        "height",
+        "seed"
+      ]
+    },
+    {
+      "title": "Translation",
+      "description": "Translation node using HuggingFace Inference API.\n    Converts text from one language to another.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.Translation",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_translation_model"
+          },
+          "default": {
+            "model_id": "google-t5/t5-base"
+          },
+          "title": "Model",
+          "description": "The model to use for translation"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to translate"
+        },
+        {
+          "name": "src_lang",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Src Lang",
+          "description": "The source language of the text. Required for models that can translate from multiple languages"
+        },
+        {
+          "name": "tgt_lang",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Tgt Lang",
+          "description": "Target language to translate to. Required for models that can translate to multiple languages"
+        },
+        {
+          "name": "clean_up_tokenization_spaces",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Clean Up Tokenization Spaces",
+          "description": "Whether to clean up the potential extra spaces in the text output"
+        },
+        {
+          "name": "truncation",
+          "type": {
+            "type": "enum",
+            "values": [
+              "do_not_truncate",
+              "longest_first",
+              "only_first",
+              "only_second"
+            ],
+            "type_name": "nodetool.nodes.huggingface_hub.Truncation"
+          },
+          "default": "do_not_truncate",
+          "title": "Truncation",
+          "description": "Truncation strategy for the input text"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "text",
+        "src_lang",
+        "tgt_lang",
+        "clean_up_tokenization_spaces",
+        "truncation"
+      ]
+    },
+    {
       "title": "Chroma",
       "description": "Base class for Chroma vector database nodes.\n\n    chroma, base, database\n\n    Use cases:\n    - Provide shared helpers for Chroma indexing and queries\n    - Disable caching for subclasses\n    - Convert result IDs into asset references",
       "namespace": "chroma.chroma_node",
