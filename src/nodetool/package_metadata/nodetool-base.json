@@ -7128,6 +7128,16 @@
           "default": [],
           "title": "Categories",
           "description": "List of possible categories. If empty, LLM will determine categories."
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
         }
       ],
       "outputs": [
@@ -7204,7 +7214,17 @@
           "title": "Max Tokens",
           "description": "The maximum number of tokens to generate.",
           "min": 1.0,
-          "max": 100000.0
+          "max": 16384.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
         }
       ],
       "outputs": [
@@ -7511,7 +7531,7 @@
           "type": {
             "type": "str"
           },
-          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_words} words.\n        ",
+          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
           "title": "System Prompt",
           "description": "The system prompt for the summarizer"
         },
@@ -7534,15 +7554,26 @@
           "description": "The text to summarize"
         },
         {
-          "name": "max_words",
+          "name": "max_tokens",
           "type": {
             "type": "int"
           },
-          "default": 150,
-          "title": "Max Words",
-          "description": "Target maximum number of words for the summary",
+          "default": 200,
+          "title": "Max Tokens",
+          "description": "Target maximum number of tokens for the summary",
           "min": 50.0,
-          "max": 500.0
+          "max": 16384.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window",
+          "description": "Context window for the model",
+          "min": 1.0,
+          "max": 200000.0
         }
       ],
       "outputs": [
@@ -7555,9 +7586,79 @@
       ],
       "basic_fields": [
         "text",
-        "max_words",
+        "max_tokens",
         "model"
       ]
+    },
+    {
+      "title": "Summarizer (Streaming)",
+      "description": "Generate concise summaries of text content using LLM providers with streaming output.\n    text, summarization, nlp, content, streaming\n\n    Specialized for creating high-quality summaries with real-time streaming:\n    - Condensing long documents into key points\n    - Creating executive summaries with live output\n    - Extracting main ideas from text as they're generated\n    - Maintaining factual accuracy while reducing length",
+      "namespace": "nodetool.llms",
+      "node_type": "nodetool.llms.SummarizerStreaming",
+      "properties": [
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
+          "title": "System Prompt",
+          "description": "The system prompt for the summarizer"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use for summarization"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to summarize"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 200,
+          "title": "Max Tokens",
+          "description": "Target maximum number of tokens for the summary",
+          "min": 50.0,
+          "max": 16384.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "max_tokens",
+        "model"
+      ],
+      "is_streaming": true
     },
     {
       "title": "Audio Mixer",

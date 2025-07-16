@@ -333,7 +333,7 @@ class Summarizer(BaseNode):
         1. Identify and include only the most important information.
         2. Maintain factual accuracy - do not add or modify information.
         3. Use clear, direct language.
-        4. Aim for approximately {self.max_words} words.
+        4. Aim for approximately {self.max_tokens} tokens.
         """,
         description="The system prompt for the summarizer",
     )
@@ -343,16 +343,22 @@ class Summarizer(BaseNode):
         description="Model to use for summarization",
     )
     text: str = Field(default="", description="The text to summarize")
-    max_words: int = Field(
-        default=150,
-        description="Target maximum number of words for the summary",
+    max_tokens: int = Field(
+        default=200,
+        description="Target maximum number of tokens for the summary",
         ge=50,
-        le=500,
+        le=16384,
+    )
+    context_window: int = Field(
+        default=4096,
+        description="Context window for the model",
+        ge=1,
+        le=200000,
     )
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["text", "max_words", "model"]
+        return ["text", "max_tokens", "model"]
 
     async def process(self, context: ProcessingContext) -> str:
         if self.model.provider == Provider.Empty:
@@ -375,7 +381,8 @@ class Summarizer(BaseNode):
             model=self.model.id,
             node_id=self.id,
             provider=self.model.provider,
-            max_tokens=8192,
+            max_tokens=self.max_tokens,
+            context_window=self.context_window,
         ):  # type: ignore
             if isinstance(chunk, Chunk):
                 context.post_message(
@@ -389,6 +396,89 @@ class Summarizer(BaseNode):
                 result_content += chunk.content
 
         return result_content
+
+
+class SummarizerStreaming(BaseNode):
+    """
+    Generate concise summaries of text content using LLM providers with streaming output.
+    text, summarization, nlp, content, streaming
+
+    Specialized for creating high-quality summaries with real-time streaming:
+    - Condensing long documents into key points
+    - Creating executive summaries with live output
+    - Extracting main ideas from text as they're generated
+    - Maintaining factual accuracy while reducing length
+    """
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Summarizer (Streaming)"
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "text": str,
+        }
+
+    system_prompt: str = Field(
+        default="""
+        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. 
+        Follow these guidelines:
+        1. Identify and include only the most important information.
+        2. Maintain factual accuracy - do not add or modify information.
+        3. Use clear, direct language.
+        4. Aim for approximately {self.max_tokens} tokens.
+        """,
+        description="The system prompt for the summarizer",
+    )
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for summarization",
+    )
+    text: str = Field(default="", description="The text to summarize")
+    max_tokens: int = Field(
+        default=200,
+        description="Target maximum number of tokens for the summary",
+        ge=50,
+        le=16384,
+    )
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
+    )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["text", "max_tokens", "model"]
+
+    async def gen_process(self, context: ProcessingContext):
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
+        content = []
+        content.append(MessageTextContent(text=self.text))
+
+        messages = [
+            Message(role="system", content=self.system_prompt),
+            Message(role="user", content=content),
+        ]
+
+        async for chunk in context.generate_messages(
+            messages=messages,
+            model=self.model.id,
+            node_id=self.id,
+            provider=self.model.provider,
+            max_tokens=self.max_tokens,
+            context_window=self.context_window,
+        ):  # type: ignore
+            print(chunk)
+            if isinstance(chunk, Chunk):
+                if chunk.content_type == "text" or chunk.content_type is None:
+                    yield "text", chunk.content
 
 
 class Extractor(BaseNode):
@@ -430,8 +520,11 @@ class Extractor(BaseNode):
     max_tokens: int = Field(
         default=4096,
         ge=1,
-        le=100000,
+        le=16384,
         description="The maximum number of tokens to generate.",
+    )
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
     @classmethod
@@ -455,6 +548,7 @@ class Extractor(BaseNode):
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
+            context_window=self.context_window,
             response_format={
                 "type": "json_schema",
                 "json_schema": {
@@ -507,6 +601,9 @@ class Classifier(BaseNode):
     categories: list[str] = Field(
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
+    )
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
     @classmethod
@@ -561,6 +658,7 @@ class Classifier(BaseNode):
         assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
+            context_window=self.context_window,
             response_format={
                 "type": "json_schema",
                 "json_schema": classification_schema,
@@ -750,4 +848,3 @@ class LLMStreaming(BaseNode):
                 messages = messages + follow_up_messages
             else:
                 break
-        yield "text", "<nodetool_end_of_stream>"

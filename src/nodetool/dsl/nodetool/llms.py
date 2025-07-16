@@ -38,6 +38,9 @@ class Classifier(GraphNode):
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
     )
+    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description=None
+    )
 
     @classmethod
     def get_node_type(cls):
@@ -82,6 +85,9 @@ class Extractor(GraphNode):
     )
     max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
         default=4096, description="The maximum number of tokens to generate."
+    )
+    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description=None
     )
 
     @classmethod
@@ -214,7 +220,7 @@ class Summarizer(GraphNode):
     """
 
     system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_words} words.\n        ",
+        default="\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
         description="The system prompt for the summarizer",
     )
     model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
@@ -229,10 +235,53 @@ class Summarizer(GraphNode):
     text: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The text to summarize"
     )
-    max_words: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=150, description="Target maximum number of words for the summary"
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=200, description="Target maximum number of tokens for the summary"
+    )
+    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description="Context window for the model"
     )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.llms.Summarizer"
+
+
+class SummarizerStreaming(GraphNode):
+    """
+    Generate concise summaries of text content using LLM providers with streaming output.
+    text, summarization, nlp, content, streaming
+
+    Specialized for creating high-quality summaries with real-time streaming:
+    - Condensing long documents into key points
+    - Creating executive summaries with live output
+    - Extracting main ideas from text as they're generated
+    - Maintaining factual accuracy while reducing length
+    """
+
+    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
+        description="The system prompt for the summarizer",
+    )
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="Model to use for summarization",
+    )
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The text to summarize"
+    )
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=200, description="Target maximum number of tokens for the summary"
+    )
+    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description=None
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.llms.SummarizerStreaming"
