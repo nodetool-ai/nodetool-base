@@ -1,327 +1,323 @@
 {
-  "id": "66a76fbad01511ef97f9000025dd7c17",
+  "id": "27f266ee608411f0ac17000069ebedb1",
   "access": "public",
-  "created_at": "2025-01-12T01:20:42.665175",
-  "updated_at": "2025-01-12T01:20:42.665186",
+  "created_at": "2025-07-16T23:40:29.275768",
+  "updated_at": "2025-07-16T23:40:29.275808",
   "name": "Summarize Newsletters",
   "description": "",
-  "tags": [
-    "email",
-    "start"
-  ],
+  "tags": ["email", "start"],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
     "nodes": [
       {
-        "id": "12",
-        "parent_id": null,
-        "type": "nodetool.workflows.base_node.Group",
-        "data": {},
-        "ui_properties": {
-          "position": {
-            "x": 472,
-            "y": 119
-          },
-          "zIndex": -10,
-          "width": 900,
-          "height": 360,
-          "selectable": false
-        }
-      },
-      {
-        "id": "13",
-        "parent_id": "12",
-        "type": "nodetool.input.GroupInput",
-        "data": {},
-        "ui_properties": {
-          "position": {
-            "x": 50,
-            "y": 168
-          },
-          "zIndex": 0,
-          "width": 122,
-          "selectable": true
-        }
-      },
-      {
-        "id": "14",
-        "parent_id": "12",
-        "type": "nodetool.output.GroupOutput",
-        "data": {},
-        "ui_properties": {
-          "selected": false,
-          "position": {
-            "x": 750,
-            "y": 168
-          },
-          "zIndex": 0,
-          "width": 100,
-          "selectable": true
-        }
-      },
-      {
-        "id": "17",
-        "parent_id": null,
-        "type": "nodetool.workflows.base_node.Preview",
-        "data": {
-          "name": "any_output_2024-12-29"
-        },
-        "ui_properties": {
-          "position": {
-            "x": 1432,
-            "y": 80
-          },
-          "zIndex": 0,
-          "width": 201,
-          "height": 162,
-          "selectable": true
-        }
-      },
-      {
-        "id": "20",
+        "id": "b6989435-487c-4585-94b7-934b3fd1b873",
         "parent_id": null,
         "type": "lib.mail.GmailSearch",
         "data": {
-          "email_address": "matti.georgi@gmail.com",
-          "search_query": "",
-          "max_results": 10
+          "from_address": "",
+          "to_address": "",
+          "subject": "AINews",
+          "body": "",
+          "date_filter": "SINCE_ONE_WEEK",
+          "keywords": "",
+          "folder": "INBOX",
+          "text": "",
+          "max_results": 5
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 242,
-            "y": 219
+            "x": 128,
+            "y": 135
           },
           "zIndex": 0,
           "width": 200,
           "selectable": true
-        }
+        },
+        "dynamic_properties": {}
       },
       {
-        "id": "22",
-        "parent_id": "12",
+        "id": "a83c2cc7-a355-4bde-a257-002a33a8d285",
+        "parent_id": null,
         "type": "lib.mail.EmailFields",
         "data": {},
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 202,
-            "y": 77
+            "x": 358,
+            "y": 246
           },
           "zIndex": 0,
           "width": 200,
           "selectable": true
-        }
+        },
+        "dynamic_properties": {}
       },
       {
-        "id": "31",
+        "id": "0540a845-9222-4461-bbe0-b0aae3959e85",
         "parent_id": null,
-        "type": "nodetool.text.Join",
+        "type": "nodetool.llms.SummarizerStreaming",
         "data": {
-          "delimiter": "=== END OF MAIL ===\n\n\n\n\n"
+          "system_prompt": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
+          "model": {
+            "type": "language_model",
+            "id": "gemma3:4b",
+            "provider": "ollama"
+          },
+          "max_tokens": 100,
+          "context_window": 4096
         },
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 1432.5,
-            "y": 292
+            "x": 588,
+            "y": 240
           },
           "zIndex": 0,
           "width": 200,
           "selectable": true
-        }
+        },
+        "dynamic_properties": {}
       },
       {
-        "id": "34",
+        "id": "a219dd8f-b0a0-470a-8202-0568253fd0a9",
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Preview",
         "data": {
-          "name": "str_output_2025-01-11"
+          "name": "str_text"
         },
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 1992,
-            "y": 180
+            "x": 823,
+            "y": 214
           },
           "zIndex": 0,
-          "width": 619,
-          "height": 895,
+          "width": 553,
+          "height": 565,
           "selectable": true
-        }
-      },
-      {
-        "id": "35",
-        "parent_id": null,
-        "type": "nodetool.llms.Summarizer",
-        "data": {
-          "model": {
-            "type": "llama_model",
-            "repo_id": "phi4:14b"
-          },
-          "context_window": 4096,
-          "max_length": 1000,
-          "temperature": 0,
-          "top_k": 50,
-          "top_p": 0.9,
-          "keep_alive": 300,
-          "focus_aspects": "key insights",
-          "style": "executive summary",
-          "audience": "AI researchers",
-          "key_points_count": 10,
-          "system_prompt": "You are an expert text summarizer. Follow these guidelines:\n\n1. Content Focus:\n   - Extract main arguments, findings, and conclusions\n   - Preserve critical evidence and methodologies\n   - Maintain factual accuracy and context\n   - Include key statistics when relevant\n\n2. Structure and Style:\n   - Present information in logical flow\n   - Use clear, precise language\n   - Balance brevity with completeness\n   - Adapt style to match source material\n\n3. Quality Standards:\n   - Include only information from the source\n   - Avoid personal interpretation\n   - Maintain technical accuracy\n   - Preserve nuance in complex topics\n\nYour goal is to create an accurate, useful, and efficient representation of the original text while maintaining its core meaning and significance.",
-          "prompt": "Create a comprehensive summary of all the newsletter emails:\n\u2022 Focus ONLY on the key information from the source text\n\u2022 Maintain a neutral, objective tone throughout\n\u2022 Present information in a logical flow\n\u2022 Remove any redundant points\n\u2022 Keep only the most important ideas and relationships\n* GROUP ALL NEWS INTO TOPICS\n* IMPORTANT NEWS FIRST",
-          "num_predict": 4096
         },
-        "ui_properties": {
-          "selected": false,
-          "position": {
-            "x": 1663,
-            "y": 229
-          },
-          "zIndex": 0,
-          "width": 299,
-          "selectable": true
-        }
+        "dynamic_properties": {}
       },
       {
-        "id": "36",
-        "parent_id": "12",
-        "type": "nodetool.llms.Summarizer",
-        "data": {
-          "model": {
-            "type": "language_model",
-            "id": "gemma3n:latest",
-            "provider": "ollama"
-          },
-          "context_window": 8192,
-          "max_length": 200,
-          "temperature": 0.7,
-          "top_k": 50,
-          "top_p": 0.95,
-          "keep_alive": 300,
-          "style": "concise bullet points",
-          "audience": "LLM",
-          "focus_aspects": "technical details",
-          "key_points_count": 3,
-          "system_prompt": "You are an expert text summarizer. Follow these guidelines:\n\n1. Content Focus:\n   - Extract main arguments, findings, and conclusions\n   - Preserve critical evidence and methodologies\n   - Maintain factual accuracy and context\n   - Include key statistics when relevant\n\n2. Structure and Style:\n   - Present information in logical flow\n   - Use clear, precise language\n   - Balance brevity with completeness\n   - Adapt style to match source material\n\n3. Quality Standards:\n   - Include only information from the source\n   - Avoid personal interpretation\n   - Maintain technical accuracy\n   - Preserve nuance in complex topics\n\nYour goal is to create an accurate, useful, and efficient representation of the original text while maintaining its core meaning and significance.",
-          "prompt": "Summarize this email newsletter:\n\u2022 Focus ONLY on the key information from the source text\n\u2022 Maintain a neutral, objective tone throughout\n\u2022 Present information in a logical flow\n\u2022 Remove any redundant points\n\u2022 Keep only the most important ideas and relationships\n* NO CONCLUSION\n* NO INTRODUCTION\n* NO EXPLANATION OR ADDITIONAL TEXT\n* ONLY RESPOND WITH THE SUMMAR"
-        },
-        "ui_properties": {
-          "selected": false,
-          "position": {
-            "x": 432,
-            "y": 50
-          },
-          "zIndex": 0,
-          "width": 288,
-          "selectable": true
-        }
-      },
-      {
-        "id": "39",
+        "id": "d36e64ab-fd19-4083-9e3c-8415f8dbb67a",
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Comment",
         "data": {
-          "comment": [
-            {
-              "type": "paragraph",
+          "comment_lexical": {
+            "root": {
               "children": [
                 {
-                  "text": "EDIT SUBJECT"
+                  "children": [
+                    {
+                      "detail": 0,
+                      "format": 1,
+                      "mode": "normal",
+                      "style": "",
+                      "text": "Summarize Newsletters",
+                      "type": "text",
+                      "version": 1
+                    }
+                  ],
+                  "direction": "ltr",
+                  "format": "",
+                  "indent": 0,
+                  "type": "paragraph",
+                  "version": 1,
+                  "textFormat": 1,
+                  "textStyle": ""
+                },
+                {
+                  "children": [
+                    {
+                      "children": [
+                        {
+                          "detail": 0,
+                          "format": 1,
+                          "mode": "normal",
+                          "style": "",
+                          "text": "\ud83d\udce5 Gmail Search: ",
+                          "type": "text",
+                          "version": 1
+                        },
+                        {
+                          "detail": 0,
+                          "format": 0,
+                          "mode": "normal",
+                          "style": "",
+                          "text": "Search for recent emails with the subject line containing \u201cAI News\u201d",
+                          "type": "text",
+                          "version": 1
+                        }
+                      ],
+                      "direction": "ltr",
+                      "format": "",
+                      "indent": 0,
+                      "type": "listitem",
+                      "version": 1,
+                      "textFormat": 1,
+                      "value": 1
+                    },
+                    {
+                      "children": [
+                        {
+                          "detail": 0,
+                          "format": 1,
+                          "mode": "normal",
+                          "style": "",
+                          "text": "\ud83d\udce4 Email Fields Extraction",
+                          "type": "text",
+                          "version": 1
+                        },
+                        {
+                          "detail": 0,
+                          "format": 0,
+                          "mode": "normal",
+                          "style": "",
+                          "text": ": Extracts fields from the retrieved emails",
+                          "type": "text",
+                          "version": 1
+                        }
+                      ],
+                      "direction": "ltr",
+                      "format": "",
+                      "indent": 0,
+                      "type": "listitem",
+                      "version": 1,
+                      "textFormat": 1,
+                      "value": 2
+                    },
+                    {
+                      "children": [
+                        {
+                          "detail": 0,
+                          "format": 1,
+                          "mode": "normal",
+                          "style": "",
+                          "text": "\ud83e\udde0 Summarizer (Streaming): F",
+                          "type": "text",
+                          "version": 1
+                        },
+                        {
+                          "detail": 0,
+                          "format": 0,
+                          "mode": "normal",
+                          "style": "",
+                          "text": "eeds the email BODY text into a summarization model.",
+                          "type": "text",
+                          "version": 1
+                        }
+                      ],
+                      "direction": "ltr",
+                      "format": "",
+                      "indent": 0,
+                      "type": "listitem",
+                      "version": 1,
+                      "textFormat": 1,
+                      "value": 3
+                    },
+                    {
+                      "children": [
+                        {
+                          "detail": 0,
+                          "format": 1,
+                          "mode": "normal",
+                          "style": "",
+                          "text": "\ud83d\udcdd Output Preview:",
+                          "type": "text",
+                          "version": 1
+                        },
+                        {
+                          "detail": 0,
+                          "format": 0,
+                          "mode": "normal",
+                          "style": "",
+                          "text": " Displays the summarized content in a structured format.",
+                          "type": "text",
+                          "version": 1
+                        }
+                      ],
+                      "direction": "ltr",
+                      "format": "",
+                      "indent": 0,
+                      "type": "listitem",
+                      "version": 1,
+                      "textFormat": 1,
+                      "value": 4
+                    }
+                  ],
+                  "direction": "ltr",
+                  "format": "",
+                  "indent": 0,
+                  "type": "list",
+                  "version": 1,
+                  "textFormat": 1,
+                  "listType": "number",
+                  "start": 1,
+                  "tag": "ol"
+                },
+                {
+                  "children": [],
+                  "direction": null,
+                  "format": "",
+                  "indent": 0,
+                  "type": "paragraph",
+                  "version": 1,
+                  "textFormat": 0,
+                  "textStyle": ""
                 }
-              ]
+              ],
+              "direction": "ltr",
+              "format": "",
+              "indent": 0,
+              "type": "root",
+              "version": 1,
+              "textFormat": 1
             }
-          ]
+          }
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": -127,
-            "y": 160
+            "x": 115,
+            "y": -286
           },
           "zIndex": 0,
-          "width": 150,
-          "height": 100,
+          "width": 596,
+          "height": 199,
           "selectable": true
-        }
+        },
+        "dynamic_properties": {}
       }
     ],
     "edges": [
       {
-        "id": "a563f4cf-b41c-4ff1-a5ba-0eca90be0221",
-        "source": "35",
-        "sourceHandle": "output",
-        "target": "34",
-        "targetHandle": "value",
-        "ui_properties": {
-          "className": "str"
-        }
-      },
-      {
-        "id": "f4cd7afd-ba08-4850-b47f-417ee7a9cd77",
-        "source": "36",
-        "sourceHandle": "output",
-        "target": "14",
-        "targetHandle": "input",
-        "ui_properties": {
-          "className": "str"
-        }
-      },
-      {
-        "id": "08465db1-1dfd-4199-bf47-14c0a6b3610c",
-        "source": "20",
-        "sourceHandle": "output",
-        "target": "12",
-        "targetHandle": "input",
-        "ui_properties": {
-          "className": "list"
-        }
-      },
-      {
-        "id": "58335",
-        "source": "12",
-        "sourceHandle": "output",
-        "target": "17",
-        "targetHandle": "value",
-        "ui_properties": {
-          "className": "any"
-        }
-      },
-      {
-        "id": "019f70a8-ba9a-4da2-a433-1cb26f370c40",
-        "source": "13",
-        "sourceHandle": "output",
-        "target": "22",
+        "id": "51791879-f60b-413d-bf37-e95708f9e870",
+        "source": "b6989435-487c-4585-94b7-934b3fd1b873",
+        "sourceHandle": "email",
+        "target": "a83c2cc7-a355-4bde-a257-002a33a8d285",
         "targetHandle": "email",
         "ui_properties": {
-          "className": "any"
+          "className": "email"
         }
       },
       {
-        "id": "79986c7a-a2cf-4904-89fa-4effbe58d784",
-        "source": "22",
+        "id": "491286ab-e7f2-425d-ba42-ece434bb9403",
+        "source": "a83c2cc7-a355-4bde-a257-002a33a8d285",
         "sourceHandle": "body",
-        "target": "36",
+        "target": "0540a845-9222-4461-bbe0-b0aae3959e85",
         "targetHandle": "text",
         "ui_properties": {
           "className": "str"
         }
       },
       {
-        "id": "062d3357-44b5-4e0d-bfcc-39e3f36d4d1c",
-        "source": "12",
-        "sourceHandle": "output",
-        "target": "31",
-        "targetHandle": "values",
-        "ui_properties": {
-          "className": "any"
-        }
-      },
-      {
-        "id": "a270ae57-f9f7-42f4-98f1-81891f2618a6",
-        "source": "31",
-        "sourceHandle": "output",
-        "target": "35",
-        "targetHandle": "text",
+        "id": "668f180b-2bdc-4d86-8290-f7a7c17e291f",
+        "source": "0540a845-9222-4461-bbe0-b0aae3959e85",
+        "sourceHandle": "text",
+        "target": "a219dd8f-b0a0-470a-8202-0568253fd0a9",
+        "targetHandle": "value",
         "ui_properties": {
           "className": "str"
         }
@@ -329,5 +325,9 @@
     ]
   },
   "input_schema": null,
-  "output_schema": null
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null
 }
