@@ -134,6 +134,93 @@
       ]
     },
     {
+      "title": "Chat Completion",
+      "description": "Chat completion node using HuggingFace Inference API.\n    Generates text based on a given prompt.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.ChatCompletion",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_text_generation_model"
+          },
+          "default": {
+            "provider": "cerebras",
+            "model_id": "Qwen/Qwen3-235B-A22B-Thinking-2507"
+          },
+          "title": "Model",
+          "description": "The model to use for text generation"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The input text prompt to generate from"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "description": "Maximum number of tokens to generate",
+          "min": 1.0,
+          "max": 16384.0
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Temperature",
+          "description": "The value used to module the logits distribution",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "top_p",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Top P",
+          "description": "Top-p value for nucleus sampling",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "top_k",
+          "type": {
+            "type": "int"
+          },
+          "default": 50,
+          "title": "Top K",
+          "description": "The number of highest probability vocabulary tokens to keep for top-k-filtering"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "prompt",
+        "max_tokens",
+        "temperature",
+        "top_p",
+        "top_k"
+      ]
+    },
+    {
       "title": "Hugging Face Inference",
       "description": "HuggingFace inference node.",
       "namespace": "huggingface_hub",
@@ -463,6 +550,47 @@
           "default": "do_not_truncate",
           "title": "Truncation",
           "description": "Truncation strategy for the input text"
+        },
+        {
+          "name": "max_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 150,
+          "title": "Max Length",
+          "description": "Maximum length of the generated summary",
+          "min": 1.0
+        },
+        {
+          "name": "min_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Min Length",
+          "description": "Minimum length of the generated summary",
+          "min": 1.0
+        },
+        {
+          "name": "num_beams",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Num Beams",
+          "description": "Number of beams for beam search. 1 means no beam search",
+          "min": 1.0
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Temperature",
+          "description": "The value used to modulate the logits distribution",
+          "min": 0.1,
+          "max": 2.0
         }
       ],
       "outputs": [
@@ -477,7 +605,11 @@
         "model",
         "text",
         "clean_up_tokenization_spaces",
-        "truncation"
+        "truncation",
+        "max_length",
+        "min_length",
+        "num_beams",
+        "temperature"
       ]
     },
     {
@@ -634,6 +766,15 @@
           "default": -1,
           "title": "Seed",
           "description": "Seed for the random number generator. Use -1 for random seed"
+        },
+        {
+          "name": "scheduler",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Scheduler",
+          "description": "Override the scheduler with a compatible one"
         }
       ],
       "outputs": [
@@ -652,7 +793,125 @@
         "num_inference_steps",
         "width",
         "height",
-        "seed"
+        "seed",
+        "scheduler"
+      ]
+    },
+    {
+      "title": "Text To Speech",
+      "description": "Text-to-speech node using HuggingFace Inference API.\n    Generates speech audio from input text.",
+      "namespace": "huggingface_hub",
+      "node_type": "huggingface_hub.TextToSpeech",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "inference_provider_text_to_speech_model"
+          },
+          "default": {
+            "model_id": "microsoft/speecht5_tts"
+          },
+          "title": "Model",
+          "description": "The model to use for text-to-speech synthesis"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The input text to convert to speech"
+        },
+        {
+          "name": "do_sample",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Do Sample",
+          "description": "Whether to use sampling instead of greedy decoding when generating new tokens"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Temperature",
+          "description": "The value used to modulate the next token probabilities",
+          "min": 0.1,
+          "max": 2.0
+        },
+        {
+          "name": "top_k",
+          "type": {
+            "type": "int"
+          },
+          "default": 50,
+          "title": "Top K",
+          "description": "The number of highest probability vocabulary tokens to keep for top-k-filtering",
+          "min": 1.0
+        },
+        {
+          "name": "top_p",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Top P",
+          "description": "If set to float < 1, only the smallest set of most probable tokens are kept for generation",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "max_new_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Max New Tokens",
+          "description": "The maximum number of tokens to generate",
+          "min": 1.0
+        },
+        {
+          "name": "num_beams",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Num Beams",
+          "description": "Number of beams to use for beam search",
+          "min": 1.0
+        },
+        {
+          "name": "use_cache",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Use Cache",
+          "description": "Whether the model should use the past last key/values attentions to speed up decoding"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "text",
+        "do_sample",
+        "temperature",
+        "top_k",
+        "top_p",
+        "max_new_tokens",
+        "num_beams",
+        "use_cache"
       ]
     },
     {
@@ -723,6 +982,37 @@
           "default": "do_not_truncate",
           "title": "Truncation",
           "description": "Truncation strategy for the input text"
+        },
+        {
+          "name": "max_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Max Length",
+          "description": "Maximum length of the generated translation",
+          "min": 1.0
+        },
+        {
+          "name": "num_beams",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Num Beams",
+          "description": "Number of beams for beam search. 1 means no beam search",
+          "min": 1.0
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Temperature",
+          "description": "The value used to modulate the logits distribution",
+          "min": 0.1,
+          "max": 2.0
         }
       ],
       "outputs": [
@@ -739,7 +1029,10 @@
         "src_lang",
         "tgt_lang",
         "clean_up_tokenization_spaces",
-        "truncation"
+        "truncation",
+        "max_length",
+        "num_beams",
+        "temperature"
       ]
     },
     {
