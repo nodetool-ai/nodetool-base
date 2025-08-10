@@ -156,7 +156,7 @@
       {
         "id": "77a9cf98-c4c6-4585-930b-badbe641a662",
         "parent_id": null,
-        "type": "nodetool.llms.LLM",
+        "type": "nodetool.agents.Agent",
         "data": {
           "model": {
             "type": "language_model",

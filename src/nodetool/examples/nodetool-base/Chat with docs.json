@@ -328,7 +328,7 @@
       {
         "id": "92df5e6c-f50c-48be-bc67-fb339c96146f",
         "parent_id": null,
-        "type": "nodetool.llms.LLMStreaming",
+        "type": "nodetool.agents.AgentStreaming",
         "data": {
           "model": {
             "type": "language_model",

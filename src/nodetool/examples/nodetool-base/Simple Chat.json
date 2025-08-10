@@ -152,7 +152,7 @@
       {
         "id": "0705f90d-2c37-44e3-9e2d-2151bbf445a7",
         "parent_id": null,
-        "type": "nodetool.llms.LLM",
+        "type": "nodetool.agents.Agent",
         "data": {
           "model": {
             "type": "language_model",

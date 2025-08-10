@@ -158,7 +158,7 @@
       {
         "id": "15",
         "parent_id": "9",
-        "type": "nodetool.llms.LLM",
+        "type": "nodetool.agents.Agent",
         "data": {
           "model": {
             "type": "language_model",
