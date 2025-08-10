@@ -5919,15 +5919,6 @@
       "node_type": "nodetool.input.AudioInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "audio"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The audio to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -5935,6 +5926,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The audio to use as input."
         },
         {
           "name": "description",
@@ -5955,6 +5955,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -5965,14 +5966,6 @@
       "node_type": "nodetool.input.BooleanInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -5980,6 +5973,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Value"
         },
         {
           "name": "description",
@@ -6000,6 +6001,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6009,6 +6011,15 @@
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.ChatInput",
       "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
         {
           "name": "value",
           "type": {
@@ -6022,15 +6033,6 @@
           "default": [],
           "title": "Value",
           "description": "The chat message to use as input."
-        },
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
         },
         {
           "name": "description",
@@ -6097,6 +6099,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6107,15 +6110,6 @@
       "node_type": "nodetool.input.CollectionInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "collection"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The collection to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6123,6 +6117,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "collection"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The collection to use as input."
         },
         {
           "name": "description",
@@ -6143,6 +6146,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6153,15 +6157,6 @@
       "node_type": "nodetool.input.DataframeInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "dataframe"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The dataframe to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6169,6 +6164,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The dataframe to use as input."
         },
         {
           "name": "description",
@@ -6189,6 +6193,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6199,15 +6204,6 @@
       "node_type": "nodetool.input.DocumentFileInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The path to the document file."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6215,6 +6211,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The path to the document file."
         },
         {
           "name": "description",
@@ -6241,6 +6246,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6251,15 +6257,6 @@
       "node_type": "nodetool.input.DocumentInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "document"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The document to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6267,6 +6264,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The document to use as input."
         },
         {
           "name": "description",
@@ -6287,6 +6293,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6297,14 +6304,6 @@
       "node_type": "nodetool.input.FloatInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6312,6 +6311,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Value"
         },
         {
           "name": "description",
@@ -6348,6 +6355,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6358,15 +6366,6 @@
       "node_type": "nodetool.input.ImageInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "image"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The image to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6374,6 +6373,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The image to use as input."
         },
         {
           "name": "description",
@@ -6394,6 +6402,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6404,14 +6413,6 @@
       "node_type": "nodetool.input.IntegerInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6419,6 +6420,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Value"
         },
         {
           "name": "description",
@@ -6455,6 +6464,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6464,6 +6474,15 @@
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.ListInput",
       "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
         {
           "name": "value",
           "type": {
@@ -6479,15 +6498,6 @@
           "description": "The list of items to use as input."
         },
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "description",
           "type": {
             "type": "str"
@@ -6511,6 +6521,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6521,15 +6532,6 @@
       "node_type": "nodetool.input.PathInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The path to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6537,6 +6539,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The path to use as input."
         },
         {
           "name": "description",
@@ -6557,6 +6568,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6567,14 +6579,6 @@
       "node_type": "nodetool.input.StringInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6582,6 +6586,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value"
         },
         {
           "name": "description",
@@ -6602,6 +6614,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6612,15 +6625,6 @@
       "node_type": "nodetool.input.TextInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "text"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The text asset to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6628,6 +6632,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "text"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The text asset to use as input."
         },
         {
           "name": "description",
@@ -6648,6 +6661,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -6658,15 +6672,6 @@
       "node_type": "nodetool.input.VideoInput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "video"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The video to use as input."
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -6674,6 +6679,15 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "video"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "The video to use as input."
         },
         {
           "name": "description",
@@ -6694,6 +6708,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12426,14 +12441,6 @@
       "node_type": "nodetool.output.ArrayOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "np_array"
-          },
-          "default": {},
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12441,6 +12448,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {},
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12461,6 +12476,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12471,14 +12487,6 @@
       "node_type": "nodetool.output.AudioOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "audio"
-          },
-          "default": {},
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12486,6 +12494,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12506,6 +12522,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12516,14 +12533,6 @@
       "node_type": "nodetool.output.BooleanOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12531,6 +12540,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12551,6 +12568,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12561,14 +12579,6 @@
       "node_type": "nodetool.output.DataframeOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "dataframe"
-          },
-          "default": {},
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12576,6 +12586,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12596,6 +12614,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12606,6 +12625,15 @@
       "node_type": "nodetool.output.DictionaryOutput",
       "properties": [
         {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
           "name": "value",
           "type": {
             "type": "dict",
@@ -12620,15 +12648,6 @@
           },
           "default": {},
           "title": "Value"
-        },
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
         },
         {
           "name": "description",
@@ -12657,6 +12676,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12667,14 +12687,6 @@
       "node_type": "nodetool.output.DocumentOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "document"
-          },
-          "default": {},
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12682,6 +12694,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12702,6 +12722,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12712,14 +12733,6 @@
       "node_type": "nodetool.output.FloatOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12727,6 +12740,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12747,6 +12768,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12757,14 +12779,6 @@
       "node_type": "nodetool.output.ImageOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "image"
-          },
-          "default": {},
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12772,6 +12786,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12792,6 +12814,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12802,14 +12825,6 @@
       "node_type": "nodetool.output.IntegerOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12817,6 +12832,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12837,6 +12860,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12846,6 +12870,15 @@
       "namespace": "nodetool.output",
       "node_type": "nodetool.output.ListOutput",
       "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
         {
           "name": "value",
           "type": {
@@ -12860,15 +12893,6 @@
           "title": "Value"
         },
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "description",
           "type": {
             "type": "str"
@@ -12892,6 +12916,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12902,14 +12927,6 @@
       "node_type": "nodetool.output.StringOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12917,6 +12934,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12937,6 +12962,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -12947,14 +12973,6 @@
       "node_type": "nodetool.output.VideoOutput",
       "properties": [
         {
-          "name": "value",
-          "type": {
-            "type": "video"
-          },
-          "default": {},
-          "title": "Value"
-        },
-        {
           "name": "name",
           "type": {
             "type": "str"
@@ -12962,6 +12980,14 @@
           "default": "",
           "title": "Name",
           "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "video"
+          },
+          "default": {},
+          "title": "Value"
         },
         {
           "name": "description",
@@ -12982,6 +13008,7 @@
         }
       ],
       "basic_fields": [
+        "name",
         "value"
       ]
     },
@@ -21970,9 +21997,9 @@
       ]
     },
     {
-      "id": "862d1018c43211efae4f00000de8b754",
+      "id": "3047c2fa760811f0b24700002df0a13c",
       "name": "Index PDFs",
-      "description": "Create searchable vector database from PDF documents",
+      "description": "Workflow to index PDFs in a folder into a Chroma collection",
       "tags": [
         "rag",
         "start"
