@@ -220,7 +220,7 @@
         "data": {
           "model": {
             "type": "language_model",
-            "id": "gemma3n:latest",
+            "id": "gpt-oss:20b",
             "provider": "ollama"
           },
           "prompt": "",
@@ -283,7 +283,7 @@
         "data": {
           "model": {
             "type": "language_model",
-            "id": "gemma3n:latest",
+            "id": "gpt-oss:20b",
             "provider": "ollama"
           },
           "prompt": "",
