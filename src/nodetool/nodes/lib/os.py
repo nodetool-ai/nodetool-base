@@ -130,13 +130,19 @@ class ListFiles(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
+    @classmethod
+    def return_type(cls):
+        return {
+            "file": FilePath
+        }
+
     directory: FilePath = Field(
         default=FilePath(path="~"), description="Directory to scan"
     )
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
     recursive: bool = Field(default=False, description="Search subdirectories")
 
-    async def process(self, context: ProcessingContext) -> list[FilePath]:
+    async def gen_process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.directory.path:
@@ -150,7 +156,8 @@ class ListFiles(BaseNode):
             pattern = os.path.join(expanded_directory, self.pattern)
             paths = glob.glob(pattern)
 
-        return [FilePath(path=p) for p in paths]
+        for p in paths:
+            yield "file", FilePath(path=p)
 
 
 class CopyFile(BaseNode):

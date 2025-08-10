@@ -1769,7 +1769,7 @@
           },
           "default": {},
           "title": "Embedding Model",
-          "description": "The embedding model to use"
+          "description": "Model to use for embedding, search for nomic-embed-text and download it"
         }
       ],
       "outputs": [
@@ -15313,21 +15313,17 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "file_path"
-              }
-            ]
+            "type": "file_path"
           },
-          "name": "output"
+          "name": "file"
         }
       ],
       "basic_fields": [
         "directory",
         "pattern",
         "recursive"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "List Tar File",
@@ -21933,15 +21929,6 @@
       ]
     },
     {
-      "id": "email_classifier",
-      "name": "Email Classifier",
-      "description": "Automatically categorize emails using AI classification",
-      "tags": [
-        "email",
-        "start"
-      ]
-    },
-    {
       "id": "01170228d0c411efaac30000491f150f",
       "name": "Paper2Podcast",
       "description": "",
@@ -21972,15 +21959,6 @@
       "tags": [
         "audio",
         "llm"
-      ]
-    },
-    {
-      "id": "310d885a341811f0942e0000191c0ba5",
-      "name": "Color Boost Video",
-      "description": "",
-      "tags": [
-        "video",
-        "start"
       ]
     },
     {
