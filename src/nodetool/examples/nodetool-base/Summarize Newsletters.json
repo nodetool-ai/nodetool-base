@@ -57,7 +57,7 @@
       {
         "id": "0540a845-9222-4461-bbe0-b0aae3959e85",
         "parent_id": null,
-        "type": "nodetool.llms.SummarizerStreaming",
+        "type": "nodetool.agents.SummarizerStreaming",
         "data": {
           "system_prompt": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
           "model": {

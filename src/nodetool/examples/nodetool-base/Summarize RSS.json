@@ -216,7 +216,7 @@
       {
         "id": "19",
         "parent_id": null,
-        "type": "nodetool.llms.Summarizer",
+        "type": "nodetool.agents.Summarizer",
         "data": {
           "model": {
             "type": "language_model",
@@ -279,7 +279,7 @@
       {
         "id": "22",
         "parent_id": "9",
-        "type": "nodetool.llms.Summarizer",
+        "type": "nodetool.agents.Summarizer",
         "data": {
           "model": {
             "type": "language_model",

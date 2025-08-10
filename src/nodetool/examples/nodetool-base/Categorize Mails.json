@@ -170,7 +170,7 @@
       {
         "id": "a6df088f-3515-49c7-9a86-fb158ae223cc",
         "parent_id": null,
-        "type": "nodetool.llms.Classifier",
+        "type": "nodetool.agents.Classifier",
         "data": {
           "system_prompt": "\n        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.\n        ",
           "model": {
