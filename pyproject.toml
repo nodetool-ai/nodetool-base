@@ -19,6 +19,8 @@ include = [
     "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg",
     "src/nodetool/assets/nodetool-base/Data Generator.jpg",
     "src/nodetool/assets/nodetool-base/Data Visualization Pipeline.jpg",
+    "src/nodetool/assets/nodetool-base/Index PDFs.jpg",
+    "src/nodetool/assets/nodetool-base/Summarize Paper.jpg",
 ]
 repository = "https://github.com/nodetool-ai/nodetool-base"
 

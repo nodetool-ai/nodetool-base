@@ -398,13 +398,13 @@ class MultiStepAgent(BaseNode):
 
 class StructuredOutputAgent(MultiStepAgent):
     """
-    Executes tasks using a multi-step agent that can call tools and return a dictionary
+    Executes tasks using a multi-step agent that can call tools and return a structured output
     agent, execution, tasks
     """
 
     @classmethod
     def get_title(cls) -> str:
-        return "Dict Agent"
+        return "Structured Output Agent"
 
     fields: RecordType = Field(
         default=RecordType(),
@@ -427,7 +427,7 @@ class StructuredOutputAgent(MultiStepAgent):
 
 class DataframeAgent(MultiStepAgent):
     """
-    Executes tasks using a multi-step agent that can call tools and return a dataframe
+    Executes tasks using a multi-step agent that can call tools and return a structured output
     agent, execution, tasks
 
     Use cases:
@@ -501,140 +501,6 @@ class ListAgent(MultiStepAgent):
             raise ValueError("Agent did not return a list")
         return result
 
-
-class SimpleAgentNode(BaseNode):
-    """
-    Executes a single task using a simple agent that can call tools.
-    agent, execution, tasks, simple
-
-    Use cases:
-    - Simple, focused tasks with a clear objective
-    - Tasks that don't require complex planning
-    - Quick responses with tool calling capabilities
-    """
-
-    name: str = Field(
-        default="Simple Agent",
-        description="The name of the simple agent executor",
-    )
-
-    objective: str = Field(default="", description="The objective or task to complete")
-
-    model: LanguageModel = Field(
-        default=LanguageModel(),
-        description="Model to use for execution",
-    )
-
-    tools: list[ToolName] = Field(
-        default=[], description="List of tools to use for execution"
-    )
-
-    output_schema: Optional[dict] = Field(
-        default=None, description="Optional JSON schema for the output"
-    )
-
-    max_iterations: int = Field(
-        default=20, description="Maximum execution iterations to prevent infinite loops"
-    )
-
-    _is_dynamic = True
-
-    @classmethod
-    def get_title(cls) -> str:
-        return "Simple Agent"
-
-    @classmethod
-    def get_basic_fields(cls) -> list[str]:
-        return [
-            "objective",
-            "model",
-            "tools",
-            "output_schema",
-            "max_iterations",
-        ]
-
-    async def process(self, context: ProcessingContext) -> str:
-        if not self.model.provider:
-            raise ValueError("Select a model")
-
-        if not self.objective:
-            raise ValueError("Objective cannot be empty")
-
-        provider = get_provider(self.model.provider)
-
-        tools = [init_tool(tool) for tool in self.tools]
-        tools_instances = [tool for tool in tools if tool is not None]
-
-        # Use default string schema if none provided
-        output_schema = self.output_schema or {"type": "string"}
-
-        inputs = self.get_dynamic_properties()
-
-        # Initialize SimpleAgent
-        from nodetool.agents.simple_agent import SimpleAgent
-
-        agent = SimpleAgent(
-            name=self.name,
-            objective=self.objective,
-            provider=provider,
-            model=self.model.id,
-            tools=tools_instances,
-            output_schema=output_schema,
-            inputs=inputs,
-            max_iterations=self.max_iterations,
-        )
-
-        # Execute the agent and yield updates
-        async for item in agent.execute(context):
-            if isinstance(item, TaskUpdate):
-                item.node_id = self.id
-                context.post_message(item)
-            elif isinstance(item, PlanningUpdate):
-                item.node_id = self.id
-                context.post_message(item)
-            elif isinstance(item, ToolCall):
-                context.post_message(
-                    ToolCallUpdate(
-                        node_id=self.id,
-                        name=item.name,
-                        args=item.args,
-                        message=item.message,
-                    )
-                )
-            elif isinstance(item, Chunk):
-                item.node_id = self.id
-                context.post_message(item)
-
-        # Get the results
-        result = agent.get_results()
-
-        # Handle different result types
-        if isinstance(result, dict) and "path" in result:
-            result_path = result.get("path")
-            if not result_path:
-                raise ValueError(
-                    f"Agent returned a dictionary with an empty path: {result}"
-                )
-
-            resolved_path = context.resolve_workspace_path(result_path)
-            if not os.path.exists(resolved_path):
-                raise ValueError(f"Agent returned path does not exist: {resolved_path}")
-
-            try:
-                with open(resolved_path, "r", encoding="utf-8") as f:
-                    file_content = f.read()
-                return file_content
-            except Exception as e:
-                raise ValueError(
-                    f"Failed to read file content from {resolved_path}: {e}"
-                )
-
-        # Return result as string
-        if not isinstance(result, str):
-            if isinstance(result, dict):
-                return json.dumps(result, indent=2)
-            return str(result)
-        return result
 
 
 class MultiStepAgentStreaming(MultiStepAgent):
@@ -814,7 +680,7 @@ class AgentNode(BaseNode):
 
     @classmethod
     def get_title(cls) -> str:
-        return "LLM"
+        return "Agent"
 
     @classmethod
     def is_cacheable(cls) -> bool:

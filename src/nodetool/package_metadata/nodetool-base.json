@@ -4223,7 +4223,7 @@
       ]
     },
     {
-      "title": "LLM",
+      "title": "Agent",
       "description": "Generate natural language responses using LLM providers.\n    llm, text-generation, chatbot, question-answering\n\n    Leverages LLM providers to:\n    - Generate human-like text responses\n    - Answer questions\n    - Complete prompts\n    - Engage in conversational interactions\n    - Assist with writing and editing tasks\n    - Perform text analysis and summarization",
       "namespace": "nodetool.agents",
       "node_type": "nodetool.agents.Agent",
@@ -4574,7 +4574,7 @@
     },
     {
       "title": "Dataframe Agent",
-      "description": "Executes tasks using a multi-step agent that can call tools and return a dataframe\n    agent, execution, tasks\n\n    Use cases:\n    - Automate complex workflows with reasoning\n    - Process tasks with tool calling capabilities\n    - Solve problems step-by-step with LLM reasoning",
+      "description": "Executes tasks using a multi-step agent that can call tools and return a structured output\n    agent, execution, tasks\n\n    Use cases:\n    - Automate complex workflows with reasoning\n    - Process tasks with tool calling capabilities\n    - Solve problems step-by-step with LLM reasoning",
       "namespace": "nodetool.agents",
       "node_type": "nodetool.agents.DataframeAgent",
       "properties": [
@@ -5119,91 +5119,8 @@
       "is_streaming": true
     },
     {
-      "title": "Simple Agent",
-      "description": "Executes a single task using a simple agent that can call tools.\n    agent, execution, tasks, simple\n\n    Use cases:\n    - Simple, focused tasks with a clear objective\n    - Tasks that don't require complex planning\n    - Quick responses with tool calling capabilities",
-      "namespace": "nodetool.agents",
-      "node_type": "nodetool.agents.SimpleAgent",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "Simple Agent",
-          "title": "Name",
-          "description": "The name of the simple agent executor"
-        },
-        {
-          "name": "objective",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Objective",
-          "description": "The objective or task to complete"
-        },
-        {
-          "name": "model",
-          "type": {
-            "type": "language_model"
-          },
-          "default": {},
-          "title": "Model",
-          "description": "Model to use for execution"
-        },
-        {
-          "name": "tools",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tool_name"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Tools",
-          "description": "List of tools to use for execution"
-        },
-        {
-          "name": "output_schema",
-          "type": {
-            "type": "dict",
-            "optional": true
-          },
-          "title": "Output Schema",
-          "description": "Optional JSON schema for the output"
-        },
-        {
-          "name": "max_iterations",
-          "type": {
-            "type": "int"
-          },
-          "default": 20,
-          "title": "Max Iterations",
-          "description": "Maximum execution iterations to prevent infinite loops"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "objective",
-        "model",
-        "tools",
-        "output_schema",
-        "max_iterations"
-      ],
-      "is_dynamic": true
-    },
-    {
-      "title": "Dict Agent",
-      "description": "Executes tasks using a multi-step agent that can call tools and return a dictionary\n    agent, execution, tasks",
+      "title": "Structured Output Agent",
+      "description": "Executes tasks using a multi-step agent that can call tools and return a structured output\n    agent, execution, tasks",
       "namespace": "nodetool.agents",
       "node_type": "nodetool.agents.StructuredOutputAgent",
       "properties": [
@@ -21908,7 +21825,17 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Index PDFs.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Daily Digest.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Summarize Paper.jpg",
       "path": ""
     },
     {
@@ -21956,8 +21883,8 @@
       ]
     },
     {
-      "id": "01170228d0c411efaac30000491f150f",
-      "name": "Paper2Podcast",
+      "id": "e25d8a38761211f080f7000017889565",
+      "name": "Summarize Paper",
       "description": "",
       "tags": [
         "audio",
