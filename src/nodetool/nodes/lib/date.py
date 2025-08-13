@@ -24,6 +24,8 @@ class Today(BaseNode):
     date, today, now
     """
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> Date:
         return Date.from_date(date.today())
 
@@ -34,8 +36,11 @@ class Now(BaseNode):
     datetime, current, now
     """
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> Datetime:
         from datetime import timezone
+
         return Datetime.from_datetime(datetime.now(timezone.utc))
 
 
@@ -44,6 +49,8 @@ class ParseDate(BaseNode):
     Parse a date string into components.
     date, parse, format
     """
+
+    _expose_as_tool: bool = True
 
     date_string: str = Field(default="", description="The date string to parse")
     input_format: DateFormat = Field(
@@ -66,6 +73,8 @@ class ParseDateTime(BaseNode):
     - Convert between date formats
     """
 
+    _expose_as_tool: bool = True
+
     datetime_string: str = Field(default="", description="The datetime string to parse")
     input_format: DateFormat = Field(
         default=DateFormat.ISO, description="Format of the input datetime string"
@@ -86,6 +95,8 @@ class AddTimeDelta(BaseNode):
     - Calculate future/past dates
     - Generate date ranges
     """
+
+    _expose_as_tool: bool = True
 
     input_datetime: Datetime = Field(
         default=Datetime(), description="Starting datetime"
@@ -124,6 +135,8 @@ class DateDifference(BaseNode):
     - Measure durations
     """
 
+    _expose_as_tool: bool = True
+
     start_date: Datetime = Field(default=Datetime(), description="Start datetime")
     end_date: Datetime = Field(default=Datetime(), description="End datetime")
 
@@ -158,6 +171,8 @@ class FormatDateTime(BaseNode):
     - Prepare dates for different systems
     """
 
+    _expose_as_tool: bool = True
+
     input_datetime: Datetime = Field(
         default=Datetime(),
         description="Datetime object to format",
@@ -180,6 +195,8 @@ class GetWeekday(BaseNode):
     - Filter events by weekday
     """
 
+    _expose_as_tool: bool = True
+
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
     as_name: bool = Field(
         default=True, description="Return weekday name instead of number (0-6)"
@@ -200,6 +217,8 @@ class DateRange(BaseNode):
     - Generate date sequences
     - Create date-based iterations
     """
+
+    _expose_as_tool: bool = True
 
     start_date: Datetime = Field(
         default=Datetime(),
@@ -231,6 +250,8 @@ class IsDateInRange(BaseNode):
     - Validate date ranges
     - Filter date-based data
     """
+
+    _expose_as_tool: bool = True
 
     check_date: Datetime = Field(default=Datetime(), description="Date to check")
     start_date: Datetime = Field(
@@ -269,6 +290,8 @@ class GetQuarter(BaseNode):
     - Quarterly analytics
     """
 
+    _expose_as_tool: bool = True
+
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
 
     @classmethod
@@ -306,6 +329,8 @@ class DateToDatetime(BaseNode):
     date, datetime, convert
     """
 
+    _expose_as_tool: bool = True
+
     input_date: Date = Field(default=Date(), description="Date to convert")
 
     async def process(self, context: ProcessingContext) -> Datetime:
@@ -320,6 +345,8 @@ class DatetimeToDate(BaseNode):
     date, datetime, convert
     """
 
+    _expose_as_tool: bool = True
+
     input_datetime: Datetime = Field(
         default=Datetime(),
         description="Datetime to convert",
@@ -329,226 +356,165 @@ class DatetimeToDate(BaseNode):
         return Date.from_date(self.input_datetime.to_datetime().date())
 
 
-class HoursAgo(BaseNode):
+class TimeDirection(str, Enum):
+    PAST = "past"
+    FUTURE = "future"
+
+
+class TimeUnitType(str, Enum):
+    HOURS = "hours"
+    DAYS = "days"
+    MONTHS = "months"
+
+
+class RelativeTime(BaseNode):
     """
-    Get datetime from specified hours ago.
-    datetime, past, hours
-    """
+    Get datetime relative to current time (past or future).
+    datetime, past, future, relative, hours, days, months
 
-    hours: int = Field(ge=0, default=1, description="Number of hours ago")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        return Datetime.from_datetime(datetime.now() - timedelta(hours=self.hours))
-
-
-class HoursFromNow(BaseNode):
-    """
-    Get datetime specified hours in the future.
-    datetime, future, hours
-    """
-
-    hours: int = Field(ge=0, default=1, description="Number of hours in the future")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        return Datetime.from_datetime(datetime.now() + timedelta(hours=self.hours))
-
-
-class DaysAgo(BaseNode):
-    """
-    Get datetime from specified days ago.
-    datetime, past, days
+    Use cases:
+    - Calculate past or future dates
+    - Generate relative timestamps
     """
 
-    days: int = Field(ge=0, default=1, description="Number of days ago")
+    _expose_as_tool: bool = True
 
-    async def process(self, context: ProcessingContext) -> Datetime:
-        return Datetime.from_datetime(datetime.now() - timedelta(days=self.days))
-
-
-class DaysFromNow(BaseNode):
-    """
-    Get datetime specified days in the future.
-    datetime, future, days
-    """
-
-    days: int = Field(ge=0, default=1, description="Number of days in the future")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        return Datetime.from_datetime(datetime.now() + timedelta(days=self.days))
-
-
-class MonthsAgo(BaseNode):
-    """
-    Get datetime from specified months ago.
-    datetime, past, months
-    """
-
-    months: int = Field(ge=0, default=1, description="Number of months ago")
+    amount: int = Field(ge=0, default=1, description="Amount of time units")
+    unit: TimeUnitType = Field(default=TimeUnitType.DAYS, description="Time unit type")
+    direction: TimeDirection = Field(
+        default=TimeDirection.FUTURE, description="Past or future"
+    )
 
     async def process(self, context: ProcessingContext) -> Datetime:
         current = datetime.now()
-        year = current.year
-        month = current.month - self.months
 
-        while month <= 0:
-            month += 12
-            year -= 1
+        if self.unit == TimeUnitType.HOURS:
+            delta = timedelta(hours=self.amount)
+            if self.direction == TimeDirection.PAST:
+                return Datetime.from_datetime(current - delta)
+            else:
+                return Datetime.from_datetime(current + delta)
 
-        return Datetime.from_datetime(current.replace(year=year, month=month))
+        elif self.unit == TimeUnitType.DAYS:
+            delta = timedelta(days=self.amount)
+            if self.direction == TimeDirection.PAST:
+                return Datetime.from_datetime(current - delta)
+            else:
+                return Datetime.from_datetime(current + delta)
+
+        else:  # TimeUnitType.MONTHS
+            year = current.year
+            month = current.month
+
+            if self.direction == TimeDirection.PAST:
+                month -= self.amount
+                while month <= 0:
+                    month += 12
+                    year -= 1
+            else:
+                month += self.amount
+                while month > 12:
+                    month -= 12
+                    year += 1
+
+            return Datetime.from_datetime(current.replace(year=year, month=month))
 
 
-class MonthsFromNow(BaseNode):
+class BoundaryType(str, Enum):
+    START = "start"
+    END = "end"
+
+
+class PeriodType(str, Enum):
+    DAY = "day"
+    WEEK = "week"
+    MONTH = "month"
+    YEAR = "year"
+
+
+class BoundaryTime(BaseNode):
     """
-    Get datetime specified months in the future.
-    datetime, future, months
+    Get the start or end of a time period (day, week, month, year).
+    datetime, start, end, boundary, day, week, month, year
+
+    Use cases:
+    - Get period boundaries for reporting
+    - Normalize dates to period starts/ends
     """
 
-    months: int = Field(ge=0, default=1, description="Number of months in the future")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        current = datetime.now()
-        year = current.year
-        month = current.month + self.months
-
-        while month > 12:
-            month -= 12
-            year += 1
-
-        return Datetime.from_datetime(current.replace(year=year, month=month))
-
-
-class StartOfDay(BaseNode):
-    """
-    Get the datetime set to the start of the day (00:00:00).
-    datetime, day, start
-    """
+    _expose_as_tool: bool = True
 
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        return Datetime.from_datetime(
-            dt.replace(hour=0, minute=0, second=0, microsecond=0)
-        )
-
-
-class EndOfDay(BaseNode):
-    """
-    Get the datetime set to the end of the day (23:59:59).
-    datetime, day, end
-    """
-
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        return Datetime.from_datetime(
-            dt.replace(hour=23, minute=59, second=59, microsecond=999999)
-        )
-
-
-class StartOfMonth(BaseNode):
-    """
-    Get the datetime set to the first day of the month.
-    datetime, month, start
-    """
-
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        return Datetime.from_datetime(
-            dt.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-        )
-
-
-class EndOfMonth(BaseNode):
-    """
-    Get the datetime set to the last day of the month.
-    datetime, month, end
-    """
-
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        # Get first day of next month and subtract one day
-        if dt.month == 12:
-            next_month = dt.replace(year=dt.year + 1, month=1, day=1)
-        else:
-            next_month = dt.replace(month=dt.month + 1, day=1)
-        return Datetime.from_datetime(next_month - timedelta(days=1))
-
-
-class StartOfYear(BaseNode):
-    """
-    Get the datetime set to the first day of the year.
-    datetime, year, start
-    """
-
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        return Datetime.from_datetime(
-            dt.replace(month=1, day=1, hour=0, minute=0, second=0, microsecond=0)
-        )
-
-
-class EndOfYear(BaseNode):
-    """
-    Get the datetime set to the last day of the year.
-    datetime, year, end
-    """
-
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        return Datetime.from_datetime(
-            dt.replace(
-                month=12, day=31, hour=23, minute=59, second=59, microsecond=999999
-            )
-        )
-
-
-class StartOfWeek(BaseNode):
-    """
-    Get the datetime set to the first day of the week (Monday by default).
-    datetime, week, start
-    """
-
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
+    period: PeriodType = Field(default=PeriodType.DAY, description="Time period type")
+    boundary: BoundaryType = Field(
+        default=BoundaryType.START, description="Start or end of period"
+    )
     start_monday: bool = Field(
-        default=True, description="Consider Monday as start of week (False for Sunday)"
+        default=True,
+        description="For week period: Consider Monday as start of week (False for Sunday)",
     )
 
     async def process(self, context: ProcessingContext) -> Datetime:
         dt = self.input_datetime.to_datetime()
-        weekday = dt.weekday() if self.start_monday else (dt.weekday() + 1) % 7
-        return Datetime.from_datetime(
-            (dt - timedelta(days=weekday)).replace(
-                hour=0, minute=0, second=0, microsecond=0
-            )
-        )
 
+        if self.period == PeriodType.DAY:
+            if self.boundary == BoundaryType.START:
+                return Datetime.from_datetime(
+                    dt.replace(hour=0, minute=0, second=0, microsecond=0)
+                )
+            else:  # END
+                return Datetime.from_datetime(
+                    dt.replace(hour=23, minute=59, second=59, microsecond=999999)
+                )
 
-class EndOfWeek(BaseNode):
-    """
-    Get the datetime set to the last day of the week (Sunday by default).
-    datetime, week, end
-    """
+        elif self.period == PeriodType.WEEK:
+            weekday = dt.weekday() if self.start_monday else (dt.weekday() + 1) % 7
+            if self.boundary == BoundaryType.START:
+                return Datetime.from_datetime(
+                    (dt - timedelta(days=weekday)).replace(
+                        hour=0, minute=0, second=0, microsecond=0
+                    )
+                )
+            else:  # END
+                return Datetime.from_datetime(
+                    (dt + timedelta(days=6 - weekday)).replace(
+                        hour=23, minute=59, second=59, microsecond=999999
+                    )
+                )
 
-    input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
-    start_monday: bool = Field(
-        default=True, description="Consider Monday as start of week (False for Sunday)"
-    )
+        elif self.period == PeriodType.MONTH:
+            if self.boundary == BoundaryType.START:
+                return Datetime.from_datetime(
+                    dt.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+                )
+            else:  # END
+                # Get first day of next month and subtract one day
+                if dt.month == 12:
+                    next_month = dt.replace(year=dt.year + 1, month=1, day=1)
+                else:
+                    next_month = dt.replace(month=dt.month + 1, day=1)
+                return Datetime.from_datetime(
+                    next_month.replace(
+                        hour=23, minute=59, second=59, microsecond=999999
+                    )
+                    - timedelta(days=1)
+                )
 
-    async def process(self, context: ProcessingContext) -> Datetime:
-        dt = self.input_datetime.to_datetime()
-        weekday = dt.weekday() if self.start_monday else (dt.weekday() + 1) % 7
-        return Datetime.from_datetime(
-            (dt + timedelta(days=6 - weekday)).replace(
-                hour=23, minute=59, second=59, microsecond=999999
-            )
-        )
+        else:  # PeriodType.YEAR
+            if self.boundary == BoundaryType.START:
+                return Datetime.from_datetime(
+                    dt.replace(
+                        month=1, day=1, hour=0, minute=0, second=0, microsecond=0
+                    )
+                )
+            else:  # END
+                return Datetime.from_datetime(
+                    dt.replace(
+                        month=12,
+                        day=31,
+                        hour=23,
+                        minute=59,
+                        second=59,
+                        microsecond=999999,
+                    )
+                )

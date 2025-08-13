@@ -117,6 +117,8 @@ class GmailSearch(BaseNode):
         description="Maximum number of emails to return",
     )
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return ["from_address", "subject", "body", "date_filter", "max_results"]
@@ -174,6 +176,8 @@ class MoveToArchive(BaseNode):
         description="Message ID to archive",
     )
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> bool:
         imap = context.get_gmail_connection()
         imap.select("INBOX")
@@ -198,6 +202,8 @@ class AddLabel(BaseNode):
         default="",
         description="Label to add to the message",
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> bool:
         if not self.message_id:
@@ -254,6 +260,8 @@ class SendEmail(BaseNode):
         default="",
         description="Email body",
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> bool:
         import smtplib

@@ -54,6 +54,8 @@ class CreateImage(BaseNode):
         default=Quality.high, description="The quality of the image to generate."
     )
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> ImageRef:
         params = {
             "prompt": self.prompt,

@@ -16,7 +16,8 @@ class CollectionNode(ChromaNode):
 
     name: str = Field(default="", description="The name of the collection to create")
     embedding_model: LlamaModel = Field(
-        default=LlamaModel(), description="Model to use for embedding, search for nomic-embed-text and download it"
+        default=LlamaModel(),
+        description="Model to use for embedding, search for nomic-embed-text and download it",
     )
 
     async def process(self, context: ProcessingContext) -> Collection:

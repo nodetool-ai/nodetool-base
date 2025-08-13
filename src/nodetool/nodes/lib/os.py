@@ -132,9 +132,7 @@ class ListFiles(BaseNode):
 
     @classmethod
     def return_type(cls):
-        return {
-            "file": FilePath
-        }
+        return {"file": FilePath}
 
     directory: FilePath = Field(
         default=FilePath(path="~"), description="Directory to scan"
@@ -157,7 +155,7 @@ class ListFiles(BaseNode):
             paths = glob.glob(pattern)
 
         for p in paths:
-            yield "file", FilePath(path=p)
+            yield FilePath(path=p)
 
 
 class CopyFile(BaseNode):

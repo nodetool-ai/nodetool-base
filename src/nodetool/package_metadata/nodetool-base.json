@@ -80,7 +80,8 @@
         "audio",
         "function_to_apply",
         "top_k"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Automatic Speech Recognition",
@@ -131,7 +132,8 @@
       "basic_fields": [
         "model",
         "audio"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Chat Completion",
@@ -306,7 +308,8 @@
         "image",
         "function_to_apply",
         "top_k"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Image Segmentation",
@@ -397,7 +400,8 @@
         "overlap_mask_area_threshold",
         "subtask",
         "threshold"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Image To Image",
@@ -498,7 +502,8 @@
         "num_inference_steps",
         "target_width",
         "target_height"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Summarization",
@@ -610,7 +615,8 @@
         "min_length",
         "num_beams",
         "temperature"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Text Classification",
@@ -684,7 +690,8 @@
         "text",
         "function_to_apply",
         "top_k"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Text To Image",
@@ -795,7 +802,8 @@
         "height",
         "seed",
         "scheduler"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Text To Speech",
@@ -1033,7 +1041,8 @@
         "max_length",
         "num_beams",
         "temperature"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Chroma",
@@ -12955,7 +12964,8 @@
       ],
       "basic_fields": [
         "prompt"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Finance",
@@ -13001,7 +13011,8 @@
       "basic_fields": [
         "query",
         "window"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Images",
@@ -13040,32 +13051,25 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
+            "type": "dict",
             "type_args": [
               {
-                "type": "image_result"
+                "type": "str"
+              },
+              {
+                "type": "any"
               }
             ]
           },
-          "name": "results"
-        },
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
-          },
-          "name": "images"
+          "name": "output"
         }
       ],
       "basic_fields": [
         "keyword",
         "image_url",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Jobs",
@@ -13118,7 +13122,8 @@
         "query",
         "location",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Lens",
@@ -13145,34 +13150,11 @@
           "description": "Maximum number of visual search results to return"
         }
       ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "visual_match_result"
-              }
-            ]
-          },
-          "name": "results"
-        },
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
-          },
-          "name": "images"
-        }
-      ],
       "basic_fields": [
         "image_url",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Maps",
@@ -13215,7 +13197,8 @@
       "basic_fields": [
         "query",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google News",
@@ -13258,7 +13241,8 @@
       "basic_fields": [
         "keyword",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Search",
@@ -13301,7 +13285,8 @@
       "basic_fields": [
         "keyword",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Google Shopping",
@@ -13394,7 +13379,8 @@
         "condition",
         "sort_by",
         "num_results"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Add Label",
@@ -13432,7 +13418,8 @@
       "basic_fields": [
         "message_id",
         "label"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Email Fields",
@@ -13611,7 +13598,8 @@
         "date_filter",
         "max_results"
       ],
-      "is_streaming": true
+      "is_streaming": true,
+      "expose_as_tool": true
     },
     {
       "title": "Move To Archive",
@@ -13639,7 +13627,8 @@
       ],
       "basic_fields": [
         "message_id"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Send Email",
@@ -13737,7 +13726,8 @@
         "to_address",
         "subject",
         "body"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Gzip Compress",
@@ -13772,7 +13762,8 @@
       ],
       "basic_fields": [
         "data"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Gzip Decompress",
@@ -13807,11 +13798,12 @@
       ],
       "basic_fields": [
         "data"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Extract Feed Metadata",
-      "description": "Extracts metadata from an RSS feed.\n    rss, metadata, feed\n    \n    Use cases:\n    - Get feed information\n    - Validate feed details\n    - Extract feed metadata",
+      "description": "Extracts metadata from an RSS feed.\n    rss, metadata, feed\n\n    Use cases:\n    - Get feed information\n    - Validate feed details\n    - Extract feed metadata",
       "namespace": "lib.rss",
       "node_type": "lib.rss.ExtractFeedMetadata",
       "properties": [
@@ -13839,7 +13831,7 @@
     },
     {
       "title": "Fetch RSS Feed",
-      "description": "Fetches and parses an RSS feed from a URL.\n    rss, feed, network\n    \n    Use cases:\n    - Monitor news feeds\n    - Aggregate content from multiple sources\n    - Process blog updates",
+      "description": "Fetches and parses an RSS feed from a URL.\n    rss, feed, network\n\n    Use cases:\n    - Monitor news feeds\n    - Aggregate content from multiple sources\n    - Process blog updates",
       "namespace": "lib.rss",
       "node_type": "lib.rss.FetchRSSFeed",
       "properties": [
@@ -13868,7 +13860,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Extract RSS Entry Fields",
@@ -14136,7 +14129,8 @@
       ],
       "basic_fields": [
         "data"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Encode Base64",
@@ -14164,7 +14158,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Hash File",
@@ -14213,7 +14208,8 @@
         "file",
         "algorithm",
         "chunk_size"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Hash String",
@@ -14251,7 +14247,8 @@
       "basic_fields": [
         "text",
         "algorithm"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "HTMLSplitter",
@@ -14462,7 +14459,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Unescape",
@@ -14490,7 +14488,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Absolute Path",
@@ -16138,7 +16137,8 @@
         "possibilities",
         "n",
         "cutoff"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Sequence Similarity Ratio",
@@ -16176,7 +16176,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Unified Diff",
@@ -16244,7 +16245,8 @@
         "fromfile",
         "tofile",
         "lineterm"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Random Bool",
@@ -16258,7 +16260,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Random Choice",
@@ -16291,7 +16294,8 @@
       ],
       "basic_fields": [
         "options"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Random Float",
@@ -16329,7 +16333,8 @@
       "basic_fields": [
         "minimum",
         "maximum"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Random Int",
@@ -16367,7 +16372,8 @@
       "basic_fields": [
         "minimum",
         "maximum"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "FTPBase",
@@ -16415,7 +16421,8 @@
         "host",
         "username",
         "password"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Download File",
@@ -16473,7 +16480,8 @@
         "username",
         "password",
         "remote_path"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "List Directory",
@@ -16536,7 +16544,8 @@
         "username",
         "password",
         "directory"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Upload File",
@@ -16596,7 +16605,8 @@
         "password",
         "remote_path",
         "document"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Compress",
@@ -16689,15 +16699,6 @@
           "default": 20000,
           "title": "Timeout",
           "description": "Timeout in milliseconds for page navigation"
-        },
-        {
-          "name": "use_readability",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Use Readability",
-          "description": "Use Python's Readability for better content extraction"
         }
       ],
       "outputs": [
@@ -16730,9 +16731,9 @@
       ],
       "basic_fields": [
         "url",
-        "timeout",
-        "use_readability"
-      ]
+        "timeout"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Browser Navigation",
@@ -16928,7 +16929,8 @@
         "task",
         "timeout",
         "use_remote_browser"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Download File",
@@ -16956,7 +16958,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Screenshot",
@@ -17024,7 +17027,8 @@
         "selector",
         "output_file",
         "timeout"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Web Fetch",
@@ -17062,7 +17066,8 @@
       "basic_fields": [
         "url",
         "selector"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Convert To Markdown",
@@ -17090,7 +17095,8 @@
       ],
       "basic_fields": [
         "document"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Get Secret",
@@ -17736,7 +17742,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Download Dataframe",
@@ -17808,7 +17815,8 @@
         "url",
         "columns",
         "file_format"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Download Files",
@@ -17879,7 +17887,8 @@
         "urls",
         "output_folder",
         "max_concurrent_downloads"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Fetch Page",
@@ -17937,7 +17946,8 @@
       "basic_fields": [
         "url",
         "wait_time"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Filter Valid URLs",
@@ -18021,7 +18031,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "GET Binary",
@@ -18049,7 +18060,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "GET Document",
@@ -18077,7 +18089,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "HTTPBase",
@@ -18210,7 +18223,8 @@
         "images",
         "base_url",
         "max_concurrent_downloads"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "GET JSON",
@@ -18386,7 +18400,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "POST Binary",
@@ -18431,7 +18446,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "PUT Request",
@@ -18468,13 +18484,14 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
-      "title": "Add",
-      "description": "Performs addition on two inputs.\n    math, plus, add, addition, sum, +",
+      "title": "Binary Op",
+      "description": "Performs a selected binary math operation on two inputs.",
       "namespace": "lib.math",
-      "node_type": "lib.math.Add",
+      "node_type": "lib.math.BinaryOp",
       "layout": "small",
       "properties": [
         {
@@ -18508,6 +18525,23 @@
           },
           "default": 0.0,
           "title": "B"
+        },
+        {
+          "name": "operation",
+          "type": {
+            "type": "enum",
+            "values": [
+              "add",
+              "subtract",
+              "multiply",
+              "divide",
+              "modulus"
+            ],
+            "type_name": "nodetool.nodes.lib.math.Operation"
+          },
+          "default": "add",
+          "title": "Operation",
+          "description": "Binary operation to perform"
         }
       ],
       "outputs": [
@@ -18528,18 +18562,19 @@
       ],
       "basic_fields": [
         "a",
-        "b"
+        "b",
+        "operation"
       ]
     },
     {
-      "title": "Binary Operation",
-      "description": "Common base for binary math operations.",
+      "title": "Unary Op",
+      "description": "Performs a selected unary math operation on an input.",
       "namespace": "lib.math",
-      "node_type": "lib.math.BinaryOperation",
+      "node_type": "lib.math.UnaryOp",
       "layout": "small",
       "properties": [
         {
-          "name": "a",
+          "name": "input",
           "type": {
             "type": "union",
             "type_args": [
@@ -18552,436 +18587,32 @@
             ]
           },
           "default": 0.0,
-          "title": "A"
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "B"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b"
-      ]
-    },
-    {
-      "title": "Cosine",
-      "description": "Computes the cosine of input angles in radians.\n    math, trigonometry, cosine, cos\n\n    Use cases:\n    - Calculating horizontal components in physics\n    - Creating circular motions\n    - Phase calculations in signal processing",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Cosine",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "angle_rad",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "int"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "Angle (Radians)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "angle_rad"
-      ]
-    },
-    {
-      "title": "Divide",
-      "description": "Divides the first input by the second.\n    math, division, arithmetic, quotient, /",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Divide",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "A"
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "B"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b"
-      ]
-    },
-    {
-      "title": "Modulus",
-      "description": "Calculates the element-wise remainder of division.\n    math, modulo, remainder, mod, %\n\n    Use cases:\n    - Implementing cyclic behaviors\n    - Checking for even/odd numbers\n    - Limiting values to a specific range",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Modulus",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "A"
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "B"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b"
-      ]
-    },
-    {
-      "title": "Multiply",
-      "description": "Multiplies two inputs.\n    math, product, times, *",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Multiply",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "A"
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "B"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b"
-      ]
-    },
-    {
-      "title": "Power",
-      "description": "Raises the base to the power of the exponent element-wise.\n    math, exponentiation, power, pow, **\n\n    Use cases:\n    - Calculating compound interest\n    - Implementing polynomial functions\n    - Applying non-linear transformations to data",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Power",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "base",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "int"
-              }
-            ]
-          },
-          "default": 1.0,
-          "title": "Base"
-        },
-        {
-          "name": "exponent",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "int"
-              }
-            ]
-          },
-          "default": 2.0,
-          "title": "Exponent"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "int"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "base",
-        "exponent"
-      ]
-    },
-    {
-      "title": "Sine",
-      "description": "Computes the sine of input angles in radians.\n    math, trigonometry, sine, sin\n\n    Use cases:\n    - Calculating vertical components in physics\n    - Generating smooth periodic functions\n    - Audio signal processing",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Sine",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "angle_rad",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "int"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "Angle (Radians)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "angle_rad"
-      ]
-    },
-    {
-      "title": "Sqrt",
-      "description": "Calculates the square root of the input element-wise.\n    math, square root, sqrt, \u221a\n\n    Use cases:\n    - Normalizing data\n    - Calculating distances in Euclidean space\n    - Finding intermediate values in binary search",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Sqrt",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "x",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 1.0,
           "title": "Input"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "int"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "x"
-      ]
-    },
-    {
-      "title": "Subtract",
-      "description": "Subtracts the second input from the first.\n    math, minus, difference, -",
-      "namespace": "lib.math",
-      "node_type": "lib.math.Subtract",
-      "layout": "small",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": 0.0,
-          "title": "A"
         },
         {
-          "name": "b",
+          "name": "operation",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "float"
-              }
-            ]
+            "type": "enum",
+            "values": [
+              "negate",
+              "absolute",
+              "square",
+              "cube",
+              "square_root",
+              "cube_root",
+              "sine",
+              "cosine",
+              "tangent",
+              "arcsin",
+              "arccos",
+              "arctan",
+              "log"
+            ],
+            "type_name": "nodetool.nodes.lib.math.Operation"
           },
-          "default": 0.0,
-          "title": "B"
+          "default": "negate",
+          "title": "Operation",
+          "description": "Unary operation to perform"
         }
       ],
       "outputs": [
@@ -19001,8 +18632,8 @@
         }
       ],
       "basic_fields": [
-        "a",
-        "b"
+        "input",
+        "operation"
       ]
     },
     {
@@ -19335,7 +18966,79 @@
         "days",
         "hours",
         "minutes"
-      ]
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Boundary Time",
+      "description": "Get the start or end of a time period (day, week, month, year).\n    datetime, start, end, boundary, day, week, month, year\n\n    Use cases:\n    - Get period boundaries for reporting\n    - Normalize dates to period starts/ends",
+      "namespace": "lib.date",
+      "node_type": "lib.date.BoundaryTime",
+      "properties": [
+        {
+          "name": "input_datetime",
+          "type": {
+            "type": "datetime"
+          },
+          "default": {},
+          "title": "Input Datetime",
+          "description": "Input datetime"
+        },
+        {
+          "name": "period",
+          "type": {
+            "type": "enum",
+            "values": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ],
+            "type_name": "nodetool.nodes.lib.date.PeriodType"
+          },
+          "default": "day",
+          "title": "Period",
+          "description": "Time period type"
+        },
+        {
+          "name": "boundary",
+          "type": {
+            "type": "enum",
+            "values": [
+              "start",
+              "end"
+            ],
+            "type_name": "nodetool.nodes.lib.date.BoundaryType"
+          },
+          "default": "start",
+          "title": "Boundary",
+          "description": "Start or end of period"
+        },
+        {
+          "name": "start_monday",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Start Monday",
+          "description": "For week period: Consider Monday as start of week (False for Sunday)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "datetime"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "input_datetime",
+        "period",
+        "boundary",
+        "start_monday"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Date Difference",
@@ -19397,7 +19100,8 @@
       "basic_fields": [
         "start_date",
         "end_date"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Date Range",
@@ -19450,7 +19154,8 @@
         "start_date",
         "end_date",
         "step_days"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Date To Datetime",
@@ -19478,7 +19183,8 @@
       ],
       "basic_fields": [
         "input_date"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Datetime To Date",
@@ -19506,187 +19212,8 @@
       ],
       "basic_fields": [
         "input_datetime"
-      ]
-    },
-    {
-      "title": "Days Ago",
-      "description": "Get datetime from specified days ago.\n    datetime, past, days",
-      "namespace": "lib.date",
-      "node_type": "lib.date.DaysAgo",
-      "properties": [
-        {
-          "name": "days",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Days",
-          "description": "Number of days ago",
-          "min": 0.0
-        }
       ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "days"
-      ]
-    },
-    {
-      "title": "Days From Now",
-      "description": "Get datetime specified days in the future.\n    datetime, future, days",
-      "namespace": "lib.date",
-      "node_type": "lib.date.DaysFromNow",
-      "properties": [
-        {
-          "name": "days",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Days",
-          "description": "Number of days in the future",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "days"
-      ]
-    },
-    {
-      "title": "End Of Day",
-      "description": "Get the datetime set to the end of the day (23:59:59).\n    datetime, day, end",
-      "namespace": "lib.date",
-      "node_type": "lib.date.EndOfDay",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime"
-      ]
-    },
-    {
-      "title": "End Of Month",
-      "description": "Get the datetime set to the last day of the month.\n    datetime, month, end",
-      "namespace": "lib.date",
-      "node_type": "lib.date.EndOfMonth",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime"
-      ]
-    },
-    {
-      "title": "End Of Week",
-      "description": "Get the datetime set to the last day of the week (Sunday by default).\n    datetime, week, end",
-      "namespace": "lib.date",
-      "node_type": "lib.date.EndOfWeek",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        },
-        {
-          "name": "start_monday",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Start Monday",
-          "description": "Consider Monday as start of week (False for Sunday)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime",
-        "start_monday"
-      ]
-    },
-    {
-      "title": "End Of Year",
-      "description": "Get the datetime set to the last day of the year.\n    datetime, year, end",
-      "namespace": "lib.date",
-      "node_type": "lib.date.EndOfYear",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime"
-      ]
+      "expose_as_tool": true
     },
     {
       "title": "Format Date Time",
@@ -19736,7 +19263,8 @@
       "basic_fields": [
         "input_datetime",
         "output_format"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Get Quarter",
@@ -19776,7 +19304,8 @@
       ],
       "basic_fields": [
         "input_datetime"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Get Weekday",
@@ -19822,65 +19351,8 @@
       "basic_fields": [
         "input_datetime",
         "as_name"
-      ]
-    },
-    {
-      "title": "Hours Ago",
-      "description": "Get datetime from specified hours ago.\n    datetime, past, hours",
-      "namespace": "lib.date",
-      "node_type": "lib.date.HoursAgo",
-      "properties": [
-        {
-          "name": "hours",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Hours",
-          "description": "Number of hours ago",
-          "min": 0.0
-        }
       ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "hours"
-      ]
-    },
-    {
-      "title": "Hours From Now",
-      "description": "Get datetime specified hours in the future.\n    datetime, future, hours",
-      "namespace": "lib.date",
-      "node_type": "lib.date.HoursFromNow",
-      "properties": [
-        {
-          "name": "hours",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Hours",
-          "description": "Number of hours in the future",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "hours"
-      ]
+      "expose_as_tool": true
     },
     {
       "title": "Is Date In Range",
@@ -19938,65 +19410,8 @@
         "start_date",
         "end_date",
         "inclusive"
-      ]
-    },
-    {
-      "title": "Months Ago",
-      "description": "Get datetime from specified months ago.\n    datetime, past, months",
-      "namespace": "lib.date",
-      "node_type": "lib.date.MonthsAgo",
-      "properties": [
-        {
-          "name": "months",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Months",
-          "description": "Number of months ago",
-          "min": 0.0
-        }
       ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "months"
-      ]
-    },
-    {
-      "title": "Months From Now",
-      "description": "Get datetime specified months in the future.\n    datetime, future, months",
-      "namespace": "lib.date",
-      "node_type": "lib.date.MonthsFromNow",
-      "properties": [
-        {
-          "name": "months",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Months",
-          "description": "Number of months in the future",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "months"
-      ]
+      "expose_as_tool": true
     },
     {
       "title": "Now",
@@ -20010,7 +19425,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Parse Date",
@@ -20060,7 +19476,8 @@
       "basic_fields": [
         "date_string",
         "input_format"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Parse Date Time",
@@ -20110,87 +19527,53 @@
       "basic_fields": [
         "datetime_string",
         "input_format"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
-      "title": "Start Of Day",
-      "description": "Get the datetime set to the start of the day (00:00:00).\n    datetime, day, start",
+      "title": "Relative Time",
+      "description": "Get datetime relative to current time (past or future).\n    datetime, past, future, relative, hours, days, months\n\n    Use cases:\n    - Calculate past or future dates\n    - Generate relative timestamps",
       "namespace": "lib.date",
-      "node_type": "lib.date.StartOfDay",
+      "node_type": "lib.date.RelativeTime",
       "properties": [
         {
-          "name": "input_datetime",
+          "name": "amount",
           "type": {
-            "type": "datetime"
+            "type": "int"
           },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime"
-      ]
-    },
-    {
-      "title": "Start Of Month",
-      "description": "Get the datetime set to the first day of the month.\n    datetime, month, start",
-      "namespace": "lib.date",
-      "node_type": "lib.date.StartOfMonth",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime"
-      ]
-    },
-    {
-      "title": "Start Of Week",
-      "description": "Get the datetime set to the first day of the week (Monday by default).\n    datetime, week, start",
-      "namespace": "lib.date",
-      "node_type": "lib.date.StartOfWeek",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
+          "default": 1,
+          "title": "Amount",
+          "description": "Amount of time units",
+          "min": 0.0
         },
         {
-          "name": "start_monday",
+          "name": "unit",
           "type": {
-            "type": "bool"
+            "type": "enum",
+            "values": [
+              "hours",
+              "days",
+              "months"
+            ],
+            "type_name": "nodetool.nodes.lib.date.TimeUnitType"
           },
-          "default": true,
-          "title": "Start Monday",
-          "description": "Consider Monday as start of week (False for Sunday)"
+          "default": "days",
+          "title": "Unit",
+          "description": "Time unit type"
+        },
+        {
+          "name": "direction",
+          "type": {
+            "type": "enum",
+            "values": [
+              "past",
+              "future"
+            ],
+            "type_name": "nodetool.nodes.lib.date.TimeDirection"
+          },
+          "default": "future",
+          "title": "Direction",
+          "description": "Past or future"
         }
       ],
       "outputs": [
@@ -20202,37 +19585,11 @@
         }
       ],
       "basic_fields": [
-        "input_datetime",
-        "start_monday"
-      ]
-    },
-    {
-      "title": "Start Of Year",
-      "description": "Get the datetime set to the first day of the year.\n    datetime, year, start",
-      "namespace": "lib.date",
-      "node_type": "lib.date.StartOfYear",
-      "properties": [
-        {
-          "name": "input_datetime",
-          "type": {
-            "type": "datetime"
-          },
-          "default": {},
-          "title": "Input Datetime",
-          "description": "Input datetime"
-        }
+        "amount",
+        "unit",
+        "direction"
       ],
-      "outputs": [
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "input_datetime"
-      ]
+      "expose_as_tool": true
     },
     {
       "title": "Today",
@@ -20246,7 +19603,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Base Get JSONPath",
@@ -21403,7 +20761,8 @@
         "input",
         "model",
         "chunk_size"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Web Search",
@@ -21506,7 +20865,8 @@
         "input",
         "model",
         "voice"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Transcribe",
@@ -21676,7 +21036,8 @@
         "audio",
         "language",
         "timestamps"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Translate",
@@ -21714,7 +21075,8 @@
       "basic_fields": [
         "audio",
         "temperature"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Create Image",
@@ -21804,7 +21166,8 @@
         "size",
         "background",
         "quality"
-      ]
+      ],
+      "expose_as_tool": true
     }
   ],
   "assets": [

@@ -21,6 +21,8 @@ class FTPBaseNode(BaseNode):
     username: str = Field(default="", description="Username for authentication")
     password: str = Field(default="", description="Password for authentication")
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def is_visible(cls) -> bool:
         return cls is not FTPBaseNode
@@ -42,6 +44,8 @@ class FTPDownloadFile(FTPBaseNode):
     """
 
     remote_path: str = Field(default="", description="Remote file path to download")
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):
@@ -82,6 +86,8 @@ class FTPUploadFile(FTPBaseNode):
         default=DocumentRef(), description="Document to upload"
     )
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_title(cls):
         return "Upload File"
@@ -117,6 +123,8 @@ class FTPListDirectory(FTPBaseNode):
     """
 
     directory: str = Field(default="", description="Remote directory to list")
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):

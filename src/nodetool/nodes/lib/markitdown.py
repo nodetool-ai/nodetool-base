@@ -22,6 +22,8 @@ class ConvertToMarkdown(BaseNode):
         default=DocumentRef(), description="The document to convert to markdown"
     )
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> str:
         try:
             if self.document.uri:

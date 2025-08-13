@@ -21,6 +21,8 @@ class HashString(BaseNode):
         description="Hash algorithm name (e.g. md5, sha1, sha256)",
     )
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> str:
         try:
             hasher = getattr(hashlib, self.algorithm)()
@@ -48,6 +50,8 @@ class HashFile(BaseNode):
     chunk_size: int = Field(
         default=8192, ge=1, description="Read size for hashing in bytes"
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> str:
         try:

@@ -47,6 +47,8 @@ class TextToSpeech(BaseNode):
     input: str = Field(title="Input", default="")
     speed: float = Field(title="Speed", default=1.0, ge=0.25, le=4.0)
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> AudioRef:
         res = await context.run_prediction(
             node_id=self._id,
@@ -87,6 +89,8 @@ class Translate(BaseNode):
     temperature: float = Field(
         default=0.0, description="The temperature to use for the translation."
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> str:
         audio_bytes = await context.asset_to_io(self.audio)
@@ -212,6 +216,8 @@ class Transcribe(BaseNode):
         le=1,
         description="The sampling temperature between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
     )
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def return_type(cls):

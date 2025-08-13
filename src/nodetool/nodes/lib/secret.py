@@ -17,6 +17,8 @@ class GetSecret(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> str | None:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
         return Environment.get(self.name, self.default)
 
 
@@ -31,6 +33,9 @@ class SetSecret(BaseNode):
 
     async def process(self, context: ProcessingContext) -> None:
         from nodetool.common.settings import save_settings
+
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
 
         settings = Environment.get_settings()
         secrets = Environment.get_secrets()

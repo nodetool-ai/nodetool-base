@@ -69,6 +69,8 @@ class GetRequest(HTTPBaseNode):
     - Check website availability
     """
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_title(cls):
         return "GET Request"
@@ -89,6 +91,8 @@ class PostRequest(HTTPBaseNode):
     - Upload files
     - Authenticate users
     """
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):
@@ -118,6 +122,8 @@ class PutRequest(HTTPBaseNode):
     - Set configuration values
     """
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_title(cls):
         return "PUT Request"
@@ -145,6 +151,8 @@ class DeleteRequest(HTTPBaseNode):
     - Cancel subscriptions
     - Clear cache entries
     """
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):
@@ -194,6 +202,8 @@ class FetchPage(BaseNode):
         default=10,
         description="Maximum time to wait for page load (in seconds).",
     )
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def return_type(cls):
@@ -255,6 +265,8 @@ class ImageDownloader(BaseNode):
         default=10,
         description="Maximum number of concurrent image downloads.",
     )
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def return_type(cls):
@@ -330,6 +342,8 @@ class GetRequestBinary(HTTPBaseNode):
     - Download any non-text content
     """
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_title(cls):
         return "GET Binary"
@@ -351,6 +365,8 @@ class GetRequestDocument(HTTPBaseNode):
     - Download any document format
     """
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_title(cls):
         return "GET Document"
@@ -371,6 +387,8 @@ class PostRequestBinary(HTTPBaseNode):
     - Process image or media uploads
     - Handle binary file transformations
     """
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):
@@ -399,6 +417,8 @@ class DownloadDataframe(HTTPBaseNode):
     - Retrieve tabular data from APIs
     - Process data files from URLs
     """
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):
@@ -697,6 +717,8 @@ class DownloadFiles(BaseNode):
         default=FilePath(path="downloads"),
         description="Local folder path where files will be saved.",
     )
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def is_visible(cls) -> bool:

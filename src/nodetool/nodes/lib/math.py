@@ -1,144 +1,102 @@
+import asyncio
 import math
+from enum import Enum
+from nodetool.agents.agent import Agent
+from nodetool.agents.tools.node_tool import NodeTool
+from nodetool.chat.providers.base import ChatProvider
+from nodetool.chat.providers.openai_provider import OpenAIProvider
+from nodetool.workflows.types import Chunk
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 
 
-class BinaryOperation(BaseNode):
-    """Common base for binary math operations."""
+class BinaryOp(BaseNode):
+    """Performs a selected binary math operation on two inputs."""
 
     _layout = "small"
+
+    class Operation(str, Enum):
+        ADD = "add"
+        SUBTRACT = "subtract"
+        MULTIPLY = "multiply"
+        DIVIDE = "divide"
+        MODULUS = "modulus"
+
     a: int | float = Field(title="A", default=0.0)
     b: int | float = Field(title="B", default=0.0)
-
-
-class Add(BinaryOperation):
-    """
-    Performs addition on two inputs.
-    math, plus, add, addition, sum, +
-    """
+    operation: Operation = Field(
+        default=Operation.ADD, description="Binary operation to perform"
+    )
 
     async def process(self, context: ProcessingContext) -> int | float:
-        return self.a + self.b
+        if self.operation == self.Operation.ADD:
+            return self.a + self.b
+        elif self.operation == self.Operation.SUBTRACT:
+            return self.a - self.b
+        elif self.operation == self.Operation.MULTIPLY:
+            return self.a * self.b
+        elif self.operation == self.Operation.DIVIDE:
+            return self.a / self.b
+        elif self.operation == self.Operation.MODULUS:
+            return self.a % self.b
+        else:
+            raise ValueError(f"Unsupported operation: {self.operation}")
 
 
-class Subtract(BinaryOperation):
-    """
-    Subtracts the second input from the first.
-    math, minus, difference, -
-    """
-
-    async def process(self, context: ProcessingContext) -> int | float:
-        return self.a - self.b
-
-
-class Multiply(BinaryOperation):
-    """
-    Multiplies two inputs.
-    math, product, times, *
-    """
-
-    async def process(self, context: ProcessingContext) -> int | float:
-        return self.a * self.b
-
-
-class Divide(BinaryOperation):
-    """
-    Divides the first input by the second.
-    math, division, arithmetic, quotient, /
-    """
-
-    async def process(self, context: ProcessingContext) -> int | float:
-        return self.a / self.b
-
-
-class Modulus(BinaryOperation):
-    """
-    Calculates the element-wise remainder of division.
-    math, modulo, remainder, mod, %
-
-    Use cases:
-    - Implementing cyclic behaviors
-    - Checking for even/odd numbers
-    - Limiting values to a specific range
-    """
-
-    async def process(self, context: ProcessingContext) -> int | float:
-        return self.a % self.b
-
-
-class Sine(BaseNode):
-    """
-    Computes the sine of input angles in radians.
-    math, trigonometry, sine, sin
-
-    Use cases:
-    - Calculating vertical components in physics
-    - Generating smooth periodic functions
-    - Audio signal processing
-    """
+class UnaryOp(BaseNode):
+    """Performs a selected unary math operation on an input."""
 
     _layout = "small"
 
-    angle_rad: float | int = Field(title="Angle (Radians)", default=0.0)
+    class Operation(str, Enum):
+        NEGATE = "negate"
+        ABSOLUTE = "absolute"
+        SQUARE = "square"
+        CUBE = "cube"
+        SQUARE_ROOT = "square_root"
+        CUBE_ROOT = "cube_root"
+        SINE = "sine"
+        COSINE = "cosine"
+        TANGENT = "tangent"
+        ARCSINE = "arcsin"
+        ARCCOSINE = "arccos"
+        ARCTANGENT = "arctan"
+        LOG = "log"
 
-    async def process(self, context: ProcessingContext) -> float:
-        return math.sin(self.angle_rad)
+    input: int | float = Field(title="Input", default=0.0)
+    operation: Operation = Field(
+        default=Operation.NEGATE, description="Unary operation to perform"
+    )
 
-
-class Cosine(BaseNode):
-    """
-    Computes the cosine of input angles in radians.
-    math, trigonometry, cosine, cos
-
-    Use cases:
-    - Calculating horizontal components in physics
-    - Creating circular motions
-    - Phase calculations in signal processing
-    """
-
-    _layout = "small"
-
-    angle_rad: float | int = Field(title="Angle (Radians)", default=0.0)
-
-    async def process(self, context: ProcessingContext) -> float:
-        return math.cos(self.angle_rad)
-
-
-class Power(BaseNode):
-    """
-    Raises the base to the power of the exponent element-wise.
-    math, exponentiation, power, pow, **
-
-    Use cases:
-    - Calculating compound interest
-    - Implementing polynomial functions
-    - Applying non-linear transformations to data
-    """
-
-    _layout = "small"
-
-    base: float | int = Field(title="Base", default=1.0)
-    exponent: float | int = Field(title="Exponent", default=2.0)
-
-    async def process(self, context: ProcessingContext) -> float | int:
-        return math.pow(self.base, self.exponent)
-
-
-class Sqrt(BaseNode):
-    """
-    Calculates the square root of the input element-wise.
-    math, square root, sqrt, √
-
-    Use cases:
-    - Normalizing data
-    - Calculating distances in Euclidean space
-    - Finding intermediate values in binary search
-    """
-
-    _layout = "small"
-
-    x: int | float = Field(title="Input", default=1.0)
-
-    async def process(self, context: ProcessingContext) -> float | int:
-        return math.sqrt(self.x)
+    async def process(self, context: ProcessingContext) -> int | float:
+        if self.operation == self.Operation.NEGATE:
+            return -self.input
+        elif self.operation == self.Operation.ABSOLUTE:
+            return abs(self.input)
+        elif self.operation == self.Operation.SQUARE:
+            return self.input * self.input
+        elif self.operation == self.Operation.CUBE:
+            return self.input * self.input * self.input
+        elif self.operation == self.Operation.SQUARE_ROOT:
+            return math.sqrt(self.input)
+        elif self.operation == self.Operation.CUBE_ROOT:
+            value = self.input
+            # Real cube root for negative numbers as well
+            return math.copysign(abs(value) ** (1 / 3), value)
+        elif self.operation == self.Operation.SINE:
+            return math.sin(self.input)
+        elif self.operation == self.Operation.COSINE:
+            return math.cos(self.input)
+        elif self.operation == self.Operation.TANGENT:
+            return math.tan(self.input)
+        elif self.operation == self.Operation.ARCSINE:
+            return math.asin(self.input)
+        elif self.operation == self.Operation.ARCCOSINE:
+            return math.acos(self.input)
+        elif self.operation == self.Operation.ARCTANGENT:
+            return math.atan(self.input)
+        elif self.operation == self.Operation.LOG:
+            return math.log(self.input)
+        else:
+            raise ValueError(f"Unsupported operation: {self.operation}")

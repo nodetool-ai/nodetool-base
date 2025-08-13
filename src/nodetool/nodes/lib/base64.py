@@ -13,6 +13,8 @@ class Encode(BaseNode):
     - Embed data in JSON or HTML
     """
 
+    _expose_as_tool: bool = True
+
     text: str = Field(default="", description="Text to encode")
 
     @classmethod
@@ -31,6 +33,8 @@ class Decode(BaseNode):
     - Read encoded data
     - Extract original text from Base64
     """
+
+    _expose_as_tool: bool = True
 
     data: str = Field(default="", description="Base64 encoded text")
 

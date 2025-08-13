@@ -19,6 +19,8 @@ class RandomInt(BaseNode):
     minimum: int = Field(default=0, description="Minimum value (inclusive)")
     maximum: int = Field(default=100, description="Maximum value (inclusive)")
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> int:
         return random.randint(self.minimum, self.maximum)
 
@@ -37,6 +39,8 @@ class RandomFloat(BaseNode):
     minimum: float = Field(default=0.0, description="Minimum value")
     maximum: float = Field(default=1.0, description="Maximum value")
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> float:
         return random.uniform(self.minimum, self.maximum)
 
@@ -54,6 +58,8 @@ class RandomChoice(BaseNode):
 
     options: list[Any] = Field(default=[], description="List of options")
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> Any:
         if not self.options:
             raise ValueError("options list is empty")
@@ -70,6 +76,8 @@ class RandomBool(BaseNode):
     - Simulate coin flips
     - Introduce randomness in control flow
     """
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> bool:
         return random.choice([True, False])

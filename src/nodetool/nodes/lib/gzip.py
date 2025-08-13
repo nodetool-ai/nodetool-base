@@ -17,6 +17,8 @@ class GzipCompress(BaseNode):
 
     data: bytes | None = Field(default=None, description="Data to compress")
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> bytes:
         if not self.data:
             raise ValueError("data cannot be empty")
@@ -38,6 +40,8 @@ class GzipDecompress(BaseNode):
         default=None,
         description="Gzip data to decompress",
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> bytes:
         if not self.data:

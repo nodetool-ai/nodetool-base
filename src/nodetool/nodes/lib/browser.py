@@ -1,6 +1,7 @@
 import traceback
 import aiohttp
 import html2text
+import trafilatura
 import logging
 from bs4 import BeautifulSoup
 from enum import Enum
@@ -13,7 +14,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
 from nodetool.common.environment import Environment
-from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath
 import os
@@ -36,15 +37,12 @@ class Browser(BaseNode):
     - Save extracted content to files
     """
 
+    _expose_as_tool: bool = True
+
     url: str = Field(default="", description="URL to navigate to")
 
     timeout: int = Field(
         default=20000, description="Timeout in milliseconds for page navigation"
-    )
-
-    use_readability: bool = Field(
-        default=True,
-        description="Use Python's Readability for better content extraction",
     )
 
     @classmethod
@@ -84,45 +82,13 @@ class Browser(BaseNode):
         try:
             # Navigate to the URL with more complete loading strategy
             await page.goto(self.url, wait_until="networkidle", timeout=self.timeout)
+            html_content = await page.content()
 
-            # Extract metadata from the page
-            metadata = await self._extract_metadata(page)
-
-            result = {
+            return {
                 "success": True,
-                "metadata": metadata,
+                "metadata": trafilatura.extract_metadata(html_content).as_dict(),
+                "content": trafilatura.extract(html_content),
             }
-
-            # Extract content using Readability or plain HTML
-            if self.use_readability:
-                try:
-                    logger.debug("Using Python Readability for URL: %s", self.url)
-
-                    # Get the HTML content from the page
-                    html_content = await page.content()
-                    logger.debug("HTML content: %s", html_content)
-
-                    doc = Document(html_content)
-
-                    # Get the article content
-                    article_content = doc.summary()
-
-                    # Convert to plain text
-                    h = html2text.HTML2Text(baseurl=self.url, bodywidth=1000)
-                    h.ignore_images = True
-                    h.ignore_mailto_links = True
-                    content = h.handle(article_content)
-
-                except Exception as e:
-                    logger.warning("Exception using Python Readability: %s", e)
-                    # Fallback to using regular HTML content on exception
-                    content = html2text.html2text(await page.content())
-            else:
-                content = html2text.html2text(await page.content())
-
-            result["content"] = content
-
-            return result
         except Exception as e:
             logger.error("Error fetching page: %s", e)
             traceback.print_exc()
@@ -132,72 +98,6 @@ class Browser(BaseNode):
             # Always close the browser session
             await browser.close()
             await playwright_instance.stop()
-
-    async def _extract_metadata(self, page):
-        """
-        Extract both Open Graph and standard metadata from a webpage using Playwright.
-        """
-        # Create a dictionary to store the metadata
-        metadata = {
-            "og": {},  # For Open Graph metadata
-            "standard": {},  # For standard metadata
-        }
-
-        # List of Open Graph properties to extract
-        og_properties = [
-            "og:locale",
-            "og:type",
-            "og:title",
-            "og:description",
-            "og:url",
-            "og:site_name",
-            "og:image",
-            "og:image:width",
-            "og:image:height",
-            "og:image:type",
-        ]
-
-        # List of standard meta properties to extract
-        standard_properties = [
-            "description",
-            "keywords",
-            "author",
-            "viewport",
-            "robots",
-            "canonical",
-            "generator",
-        ]
-
-        # Extract Open Graph metadata
-        for prop in og_properties:
-            # Use locator to find the meta tag with the specific property
-            locator = page.locator(f'meta[property="{prop}"]')
-
-            # Check if the element exists
-            if await locator.count() > 0:
-                # Extract the content attribute
-                content = await locator.first.get_attribute("content")
-                # Store in dictionary (remove 'og:' prefix for cleaner keys)
-                metadata["og"][prop.replace("og:", "")] = content
-
-        # Extract standard metadata
-        for prop in standard_properties:
-            # Use locator to find the meta tag with the specific name
-            locator = page.locator(f'meta[name="{prop}"]')
-
-            # Check if the element exists
-            if await locator.count() > 0:
-                # Extract the content attribute
-                content = await locator.first.get_attribute("content")
-                # Store in dictionary
-                metadata["standard"][prop] = content
-
-        # Also get title from the title tag
-        title_locator = page.locator("title")
-        if await title_locator.count() > 0:
-            metadata["standard"]["title"] = await title_locator.first.inner_text()
-
-        return metadata
 
 
 class Screenshot(BaseNode):
@@ -210,6 +110,8 @@ class Screenshot(BaseNode):
     - Document specific UI elements
     - Create visual records of web content
     """
+
+    _expose_as_tool: bool = True
 
     url: str = Field(
         default="", description="URL to navigate to before taking screenshot"
@@ -297,6 +199,8 @@ class WebFetch(BaseNode):
     - Save web content to files
     """
 
+    _expose_as_tool: bool = True
+
     url: str = Field(default="", description="URL to fetch content from")
 
     selector: str = Field(
@@ -368,6 +272,8 @@ class DownloadFile(BaseNode):
     - Save data for further processing
     - Retrieve file assets for analysis
     """
+
+    _expose_as_tool: bool = True
 
     url: str = Field(default="", description="URL of the file to download")
 
@@ -587,6 +493,8 @@ class BrowserUseNode(BaseNode):
     - Automate multi-step web workflows.
     """
 
+    _expose_as_tool: bool = True
+
     model: BrowserUseModel = Field(
         default=BrowserUseModel.GPT_4O,
         description="The model to use for the browser agent.",
@@ -633,21 +541,18 @@ class BrowserUseNode(BaseNode):
         if self.model == BrowserUseModel.GPT_4O:
             openai_api_key = Environment.get("OPENAI_API_KEY")
             if not openai_api_key:
-                return {
-                    "success": False,
-                    "task": self.task,
-                    "error": "OpenAI API key not found in environment variables (OPENAI_API_KEY).",
-                }
+                raise ApiKeyMissingError(
+                    "OpenAI API key not configured in NodeTool settings."
+                )
 
             llm = ChatOpenAI(model="gpt-4o", temperature=0, api_key=openai_api_key)
         elif self.model == BrowserUseModel.ANTHROPIC_CLAUDE_3_5_SONNET:
             anthropic_api_key = Environment.get("ANTHROPIC_API_KEY")
             if not anthropic_api_key:
-                return {
-                    "success": False,
-                    "task": self.task,
-                    "error": "Anthropic API key not found in environment variables (ANTHROPIC_API_KEY).",
-                }
+                raise ApiKeyMissingError(
+                    "Anthropic API key not configured in NodeTool settings."
+                )
+
             llm = ChatAnthropic(
                 model_name="claude-3-5-sonnet",
                 temperature=0,
@@ -658,18 +563,13 @@ class BrowserUseNode(BaseNode):
 
         browser_instance = None
         try:
-            if self.use_remote_browser:
-                browser_endpoint = Environment.get("BROWSER_URL")
-                if not browser_endpoint:
-                    raise ValueError(
-                        "BrightData scraping browser endpoint not found in environment variables (BROWSER_URL)."
-                    )
-
-                # Use BrightData CDP endpoint
+            browser_url = Environment.get("BROWSER_URL")
+            if self.use_remote_browser and browser_url:
+                # Use a remote browser endpoint
                 browser_instance = BrowserUse(
                     config=BrowserConfig(
                         headless=True,  # Usually required for CDP connection
-                        wss_url=browser_endpoint,
+                        wss_url=browser_url,
                     )
                 )
             else:

@@ -53,6 +53,8 @@ class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
     Automatic speech recognition node.
     """
 
+    _expose_as_tool: bool = True
+
     model: InferenceProviderAutomaticSpeechRecognitionModel = Field(
         default=InferenceProviderAutomaticSpeechRecognitionModel(
             provider=InferenceProvider.fal_ai, model_id="openai/whisper-large-v3"
@@ -113,6 +115,8 @@ class AudioClassification(HuggingFaceInferenceNode):
     )
     top_k: int = Field(default=1, description="The number of top predictions to return")
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> dict[str, float]:
         client = self.get_client(self.model.provider)
         audio_bytes = await context.asset_to_bytes(self.audio)
@@ -158,6 +162,8 @@ class ImageClassification(HuggingFaceInferenceNode):
         description="The function to apply to the model outputs",
     )
     top_k: int = Field(default=1, description="The number of top predictions to return")
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> dict[str, float]:
         client = self.get_client(self.model.provider)
@@ -214,6 +220,8 @@ class ImageSegmentation(HuggingFaceInferenceNode):
     threshold: float = Field(
         default=0.5, description="Probability threshold to filter out predicted masks"
     )
+
+    _expose_as_tool: bool = True
 
     async def process(
         self, context: ProcessingContext
@@ -281,6 +289,8 @@ class ImageToImage(HuggingFaceInferenceNode):
         default=512, description="The target height in pixels of the output image"
     )
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def return_type(cls):
         return ImageRef
@@ -346,6 +356,8 @@ class TextToImage(HuggingFaceInferenceNode):
         default="",
         description="Override the scheduler with a compatible one",
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         client = self.get_client(self.model.provider)
@@ -417,9 +429,7 @@ class Translation(HuggingFaceInferenceNode):
         le=2.0,
     )
 
-    @classmethod
-    def return_type(cls):
-        return str
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> str:
         client = self.get_client(self.model.provider)
@@ -478,6 +488,8 @@ class TextClassification(HuggingFaceInferenceNode):
         default=1,
         description="When specified, limits the output to the top K most probable classes",
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> dict[str, float]:
         client = self.get_client(self.model.provider)
@@ -550,9 +562,7 @@ class Summarization(HuggingFaceInferenceNode):
         le=2.0,
     )
 
-    @classmethod
-    def return_type(cls):
-        return str
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> str:
         client = self.get_client(self.model.provider)
@@ -591,7 +601,8 @@ class ChatCompletion(HuggingFaceInferenceNode):
 
     model: InferenceProviderTextGenerationModel = Field(
         default=InferenceProviderTextGenerationModel(
-            provider=InferenceProvider.cerebras, model_id="Qwen/Qwen3-235B-A22B-Thinking-2507"
+            provider=InferenceProvider.cerebras,
+            model_id="Qwen/Qwen3-235B-A22B-Thinking-2507",
         ),
         description="The model to use for text generation",
     )
@@ -599,7 +610,8 @@ class ChatCompletion(HuggingFaceInferenceNode):
         default="", description="The input text prompt to generate from"
     )
     max_tokens: int = Field(
-        default=4096, description="Maximum number of tokens to generate",
+        default=4096,
+        description="Maximum number of tokens to generate",
         ge=1,
         le=16384,
     )
@@ -624,9 +636,7 @@ class ChatCompletion(HuggingFaceInferenceNode):
         client = self.get_client(self.model.provider)
 
         output = await client.chat_completion(
-            messages=[
-                {"role": "user", "content": self.prompt}
-            ],
+            messages=[{"role": "user", "content": self.prompt}],
             model=self.model.model_id,
             max_tokens=self.max_tokens,
             temperature=self.temperature,
@@ -649,9 +659,7 @@ class TextToSpeech(HuggingFaceInferenceNode):
         ),
         description="The model to use for text-to-speech synthesis",
     )
-    text: str = Field(
-        default="", description="The input text to convert to speech"
-    )
+    text: str = Field(default="", description="The input text to convert to speech")
     do_sample: bool = Field(
         default=False,
         description="Whether to use sampling instead of greedy decoding when generating new tokens",

@@ -1,6 +1,6 @@
 from pydantic import Field
 from nodetool.metadata.types import ImageRef
-from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from google.genai.client import AsyncClient
 from google.genai.types import GenerateImagesConfig
@@ -11,7 +11,10 @@ from google.genai import Client
 def get_genai_client() -> AsyncClient:
     env = Environment.get_environment()
     api_key = env.get("GEMINI_API_KEY")
-    assert api_key, "GEMINI_API_KEY is not set"
+    if not api_key:
+        raise ApiKeyMissingError(
+            "GEMINI_API_KEY is not configured in the nodetool settings"
+        )
     return Client(api_key=api_key).aio
 
 
@@ -25,6 +28,8 @@ class ImageGeneration(BaseNode):
     - Generate assets for creative projects
     - Explore AI-powered image synthesis
     """
+
+    _expose_as_tool: bool = True
 
     prompt: str = Field(
         default="", description="The text prompt describing the image to generate."

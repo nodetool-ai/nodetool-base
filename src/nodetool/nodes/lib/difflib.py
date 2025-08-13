@@ -18,6 +18,8 @@ class SimilarityRatio(BaseNode):
     a: str = Field(default="", description="First string to compare")
     b: str = Field(default="", description="Second string to compare")
 
+    _expose_as_tool: bool = True
+
     @classmethod
     def get_title(cls):
         return "Sequence Similarity Ratio"
@@ -43,6 +45,8 @@ class GetCloseMatches(BaseNode):
     cutoff: float = Field(
         default=0.6, ge=0.0, le=1.0, description="Minimum similarity ratio"
     )
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):
@@ -70,6 +74,8 @@ class UnifiedDiff(BaseNode):
     fromfile: str = Field(default="a", description="Name of the original file")
     tofile: str = Field(default="b", description="Name of the modified file")
     lineterm: str = Field(default="\n", description="Line terminator")
+
+    _expose_as_tool: bool = True
 
     @classmethod
     def get_title(cls):

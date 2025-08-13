@@ -50,6 +50,8 @@ class GoogleSearch(BaseNode):
         default=10, description="Maximum number of results to return"
     )
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> list[OrganicResult]:
         if not self.keyword:
             raise ValueError("Keyword is required")
@@ -84,6 +86,8 @@ class GoogleNews(BaseNode):
     num_results: int = Field(
         default=10, description="Maximum number of news results to return"
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> list[NewsResult]:
         if not self.keyword:
@@ -121,9 +125,7 @@ class GoogleImages(BaseNode):
         default=20, description="Maximum number of image results to return"
     )
 
-    @classmethod
-    def return_type(cls):
-        return {"results": list[ImageResult], "images": list[ImageRef]}
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.keyword and not self.image_url:
@@ -172,6 +174,8 @@ class GoogleFinance(BaseNode):
         description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')",
     )
 
+    _expose_as_tool: bool = True
+
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.query:
             return {"error": "Query is required for Google Finance search."}
@@ -206,6 +210,8 @@ class GoogleJobs(BaseNode):
     num_results: int = Field(
         default=10, description="Maximum number of job results to return"
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> list[JobResult]:
         if not self.query:
@@ -247,9 +253,7 @@ class GoogleLens(BaseNode):
         default=10, description="Maximum number of visual search results to return"
     )
 
-    @classmethod
-    def return_type(cls):
-        return {"results": list[ViualMatchResult], "images": list[ImageRef]}
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext):
         if not self.image_url:
@@ -298,6 +302,8 @@ class GoogleMaps(BaseNode):
     num_results: int = Field(
         default=10, description="Maximum number of map results to return"
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> list[LocalResult]:
         if not self.query:
@@ -355,6 +361,8 @@ class GoogleShopping(BaseNode):
     num_results: int = Field(
         default=10, description="Maximum number of shopping results to return"
     )
+
+    _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> list[ShoppingResult]:
         if not self.query:
