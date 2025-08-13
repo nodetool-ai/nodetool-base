@@ -83,10 +83,12 @@ class Browser(BaseNode):
             # Navigate to the URL with more complete loading strategy
             await page.goto(self.url, wait_until="networkidle", timeout=self.timeout)
             html_content = await page.content()
-
+            metadata = trafilatura.extract_metadata(html_content).as_dict()
+            metadata.pop("body")
+            metadata.pop("commentsbody")
             return {
                 "success": True,
-                "metadata": trafilatura.extract_metadata(html_content).as_dict(),
+                "metadata": metadata,
                 "content": trafilatura.extract(html_content),
             }
         except Exception as e:
