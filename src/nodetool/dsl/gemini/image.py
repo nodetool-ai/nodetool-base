@@ -5,6 +5,8 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import nodetool.nodes.gemini.image
+
 
 class ImageGeneration(GraphNode):
     """
@@ -17,10 +19,17 @@ class ImageGeneration(GraphNode):
     - Explore AI-powered image synthesis
     """
 
+    ImageGenerationModel: typing.ClassVar[type] = (
+        nodetool.nodes.gemini.image.ImageGenerationModel
+    )
     prompt: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The text prompt describing the image to generate."
+    )
+    model: nodetool.nodes.gemini.image.ImageGenerationModel = Field(
+        default=nodetool.nodes.gemini.image.ImageGenerationModel.IMAGEN_3_0_GENERATE_002,
+        description="The image generation model to use",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "google.image_generation.ImageGeneration"
+        return "gemini.image.ImageGeneration"

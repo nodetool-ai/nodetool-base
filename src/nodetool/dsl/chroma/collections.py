@@ -25,7 +25,7 @@ class CollectionNode(GraphNode):
             digest="",
             details={},
         ),
-        description="The embedding model to use",
+        description="Model to use for embedding, search for nomic-embed-text and download it",
     )
 
     @classmethod

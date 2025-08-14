@@ -1,0 +1,48 @@
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
+from nodetool.dsl.graph import GraphNode
+
+import nodetool.nodes.gemini.audio
+import nodetool.nodes.gemini.audio
+
+
+class TextToSpeech(GraphNode):
+    """
+    Generate speech audio from text using Google's Gemini text-to-speech models.
+    google, text-to-speech, tts, audio, speech, voice, ai
+
+    This node converts text input into natural-sounding speech audio using Google's
+    advanced text-to-speech models with support for multiple voices and speech styles.
+
+    Use cases:
+    - Create voiceovers for videos and presentations
+    - Generate audio content for podcasts and audiobooks
+    - Add voice narration to applications
+    - Create accessibility features with speech output
+    - Generate multilingual audio content
+    """
+
+    TTSModel: typing.ClassVar[type] = nodetool.nodes.gemini.audio.TTSModel
+    VoiceName: typing.ClassVar[type] = nodetool.nodes.gemini.audio.VoiceName
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The text to convert to speech."
+    )
+    model: nodetool.nodes.gemini.audio.TTSModel = Field(
+        default=nodetool.nodes.gemini.audio.TTSModel.GEMINI_2_5_FLASH_PREVIEW_TTS,
+        description="The text-to-speech model to use",
+    )
+    voice_name: nodetool.nodes.gemini.audio.VoiceName = Field(
+        default=nodetool.nodes.gemini.audio.VoiceName.KORE,
+        description="The voice to use for speech generation",
+    )
+    style_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Optional style prompt to control speech characteristics (e.g., 'Say cheerfully', 'Speak with excitement')",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "gemini.audio.TextToSpeech"

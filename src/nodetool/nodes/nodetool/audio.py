@@ -62,6 +62,8 @@ class SaveAudio(BaseNode):
     - Create backups of generated audio
     """
 
+    _expose_as_tool = True
+
     audio: AudioRef = AudioRef()
     folder: FolderRef = Field(
         FolderRef(), description="The asset folder to save the audio file to. "
@@ -107,6 +109,8 @@ class Concat(BaseNode):
     - Create longer audio tracks from shorter segments
     """
 
+    _expose_as_tool = True
+
     a: AudioRef = Field(default=AudioRef(), description="The first audio file.")
     b: AudioRef = Field(default=AudioRef(), description="The second audio file.")
 
@@ -127,6 +131,8 @@ class ConcatList(BaseNode):
     - Create longer audio tracks from multiple segments
     - Chain multiple audio files in order
     """
+
+    _expose_as_tool = True
 
     audio_files: list[AudioRef] = Field(
         default=[], description="List of audio files to concatenate in sequence."
@@ -163,6 +169,8 @@ class Normalize(BaseNode):
     - Adjust overall volume level before further processing
     """
 
+    _expose_as_tool = True
+
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to normalize."
     )
@@ -182,6 +190,8 @@ class OverlayAudio(BaseNode):
     - Mix background music with voice recording
     - Layer sound effects over an existing audio track
     """
+
+    _expose_as_tool = True
 
     a: AudioRef = Field(default=AudioRef(), description="The first audio file.")
     b: AudioRef = Field(default=AudioRef(), description="The second audio file.")
@@ -203,6 +213,8 @@ class RemoveSilence(BaseNode):
     - Remove or shorten long pauses between speech segments
     - Apply crossfade for smooth transitions
     """
+
+    _expose_as_tool = True
 
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to process."
@@ -261,6 +273,8 @@ class SliceAudio(BaseNode):
     - Remove unwanted portions from beginning or end
     """
 
+    _expose_as_tool = True
+
     audio: AudioRef = Field(default=AudioRef(), description="The audio file.")
     start: float = Field(default=0.0, description="The start time in seconds.", ge=0.0)
     end: float = Field(default=1.0, description="The end time in seconds.", ge=0.0)
@@ -283,6 +297,8 @@ class MonoToStereo(BaseNode):
     - Expand mono recordings for stereo playback systems
     - Prepare audio for further stereo processing
     """
+
+    _expose_as_tool = True
 
     audio: AudioRef = Field(
         default=AudioRef(), description="The mono audio file to convert."
@@ -309,6 +325,8 @@ class StereoToMono(BaseNode):
     - Reduce file size for mono-only applications
     - Simplify audio for certain processing tasks
     """
+
+    _expose_as_tool = True
 
     audio: AudioRef = Field(
         default=AudioRef(), description="The stereo audio file to convert."
@@ -349,6 +367,8 @@ class Reverse(BaseNode):
     - Generate backwards speech or music
     """
 
+    _expose_as_tool = True
+
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to reverse."
     )
@@ -368,6 +388,8 @@ class FadeIn(BaseNode):
     - Create smooth introductions to audio tracks
     - Gradually increase volume at the start of a clip
     """
+
+    _expose_as_tool = True
 
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to apply fade-in to."
@@ -392,6 +414,8 @@ class FadeOut(BaseNode):
     - Gradually decrease volume at the end of a clip
     """
 
+    _expose_as_tool = True
+
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to apply fade-out to."
     )
@@ -415,6 +439,8 @@ class Repeat(BaseNode):
     - Extend short audio clips to fill longer durations
     - Generate rhythmic patterns from short samples
     """
+
+    _expose_as_tool = True
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio file to loop.")
     loops: int = Field(
@@ -537,6 +563,8 @@ class Trim(BaseNode):
     - Extract specific segments from audio files
     - Prepare audio data for machine learning models
     """
+
+    _expose_as_tool = True
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio file to trim.")
     start: float = Field(

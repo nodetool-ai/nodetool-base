@@ -24,10 +24,6 @@ class Browser(GraphNode):
     timeout: int | GraphNode | tuple[GraphNode, str] = Field(
         default=20000, description="Timeout in milliseconds for page navigation"
     )
-    use_readability: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=True,
-        description="Use Python's Readability for better content extraction",
-    )
 
     @classmethod
     def get_node_type(cls):

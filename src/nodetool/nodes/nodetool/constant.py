@@ -23,7 +23,6 @@ class Constant(BaseNode):
     """
 
 
-
 class Audio(Constant):
     """Represents an audio file constant in the workflow.
     audio, file, mp3, wav
@@ -33,6 +32,8 @@ class Audio(Constant):
     - Reference a specific audio file in the workflow
     - Set default audio for testing or demonstration purposes
     """
+
+    _expose_as_tool = True
 
     value: AudioRef = AudioRef()
 
@@ -51,6 +52,8 @@ class Bool(Constant):
     - Set default boolean values for configuration
     """
 
+    _expose_as_tool = True
+
     value: bool = False
 
     async def process(self, context: ProcessingContext) -> bool:
@@ -67,6 +70,8 @@ class DataFrame(Constant):
     - Set sample data for testing or demonstration
     """
 
+    _expose_as_tool = True
+
     value: DataFrameRef = Field(title="DataFrame", default=DataFrameRef())
 
     async def process(self, context: ProcessingContext) -> DataFrameRef:
@@ -77,6 +82,8 @@ class Document(Constant):
     """Represents a document constant in the workflow.
     document, pdf, word, docx
     """
+
+    _expose_as_tool = True
 
     value: DocumentRef = Field(title="Document", default=DocumentRef())
 
@@ -94,6 +101,8 @@ class Dict(Constant):
     - Define parameter sets for other nodes
     """
 
+    _expose_as_tool = True
+
     value: dict[(str, Any)] = {}
 
     async def process(self, context: ProcessingContext) -> dict[(str, Any)]:
@@ -109,6 +118,8 @@ class Image(Constant):
     - Reference a specific image file in the workflow
     - Set default image for testing or demonstration purposes
     """
+
+    _expose_as_tool = True
 
     value: ImageRef = ImageRef()
 
@@ -191,6 +202,8 @@ class Video(Constant):
     - Set default video for testing or demonstration purposes
     """
 
+    _expose_as_tool = True
+
     value: VideoRef = VideoRef()
 
     async def process(self, context: ProcessingContext) -> VideoRef:
@@ -228,6 +241,8 @@ class DateTime(BaseNode):
     tzinfo: str = Field(default="UTC", description="Timezone of the datetime")
     utc_offset: int = Field(default=0, description="UTC offset of the datetime")
 
+    _expose_as_tool = True
+
     async def process(self, context: ProcessingContext) -> Datetime:
         return Datetime(
             year=self.year,
@@ -246,6 +261,8 @@ class JSON(Constant):
     """Represents a JSON constant in the workflow.
     json, object, dictionary
     """
+
+    _expose_as_tool = True
 
     value: JSONRef = JSONRef()
 

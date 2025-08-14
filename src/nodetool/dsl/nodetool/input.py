@@ -18,12 +18,12 @@ class AudioInput(GraphNode):
     - Process audio for enhancement or feature extraction.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -45,11 +45,11 @@ class BooleanInput(GraphNode):
     - Make conditional choices within a workflow (e.g., proceed if true).
     """
 
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    value: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description=None
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -72,11 +72,11 @@ class ChatInput(GraphNode):
     - Initiate or continue a chat-based workflow.
     """
 
-    value: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The chat message to use as input."
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    value: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The chat message to use as input."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -99,12 +99,12 @@ class CollectionInput(GraphNode):
     - Choose a data source or destination that is represented as a named collection.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
         default=types.Collection(type="collection", name=""),
         description="The collection to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -124,14 +124,14 @@ class DataframeInput(GraphNode):
     - Provide a pandas DataFrame as input to a workflow.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The dataframe to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -154,12 +154,12 @@ class DocumentFileInput(GraphNode):
     - To provide an existing 'DocumentRef', use 'DocumentInput'.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
         default=types.FilePath(type="file_path", path=""),
         description="The path to the document file.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -182,12 +182,12 @@ class DocumentInput(GraphNode):
     - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -209,11 +209,11 @@ class FloatInput(GraphNode):
     - Configure continuous parameters like opacity, volume, or temperature.
     """
 
-    value: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0.0, description=None
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    value: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description=None
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -240,12 +240,12 @@ class ImageInput(GraphNode):
     - Display an image within a workflow interface.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -267,10 +267,10 @@ class IntegerInput(GraphNode):
     - Configure discrete numeric parameters like age, steps, or quantity.
     """
 
-    value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
     )
@@ -291,11 +291,11 @@ class ListInput(GraphNode):
     - Provide a list of items to a workflow.
     """
 
-    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The list of items to use as input."
-    )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
+    )
+    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The list of items to use as input."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -318,12 +318,12 @@ class PathInput(GraphNode):
     - Not available in production: raises an error if used in a production environment.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
         default=types.FilePath(type="file_path", path=""),
         description="The path to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -347,10 +347,10 @@ class StringInput(GraphNode):
     - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.
     """
 
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
+    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
     )
@@ -369,12 +369,12 @@ class TextInput(GraphNode):
     a raw ``str``.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.TextRef(type="text", uri="", asset_id=None, data=None),
         description="The text asset to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -397,14 +397,14 @@ class VideoInput(GraphNode):
     - Provide video input to models that understand video data.
     """
 
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
     value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The video to use as input.",
-    )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
