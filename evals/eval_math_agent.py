@@ -298,23 +298,13 @@ async def main():
         concurrency=concurrency,
     )
 
-    # Live updating Rich view during evaluation
-    console = Console()
     stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
     log_lines: List[Any] = []
-    result: EvaluationResult = await evaluator.evaluate()
 
-    # with Live(
-    #     make_view(stats, log_lines),
-    #     refresh_per_second=8,
-    #     console=console,
-    #     redirect_stdout=True,
-    #     redirect_stderr=True,
-    # ) as live:
-    #     evaluator.on_update = lambda s, l: live.update(make_view(s, l))
-    #     result: EvaluationResult = await evaluator.evaluate()
-    #     # Final render
-    #     live.update(make_view(result.stats, result.logs))
+    with Live(make_view(stats, log_lines), refresh_per_second=8) as live:
+        evaluator.on_update = lambda s, l: live.update(make_view(s, l))  # type: ignore
+        result: EvaluationResult = await evaluator.evaluate()
+        live.update(make_view(result.stats, result.logs))
 
 
 if __name__ == "__main__":
