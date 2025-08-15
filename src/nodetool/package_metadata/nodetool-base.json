@@ -11481,7 +11481,8 @@
         "dataframe",
         "column_name",
         "values"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Aggregate",
@@ -11529,7 +11530,8 @@
         "dataframe",
         "columns",
         "aggregation"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Append",
@@ -11567,7 +11569,8 @@
       "basic_fields": [
         "dataframe_a",
         "dataframe_b"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Drop Duplicates",
@@ -11595,7 +11598,8 @@
       ],
       "basic_fields": [
         "df"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Drop NA",
@@ -11623,7 +11627,8 @@
       ],
       "basic_fields": [
         "df"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Extract Column",
@@ -11666,7 +11671,8 @@
       "basic_fields": [
         "dataframe",
         "column_name"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Fill NA",
@@ -11724,7 +11730,8 @@
         "value",
         "method",
         "columns"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Filter",
@@ -11762,7 +11769,8 @@
       "basic_fields": [
         "df",
         "condition"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Find Row",
@@ -11800,7 +11808,8 @@
       "basic_fields": [
         "df",
         "condition"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "From List",
@@ -11833,7 +11842,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Import CSV",
@@ -11861,7 +11871,8 @@
       ],
       "basic_fields": [
         "csv_data"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Convert JSON to DataFrame",
@@ -11888,7 +11899,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Join",
@@ -11936,7 +11948,8 @@
         "dataframe_a",
         "dataframe_b",
         "join_on"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Load CSV Assets",
@@ -11971,7 +11984,8 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming": true
+      "is_streaming": true,
+      "expose_as_tool": true
     },
     {
       "title": "Load CSVFile",
@@ -11999,7 +12013,37 @@
       ],
       "basic_fields": [
         "file_path"
-      ]
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Load CSVURL",
+      "description": "Load CSV file from URL.\n    csv, dataframe, import",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.LoadCSVURL",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "The URL of the CSV file to load."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "url"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Merge",
@@ -12037,7 +12081,8 @@
       "basic_fields": [
         "dataframe_a",
         "dataframe_b"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Pivot",
@@ -12105,7 +12150,8 @@
         "columns",
         "values",
         "aggfunc"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Rename",
@@ -12143,7 +12189,8 @@
       "basic_fields": [
         "dataframe",
         "rename_map"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Row Iterator",
@@ -12225,7 +12272,8 @@
         "df",
         "folder",
         "name"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Select Column",
@@ -12263,7 +12311,8 @@
       "basic_fields": [
         "dataframe",
         "columns"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Slice",
@@ -12311,7 +12360,8 @@
         "dataframe",
         "start_index",
         "end_index"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Sort By Column",
@@ -12381,7 +12431,8 @@
       ],
       "basic_fields": [
         "dataframe"
-      ]
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Array Output",
@@ -18840,7 +18891,7 @@
     },
     {
       "title": "Binary Op",
-      "description": "Performs a selected binary math operation on two inputs.",
+      "description": "Performs a selected binary math operation on two inputs.\n    math, add, subtract, multiply, divide, modulus, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log",
       "namespace": "lib.math",
       "node_type": "lib.math.BinaryOp",
       "layout": "small",
@@ -18919,7 +18970,7 @@
     },
     {
       "title": "Unary Op",
-      "description": "Performs a selected unary math operation on an input.",
+      "description": "Performs a selected unary math operation on an input.\n    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log",
       "namespace": "lib.math",
       "node_type": "lib.math.UnaryOp",
       "layout": "small",

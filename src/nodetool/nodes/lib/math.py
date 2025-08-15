@@ -12,7 +12,10 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class BinaryOp(BaseNode):
-    """Performs a selected binary math operation on two inputs."""
+    """
+    Performs a selected binary math operation on two inputs.
+    math, add, subtract, multiply, divide, modulus, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
+    """
 
     _layout = "small"
 
@@ -45,7 +48,10 @@ class BinaryOp(BaseNode):
 
 
 class UnaryOp(BaseNode):
-    """Performs a selected unary math operation on an input."""
+    """
+    Performs a selected unary math operation on an input.
+    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
+    """
 
     _layout = "small"
 
