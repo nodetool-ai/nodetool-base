@@ -4,15 +4,6 @@ from typing import Any, List, Sequence, Tuple
 from nodetool.agents.simple_agent import SimpleAgent
 
 
-# Models to evaluate with. Keep consistent with other evals.
-MODELS: List[Tuple[str, str]] = [
-    ("openai", "gpt-5-mini"),
-    ("gemini", "gemini-2.5-flash-lite"),
-    ("anthropic", "claude-3-5-haiku-20241022"),
-    ("huggingface:cerebras", "openai/gpt-oss-120b"),
-]
-
-
 # Keep a modest rolling buffer of recent agent results in the log panel
 MAX_LOG_LINES: int = int(os.getenv("SEARCH_AGENT_LOG_LINES", "50"))
 

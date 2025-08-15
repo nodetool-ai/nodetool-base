@@ -35,16 +35,6 @@ from nodetool.nodes.nodetool.data import (
 # This IRIS-focused eval covers the tools listed in `nodes` below.
 
 
-MODELS: List[Tuple[str, str]] = [
-    ("openai", "gpt-5"),
-    ("openai", "gpt-5-mini"),
-    ("gemini", "gemini-2.5-pro"),
-    ("gemini", "gemini-2.5-flash"),
-    ("anthropic", "claude-sonnet-4-20250514"),
-    ("anthropic", "claude-3-5-haiku-20241022"),
-]
-
-
 IRIS_FILE = os.path.join(os.path.dirname(__file__), "iris.csv")
 
 

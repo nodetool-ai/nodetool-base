@@ -6,19 +6,6 @@ from typing import Any, List, Sequence, Tuple
 
 from nodetool.agents.simple_agent import SimpleAgent
 
-
-MODELS: List[Tuple[str, str]] = [
-    ("openai", "gpt-5"),
-    ("openai", "gpt-5-mini"),
-    ("gemini", "gemini-2.5-flash"),
-    ("gemini", "gemini-2.5-flash-lite"),
-    ("anthropic", "claude-sonnet-4-20250514"),
-    ("anthropic", "claude-3-5-haiku-20241022"),
-    ("huggingface:cerebras", "openai/gpt-oss-120b"),
-    ("huggingface:cerebras", "Qwen/Qwen3-Coder-480B-A35B-Instruct"),
-]
-
-
 # Keep a modest rolling buffer of recent agent results in the log panel
 MAX_LOG_LINES: int = int(os.getenv("MATH_AGENT_LOG_LINES", "50"))
 

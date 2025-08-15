@@ -25,6 +25,18 @@ import eval_browser_agent as browser_eval  # type: ignore
 import eval_search_agent as search_eval  # type: ignore
 
 
+MODELS: List[Tuple[str, str]] = [
+    # ("openai", "gpt-5"),
+    ("openai", "gpt-5-mini"),
+    ("gemini", "gemini-2.5-flash"),
+    # ("gemini", "gemini-2.5-flash-lite"),
+    # ("anthropic", "claude-sonnet-4-20250514"),
+    ("anthropic", "claude-3-5-haiku-20241022"),
+    ("huggingface:cerebras", "openai/gpt-oss-120b"),
+    # ("huggingface:cerebras", "Qwen/Qwen3-Coder-480B-A35B-Instruct"),
+]
+
+
 def make_table(stats: Dict[str, ModelStats], models: List[Tuple[str, str]]) -> Table:
     """Create a consolidated stats table for any agent type."""
     table = Table()
@@ -157,10 +169,24 @@ def default_provider_factory(provider_key: str) -> Any:
 
 def _build_math_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
     from nodetool.agents.tools.node_tool import NodeTool
-    from nodetool.nodes.lib.math import BinaryOp, UnaryOp
+    from nodetool.nodes.lib.math import (
+        Add,
+        Subtract,
+        Multiply,
+        Divide,
+        Modulus,
+        MathFunction,
+    )
 
     provider = default_provider_factory(provider_key)
-    tools = [NodeTool(BinaryOp), NodeTool(UnaryOp)]
+    tools = [
+        NodeTool(Add),
+        NodeTool(Subtract),
+        NodeTool(Multiply),
+        NodeTool(Divide),
+        NodeTool(Modulus),
+        NodeTool(MathFunction),
+    ]
     return math_eval.build_math_agent(provider, model, tools, problem_payload)
 
 
@@ -265,86 +291,72 @@ def main() -> None:
         runner_path = os.path.abspath(__file__)
         if args.agent == "data":
             problems = data_eval.generate_iris_problems()
-            models = data_eval.MODELS
-            tools = data_eval.tools
             evaluator = AgentEvaluator(
-                models=models,
+                models=MODELS,
                 problems=problems,
                 result_checker=data_eval.numeric_result_checker,
-                tools=tools,
                 concurrency=int(os.getenv("DATA_AGENT_CONCURRENCY", "8")),
                 subprocess_runner_path=runner_path,
                 subprocess_agent="data",
             )
-            data_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in models}
+            data_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
             data_logs: List[Any] = []
             from rich.live import Live
             from rich.console import Console
 
             console = Console()
             with Live(
-                make_view(data_stats, data_logs, models),
+                make_view(data_stats, data_logs, MODELS),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS))  # type: ignore
                 data_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
-                live.update(make_view(data_result.stats, data_result.logs, models))
+                live.update(make_view(data_result.stats, data_result.logs, MODELS))
             return
 
         if args.agent == "math":
             problems = math_eval.generate_math_problems()
-            models = math_eval.MODELS
-            from nodetool.agents.tools.node_tool import NodeTool
-            from nodetool.nodes.lib.math import BinaryOp, UnaryOp
-
-            tools = [NodeTool(BinaryOp), NodeTool(UnaryOp)]
             evaluator = AgentEvaluator(
-                models=models,
+                models=MODELS,
                 problems=problems,
                 result_checker=math_eval.numeric_result_checker,
-                tools=tools,
                 concurrency=int(os.getenv("MATH_AGENT_CONCURRENCY", "8")),
                 subprocess_runner_path=runner_path,
                 subprocess_agent="math",
             )
-            math_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in models}
+            math_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
             math_logs: List[Any] = []
             from rich.live import Live
             from rich.console import Console
 
             console = Console()
             with Live(
-                make_view(math_stats, math_logs, models),
+                make_view(math_stats, math_logs, MODELS),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS))  # type: ignore
                 math_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
-                live.update(make_view(math_result.stats, math_result.logs, models))
+                live.update(make_view(math_result.stats, math_result.logs, MODELS))
             return
 
         if args.agent == "browser":
             tasks = browser_eval.generate_wikipedia_tasks()
             problems = [((desc, url), expected) for desc, url, expected in tasks]
-            models = browser_eval.MODELS
-            from nodetool.agents.tools.browser_tools import BrowserTool
-
-            tools = [BrowserTool()]
             evaluator = AgentEvaluator(
-                models=models,
+                models=MODELS,
                 problems=problems,
                 result_checker=browser_eval.content_result_checker,
-                tools=tools,
                 concurrency=int(os.getenv("BROWSER_AGENT_CONCURRENCY", "4")),
                 subprocess_runner_path=runner_path,
                 subprocess_agent="browser",
             )
-            browser_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in models}
+            browser_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
             browser_logs: List[Any] = []
             from rich.live import Live
             from rich.console import Console
@@ -354,12 +366,12 @@ def main() -> None:
             max_log_lines = int(os.getenv("BROWSER_AGENT_LOG_LINES", "50"))
             with Live(
                 make_view(
-                    browser_stats, browser_logs, models, max_log_lines, "Task", True
+                    browser_stats, browser_logs, MODELS, max_log_lines, "Task", True
                 ),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models, max_log_lines, "Task", True))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS, max_log_lines, "Task", True))  # type: ignore
                 browser_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
@@ -367,7 +379,7 @@ def main() -> None:
                     make_view(
                         browser_result.stats,
                         browser_result.logs,
-                        models,
+                        MODELS,
                         max_log_lines,
                         "Task",
                         True,
@@ -378,39 +390,16 @@ def main() -> None:
         if args.agent == "search":
             tasks = search_eval.generate_search_tasks()
             problems = [((desc, query), expected) for desc, query, expected in tasks]
-            models = search_eval.MODELS
-            from nodetool.agents.tools.node_tool import NodeTool
-            from nodetool.nodes.search.google import (
-                GoogleSearch,
-                GoogleNews,
-                GoogleImages,
-                GoogleFinance,
-                GoogleJobs,
-                GoogleLens,
-                GoogleMaps,
-                GoogleShopping,
-            )
 
-            tools = [
-                NodeTool(GoogleSearch),
-                NodeTool(GoogleNews),
-                NodeTool(GoogleImages),
-                NodeTool(GoogleFinance),
-                NodeTool(GoogleJobs),
-                NodeTool(GoogleLens),
-                NodeTool(GoogleMaps),
-                NodeTool(GoogleShopping),
-            ]
             evaluator = AgentEvaluator(
-                models=models,
+                models=MODELS,
                 problems=problems,
                 result_checker=search_eval.content_result_checker,
-                tools=tools,
                 concurrency=int(os.getenv("SEARCH_AGENT_CONCURRENCY", "8")),
                 subprocess_runner_path=runner_path,
                 subprocess_agent="search",
             )
-            search_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in models}
+            search_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
             search_logs: List[Any] = []
             from rich.live import Live
             from rich.console import Console
@@ -419,12 +408,12 @@ def main() -> None:
             max_log_lines = int(os.getenv("SEARCH_AGENT_LOG_LINES", "50"))
             with Live(
                 make_view(
-                    search_stats, search_logs, models, max_log_lines, "Task", True
+                    search_stats, search_logs, MODELS, max_log_lines, "Task", True
                 ),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models, max_log_lines, "Task", True))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS, max_log_lines, "Task", True))  # type: ignore
                 search_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
@@ -432,7 +421,7 @@ def main() -> None:
                     make_view(
                         search_result.stats,
                         search_result.logs,
-                        models,
+                        MODELS,
                         max_log_lines,
                         "Task",
                         True,

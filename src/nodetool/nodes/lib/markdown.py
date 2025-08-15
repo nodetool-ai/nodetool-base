@@ -17,6 +17,8 @@ class ExtractLinks(BaseNode):
     - Analyze external resources referenced in markdown files
     """
 
+    _expose_as_tool = True
+
     markdown: str = Field(default="", description="The markdown text to analyze")
     include_titles: bool = Field(
         default=True, description="Whether to include link titles in output"
@@ -51,6 +53,8 @@ class ExtractHeaders(BaseNode):
     - Analyze document structure
     - Extract main topics from documents
     """
+
+    _expose_as_tool = True
 
     markdown: str = Field(default="", description="The markdown text to analyze")
     max_level: int = Field(
@@ -88,6 +92,8 @@ class ExtractBulletLists(BaseNode):
     - Convert bullet lists to structured data
     """
 
+    _expose_as_tool = True
+
     markdown: str = Field(default="", description="The markdown text to analyze")
 
     async def process(self, context: ProcessingContext) -> List[Dict[str, Any]]:
@@ -120,6 +126,8 @@ class ExtractNumberedLists(BaseNode):
     - Analyze enumerated structures
     - Convert numbered lists to structured data
     """
+
+    _expose_as_tool = True
 
     markdown: str = Field(default="", description="The markdown text to analyze")
 
@@ -177,6 +185,8 @@ class ExtractTables(BaseNode):
     - Convert markdown tables to structured formats
     - Analyze tabulated information
     """
+
+    _expose_as_tool = True
 
     markdown: str = Field(default="", description="The markdown text to analyze")
 

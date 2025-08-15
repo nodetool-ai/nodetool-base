@@ -18,6 +18,8 @@ class ExtractText(BaseNode):
     - Prepare text for further processing
     """
 
+    _expose_as_tool = True
+
     pdf: DocumentRef = Field(
         default=DocumentRef(), description="The PDF document to extract text from"
     )
@@ -51,6 +53,8 @@ class ExtractTextBlocks(BaseNode):
     - Extract text while preserving block-level formatting
     - Get text position information
     """
+
+    _expose_as_tool = True
 
     pdf: DocumentRef = Field(
         default=DocumentRef(),
@@ -97,6 +101,7 @@ class ExtractTextWithStyle(BaseNode):
     end_page: int = Field(
         default=-1, description="Last page to extract (-1 for last page)"
     )
+    _expose_as_tool = True
 
     async def process(self, context: ProcessingContext) -> List[dict]:
         pdf_data = await context.asset_to_bytes(self.pdf)
@@ -140,6 +145,8 @@ class ExtractTables(BaseNode):
     - Convert PDF tables to structured formats
     - Analyze table layouts and content
     """
+
+    _expose_as_tool = True
 
     pdf: DocumentRef = Field(
         default=DocumentRef(),
@@ -195,6 +202,8 @@ class ExtractMarkdown(BaseNode):
     - Preserve document structure in markdown
     - Create editable markdown from PDFs
     """
+
+    _expose_as_tool = True
 
     pdf: DocumentRef = Field(
         default=DocumentRef(),

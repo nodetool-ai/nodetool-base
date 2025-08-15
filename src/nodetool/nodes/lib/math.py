@@ -1,59 +1,96 @@
-import asyncio
 import math
 from enum import Enum
-from nodetool.agents.agent import Agent
-from nodetool.agents.tools.node_tool import NodeTool
-from nodetool.chat.providers.base import ChatProvider
-from nodetool.chat.providers.openai_provider import OpenAIProvider
-from nodetool.workflows.types import Chunk
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 
 
-class BinaryOp(BaseNode):
+class Add(BaseNode):
     """
-    Performs a selected binary math operation on two inputs.
-    math, add, subtract, multiply, divide, modulus, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
+    Adds two numbers.
+    math, add, plus
     """
 
     _layout = "small"
-
-    class Operation(str, Enum):
-        ADD = "add"
-        SUBTRACT = "subtract"
-        MULTIPLY = "multiply"
-        DIVIDE = "divide"
-        MODULUS = "modulus"
+    _expose_as_tool = True
 
     a: int | float = Field(title="A", default=0.0)
     b: int | float = Field(title="B", default=0.0)
-    operation: Operation = Field(
-        default=Operation.ADD, description="Binary operation to perform"
-    )
 
     async def process(self, context: ProcessingContext) -> int | float:
-        if self.operation == self.Operation.ADD:
-            return self.a + self.b
-        elif self.operation == self.Operation.SUBTRACT:
-            return self.a - self.b
-        elif self.operation == self.Operation.MULTIPLY:
-            return self.a * self.b
-        elif self.operation == self.Operation.DIVIDE:
-            return self.a / self.b
-        elif self.operation == self.Operation.MODULUS:
-            return self.a % self.b
-        else:
-            raise ValueError(f"Unsupported operation: {self.operation}")
+        return self.a + self.b
 
 
-class UnaryOp(BaseNode):
+class Subtract(BaseNode):
+    """
+    Subtracts B from A.
+    math, subtract, minus
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+
+    a: int | float = Field(title="A", default=0.0)
+    b: int | float = Field(title="B", default=0.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return self.a - self.b
+
+
+class Multiply(BaseNode):
+    """
+    Multiplies two numbers.
+    math, multiply, product
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+    a: int | float = Field(title="A", default=0.0)
+    b: int | float = Field(title="B", default=0.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return self.a * self.b
+
+
+class Divide(BaseNode):
+    """
+    Divides A by B.
+    math, divide, division, quotient
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+
+    a: int | float = Field(title="A", default=0.0)
+    b: int | float = Field(title="B", default=1.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return self.a / self.b
+
+
+class Modulus(BaseNode):
+    """
+    Computes A modulo B.
+    math, modulus, modulo, remainder
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+    a: int | float = Field(title="A", default=0.0)
+    b: int | float = Field(title="B", default=1.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return self.a % self.b
+
+
+class MathFunction(BaseNode):
     """
     Performs a selected unary math operation on an input.
     math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
     """
 
     _layout = "small"
+    _expose_as_tool = True
 
     class Operation(str, Enum):
         NEGATE = "negate"
