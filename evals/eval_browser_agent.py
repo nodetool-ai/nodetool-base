@@ -1,20 +1,8 @@
-import asyncio
 import os
-import sys
-import json
-import argparse
 from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence, Tuple
 
-from rich.table import Table
-from rich.columns import Columns
-from rich.console import Console
-from rich.live import Live
-
 from nodetool.agents.simple_agent import SimpleAgent
-from nodetool.agents.agent_evaluator import (
-    ModelStats,
-)
 
 
 MODELS: List[Tuple[str, str]] = [
@@ -151,64 +139,7 @@ def build_objective(task_description: str, url: str) -> str:
     """
 
 
-def make_table(stats: Dict[str, ModelStats]) -> Table:
-    table = Table()
-    table.add_column("Model")
-    table.add_column("Finished Tests", justify="right")
-    table.add_column("Correct Results", justify="right")
-    table.add_column("Input Tokens", justify="right")
-    table.add_column("Output Tokens", justify="right")
-    table.add_column("Avg Runtime (s)", justify="right")
-    for provider_key, model in MODELS:
-        s = stats[model]
-        avg_runtime = (s.total_runtime_seconds / s.finished) if s.finished > 0 else 0.0
-        table.add_row(
-            model,
-            str(s.finished),
-            str(s.correct),
-            str(s.input_tokens),
-            str(s.output_tokens),
-            f"{avg_runtime:.2f}",
-        )
-    return table
-
-
-def make_log_table(log_entries: List[Any]) -> Table:
-    table = Table(title="Agent Results")
-    table.add_column("Model")
-    table.add_column("Task")
-    table.add_column("Result", justify="right")
-    table.add_column("Correct", justify="center")
-    table.add_column("Runtime (s)", justify="right")
-    if not log_entries:
-        return table
-    for entry in log_entries[-MAX_LOG_LINES:]:
-        status = (
-            "✓" if entry.correct is True else ("✗" if entry.correct is False else "—")
-        )
-        result_text = (
-            "None"
-            if entry.result is None
-            else (
-                str(entry.result)[:50] + "..."
-                if len(str(entry.result)) > 50
-                else str(entry.result)
-            )
-        )
-        table.add_row(
-            entry.model,
-            entry.problem[:30] + "..." if len(entry.problem) > 30 else entry.problem,
-            result_text,
-            status,
-            f"{entry.runtime_seconds:.2f}",
-        )
-    return table
-
-
-def make_view(stats: Dict[str, ModelStats], log_entries: List[Any]):
-    stats_table = make_table(stats)
-    logs_table = make_log_table(log_entries)
-    return Columns([stats_table, logs_table], equal=True, expand=True)
+# Table functions have been consolidated in eval_runner.py
 
 
 def build_browser_agent(

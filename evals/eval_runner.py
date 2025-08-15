@@ -3,8 +3,10 @@ import json
 import os
 import sys
 import asyncio
-from typing import Any, List, Dict
+from typing import Any, List, Dict, Tuple
 
+from rich.table import Table
+from rich.columns import Columns
 from nodetool.agents.agent_evaluator import (
     AgentEvaluator,
     ModelStats,
@@ -20,6 +22,86 @@ if THIS_DIR not in sys.path:
 import eval_data_agent as data_eval  # type: ignore
 import eval_math_agent as math_eval  # type: ignore
 import eval_browser_agent as browser_eval  # type: ignore
+import eval_search_agent as search_eval  # type: ignore
+
+
+def make_table(stats: Dict[str, ModelStats], models: List[Tuple[str, str]]) -> Table:
+    """Create a consolidated stats table for any agent type."""
+    table = Table()
+    table.add_column("Model")
+    table.add_column("Finished Tests", justify="right")
+    table.add_column("Correct Results", justify="right")
+    table.add_column("Input Tokens", justify="right")
+    table.add_column("Output Tokens", justify="right")
+    table.add_column("Avg Runtime (s)", justify="right")
+    for _, model in models:
+        s = stats[model]
+        avg_runtime = (s.total_runtime_seconds / s.finished) if s.finished > 0 else 0.0
+        table.add_row(
+            model,
+            str(s.finished),
+            str(s.correct),
+            str(s.input_tokens),
+            str(s.output_tokens),
+            f"{avg_runtime:.2f}",
+        )
+    return table
+
+
+def make_log_table(
+    log_entries: List[Any],
+    max_lines: int = 50,
+    problem_column_name: str = "Problem",
+    truncate_long_text: bool = False,
+) -> Table:
+    """Create a consolidated log table for any agent type."""
+    table = Table(title="Agent Results")
+    table.add_column("Model")
+    table.add_column(problem_column_name)
+    table.add_column("Result", justify="right")
+    table.add_column("Correct", justify="center")
+    table.add_column("Runtime (s)", justify="right")
+    if not log_entries:
+        return table
+    for entry in log_entries[-max_lines:]:
+        status = (
+            "✓" if entry.correct is True else ("✗" if entry.correct is False else "—")
+        )
+
+        # Handle result text formatting
+        result_text = "None" if entry.result is None else str(entry.result)
+        if truncate_long_text and len(result_text) > 50:
+            result_text = result_text[:50] + "..."
+
+        # Handle problem text formatting
+        problem_text = entry.problem
+        if truncate_long_text and len(problem_text) > 30:
+            problem_text = problem_text[:30] + "..."
+
+        table.add_row(
+            entry.model,
+            problem_text,
+            result_text,
+            status,
+            f"{entry.runtime_seconds:.2f}",
+        )
+    return table
+
+
+def make_view(
+    stats: Dict[str, ModelStats],
+    log_entries: List[Any],
+    models: List[Tuple[str, str]],
+    max_log_lines: int = 50,
+    problem_column_name: str = "Problem",
+    truncate_long_text: bool = False,
+) -> Columns:
+    """Create a consolidated view for any agent type."""
+    stats_table = make_table(stats, models)
+    logs_table = make_log_table(
+        log_entries, max_log_lines, problem_column_name, truncate_long_text
+    )
+    return Columns([stats_table, logs_table], equal=True, expand=True)
 
 
 async def _execute_agent_once(agent: Any, output_json_path: str | None) -> None:
@@ -89,7 +171,7 @@ def _build_data_agent(provider_key: str, model: str, problem_payload: Any) -> An
 
 
 def _build_browser_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
-    from nodetool.agents.tools.browser_tools import AgenticBrowserTool, BrowserTool
+    from nodetool.agents.tools.browser_tools import BrowserTool
 
     provider = default_provider_factory(provider_key)
     # Expect problem_payload as (description, url)
@@ -101,10 +183,47 @@ def _build_browser_agent(provider_key: str, model: str, problem_payload: Any) ->
         raise ValueError(
             "Invalid problem payload for browser agent; expected [desc, url]"
         )
-    difficulty = os.getenv("BROWSER_AGENT_DIFFICULTY", "hard").strip().lower()
-    tools = [AgenticBrowserTool()] if difficulty == "hard" else [BrowserTool()]
+    tools = [BrowserTool()]
     return browser_eval.build_browser_agent(
         provider, model, tools, (task_description, url)
+    )
+
+
+def _build_search_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
+    from nodetool.agents.tools.node_tool import NodeTool
+    from nodetool.nodes.search.google import (
+        GoogleSearch,
+        GoogleNews,
+        GoogleImages,
+        GoogleFinance,
+        GoogleJobs,
+        GoogleLens,
+        GoogleMaps,
+        GoogleShopping,
+    )
+
+    provider = default_provider_factory(provider_key)
+    # Expect problem_payload as (description, query)
+    if isinstance(problem_payload, (list, tuple)) and len(problem_payload) >= 2:
+        task_description, query = problem_payload[0], problem_payload[1]
+    elif isinstance(problem_payload, str) and "|" in problem_payload:
+        task_description, query = problem_payload.split("|", 1)
+    else:
+        raise ValueError(
+            "Invalid problem payload for search agent; expected [desc, query]"
+        )
+    tools = [
+        NodeTool(GoogleSearch),
+        NodeTool(GoogleNews),
+        NodeTool(GoogleImages),
+        NodeTool(GoogleFinance),
+        NodeTool(GoogleJobs),
+        NodeTool(GoogleLens),
+        NodeTool(GoogleMaps),
+        NodeTool(GoogleShopping),
+    ]
+    return search_eval.build_search_agent(
+        provider, model, tools, (task_description, query)
     )
 
 
@@ -115,7 +234,7 @@ def main() -> None:
     parser.add_argument(
         "--agent",
         required=True,
-        choices=["math", "data", "browser"],
+        choices=["math", "data", "browser", "search"],
         help="Agent type to run",
     )
     parser.add_argument(
@@ -164,15 +283,15 @@ def main() -> None:
 
             console = Console()
             with Live(
-                data_eval.make_view(data_stats, data_logs),
+                make_view(data_stats, data_logs, models),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(data_eval.make_view(s, l))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models))  # type: ignore
                 data_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
-                live.update(data_eval.make_view(data_result.stats, data_result.logs))
+                live.update(make_view(data_result.stats, data_result.logs, models))
             return
 
         if args.agent == "math":
@@ -198,24 +317,24 @@ def main() -> None:
 
             console = Console()
             with Live(
-                math_eval.make_view(math_stats, math_logs),
+                make_view(math_stats, math_logs, models),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(math_eval.make_view(s, l))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models))  # type: ignore
                 math_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
-                live.update(math_eval.make_view(math_result.stats, math_result.logs))
+                live.update(make_view(math_result.stats, math_result.logs, models))
             return
 
         if args.agent == "browser":
             tasks = browser_eval.generate_wikipedia_tasks()
             problems = [((desc, url), expected) for desc, url, expected in tasks]
             models = browser_eval.MODELS
-            from nodetool.agents.tools.browser_tools import AgenticBrowserTool
+            from nodetool.agents.tools.browser_tools import BrowserTool
 
-            tools = [AgenticBrowserTool()]
+            tools = [BrowserTool()]
             evaluator = AgentEvaluator(
                 models=models,
                 problems=problems,
@@ -231,17 +350,93 @@ def main() -> None:
             from rich.console import Console
 
             console = Console()
+            # Browser agent uses different parameters for table formatting
+            max_log_lines = int(os.getenv("BROWSER_AGENT_LOG_LINES", "50"))
             with Live(
-                browser_eval.make_view(browser_stats, browser_logs),
+                make_view(
+                    browser_stats, browser_logs, models, max_log_lines, "Task", True
+                ),
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(browser_eval.make_view(s, l))  # type: ignore
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models, max_log_lines, "Task", True))  # type: ignore
                 browser_result: EvaluationResult = (
                     asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
                 )
                 live.update(
-                    browser_eval.make_view(browser_result.stats, browser_result.logs)
+                    make_view(
+                        browser_result.stats,
+                        browser_result.logs,
+                        models,
+                        max_log_lines,
+                        "Task",
+                        True,
+                    )
+                )
+            return
+
+        if args.agent == "search":
+            tasks = search_eval.generate_search_tasks()
+            problems = [((desc, query), expected) for desc, query, expected in tasks]
+            models = search_eval.MODELS
+            from nodetool.agents.tools.node_tool import NodeTool
+            from nodetool.nodes.search.google import (
+                GoogleSearch,
+                GoogleNews,
+                GoogleImages,
+                GoogleFinance,
+                GoogleJobs,
+                GoogleLens,
+                GoogleMaps,
+                GoogleShopping,
+            )
+
+            tools = [
+                NodeTool(GoogleSearch),
+                NodeTool(GoogleNews),
+                NodeTool(GoogleImages),
+                NodeTool(GoogleFinance),
+                NodeTool(GoogleJobs),
+                NodeTool(GoogleLens),
+                NodeTool(GoogleMaps),
+                NodeTool(GoogleShopping),
+            ]
+            evaluator = AgentEvaluator(
+                models=models,
+                problems=problems,
+                result_checker=search_eval.content_result_checker,
+                tools=tools,
+                concurrency=int(os.getenv("SEARCH_AGENT_CONCURRENCY", "8")),
+                subprocess_runner_path=runner_path,
+                subprocess_agent="search",
+            )
+            search_stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in models}
+            search_logs: List[Any] = []
+            from rich.live import Live
+            from rich.console import Console
+
+            console = Console()
+            max_log_lines = int(os.getenv("SEARCH_AGENT_LOG_LINES", "50"))
+            with Live(
+                make_view(
+                    search_stats, search_logs, models, max_log_lines, "Task", True
+                ),
+                refresh_per_second=8,
+                console=console,
+            ) as live:
+                evaluator.on_update = lambda s, l: live.update(make_view(s, l, models, max_log_lines, "Task", True))  # type: ignore
+                search_result: EvaluationResult = (
+                    asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
+                )
+                live.update(
+                    make_view(
+                        search_result.stats,
+                        search_result.logs,
+                        models,
+                        max_log_lines,
+                        "Task",
+                        True,
+                    )
                 )
             return
 
@@ -265,6 +460,8 @@ def main() -> None:
         agent = _build_data_agent(args.provider, args.model, problem_payload)
     elif args.agent == "browser":
         agent = _build_browser_agent(args.provider, args.model, problem_payload)
+    elif args.agent == "search":
+        agent = _build_search_agent(args.provider, args.model, problem_payload)
     else:
         raise SystemExit("Unknown agent type")
     asyncio.run(_execute_agent_once(agent, args.output_json))

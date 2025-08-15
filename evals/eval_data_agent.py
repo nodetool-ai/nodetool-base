@@ -1,22 +1,9 @@
-import asyncio
 import json
 import math
 import os
-from typing import Any, Dict, Iterable, List, Sequence, Tuple
-import argparse
-import sys
+from typing import Any, List, Sequence, Tuple
 
 import pandas as pd
-from rich.columns import Columns
-from rich.console import Console
-from rich.live import Live
-from rich.table import Table
-
-from nodetool.agents.agent_evaluator import (
-    AgentEvaluator,
-    EvaluationResult,
-    ModelStats,
-)
 from nodetool.agents.simple_agent import SimpleAgent
 from nodetool.agents.tools.node_tool import NodeTool
 from nodetool.chat.providers.base import ChatProvider
@@ -277,53 +264,4 @@ def generate_iris_problems() -> List[Tuple[str, float]]:
     return problems
 
 
-def make_table(stats: Dict[str, ModelStats]) -> Table:
-    table = Table()
-    table.add_column("Model")
-    table.add_column("Finished Tests", justify="right")
-    table.add_column("Correct Results", justify="right")
-    table.add_column("Input Tokens", justify="right")
-    table.add_column("Output Tokens", justify="right")
-    table.add_column("Avg Runtime (s)", justify="right")
-    for _, model in MODELS:
-        s = stats[model]
-        avg_runtime = (s.total_runtime_seconds / s.finished) if s.finished > 0 else 0.0
-        table.add_row(
-            model,
-            str(s.finished),
-            str(s.correct),
-            str(s.input_tokens),
-            str(s.output_tokens),
-            f"{avg_runtime:.2f}",
-        )
-    return table
-
-
-def make_log_table(log_entries: List[Any]) -> Table:
-    table = Table(title="Agent Results")
-    table.add_column("Model")
-    table.add_column("Problem")
-    table.add_column("Result", justify="right")
-    table.add_column("Correct", justify="center")
-    table.add_column("Runtime (s)", justify="right")
-    if not log_entries:
-        return table
-    for entry in log_entries[-50:]:
-        status = (
-            "✓" if entry.correct is True else ("✗" if entry.correct is False else "—")
-        )
-        result_text = "None" if entry.result is None else str(entry.result)
-        table.add_row(
-            entry.model,
-            entry.problem,
-            result_text,
-            status,
-            f"{entry.runtime_seconds:.2f}",
-        )
-    return table
-
-
-def make_view(stats: Dict[str, ModelStats], log_entries: List[Any]):
-    return Columns(
-        [make_table(stats), make_log_table(log_entries)], equal=True, expand=True
-    )
+# Table functions have been consolidated in eval_runner.py
