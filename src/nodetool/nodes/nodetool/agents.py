@@ -1,17 +1,37 @@
-import json
 import os
-from typing import Any, List, Optional, AsyncGenerator
-from nodetool.common.environment import Environment
-from pydantic import Field
+import base64
+import json
+from io import BytesIO
+from typing import Any, List, Optional, AsyncGenerator, Sequence
+
 from enum import Enum
 
+from pydantic import Field
+
+import pydub
+
+from nodetool.agents.tools.tool_registry import resolve_tool_by_name
+from nodetool.common.environment import Environment
 from nodetool.agents.agent import Agent
 from nodetool.agents.tools.base import Tool
+from nodetool.agents.task_planner import TaskPlanner
+
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
     json_schema_for_dictionary,
 )
-from nodetool.workflows.types import TaskUpdate, PlanningUpdate, SubTaskResult
+from nodetool.chat.providers import get_provider, Chunk
+
+from nodetool.workflows.types import (
+    TaskUpdate,
+    PlanningUpdate,
+    SubTaskResult,
+    ToolCallUpdate,
+    NodeProgress,
+)
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+
 from nodetool.metadata.types import (
     DataframeRef,
     RecordType,
@@ -22,65 +42,7 @@ from nodetool.metadata.types import (
     Task,
     ImageRef,
     AudioRef,
-)
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import ToolCallUpdate
-from nodetool.chat.providers import get_provider
-from nodetool.chat.providers import Chunk
-
-from typing import Sequence
-from nodetool.agents.task_planner import TaskPlanner
-
-from nodetool.agents.tools import (
-    GoogleImageGenerationTool,
-    GoogleGroundedSearchTool,
-    GoogleNewsTool,
-    GoogleImagesTool,
-    GoogleSearchTool,
-    GoogleLensTool,
-    GoogleMapsTool,
-    GoogleShoppingTool,
-    GoogleFinanceTool,
-    GoogleJobsTool,
-    BrowserTool,
-    ChromaHybridSearchTool,
-    SearchEmailTool,
-    OpenAIImageGenerationTool,
-    OpenAITextToSpeechTool,
-)
-
-TOOLS = {
-    tool.name: tool
-    for tool in [
-        GoogleImageGenerationTool,
-        GoogleGroundedSearchTool,
-        GoogleNewsTool,
-        GoogleImagesTool,
-        GoogleSearchTool,
-        GoogleLensTool,
-        GoogleMapsTool,
-        GoogleShoppingTool,
-        GoogleFinanceTool,
-        GoogleJobsTool,
-        BrowserTool,
-        ChromaHybridSearchTool,
-        SearchEmailTool,
-        OpenAIImageGenerationTool,
-        OpenAITextToSpeechTool,
-    ]
-}
-import base64
-from enum import Enum
-from io import BytesIO
-import json
-import pydub
-from pydantic import Field
-
-from nodetool.metadata.types import (
     Message,
-)
-from nodetool.metadata.types import (
     MessageTextContent,
     MessageImageContent,
     MessageAudioContent,
@@ -90,7 +52,6 @@ from nodetool.metadata.types import (
     AudioRef,
     LanguageModel,
 )
-from nodetool.agents.tools.base import Tool
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress, ToolCallUpdate
@@ -99,57 +60,6 @@ from nodetool.chat.dataframes import json_schema_for_dataframe
 from nodetool.metadata.types import DataframeRef, RecordType
 from nodetool.metadata.types import Provider
 from nodetool.chat.providers import get_provider
-
-from nodetool.agents.tools import (
-    GoogleImageGenerationTool,
-    GoogleGroundedSearchTool,
-    GoogleNewsTool,
-    GoogleImagesTool,
-    GoogleSearchTool,
-    GoogleLensTool,
-    GoogleMapsTool,
-    GoogleShoppingTool,
-    GoogleFinanceTool,
-    GoogleJobsTool,
-    BrowserTool,
-    ChromaHybridSearchTool,
-    SearchEmailTool,
-    OpenAIImageGenerationTool,
-    OpenAITextToSpeechTool,
-)
-
-TOOLS = {
-    tool.name: tool
-    for tool in [
-        GoogleImageGenerationTool,
-        GoogleGroundedSearchTool,
-        GoogleNewsTool,
-        GoogleImagesTool,
-        GoogleSearchTool,
-        GoogleLensTool,
-        GoogleMapsTool,
-        GoogleShoppingTool,
-        GoogleFinanceTool,
-        GoogleJobsTool,
-        BrowserTool,
-        ChromaHybridSearchTool,
-        SearchEmailTool,
-        OpenAIImageGenerationTool,
-        OpenAITextToSpeechTool,
-    ]
-}
-
-
-
-def init_tool(tool: ToolName) -> Tool | None:
-    if tool.name:
-        tool_class = TOOLS.get(tool.name)
-        if tool_class:
-            return tool_class()
-        else:
-            raise ValueError(f"Tool {tool.name} not found")
-    else:
-        return None
 
 
 class TaskPlannerNode(BaseNode):
@@ -232,7 +142,7 @@ class TaskPlannerNode(BaseNode):
         provider = get_provider(self.model.provider)
 
         execution_tools_instances: Sequence[Tool] = [
-            t for t in (init_tool(tool) for tool in self.tools) if t is not None
+            resolve_tool_by_name(tool.name) for tool in self.tools
         ]
         inputs = self.get_dynamic_properties()
 
@@ -343,7 +253,7 @@ class MultiStepAgent(BaseNode):
 
         provider = get_provider(self.model.provider)
 
-        tools = [init_tool(tool) for tool in self.tools]
+        tools = [resolve_tool_by_name(tool.name) for tool in self.tools]
         tools_instances = [tool for tool in tools if tool is not None]
 
         inputs = self.get_dynamic_properties()
@@ -502,7 +412,6 @@ class ListAgent(MultiStepAgent):
         return result
 
 
-
 class MultiStepAgentStreaming(MultiStepAgent):
     """
     Executes tasks using a multi-step agent that streams results as they're generated.
@@ -553,7 +462,7 @@ class MultiStepAgentStreaming(MultiStepAgent):
 
         provider = get_provider(self.model.provider)
 
-        tools = [init_tool(tool) for tool in self.tools]
+        tools = [resolve_tool_by_name(tool.name) for tool in self.tools]
         tools_instances = [tool for tool in tools if tool is not None]
 
         inputs = self.get_dynamic_properties()
@@ -758,7 +667,7 @@ class AgentNode(BaseNode):
             messages.append(message)
 
         messages.append(Message(role="user", content=content))
-        tools = [init_tool(tool) for tool in self.tools]
+        tools = [resolve_tool_by_name(tool.name) for tool in self.tools]
         result_content = ""
         result_audio = None
         result_image = None
@@ -1344,7 +1253,7 @@ class AgentStreaming(BaseNode):
             messages.append(message)
 
         messages.append(Message(role="user", content=content))
-        tools = [init_tool(tool) for tool in self.tools]
+        tools = [resolve_tool_by_name(tool.name) for tool in self.tools]
 
         while True:
             follow_up_messages = []
