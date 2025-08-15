@@ -305,11 +305,11 @@ class LoadJSONAssets(BaseNode):
             raise ValueError("Please select an asset folder.")
 
         parent_id = self.folder.asset_id
-        list_assets = await context.list_assets(
+        list_assets, _ = await context.list_assets(
             parent_id=parent_id, content_type="json"
         )
 
-        for asset in list_assets.assets:
+        for asset in list_assets:
             yield "name", asset.name
             content = await context.download_asset(asset.id)
             try:

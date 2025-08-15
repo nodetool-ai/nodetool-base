@@ -223,7 +223,8 @@ class SaveList(BaseNode):
         asset = await context.create_asset(
             name=filename, content_type="text/plain", content=BytesIO(values.encode())
         )
-        return TextRef(uri=asset.get_url or "", asset_id=asset.id)
+        url = await context.get_asset_url(asset.id)
+        return TextRef(uri=url, asset_id=asset.id)
 
 
 class Randomize(BaseNode):

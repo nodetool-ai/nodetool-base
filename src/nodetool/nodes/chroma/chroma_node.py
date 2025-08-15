@@ -32,10 +32,13 @@ class ChromaNode(BaseNode):
         asset_refs = []
         for id in ids:
             asset = await context.find_asset(str(id))
+            if asset is None:
+                continue
+            url = await context.get_asset_url(asset.id)
             if asset.content_type.startswith("image"):
-                ref = ImageRef(asset_id=asset.id)
+                ref = ImageRef(asset_id=asset.id, uri=url)
                 asset_refs.append(ref)
             if asset.content_type.startswith("text"):
-                ref = TextRef(asset_id=asset.id)
+                ref = TextRef(asset_id=asset.id, uri=url)
                 asset_refs.append(ref)
         return asset_refs
