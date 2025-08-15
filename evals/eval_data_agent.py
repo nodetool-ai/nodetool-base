@@ -3,6 +3,8 @@ import json
 import math
 import os
 from typing import Any, Dict, Iterable, List, Sequence, Tuple
+import argparse
+import sys
 
 import pandas as pd
 from rich.columns import Columns
@@ -325,29 +327,3 @@ def make_view(stats: Dict[str, ModelStats], log_entries: List[Any]):
     return Columns(
         [make_table(stats), make_log_table(log_entries)], equal=True, expand=True
     )
-
-
-async def main():
-    problems = generate_iris_problems()
-    concurrency = int(os.getenv("DATA_AGENT_CONCURRENCY", "8"))
-
-    evaluator = AgentEvaluator(
-        models=MODELS,
-        problems=problems,
-        build_agent_fn=build_data_agent,
-        result_checker=numeric_result_checker,
-        tools=tools,
-        concurrency=concurrency,
-    )
-
-    stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
-    logs: List[Any] = []
-    console = Console()
-    with Live(make_view(stats, logs), refresh_per_second=8, console=console) as live:
-        evaluator.on_update = lambda s, l: live.update(make_view(s, l))  # type: ignore
-        result: EvaluationResult = await evaluator.evaluate()
-        live.update(make_view(result.stats, result.logs))
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

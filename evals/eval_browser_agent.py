@@ -1,5 +1,8 @@
 import asyncio
 import os
+import sys
+import json
+import argparse
 from dataclasses import dataclass
 from typing import Any, Dict, List, Sequence, Tuple
 
@@ -9,8 +12,9 @@ from rich.console import Console
 from rich.live import Live
 
 from nodetool.agents.simple_agent import SimpleAgent
-from nodetool.agents.tools.browser_tools import BrowserTool, AgenticBrowserTool
-from nodetool.agents.agent_evaluator import AgentEvaluator, ModelStats, EvaluationResult
+from nodetool.agents.agent_evaluator import (
+    ModelStats,
+)
 
 
 MODELS: List[Tuple[str, str]] = [
@@ -251,50 +255,3 @@ def content_result_checker(result: Any, expected: Any) -> bool:
     except Exception as e:
         print(f"Error in content_result_checker: {e}")
         return False
-
-
-async def main():
-    # Choose task difficulty via env var; defaults to 'hard' inside the function
-    tasks = generate_wikipedia_tasks()
-    # Format tasks for AgentEvaluator: ((task_description, url), expected_content)
-    problems = [((desc, url), expected) for desc, url, expected in tasks]
-
-    # Use a more capable tool for harder tasks
-    difficulty = os.getenv("BROWSER_AGENT_DIFFICULTY", "hard").strip().lower()
-    tools = [AgenticBrowserTool()] if difficulty == "hard" else [BrowserTool()]
-    concurrency = int(os.getenv("BROWSER_AGENT_CONCURRENCY", "4"))
-
-    evaluator = AgentEvaluator(
-        models=MODELS,
-        problems=problems,
-        build_agent_fn=build_browser_agent,
-        result_checker=content_result_checker,
-        tools=tools,
-        concurrency=concurrency,
-    )
-
-    # Live updating Rich view during evaluation (mirrors eval_math_agent)
-    console = Console()
-    stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
-    log_lines: List[Any] = []
-    with Live(
-        make_view(stats, log_lines),
-        refresh_per_second=8,
-        console=console,
-        redirect_stdout=True,
-        redirect_stderr=True,
-    ) as live:
-        evaluator.on_update = lambda s, l: live.update(make_view(s, l))
-        result: EvaluationResult = await evaluator.evaluate()
-        # Final render
-        live.update(make_view(result.stats, result.logs))
-
-    print("\n=== Browser Agent Evaluation Results ===")
-    print(make_table(result.stats))
-    print(
-        f"\nCompleted evaluation of {len(problems)} Wikipedia tasks across {len(MODELS)} models"
-    )
-
-
-if __name__ == "__main__":
-    asyncio.run(main())

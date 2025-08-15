@@ -1,5 +1,8 @@
 import asyncio
 import os
+import sys
+import json
+import argparse
 import math
 from dataclasses import dataclass
 from typing import Any, Dict, Iterable, List, Sequence, Tuple
@@ -12,7 +15,12 @@ from rich.live import Live
 from nodetool.agents.simple_agent import SimpleAgent
 from nodetool.agents.tools.node_tool import NodeTool
 from nodetool.nodes.lib.math import BinaryOp, UnaryOp
-from nodetool.agents.agent_evaluator import AgentEvaluator, ModelStats, EvaluationResult
+from nodetool.agents.agent_evaluator import (
+    AgentEvaluator,
+    ModelStats,
+    EvaluationResult,
+)
+from nodetool.workflows.processing_context import ProcessingContext
 
 
 MODELS: List[Tuple[str, str]] = [
@@ -282,30 +290,3 @@ def numeric_result_checker(result: Any, expected: Any) -> bool:
         return math.isclose(value_f, float(expected), rel_tol=1e-6, abs_tol=1e-6)
     except Exception:
         return False
-
-
-async def main():
-    problems = generate_math_problems()
-    tools = [NodeTool(BinaryOp), NodeTool(UnaryOp)]
-    concurrency = int(os.getenv("MATH_AGENT_CONCURRENCY", "8"))
-
-    evaluator = AgentEvaluator(
-        models=MODELS,
-        problems=problems,
-        build_agent_fn=build_math_agent,
-        result_checker=numeric_result_checker,
-        tools=tools,
-        concurrency=concurrency,
-    )
-
-    stats: Dict[str, ModelStats] = {m: ModelStats() for _, m in MODELS}
-    log_lines: List[Any] = []
-
-    with Live(make_view(stats, log_lines), refresh_per_second=8) as live:
-        evaluator.on_update = lambda s, l: live.update(make_view(s, l))  # type: ignore
-        result: EvaluationResult = await evaluator.evaluate()
-        live.update(make_view(result.stats, result.logs))
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
