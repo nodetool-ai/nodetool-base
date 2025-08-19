@@ -1,5 +1,5 @@
 import asyncio
-from nodetool.common.chroma_client import get_collection
+from nodetool.common.async_chroma_client import get_async_collection
 from nodetool.common.environment import Environment
 from nodetool.metadata.types import (
     Collection,
@@ -104,7 +104,7 @@ class IndexImages(ChromaNode):
         if any(img.document_id is None for img in self.images):
             raise ValueError("document_id cannot be None for any image")
 
-        collection = get_collection(self.collection.name)
+        collection = await get_async_collection(self.collection.name)
         total = len(self.images)
         context.post_message(NodeProgress(node_id=self._id, progress=0, total=total))
         # Validate all images have asset_ids
@@ -124,9 +124,9 @@ class IndexImages(ChromaNode):
         image_arrays = [np.array(img) for img in images]
 
         if self.upsert:
-            collection.upsert(ids=image_ids, images=image_arrays)
+            await collection.upsert(ids=image_ids, images=image_arrays)
         else:
-            collection.add(ids=image_ids, images=image_arrays)
+            await collection.add(ids=image_ids, images=image_arrays)
 
 
 class IndexEmbedding(ChromaNode):
@@ -157,8 +157,8 @@ class IndexEmbedding(ChromaNode):
         if self.embedding.is_empty():
             raise ValueError("The embedding cannot be empty")
 
-        collection = get_collection(self.collection.name)
-        collection.add(
+        collection = await get_async_collection(self.collection.name)
+        await collection.add(
             ids=[self.id],
             embeddings=[self.embedding.to_numpy()],
             metadatas=[self.metadata or {}],
@@ -187,9 +187,9 @@ class IndexImage(ChromaNode):
             raise ValueError("The image needs to have an asset_id or uri")
 
         document_id = self.image.document_id
-        collection = get_collection(self.collection.name)
+        collection = await get_async_collection(self.collection.name)
         image = await context.image_to_pil(self.image)
-        collection.add(
+        await collection.add(
             ids=[document_id],
             images=[np.array(image)],
             metadatas=[self.metadata or {}],
@@ -217,8 +217,8 @@ class IndexTextChunk(ChromaNode):
         if not self.text_chunk.source_id.strip():
             raise ValueError("The source ID cannot be empty")
 
-        collection = get_collection(self.collection.name)
-        collection.add(
+        collection = await get_async_collection(self.collection.name)
+        await collection.add(
             ids=[self.text_chunk.get_document_id()],
             documents=[self.text_chunk.text],
             metadatas=[self.metadata or {}],
@@ -242,7 +242,7 @@ class IndexTextChunks(ChromaNode):
         if not self.text_chunks:
             return
 
-        collection = get_collection(self.collection.name)
+        collection = await get_async_collection(self.collection.name)
 
         # Extract document IDs and texts from chunks
         doc_ids = [chunk.get_document_id() for chunk in self.text_chunks]
@@ -340,7 +340,7 @@ class IndexAggregatedText(ChromaNode):
         else:
             raise ValueError(f"Invalid aggregation method: {self.aggregation}")
 
-        collection.add(
+        await collection.add(
             ids=[self.document_id],
             documents=[self.document],
             embeddings=[aggregated_embedding],
@@ -372,5 +372,5 @@ class IndexString(ChromaNode):
         if not self.document_id.strip():
             raise ValueError("The document ID cannot be empty")
 
-        collection = get_collection(self.collection.name)
-        collection.add(ids=[self.document_id], documents=[self.text])
+        collection = await get_async_collection(self.collection.name)
+        await collection.add(ids=[self.document_id], documents=[self.text])

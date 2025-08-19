@@ -1,5 +1,8 @@
 from pydantic import Field
-from nodetool.common.chroma_client import get_collection, get_chroma_client
+from nodetool.common.async_chroma_client import (
+    get_async_collection,
+    get_async_chroma_client,
+)
 from nodetool.metadata.types import (
     Collection,
     LlamaModel,
@@ -21,8 +24,8 @@ class CollectionNode(ChromaNode):
     )
 
     async def process(self, context: ProcessingContext) -> Collection:
-        client = get_chroma_client()
-        client.get_or_create_collection(
+        client = await get_async_chroma_client()
+        await client.get_or_create_collection(
             name=self.name,
             metadata={"embedding_model": self.embedding_model.repo_id},
         )
@@ -40,8 +43,8 @@ class Count(ChromaNode):
     )
 
     async def process(self, context: ProcessingContext) -> int:
-        collection = get_collection(self.collection.name)
-        return collection.count()
+        collection = await get_async_collection(self.collection.name)
+        return await collection.count()
 
 
 class GetDocuments(ChromaNode):
@@ -59,8 +62,8 @@ class GetDocuments(ChromaNode):
     offset: int = Field(default=0, description="The offset of the documents to get")
 
     async def process(self, context: ProcessingContext) -> list[str]:
-        collection = get_collection(self.collection.name)
-        result = collection.get(
+        collection = await get_async_collection(self.collection.name)
+        result = await collection.get(
             ids=self.ids,
             limit=self.limit,
             offset=self.offset,
@@ -81,7 +84,7 @@ class Peek(ChromaNode):
     limit: int = Field(default=100, description="The limit of the documents to peek")
 
     async def process(self, context: ProcessingContext) -> list[str]:
-        collection = get_collection(self.collection.name)
-        result = collection.peek(limit=self.limit)
+        collection = await get_async_collection(self.collection.name)
+        result = await collection.peek(limit=self.limit)
         assert result["documents"] is not None
         return result["documents"]

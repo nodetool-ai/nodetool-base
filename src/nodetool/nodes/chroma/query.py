@@ -1,4 +1,4 @@
-from nodetool.common.chroma_client import get_collection
+from nodetool.common.async_chroma_client import get_async_collection
 from nodetool.metadata.types import (
     Collection,
     ImageRef,
@@ -37,9 +37,9 @@ class QueryImage(ChromaNode):
         if not self.image.asset_id and not self.image.uri:
             raise ValueError("Image is not connected")
 
-        collection = get_collection(self.collection.name)
+        collection = await get_async_collection(self.collection.name)
         image = await context.image_to_pil(self.image)
-        result = collection.query(
+        result = await collection.query(
             query_images=[np.array(image)], n_results=self.n_results
         )
         assert result["ids"] is not None, "Ids are not returned"
@@ -93,8 +93,10 @@ class QueryText(ChromaNode):
         }
 
     async def process(self, context: ProcessingContext):
-        collection = get_collection(self.collection.name)
-        result = collection.query(query_texts=[self.text], n_results=self.n_results)
+        collection = await get_async_collection(self.collection.name)
+        result = await collection.query(
+            query_texts=[self.text], n_results=self.n_results
+        )
 
         assert result["ids"] is not None, "Ids are not returned"
         assert result["documents"] is not None, "Documents are not returned"
@@ -312,10 +314,10 @@ class HybridSearch(ChromaNode):
         if not self.text.strip():
             raise ValueError("Search text cannot be empty")
 
-        collection = get_collection(self.collection.name)
+        collection = await get_async_collection(self.collection.name)
 
         # Perform semantic search
-        semantic_results = collection.query(
+        semantic_results = await collection.query(
             query_texts=[self.text],
             n_results=self.n_results * 2,  # Get more results for better fusion
             include=[
@@ -328,7 +330,7 @@ class HybridSearch(ChromaNode):
         # Perform keyword search if we have valid keywords
         keyword_query = self._get_keyword_query(self.text)
         if keyword_query:
-            keyword_results = collection.query(
+            keyword_results = await collection.query(
                 query_texts=[self.text],
                 n_results=self.n_results * 2,
                 where_document=keyword_query,
