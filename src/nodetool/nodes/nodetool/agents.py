@@ -654,7 +654,20 @@ class AgentNode(BaseNode):
         content.append(MessageTextContent(text=self.prompt))
 
         if self.image.is_set():
-            content.append(MessageImageContent(image=self.image))
+            # Ensure image is converted to base64 format for Claude API compatibility
+            if self.image.data:
+                # Image already has data, just encode it
+                image_ref = self.image.encode_data_to_uri()
+                print(f"[DEBUG] AgentNode - Using image data, URI: {image_ref.uri[:100]}{'...' if len(image_ref.uri) > 100 else ''}")
+            elif self.image.uri:
+                # Image has URI but no data, need to download it
+                print(f"[DEBUG] AgentNode - Downloading image from URI: {self.image.uri}")
+                image_ref = await context.image_from_url(self.image.uri)
+                print(f"[DEBUG] AgentNode - Downloaded image, new URI: {image_ref.uri[:100]}{'...' if len(image_ref.uri) > 100 else ''}")
+            else:
+                image_ref = self.image
+                print(f"[DEBUG] AgentNode - Using image as-is: {image_ref.uri[:100]}{'...' if len(image_ref.uri) > 100 else ''}")
+            content.append(MessageImageContent(image=image_ref))
 
         if self.audio.is_set():
             content.append(MessageAudioContent(audio=self.audio))
@@ -1240,7 +1253,20 @@ class AgentStreaming(BaseNode):
         content.append(MessageTextContent(text=self.prompt))
 
         if self.image.is_set():
-            content.append(MessageImageContent(image=self.image))
+            # Ensure image is converted to base64 format for Claude API compatibility
+            if self.image.data:
+                # Image already has data, just encode it
+                image_ref = self.image.encode_data_to_uri()
+                print(f"[DEBUG] AgentStreaming - Using image data, URI: {image_ref.uri[:100]}{'...' if len(image_ref.uri) > 100 else ''}")
+            elif self.image.uri:
+                # Image has URI but no data, need to download it
+                print(f"[DEBUG] AgentStreaming - Downloading image from URI: {self.image.uri}")
+                image_ref = await context.image_from_url(self.image.uri)
+                print(f"[DEBUG] AgentStreaming - Downloaded image, new URI: {image_ref.uri[:100]}{'...' if len(image_ref.uri) > 100 else ''}")
+            else:
+                image_ref = self.image
+                print(f"[DEBUG] AgentStreaming - Using image as-is: {image_ref.uri[:100]}{'...' if len(image_ref.uri) > 100 else ''}")
+            content.append(MessageImageContent(image=image_ref))
 
         if self.audio.is_set():
             content.append(MessageAudioContent(audio=self.audio))
