@@ -921,15 +921,15 @@ class Classifier(BaseNode):
 
 
 DEFAULT_SYSTEM_PROMPT = """
-You are a deployed coding agent for the Nodetool project. Resolve the user's task end-to-end with high accuracy and efficient tool use.
+You are an agent for the Nodetool project. 
+Resolve the user's task end-to-end with high accuracy and efficient tool use.
 
 Behavior
 - Be precise, concise, and actionable. Prefer acting over asking; proceed under the most reasonable assumptions and document them after you finish.
 - Keep going until the task is fully solved. Only hand back if blocked by missing credentials or an explicit safety boundary.
 - Use tools when they materially improve correctness or efficiency. Avoid unnecessary calls. Parallelize independent lookups. Stop searching once you can act.
-- For destructive/irreversible actions (e.g., deleting files, payments), ask for explicit confirmation first.
 
-Tool preambles (before tool calls)
+Tool preambles
 - Briefly restate the goal.
 - Outline the next step(s) you will perform.
 - Provide short progress updates as actions complete.
@@ -938,24 +938,11 @@ Tool preambles (before tool calls)
 Context gathering strategy
 - Start broad, then narrow with targeted queries.
 - Batch related searches in parallel; deduplicate overlapping results.
-- Trace only the symbols you will modify or whose contracts you rely on; avoid deep transitive expansion unless necessary.
 
-Coding standards
-- Make minimal, focused edits aligned with the existing style.
-- Write clear, readable code with descriptive names and guard clauses; avoid unnecessary complexity.
-- Do not add inline comments except where essential to explain non-obvious decisions.
-- When you introduce substantive changes, run tests/build and fix any errors you introduced.
+Rendering
+- Use Markdown to display images, tables, and other rich content.
+- Display images, audio, and video assets using the appropriate HTML or Markdown.
 
-Output style
-- Use Markdown sparingly for clarity (short headings, bullet points, fenced code where needed).
-- When showing code, include only relevant snippets or diffs.
-- End with a brief, high-signal summary of actions taken and results.
-
-Safety
-- Do not exfiltrate or reveal secrets. Redact tokens/keys/PII.
-- Follow provider and project policies.
-
-You can call tools to help you answer the user's question.
 """
 
 
@@ -999,18 +986,6 @@ class Agent(BaseNode):
     llm, text-generation, chatbot, question-answering, streaming
     """
 
-    @classmethod
-    def is_cacheable(cls) -> bool:
-        return False
-
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": str,
-            "image": ImageRef,
-            "audio": AudioRef,
-        }
-
     model: LanguageModel = Field(
         default=LanguageModel(),
         description="Model to use for execution",
@@ -1047,6 +1022,17 @@ class Agent(BaseNode):
     )
 
     _supports_dynamic_outputs = True
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "chunk": Chunk,
+            "audio": AudioRef,
+        }
 
     def collect_tools_from_dynamic_outputs(
         self, context: ProcessingContext
@@ -1101,6 +1087,7 @@ class Agent(BaseNode):
         first_time = True
 
         while tools_called or first_time:
+            tools_called = False
             first_time = False
             message_text_content = MessageTextContent(text="")
             assistant_message = Message(
@@ -1111,8 +1098,6 @@ class Agent(BaseNode):
                 tool_calls=[],
             )
 
-            # for msg in messages:
-            #     print(msg.model_dump_json(indent=2))
             async for chunk in context.generate_messages(
                 messages=messages,
                 provider=self.model.provider,
@@ -1122,19 +1107,18 @@ class Agent(BaseNode):
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
             ):  # type: ignore
-                print(f"chunk: {chunk}")
                 if messages[-1] != assistant_message:
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
                     if chunk.content_type == "text" or chunk.content_type is None:
                         message_text_content.text += chunk.content
-                        yield "text", chunk.content
+                        yield "chunk", chunk
                     elif chunk.content_type == "audio":
                         data = base64.b64decode(chunk.content)
                         yield "audio", AudioRef(data=data)
                     elif chunk.content_type == "image":
-                        data = base64.b64decode(chunk.content)
-                        yield "image", ImageRef(data=data)
+                        yield "chunk", chunk
+
                 elif isinstance(chunk, ToolCall):
                     tools_called = True
                     log.debug(f"tool call: {chunk}")
@@ -1153,7 +1137,6 @@ class Agent(BaseNode):
                             tool_result = await tool_instance.process(
                                 context, chunk.args
                             )
-                            log.debug(f"tool result: {tool_result}")
                             tool_result_json = json.dumps(
                                 serialize_tool_result(tool_result)
                             )

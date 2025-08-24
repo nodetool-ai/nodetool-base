@@ -9,7 +9,8 @@ from nodetool.workflows.processing_context import ProcessingContext
 import numpy as np
 from pydantic import Field
 import re
-from chromadb.api.types import IncludeEnum
+
+"""Chroma query nodes (assume Chroma 0.6 APIs)."""
 
 
 class QueryImage(ChromaNode):
@@ -320,11 +321,7 @@ class HybridSearch(ChromaNode):
         semantic_results = await collection.query(
             query_texts=[self.text],
             n_results=self.n_results * 2,  # Get more results for better fusion
-            include=[
-                IncludeEnum.documents,
-                IncludeEnum.metadatas,
-                IncludeEnum.distances,
-            ],
+            include=["documents", "metadatas", "distances"],
         )
 
         # Perform keyword search if we have valid keywords
@@ -334,11 +331,7 @@ class HybridSearch(ChromaNode):
                 query_texts=[self.text],
                 n_results=self.n_results * 2,
                 where_document=keyword_query,
-                include=[
-                    IncludeEnum.documents,
-                    IncludeEnum.metadatas,
-                    IncludeEnum.distances,
-                ],
+                include=["documents", "metadatas", "distances"],
             )
         else:
             keyword_results = semantic_results  # Fall back to semantic only

@@ -4251,7 +4251,7 @@
           "type": {
             "type": "str"
           },
-          "default": "You are a friendly assistant.",
+          "default": "\nYou are an agent for the Nodetool project. \nResolve the user's task end-to-end with high accuracy and efficient tool use.\n\nBehavior\n- Be precise, concise, and actionable. Prefer acting over asking; proceed under the most reasonable assumptions and document them after you finish.\n- Keep going until the task is fully solved. Only hand back if blocked by missing credentials or an explicit safety boundary.\n- Use tools when they materially improve correctness or efficiency. Avoid unnecessary calls. Parallelize independent lookups. Stop searching once you can act.\n\nTool preambles\n- Briefly restate the goal.\n- Outline the next step(s) you will perform.\n- Provide short progress updates as actions complete.\n- After acting, summarize what changed and the impact.\n\nContext gathering strategy\n- Start broad, then narrow with targeted queries.\n- Batch related searches in parallel; deduplicate overlapping results.\n\nRendering\n- Use Markdown to display images, tables, and other rich content.\n- Display images, audio, and video assets using the appropriate HTML or Markdown.\n\n",
           "title": "System",
           "description": "The system prompt for the LLM"
         },
@@ -4315,7 +4315,7 @@
           "type": {
             "type": "int"
           },
-          "default": 4096,
+          "default": 32768,
           "title": "Max Tokens",
           "min": 1.0,
           "max": 100000.0
@@ -4334,15 +4334,9 @@
       "outputs": [
         {
           "type": {
-            "type": "str"
+            "type": "chunk"
           },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "image"
+          "name": "chunk"
         },
         {
           "type": {

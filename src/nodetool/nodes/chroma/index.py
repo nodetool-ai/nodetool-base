@@ -252,7 +252,7 @@ class IndexTextChunks(ChromaNode):
         if any(not chunk.source_id.strip() for chunk in self.text_chunks):
             raise ValueError("All text chunks must have a source ID")
 
-        collection.add(ids=doc_ids, documents=texts)
+        await collection.add(ids=doc_ids, documents=texts)
 
 
 class EmbeddingAggregation(Enum):
@@ -305,7 +305,7 @@ class IndexAggregatedText(ChromaNode):
         if not self.text_chunks:
             raise ValueError("The text chunks cannot be empty")
 
-        collection = get_collection(self.collection.name)
+        collection = await get_async_collection(self.collection.name)
 
         model = collection.metadata.get("embedding_model")
         if not model:
