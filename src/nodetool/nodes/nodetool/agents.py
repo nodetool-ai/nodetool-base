@@ -1134,12 +1134,24 @@ class Agent(BaseNode):
                                     message=tool_instance.user_message(chunk.args),
                                 )
                             )
-                            tool_result = await tool_instance.process(
-                                context, chunk.args
-                            )
-                            tool_result_json = json.dumps(
-                                serialize_tool_result(tool_result)
-                            )
+
+                            # Process tool with proper exception handling
+                            try:
+                                tool_result = await tool_instance.process(
+                                    context, chunk.args
+                                )
+                                tool_result_json = json.dumps(
+                                    serialize_tool_result(tool_result)
+                                )
+                            except Exception as e:
+                                log.error(
+                                    f"Tool call {chunk.id} ({chunk.name}) failed with exception: {e}"
+                                )
+                                # Create an error tool result message to satisfy OpenAI's requirement
+                                # that all tool_call_ids have corresponding tool messages
+                                tool_result_json = json.dumps(
+                                    {"error": f"Error executing tool: {str(e)}"}
+                                )
 
                             messages.append(
                                 Message(
