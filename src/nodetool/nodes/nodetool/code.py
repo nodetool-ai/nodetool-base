@@ -4,6 +4,7 @@ import base64
 import json
 import textwrap
 from typing import Any
+from enum import Enum
 from nodetool.workflows.types import NodeUpdate
 from pydantic import Field
 from nodetool.common.environment import Environment
@@ -28,10 +29,27 @@ class ExecutePython(BaseNode):
     _is_dynamic = True
     _supports_dynamic_outputs = True
 
+    class PythonImage(Enum):
+        PYTHON_3_12_SLIM = "python:3.12-slim"
+        PYTHON_3_11_SLIM = "python:3.11-slim"
+        PYTHON_3_10_SLIM = "python:3.10-slim"
+        JUPYTER_DATASCIENCE_NOTEBOOK = "jupyter/datascience-notebook:latest"
+        JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
+        PYTORCH_CPU = "pytorch/pytorch:latest"
+
     code: str = Field(
         default="",
-        description="Python code to execute. Dynamic properties and inputs are available as locals. Assign the desired output to the 'result' variable.",
+        description="Python code to execute. Dynamic inputs are available as locals. Send output using the `yield` keyword, e.g. `yield 'output', 'Hello, world!'` or `yield 'dynmamic_output', {'key': 'value'}`",
     )
+
+    image: PythonImage = Field(
+        default=PythonImage.PYTHON_3_11_SLIM,
+        description="Docker image to use for execution",
+    )
+
+    @classmethod
+    def return_type(cls):
+        return {"error": str, "output": Any}
 
     async def gen_process(self, context: ProcessingContext):
         if Environment.is_production():
@@ -40,7 +58,7 @@ class ExecutePython(BaseNode):
         if not self.code.strip():
             raise RuntimeError("Code is required")
 
-        runner = PythonDockerRunner()
+        runner = PythonDockerRunner(image=self.image.value)
         async for slot, value in runner.stream(
             user_code=self.code,
             env_locals=self._dynamic_properties,
