@@ -228,6 +228,26 @@ class FloatInput(GraphNode):
         return "nodetool.input.FloatInput"
 
 
+class GroupInput(GraphNode):
+    """
+    A minimal group input placeholder to satisfy imports in tests.
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value of the input."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.GroupInput"
+
+
 class ImageInput(GraphNode):
     """
     Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.

@@ -1,10 +1,12 @@
 import json
 import logging
+import re
 from pydantic import Field
 
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
 )
+from nodetool.chat.providers import get_provider
 from nodetool.metadata.types import (
     Message,
     DataframeRef,
@@ -72,9 +74,8 @@ class DataGenerator(BaseNode):
         )
         messages = [system_message, user_message]
 
-        assistant_message = await context.generate_message(
-            node_id=self.id,
-            provider=self.model.provider,
+        provider = get_provider(self.model.provider)
+        assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
@@ -87,12 +88,22 @@ class DataGenerator(BaseNode):
                 },
             },
         )
+        # Extract text content from the message
+        if assistant_message.content and len(assistant_message.content) > 0:
+            content_text = (
+                assistant_message.content[0].text
+                if hasattr(assistant_message.content[0], "text")
+                else str(assistant_message.content[0])
+            )
+        else:
+            content_text = str(assistant_message.content)
+
         data = [
             [
                 (row[col.name] if col.name in row else None)
                 for col in self.columns.columns
             ]
-            for row in json.loads(str(assistant_message.content)).get("data", [])
+            for row in json.loads(content_text).get("data", [])
         ]
         return DataframeRef(columns=self.columns.columns, data=data)
 
@@ -100,41 +111,11 @@ class DataGenerator(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["prompt", "model", "columns"]
 
-
-class DataStreamer(BaseNode):
-    """
-    LLM Agent to create a stream of data based on a user prompt.
-    llm, data streaming, data structuring
-
-    Use cases:
-    - Generating structured data from natural language descriptions
-    - Creating sample datasets for testing or demonstration
-    """
-
-    model: LanguageModel = Field(
-        default=LanguageModel(),
-        description="The model to use for data generation.",
-    )
-    prompt: str = Field(
-        default="",
-        description="The user prompt",
-    )
-    input_text: str = Field(
-        default="",
-        description="The input text to be analyzed by the agent.",
-    )
-    max_tokens: int = Field(
-        default=4096,
-        ge=1,
-        le=100000,
-        description="The maximum number of tokens to generate.",
-    )
-    columns: RecordType = Field(
-        default=RecordType(),
-        description="The columns to use in the dataframe.",
-    )
-
     async def gen_process(self, context: ProcessingContext):
+        """
+        Streaming generation that yields individual records as they are generated
+        and a final dataframe once all records are ready.
+        """
         system_message = Message(
             role="system",
             content="You are an assistant with access to tools. Use generate_data to emit each row of the data.",
@@ -146,9 +127,10 @@ class DataStreamer(BaseNode):
         )
         messages = [system_message, user_message]
 
-        async for chunk in context.generate_messages(
-            node_id=self.id,
-            provider=self.model.provider,
+        collected_rows: list[dict] = []
+
+        provider = get_provider(self.model.provider)
+        async for chunk in provider.generate_messages(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
@@ -161,11 +143,19 @@ class DataStreamer(BaseNode):
         ):
             if isinstance(chunk, ToolCall):
                 logger.debug("Tool call args: %s", chunk.args)
-                yield "output", chunk.args
+                collected_rows.append(chunk.args)
+                # Yield each generated record immediately
+                yield "record", chunk.args
 
-    @classmethod
-    def get_basic_fields(cls) -> list[str]:
-        return ["prompt", "model", "columns"]
+        # After streaming completes, yield the full dataframe once
+        data = [
+            [
+                (row[col.name] if col.name in row else None)
+                for col in self.columns.columns
+            ]
+            for row in collected_rows
+        ]
+        yield "dataframe", DataframeRef(columns=self.columns.columns, data=data)
 
 
 class ListGenerator(BaseNode):
@@ -200,8 +190,9 @@ class ListGenerator(BaseNode):
     @classmethod
     def return_type(cls):
         return {
-            "item": str,
+            "items": str,
             "index": int,
+            "list": list[str],
         }
 
     async def gen_process(self, context: ProcessingContext):
@@ -231,10 +222,10 @@ class ListGenerator(BaseNode):
         current_item = ""
         current_index = 0
         in_item = False
+        collected_items: list[str] = []
 
-        async for chunk in context.generate_messages(
-            node_id=self.id,
-            provider=self.model.provider,
+        provider = get_provider(self.model.provider)
+        async for chunk in provider.generate_messages(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
@@ -259,7 +250,8 @@ class ListGenerator(BaseNode):
                     if match:
                         # If we were processing a previous item, yield it
                         if in_item and current_item:
-                            yield "item", current_item
+                            collected_items.append(current_item)
+                            yield "items", current_item
                             yield "index", current_index
 
                         # Start a new item
@@ -276,19 +268,35 @@ class ListGenerator(BaseNode):
             if match:
                 # If we were processing a previous item, yield it
                 if in_item and current_item:
-                    yield "item", current_item
+                    collected_items.append(current_item)
+                    yield "items", current_item
                     yield "index", current_index
 
                 # Process the final item
                 current_index = int(match.group(1))
                 current_item = match.group(2)
-                yield "item", current_item
+                collected_items.append(current_item)
+                yield "items", current_item
                 yield "index", current_index
             elif in_item:
                 # Add to the current item and yield it
                 current_item += " " + buffer.strip()
-                yield "item", current_item
+                collected_items.append(current_item)
+                yield "items", current_item
                 yield "index", current_index
+
+        # Flush any final item if not yet emitted
+        if (
+            in_item
+            and current_item
+            and (not collected_items or collected_items[-1] != current_item)
+        ):
+            collected_items.append(current_item)
+            yield "items", current_item
+            yield "index", current_index
+
+        # After streaming completes, yield the full list once
+        yield "list", collected_items
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -586,9 +594,8 @@ Ensure the generated JSON is valid and strictly adheres to the schema provided f
 
         messages = [system_message, user_message]
 
-        assistant_message = await context.generate_message(
-            node_id=self.id,
-            provider=self.model.provider,
+        provider = get_provider(self.model.provider)
+        assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
@@ -696,9 +703,8 @@ Use clear, semantic element IDs and class names if needed.""",
 
         messages = [system_message, user_message]
 
-        assistant_message = await context.generate_message(
-            node_id=self.id,
-            provider=self.model.provider,
+        provider = get_provider(self.model.provider)
+        assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,

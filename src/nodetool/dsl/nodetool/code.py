@@ -47,10 +47,7 @@ class ExecutePython(GraphNode):
 
     code: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",
-        description="Python code to execute. Input variables are available as locals. Assign the desired output to the 'result' variable.",
-    )
-    inputs: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
-        default={}, description="Input variables available to the code as locals."
+        description="Python code to execute. Dynamic properties and inputs are available as locals. Assign the desired output to the 'result' variable.",
     )
 
     @classmethod

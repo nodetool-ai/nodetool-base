@@ -1,9 +1,15 @@
 import ast
+import asyncio
+import base64
+import json
+import textwrap
 from typing import Any
+from nodetool.workflows.types import NodeUpdate
 from pydantic import Field
 from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+from .python_runner import PythonDockerRunner
 
 
 class ExecutePython(BaseNode):
@@ -19,65 +25,31 @@ class ExecutePython(BaseNode):
     IMPORTANT: Only enabled in non-production environments
     """
 
+    _is_dynamic = True
+    _supports_dynamic_outputs = True
+
     code: str = Field(
         default="",
-        description="Python code to execute. Input variables are available as locals. Assign the desired output to the 'result' variable.",
+        description="Python code to execute. Dynamic properties and inputs are available as locals. Assign the desired output to the 'result' variable.",
     )
 
-    inputs: dict[str, Any] = Field(
-        default={},
-        description="Input variables available to the code as locals.",
-    )
-
-    async def process(self, context: ProcessingContext) -> Any:
+    async def gen_process(self, context: ProcessingContext):
         if Environment.is_production():
             raise RuntimeError("Python code execution is disabled in production")
 
         if not self.code.strip():
-            return None
+            raise RuntimeError("Code is required")
 
-        # Basic static analysis for dangerous operations
-        tree = ast.parse(self.code)
-        for node in ast.walk(tree):
-            # Block imports
-            if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
-                raise ValueError("Import statements are not allowed")
-
-            # Block file operations
-            if isinstance(node, ast.Call):
-                if isinstance(node.func, ast.Name):
-                    if node.func.id in ["open", "eval", "exec"]:
-                        raise ValueError(f"Function {node.func.id}() is not allowed")
-
-        # Create restricted globals
-        restricted_globals = {
-            "__builtins__": {
-                "abs": abs,
-                "all": all,
-                "any": any,
-                "bool": bool,
-                "dict": dict,
-                "float": float,
-                "int": int,
-                "len": len,
-                "list": list,
-                "max": max,
-                "min": min,
-                "range": range,
-                "round": round,
-                "str": str,
-                "sum": sum,
-                "tuple": tuple,
-                "zip": zip,
-            }
-        }
-
-        # Execute in restricted environment
-        try:
-            exec(self.code, restricted_globals, self.inputs)
-            return self.inputs.get("result", None)
-        except Exception as e:
-            raise RuntimeError(f"Error executing Python code: {str(e)}")
+        runner = PythonDockerRunner()
+        async for slot, value in runner.stream(
+            user_code=self.code,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            allow_dynamic_outputs=self.supports_dynamic_outputs(),
+        ):
+            if value is not None:
+                yield slot, value
 
 
 class EvaluateExpression(BaseNode):
@@ -109,13 +81,135 @@ class EvaluateExpression(BaseNode):
         if not self.expression.strip():
             return None
 
-        # Basic static analysis
+        # Basic static analysis with AST whitelisting
         tree = ast.parse(self.expression, mode="eval")
-        for node in ast.walk(tree):
-            if isinstance(node, (ast.Call, ast.Import, ast.ImportFrom)):
-                raise ValueError(
-                    "Function calls and imports are not allowed in expressions"
-                )
+
+        allowed_call_names = {
+            "abs",
+            "all",
+            "any",
+            "bool",
+            "float",
+            "int",
+            "len",
+            "max",
+            "min",
+            "round",
+            "str",
+            "sum",
+        }
+
+        allowed_unary_ops = (ast.UAdd, ast.USub, ast.Not, ast.Invert)
+        allowed_bin_ops = (
+            ast.Add,
+            ast.Sub,
+            ast.Mult,
+            ast.Div,
+            ast.Mod,
+            ast.Pow,
+            ast.FloorDiv,
+            ast.MatMult,
+        )
+        allowed_bool_ops = (ast.And, ast.Or)
+        allowed_cmp_ops = (
+            ast.Eq,
+            ast.NotEq,
+            ast.Lt,
+            ast.LtE,
+            ast.Gt,
+            ast.GtE,
+            ast.Is,
+            ast.IsNot,
+            ast.In,
+            ast.NotIn,
+        )
+
+        def _validate(node: ast.AST) -> None:
+            if isinstance(node, ast.Expression):
+                _validate(node.body)
+                return
+            if isinstance(node, ast.Constant):
+                return
+            if isinstance(node, ast.Name):
+                # Variables or allowed globals by name (usage without calling is fine)
+                return
+            if isinstance(node, ast.Tuple):
+                for elt in node.elts:
+                    _validate(elt)
+                return
+            if isinstance(node, ast.List):
+                for elt in node.elts:
+                    _validate(elt)
+                return
+            if isinstance(node, ast.Dict):
+                for k, v in zip(node.keys, node.values):
+                    if k is not None:
+                        _validate(k)
+                    _validate(v)
+                return
+            if isinstance(node, ast.Set):
+                for elt in node.elts:
+                    _validate(elt)
+                return
+            if isinstance(node, ast.UnaryOp):
+                if not isinstance(node.op, allowed_unary_ops):
+                    raise ValueError("Operator not allowed")
+                _validate(node.operand)
+                return
+            if isinstance(node, ast.BinOp):
+                if not isinstance(node.op, allowed_bin_ops):
+                    raise ValueError("Operator not allowed")
+                _validate(node.left)
+                _validate(node.right)
+                return
+            if isinstance(node, ast.BoolOp):
+                if not isinstance(node.op, allowed_bool_ops):
+                    raise ValueError("Boolean operator not allowed")
+                for v in node.values:
+                    _validate(v)
+                return
+            if isinstance(node, ast.Compare):
+                for op in node.ops:
+                    if not isinstance(op, allowed_cmp_ops):
+                        raise ValueError("Comparison operator not allowed")
+                _validate(node.left)
+                for cmp in node.comparators:
+                    _validate(cmp)
+                return
+            if isinstance(node, ast.IfExp):
+                _validate(node.test)
+                _validate(node.body)
+                _validate(node.orelse)
+                return
+            if isinstance(node, ast.Subscript):
+                _validate(node.value)
+                _validate(node.slice)
+                return
+            if isinstance(node, ast.Slice):
+                if node.lower:
+                    _validate(node.lower)
+                if node.upper:
+                    _validate(node.upper)
+                if node.step:
+                    _validate(node.step)
+                return
+            if isinstance(node, ast.Call):
+                # Only allow calling whitelisted simple names
+                if (
+                    not isinstance(node.func, ast.Name)
+                    or node.func.id not in allowed_call_names
+                ):
+                    raise ValueError("Only calls to whitelisted functions are allowed")
+                for arg in node.args:
+                    _validate(arg)
+                for kw in node.keywords:
+                    if kw.value is not None:
+                        _validate(kw.value)
+                return
+            # Disallow everything else: attributes, lambdas, comprehensions, assigns, etc.
+            raise ValueError("Unsupported expression construct")
+
+        _validate(tree)
 
         # Create restricted environment
         restricted_globals = {

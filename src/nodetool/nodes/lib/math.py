@@ -143,3 +143,64 @@ class MathFunction(BaseNode):
             return math.log(self.input)
         else:
             raise ValueError(f"Unsupported operation: {self.operation}")
+
+
+class Sine(BaseNode):
+    """
+    Computes sine of the given angle in radians.
+    math, sine, trig
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+
+    angle_rad: int | float = Field(title="Angle (rad)", default=0.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return math.sin(self.angle_rad)
+
+
+class Cosine(BaseNode):
+    """
+    Computes cosine of the given angle in radians.
+    math, cosine, trig
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+
+    angle_rad: int | float = Field(title="Angle (rad)", default=0.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return math.cos(self.angle_rad)
+
+
+class Power(BaseNode):
+    """
+    Raises base to the given exponent.
+    math, power, exponent
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+
+    base: int | float = Field(title="Base", default=0.0)
+    exponent: int | float = Field(title="Exponent", default=1.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return math.pow(self.base, self.exponent)
+
+
+class Sqrt(BaseNode):
+    """
+    Computes square root of x.
+    math, sqrt, square_root
+    """
+
+    _layout = "small"
+    _expose_as_tool = True
+
+    x: int | float = Field(title="X", default=0.0)
+
+    async def process(self, context: ProcessingContext) -> int | float:
+        return math.sqrt(self.x)

@@ -140,6 +140,22 @@ class ListFiles(BaseNode):
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
     recursive: bool = Field(default=False, description="Search subdirectories")
 
+    async def process(self, context: ProcessingContext) -> list[FilePath]:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.directory.path:
+            raise ValueError("directory cannot be empty")
+        expanded_directory = os.path.expanduser(self.directory.path)
+
+        if self.recursive:
+            pattern = os.path.join(expanded_directory, "**", self.pattern)
+            paths = glob.glob(pattern, recursive=True)
+        else:
+            pattern = os.path.join(expanded_directory, self.pattern)
+            paths = glob.glob(pattern)
+
+        return [FilePath(path=p) for p in paths]
+
     async def gen_process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")

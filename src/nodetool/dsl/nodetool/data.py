@@ -399,6 +399,21 @@ class LoadCSVFile(GraphNode):
         return "nodetool.data.LoadCSVFile"
 
 
+class LoadCSVURL(GraphNode):
+    """
+    Load CSV file from URL.
+    csv, dataframe, import
+    """
+
+    url: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The URL of the CSV file to load."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.LoadCSVURL"
+
+
 class Merge(GraphNode):
     """
     Merge two dataframes along columns.

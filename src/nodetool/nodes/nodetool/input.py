@@ -374,3 +374,14 @@ class TextInput(InputNode):
         if self.value.is_empty():
             raise ValueError("Text input is empty, please provide a text asset")
         return self.value
+
+
+class GroupInput(InputNode):
+    """
+    A minimal group input placeholder to satisfy imports in tests.
+    """
+
+    _value: Any | None = None
+
+    async def process(self, context: ProcessingContext) -> Any:
+        return self._value

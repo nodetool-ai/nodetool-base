@@ -13,6 +13,7 @@ import pydub
 
 from nodetool.agents.tools.tool_registry import resolve_tool_by_name
 from nodetool.agents.tools.base import Tool
+from nodetool.chat.providers import get_provider
 
 from nodetool.workflows.types import (
     ToolCallUpdate,
@@ -550,94 +551,6 @@ log.setLevel(logging.DEBUG)
 
 class Summarizer(BaseNode):
     """
-    Generate concise summaries of text content using LLM providers.
-    text, summarization, nlp, content
-
-    Specialized for creating high-quality summaries:
-    - Condensing long documents into key points
-    - Creating executive summaries
-    - Extracting main ideas from text
-    - Maintaining factual accuracy while reducing length
-    """
-
-    @classmethod
-    def get_title(cls) -> str:
-        return "Summarizer"
-
-    system_prompt: str = Field(
-        default="""
-        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. 
-        Follow these guidelines:
-        1. Identify and include only the most important information.
-        2. Maintain factual accuracy - do not add or modify information.
-        3. Use clear, direct language.
-        4. Aim for approximately {self.max_tokens} tokens.
-        """,
-        description="The system prompt for the summarizer",
-    )
-
-    model: LanguageModel = Field(
-        default=LanguageModel(),
-        description="Model to use for summarization",
-    )
-    text: str = Field(default="", description="The text to summarize")
-    max_tokens: int = Field(
-        default=200,
-        description="Target maximum number of tokens for the summary",
-        ge=50,
-        le=16384,
-    )
-    context_window: int = Field(
-        default=4096,
-        description="Context window for the model",
-        ge=1,
-        le=200000,
-    )
-
-    @classmethod
-    def get_basic_fields(cls) -> list[str]:
-        return ["text", "max_tokens", "model"]
-
-    async def process(self, context: ProcessingContext) -> str:
-        if self.model.provider == Provider.Empty:
-            raise ValueError("Select a model")
-
-        content = []
-        content.append(MessageTextContent(text=self.text))
-
-        messages = [
-            Message(role="system", content=self.system_prompt),
-            Message(role="user", content=content),
-        ]
-
-        assert self.model.provider != Provider.Empty, "Select a model"
-
-        result_content = ""
-
-        async for chunk in context.generate_messages(
-            messages=messages,
-            model=self.model.id,
-            node_id=self.id,
-            provider=self.model.provider,
-            max_tokens=self.max_tokens,
-            context_window=self.context_window,
-        ):  # type: ignore
-            if isinstance(chunk, Chunk):
-                context.post_message(
-                    NodeProgress(
-                        node_id=self.id,
-                        progress=0,
-                        total=0,
-                        chunk=chunk.content,
-                    )
-                )
-                result_content += chunk.content
-
-        return result_content
-
-
-class SummarizerStreaming(BaseNode):
-    """
     Generate concise summaries of text content using LLM providers with streaming output.
     text, summarization, nlp, content, streaming
 
@@ -649,10 +562,6 @@ class SummarizerStreaming(BaseNode):
     """
 
     @classmethod
-    def get_title(cls) -> str:
-        return "Summarizer (Streaming)"
-
-    @classmethod
     def is_cacheable(cls) -> bool:
         return False
 
@@ -660,6 +569,7 @@ class SummarizerStreaming(BaseNode):
     def return_type(cls):
         return {
             "text": str,
+            "chunk": Chunk,
         }
 
     system_prompt: str = Field(
@@ -705,17 +615,17 @@ class SummarizerStreaming(BaseNode):
             Message(role="user", content=content),
         ]
 
-        async for chunk in context.generate_messages(
+        provider = get_provider(self.model.provider)
+        async for chunk in provider.generate_messages(
             messages=messages,
             model=self.model.id,
-            node_id=self.id,
-            provider=self.model.provider,
             max_tokens=self.max_tokens,
             context_window=self.context_window,
-        ):  # type: ignore
-            print(chunk)
+        ):
             if isinstance(chunk, Chunk):
                 if chunk.content_type == "text" or chunk.content_type is None:
+                    yield "chunk", chunk
+                if chunk.done:
                     yield "text", chunk.content
 
 
@@ -915,13 +825,23 @@ class Classifier(BaseNode):
             },
         )
 
-        classification = json.loads(str(assistant_message.content))
+        # Extract text content from the message
+        if assistant_message.content and len(assistant_message.content) > 0:
+            content_text = (
+                assistant_message.content[0].text
+                if hasattr(assistant_message.content[0], "text")
+                else str(assistant_message.content[0])
+            )
+        else:
+            content_text = str(assistant_message.content)
+
+        classification = json.loads(content_text)
 
         return classification["category"]
 
 
 DEFAULT_SYSTEM_PROMPT = """
-You are an agent for the Nodetool project. 
+You are a general purpose AI agent. 
 Resolve the user's task end-to-end with high accuracy and efficient tool use.
 
 Behavior
@@ -1030,6 +950,7 @@ class Agent(BaseNode):
     @classmethod
     def return_type(cls):
         return {
+            "text": str,
             "chunk": Chunk,
             "audio": AudioRef,
         }
@@ -1051,6 +972,7 @@ class Agent(BaseNode):
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return [
+            "system",
             "prompt",
             "model",
             "messages",
@@ -1098,15 +1020,14 @@ class Agent(BaseNode):
                 tool_calls=[],
             )
 
-            async for chunk in context.generate_messages(
+            provider = get_provider(self.model.provider)
+            async for chunk in provider.generate_messages(
                 messages=messages,
-                provider=self.model.provider,
                 model=self.model.id,
-                node_id=self.id,
                 tools=tools,
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
-            ):  # type: ignore
+            ):
                 if messages[-1] != assistant_message:
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
@@ -1118,6 +1039,9 @@ class Agent(BaseNode):
                         yield "audio", AudioRef(data=data)
                     elif chunk.content_type == "image":
                         yield "chunk", chunk
+
+                    if chunk.done:
+                        yield "text", message_text_content.text
 
                 elif isinstance(chunk, ToolCall):
                     tools_called = True

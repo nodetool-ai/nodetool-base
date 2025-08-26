@@ -1,6 +1,6 @@
 import pytest
 from nodetool.dsl.graph import graph_result
-from nodetool.dsl.lib.math import Add, Multiply, Sine, Power, Sqrt, Divide
+from nodetool.dsl.lib.math import Add, Multiply, Divide, MathFunction, Power
 from nodetool.dsl.nodetool.output import FloatOutput
 
 # Example 1: Basic arithmetic (2 + 3) * 4
@@ -12,13 +12,22 @@ basic_arithmetic = FloatOutput(
 # Example 2: Trigonometric calculation with power: sin(π/4)²
 trig_calculation = FloatOutput(
     name="trig_calculation",
-    value=Power(base=Sine(angle_rad=3.14159 / 4), exponent=2),
+    value=MathFunction(
+        input=MathFunction(input=3.14159 / 4, operation=MathFunction.Operation.SINE),
+        operation=MathFunction.Operation.SQUARE,
+    ),
 )
 
 # Example 3: Complex formula: √(a² + b²) - Pythagorean theorem
 pythagorean = FloatOutput(
     name="pythagorean",
-    value=Sqrt(x=Add(a=Power(base=3, exponent=2), b=Power(base=4, exponent=2))),
+    value=MathFunction(
+        input=Add(
+            a=MathFunction(input=3, operation=MathFunction.Operation.SQUARE),
+            b=MathFunction(input=4, operation=MathFunction.Operation.SQUARE),
+        ),
+        operation=MathFunction.Operation.SQUARE_ROOT,
+    ),
 )
 
 # Example 4: Nested operations: (10 + 5) / (2 * 3)
@@ -30,7 +39,13 @@ nested_operations = FloatOutput(
 # Example 5: Combining multiple operations: sin(x²) + √(x)
 combined_operations = FloatOutput(
     name="combined_operations",
-    value=Add(a=Sine(angle_rad=Power(base=2, exponent=2)), b=Sqrt(x=2)),
+    value=Add(
+        a=MathFunction(
+            input=MathFunction(input=2, operation=MathFunction.Operation.SQUARE),
+            operation=MathFunction.Operation.SINE,
+        ),
+        b=MathFunction(input=2, operation=MathFunction.Operation.SQUARE_ROOT),
+    ),
 )
 
 
@@ -61,4 +76,5 @@ async def test_trig_calculation():
 @pytest.mark.asyncio
 async def test_combined_operations():
     result = await graph_result(combined_operations)
+    assert isinstance(result, (int, float))
     assert result > 0

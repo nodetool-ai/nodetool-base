@@ -3878,24 +3878,7 @@
           },
           "default": "",
           "title": "Code",
-          "description": "Python code to execute. Input variables are available as locals. Assign the desired output to the 'result' variable."
-        },
-        {
-          "name": "inputs",
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "default": {},
-          "title": "Inputs",
-          "description": "Input variables available to the code as locals."
+          "description": "Python code to execute. Dynamic properties and inputs are available as locals. Assign the desired output to the 'result' variable."
         }
       ],
       "outputs": [
@@ -3907,9 +3890,11 @@
         }
       ],
       "basic_fields": [
-        "code",
-        "inputs"
-      ]
+        "code"
+      ],
+      "is_dynamic": true,
+      "is_streaming": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "All",
@@ -4251,7 +4236,7 @@
           "type": {
             "type": "str"
           },
-          "default": "\nYou are an agent for the Nodetool project. \nResolve the user's task end-to-end with high accuracy and efficient tool use.\n\nBehavior\n- Be precise, concise, and actionable. Prefer acting over asking; proceed under the most reasonable assumptions and document them after you finish.\n- Keep going until the task is fully solved. Only hand back if blocked by missing credentials or an explicit safety boundary.\n- Use tools when they materially improve correctness or efficiency. Avoid unnecessary calls. Parallelize independent lookups. Stop searching once you can act.\n\nTool preambles\n- Briefly restate the goal.\n- Outline the next step(s) you will perform.\n- Provide short progress updates as actions complete.\n- After acting, summarize what changed and the impact.\n\nContext gathering strategy\n- Start broad, then narrow with targeted queries.\n- Batch related searches in parallel; deduplicate overlapping results.\n\nRendering\n- Use Markdown to display images, tables, and other rich content.\n- Display images, audio, and video assets using the appropriate HTML or Markdown.\n\n",
+          "default": "\nYou are a general purpose AI agent. \nResolve the user's task end-to-end with high accuracy and efficient tool use.\n\nBehavior\n- Be precise, concise, and actionable. Prefer acting over asking; proceed under the most reasonable assumptions and document them after you finish.\n- Keep going until the task is fully solved. Only hand back if blocked by missing credentials or an explicit safety boundary.\n- Use tools when they materially improve correctness or efficiency. Avoid unnecessary calls. Parallelize independent lookups. Stop searching once you can act.\n\nTool preambles\n- Briefly restate the goal.\n- Outline the next step(s) you will perform.\n- Provide short progress updates as actions complete.\n- After acting, summarize what changed and the impact.\n\nContext gathering strategy\n- Start broad, then narrow with targeted queries.\n- Batch related searches in parallel; deduplicate overlapping results.\n\nRendering\n- Use Markdown to display images, tables, and other rich content.\n- Display images, audio, and video assets using the appropriate HTML or Markdown.\n\n",
           "title": "System",
           "description": "The system prompt for the LLM"
         },
@@ -4334,6 +4319,12 @@
       "outputs": [
         {
           "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
             "type": "chunk"
           },
           "name": "chunk"
@@ -4346,6 +4337,7 @@
         }
       ],
       "basic_fields": [
+        "system",
         "prompt",
         "model",
         "messages",
@@ -4501,79 +4493,9 @@
     },
     {
       "title": "Summarizer",
-      "description": "Generate concise summaries of text content using LLM providers.\n    text, summarization, nlp, content\n\n    Specialized for creating high-quality summaries:\n    - Condensing long documents into key points\n    - Creating executive summaries\n    - Extracting main ideas from text\n    - Maintaining factual accuracy while reducing length",
-      "namespace": "nodetool.agents",
-      "node_type": "nodetool.agents.Summarizer",
-      "properties": [
-        {
-          "name": "system_prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
-          "title": "System Prompt",
-          "description": "The system prompt for the summarizer"
-        },
-        {
-          "name": "model",
-          "type": {
-            "type": "language_model"
-          },
-          "default": {},
-          "title": "Model",
-          "description": "Model to use for summarization"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The text to summarize"
-        },
-        {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 200,
-          "title": "Max Tokens",
-          "description": "Target maximum number of tokens for the summary",
-          "min": 50.0,
-          "max": 16384.0
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window",
-          "description": "Context window for the model",
-          "min": 1.0,
-          "max": 200000.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text",
-        "max_tokens",
-        "model"
-      ]
-    },
-    {
-      "title": "Summarizer (Streaming)",
       "description": "Generate concise summaries of text content using LLM providers with streaming output.\n    text, summarization, nlp, content, streaming\n\n    Specialized for creating high-quality summaries with real-time streaming:\n    - Condensing long documents into key points\n    - Creating executive summaries with live output\n    - Extracting main ideas from text as they're generated\n    - Maintaining factual accuracy while reducing length",
       "namespace": "nodetool.agents",
-      "node_type": "nodetool.agents.SummarizerStreaming",
+      "node_type": "nodetool.agents.Summarizer",
       "properties": [
         {
           "name": "system_prompt",
@@ -4630,6 +4552,12 @@
             "type": "str"
           },
           "name": "text"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
         }
       ],
       "basic_fields": [
@@ -4764,74 +4692,6 @@
         "prompt",
         "model",
         "columns"
-      ]
-    },
-    {
-      "title": "Data Streamer",
-      "description": "LLM Agent to create a stream of data based on a user prompt.\n    llm, data streaming, data structuring\n\n    Use cases:\n    - Generating structured data from natural language descriptions\n    - Creating sample datasets for testing or demonstration",
-      "namespace": "nodetool.generators",
-      "node_type": "nodetool.generators.DataStreamer",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "language_model"
-          },
-          "default": {},
-          "title": "Model",
-          "description": "The model to use for data generation."
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "The user prompt"
-        },
-        {
-          "name": "input_text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Input Text",
-          "description": "The input text to be analyzed by the agent."
-        },
-        {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Max Tokens",
-          "description": "The maximum number of tokens to generate.",
-          "min": 1.0,
-          "max": 100000.0
-        },
-        {
-          "name": "columns",
-          "type": {
-            "type": "record_type"
-          },
-          "default": {},
-          "title": "Columns",
-          "description": "The columns to use in the dataframe."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "prompt",
-        "model",
-        "columns"
       ],
       "is_streaming": true
     },
@@ -4885,13 +4745,24 @@
           "type": {
             "type": "str"
           },
-          "name": "item"
+          "name": "items"
         },
         {
           "type": {
             "type": "int"
           },
           "name": "index"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "list"
         }
       ],
       "basic_fields": [
@@ -5412,6 +5283,52 @@
         {
           "type": {
             "type": "float"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Group Input",
+      "description": "A minimal group input placeholder to satisfy imports in tests.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.GroupInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "any"
+          },
+          "title": "Value",
+          "description": "The value of the input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
           },
           "name": "output"
         }
@@ -18093,6 +18010,51 @@
       "expose_as_tool": true
     },
     {
+      "title": "Cosine",
+      "description": "Computes cosine of the given angle in radians.\n    math, cosine, trig",
+      "namespace": "lib.math",
+      "node_type": "lib.math.Cosine",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "angle_rad",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "Angle (rad)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "angle_rad"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Divide",
       "description": "Divides A by B.\n    math, divide, division, quotient",
       "namespace": "lib.math",
@@ -18346,6 +18308,158 @@
       "basic_fields": [
         "a",
         "b"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Power",
+      "description": "Raises base to the given exponent.\n    math, power, exponent",
+      "namespace": "lib.math",
+      "node_type": "lib.math.Power",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "base",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "Base"
+        },
+        {
+          "name": "exponent",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "default": 1.0,
+          "title": "Exponent"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "base",
+        "exponent"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sine",
+      "description": "Computes sine of the given angle in radians.\n    math, sine, trig",
+      "namespace": "lib.math",
+      "node_type": "lib.math.Sine",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "angle_rad",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "Angle (rad)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "angle_rad"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sqrt",
+      "description": "Computes square root of x.\n    math, sqrt, square_root",
+      "namespace": "lib.math",
+      "node_type": "lib.math.Sqrt",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "x",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "X"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "x"
       ],
       "expose_as_tool": true
     },
