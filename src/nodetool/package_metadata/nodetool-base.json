@@ -3659,39 +3659,13 @@
             "type": "str"
           },
           "default": "",
-          "title": "Code",
-          "description": "Python code to execute. Dynamic inputs are available as locals. Send output using the `yield` keyword, e.g. `yield 'output', 'Hello, world!'` or `yield 'dynmamic_output', {'key': 'value'}`"
+          "title": "Host",
+          "description": "FTP server host"
         },
-        {
-          "name": "image",
-          "type": {
-            "type": "enum",
-            "values": [
-              "python:3.12-slim",
-              "python:3.11-slim",
-              "python:3.10-slim",
-              "jupyter/datascience-notebook:latest",
-              "jupyter/scipy-notebook:latest",
-              "pytorch/pytorch:latest"
-            ],
-            "type_name": "nodetool.nodes.nodetool.code.PythonImage"
-          },
-          "default": "python:3.11-slim",
-          "title": "Image",
-          "description": "Docker image to use for execution"
-        }
-      ],
-      "outputs": [
         {
           "name": "username",
           "type": {
             "type": "str"
-          },
-          "name": "error"
-        },
-        {
-          "type": {
-            "type": "any"
           },
           "default": "",
           "title": "Username",
@@ -3726,8 +3700,11 @@
         }
       ],
       "basic_fields": [
-        "code",
-        "image"
+        "host",
+        "username",
+        "password",
+        "remote_path",
+        "document"
       ],
       "expose_as_tool": true
     },
@@ -11088,10 +11065,34 @@
           },
           "default": "",
           "title": "Code",
-          "description": "Python code to execute. Dynamic properties and inputs are available as locals. Assign the desired output to the 'result' variable."
+          "description": "Python code to execute. Dynamic inputs are available as locals. Send output using the `yield` keyword, e.g. `yield 'output', 'Hello, world!'` or `yield 'dynmamic_output', {'key': 'value'}`"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "enum",
+            "values": [
+              "python:3.12-slim",
+              "python:3.11-slim",
+              "python:3.10-slim",
+              "jupyter/datascience-notebook:latest",
+              "jupyter/scipy-notebook:latest",
+              "pytorch/pytorch:latest"
+            ],
+            "type_name": "nodetool.nodes.nodetool.code.PythonImage"
+          },
+          "default": "python:3.11-slim",
+          "title": "Image",
+          "description": "Docker image to use for execution"
         }
       ],
       "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "error"
+        },
         {
           "type": {
             "type": "any"
@@ -11100,7 +11101,8 @@
         }
       ],
       "basic_fields": [
-        "code"
+        "code",
+        "image"
       ],
       "is_dynamic": true,
       "is_streaming": true,
