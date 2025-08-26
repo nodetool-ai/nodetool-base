@@ -120,3 +120,29 @@ class CollectorNode(BaseNode):
                 self._collected_items.append(self.input_item)
         else:
             raise ValueError(f"Unknown event: {event.name}")
+
+
+class Reroute(BaseNode):
+    """
+    Pass data through unchanged for tidier workflow layouts.
+    reroute, passthrough, organize, tidy, flow, connection, redirect
+    
+    Use cases:
+    - Organize complex workflows by routing connections
+    - Create cleaner visual layouts
+    - Redirect data flow without modification
+    """
+    
+    input_value: Any = Field(default=None, description="Value to pass through unchanged")
+    
+    @classmethod
+    def get_title(cls) -> str:
+        return "Reroute"
+    
+    @classmethod
+    def return_type(cls):
+        return {"output": Any}
+    
+    async def process(self, context: Any) -> Any:
+        # Return a mapping from output slot name to value as expected by the runner
+        return {"output": self.input_value}
