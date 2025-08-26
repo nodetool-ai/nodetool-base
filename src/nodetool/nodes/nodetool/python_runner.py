@@ -226,12 +226,7 @@ class PythonDockerRunner:
 
         def _sync_run_stream():
             try:
-                try:
-                    import docker  # type: ignore
-                except Exception:
-                    raise RuntimeError(
-                        "Docker Python SDK is required. Install with 'pip install docker' and ensure Docker Desktop is running."
-                    )
+                import docker
 
                 client = docker.from_env()
                 try:
