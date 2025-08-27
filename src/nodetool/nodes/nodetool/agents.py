@@ -837,22 +837,25 @@ class Classifier(BaseNode):
         return classification["category"]
 
 
-DEFAULT_SYSTEM_PROMPT = """You are a general purpose AI agent. 
-Resolve the user's task end-to-end with high accuracy and efficient tool use.
+DEFAULT_SYSTEM_PROMPT = """You are a an AI agent. 
 
 Behavior
+- Understand the user's intent and the context of the task.
+- Break down the task into smaller steps.
 - Be precise, concise, and actionable.
 - Use tools to accomplish your goal. 
-- Parallelize independent lookups.
 
 Tool preambles
-- Briefly restate the goal.
 - Outline the next step(s) you will perform.
-- After acting, summarize what changed and the impact.
+- After acting, summarize the outcome.
 
 Rendering
-- Use Markdown to display images, tables, and other rich content.
-- Display images, audio, and video assets using the appropriate HTML or Markdown.
+- Use Markdown to display media assets.
+- Display images, audio, and video assets using the appropriate Markdown.
+
+File handling
+- Inputs and outputs are files in the /workspace directory.
+- Write outputs of code execution to the /workspace directory.
 """
 
 
@@ -963,15 +966,15 @@ class Agent(BaseNode):
         default=AudioRef(),
         description="The audio to analyze",
     )
-    tools: list[ToolName] = Field(
-        default=[], description="List of tools to use for execution"
-    )
     messages: list[Message] = Field(
         title="Messages", default=[], description="The messages for the LLM"
     )
     max_tokens: int = Field(title="Max Tokens", default=32768, ge=1, le=100000)
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
+    )
+    tools: list[ToolName] = Field(
+        default=[], description="List of tools to use for execution"
     )
     tool_call_limit: int = Field(
         title="Tool Call Limit",
@@ -1014,11 +1017,6 @@ class Agent(BaseNode):
             "system",
             "prompt",
             "model",
-            "messages",
-            "image",
-            "audio",
-            "tools",
-            "tool_call_limit",
         ]
 
     async def gen_process(self, context: ProcessingContext):

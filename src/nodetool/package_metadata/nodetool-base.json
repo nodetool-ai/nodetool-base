@@ -3923,19 +3923,6 @@
           "default": "ubuntu:22.04",
           "title": "Image",
           "description": "Docker image to use for execution"
-        },
-        {
-          "name": "args",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "title": "Args",
-          "description": "Positional arguments to pass to the Bash shell. Available as $1..$N and mirrored in NT_ARGS_JSON env."
         }
       ],
       "outputs": [
@@ -3954,8 +3941,7 @@
       ],
       "basic_fields": [
         "code",
-        "image",
-        "args"
+        "image"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -3988,19 +3974,6 @@
           "default": "node:22-alpine",
           "title": "Image",
           "description": "Docker image to use for execution"
-        },
-        {
-          "name": "args",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "title": "Args",
-          "description": "Positional arguments to pass after -e code. Available via process.argv and NT_ARGS_JSON env."
         }
       ],
       "outputs": [
@@ -4019,8 +3992,7 @@
       ],
       "basic_fields": [
         "code",
-        "image",
-        "args"
+        "image"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -4105,19 +4077,6 @@
           "default": "ruby:3.3-alpine",
           "title": "Image",
           "description": "Docker image to use for execution"
-        },
-        {
-          "name": "args",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "title": "Args",
-          "description": "Positional arguments to pass to Ruby. Available in ARGV and mirrored in NT_ARGS_JSON env."
         }
       ],
       "outputs": [
@@ -4136,8 +4095,7 @@
       ],
       "basic_fields": [
         "code",
-        "image",
-        "args"
+        "image"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -4483,7 +4441,7 @@
           "type": {
             "type": "str"
           },
-          "default": "You are a general purpose AI agent. \nResolve the user's task end-to-end with high accuracy and efficient tool use.\n\nBehavior\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n- Parallelize independent lookups.\n\nTool preambles\n- Briefly restate the goal.\n- Outline the next step(s) you will perform.\n- After acting, summarize what changed and the impact.\n\nRendering\n- Use Markdown to display images, tables, and other rich content.\n- Display images, audio, and video assets using the appropriate HTML or Markdown.\n",
+          "default": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
           "title": "System",
           "description": "The system prompt for the LLM"
         },
@@ -4513,20 +4471,6 @@
           "default": {},
           "title": "Audio",
           "description": "The audio to analyze"
-        },
-        {
-          "name": "tools",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tool_name"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Tools",
-          "description": "List of tools to use for execution"
         },
         {
           "name": "messages",
@@ -4563,6 +4507,20 @@
           "max": 65536.0
         },
         {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tools",
+          "description": "List of tools to use for execution"
+        },
+        {
           "name": "tool_call_limit",
           "type": {
             "type": "int"
@@ -4596,12 +4554,7 @@
       "basic_fields": [
         "system",
         "prompt",
-        "model",
-        "messages",
-        "image",
-        "audio",
-        "tools",
-        "tool_call_limit"
+        "model"
       ],
       "is_streaming": true,
       "supports_dynamic_outputs": true
@@ -15779,6 +15732,20 @@
       ],
       "basic_fields": [
         "path"
+      ]
+    },
+    {
+      "title": "Workspace Directory",
+      "description": "Get the workspace directory.\n    files, workspace, directory",
+      "namespace": "lib.os",
+      "node_type": "lib.os.WorkspaceDirectory",
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
       ]
     },
     {

@@ -94,14 +94,6 @@ class ExecuteJavaScript(BaseNode):
         description="Docker image to use for execution",
     )
 
-    args: list[str] = Field(
-        default_factory=list,
-        description=(
-            "Positional arguments to pass after -e code. "
-            "Available via process.argv and NT_ARGS_JSON env."
-        ),
-    )
-
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
@@ -155,14 +147,6 @@ class ExecuteBash(BaseNode):
         description="Docker image to use for execution",
     )
 
-    args: list[str] = Field(
-        default_factory=list,
-        description=(
-            "Positional arguments to pass to the Bash shell. "
-            "Available as $1..$N and mirrored in NT_ARGS_JSON env."
-        ),
-    )
-
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
@@ -210,14 +194,6 @@ class ExecuteRuby(BaseNode):
     image: RubyImage = Field(
         default=RubyImage.RUBY_3_3_ALPINE,
         description="Docker image to use for execution",
-    )
-
-    args: list[str] = Field(
-        default_factory=list,
-        description=(
-            "Positional arguments to pass to Ruby. "
-            "Available in ARGV and mirrored in NT_ARGS_JSON env."
-        ),
     )
 
     @classmethod

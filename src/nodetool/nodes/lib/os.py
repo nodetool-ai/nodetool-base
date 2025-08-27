@@ -23,6 +23,28 @@ from nodetool.metadata.types import (
 import subprocess
 
 
+class WorkspaceDirectory(BaseNode):
+    """
+    Get the workspace directory.
+    files, workspace, directory
+    """
+
+    async def process(self, context: ProcessingContext) -> str:
+        return context.workspace_dir
+
+
+class OpenWorkspaceDirectory(BaseNode):
+    """
+    Open the workspace directory.
+    files, workspace, directory
+    """
+
+    async def process(self, context: ProcessingContext) -> None:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        subprocess.run(["open", context.workspace_dir])
+
+
 class GetEnvironmentVariable(BaseNode):
     """
     Gets an environment variable value.

@@ -1,4 +1,5 @@
 import pytest
+from nodetool.common.environment import Environment
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath
 from nodetool.nodes.lib.os import (
