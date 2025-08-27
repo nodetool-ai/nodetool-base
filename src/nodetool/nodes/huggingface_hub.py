@@ -51,6 +51,7 @@ class HuggingFaceInferenceNode(BaseNode):
 class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
     """
     Automatic speech recognition node.
+    audio, speech, recognition, huggingface, inference
     """
 
     _expose_as_tool: bool = True
@@ -93,8 +94,8 @@ class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
 
 class AudioClassification(HuggingFaceInferenceNode):
     """
-    Audio classification node using HuggingFace Inference API.
-    Assigns a label or class to audio data.
+    Audio classification node using HuggingFace Inference API. Assigns a label or class to audio data.
+    audio, classification, huggingface, inference
     """
 
     class OutputTransform(Enum):
@@ -140,8 +141,8 @@ class AudioClassification(HuggingFaceInferenceNode):
 
 class ImageClassification(HuggingFaceInferenceNode):
     """
-    Image classification node using HuggingFace Inference API.
-    Assigns a label or class to image data.
+    Image classification node using HuggingFace Inference API. Assigns a label or class to image data.
+    image, classification, huggingface, inference
     """
 
     class OutputTransform(Enum):
@@ -189,8 +190,8 @@ class ImageClassification(HuggingFaceInferenceNode):
 
 class ImageSegmentation(HuggingFaceInferenceNode):
     """
-    Image segmentation node using HuggingFace Inference API.
-    Divides an image into segments where each pixel is mapped to an object.
+    Image segmentation node using HuggingFace Inference API. Divides an image into segments where each pixel is mapped to an object.
+    image, segmentation, huggingface, inference
     """
 
     class Subtask(str, Enum):
@@ -253,8 +254,8 @@ class ImageSegmentation(HuggingFaceInferenceNode):
 
 class ImageToImage(HuggingFaceInferenceNode):
     """
-    Image-to-image node using HuggingFace Inference API.
-    Transforms a source image to match the characteristics of a target image or domain.
+    Image-to-image node using HuggingFace Inference API. Transforms a source image to match the characteristics of a target image or domain.
+    img2img, img-to-img, huggingface, inference
     """
 
     model: InferenceProviderImageToImageModel = Field(
@@ -317,8 +318,8 @@ class ImageToImage(HuggingFaceInferenceNode):
 
 class TextToImage(HuggingFaceInferenceNode):
     """
-    Text-to-image node using HuggingFace Inference API.
-    Generates an image based on a given text prompt.
+    Text-to-image node using HuggingFace Inference API. Generates an image based on a given text prompt.
+    text2img, text-to-img, huggingface, inference
     """
 
     model: InferenceProviderTextToImageModel = Field(
@@ -379,8 +380,8 @@ class TextToImage(HuggingFaceInferenceNode):
 
 class Translation(HuggingFaceInferenceNode):
     """
-    Translation node using HuggingFace Inference API.
-    Converts text from one language to another.
+    Translation node using HuggingFace Inference API. Converts text from one language to another.
+    translation, huggingface, inference
     """
 
     class Truncation(str, Enum):
@@ -462,9 +463,8 @@ class Translation(HuggingFaceInferenceNode):
 
 class TextClassification(HuggingFaceInferenceNode):
     """
-    Text classification node using HuggingFace Inference API.
-    Assigns a label or class to given text. Use cases include sentiment analysis,
-    natural language inference, and assessing grammatical correctness.
+    Text classification node using HuggingFace Inference API. Assigns a label or class to given text. Use cases include sentiment analysis, natural language inference, and assessing grammatical correctness.
+    text, sentiment, classification, natural language, inference, grammatical correctness, huggingface, inference
     """
 
     class OutputTransform(Enum):
@@ -514,9 +514,8 @@ class TextClassification(HuggingFaceInferenceNode):
 
 class Summarization(HuggingFaceInferenceNode):
     """
-    Summarization node using HuggingFace Inference API.
-    Produces a shorter version of a document while preserving its important information.
-    Some models can extract text from the original input, while others can generate entirely new text.
+    Summarization node using HuggingFace Inference API. Produces a shorter version of a document while preserving its important information. Some models can extract text from the original input, while others can generate entirely new text.
+    summarization, huggingface, inference
     """
 
     class Truncation(str, Enum):
@@ -595,8 +594,8 @@ class Summarization(HuggingFaceInferenceNode):
 
 class ChatCompletion(HuggingFaceInferenceNode):
     """
-    Chat completion node using HuggingFace Inference API.
-    Generates text based on a given prompt.
+    Chat completion node using HuggingFace Inference API. Generates text based on a given prompt.
+    chat, completion, huggingface, inference
     """
 
     model: InferenceProviderTextGenerationModel = Field(
@@ -649,8 +648,8 @@ class ChatCompletion(HuggingFaceInferenceNode):
 
 class TextToSpeech(HuggingFaceInferenceNode):
     """
-    Text-to-speech node using HuggingFace Inference API.
-    Generates speech audio from input text.
+    Text-to-speech node using HuggingFace Inference API. Generates speech audio from input text.
+    text-to-speech, text-to-audio, speech, huggingface, inference
     """
 
     model: InferenceProviderTextToSpeechModel = Field(
