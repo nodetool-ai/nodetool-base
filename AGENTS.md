@@ -1,104 +1,40 @@
-# CLAUDE.md
+# Repository Guidelines
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project Structure & Module Organization
+- Source: `src/nodetool/` (nodes in `src/nodetool/nodes/`, examples in `src/nodetool/examples/`, assets in `src/nodetool/assets/`).
+- Tests: `tests/` mirror the source tree (e.g., `tests/nodetool/nodes/...`).
+- Nodes inherit from `BaseNode` and implement async `process()` or `gen_process()`; use typed refs (`AudioRef`, `ImageRef`, etc.).
 
-## Essential Commands
+## Build, Test, and Development Commands
+- Install: `pip install .` (Python 3.11+). If using Poetry, `poetry install` may also work.
+- Run tests: `pytest -q`
+- Specific test: `pytest tests/nodetool/test_audio.py::test_specific_function -v`
+- Lint/format: `black .` • `ruff check .` • `mypy .` • `flake8`
+- Generate node metadata: `nodetool package scan`
+- Generate DSL code: `nodetool codegen`
 
-**Install dependencies:**
+## Coding Style & Naming Conventions
+- Python: 4-space indentation, type hints required for public APIs.
+- Names: modules `snake_case.py`, classes `PascalCase`, functions/vars `snake_case`.
+- Nodes: include a concise docstring with tags/keywords for search. Keep async I/O non-blocking.
+- Use `black` formatting; keep code `ruff`/`flake8` clean and `mypy`-typed.
 
-```bash
-pip install .
-```
+## Testing Guidelines
+- Framework: `pytest` with `pytest-asyncio` for async nodes.
+- Structure: place tests under `tests/` mirroring source paths; name files `test_*.py` and tests `test_*`.
+- Practice: mock external APIs; include small sample media when needed (`tests/assets/` or inline fixtures).
 
-**Run tests:**
+## Commit & Pull Request Guidelines
+- Commits: clear, imperative subject (max ~72 chars). Prefer Conventional Commits (e.g., `feat:`, `fix:`, `docs:`) when meaningful.
+- PRs: include summary, rationale, screenshots/logs for UX/CLI changes, and linked issues.
+- CI hygiene: ensure `pytest -q` and all linters pass locally before opening/merging.
 
-```bash
-pytest -q
-```
-
-**Run specific test:**
-
-```bash
-pytest tests/nodetool/test_audio.py::test_specific_function -v
-```
-
-**Linting and formatting (from requirements-dev.txt):**
-
-```bash
-black .
-ruff check .
-mypy .
-flake8
-```
-
-**Generating node metadata**
-
-```bash
-nodetool package scan
-```
-
-**Generating DSL code**
-
-```bash
-nodetool codegen
-```
-
-## Architecture Overview
-
-This is a node-based system for composing AI workflows. Key architectural patterns:
-
-### Node System
-
-- All nodes inherit from `BaseNode` (imported from nodetool-core)
-- Nodes implement async `process()` or `gen_process()` methods
-- `ProcessingContext` provides runtime services (asset management, API access, etc.)
-- Type system uses refs for media types: `AudioRef`, `ImageRef`, `VideoRef`, `FolderRef`
-
-### Node Structure Pattern
-
-```python
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-
-class ExampleNode(BaseNode):
-    """
-    Brief description
-    tags, keywords, for, search
-    """
-    # Pydantic fields for inputs
-
-    async def process(self, context: ProcessingContext):
-        # Implementation
-```
-
-### Directory Organization
-
-- `src/nodetool/nodes/` - All node implementations organized by namespace
-- `src/nodetool/examples/` - JSON workflow examples
-- `src/nodetool/assets/` - Workflow thumbnails
-- `tests/` - Test files mirror source structure
-
-### Testing Patterns
-
-- Use `pytest-asyncio` for async node tests
-- Parametrized tests for multiple scenarios
-- Mock external API calls
-- Test files include sample media (test.jpg, test.mp3, test.mp4)
-
-## Node Categories
-
-- **calendly/** - Calendly API integration
-- **chroma/** - Vector database operations (collections, indexing, queries)
-- **google/** - Google services (image generation)
-- **lib/** - Library wrappers (BeautifulSoup, LlamaIndex, PyMuPDF, etc.)
-- **nodetool/** - Core functionality (audio, image, video, text, math, etc.)
-- **openai/** - OpenAI API wrappers (GPT, DALL-E, Whisper)
-
-## Development Notes
-
-- Python 3.11+ required
-- Uses Poetry for dependency management
-- `nodetool-core` dependency installed from git
-- Async/await patterns throughout
-- Strong typing with Pydantic models
-- Documentation auto-generated in `docs/` folder
+## Node Authoring Tips
+- Base pattern:
+  ```python
+  class ExampleNode(BaseNode):
+      async def process(self, context: ProcessingContext):
+          ...
+  ```
+- Use `ProcessingContext` for asset management and external access; avoid direct file/network ops where context helpers exist.
+- After adding nodes, run `nodetool package scan` and `nodetool codegen` to refresh metadata/DSL.
