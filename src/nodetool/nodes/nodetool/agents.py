@@ -1,15 +1,11 @@
 import base64
+import asyncio
 import json
 import logging
 from typing import Any
 
-from enum import Enum
-import uuid
-
 from nodetool.agents.tools.workflow_tool import GraphTool
 from pydantic import Field
-
-import pydub
 
 from nodetool.agents.tools.tool_registry import resolve_tool_by_name
 from nodetool.agents.tools.base import Tool
@@ -825,13 +821,14 @@ class Classifier(BaseNode):
             },
         )
 
-        # Extract text content from the message
+        # Extract text content from the message in a type-safe way
+        content_text: str
         if assistant_message.content and len(assistant_message.content) > 0:
-            content_text = (
-                assistant_message.content[0].text
-                if hasattr(assistant_message.content[0], "text")
-                else str(assistant_message.content[0])
-            )
+            first_item = assistant_message.content[0]
+            if isinstance(first_item, MessageTextContent):
+                content_text = first_item.text
+            else:
+                content_text = str(first_item)
         else:
             content_text = str(assistant_message.content)
 
@@ -840,29 +837,22 @@ class Classifier(BaseNode):
         return classification["category"]
 
 
-DEFAULT_SYSTEM_PROMPT = """
-You are a general purpose AI agent. 
+DEFAULT_SYSTEM_PROMPT = """You are a general purpose AI agent. 
 Resolve the user's task end-to-end with high accuracy and efficient tool use.
 
 Behavior
-- Be precise, concise, and actionable. Prefer acting over asking; proceed under the most reasonable assumptions and document them after you finish.
-- Keep going until the task is fully solved. Only hand back if blocked by missing credentials or an explicit safety boundary.
-- Use tools when they materially improve correctness or efficiency. Avoid unnecessary calls. Parallelize independent lookups. Stop searching once you can act.
+- Be precise, concise, and actionable.
+- Use tools to accomplish your goal. 
+- Parallelize independent lookups.
 
 Tool preambles
 - Briefly restate the goal.
 - Outline the next step(s) you will perform.
-- Provide short progress updates as actions complete.
 - After acting, summarize what changed and the impact.
-
-Context gathering strategy
-- Start broad, then narrow with targeted queries.
-- Batch related searches in parallel; deduplicate overlapping results.
 
 Rendering
 - Use Markdown to display images, tables, and other rich content.
 - Display images, audio, and video assets using the appropriate HTML or Markdown.
-
 """
 
 
@@ -885,12 +875,55 @@ def serialize_tool_result(tool_result: Any) -> Any:
         # Pydantic/BaseModel or BaseType
         if getattr(tool_result, "model_dump", None) is not None:
             return tool_result.model_dump()
+        # Handle set/tuple
+        if isinstance(tool_result, (set, tuple)):
+            return [serialize_tool_result(v) for v in tool_result]
         # Numpy types
         try:
             import numpy as np  # type: ignore
 
             if isinstance(tool_result, np.ndarray):
                 return tool_result.tolist()
+            # numpy scalar types
+            if isinstance(tool_result, (np.integer,)):
+                return int(tool_result)
+            if isinstance(tool_result, (np.floating,)):
+                return float(tool_result)
+            if isinstance(tool_result, (np.bool_,)):
+                return bool(tool_result)
+            # generic fallback, including np.generic subclasses
+            if isinstance(tool_result, np.generic):
+                try:
+                    return tool_result.item()
+                except Exception:
+                    pass
+            # datetime/timedelta
+            if isinstance(tool_result, np.datetime64):
+                try:
+                    return np.datetime_as_string(tool_result, timezone="naive")
+                except Exception:
+                    return str(tool_result)
+            if isinstance(tool_result, np.timedelta64):
+                return str(tool_result)
+        except Exception:
+            pass
+        # Pandas types
+        try:
+            import pandas as pd  # type: ignore
+
+            if isinstance(tool_result, pd.DataFrame):
+                return tool_result.to_dict(orient="records")
+            if isinstance(tool_result, pd.Series):
+                return tool_result.tolist()
+            if isinstance(tool_result, pd.Index):
+                return tool_result.tolist()
+            if isinstance(tool_result, pd.Timestamp):
+                return tool_result.isoformat()
+            if isinstance(tool_result, pd.Timedelta):
+                return str(tool_result)
+            # pandas NA scalar
+            if tool_result is pd.NA:  # type: ignore[attr-defined]
+                return None
         except Exception:
             pass
         # Fallback: make it a string
@@ -940,6 +973,12 @@ class Agent(BaseNode):
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
+    tool_call_limit: int = Field(
+        title="Tool Call Limit",
+        default=3,
+        ge=0,
+        description="Maximum iterations that make tool calls before forcing a final answer. 0 disables tools.",
+    )
 
     _supports_dynamic_outputs = True
 
@@ -979,6 +1018,7 @@ class Agent(BaseNode):
             "image",
             "audio",
             "tools",
+            "tool_call_limit",
         ]
 
     async def gen_process(self, context: ProcessingContext):
@@ -990,6 +1030,20 @@ class Agent(BaseNode):
         content.append(MessageTextContent(text=self.prompt))
         tools: list[Tool] = [resolve_tool_by_name(tool.name) for tool in self.tools]
         tools.extend(self.collect_tools_from_dynamic_outputs(context))
+
+        try:
+            tool_names = [t.name for t in tools if t is not None]
+        except Exception:
+            tool_names = []
+        log.debug(
+            "Agent setup: model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+            self.model.id,
+            self.model.provider,
+            self.context_window,
+            self.max_tokens,
+            tool_names,
+            self.tool_call_limit,
+        )
 
         if self.image.is_set():
             content.append(MessageImageContent(image=self.image))
@@ -1005,10 +1059,27 @@ class Agent(BaseNode):
             messages.append(message)
 
         messages.append(Message(role="user", content=content))
+        log.debug(
+            "Agent initial messages prepared: num_messages=%d has_image=%s has_audio=%s prompt_len=%d",
+            len(messages),
+            self.image.is_set(),
+            self.audio.is_set(),
+            len(self.prompt or ""),
+        )
         tools_called = False
         first_time = True
+        iteration = 0
+        tool_iterations = 0  # Number of iterations where a tool was actually called
 
         while tools_called or first_time:
+            iteration += 1
+            log.debug(
+                "Agent loop start: iteration=%d tools_called_prev=%s first_time=%s num_messages=%d",
+                iteration,
+                tools_called,
+                first_time,
+                len(messages),
+            )
             tools_called = False
             first_time = False
             message_text_content = MessageTextContent(text="")
@@ -1021,10 +1092,22 @@ class Agent(BaseNode):
             )
 
             provider = get_provider(self.model.provider)
+            # Anti-loop guard: after N tool-calling iterations, disable tools to force a final answer
+            tools_for_iteration = (
+                tools if tool_iterations < self.tool_call_limit else []
+            )
+            if tools_for_iteration is not tools:
+                log.debug(
+                    "Agent tools disabled for iteration=%d after %d tool iterations (limit=%d) to prevent looping",
+                    iteration,
+                    tool_iterations,
+                    self.tool_call_limit,
+                )
+            pending_tool_tasks: list[asyncio.Task] = []
             async for chunk in provider.generate_messages(
                 messages=messages,
                 model=self.model.id,
-                tools=tools,
+                tools=tools_for_iteration,
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
             ):
@@ -1034,6 +1117,13 @@ class Agent(BaseNode):
                     if chunk.content_type == "text" or chunk.content_type is None:
                         message_text_content.text += chunk.content
                         yield "chunk", chunk
+                        # Only log occasionally to avoid excessive logging per token
+                        if chunk.done:
+                            log.debug(
+                                "Agent chunk done: iteration=%d text_len=%d",
+                                iteration,
+                                len(message_text_content.text),
+                            )
                     elif chunk.content_type == "audio":
                         data = base64.b64decode(chunk.content)
                         yield "audio", AudioRef(data=data)
@@ -1045,7 +1135,26 @@ class Agent(BaseNode):
 
                 elif isinstance(chunk, ToolCall):
                     tools_called = True
-                    log.debug(f"tool call: {chunk}")
+                    tool_iterations += 1
+                    try:
+                        args_preview = (
+                            (
+                                json.dumps(chunk.args)[:500]
+                                + ("…" if len(json.dumps(chunk.args)) > 500 else "")
+                            )
+                            if chunk.args is not None
+                            else None
+                        )
+                    except Exception:
+                        args_preview = "<unserializable>"
+                    log.debug(
+                        "Agent tool call: iteration=%d id=%s name=%s has_args=%s args_preview=%s",
+                        iteration,
+                        getattr(chunk, "id", None),
+                        getattr(chunk, "name", None),
+                        chunk.args is not None,
+                        args_preview,
+                    )
                     assert assistant_message.tool_calls is not None
                     assistant_message.tool_calls.append(chunk)
                     for tool_instance in tools:
@@ -1059,29 +1168,62 @@ class Agent(BaseNode):
                                 )
                             )
 
-                            # Process tool with proper exception handling
-                            try:
-                                tool_result = await tool_instance.process(
-                                    context, chunk.args
-                                )
-                                tool_result_json = json.dumps(
-                                    serialize_tool_result(tool_result)
-                                )
-                            except Exception as e:
-                                log.error(
-                                    f"Tool call {chunk.id} ({chunk.name}) failed with exception: {e}"
-                                )
-                                # Create an error tool result message to satisfy OpenAI's requirement
-                                # that all tool_call_ids have corresponding tool messages
-                                tool_result_json = json.dumps(
-                                    {"error": f"Error executing tool: {str(e)}"}
-                                )
+                            async def _run_tool(instance: Tool, call: ToolCall):
+                                try:
+                                    result = await instance.process(context, call.args)
+                                    result_json = json.dumps(
+                                        serialize_tool_result(result)
+                                    )
+                                    log.debug(
+                                        "Agent tool result (parallel): iteration=%d id=%s name=%s result_len=%d",
+                                        iteration,
+                                        getattr(call, "id", None),
+                                        getattr(call, "name", None),
+                                        len(result_json),
+                                    )
+                                except Exception as e:
+                                    log.error(
+                                        f"Tool call {call.id} ({call.name}) failed with exception: {e}"
+                                    )
+                                    result_json = json.dumps(
+                                        {"error": f"Error executing tool: {str(e)}"}
+                                    )
+                                    log.debug(
+                                        "Agent tool result error recorded (parallel): iteration=%d id=%s name=%s",
+                                        iteration,
+                                        getattr(call, "id", None),
+                                        getattr(call, "name", None),
+                                    )
+                                return call.id, call.name, result_json
 
-                            messages.append(
-                                Message(
-                                    role="tool",
-                                    tool_call_id=chunk.id,
-                                    name=chunk.name,
-                                    content=tool_result_json,
-                                )
+                            pending_tool_tasks.append(
+                                asyncio.create_task(_run_tool(tool_instance, chunk))
                             )
+                            break
+            # After provider finishes streaming this assistant turn, await all pending tool calls in parallel
+            if pending_tool_tasks:
+                log.debug(
+                    "Agent executing %d tool call(s) in parallel for iteration=%d",
+                    len(pending_tool_tasks),
+                    iteration,
+                )
+                results = await asyncio.gather(*pending_tool_tasks)
+                for tool_call_id, tool_name, tool_result_json in results:
+                    messages.append(
+                        Message(
+                            role="tool",
+                            tool_call_id=tool_call_id,
+                            name=tool_name,
+                            content=tool_result_json,
+                        )
+                    )
+            # End of provider.generate_messages loop for this iteration
+            log.debug(
+                "Agent loop end: iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
+                iteration,
+                tools_called,
+                assistant_message.tool_calls is not None
+                and len(assistant_message.tool_calls) > 0,
+                len(message_text_content.text),
+                len(messages),
+            )

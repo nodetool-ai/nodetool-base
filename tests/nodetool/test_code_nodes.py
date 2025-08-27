@@ -1,4 +1,3 @@
-import json
 import pytest
 from unittest.mock import patch
 
@@ -12,77 +11,73 @@ def context():
 
 
 @pytest.mark.asyncio
-async def test_execute_python_basic(context: ProcessingContext):
-    code = """
-def main(env):
-    return (env['a'] + env['b']) * 2
-"""
-    node = ExecutePython(code=code, inputs={"a": 2, "b": 3})
-
-    # Simulate Docker SDK execution returning a magic-tagged success line
-    async def fake_to_thread(func, *args, **kwargs):
-        payload = {"ok": True, "result": 10}
-        return "__NT_RESULT__:" + json.dumps(payload)
-
-    with patch(
-        "nodetool.nodes.nodetool.code.Environment.is_production", return_value=False
-    ), patch("asyncio.to_thread", side_effect=fake_to_thread):
-        assert await node.process(context) == 10
-
-
-@pytest.mark.asyncio
-async def test_execute_python_missing_main_raises(context: ProcessingContext):
-    code = """
-x = 1
-"""
+async def test_execute_python_basic_streams_stdout(context: ProcessingContext):
+    code = "print('unused in test; stream is patched')"
     node = ExecutePython(code=code)
 
-    # Simulate container emitting an error payload due to missing main(env) or result
-    async def fake_to_thread(func, *args, **kwargs):
-        payload = {
-            "ok": False,
-            "error": "Provide main(env) or set a global result variable",
-        }
-        return "__NT_RESULT__:" + json.dumps(payload)
+    async def fake_stream(
+        self, user_code, env_locals, context, node, allow_dynamic_outputs=True
+    ):
+        yield ("stdout", "10")
 
     with patch(
-        "nodetool.nodes.nodetool.code.Environment.is_production", return_value=False
-    ), patch("asyncio.to_thread", side_effect=fake_to_thread):
-        with pytest.raises(RuntimeError):
-            await node.process(context)
+        "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
+    ):
+        results = []
+        async for slot, value in node.gen_process(context):
+            results.append((slot, value))
+        assert ("stdout", "10") in results
 
 
 @pytest.mark.asyncio
-async def test_execute_python_legacy_result_style(context: ProcessingContext):
-    code = """
-a_plus_b = a + b
-result = a_plus_b * 2
-"""
-    node = ExecutePython(code=code, inputs={"a": 2, "b": 3})
+async def test_execute_python_streams_stderr(context: ProcessingContext):
+    node = ExecutePython(code="print('unused')")
 
-    async def fake_to_thread(func, *args, **kwargs):
-        payload = {"ok": True, "result": 10}
-        return "__NT_RESULT__:" + json.dumps(payload)
+    async def fake_stream(
+        self, user_code, env_locals, context, node, allow_dynamic_outputs=True
+    ):
+        yield ("stderr", "some error message")
 
     with patch(
-        "nodetool.nodes.nodetool.code.Environment.is_production", return_value=False
-    ), patch("asyncio.to_thread", side_effect=fake_to_thread):
-        assert await node.process(context) == 10
+        "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
+    ):
+        results = []
+        async for slot, value in node.gen_process(context):
+            results.append((slot, value))
+        assert ("stderr", "some error message") in results
+
+
+@pytest.mark.asyncio
+async def test_execute_python_streams_both_channels(context: ProcessingContext):
+    node = ExecutePython(code="print('unused')")
+
+    async def fake_stream(
+        self, user_code, env_locals, context, node, allow_dynamic_outputs=True
+    ):
+        yield ("stdout", "line out")
+        yield ("stderr", "line err")
+
+    with patch(
+        "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
+    ):
+        stdout_lines = []
+        stderr_lines = []
+        async for slot, value in node.gen_process(context):
+            if slot == "stdout":
+                stdout_lines.append(value)
+            elif slot == "stderr":
+                stderr_lines.append(value)
+        assert "line out" in stdout_lines
+        assert "line err" in stderr_lines
 
 
 @pytest.mark.asyncio
 async def test_evaluate_expression_basic(context: ProcessingContext):
     node = EvaluateExpression(expression="a*b + 1", variables={"a": 3, "b": 4})
-    with patch(
-        "nodetool.nodes.nodetool.code.Environment.is_production", return_value=False
-    ):
-        assert await node.process(context) == 13
+    assert await node.process(context) == 13
 
 
 @pytest.mark.asyncio
 async def test_evaluate_expression_allows_whitelisted_calls(context: ProcessingContext):
     node = EvaluateExpression(expression="len([1,2,3])", variables={})
-    with patch(
-        "nodetool.nodes.nodetool.code.Environment.is_production", return_value=False
-    ):
-        assert await node.process(context) == 3
+    assert await node.process(context) == 3

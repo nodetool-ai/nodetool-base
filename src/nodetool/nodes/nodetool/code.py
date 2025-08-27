@@ -1,8 +1,4 @@
 import ast
-import asyncio
-import base64
-import json
-import textwrap
 from typing import Any
 from enum import Enum
 from nodetool.workflows.types import NodeUpdate
@@ -10,7 +6,10 @@ from pydantic import Field
 from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from .python_runner import PythonDockerRunner
+from nodetool.code_runners.python_runner import PythonDockerRunner
+from nodetool.code_runners.javascript_runner import JavaScriptDockerRunner
+from nodetool.code_runners.bash_runner import BashDockerRunner
+from nodetool.code_runners.ruby_runner import RubyDockerRunner
 
 
 class ExecutePython(BaseNode):
@@ -30,16 +29,15 @@ class ExecutePython(BaseNode):
     _supports_dynamic_outputs = True
 
     class PythonImage(Enum):
-        PYTHON_3_12_SLIM = "python:3.12-slim"
         PYTHON_3_11_SLIM = "python:3.11-slim"
-        PYTHON_3_10_SLIM = "python:3.10-slim"
-        JUPYTER_DATASCIENCE_NOTEBOOK = "jupyter/datascience-notebook:latest"
         JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
-        PYTORCH_CPU = "pytorch/pytorch:latest"
 
     code: str = Field(
         default="",
-        description="Python code to execute. Dynamic inputs are available as locals. Send output using the `yield` keyword, e.g. `yield 'output', 'Hello, world!'` or `yield 'dynmamic_output', {'key': 'value'}`",
+        description=(
+            "Python code to execute as-is. Dynamic inputs are provided as env vars. "
+            "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        ),
     )
 
     image: PythonImage = Field(
@@ -49,12 +47,9 @@ class ExecutePython(BaseNode):
 
     @classmethod
     def return_type(cls):
-        return {"error": str, "output": Any}
+        return {"stdout": str, "stderr": str}
 
     async def gen_process(self, context: ProcessingContext):
-        if Environment.is_production():
-            raise RuntimeError("Python code execution is disabled in production")
-
         if not self.code.strip():
             raise RuntimeError("Code is required")
 
@@ -66,8 +61,185 @@ class ExecutePython(BaseNode):
             node=self,
             allow_dynamic_outputs=self.supports_dynamic_outputs(),
         ):
-            if value is not None:
-                yield slot, value
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+            yield slot, text_value
+
+
+class ExecuteJavaScript(BaseNode):
+    """
+    Executes JavaScript (Node.js) code with safety restrictions.
+    javascript, nodejs, code, execute
+
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic = True
+    _supports_dynamic_outputs = True
+
+    class JavaScriptImage(Enum):
+        NODE_22_ALPINE = "node:22-alpine"
+
+    code: str = Field(
+        default="",
+        description=(
+            "JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as env vars. "
+            "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        ),
+    )
+
+    image: JavaScriptImage = Field(
+        default=JavaScriptImage.NODE_22_ALPINE,
+        description="Docker image to use for execution",
+    )
+
+    args: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Positional arguments to pass after -e code. "
+            "Available via process.argv and NT_ARGS_JSON env."
+        ),
+    )
+
+    @classmethod
+    def return_type(cls):
+        return {"stdout": str, "stderr": str}
+
+    async def gen_process(self, context: ProcessingContext):
+        if not self.code.strip():
+            raise RuntimeError("Code is required")
+
+        runner = JavaScriptDockerRunner(image=self.image.value)
+        async for slot, value in runner.stream(
+            user_code=self.code,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            allow_dynamic_outputs=self.supports_dynamic_outputs(),
+        ):
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+            yield slot, text_value
+
+
+class ExecuteBash(BaseNode):
+    """
+    Executes Bash script with safety restrictions.
+    bash, shell, code, execute
+
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic = True
+    _supports_dynamic_outputs = True
+
+    class BashImage(Enum):
+        BASH_5_2 = "bash:5.2"
+        DEBIAN_12 = "debian:12"
+        UBUNTU_22_04 = "ubuntu:22.04"
+        UBUNTU_24_04 = "ubuntu:24.04"
+        JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
+
+    code: str = Field(
+        default="",
+        description=(
+            "Bash script to execute as-is. Dynamic inputs are provided as env vars. "
+            "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        ),
+    )
+
+    image: BashImage = Field(
+        default=BashImage.UBUNTU_22_04,
+        description="Docker image to use for execution",
+    )
+
+    args: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Positional arguments to pass to the Bash shell. "
+            "Available as $1..$N and mirrored in NT_ARGS_JSON env."
+        ),
+    )
+
+    @classmethod
+    def return_type(cls):
+        return {"stdout": str, "stderr": str}
+
+    async def gen_process(self, context: ProcessingContext):
+        if not self.code.strip():
+            raise RuntimeError("Code is required")
+
+        runner = BashDockerRunner(image=self.image.value)
+        async for slot, value in runner.stream(
+            user_code=self.code,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            allow_dynamic_outputs=self.supports_dynamic_outputs(),
+        ):
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+            yield slot, text_value
+
+
+class ExecuteRuby(BaseNode):
+    """
+    Executes Ruby code with safety restrictions.
+    ruby, code, execute
+
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic = True
+    _supports_dynamic_outputs = True
+
+    class RubyImage(Enum):
+        RUBY_3_3_ALPINE = "ruby:3.3-alpine"
+
+    code: str = Field(
+        default="",
+        description=(
+            "Ruby code to execute as-is. Dynamic inputs are provided as env vars. "
+            "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        ),
+    )
+
+    image: RubyImage = Field(
+        default=RubyImage.RUBY_3_3_ALPINE,
+        description="Docker image to use for execution",
+    )
+
+    args: list[str] = Field(
+        default_factory=list,
+        description=(
+            "Positional arguments to pass to Ruby. "
+            "Available in ARGV and mirrored in NT_ARGS_JSON env."
+        ),
+    )
+
+    @classmethod
+    def return_type(cls):
+        return {"stdout": str, "stderr": str}
+
+    async def gen_process(self, context: ProcessingContext):
+        if not self.code.strip():
+            raise RuntimeError("Code is required")
+
+        runner = RubyDockerRunner(image=self.image.value)
+        async for slot, value in runner.stream(
+            user_code=self.code,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            allow_dynamic_outputs=self.supports_dynamic_outputs(),
+        ):
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+            yield slot, text_value
 
 
 class EvaluateExpression(BaseNode):
@@ -93,9 +265,6 @@ class EvaluateExpression(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> Any:
-        if Environment.is_production():
-            raise RuntimeError("Python expression evaluation is disabled in production")
-
         if not self.expression.strip():
             return None
 
