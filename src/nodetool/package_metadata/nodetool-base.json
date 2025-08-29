@@ -3422,11 +3422,20 @@
           "title": "Step"
         }
       ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "output"
+        }
+      ],
       "basic_fields": [
         "start",
         "stop",
         "step"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Slice",
@@ -3923,6 +3932,15 @@
           "default": "ubuntu:22.04",
           "title": "Image",
           "description": "Docker image to use for execution"
+        },
+        {
+          "name": "stdin",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Stdin",
+          "description": "String to write to process stdin before any streaming input. Use newlines to separate lines."
         }
       ],
       "outputs": [
@@ -3941,7 +3959,72 @@
       ],
       "basic_fields": [
         "code",
-        "image"
+        "image",
+        "stdin"
+      ],
+      "is_dynamic": true,
+      "is_streaming": true,
+      "supports_dynamic_outputs": true
+    },
+    {
+      "title": "Execute Command",
+      "description": "Executes a single shell command inside a Docker container.\n    command, execute, shell, bash, sh\n\n    IMPORTANT: Only enabled in non-production environments",
+      "namespace": "nodetool.code",
+      "node_type": "nodetool.code.ExecuteCommand",
+      "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Single command to run via the selected shell. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "enum",
+            "values": [
+              "bash:5.2",
+              "alpine:3",
+              "ubuntu:22.04",
+              "ubuntu:24.04"
+            ],
+            "type_name": "nodetool.nodes.nodetool.code.CommandImage"
+          },
+          "default": "bash:5.2",
+          "title": "Image",
+          "description": "Docker image to use for execution"
+        },
+        {
+          "name": "stdin",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Stdin",
+          "description": "String to write to process stdin before any streaming input. Use newlines to separate lines."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stdout"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stderr"
+        }
+      ],
+      "basic_fields": [
+        "command",
+        "image",
+        "stdin"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -3974,6 +4057,15 @@
           "default": "node:22-alpine",
           "title": "Image",
           "description": "Docker image to use for execution"
+        },
+        {
+          "name": "stdin",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Stdin",
+          "description": "String to write to process stdin before any streaming input. Use newlines to separate lines."
         }
       ],
       "outputs": [
@@ -3992,7 +4084,8 @@
       ],
       "basic_fields": [
         "code",
-        "image"
+        "image",
+        "stdin"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -4026,6 +4119,15 @@
           "default": "python:3.11-slim",
           "title": "Image",
           "description": "Docker image to use for execution"
+        },
+        {
+          "name": "stdin",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Stdin",
+          "description": "String to write to process stdin before any streaming input. Use newlines to separate lines."
         }
       ],
       "outputs": [
@@ -4044,7 +4146,8 @@
       ],
       "basic_fields": [
         "code",
-        "image"
+        "image",
+        "stdin"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -4077,6 +4180,15 @@
           "default": "ruby:3.3-alpine",
           "title": "Image",
           "description": "Docker image to use for execution"
+        },
+        {
+          "name": "stdin",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Stdin",
+          "description": "String to write to process stdin before any streaming input. Use newlines to separate lines."
         }
       ],
       "outputs": [
@@ -4095,7 +4207,8 @@
       ],
       "basic_fields": [
         "code",
-        "image"
+        "image",
+        "stdin"
       ],
       "is_dynamic": true,
       "is_streaming": true,
@@ -11742,7 +11855,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Audio Output",
@@ -11788,7 +11902,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Boolean Output",
@@ -11834,7 +11949,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Dataframe Output",
@@ -11880,7 +11996,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Dictionary Output",
@@ -11942,7 +12059,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Document Output",
@@ -11988,7 +12106,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Float Output",
@@ -12034,7 +12153,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Image Output",
@@ -12080,7 +12200,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Integer Output",
@@ -12126,7 +12247,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "List Output",
@@ -12182,7 +12304,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "String Output",
@@ -12228,7 +12351,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Video Output",
@@ -12274,7 +12398,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Grounded Search",
@@ -15225,6 +15350,12 @@
       "basic_fields": [
         "path"
       ]
+    },
+    {
+      "title": "Open Workspace Directory",
+      "description": "Open the workspace directory.\n    files, workspace, directory",
+      "namespace": "lib.os",
+      "node_type": "lib.os.OpenWorkspaceDirectory"
     },
     {
       "title": "Path To String",

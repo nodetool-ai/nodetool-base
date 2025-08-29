@@ -770,71 +770,69 @@ class Classifier(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        content = []
-        content.append(MessageTextContent(text=self.text))
-
-        assert self.model.provider != Provider.Empty, "Select a model"
-
         if len(self.categories) < 2:
             raise ValueError("At least 2 categories are required")
 
-        category_info = (
-            f"\nClassify into these categories: {', '.join(self.categories)}"
-        )
-
+        # Build messages instructing the model to pick a category via tool call
         messages = [
             Message(role="system", content=self.system_prompt),
             Message(
                 role="user",
-                content=f"Perform classification on the following text:{category_info}\n\nText: {self.text}",
+                content=(
+                    "Classify the given text by calling the provided tool to choose one category.\n"
+                    f"Categories: {', '.join(self.categories)}\n\n"
+                    f"Text: {self.text}"
+                ),
             ),
         ]
 
-        provider = get_provider(self.model.provider)
-
-        classification_schema = {
-            "name": "classification_results",
-            "schema": {
+        # Define a dynamic tool with an enum of the categories
+        class ClassificationTool(Tool):
+            name = "choose_category"
+            description = "Select the best matching category for the provided text."
+            input_schema = {
                 "type": "object",
-                "title": "Classification Results",
-                "description": "Category confidence scores between 0 and 1",
                 "additionalProperties": False,
                 "required": ["category"],
                 "properties": {
                     "category": {
                         "type": "string",
-                        "description": "The category of the text",
                         "enum": self.categories,
-                    }
+                        "description": "One of the allowed categories",
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Brief reason for the selection",
+                    },
                 },
-            },
-            "strict": True,
-        }
+            }
 
-        assistant_message = await provider.generate_message(
-            model=self.model.id,
+        tool_instance = ClassificationTool()
+        provider = get_provider(self.model.provider)
+
+        # Stream until the model calls the tool and return the selected category
+        selected_category: str | None = None
+        async for chunk in provider.generate_messages(
             messages=messages,
+            model=self.model.id,
+            tools=[tool_instance],
             context_window=self.context_window,
-            response_format={
-                "type": "json_schema",
-                "json_schema": classification_schema,
-            },
-        )
+            max_tokens=256,
+        ):
+            if isinstance(chunk, ToolCall) and chunk.name == tool_instance.name:
+                try:
+                    args = chunk.args or {}
+                    category = args.get("category")
+                    if isinstance(category, str) and category in self.categories:
+                        selected_category = category
+                        break
+                except Exception:
+                    pass
 
-        # Extract text content from the message in a type-safe way
-        content_text: str
-        if assistant_message.content and len(assistant_message.content) > 0:
-            first_item = assistant_message.content[0]
-            if isinstance(first_item, MessageTextContent):
-                content_text = first_item.text
-            else:
-                content_text = str(first_item)
-        else:
-            content_text = str(assistant_message.content)
+        if selected_category is None:
+            raise ValueError("Model did not select a category via tool calling")
 
-        classification = json.loads(content_text)
-
-        return classification["category"]
+        return selected_category
 
 
 DEFAULT_SYSTEM_PROMPT = """You are a an AI agent. 
@@ -984,6 +982,13 @@ class Agent(BaseNode):
     )
 
     _supports_dynamic_outputs = True
+
+    def should_route_output(self, output_name: str) -> bool:
+        """
+        Do not route dynamic outputs; they represent tool entry points.
+        Still route declared outputs like 'text', 'chunk', 'audio'.
+        """
+        return output_name not in self._dynamic_outputs
 
     @classmethod
     def is_cacheable(cls) -> bool:

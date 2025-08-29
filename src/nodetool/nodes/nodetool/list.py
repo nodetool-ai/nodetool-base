@@ -57,9 +57,13 @@ class SequenceIterator(BaseNode):
     stop: int = 0
     step: int = 1
 
-    async def process(self, context: ProcessingContext):
+    @classmethod
+    def return_type(cls):
+        return {"output": int}
+
+    async def gen_process(self, context: ProcessingContext):
         for i in range(self.start, self.stop, self.step):
-            yield i
+            yield "output", i
 
 
 class Slice(BaseNode):

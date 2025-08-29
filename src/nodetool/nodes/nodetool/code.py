@@ -10,6 +10,7 @@ from nodetool.code_runners.python_runner import PythonDockerRunner
 from nodetool.code_runners.javascript_runner import JavaScriptDockerRunner
 from nodetool.code_runners.bash_runner import BashDockerRunner
 from nodetool.code_runners.ruby_runner import RubyDockerRunner
+from nodetool.code_runners.command_runner import CommandDockerRunner
 
 
 class ExecutePython(BaseNode):
@@ -45,6 +46,18 @@ class ExecutePython(BaseNode):
         description="Docker image to use for execution",
     )
 
+    stdin: str = Field(
+        default="",
+        description=(
+            "String to write to process stdin before any streaming input. "
+            "Use newlines to separate lines."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
@@ -53,6 +66,17 @@ class ExecutePython(BaseNode):
         if not self.code.strip():
             raise RuntimeError("Code is required")
 
+        async def create_stdin_stream():
+            if self.stdin:
+                yield self.stdin
+            async for handle, value in self.iter_any_input():
+                yield str(value) if value is not None else ""
+
+        if self.stdin or self.has_streaming_inputs():
+            stdin_stream = create_stdin_stream()
+        else:
+            stdin_stream = None
+
         runner = PythonDockerRunner(image=self.image.value)
         async for slot, value in runner.stream(
             user_code=self.code,
@@ -60,6 +84,7 @@ class ExecutePython(BaseNode):
             context=context,
             node=self,
             allow_dynamic_outputs=self.supports_dynamic_outputs(),
+            stdin_stream=stdin_stream,
         ):
             if value is None:
                 continue
@@ -94,6 +119,18 @@ class ExecuteJavaScript(BaseNode):
         description="Docker image to use for execution",
     )
 
+    stdin: str = Field(
+        default="",
+        description=(
+            "String to write to process stdin before any streaming input. "
+            "Use newlines to separate lines."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
@@ -102,6 +139,17 @@ class ExecuteJavaScript(BaseNode):
         if not self.code.strip():
             raise RuntimeError("Code is required")
 
+        async def create_stdin_stream():
+            if self.stdin:
+                yield self.stdin
+            async for handle, value in self.iter_any_input():
+                yield str(value) if value is not None else ""
+
+        if self.stdin or self.has_streaming_inputs():
+            stdin_stream = create_stdin_stream()
+        else:
+            stdin_stream = None
+
         runner = JavaScriptDockerRunner(image=self.image.value)
         async for slot, value in runner.stream(
             user_code=self.code,
@@ -109,6 +157,7 @@ class ExecuteJavaScript(BaseNode):
             context=context,
             node=self,
             allow_dynamic_outputs=self.supports_dynamic_outputs(),
+            stdin_stream=stdin_stream,
         ):
             if value is None:
                 continue
@@ -147,6 +196,18 @@ class ExecuteBash(BaseNode):
         description="Docker image to use for execution",
     )
 
+    stdin: str = Field(
+        default="",
+        description=(
+            "String to write to process stdin before any streaming input. "
+            "Use newlines to separate lines."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
@@ -155,6 +216,17 @@ class ExecuteBash(BaseNode):
         if not self.code.strip():
             raise RuntimeError("Code is required")
 
+        async def create_stdin_stream():
+            if self.stdin:
+                yield self.stdin
+            async for handle, value in self.iter_any_input():
+                yield str(value) if value is not None else ""
+
+        if self.stdin or self.has_streaming_inputs():
+            stdin_stream = create_stdin_stream()
+        else:
+            stdin_stream = None
+
         runner = BashDockerRunner(image=self.image.value)
         async for slot, value in runner.stream(
             user_code=self.code,
@@ -162,6 +234,7 @@ class ExecuteBash(BaseNode):
             context=context,
             node=self,
             allow_dynamic_outputs=self.supports_dynamic_outputs(),
+            stdin_stream=stdin_stream,
         ):
             if value is None:
                 continue
@@ -196,6 +269,18 @@ class ExecuteRuby(BaseNode):
         description="Docker image to use for execution",
     )
 
+    stdin: str = Field(
+        default="",
+        description=(
+            "String to write to process stdin before any streaming input. "
+            "Use newlines to separate lines."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
@@ -204,6 +289,17 @@ class ExecuteRuby(BaseNode):
         if not self.code.strip():
             raise RuntimeError("Code is required")
 
+        async def create_stdin_stream():
+            if self.stdin:
+                yield self.stdin
+            async for handle, value in self.iter_any_input():
+                yield str(value) if value is not None else ""
+
+        if self.stdin or self.has_streaming_inputs():
+            stdin_stream = create_stdin_stream()
+        else:
+            stdin_stream = None
+
         runner = RubyDockerRunner(image=self.image.value)
         async for slot, value in runner.stream(
             user_code=self.code,
@@ -211,6 +307,83 @@ class ExecuteRuby(BaseNode):
             context=context,
             node=self,
             allow_dynamic_outputs=self.supports_dynamic_outputs(),
+            stdin_stream=stdin_stream,
+        ):
+            if value is None:
+                continue
+            text_value = value if isinstance(value, str) else str(value)
+            yield slot, text_value
+
+
+class ExecuteCommand(BaseNode):
+    """
+    Executes a single shell command inside a Docker container.
+    command, execute, shell, bash, sh
+
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic = True
+    _supports_dynamic_outputs = True
+
+    class CommandImage(Enum):
+        BASH_5_2 = "bash:5.2"
+        ALPINE_3 = "alpine:3"
+        UBUNTU_22_04 = "ubuntu:22.04"
+        UBUNTU_24_04 = "ubuntu:24.04"
+
+    command: str = Field(
+        default="",
+        description=(
+            "Single command to run via the selected shell. "
+            "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        ),
+    )
+
+    image: CommandImage = Field(
+        default=CommandImage.BASH_5_2,
+        description="Docker image to use for execution",
+    )
+
+    stdin: str = Field(
+        default="",
+        description=(
+            "String to write to process stdin before any streaming input. "
+            "Use newlines to separate lines."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
+    @classmethod
+    def return_type(cls):
+        return {"stdout": str, "stderr": str}
+
+    async def gen_process(self, context: ProcessingContext):
+        if not self.command.strip():
+            raise RuntimeError("Command is required")
+
+        async def create_stdin_stream():
+            if self.stdin:
+                yield self.stdin
+            async for handle, value in self.iter_any_input():
+                yield str(value) if value is not None else ""
+
+        if self.stdin or self.has_streaming_inputs():
+            stdin_stream = create_stdin_stream()
+        else:
+            stdin_stream = None
+
+        runner = CommandDockerRunner(image=self.image.value)
+        async for slot, value in runner.stream(
+            user_code=self.command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            allow_dynamic_outputs=self.supports_dynamic_outputs(),
+            stdin_stream=stdin_stream,
         ):
             if value is None:
                 continue
