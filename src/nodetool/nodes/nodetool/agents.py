@@ -1024,6 +1024,10 @@ class Agent(BaseNode):
             "model",
         ]
 
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
     async def gen_process(self, context: ProcessingContext):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
@@ -1230,3 +1234,91 @@ class Agent(BaseNode):
                 len(message_text_content.text),
                 len(messages),
             )
+
+        log.debug(
+            "Agent loop complete: iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
+            iteration,
+            tools_called,
+            assistant_message.tool_calls is not None
+            and len(assistant_message.tool_calls) > 0,
+            len(message_text_content.text),
+            len(messages),
+        )
+
+
+if __name__ == "__main__":
+    # Build and run a workflow graph like the screenshot:
+    # Agent (dynamic output "Encode") -> lib.base64.Encode -> Tool Result (+ Preview)
+    from nodetool.types.graph import Node as ApiNode, Edge as ApiEdge, Graph as ApiGraph
+    from nodetool.workflows.run_workflow import run_workflow
+    from nodetool.workflows.run_job_request import RunJobRequest
+    from nodetool.metadata.type_metadata import TypeMetadata
+
+    # Define nodes
+    agent_node = ApiNode(
+        id="agent",
+        type="nodetool.agents.Agent",
+        data={
+            "model": {
+                "type": "language_model",
+                "provider": "openai",
+                "id": "gpt-5-nano",
+            },
+            "system": "You are an AI agent.",
+            "prompt": "encode hunger",
+            "tool_call_limit": 3,
+        },
+        dynamic_outputs={
+            # Expose a tool entry point named "Encode" which wires into the subgraph
+            "Encode": TypeMetadata(type="any"),
+        },
+    )
+
+    encode_node = ApiNode(
+        id="encode",
+        type="lib.base64.Encode",
+        data={},
+    )
+
+    preview_node = ApiNode(
+        id="preview",
+        type="nodetool.workflows.base_node.Preview",
+        data={"name": "PREVIEW"},
+    )
+
+    tool_result_node = ApiNode(
+        id="tool_result",
+        type="nodetool.workflows.base_node.ToolResult",
+        data={},
+    )
+
+    # Wire edges
+    edges = [
+        # Agent dynamic output "Encode" → Base64.Encode.text
+        ApiEdge(
+            source="agent", sourceHandle="Encode", target="encode", targetHandle="text"
+        ),
+        # Base64.Encode.output → ToolResult (so we capture results in messages)
+        ApiEdge(
+            source="encode",
+            sourceHandle="output",
+            target="tool_result",
+            targetHandle="output",
+        ),
+    ]
+
+    graph = ApiGraph(
+        nodes=[agent_node, encode_node, preview_node, tool_result_node], edges=edges
+    )
+
+    async def run():
+        print("Running Agent→Encode→ToolResult graph via run_workflow...\n")
+        ctx = ProcessingContext()
+        req = RunJobRequest(user_id="test_user", auth_token="test_token", graph=graph)
+        async for msg in run_workflow(
+            req,
+            context=ctx,
+        ):
+            print(msg)
+
+    asyncio.run(run())
