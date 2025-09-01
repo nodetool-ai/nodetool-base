@@ -12,6 +12,7 @@ from nodetool.code_runners.bash_runner import BashDockerRunner
 from nodetool.code_runners.ruby_runner import RubyDockerRunner
 from nodetool.code_runners.command_runner import CommandDockerRunner
 from nodetool.workflows.io import NodeInputs, NodeOutputs
+from nodetool.code_runners.runtime_base import StreamRunnerBase
 
 
 class ExecutePython(BaseNode):
@@ -29,6 +30,7 @@ class ExecutePython(BaseNode):
 
     _is_dynamic = True
     _supports_dynamic_outputs = True
+    _runner: StreamRunnerBase | None = None
 
     class PythonImage(Enum):
         PYTHON_3_11_SLIM = "python:3.11-slim"
@@ -86,6 +88,7 @@ class ExecutePython(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = PythonDockerRunner(image=self.image.value)
+        self._runner = runner
         async for slot, value in runner.stream(
             user_code=self.code,
             env_locals=self._dynamic_properties,
@@ -118,6 +121,21 @@ class ExecutePython(BaseNode):
                 )
             await outputs.emit(slot, text_value)
 
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop any running Docker container for this node.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            Environment.get_logger().debug(f"ExecutePython finalize: {e}")
+
 
 class ExecuteJavaScript(BaseNode):
     """
@@ -129,6 +147,7 @@ class ExecuteJavaScript(BaseNode):
 
     _is_dynamic = True
     _supports_dynamic_outputs = True
+    _runner: StreamRunnerBase | None = None
 
     class JavaScriptImage(Enum):
         NODE_22_ALPINE = "node:22-alpine"
@@ -209,6 +228,7 @@ class ExecuteJavaScript(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = JavaScriptDockerRunner(image=self.image.value)
+        self._runner = runner
         async for slot, value in runner.stream(
             user_code=self.code,
             env_locals=self._dynamic_properties,
@@ -241,6 +261,21 @@ class ExecuteJavaScript(BaseNode):
                 )
             await outputs.emit(slot, text_value)
 
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop any running Docker container for this node.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            Environment.get_logger().debug(f"ExecuteJavaScript finalize: {e}")
+
 
 class ExecuteBash(BaseNode):
     """
@@ -252,6 +287,7 @@ class ExecuteBash(BaseNode):
 
     _is_dynamic = True
     _supports_dynamic_outputs = True
+    _runner: StreamRunnerBase | None = None
 
     class BashImage(Enum):
         BASH_5_2 = "bash:5.2"
@@ -340,6 +376,7 @@ class ExecuteBash(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = BashDockerRunner(image=self.image.value)
+        self._runner = runner
         async for slot, value in runner.stream(
             user_code=self.code,
             env_locals=self._dynamic_properties,
@@ -373,6 +410,21 @@ class ExecuteBash(BaseNode):
                 )
             await outputs.emit(slot, text_value)
 
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop any running Docker container for this node.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            Environment.get_logger().debug(f"ExecuteBash finalize: {e}")
+
 
 class ExecuteRuby(BaseNode):
     """
@@ -384,6 +436,7 @@ class ExecuteRuby(BaseNode):
 
     _is_dynamic = True
     _supports_dynamic_outputs = True
+    _runner: StreamRunnerBase | None = None
 
     class RubyImage(Enum):
         RUBY_3_3_ALPINE = "ruby:3.3-alpine"
@@ -468,6 +521,7 @@ class ExecuteRuby(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = RubyDockerRunner(image=self.image.value)
+        self._runner = runner
         async for slot, value in runner.stream(
             user_code=self.code,
             env_locals=self._dynamic_properties,
@@ -500,6 +554,21 @@ class ExecuteRuby(BaseNode):
                 )
             await outputs.emit(slot, text_value)
 
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop any running Docker container for this node.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            Environment.get_logger().debug(f"ExecuteRuby finalize: {e}")
+
 
 class ExecuteCommand(BaseNode):
     """
@@ -511,6 +580,7 @@ class ExecuteCommand(BaseNode):
 
     _is_dynamic = True
     _supports_dynamic_outputs = True
+    _runner: StreamRunnerBase | None = None
 
     class CommandImage(Enum):
         BASH_5_2 = "bash:5.2"
@@ -598,6 +668,7 @@ class ExecuteCommand(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = CommandDockerRunner(image=self.image.value)
+        self._runner = runner
         async for slot, value in runner.stream(
             user_code=self.command,
             env_locals=self._dynamic_properties,
@@ -629,6 +700,21 @@ class ExecuteCommand(BaseNode):
                     )
                 )
             await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop any running Docker container for this node.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            Environment.get_logger().debug(f"ExecuteCommand finalize: {e}")
 
 
 class EvaluateExpression(BaseNode):

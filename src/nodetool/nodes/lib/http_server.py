@@ -7,6 +7,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.code_runners.server_runner import ServerDockerRunner
+from nodetool.code_runners.runtime_base import StreamRunnerBase
 
 
 class SimpleHttpServer(BaseNode):
@@ -19,6 +20,7 @@ class SimpleHttpServer(BaseNode):
     """
 
     _supports_dynamic_outputs: bool = True
+    _runner: StreamRunnerBase | None = None
 
     image: str = Field(
         default="python:3.11-slim",
@@ -48,6 +50,20 @@ class SimpleHttpServer(BaseNode):
     def return_type(cls) -> dict[str, Any]:
         return {"endpoint": str, "stdout": str, "stderr": str}
 
+    def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
+        """Return an overall timeout for the server container.
+
+        Uses the configured ``timeout_seconds`` plus small headroom to include
+        startup/teardown time.
+
+        Returns:
+            float | None: Timeout in seconds.
+        """
+        try:
+            return max(5.0, float(self.timeout_seconds) + 5.0)
+        except Exception:
+            return 60.0
+
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         cmd = (
             self.command.strip()
@@ -62,6 +78,7 @@ class SimpleHttpServer(BaseNode):
             ready_timeout_seconds=self.ready_timeout_seconds,
             endpoint_path="",  # plain http root
         )
+        self._runner = runner
 
         async for slot, value in runner.stream(
             user_code=cmd,
@@ -76,3 +93,18 @@ class SimpleHttpServer(BaseNode):
                 # Pass through unknown slots as stdout for visibility
                 slot = "stdout"
             await outputs.emit(slot, text)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop the server container if still running.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        if self._runner:
+            try:
+                self._runner.stop()
+            except Exception:
+                pass

@@ -23,6 +23,7 @@ from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.types import Notification, LogUpdate
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.code_runners.runtime_base import StreamRunnerBase
 
 logger = logging.getLogger(__name__)
 
@@ -226,6 +227,22 @@ class Browser(BaseNode):
             "metadata": Dict[str, Any],
         }
 
+    def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
+        """Return a conservative overall timeout for the browser task.
+
+        Uses the configured page timeout (milliseconds) plus headroom to
+        cover driver startup and teardown.
+
+        Returns:
+            float | None: Timeout in seconds.
+        """
+        try:
+            return max(5.0, float(self.timeout) / 1000.0 + 20.0)
+        except Exception:
+            return 60.0
+
+    _runner: StreamRunnerBase | None = None
+
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.url:
             raise ValueError("URL is required")
@@ -243,6 +260,7 @@ class Browser(BaseNode):
             timeout_seconds=max(5, int(self.timeout / 1000) + 10),
             endpoint_path="/?ws=1",
         )
+        self._runner = runner
 
         endpoint: str | None = None
         async for slot, value in runner.stream(
@@ -298,7 +316,27 @@ class Browser(BaseNode):
             except Exception:
                 content = ""
             await browser.close()
+            # Proactively stop server container
+            try:
+                runner.stop()
+            except Exception:
+                pass
             return {"success": True, "metadata": meta, "content": content}
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop the Playwright driver container if still running.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        if self._runner:
+            try:
+                self._runner.stop()
+            except Exception:
+                pass
 
 
 class Screenshot(BaseNode):
@@ -331,6 +369,8 @@ class Screenshot(BaseNode):
         default=30000, description="Timeout in milliseconds for page navigation"
     )
 
+    _runner: StreamRunnerBase | None = None
+
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.url:
             raise ValueError("URL is required")
@@ -352,6 +392,7 @@ class Screenshot(BaseNode):
             timeout_seconds=max(5, int(self.timeout / 1000) + 10),
             endpoint_path="/?ws=1",
         )
+        self._runner = runner
 
         endpoint: str | None = None
         async for slot, value in runner.stream(
@@ -406,7 +447,39 @@ class Screenshot(BaseNode):
             else:
                 await page.screenshot(path=container_path)
             await browser.close()
+            try:
+                runner.stop()
+            except Exception:
+                pass
             return {"success": True, "path": host_path, "url": self.url}
+
+    def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
+        """Return a conservative overall timeout for the screenshot task.
+
+        Based on navigation timeout (milliseconds) plus headroom.
+
+        Returns:
+            float | None: Timeout in seconds.
+        """
+        try:
+            return max(5.0, float(self.timeout) / 1000.0 + 20.0)
+        except Exception:
+            return 60.0
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop the Playwright driver container if still running.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        if self._runner:
+            try:
+                self._runner.stop()
+            except Exception:
+                pass
 
 
 class WebFetch(BaseNode):
@@ -573,6 +646,8 @@ class BrowserNavigation(BaseNode):
         description="Attribute name to extract (when extract_type is 'attribute')",
     )
 
+    _runner: StreamRunnerBase | None = None
+
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if self.action == self.Action.GOTO and not self.url:
             raise ValueError("URL is required for goto action")
@@ -590,6 +665,7 @@ class BrowserNavigation(BaseNode):
             timeout_seconds=max(5, int(self.timeout / 1000) + 10),
             endpoint_path="/?ws=1",
         )
+        self._runner = runner
 
         endpoint: str | None = None
         async for slot, value in runner.stream(
@@ -675,12 +751,45 @@ class BrowserNavigation(BaseNode):
                             "() => document.body ? document.body.innerText : ''"
                         )
 
-            await browser.close()
+            try:
+                await browser.close()
+            finally:
+                try:
+                    runner.stop()
+                except Exception:
+                    pass
             return {
                 "success": True,
                 "action": self.action.value,
                 "extracted": extracted,
             }
+
+    def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
+        """Return an overall timeout covering navigation and interactions.
+
+        Uses the configured action timeout (milliseconds) plus headroom.
+
+        Returns:
+            float | None: Timeout in seconds.
+        """
+        try:
+            return max(5.0, float(self.timeout) / 1000.0 + 20.0)
+        except Exception:
+            return 60.0
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        """Stop the Playwright driver container if still running.
+
+        Args:
+            context: Processing context (unused).
+
+        Returns:
+            None
+        """
+        if self._runner:
+            try:
+                self._runner.stop()
+            except Exception:
+                pass
 
 
 class BrowserUseModel(str, Enum):
