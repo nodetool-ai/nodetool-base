@@ -3963,7 +3963,6 @@
         "stdin"
       ],
       "is_dynamic": true,
-      "is_streaming": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -4027,7 +4026,6 @@
         "stdin"
       ],
       "is_dynamic": true,
-      "is_streaming": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -4088,7 +4086,6 @@
         "stdin"
       ],
       "is_dynamic": true,
-      "is_streaming": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -4150,7 +4147,6 @@
         "stdin"
       ],
       "is_dynamic": true,
-      "is_streaming": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -4211,7 +4207,6 @@
         "stdin"
       ],
       "is_dynamic": true,
-      "is_streaming": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -11847,7 +11842,7 @@
       "outputs": [
         {
           "type": {
-            "type": "np_array"
+            "type": "any"
           },
           "name": "output"
         }
@@ -11894,7 +11889,7 @@
       "outputs": [
         {
           "type": {
-            "type": "audio"
+            "type": "any"
           },
           "name": "output"
         }
@@ -11941,7 +11936,7 @@
       "outputs": [
         {
           "type": {
-            "type": "bool"
+            "type": "any"
           },
           "name": "output"
         }
@@ -11988,7 +11983,7 @@
       "outputs": [
         {
           "type": {
-            "type": "dataframe"
+            "type": "any"
           },
           "name": "output"
         }
@@ -12043,15 +12038,7 @@
       "outputs": [
         {
           "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
+            "type": "any"
           },
           "name": "output"
         }
@@ -12098,7 +12085,7 @@
       "outputs": [
         {
           "type": {
-            "type": "document"
+            "type": "any"
           },
           "name": "output"
         }
@@ -12145,7 +12132,7 @@
       "outputs": [
         {
           "type": {
-            "type": "float"
+            "type": "any"
           },
           "name": "output"
         }
@@ -12192,7 +12179,7 @@
       "outputs": [
         {
           "type": {
-            "type": "image"
+            "type": "any"
           },
           "name": "output"
         }
@@ -12239,7 +12226,7 @@
       "outputs": [
         {
           "type": {
-            "type": "int"
+            "type": "any"
           },
           "name": "output"
         }
@@ -12291,12 +12278,7 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
+            "type": "any"
           },
           "name": "output"
         }
@@ -12343,7 +12325,7 @@
       "outputs": [
         {
           "type": {
-            "type": "str"
+            "type": "any"
           },
           "name": "output"
         }
@@ -12390,7 +12372,7 @@
       "outputs": [
         {
           "type": {
-            "type": "video"
+            "type": "any"
           },
           "name": "output"
         }
@@ -15355,7 +15337,15 @@
       "title": "Open Workspace Directory",
       "description": "Open the workspace directory.\n    files, workspace, directory",
       "namespace": "lib.os",
-      "node_type": "lib.os.OpenWorkspaceDirectory"
+      "node_type": "lib.os.OpenWorkspaceDirectory",
+      "outputs": [
+        {
+          "type": {
+            "type": "none"
+          },
+          "name": "output"
+        }
+      ]
     },
     {
       "title": "Path To String",
@@ -15764,6 +15754,14 @@
           "description": "Environment variable value"
         }
       ],
+      "outputs": [
+        {
+          "type": {
+            "type": "none"
+          },
+          "name": "output"
+        }
+      ],
       "basic_fields": [
         "name",
         "value"
@@ -15801,6 +15799,14 @@
           "default": 10,
           "title": "Timeout",
           "description": "How long the notification should stay visible (in seconds)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "none"
+          },
+          "name": "output"
         }
       ],
       "basic_fields": [
@@ -16058,6 +16064,87 @@
         "lineterm"
       ],
       "expose_as_tool": true
+    },
+    {
+      "title": "Simple Http Server",
+      "description": "Starts a simple HTTP server inside Docker and streams logs.\n    http, server, web\n\n    Emits the reachable endpoint URL on the \"endpoint\" output when ready,\n    then streams stdout/stderr lines on the corresponding outputs.",
+      "namespace": "lib.http_server",
+      "node_type": "lib.http_server.SimpleHttpServer",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "str"
+          },
+          "default": "python:3.11-slim",
+          "title": "Image",
+          "description": "Docker image to run the server in"
+        },
+        {
+          "name": "container_port",
+          "type": {
+            "type": "int"
+          },
+          "default": 8000,
+          "title": "Container Port",
+          "description": "Port the server listens on inside the container"
+        },
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Startup command. If empty, uses 'python -m http.server <container_port> --bind 0.0.0.0'"
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 600,
+          "title": "Timeout Seconds",
+          "description": "Max lifetime of the server container (seconds)"
+        },
+        {
+          "name": "ready_timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 15,
+          "title": "Ready Timeout Seconds",
+          "description": "Seconds to wait for server readiness"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "endpoint"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stdout"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stderr"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "container_port",
+        "command",
+        "timeout_seconds",
+        "ready_timeout_seconds"
+      ],
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Random Bool",
@@ -16408,6 +16495,14 @@
           "default": {},
           "title": "Document",
           "description": "Document to upload"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "none"
+          },
+          "name": "output"
         }
       ],
       "basic_fields": [
@@ -16985,6 +17080,14 @@
           "default": "",
           "title": "Value",
           "description": "Secret value"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "none"
+          },
+          "name": "output"
         }
       ],
       "basic_fields": [

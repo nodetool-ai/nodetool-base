@@ -5,6 +5,7 @@ from pydantic import Field
 from nodetool.common.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.types import LogUpdate
 from nodetool.code_runners.python_runner import PythonDockerRunner
 from nodetool.code_runners.javascript_runner import JavaScriptDockerRunner
 from nodetool.code_runners.bash_runner import BashDockerRunner
@@ -96,6 +97,25 @@ class ExecutePython(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
+            # Send log updates for stdout/stderr
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
             await outputs.emit(slot, text_value)
 
 
@@ -200,6 +220,25 @@ class ExecuteJavaScript(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
+            # Send log updates for stdout/stderr
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
             await outputs.emit(slot, text_value)
 
 
@@ -312,6 +351,26 @@ class ExecuteBash(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
+            # Send log updates for stdout/stderr
+            print(f"slot: {slot}, value: {value}")
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
             await outputs.emit(slot, text_value)
 
 
@@ -420,6 +479,25 @@ class ExecuteRuby(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
+            # Send log updates for stdout/stderr
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
             await outputs.emit(slot, text_value)
 
 
@@ -531,6 +609,25 @@ class ExecuteCommand(BaseNode):
             if value is None:
                 continue
             text_value = value if isinstance(value, str) else str(value)
+            # Send log updates for stdout/stderr
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
             await outputs.emit(slot, text_value)
 
 

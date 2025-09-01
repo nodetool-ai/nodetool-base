@@ -32,7 +32,7 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import NodeProgress, ToolCallUpdate
+from nodetool.workflows.types import NodeProgress, ToolCallUpdate, EdgeUpdate
 from nodetool.chat.providers import Chunk
 from nodetool.chat.dataframes import json_schema_for_dataframe
 from nodetool.metadata.types import DataframeRef, RecordType
@@ -1174,6 +1174,17 @@ class Agent(BaseNode):
                                     message=tool_instance.user_message(chunk.args),
                                 )
                             )
+                            # Emit EdgeUpdate to animate the edge connected to this tool output
+                            initial_edges, _ = context.get_graph_connected_to_output(
+                                self.id, chunk.name
+                            )
+                            for e in initial_edges:
+                                context.post_message(
+                                    EdgeUpdate(
+                                        edge_id=e.id or "",
+                                        status="message_sent",
+                                    )
+                                )
 
                             async def _run_tool(instance: Tool, call: ToolCall):
                                 try:
@@ -1216,6 +1227,14 @@ class Agent(BaseNode):
                 )
                 results = await asyncio.gather(*pending_tool_tasks)
                 for tool_call_id, tool_name, tool_result_json in results:
+                    # Clear edge animation by posting drained after tool completes
+                    initial_edges, _ = context.get_graph_connected_to_output(
+                        self.id, tool_name
+                    )
+                    for e in initial_edges:
+                        context.post_message(
+                            EdgeUpdate(edge_id=e.id or "", status="drained")
+                        )
                     messages.append(
                         Message(
                             role="tool",

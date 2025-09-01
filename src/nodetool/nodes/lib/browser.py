@@ -1,28 +1,201 @@
+import asyncio
+import logging
+import os
+import re
 import traceback
+from enum import Enum
+from typing import Any, Dict, Iterator, Optional
+import json
+import hashlib
+
 import aiohttp
+import docker
 import html2text
 import trafilatura
-import logging
 from bs4 import BeautifulSoup
-from enum import Enum
-from typing import Any, Dict, Optional
 from pydantic import Field
-from playwright.async_api import async_playwright
-from readability import Document
-import asyncio
 from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
+# ServerDockerRunner is used at runtime to start a Playwright WS server in Docker
 from nodetool.common.environment import Environment
-from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FilePath
-import os
+from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from nodetool.workflows.types import Notification, LogUpdate
+from nodetool.workflows.processing_context import ProcessingContext
 
 logger = logging.getLogger(__name__)
 
 # Browser Use
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
+
+PLAYWRIGHT_BASE_IMAGE = "mcr.microsoft.com/playwright:v1.55.0-noble"
+PLAYWRIGHT_DRIVER_PORT = 3000
+
+# Dockerfile content for the custom Playwright driver image.
+# Builds on the official Microsoft Playwright image and ensures the Node.js
+# Playwright CLI is installed for running the remote driver server.
+_PLAYWRIGHT_DOCKERFILE = """
+# Base Microsoft Playwright image
+FROM mcr.microsoft.com/playwright:v1.55.0-noble
+
+# Become root to install global npm packages if requested
+USER root
+
+RUN npm install -y -g --unsafe-perm playwright
+
+# Set defaults and expose the Playwright driver port
+ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
+    DRIVER_PORT=3000
+
+EXPOSE 3000
+
+# Drop back to the non-root user used by Playwright images
+USER pwuser
+
+# Default command runs the Playwright driver server
+CMD ["bash", "-lc", "playwright run-server --host 0.0.0.0 --port ${DRIVER_PORT}"]
+"""
+
+
+def _playwright_image_tag() -> str:
+    """Return a deterministic image tag derived from the Dockerfile content.
+
+    Including a short hash of the Dockerfile content in the tag ensures that
+    changes to this file produce a new local image and avoid stale caches.
+    """
+    h = hashlib.sha256(_PLAYWRIGHT_DOCKERFILE.encode("utf-8")).hexdigest()[:12]
+    return f"nodetool/playwright-driver:v1.55.0-noble-{h}"
+
+
+def _ensure_custom_playwright_image(context: ProcessingContext, node: BaseNode) -> str:
+    """Ensure the custom Playwright image exists locally; build if missing.
+
+    Returns the image tag to use with Docker. Building happens in a workspace
+    subdirectory so that users can inspect artifacts under `.nt-browser/`.
+    """
+    tag = _playwright_image_tag()
+    client = docker.from_env()
+    try:
+        client.ping()
+    except Exception as e:
+        raise RuntimeError(
+            "Docker daemon is not available. Please start Docker and try again."
+        ) from e
+
+    try:
+        client.images.get(tag)
+        return tag
+    except Exception:
+        pass
+
+    build_dir = context.resolve_workspace_path(
+        os.path.join(".nt-browser", "images", f"playwright-{tag.split('-')[-1]}")
+    )
+    os.makedirs(build_dir, exist_ok=True)
+    dockerfile_path = os.path.join(build_dir, "Dockerfile")
+    with open(dockerfile_path, "w", encoding="utf-8") as f:
+        f.write(_PLAYWRIGHT_DOCKERFILE)
+
+    context.post_message(
+        Notification(
+            node_id=node.id,
+            severity="info",
+            content=f"Building custom Playwright image: {tag}",
+        )
+    )
+    context.post_message(
+        LogUpdate(
+            node_id=node.id,
+            node_name=node.get_title(),
+            content=f"Building custom Playwright image: {tag}",
+            severity="info",
+        )
+    )
+
+    # Build the image; stream build output lines as progress notifications.
+    image, logs = client.images.build(
+        path=build_dir,
+        dockerfile="Dockerfile",
+        tag=tag,
+        rm=True,
+        pull=True,
+    )
+    for entry in logs:
+        text = str(entry)
+        context.post_message(
+            Notification(
+                node_id=node.id,
+                severity="info",
+                content=text,
+            )
+        )
+        context.post_message(
+            LogUpdate(
+                node_id=node.id,
+                node_name=node.get_title(),
+                content=text,
+                severity="info",
+            )
+        )
+
+    context.post_message(
+        Notification(
+            node_id=node.id,
+            severity="info",
+            content=f"Custom Playwright image ready: {tag}",
+        )
+    )
+    context.post_message(
+        LogUpdate(
+            node_id=node.id,
+            node_name=node.get_title(),
+            content=f"Custom Playwright image ready: {tag}",
+            severity="info",
+        )
+    )
+    return tag
+
+
+def _container_workspace_path(context: ProcessingContext, host_path: str) -> str:
+    """Translate an absolute host path to the container workspace path.
+
+    The Docker runner mounts the workspace at /workspace. This helper maps
+    a host path inside the workspace to the corresponding container path.
+    """
+    # Normalize and ensure we are within the workspace
+    abs_host = os.path.abspath(host_path)
+    ws = os.path.abspath(context.workspace_dir)
+    if not abs_host.startswith(ws + os.sep) and abs_host != ws:
+        raise ValueError(
+            f"Path '{host_path}' is outside of workspace '{context.workspace_dir}'"
+        )
+    rel = os.path.relpath(abs_host, ws)
+    # Map to container mount
+    return f"/workspace/{rel}" if rel != "." else "/workspace"
+
+
+def sanitize_node_id(node_id: str) -> str:
+    """
+    Sanitize a node id for use as a directory name using regex.
+    """
+    return re.sub(r"[^a-zA-Z0-9_-]", "_", str(node_id))
+
+
+def _write_script(
+    context: ProcessingContext, name: str, code: str, node_id: str
+) -> str:
+    base_dir = context.resolve_workspace_path(
+        os.path.join(".nt-browser", sanitize_node_id(node_id))
+    )
+    os.makedirs(base_dir, exist_ok=True)
+    unique = (
+        f"{int(__import__('time').time()*1000)}-{__import__('secrets').token_hex(4)}"
+    )
+    path = os.path.join(base_dir, f"{name}-{unique}.js")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(code)
+    return path
 
 
 class Browser(BaseNode):
@@ -57,49 +230,75 @@ class Browser(BaseNode):
         if not self.url:
             raise ValueError("URL is required")
 
-        # Initialize browser
-        playwright_instance = await async_playwright().start()
-        browser_endpoint = Environment.get("BROWSER_URL")
+        # Start Playwright driver in Docker and connect via remote WebSocket
+        server_cmd = (
+            f"playwright run-server --host 0.0.0.0 --port {PLAYWRIGHT_DRIVER_PORT}"
+        )
+        from nodetool.code_runners.server_runner import ServerDockerRunner
 
-        if browser_endpoint:
-            browser = await playwright_instance.chromium.connect_over_cdp(
-                browser_endpoint
-            )
-            # Create context with additional permissions and settings
-            browser_context = await browser.new_context(
-                bypass_csp=True,
-            )
-        else:
-            # Launch browser with similar settings for local usage
-            browser = await playwright_instance.chromium.launch(headless=True)
-            browser_context = await browser.new_context(
-                bypass_csp=True,
-            )
+        runner = ServerDockerRunner(
+            image=_ensure_custom_playwright_image(context, self),
+            container_port=PLAYWRIGHT_DRIVER_PORT,
+            scheme="ws",
+            timeout_seconds=max(5, int(self.timeout / 1000) + 10),
+            endpoint_path="/?ws=1",
+        )
 
-        # Create page from the context instead of directly from browser
-        page = await browser_context.new_page()
+        endpoint: str | None = None
+        async for slot, value in runner.stream(
+            user_code=server_cmd,
+            env_locals={},
+            context=context,
+            node=self,
+        ):
+            # Stream docker logs as workflow logs
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
+            elif slot == "endpoint":
+                endpoint = value
+                break
 
-        try:
-            # Navigate to the URL with more complete loading strategy
+        if not endpoint:
+            raise ValueError("Failed to start Playwright server (no endpoint)")
+
+        # Point Playwright Python at the remote driver
+        os.environ["PLAYWRIGHT_DRIVER_URL"] = str(endpoint)
+        from playwright.async_api import async_playwright
+
+        async with async_playwright() as apw:
+            browser = await apw.chromium.launch()
+            ctx = await browser.new_context(bypass_csp=True)
+            page = await ctx.new_page()
             await page.goto(self.url, wait_until="networkidle", timeout=self.timeout)
-            html_content = await page.content()
-            metadata = trafilatura.extract_metadata(html_content).as_dict()
-            metadata.pop("body")
-            metadata.pop("commentsbody")
-            return {
-                "success": True,
-                "metadata": metadata,
-                "content": trafilatura.extract(html_content),
-            }
-        except Exception as e:
-            logger.error("Error fetching page: %s", e)
-            traceback.print_exc()
-            raise ValueError(f"Error fetching page: {str(e)}")
-
-        finally:
-            # Always close the browser session
+            html = await page.content()
+            try:
+                meta = trafilatura.extract_metadata(html).as_dict()
+                meta.pop("body", None)
+                meta.pop("commentsbody", None)
+            except Exception:
+                meta = {}
+            try:
+                content = trafilatura.extract(html) or ""
+            except Exception:
+                content = ""
             await browser.close()
-            await playwright_instance.stop()
+            return {"success": True, "metadata": meta, "content": content}
 
 
 class Screenshot(BaseNode):
@@ -133,61 +332,81 @@ class Screenshot(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
-        try:
-            from playwright.async_api import async_playwright
-        except ImportError:
-            raise Exception(
-                "Playwright is not installed. Please install it with 'pip install playwright' and then run 'playwright install'"
-            )
-
         if not self.url:
             raise ValueError("URL is required")
 
-        # Initialize browser
-        playwright_instance = await async_playwright().start()
-        browser_endpoint = Environment.get("BROWSER_URL")
+        host_path = context.resolve_workspace_path(self.output_file.path)
+        os.makedirs(os.path.dirname(host_path), exist_ok=True)
+        container_path = _container_workspace_path(context, host_path)
 
-        if browser_endpoint:
-            browser = await playwright_instance.chromium.connect_over_cdp(
-                browser_endpoint
-            )
-            browser_context = await browser.new_context(bypass_csp=True)
-        else:
-            browser = await playwright_instance.chromium.launch(headless=True)
-            browser_context = await browser.new_context(bypass_csp=True)
+        # Start Playwright driver in Docker and take a screenshot via remote driver
+        server_cmd = (
+            f"playwright run-server --host 0.0.0.0 --port {PLAYWRIGHT_DRIVER_PORT}"
+        )
+        from nodetool.code_runners.server_runner import ServerDockerRunner
 
-        page = await browser_context.new_page()
+        runner = ServerDockerRunner(
+            image=_ensure_custom_playwright_image(context, self),
+            container_port=PLAYWRIGHT_DRIVER_PORT,
+            scheme="ws",
+            timeout_seconds=max(5, int(self.timeout / 1000) + 10),
+            endpoint_path="/?ws=1",
+        )
 
-        try:
-            # Navigate to the URL
+        endpoint: str | None = None
+        async for slot, value in runner.stream(
+            user_code=server_cmd,
+            env_locals={},
+            context=context,
+            node=self,
+        ):
+            if slot == "stdout":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
+                    )
+                )
+            elif slot == "stderr":
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
+                    )
+                )
+            elif slot == "endpoint":
+                endpoint = str(value)
+                break
+
+        if not endpoint:
+            raise ValueError("Failed to start Playwright server (no endpoint)")
+
+        # Configure Playwright client to use remote driver
+        os.environ["PLAYWRIGHT_DRIVER_URL"] = str(endpoint)
+        from playwright.async_api import async_playwright
+
+        async with async_playwright() as apw:
+            browser = await apw.chromium.launch()
+            ctx = await browser.new_context(bypass_csp=True)
+            page = await ctx.new_page()
             await page.goto(
                 self.url, wait_until="domcontentloaded", timeout=self.timeout
             )
-
-            # Prepare the output path
-            full_path = context.resolve_workspace_path(self.output_file.path)
-            os.makedirs(os.path.dirname(full_path), exist_ok=True)
-
-            # Take screenshot of specific element or full page
             if self.selector:
-                element = await page.query_selector(self.selector)
-                if element:
-                    await element.screenshot(path=full_path)
-                else:
+                el = await page.wait_for_selector(self.selector, timeout=self.timeout)
+                if not el:
                     raise ValueError(
                         f"No element found matching selector: {self.selector}"
                     )
+                await el.screenshot(path=container_path)
             else:
-                await page.screenshot(path=full_path)
-
-            return {"success": True, "path": full_path, "url": self.url}
-
-        except Exception as e:
-            raise ValueError(f"Error taking screenshot: {str(e)}")
-
-        finally:
+                await page.screenshot(path=container_path)
             await browser.close()
-            await playwright_instance.stop()
+            return {"success": True, "path": host_path, "url": self.url}
 
 
 class WebFetch(BaseNode):
@@ -355,124 +574,113 @@ class BrowserNavigation(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
-        try:
-            from playwright.async_api import async_playwright
-        except ImportError:
-            raise Exception(
-                "Playwright is not installed. Please install it with 'pip install playwright' and then run 'playwright install'"
-            )
+        if self.action == self.Action.GOTO and not self.url:
+            raise ValueError("URL is required for goto action")
 
-        # Initialize browser
-        playwright_instance = await async_playwright().start()
-        browser_endpoint = Environment.get("BROWSER_URL")
+        # Use ServerDockerRunner to start Playwright driver and connect via Python client
+        server_cmd = (
+            f"playwright run-server --host 0.0.0.0 --port {PLAYWRIGHT_DRIVER_PORT}"
+        )
+        from nodetool.code_runners.server_runner import ServerDockerRunner
 
-        try:
-            if browser_endpoint:
-                browser = await playwright_instance.chromium.connect_over_cdp(
-                    browser_endpoint
-                )
-                browser_context = await browser.new_context(bypass_csp=True)
-            else:
-                browser = await playwright_instance.chromium.launch(headless=True)
-                browser_context = await browser.new_context(bypass_csp=True)
+        runner = ServerDockerRunner(
+            image=_ensure_custom_playwright_image(context, self),
+            container_port=PLAYWRIGHT_DRIVER_PORT,
+            scheme="ws",
+            timeout_seconds=max(5, int(self.timeout / 1000) + 10),
+            endpoint_path="/?ws=1",
+        )
 
-            # Create page from the context
-            page = await browser_context.new_page()
+        endpoint: str | None = None
+        async for slot, value in runner.stream(
+            user_code=server_cmd,
+            env_locals={},
+            context=context,
+            node=self,
+        ):
+            if slot == "endpoint":
+                endpoint = str(value)
+                break
 
-            result = {
-                "success": True,
-                "action": self.action,
-            }
+        if not endpoint:
+            raise ValueError("Failed to start Playwright server (no endpoint)")
 
-            # Perform the requested action
-            if self.action == self.Action.CLICK:
-                if not self.selector:
-                    raise ValueError("Selector is required for click action")
+        # Configure Playwright client to use remote driver
+        os.environ["PLAYWRIGHT_DRIVER_URL"] = str(endpoint)
+        from playwright.async_api import async_playwright
 
-                # Wait for the element to be visible and clickable
-                element = await page.wait_for_selector(
-                    self.selector, timeout=self.timeout
-                )
-                if element:
-                    await element.click()
-                    result["clicked_selector"] = self.selector
-                else:
-                    raise ValueError(f"Element not found: {self.selector}")
+        async with async_playwright() as apw:
+            browser = await apw.chromium.launch()
+            ctx = await browser.new_context(bypass_csp=True)
+            page = await ctx.new_page()
 
-            elif self.action == self.Action.GOTO:
-                if not self.url:
-                    raise ValueError("URL is required for goto action")
-
+            # Perform action
+            if self.action == self.Action.GOTO:
                 await page.goto(
-                    self.url, timeout=self.timeout, wait_until="domcontentloaded"
+                    self.url, wait_until="domcontentloaded", timeout=self.timeout
                 )
-                result["navigated_to"] = self.url
-
+            elif self.action == self.Action.RELOAD:
+                await page.goto(
+                    self.url, wait_until="domcontentloaded", timeout=self.timeout
+                )
+                await page.reload(wait_until="domcontentloaded", timeout=self.timeout)
+            elif self.action == self.Action.CLICK:
+                await page.goto(
+                    self.url, wait_until="domcontentloaded", timeout=self.timeout
+                )
+                el = await page.wait_for_selector(self.selector, timeout=self.timeout)
+                if not el:
+                    raise ValueError(f"Element not found: {self.selector}")
+                await el.click()
+            elif self.action == self.Action.EXTRACT:
+                await page.goto(
+                    self.url, wait_until="domcontentloaded", timeout=self.timeout
+                )
             elif self.action == self.Action.BACK:
                 await page.go_back(timeout=self.timeout, wait_until="domcontentloaded")
-
             elif self.action == self.Action.FORWARD:
                 await page.go_forward(
                     timeout=self.timeout, wait_until="domcontentloaded"
                 )
 
-            elif self.action == self.Action.RELOAD:
-                await page.reload(timeout=self.timeout, wait_until="domcontentloaded")
-
-            elif self.action == self.Action.EXTRACT:
-                if self.selector:
-                    # Wait for the element if specified
-                    element = await page.wait_for_selector(
-                        self.selector, timeout=self.timeout
-                    )
-                    if not element:
-                        raise ValueError(f"Element not found: {self.selector}")
-
-                    if self.extract_type == self.ExtractType.TEXT:
-                        content = await element.text_content()
-                    elif self.extract_type == self.ExtractType.HTML:
-                        content = await element.inner_html()
-                    elif self.extract_type == self.ExtractType.VALUE:
-                        content = await element.input_value()
-                    elif self.extract_type == self.ExtractType.ATTRIBUTE:
-                        if not self.attribute:
-                            raise ValueError(
-                                "Attribute name is required for attribute extraction"
-                            )
-                        content = await element.get_attribute(self.attribute)
-                else:
-                    # Extract from entire page if no selector
-                    if self.extract_type == self.ExtractType.TEXT:
-                        content = await page.text_content("body")
-                    elif self.extract_type == self.ExtractType.HTML:
-                        content = await page.content()
-                    else:
-                        raise ValueError(
-                            f"Invalid extract_type '{self.extract_type}' for full page extraction"
-                        )
-
-                result["content"] = content
-                result["extract_type"] = self.extract_type
-                if self.selector:
-                    result["selector"] = self.selector
-
-            # Wait for additional element if specified
             if self.wait_for:
                 await page.wait_for_selector(self.wait_for, timeout=self.timeout)
-                result["waited_for"] = self.wait_for
 
-            # Add current page information to result
-            result.update({"current_url": page.url, "title": await page.title()})
+            extracted = None
+            if self.action == self.Action.EXTRACT:
+                if self.selector:
+                    el = await page.wait_for_selector(
+                        self.selector, timeout=self.timeout
+                    )
+                    if not el:
+                        raise ValueError(f"Element not found: {self.selector}")
+                    if self.extract_type == self.ExtractType.HTML:
+                        extracted = await el.evaluate("e => e.outerHTML")
+                    elif self.extract_type == self.ExtractType.VALUE:
+                        extracted = await el.evaluate("e => e.value ?? ''")
+                    elif self.extract_type == self.ExtractType.ATTRIBUTE:
+                        attr = self.attribute or ""
+                        extracted = await el.evaluate(
+                            "(e, a) => e.getAttribute(a)", attr
+                        )
+                    else:
+                        extracted = await el.evaluate(
+                            "e => e.innerText ?? e.textContent ?? ''"
+                        )
+                else:
+                    if self.extract_type == self.ExtractType.HTML:
+                        extracted = await page.content()
+                    else:
+                        extracted = await page.evaluate(
+                            "() => document.body ? document.body.innerText : ''"
+                        )
 
-            return result
-
-        except Exception as e:
-            raise ValueError(f"Navigation/extraction action failed: {str(e)}")
-
-        finally:
-            # Always close the browser session
             await browser.close()
-            await playwright_instance.stop()
+            return {
+                "success": True,
+                "action": self.action.value,
+                "extracted": extracted,
+            }
 
 
 class BrowserUseModel(str, Enum):
