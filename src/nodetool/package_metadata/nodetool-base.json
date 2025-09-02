@@ -4811,6 +4811,103 @@
       "supports_dynamic_outputs": true
     },
     {
+      "title": "Realtime Agent",
+      "description": "Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.\n    realtime, streaming, openai, audio-input, text-output\n\n    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:\n    - Sends session settings via `session.update`\n    - Adds user input via `conversation.item.create`\n    - Streams back `response.text.delta` events until `response.done`",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.RealtimeAgent",
+      "properties": [
+        {
+          "name": "system",
+          "type": {
+            "type": "str"
+          },
+          "default": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+          "title": "System",
+          "description": "System instructions for the realtime session"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional user text input for the session"
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "Optional audio input to send (base64 or bytes)"
+        },
+        {
+          "name": "voice",
+          "type": {
+            "type": "enum",
+            "values": [
+              "none",
+              "ash",
+              "alloy",
+              "ballad",
+              "coral",
+              "echo",
+              "fable",
+              "onyx",
+              "nova",
+              "shimmer",
+              "sage",
+              "verse"
+            ],
+            "type_name": "nodetool.nodes.nodetool.agents.Voice"
+          },
+          "default": "alloy",
+          "title": "Voice",
+          "description": "The voice for the audio output"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.8,
+          "title": "Temperature",
+          "description": "The temperature for the response",
+          "min": 0.6,
+          "max": 1.2
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "system",
+        "prompt",
+        "audio",
+        "model"
+      ],
+      "is_streaming": true
+    },
+    {
       "title": "Summarizer",
       "description": "Generate concise summaries of text content using LLM providers with streaming output.\n    text, summarization, nlp, content, streaming\n\n    Specialized for creating high-quality summaries with real-time streaming:\n    - Condensing long documents into key points\n    - Creating executive summaries with live output\n    - Extracting main ideas from text as they're generated\n    - Maintaining factual accuracy while reducing length",
       "namespace": "nodetool.agents",

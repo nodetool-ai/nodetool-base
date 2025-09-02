@@ -1,15 +1,33 @@
 import base64
 import asyncio
+from enum import Enum
+import io
 import json
 import logging
 from typing import Any
 
 from nodetool.agents.tools.workflow_tool import GraphTool
+from openai.types.beta.realtime import (
+    ResponseAudioDoneEvent,
+    ResponseDoneEvent,
+    ResponseTextDeltaEvent,
+    ResponseTextDoneEvent,
+)
+from openai.types.beta.realtime.session_update_event_param import Session
+from openai.types.beta.realtime.response_create_event_param import Response
+from openai.types.beta.realtime.error_event import ErrorEvent
+from openai.types.beta.realtime.response_audio_delta_event import (
+    ResponseAudioDeltaEvent,
+)
+from openai.types.beta.realtime.response_audio_transcript_delta_event import (
+    ResponseAudioTranscriptDeltaEvent,
+)
 from pydantic import Field
 
 from nodetool.agents.tools.tool_registry import resolve_tool_by_name
 from nodetool.agents.tools.base import Tool
 from nodetool.chat.providers import get_provider
+from nodetool.common.environment import Environment
 
 from nodetool.workflows.types import (
     ToolCallUpdate,
@@ -40,7 +58,7 @@ from nodetool.metadata.types import Provider
 from nodetool.chat.providers import get_provider
 
 log = logging.getLogger(__name__)
-log.setLevel(logging.DEBUG)
+# Log level is controlled by env (DEBUG/NODETOOL_LOG_LEVEL)
 
 
 # class TaskPlannerNode(BaseNode):
@@ -1263,6 +1281,202 @@ class Agent(BaseNode):
             len(message_text_content.text),
             len(messages),
         )
+
+
+class RealtimeAgent(BaseNode):
+    """
+    Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
+    realtime, streaming, openai, audio-input, text-output
+
+    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
+    - Sends session settings via `session.update`
+    - Adds user input via `conversation.item.create`
+    - Streams back `response.text.delta` events until `response.done`
+    """
+
+    class Voice(str, Enum):
+        NONE = "none"
+        ASH = "ash"
+        ALLOY = "alloy"
+        BALLAD = "ballad"
+        CORAL = "coral"
+        ECHO = "echo"
+        FABLE = "fable"
+        ONYX = "onyx"
+        NOVA = "nova"
+        SHIMMER = "shimmer"
+        SAGE = "sage"
+        VERSE = "verse"
+
+    system: str = Field(
+        title="System",
+        default=DEFAULT_SYSTEM_PROMPT,
+        description="System instructions for the realtime session",
+    )
+    prompt: str = Field(
+        title="Prompt",
+        default="",
+        description="Optional user text input for the session",
+    )
+    audio: AudioRef = Field(
+        title="Audio",
+        default=AudioRef(),
+        description="Optional audio input to send (base64 or bytes)",
+    )
+    voice: Voice = Field(
+        title="Voice",
+        default=Voice.ALLOY,
+        description="The voice for the audio output",
+    )
+    temperature: float = Field(
+        title="Temperature",
+        ge=0.6,
+        le=1.2,
+        default=0.8,
+        description="The temperature for the response",
+    )
+
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "chunk": Chunk,
+            "audio": AudioRef,
+            "text": str,
+        }
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["system", "prompt", "audio", "model"]
+
+    async def _prepare_audio_pcm16_chunks(
+        self, context: ProcessingContext
+    ) -> list[str]:
+        """Return base64-encoded PCM16 (s16le) chunks"""
+        if not self.audio or self.audio.is_empty():
+            return []
+
+        audio_segment = await context.audio_to_audio_segment(self.audio)
+
+        # Convert to PCM16 mono at desired sample rate when possible
+        pcm_bytes: bytes | None = None
+
+        # seg = audio_segment.set_frame_rate(16000).set_channels(1).set_sample_width(2)
+        with io.BytesIO() as buf:
+            audio_segment.export(buf, format="s16le")  # raw signed 16-bit little-endian
+            pcm_bytes = buf.getvalue()
+
+        # Chunk into reasonable sizes for multiple append events
+        # chunk_size = 8192
+        # chunks: list[str] = []
+        # for i in range(0, len(pcm_bytes), chunk_size):
+        #     chunk = pcm_bytes[i : i + chunk_size]
+        #     chunks.append(base64.b64encode(chunk).decode("utf-8"))
+        return [base64.b64encode(pcm_bytes).decode("utf-8")]
+
+    async def gen_process(self, context: ProcessingContext):
+        from openai import AsyncOpenAI  # Official SDK v1
+
+        env = Environment.get_environment()
+        api_key = env.get("OPENAI_API_KEY")
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY is not set in environment/secrets")
+
+        client = AsyncOpenAI(api_key=api_key)
+
+        # Prepare inputs
+        prompt_text = self.prompt or ""
+        audio_b64_chunks = await self._prepare_audio_pcm16_chunks(context)
+
+        # Connect and stream events
+        async with client.beta.realtime.connect(model="gpt-realtime") as connection:
+            # Configure session
+            await connection.session.update(
+                session=Session(
+                    modalities=["text", "audio"] if audio_b64_chunks else ["text"],
+                    instructions=self.system or "",
+                )
+            )
+
+            # If audio provided, append PCM16 chunks to input buffer
+            if audio_b64_chunks:
+                for ch in audio_b64_chunks:
+                    # input_audio_buffer.append events
+                    await connection.input_audio_buffer.append(audio=ch)
+                # await connection.input_audio_buffer.commit()
+
+            # If text prompt provided, add as a user message item
+            if prompt_text.strip():
+                await connection.conversation.item.create(
+                    item={
+                        "type": "message",
+                        "role": "user",
+                        "content": [{"type": "input_text", "text": prompt_text}],
+                    }
+                )
+
+            # Request a response
+            await connection.response.create(
+                response=Response(
+                    modalities=(
+                        ["text", "audio"] if self.voice != self.Voice.NONE else ["text"]
+                    ),
+                    output_audio_format="pcm16",
+                    temperature=self.temperature,
+                    tools=[],
+                    voice=(
+                        self.voice.value if self.voice != self.Voice.NONE else "alloy"
+                    ),
+                    instructions=self.system or "",
+                    metadata={},
+                )
+            )
+
+            # Stream response events, while aggregating full text and audio
+            full_text_parts: list[str] = []
+            audio_accum = bytearray()
+            async for event in connection:
+                print("EVENT", event.type)
+                if isinstance(event, ResponseTextDeltaEvent):
+                    if event.delta:
+                        full_text_parts.append(event.delta or "")
+                        yield "chunk", Chunk(content=event.delta or "", done=False)
+                elif isinstance(event, ResponseAudioTranscriptDeltaEvent):
+                    # Transcript is also textual; treat as part of the final text
+                    if event.delta:
+                        full_text_parts.append(event.delta or "")
+                        yield "chunk", Chunk(content=event.delta or "", done=False)
+                elif isinstance(event, ResponseAudioDeltaEvent):
+                    # Stream base64 PCM16 delta to output and aggregate raw bytes
+                    if event.delta:
+                        audio_accum.extend(base64.b64decode(event.delta))
+                        yield "chunk", Chunk(
+                            content=event.delta or "", done=False, content_type="audio"
+                        )
+                elif isinstance(event, ResponseTextDoneEvent):
+                    yield "chunk", Chunk(content="", done=True)
+                elif isinstance(event, ResponseAudioDoneEvent):
+                    yield "chunk", Chunk(content="", done=True, content_type="audio")
+                elif isinstance(event, ResponseDoneEvent):
+                    if event.response.status == "cancelled":
+                        raise RuntimeError("Realtime session cancelled")
+                    if len(audio_accum) > 0:
+                        yield "audio", AudioRef(data=bytes(audio_accum))
+                    final_text = "".join(full_text_parts)
+                    if final_text.strip():
+                        yield "text", final_text
+                    break
+                elif isinstance(event, ErrorEvent):
+                    # Normalize error event shape
+                    msg = event.error or str(event)
+                    raise RuntimeError(f"Realtime error: {msg}")
 
 
 if __name__ == "__main__":

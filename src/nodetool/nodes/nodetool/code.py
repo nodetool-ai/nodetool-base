@@ -134,7 +134,8 @@ class ExecutePython(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            Environment.get_logger().debug(f"ExecutePython finalize: {e}")
+            import logging
+            logging.getLogger(__name__).debug(f"ExecutePython finalize: {e}")
 
 
 class ExecuteJavaScript(BaseNode):
@@ -274,7 +275,8 @@ class ExecuteJavaScript(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            Environment.get_logger().debug(f"ExecuteJavaScript finalize: {e}")
+            import logging
+            logging.getLogger(__name__).debug(f"ExecuteJavaScript finalize: {e}")
 
 
 class ExecuteBash(BaseNode):
@@ -423,7 +425,8 @@ class ExecuteBash(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            Environment.get_logger().debug(f"ExecuteBash finalize: {e}")
+            import logging
+            logging.getLogger(__name__).debug(f"ExecuteBash finalize: {e}")
 
 
 class ExecuteRuby(BaseNode):
@@ -567,7 +570,8 @@ class ExecuteRuby(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            Environment.get_logger().debug(f"ExecuteRuby finalize: {e}")
+            import logging
+            logging.getLogger(__name__).debug(f"ExecuteRuby finalize: {e}")
 
 
 class ExecuteCommand(BaseNode):
@@ -714,7 +718,8 @@ class ExecuteCommand(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            Environment.get_logger().debug(f"ExecuteCommand finalize: {e}")
+            import logging
+            logging.getLogger(__name__).debug(f"ExecuteCommand finalize: {e}")
 
 
 class EvaluateExpression(BaseNode):
