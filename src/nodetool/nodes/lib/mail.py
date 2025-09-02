@@ -1,4 +1,9 @@
 import asyncio
+import random
+import imaplib
+import socket
+import ssl
+from typing import Callable, Awaitable, Optional, TypeVar, Tuple, Type
 from datetime import datetime, timedelta
 from enum import Enum
 from pydantic import Field
@@ -15,6 +20,65 @@ from nodetool.metadata.types import (
 
 
 KEYWORD_SEPARATOR_REGEX = r"\s+|,|;"
+
+
+T = TypeVar("T")
+
+
+async def run_with_retries(
+    fn: Callable[[], T] | Callable[[], Awaitable[T]],
+    *,
+    attempts: int = 3,
+    base_delay: float = 0.5,
+    max_delay: float = 5.0,
+    factor: float = 2.0,
+    jitter: float = 0.1,
+    run_in_thread: bool = True,
+    retry_exceptions: Optional[Tuple[Type[BaseException], ...]] = None,
+    on_retry: Optional[Callable[[int, Exception], Awaitable[None] | None]] = None,
+) -> T:
+    """Run a callable with exponential backoff retries.
+
+    Args:
+        fn: Zero-arg callable to execute.
+        attempts: Max attempts before giving up.
+        base_delay: Initial delay seconds.
+        max_delay: Max backoff delay seconds.
+        factor: Exponential factor.
+        jitter: Added random jitter [0, jitter] seconds.
+        run_in_thread: Execute the function in a worker thread.
+
+    Returns:
+        Result of the callable.
+
+    Raises:
+        Exception from the final attempt.
+    """
+    last_exc: Exception | None = None
+    for attempt in range(1, max(1, attempts) + 1):
+        try:
+            if run_in_thread:
+                return await asyncio.to_thread(fn)  # type: ignore[arg-type]
+            result = fn()
+            if asyncio.iscoroutine(result):  # type: ignore[truthy-function]
+                return await result  # type: ignore[misc]
+            return result  # type: ignore[return-value]
+        except Exception as exc:  # noqa: BLE001
+            last_exc = exc
+            if retry_exceptions is not None and not isinstance(exc, retry_exceptions):
+                raise
+            if attempt >= attempts:
+                raise
+            if on_retry is not None:
+                maybe_coro = on_retry(attempt, exc)
+                if asyncio.iscoroutine(maybe_coro):
+                    await maybe_coro  # type: ignore[misc]
+            delay = min(max_delay, base_delay * (factor ** (attempt - 1)))
+            delay += random.uniform(0, max(0.0, jitter))
+            await asyncio.sleep(delay)
+    # Should not reach here
+    assert last_exc is not None
+    raise last_exc
 
 
 class EmailFields(BaseNode):
@@ -117,6 +181,28 @@ class GmailSearch(BaseNode):
         description="Maximum number of emails to return",
     )
 
+    # Retry configuration
+    retry_attempts: int = Field(
+        default=3,
+        description="Maximum retry attempts for Gmail operations",
+    )
+    retry_base_delay: float = Field(
+        default=0.5,
+        description="Base delay (seconds) for exponential backoff",
+    )
+    retry_max_delay: float = Field(
+        default=5.0,
+        description="Maximum delay (seconds) for exponential backoff",
+    )
+    retry_factor: float = Field(
+        default=2.0,
+        description="Exponential growth factor for backoff",
+    )
+    retry_jitter: float = Field(
+        default=0.1,
+        description="Random jitter (seconds) added to each backoff",
+    )
+
     _expose_as_tool: bool = True
 
     @classmethod
@@ -151,14 +237,46 @@ class GmailSearch(BaseNode):
             folder=self.folder.value if self.folder else None,
             text=self.text.strip() if self.text and self.text.strip() else None,
         )
+        gmail_connection = context.get_gmail_connection()
 
-        message_ids = search_emails(
-            context.get_gmail_connection(), search_criteria, self.max_results
+        async def _on_retry(attempt: int, exc: Exception):
+            gmail_connection.shutdown()
+            gmail_connection.logout()
+            gmail_connection.select("INBOX")
+
+        message_ids = await run_with_retries(
+            lambda: search_emails(gmail_connection, search_criteria, self.max_results),
+            attempts=self.retry_attempts,
+            base_delay=self.retry_base_delay,
+            max_delay=self.retry_max_delay,
+            factor=self.retry_factor,
+            jitter=self.retry_jitter,
+            run_in_thread=True,
+            retry_exceptions=(
+                imaplib.IMAP4.abort,
+                socket.timeout,
+                ssl.SSLError,
+                OSError,
+            ),
+            on_retry=_on_retry,
         )
 
         for message_id in message_ids:
-            email = await asyncio.to_thread(
-                fetch_email, context.get_gmail_connection(), message_id
+            email = await run_with_retries(
+                lambda: fetch_email(gmail_connection, message_id),
+                attempts=self.retry_attempts,
+                base_delay=self.retry_base_delay,
+                max_delay=self.retry_max_delay,
+                factor=self.retry_factor,
+                jitter=self.retry_jitter,
+                run_in_thread=True,
+                retry_exceptions=(
+                    imaplib.IMAP4.abort,
+                    socket.timeout,
+                    ssl.SSLError,
+                    OSError,
+                ),
+                on_retry=_on_retry,
             )
             if email:
                 yield "email", email
@@ -179,12 +297,41 @@ class MoveToArchive(BaseNode):
     _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> bool:
-        imap = context.get_gmail_connection()
-        imap.select("INBOX")
+        attempts = 3
+        base_delay = 0.5
+        max_delay = 5.0
+        factor = 2.0
+        jitter = 0.1
+        gmail_connection = context.get_gmail_connection()
 
-        # Moving to archive in Gmail is done by removing the INBOX label
-        result = imap.store(self.message_id, "-X-GM-LABELS", "\\Inbox")
-        return result[0] == "OK"
+        async def _on_retry(attempt: int, exc: Exception):
+            gmail_connection.shutdown()
+            gmail_connection.logout()
+            gmail_connection.select("INBOX")
+
+        def op() -> bool:
+            gmail_connection.select("INBOX")
+            result = gmail_connection.store(self.message_id, "-X-GM-LABELS", "\\Inbox")
+            if result[0] != "OK":
+                raise OSError(f"IMAP STORE archive failed: {result}")
+            return True
+
+        return await run_with_retries(
+            op,
+            attempts=attempts,
+            base_delay=base_delay,
+            max_delay=max_delay,
+            factor=factor,
+            jitter=jitter,
+            run_in_thread=True,
+            retry_exceptions=(
+                imaplib.IMAP4.abort,
+                socket.timeout,
+                ssl.SSLError,
+                OSError,
+            ),
+            on_retry=_on_retry,
+        )
 
 
 class AddLabel(BaseNode):
@@ -212,11 +359,42 @@ class AddLabel(BaseNode):
         if not self.label:
             raise ValueError("Label is required")
 
-        imap = context.get_gmail_connection()
-        imap.select("INBOX")
+        attempts = 3
+        base_delay = 0.5
+        max_delay = 5.0
+        factor = 2.0
+        jitter = 0.1
 
-        result = imap.store(self.message_id, "+X-GM-LABELS", self.label)
-        return result[0] == "OK"
+        gmail_connection = context.get_gmail_connection()
+
+        async def _on_retry(attempt: int, exc: Exception):
+            gmail_connection.shutdown()
+            gmail_connection.logout()
+            gmail_connection.select("INBOX")
+
+        def op() -> bool:
+            gmail_connection.select("INBOX")
+            result = gmail_connection.store(self.message_id, "-X-GM-LABELS", "\\Inbox")
+            if result[0] != "OK":
+                raise OSError(f"IMAP STORE archive failed: {result}")
+            return True
+
+        return await run_with_retries(
+            op,
+            attempts=attempts,
+            base_delay=base_delay,
+            max_delay=max_delay,
+            factor=factor,
+            jitter=jitter,
+            run_in_thread=True,
+            retry_exceptions=(
+                imaplib.IMAP4.abort,
+                socket.timeout,
+                ssl.SSLError,
+                OSError,
+            ),
+            on_retry=_on_retry,
+        )
 
 
 class SendEmail(BaseNode):
@@ -263,6 +441,28 @@ class SendEmail(BaseNode):
 
     _expose_as_tool: bool = True
 
+    # Retry configuration
+    retry_attempts: int = Field(
+        default=3,
+        description="Maximum retry attempts for SMTP send",
+    )
+    retry_base_delay: float = Field(
+        default=0.5,
+        description="Base delay (seconds) for exponential backoff",
+    )
+    retry_max_delay: float = Field(
+        default=5.0,
+        description="Maximum delay (seconds) for exponential backoff",
+    )
+    retry_factor: float = Field(
+        default=2.0,
+        description="Exponential growth factor for backoff",
+    )
+    retry_jitter: float = Field(
+        default=0.1,
+        description="Random jitter (seconds) added to each backoff",
+    )
+
     async def process(self, context: ProcessingContext) -> bool:
         import smtplib
         from email.message import EmailMessage
@@ -285,7 +485,15 @@ class SendEmail(BaseNode):
                     smtp.login(self.username, self.password)
                 smtp.send_message(msg)
 
-        await asyncio.to_thread(_send)
+        await run_with_retries(
+            _send,
+            attempts=self.retry_attempts,
+            base_delay=self.retry_base_delay,
+            max_delay=self.retry_max_delay,
+            factor=self.retry_factor,
+            jitter=self.retry_jitter,
+            run_in_thread=True,
+        )
         return True
 
 
