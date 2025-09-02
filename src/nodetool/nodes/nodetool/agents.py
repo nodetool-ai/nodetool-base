@@ -744,6 +744,30 @@ class Extractor(BaseNode):
         return result_obj
 
 
+DEFAULT_CLASSIFY_SYSTEM_PROMPT = """
+You are a precise text classifier.
+
+Goal
+- Select exactly one category from the list provided by the user.
+
+Tool-calling rules
+- You MUST respond by calling the tool "classify" exactly once.
+- Provide only the "category" field in the tool arguments.
+- Do not produce any assistant text, only the tool call.
+
+Selection criteria
+- Choose the single best category that captures the main intent of the text.
+- If multiple categories seem plausible, pick the most probable one; do not return multiple.
+- If none fit perfectly, choose the closest allowed category. If the list includes "Other" or "Unknown", prefer it when appropriate.
+- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., "not spam" ≠ spam).
+- Never invent categories that are not in the provided list.
+
+Behavior
+- Be deterministic for the same input.
+- Do not ask clarifying questions; make the best choice with what's given.
+"""
+
+
 class Classifier(BaseNode):
     """
     Classify text into predefined or dynamic categories using LLM.
@@ -761,9 +785,7 @@ class Classifier(BaseNode):
         return "Classifier"
 
     system_prompt: str = Field(
-        default="""
-        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.
-        """,
+        default=DEFAULT_CLASSIFY_SYSTEM_PROMPT,
         description="The system prompt for the classifier",
     )
 
@@ -806,7 +828,7 @@ class Classifier(BaseNode):
 
         # Define a dynamic tool with an enum of the categories
         class ClassificationTool(Tool):
-            name = "choose_category"
+            name = "classify"
             description = "Select the best matching category for the provided text."
             input_schema = {
                 "type": "object",
@@ -817,10 +839,6 @@ class Classifier(BaseNode):
                         "type": "string",
                         "enum": self.categories,
                         "description": "One of the allowed categories",
-                    },
-                    "reason": {
-                        "type": "string",
-                        "description": "Brief reason for the selection",
                     },
                 },
             }
@@ -835,7 +853,6 @@ class Classifier(BaseNode):
             model=self.model.id,
             tools=[tool_instance],
             context_window=self.context_window,
-            max_tokens=256,
         ):
             if isinstance(chunk, ToolCall) and chunk.name == tool_instance.name:
                 try:
@@ -1435,7 +1452,6 @@ class RealtimeAgent(BaseNode):
                         self.voice.value if self.voice != self.Voice.NONE else "alloy"
                     ),
                     instructions=self.system or "",
-                    metadata={},
                 )
             )
 
