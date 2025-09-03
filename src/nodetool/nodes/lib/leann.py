@@ -145,6 +145,10 @@ class LeannBuilder(BaseNode):
         # Consume chunks as a stream; build the index once when input stream ends
         return True
 
+    @classmethod
+    def return_type(cls):
+        return {"output": bool}
+
     async def run(self, context: ProcessingContext, inputs, outputs) -> None:
         builder = leann.LeannBuilder(
             backend_name=self.backend.value,
@@ -162,7 +166,8 @@ class LeannBuilder(BaseNode):
                 for it in item:
                     assert isinstance(it, TextChunk)
                     builder.add_text(it.text, {"source_id": it.source_id})
+                    await outputs.emit("output", f"Added text chunk {it.source_id}")
 
         builder.build_index(os.path.join(self.folder.path, self.name))
 
-        await outputs.default(True)
+        await outputs.emit("output", "Index built successfully")

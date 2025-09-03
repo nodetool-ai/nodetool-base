@@ -1074,7 +1074,9 @@ class Agent(BaseNode):
         content = []
 
         content.append(MessageTextContent(text=self.prompt))
-        tools: list[Tool] = [resolve_tool_by_name(tool.name) for tool in self.tools]
+        tools: list[Tool] = await asyncio.gather(
+            *[resolve_tool_by_name(tool.name) for tool in self.tools]
+        )
         tools.extend(self.collect_tools_from_dynamic_outputs(context))
 
         try:

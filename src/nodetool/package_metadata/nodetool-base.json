@@ -4660,9 +4660,12 @@
         }
       ],
       "basic_fields": [
-        "system",
         "prompt",
-        "model"
+        "model",
+        "messages",
+        "image",
+        "audio",
+        "tools"
       ],
       "is_streaming": true,
       "supports_dynamic_outputs": true
@@ -15243,8 +15246,7 @@
         "folder",
         "pattern",
         "recursive"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "List Tar File",
