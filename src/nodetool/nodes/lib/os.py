@@ -4,6 +4,7 @@ import shutil
 import glob
 import tarfile
 from datetime import datetime
+from pathlib import Path
 import pandas as pd
 from pydantic import Field
 from nodetool.common.environment import Environment
@@ -21,6 +22,7 @@ from nodetool.metadata.types import (
 )
 
 import subprocess
+from nodetool.common.uri_utils import create_file_uri
 
 
 class WorkspaceDirectory(BaseNode):
@@ -152,38 +154,22 @@ class ListFiles(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    @classmethod
-    def return_type(cls):
-        return {"file": FilePath}
-
-    directory: FilePath = Field(
-        default=FilePath(path="~"), description="Directory to scan"
+    folder: FolderPath = Field(
+        default=FolderPath(path="~"), description="Directory to scan"
     )
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
     recursive: bool = Field(default=False, description="Search subdirectories")
 
-    async def process(self, context: ProcessingContext) -> list[FilePath]:
-        if Environment.is_production():
-            raise ValueError("This node is not available in production")
-        if not self.directory.path:
-            raise ValueError("directory cannot be empty")
-        expanded_directory = os.path.expanduser(self.directory.path)
-
-        if self.recursive:
-            pattern = os.path.join(expanded_directory, "**", self.pattern)
-            paths = glob.glob(pattern, recursive=True)
-        else:
-            pattern = os.path.join(expanded_directory, self.pattern)
-            paths = glob.glob(pattern)
-
-        return [FilePath(path=p) for p in paths]
+    @classmethod
+    def return_type(cls):
+        return {"file": FolderPath}
 
     async def gen_process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.directory.path:
+        if not self.folder.path:
             raise ValueError("directory cannot be empty")
-        expanded_directory = os.path.expanduser(self.directory.path)
+        expanded_directory = os.path.expanduser(self.folder.path)
 
         if self.recursive:
             pattern = os.path.join(expanded_directory, "**", self.pattern)
@@ -193,7 +179,41 @@ class ListFiles(BaseNode):
             paths = glob.glob(pattern)
 
         for p in paths:
-            yield FilePath(path=p)
+            yield FolderPath(path=p)
+
+
+class ListDocuments(BaseNode):
+    """
+    List documents in a directory.
+    files, list, directory
+    """
+
+    folder: FolderPath = Field(
+        default=FolderPath(path="~"), description="Directory to scan"
+    )
+    pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
+    recursive: bool = Field(default=False, description="Search subdirectories")
+
+    @classmethod
+    def return_type(cls):
+        return {"document": DocumentRef}
+
+    async def gen_process(self, context: ProcessingContext):
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder.path:
+            raise ValueError("directory cannot be empty")
+        expanded_directory = os.path.expanduser(self.folder.path)
+
+        if self.recursive:
+            pattern = os.path.join(expanded_directory, "**", self.pattern)
+            paths = glob.glob(pattern, recursive=True)
+        else:
+            pattern = os.path.join(expanded_directory, self.pattern)
+            paths = glob.glob(pattern)
+
+        for p in paths:
+            yield "document", DocumentRef(uri=create_file_uri(p))
 
 
 class CopyFile(BaseNode):
@@ -451,7 +471,7 @@ class LoadDocumentFile(BaseNode):
         if not self.path.path:
             raise ValueError("path cannot be empty")
         expanded_path = os.path.expanduser(self.path.path)
-        return DocumentRef(uri="file://" + expanded_path)
+        return DocumentRef(uri=create_file_uri(expanded_path))
 
 
 class SaveDocumentFile(BaseNode):
@@ -594,7 +614,7 @@ class SaveCSVDataframeFile(BaseNode):
 
         filename = datetime.now().strftime(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
-        df = pd.DataFrame(self.dataframe.data, columns=self.dataframe.columns)
+        df = await context.dataframe_to_pandas(self.dataframe)
         df.to_csv(expanded_path, index=False)
 
 
@@ -689,7 +709,7 @@ class LoadImageFile(BaseNode):
             image_data = f.read()
 
         image = await context.image_from_bytes(image_data)
-        image.uri = "file://" + expanded_path
+        image.uri = create_file_uri(expanded_path)
         return image
 
 
@@ -741,7 +761,7 @@ class SaveImageFile(BaseNode):
 
         image = await context.image_to_pil(self.image)
         image.save(expanded_path)
-        return ImageRef(uri="file://" + expanded_path, data=image.tobytes())
+        return ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
 
 
 class LoadAudioFile(BaseNode):
@@ -772,7 +792,7 @@ class LoadAudioFile(BaseNode):
             audio_data = f.read()
 
         audio = await context.audio_from_bytes(audio_data)
-        audio.uri = "file://" + expanded_path
+        audio.uri = create_file_uri(expanded_path)
         return audio
 
 
@@ -824,7 +844,7 @@ class SaveAudioFile(BaseNode):
         audio_data = audio_io.read()
         with open(expanded_path, "wb") as f:
             f.write(audio_data)
-        return AudioRef(uri="file://" + expanded_path, data=audio_data)
+        return AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
 
 
 class LoadVideoFile(BaseNode):
@@ -850,7 +870,7 @@ class LoadVideoFile(BaseNode):
         with open(expanded_path, "rb") as f:
             video_data = f.read()
             video = await context.video_from_bytes(video_data)
-            video.uri = "file://" + expanded_path
+            video.uri = create_file_uri(expanded_path)
             return video
 
 
@@ -904,7 +924,7 @@ class SaveVideoFile(BaseNode):
         with open(expanded_path, "wb") as f:
             f.write(video_data)
 
-        return VideoRef(uri="file://" + expanded_path, data=video_data)
+        return VideoRef(uri=create_file_uri(expanded_path), data=video_data)
 
 
 class FileNameMatch(BaseNode):

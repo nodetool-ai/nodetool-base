@@ -1,6 +1,6 @@
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import TextChunk
+from nodetool.metadata.types import DocumentRef, TextChunk
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -15,10 +15,7 @@ class RecursiveTextSplitter(BaseNode):
     - Handling text in languages with/without word boundaries
     """
 
-    text: str = Field(title="Text", default="")
-    document_id: str = Field(
-        default="", description="Document ID to associate with the text"
-    )
+    document: DocumentRef = Field(default=DocumentRef())
     chunk_size: int = Field(
         default=1000,
         description="Maximum size of each chunk in characters",
@@ -50,13 +47,12 @@ class RecursiveTextSplitter(BaseNode):
             add_start_index=True,
         )
 
-        docs = splitter.split_documents([Document(page_content=self.text)])
+        docs = splitter.split_documents([Document(page_content=self.document.data)])
 
         return [
             TextChunk(
                 text=doc.page_content,
-                source_id=f"{self.document_id}:{i}",
-                start_index=doc.metadata["start_index"],
+                source_id=f"{self.document.uri}:{i}",
             )
             for i, doc in enumerate(docs)
         ]
@@ -73,10 +69,7 @@ class MarkdownSplitter(BaseNode):
     - Creating context-aware chunks from markdown content
     """
 
-    text: str = Field(title="Markdown Text", default="")
-    document_id: str = Field(
-        default="", description="Document ID to associate with the text"
-    )
+    document: DocumentRef = Field(default=DocumentRef())
     headers_to_split_on: list[tuple[str, str]] = Field(
         default=[
             ("#", "Header 1"),
@@ -120,7 +113,7 @@ class MarkdownSplitter(BaseNode):
         )
 
         # Split by headers
-        splits = markdown_splitter.split_text(self.text)
+        splits = markdown_splitter.split_text(self.document.data)
 
         # Further split by chunk size if specified
         if self.chunk_size:
@@ -133,8 +126,7 @@ class MarkdownSplitter(BaseNode):
         return [
             TextChunk(
                 text=doc.page_content,
-                source_id=self.document_id,
-                start_index=doc.metadata["start_index"],
+                source_id=self.document.uri,
             )
             for doc in splits
         ]
@@ -151,10 +143,7 @@ class SentenceSplitter(BaseNode):
     - Processing text for sentence-level analysis
     """
 
-    text: str = Field(title="Text", default="")
-    document_id: str = Field(
-        default="", description="Document ID to associate with the text"
-    )
+    document: DocumentRef = Field(default=DocumentRef())
     chunk_size: int = Field(
         default=40,
         description="Maximum number of tokens per chunk",
@@ -178,13 +167,12 @@ class SentenceSplitter(BaseNode):
             add_start_index=True,
         )
 
-        docs = splitter.split_documents([Document(page_content=self.text)])
+        docs = splitter.split_documents([Document(page_content=self.document.data)])
 
         return [
             TextChunk(
                 text=doc.page_content,
-                source_id=f"{self.document_id}:{i}",
-                start_index=doc.metadata["start_index"],
+                source_id=f"{self.document.uri}:{i}",
             )
             for i, doc in enumerate(docs)
         ]

@@ -4678,7 +4678,7 @@
           "type": {
             "type": "str"
           },
-          "default": "\n        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.\n        ",
+          "default": "\nYou are a precise text classifier.\n\nGoal\n- Select exactly one category from the list provided by the user.\n\nTool-calling rules\n- You MUST respond by calling the tool \"classify\" exactly once.\n- Provide only the \"category\" field in the tool arguments.\n- Do not produce any assistant text, only the tool call.\n\nSelection criteria\n- Choose the single best category that captures the main intent of the text.\n- If multiple categories seem plausible, pick the most probable one; do not return multiple.\n- If none fit perfectly, choose the closest allowed category. If the list includes \"Other\" or \"Unknown\", prefer it when appropriate.\n- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., \"not spam\" \u2260 spam).\n- Never invent categories that are not in the provided list.\n\nBehavior\n- Be deterministic for the same input.\n- Do not ask clarifying questions; make the best choice with what's given.\n",
           "title": "System Prompt",
           "description": "The system prompt for the classifier"
         },
@@ -13445,6 +13445,51 @@
           "default": 50,
           "title": "Max Results",
           "description": "Maximum number of emails to return"
+        },
+        {
+          "name": "retry_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 3,
+          "title": "Retry Attempts",
+          "description": "Maximum retry attempts for Gmail operations"
+        },
+        {
+          "name": "retry_base_delay",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Retry Base Delay",
+          "description": "Base delay (seconds) for exponential backoff"
+        },
+        {
+          "name": "retry_max_delay",
+          "type": {
+            "type": "float"
+          },
+          "default": 5.0,
+          "title": "Retry Max Delay",
+          "description": "Maximum delay (seconds) for exponential backoff"
+        },
+        {
+          "name": "retry_factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Retry Factor",
+          "description": "Exponential growth factor for backoff"
+        },
+        {
+          "name": "retry_jitter",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.1,
+          "title": "Retry Jitter",
+          "description": "Random jitter (seconds) added to each backoff"
         }
       ],
       "outputs": [
@@ -13577,6 +13622,51 @@
           "default": "",
           "title": "Body",
           "description": "Email body"
+        },
+        {
+          "name": "retry_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 3,
+          "title": "Retry Attempts",
+          "description": "Maximum retry attempts for SMTP send"
+        },
+        {
+          "name": "retry_base_delay",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Retry Base Delay",
+          "description": "Base delay (seconds) for exponential backoff"
+        },
+        {
+          "name": "retry_max_delay",
+          "type": {
+            "type": "float"
+          },
+          "default": 5.0,
+          "title": "Retry Max Delay",
+          "description": "Maximum delay (seconds) for exponential backoff"
+        },
+        {
+          "name": "retry_factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Retry Factor",
+          "description": "Exponential growth factor for backoff"
+        },
+        {
+          "name": "retry_jitter",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.1,
+          "title": "Retry Jitter",
+          "description": "Random jitter (seconds) added to each backoff"
         }
       ],
       "outputs": [
@@ -13595,7 +13685,12 @@
         "from_address",
         "to_address",
         "subject",
-        "body"
+        "body",
+        "retry_attempts",
+        "retry_base_delay",
+        "retry_max_delay",
+        "retry_factor",
+        "retry_jitter"
       ],
       "expose_as_tool": true
     },
@@ -14127,41 +14222,27 @@
       "node_type": "lib.llama_index.HTMLSplitter",
       "properties": [
         {
-          "name": "document_id",
+          "name": "document",
           "type": {
-            "type": "str"
+            "type": "document"
           },
-          "default": "",
-          "title": "Document Id",
+          "default": {},
+          "title": "Document",
           "description": "Document ID to associate with the HTML content"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "HTML content to split"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "any"
           },
           "name": "output"
         }
       ],
       "basic_fields": [
-        "document_id",
-        "text"
-      ]
+        "document"
+      ],
+      "is_streaming": true
     },
     {
       "title": "JSONSplitter",
@@ -14170,22 +14251,13 @@
       "node_type": "lib.llama_index.JSONSplitter",
       "properties": [
         {
-          "name": "document_id",
+          "name": "document",
           "type": {
-            "type": "str"
+            "type": "document"
           },
-          "default": "",
-          "title": "Document Id",
+          "default": {},
+          "title": "Document",
           "description": "Document ID to associate with the JSON content"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "JSON content to split"
         },
         {
           "name": "include_metadata",
@@ -14220,8 +14292,7 @@
         }
       ],
       "basic_fields": [
-        "document_id",
-        "text",
+        "document",
         "include_metadata",
         "include_prev_next_rel"
       ]
@@ -14242,22 +14313,13 @@
           "description": "Embedding model to use"
         },
         {
-          "name": "document_id",
+          "name": "document",
           "type": {
-            "type": "str"
+            "type": "document"
           },
-          "default": "",
-          "title": "Document Id",
+          "default": {},
+          "title": "Document",
           "description": "Document ID to associate with the text content"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "Text content to split"
         },
         {
           "name": "buffer_size",
@@ -14285,23 +14347,18 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "any"
           },
           "name": "output"
         }
       ],
       "basic_fields": [
         "embed_model",
-        "document_id",
-        "text",
+        "document",
         "buffer_size",
         "threshold"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Escape",
@@ -15088,20 +15145,20 @@
       ]
     },
     {
-      "title": "List Files",
-      "description": "list files in a directory matching a pattern.\n    files, list, directory\n\n    Use cases:\n    - Get files for batch processing\n    - Filter files by extension or pattern",
+      "title": "List Documents",
+      "description": "List documents in a directory.\n    files, list, directory",
       "namespace": "lib.os",
-      "node_type": "lib.os.ListFiles",
+      "node_type": "lib.os.ListDocuments",
       "properties": [
         {
-          "name": "directory",
+          "name": "folder",
           "type": {
-            "type": "file_path"
+            "type": "folder_path"
           },
           "default": {
             "path": "~"
           },
-          "title": "Directory",
+          "title": "Folder",
           "description": "Directory to scan"
         },
         {
@@ -15126,13 +15183,64 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "document"
+          },
+          "name": "document"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "pattern",
+        "recursive"
+      ],
+      "is_streaming": true
+    },
+    {
+      "title": "List Files",
+      "description": "list files in a directory matching a pattern.\n    files, list, directory\n\n    Use cases:\n    - Get files for batch processing\n    - Filter files by extension or pattern",
+      "namespace": "lib.os",
+      "node_type": "lib.os.ListFiles",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {
+            "path": "~"
+          },
+          "title": "Folder",
+          "description": "Directory to scan"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "*",
+          "title": "Pattern",
+          "description": "File pattern to match (e.g. *.txt)"
+        },
+        {
+          "name": "recursive",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Recursive",
+          "description": "Search subdirectories"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "folder_path"
           },
           "name": "file"
         }
       ],
       "basic_fields": [
-        "directory",
+        "folder",
         "pattern",
         "recursive"
       ],
@@ -16163,6 +16271,211 @@
       "expose_as_tool": true
     },
     {
+      "title": "Leann Builder",
+      "description": "Create high-performance vector indexes for Retrieval-Augmented Generation (RAG) using LEANN.\n    embedding, collection, RAG, index, text, chunk, batch, vector, search, leann\n\n    Embedding Model Selection: Understanding the Trade-offs\n    Based on extensive testing with LEANN, embedding models fall into three performance tiers:\n\n    \ud83d\ude80 SMALL MODELS (< 100M parameters)\n    - sentence-transformers/all-MiniLM-L6-v2 (22M params)\n    \ud83c\udfaf BEST FOR: Prototyping, simple queries, interactive demos, resource-constrained environments\n\n    \u2696\ufe0f MEDIUM MODELS (100M-500M parameters)\n    - facebook/contriever (110M params)\n    - BAAI/bge-base-en-v1.5 (109M params)\n    \ud83c\udfaf BEST FOR: Production RAG applications, balanced quality-performance needs\n\n    \ud83c\udfc6 LARGE MODELS (500M+ parameters)\n    - Qwen/Qwen3-Embedding-0.6B (600M params)\n    - intfloat/multilingual-e5-large (560M params)\n    \ud83c\udfaf BEST FOR: High-stakes applications, maximum accuracy requirements, production environments\n\n    Index Backend Selection: Optimizing for Scale and Performance\n\n    Choose the right backend based on your dataset size and performance requirements:\n\n    \u26a1 HNSW (Hierarchical Navigable Small World)\n    \ud83c\udfaf BEST FOR: Datasets < 10M vectors, when memory isn't a bottleneck, default recommendation\n\n    \ud83d\ude80 DISKANN (Disk-based Approximate Nearest Neighbor)\n    \ud83c\udfaf BEST FOR: Large datasets (100k+ documents), production environments, when recompute=True",
+      "namespace": "lib.leann",
+      "node_type": "lib.leann.LeannBuilder",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Output folder where the LEANN index will be stored. Choose a location with sufficient disk space for your dataset."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "Unique identifier for this index. Used for organizing and retrieving specific indexes."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "sentence-transformers/all-MiniLM-L6-v2",
+              "facebook/contriever",
+              "BAAI/bge-base-en-v1.5",
+              "Qwen/Qwen3-Embedding-0.6B",
+              "intfloat/multilingual-e5-large"
+            ],
+            "type_name": "nodetool.nodes.lib.leann.EmbeddingModel"
+          },
+          "default": "sentence-transformers/all-MiniLM-L6-v2",
+          "title": "Model",
+          "description": "Select embedding model based on your quality-speed trade-off. See EmbeddingModel documentation for detailed guidance."
+        },
+        {
+          "name": "backend",
+          "type": {
+            "type": "enum",
+            "values": [
+              "hnsw",
+              "diskann"
+            ],
+            "type_name": "nodetool.nodes.lib.leann.Backend"
+          },
+          "default": "hnsw",
+          "title": "Backend",
+          "description": "Index backend optimized for your scale. HNSW for most use cases, DiskANN for large datasets. See Backend documentation for details."
+        },
+        {
+          "name": "text_chunks",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Text Chunks",
+          "description": "Text chunks to be indexed. Each chunk should contain: text content, unique source_id, and optional metadata for filtering."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "name",
+        "model",
+        "backend",
+        "text_chunks"
+      ]
+    },
+    {
+      "title": "Leann Searcher",
+      "description": "Search high-performance vector indexes for Retrieval-Augmented Generation (RAG) using LEANN.\n    embedding, collection, RAG, index, text, chunk, batch, vector, search, leann",
+      "namespace": "lib.leann",
+      "node_type": "lib.leann.LeannSearcher",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "The folder where the index is stored"
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The name of the index"
+        },
+        {
+          "name": "query",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Query",
+          "description": "The query to search for"
+        },
+        {
+          "name": "top_k",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Top K",
+          "description": "The number of results to return"
+        },
+        {
+          "name": "complexity",
+          "type": {
+            "type": "int"
+          },
+          "default": 64,
+          "title": "Complexity",
+          "description": "The complexity of the search"
+        },
+        {
+          "name": "beam_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Beam Width",
+          "description": "The beam width of the search"
+        },
+        {
+          "name": "prune_ratio",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Prune Ratio",
+          "description": "The prune ratio of the search"
+        },
+        {
+          "name": "recompute_embeddings",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Recompute Embeddings",
+          "description": "Whether to recompute the embeddings"
+        },
+        {
+          "name": "pruning_strategy",
+          "type": {
+            "type": "enum",
+            "values": [
+              "global",
+              "local",
+              "proportional"
+            ],
+            "type_name": "nodetool.nodes.lib.leann.PruningStrategy"
+          },
+          "default": "global",
+          "title": "Pruning Strategy",
+          "description": "The pruning strategy of the search"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "leann_search_result"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "name",
+        "query",
+        "top_k",
+        "complexity",
+        "beam_width",
+        "prune_ratio",
+        "recompute_embeddings",
+        "pruning_strategy"
+      ]
+    },
+    {
       "title": "Simple Http Server",
       "description": "Starts a simple HTTP server inside Docker and streams logs.\n    http, server, web\n\n    Emits the reachable endpoint URL on the \"endpoint\" output when ready,\n    then streams stdout/stderr lines on the corresponding outputs.",
       "namespace": "lib.http_server",
@@ -17091,7 +17404,7 @@
       "outputs": [
         {
           "type": {
-            "type": "str"
+            "type": "document"
           },
           "name": "output"
         }
@@ -19088,21 +19401,12 @@
       "node_type": "lib.langchain.MarkdownSplitter",
       "properties": [
         {
-          "name": "text",
+          "name": "document",
           "type": {
-            "type": "str"
+            "type": "document"
           },
-          "default": "",
-          "title": "Markdown Text"
-        },
-        {
-          "name": "document_id",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Document Id",
-          "description": "Document ID to associate with the text"
+          "default": {},
+          "title": "Document"
         },
         {
           "name": "headers_to_split_on",
@@ -19197,8 +19501,7 @@
         }
       ],
       "basic_fields": [
-        "text",
-        "document_id",
+        "document",
         "headers_to_split_on",
         "strip_headers",
         "return_each_line",
@@ -19213,21 +19516,12 @@
       "node_type": "lib.langchain.RecursiveTextSplitter",
       "properties": [
         {
-          "name": "text",
+          "name": "document",
           "type": {
-            "type": "str"
+            "type": "document"
           },
-          "default": "",
-          "title": "Text"
-        },
-        {
-          "name": "document_id",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Document Id",
-          "description": "Document ID to associate with the text"
+          "default": {},
+          "title": "Document"
         },
         {
           "name": "chunk_size",
@@ -19280,8 +19574,7 @@
         }
       ],
       "basic_fields": [
-        "text",
-        "document_id",
+        "document",
         "chunk_size",
         "chunk_overlap",
         "separators"
@@ -19294,21 +19587,12 @@
       "node_type": "lib.langchain.SentenceSplitter",
       "properties": [
         {
-          "name": "text",
+          "name": "document",
           "type": {
-            "type": "str"
+            "type": "document"
           },
-          "default": "",
-          "title": "Text"
-        },
-        {
-          "name": "document_id",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Document Id",
-          "description": "Document ID to associate with the text"
+          "default": {},
+          "title": "Document"
         },
         {
           "name": "chunk_size",
@@ -19343,8 +19627,7 @@
         }
       ],
       "basic_fields": [
-        "text",
-        "document_id",
+        "document",
         "chunk_size",
         "chunk_overlap"
       ]

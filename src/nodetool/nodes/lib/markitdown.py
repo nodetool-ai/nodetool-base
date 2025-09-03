@@ -24,17 +24,12 @@ class ConvertToMarkdown(BaseNode):
 
     _expose_as_tool: bool = True
 
-    async def process(self, context: ProcessingContext) -> str:
+    async def process(self, context: ProcessingContext) -> DocumentRef:
         try:
-            if self.document.uri:
-                uri = self.document.uri
-                temp_file = None
-                if uri.startswith("file://"):
-                    uri = uri[7:]
-            else:
-                bytes = await context.asset_to_bytes(self.document)
+            file_content = await context.download_file(self.document.uri)
+            with open(file_content.name, "rb") as f:
                 temp_file = tempfile.NamedTemporaryFile(delete=False)
-                temp_file.write(bytes)
+                temp_file.write(f.read())
                 temp_file.flush()
                 uri = temp_file.name
 
@@ -44,7 +39,7 @@ class ConvertToMarkdown(BaseNode):
             result = md.convert(uri)
 
             # Return the markdown text content
-            return result.text_content
+            return DocumentRef(type="document", uri=uri, data=result.text_content)
         finally:
             if temp_file:
                 temp_file.close()
