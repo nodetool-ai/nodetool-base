@@ -5,7 +5,7 @@ from nodetool.metadata.types import AudioRef
 from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.common.audio_helpers import normalize_audio, remove_silence
+from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
 from pydub import AudioSegment

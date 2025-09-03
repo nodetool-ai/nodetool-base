@@ -2,6 +2,8 @@ import pytest
 from unittest.mock import patch
 
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.inbox import NodeInbox
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.nodes.nodetool.code import ExecutePython, EvaluateExpression
 
 
@@ -13,46 +15,75 @@ def context():
 @pytest.mark.asyncio
 async def test_execute_python_basic_streams_stdout(context: ProcessingContext):
     code = "print('unused in test; stream is patched')"
-    node = ExecutePython(code=code)
+    node = ExecutePython(code=code)  # type: ignore[call-arg]
 
     async def fake_stream(
-        self, user_code, env_locals, context, node, allow_dynamic_outputs=True
+        self,
+        user_code,
+        env_locals,
+        context,
+        node,
+        allow_dynamic_outputs=True,
+        stdin_stream=None,
+        **kwargs
     ):
         yield ("stdout", "10")
 
     with patch(
         "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
     ):
-        results = []
-        async for slot, value in node.gen_process(context):
-            results.append((slot, value))
-        assert ("stdout", "10") in results
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        outputs = NodeOutputs(
+            runner=None, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
+        collected = outputs.collected()
+        assert collected.get("stdout") == "10"
 
 
 @pytest.mark.asyncio
 async def test_execute_python_streams_stderr(context: ProcessingContext):
-    node = ExecutePython(code="print('unused')")
+    node = ExecutePython(code="print('unused')")  # type: ignore[call-arg]
 
     async def fake_stream(
-        self, user_code, env_locals, context, node, allow_dynamic_outputs=True
+        self,
+        user_code,
+        env_locals,
+        context,
+        node,
+        allow_dynamic_outputs=True,
+        stdin_stream=None,
+        **kwargs
     ):
         yield ("stderr", "some error message")
 
     with patch(
         "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
     ):
-        results = []
-        async for slot, value in node.gen_process(context):
-            results.append((slot, value))
-        assert ("stderr", "some error message") in results
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        outputs = NodeOutputs(
+            runner=None, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
+        collected = outputs.collected()
+        assert collected.get("stderr") == "some error message"
 
 
 @pytest.mark.asyncio
 async def test_execute_python_streams_both_channels(context: ProcessingContext):
-    node = ExecutePython(code="print('unused')")
+    node = ExecutePython(code="print('unused')")  # type: ignore[call-arg]
 
     async def fake_stream(
-        self, user_code, env_locals, context, node, allow_dynamic_outputs=True
+        self,
+        user_code,
+        env_locals,
+        context,
+        node,
+        allow_dynamic_outputs=True,
+        stdin_stream=None,
+        **kwargs
     ):
         yield ("stdout", "line out")
         yield ("stderr", "line err")
@@ -60,24 +91,24 @@ async def test_execute_python_streams_both_channels(context: ProcessingContext):
     with patch(
         "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
     ):
-        stdout_lines = []
-        stderr_lines = []
-        async for slot, value in node.gen_process(context):
-            if slot == "stdout":
-                stdout_lines.append(value)
-            elif slot == "stderr":
-                stderr_lines.append(value)
-        assert "line out" in stdout_lines
-        assert "line err" in stderr_lines
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        outputs = NodeOutputs(
+            runner=None, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
+        collected = outputs.collected()
+        assert collected.get("stdout") == "line out"
+        assert collected.get("stderr") == "line err"
 
 
 @pytest.mark.asyncio
 async def test_evaluate_expression_basic(context: ProcessingContext):
-    node = EvaluateExpression(expression="a*b + 1", variables={"a": 3, "b": 4})
+    node = EvaluateExpression(expression="a*b + 1", variables={"a": 3, "b": 4})  # type: ignore[call-arg]
     assert await node.process(context) == 13
 
 
 @pytest.mark.asyncio
 async def test_evaluate_expression_allows_whitelisted_calls(context: ProcessingContext):
-    node = EvaluateExpression(expression="len([1,2,3])", variables={})
+    node = EvaluateExpression(expression="len([1,2,3])", variables={})  # type: ignore[call-arg]
     assert await node.process(context) == 3

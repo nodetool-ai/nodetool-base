@@ -7,7 +7,7 @@ from datetime import datetime
 from pathlib import Path
 import pandas as pd
 from pydantic import Field
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
@@ -22,7 +22,7 @@ from nodetool.metadata.types import (
 )
 
 import subprocess
-from nodetool.common.uri_utils import create_file_uri
+from nodetool.io.uri_utils import create_file_uri
 
 
 class WorkspaceDirectory(BaseNode):
@@ -164,7 +164,7 @@ class ListFiles(BaseNode):
     def return_type(cls):
         return {"file": FolderPath}
 
-    async def gen_process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> list[FolderPath]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder.path:
@@ -178,8 +178,7 @@ class ListFiles(BaseNode):
             pattern = os.path.join(expanded_directory, self.pattern)
             paths = glob.glob(pattern)
 
-        for p in paths:
-            yield FolderPath(path=p)
+        return [FolderPath(path=p) for p in paths]
 
 
 class ListDocuments(BaseNode):

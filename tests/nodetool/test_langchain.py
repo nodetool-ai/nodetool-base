@@ -39,9 +39,11 @@ class TestRecursiveTextSplitter:
         mock_splitter_instance.split_documents.return_value = mock_docs
 
         # Create node instance
+        from nodetool.metadata.types import DocumentRef
+
+        doc_ref = DocumentRef(uri="test-doc", data="Sample text for testing")
         node = RecursiveTextSplitter(
-            text="Sample text for testing",
-            document_id="test-doc",
+            document=doc_ref,
             chunk_size=500,
             chunk_overlap=50,
             separators=["\n\n", "\n", "."],
@@ -98,9 +100,13 @@ class TestMarkdownSplitter:
         mock_md_splitter_instance.split_text.return_value = mock_docs
 
         # Create node instance
+        from nodetool.metadata.types import DocumentRef
+
+        doc_ref = DocumentRef(
+            uri="test-md-doc", data="# Header 1\nContent 1\n## Header 2\nContent 2"
+        )
         node = MarkdownSplitter(
-            text="# Header 1\nContent 1\n## Header 2\nContent 2",
-            document_id="test-md-doc",
+            document=doc_ref,
             headers_to_split_on=[("#", "Header 1"), ("##", "Header 2")],
             strip_headers=True,
         )
@@ -154,9 +160,11 @@ class TestMarkdownSplitter:
         mock_text_splitter_instance.split_documents.return_value = mock_split_docs
 
         # Create node instance with chunk_size
+        from nodetool.metadata.types import DocumentRef
+
+        doc_ref = DocumentRef(uri="test-md-doc", data="# Long markdown content")
         node = MarkdownSplitter(
-            text="# Long markdown content",
-            document_id="test-md-doc",
+            document=doc_ref,
             chunk_size=100,
             chunk_overlap=20,
         )
@@ -192,9 +200,11 @@ class TestSentenceSplitter:
         mock_splitter_instance.split_documents.return_value = mock_docs
 
         # Create node instance
+        from nodetool.metadata.types import DocumentRef
+
+        doc_ref = DocumentRef(uri="test-sentence-doc", data="Sentence 1. Sentence 2.")
         node = SentenceSplitter(
-            text="Sentence 1. Sentence 2.",
-            document_id="test-sentence-doc",
+            document=doc_ref,
             chunk_size=30,
             chunk_overlap=5,
         )

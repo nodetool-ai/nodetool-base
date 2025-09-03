@@ -1,4 +1,4 @@
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
@@ -32,7 +32,7 @@ class SetSecret(BaseNode):
     value: str = Field(default="", description="Secret value")
 
     async def process(self, context: ProcessingContext) -> None:
-        from nodetool.common.settings import save_settings
+        from nodetool.config.settings import save_settings
 
         if Environment.is_production():
             raise ValueError("This node is not available in production")

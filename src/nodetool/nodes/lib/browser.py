@@ -18,7 +18,7 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
 # ServerDockerRunner is used at runtime to start a Playwright WS server in Docker
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.types import Notification, LogUpdate

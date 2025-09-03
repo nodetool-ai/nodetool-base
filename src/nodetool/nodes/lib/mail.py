@@ -7,7 +7,7 @@ from typing import Callable, Awaitable, Optional, TypeVar, Tuple, Type
 from datetime import datetime, timedelta
 from enum import Enum
 from pydantic import Field
-from nodetool.common.imap import search_emails, fetch_email
+from nodetool.system.imap import search_emails, fetch_email
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (

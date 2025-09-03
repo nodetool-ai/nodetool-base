@@ -1,4 +1,4 @@
-from nodetool.common.async_chroma_client import get_async_collection
+from nodetool.integrations.vectorstores.chroma.async_chroma_client import get_async_collection
 from nodetool.metadata.types import (
     Collection,
     ImageRef,

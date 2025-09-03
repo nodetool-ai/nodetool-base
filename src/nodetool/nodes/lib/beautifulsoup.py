@@ -12,7 +12,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 from bs4 import BeautifulSoup, Tag
-from nodetool.common.convert_html import convert_html_to_text
+from nodetool.html.convert_html import convert_html_to_text
 
 
 class BaseUrl(BaseNode):

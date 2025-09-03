@@ -1,5 +1,5 @@
 from pydantic import Field
-from nodetool.common.async_chroma_client import (
+from nodetool.integrations.vectorstores.chroma.async_chroma_client import (
     get_async_collection,
     get_async_chroma_client,
 )

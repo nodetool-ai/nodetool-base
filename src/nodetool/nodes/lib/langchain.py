@@ -53,6 +53,7 @@ class RecursiveTextSplitter(BaseNode):
             TextChunk(
                 text=doc.page_content,
                 source_id=f"{self.document.uri}:{i}",
+                start_index=doc.metadata.get("start_index", 0),
             )
             for i, doc in enumerate(docs)
         ]
@@ -127,6 +128,7 @@ class MarkdownSplitter(BaseNode):
             TextChunk(
                 text=doc.page_content,
                 source_id=self.document.uri,
+                start_index=doc.metadata.get("start_index", 0),
             )
             for doc in splits
         ]
@@ -173,6 +175,7 @@ class SentenceSplitter(BaseNode):
             TextChunk(
                 text=doc.page_content,
                 source_id=f"{self.document.uri}:{i}",
+                start_index=doc.metadata.get("start_index", 0),
             )
             for i, doc in enumerate(docs)
         ]

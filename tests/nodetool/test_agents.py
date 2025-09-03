@@ -223,13 +223,16 @@ class TestClassifier:
             model=mock_model,
         )
 
-        # Mock the provider to return proper Message with content
-        from nodetool.metadata.types import Message, MessageTextContent
+        # Mock the provider to return proper Message with tool call
+        from nodetool.metadata.types import Message, ToolCall
         from nodetool.chat.providers.base import MockProvider
 
+        tool_call = ToolCall(
+            id="test_call", name="classify", args={"category": "positive"}
+        )
         mock_response = Message(
             role="assistant",
-            content=[MessageTextContent(text='{"category": "positive"}')],
+            tool_calls=[tool_call],
         )
         mock_provider = MockProvider([mock_response])
 
@@ -504,29 +507,6 @@ class TestAgent:
             assert audio_output is not None
             assert isinstance(audio_output, AudioRef)
             assert audio_output.data == b"fake_audio_data"
-
-    def test_agent_collect_tools_from_dynamic_outputs(
-        self, context: ProcessingContext, mock_model: LanguageModel
-    ):
-        """Test collection of tools from dynamic outputs"""
-        node = Agent(
-            prompt="Test",
-            model=mock_model,
-        )
-
-        # Mock dynamic outputs
-        node._dynamic_outputs = {"tool1": MagicMock(), "tool2": MagicMock()}
-
-        # Mock context methods
-        context.get_graph_connected_to_output = MagicMock(
-            return_value=([], MagicMock(nodes=[]))
-        )
-        context.find_node = MagicMock()
-
-        tools = node.collect_tools_from_dynamic_outputs(context)
-
-        # Should return empty list since mock graph has no nodes
-        assert len(tools) == 0
 
     def test_serialize_tool_result_dict(self):
         """Test serialization of dictionary tool result"""

@@ -21,7 +21,7 @@ from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import InputNode
 from nodetool.metadata.types import VideoRef
 from nodetool.metadata.types import Collection, ToolName
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 
 
 class FloatInput(InputNode):

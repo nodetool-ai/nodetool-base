@@ -5,7 +5,7 @@ from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from google.genai.client import AsyncClient
 from google.genai.types import GenerateImagesConfig
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from google.genai import Client
 
 

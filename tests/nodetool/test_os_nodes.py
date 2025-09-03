@@ -1,7 +1,7 @@
 import pytest
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FilePath
+from nodetool.metadata.types import FilePath, FolderPath
 from nodetool.nodes.lib.os import (
     SetEnvironmentVariable,
     GetEnvironmentVariable,
@@ -39,7 +39,7 @@ async def test_file_operations(context: ProcessingContext, tmp_path):
     exists_node = FileExists(path=FilePath(path=str(file_path)))
     assert await exists_node.process(context) is True
 
-    list_node = ListFiles(directory=FilePath(path=str(test_dir)), pattern="*.txt")
+    list_node = ListFiles(folder=FolderPath(path=str(test_dir)), pattern="*.txt")
     files = await list_node.process(context)
     assert len(files) == 1
     assert files[0].path == str(file_path)

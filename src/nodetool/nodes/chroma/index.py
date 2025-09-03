@@ -1,6 +1,6 @@
 import asyncio
-from nodetool.common.async_chroma_client import get_async_collection
-from nodetool.common.environment import Environment
+from nodetool.integrations.vectorstores.chroma.async_chroma_client import get_async_collection
+from nodetool.config.environment import Environment
 from nodetool.metadata.types import (
     Collection,
     ImageRef,

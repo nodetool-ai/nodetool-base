@@ -7,6 +7,7 @@ import logging
 from typing import Any
 
 from nodetool.agents.tools.workflow_tool import GraphTool
+from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from openai.types.beta.realtime import (
     ResponseAudioDoneEvent,
     ResponseDoneEvent,
@@ -27,7 +28,7 @@ from pydantic import Field
 from nodetool.agents.tools.tool_registry import resolve_tool_by_name
 from nodetool.agents.tools.base import Tool
 from nodetool.chat.providers import get_provider
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 
 from nodetool.workflows.types import (
     ToolCallUpdate,
@@ -1042,8 +1043,8 @@ class Agent(BaseNode):
     ) -> list[Tool]:
         tools = []
         for name, type_meta in self._dynamic_outputs.items():
-            initial_edges, graph = context.get_graph_connected_to_output(self.id, name)
-            initial_nodes = [context.find_node(edge.target) for edge in initial_edges]
+            initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
+            initial_nodes = [find_node(graph, edge.target) for edge in initial_edges]
             nodes = graph.nodes
             if len(nodes) == 0:
                 continue
@@ -1054,9 +1055,12 @@ class Agent(BaseNode):
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return [
-            "system",
             "prompt",
             "model",
+            "messages",
+            "image",
+            "audio",
+            "tools",
         ]
 
     @classmethod
@@ -1210,8 +1214,8 @@ class Agent(BaseNode):
                                 )
                             )
                             # Emit EdgeUpdate to animate the edge connected to this tool output
-                            initial_edges, _ = context.get_graph_connected_to_output(
-                                self.id, chunk.name
+                            initial_edges, _ = get_downstream_subgraph(
+                                context.graph, self.id, chunk.name
                             )
                             for e in initial_edges:
                                 context.post_message(
@@ -1263,8 +1267,8 @@ class Agent(BaseNode):
                 results = await asyncio.gather(*pending_tool_tasks)
                 for tool_call_id, tool_name, tool_result_json in results:
                     # Clear edge animation by posting drained after tool completes
-                    initial_edges, _ = context.get_graph_connected_to_output(
-                        self.id, tool_name
+                    initial_edges, _ = get_downstream_subgraph(
+                        context.graph, self.id, tool_name
                     )
                     for e in initial_edges:
                         context.post_message(

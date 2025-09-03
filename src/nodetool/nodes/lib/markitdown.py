@@ -25,6 +25,7 @@ class ConvertToMarkdown(BaseNode):
     _expose_as_tool: bool = True
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
+        temp_file = None
         try:
             file_content = await context.download_file(self.document.uri)
             with open(file_content.name, "rb") as f:

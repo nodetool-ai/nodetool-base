@@ -2,7 +2,7 @@ import ast
 from typing import Any
 from enum import Enum
 from pydantic import Field
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import LogUpdate

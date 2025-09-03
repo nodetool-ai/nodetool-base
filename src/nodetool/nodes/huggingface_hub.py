@@ -1,5 +1,5 @@
 from enum import Enum
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 from nodetool.metadata.types import (
     AudioChunk,
     AudioRef,

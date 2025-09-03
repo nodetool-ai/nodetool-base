@@ -7,7 +7,7 @@ from typing import Literal
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import Datetime, BaseType
-from nodetool.common.environment import Environment
+from nodetool.config.environment import Environment
 
 
 CALENDLY_API_BASE = "https://api.calendly.com"
