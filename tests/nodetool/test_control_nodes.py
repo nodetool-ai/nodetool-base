@@ -60,11 +60,12 @@ async def test_if_routes_true_and_not_false(context: ProcessingContext):
     found_true = False
 
     async for msg in run_workflow(req, context=context):
+        print(msg)
         if isinstance(msg, OutputUpdate):
-            if msg.node_name == "true_sink":
+            if msg.node_id == "out_true":
                 found_true = True
-                assert msg.value == ["hello"]
-            elif msg.node_name == "false_sink":
+                assert msg.value == "hello"
+            elif msg.node_id == "out_false":
                 pytest.fail("False branch should not emit")
 
     assert found_true, "True branch should emit"
@@ -128,12 +129,12 @@ async def test_if_streams_values_with_static_true_condition(context: ProcessingC
     graph = APIGraph(nodes=nodes, edges=edges)
 
     req = RunJobRequest(graph=graph)
-    last = None
+    values = []
     async for msg in run_workflow(req, context=context):
-        if isinstance(msg, OutputUpdate) and msg.node_name == "passed":
-            last = msg.value
+        if isinstance(msg, OutputUpdate) and msg.node_id == "out":
+            values.append(msg.value)
 
-    assert last == ["a", "b", "c"]
+    assert values == ["a", "b", "c"]
 
 
 @pytest.mark.asyncio
@@ -249,18 +250,18 @@ async def test_if_toggles_between_branches_with_streaming_condition_and_values(
         )
     )
 
-    last_true = None
-    last_false = None
+    true_values = []
+    false_values = []
     async for msg in run_workflow(req, context=context):
         if isinstance(msg, OutputUpdate):
-            if msg.node_name == "true_sink":
-                last_true = msg.value
-            elif msg.node_name == "false_sink":
-                last_false = msg.value
+            if msg.node_id == "out_true":
+                true_values.append(msg.value)
+            elif msg.node_id == "out_false":
+                false_values.append(msg.value)
 
     # With the delays configured, expected routing: A->true, B->true, C->false
-    assert last_true == ["A", "B"]
-    assert last_false == ["C"]
+    assert true_values == ["A", "B"]
+    assert false_values == ["C"]
 
 
 @pytest.mark.asyncio
@@ -307,12 +308,12 @@ async def test_reroute_passes_stream_through(context: ProcessingContext):
     graph = APIGraph(nodes=nodes, edges=edges)
 
     req = RunJobRequest(graph=graph)
-    last = None
+    values = []
     async for msg in run_workflow(req, context=context):
-        if isinstance(msg, OutputUpdate) and msg.node_name == "sink":
-            last = msg.value
+        if isinstance(msg, OutputUpdate) and msg.node_id == "out":
+            values.append(msg.value)
 
-    assert last == [1, 2, 3]
+    assert values == [1, 2, 3]
 
 
 @pytest.mark.asyncio
@@ -362,12 +363,12 @@ async def test_collect_node_aggregates_stream(context: ProcessingContext):
     graph = APIGraph(nodes=nodes, edges=edges)
 
     req = RunJobRequest(graph=graph)
-    last = None
+    values = []
     async for msg in run_workflow(req, context=context):
-        if isinstance(msg, OutputUpdate) and msg.node_name == "items":
-            last = msg.value
+        if isinstance(msg, OutputUpdate) and msg.node_id == "out":
+            values.append(msg.value)
 
-    assert last == [["x", "y", "z"]]
+    assert values == [["x", "y", "z"]]
 
 
 @pytest.mark.asyncio
@@ -390,12 +391,12 @@ async def test_collect_node_handles_empty_stream(context: ProcessingContext):
     graph = APIGraph(nodes=nodes, edges=edges)
 
     req = RunJobRequest(graph=graph)
-    last = None
+    values = []
     async for msg in run_workflow(req, context=context):
-        if isinstance(msg, OutputUpdate) and msg.node_name == "items":
-            last = msg.value
+        if isinstance(msg, OutputUpdate) and msg.node_id == "out":
+            values.append(msg.value)
 
-    assert last == [[]]
+    assert values == [[]]
 
 
 @pytest.mark.asyncio
@@ -433,14 +434,14 @@ async def test_foreach_emits_last_item_and_index_only_in_current_engine(
     graph = APIGraph(nodes=nodes, edges=edges)
 
     req = RunJobRequest(graph=graph)
-    last_item = None
-    last_idx = None
+    item_values = []
+    idx_values = []
     async for msg in run_workflow(req, context=context):
         if isinstance(msg, OutputUpdate):
-            if msg.node_name == "item":
-                last_item = msg.value
-            elif msg.node_name == "idx":
-                last_idx = msg.value
+            if msg.node_id == "out_item":
+                item_values.append(msg.value)
+            elif msg.node_id == "out_index":
+                idx_values.append(msg.value)
 
-    assert last_item == [12]
-    assert last_idx == [2]
+    assert item_values == [12]
+    assert idx_values == [2]
