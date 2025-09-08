@@ -1,12 +1,99 @@
 from typing import Any
-from nodetool.metadata.types import FolderRef
+from nodetool.config.environment import Environment
+from nodetool.metadata.types import FolderRef, FilePath, FolderPath
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
-from datetime import datetime
+from nodetool.workflows.processing_context import create_file_uri
+import os
+import datetime
 from pydantic import Field
 import PIL
 import PIL.Image
+
+
+class LoadImageFile(BaseNode):
+    """
+    Read an image file from disk.
+    image, input, load, file
+
+    Use cases:
+    - Load images for processing
+    - Import photos for editing
+    - Read image assets for a workflow
+    """
+
+    path: FilePath = Field(
+        default=FilePath(), description="Path to the image file to read"
+    )
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.path.path:
+            raise ValueError("path cannot be empty")
+
+        expanded_path = os.path.expanduser(self.path.path)
+        if not os.path.exists(expanded_path):
+            raise ValueError(f"Image file not found: {expanded_path}")
+
+        with open(expanded_path, "rb") as f:
+            image_data = f.read()
+
+        image = await context.image_from_bytes(image_data)
+        image.uri = create_file_uri(expanded_path)
+        return image
+
+
+class SaveImageFile(BaseNode):
+    """
+    Write an image to disk.
+    image, output, save, file
+
+    Use cases:
+    - Save processed images
+    - Export edited photos
+    - Archive image results
+    """
+
+    image: ImageRef = Field(default=ImageRef(), description="The image to save")
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Folder where the file will be saved"
+    )
+    filename: str = Field(
+        default="",
+        description="""
+        The name of the image file.
+        You can use time and date variables to create unique names:
+        %Y - Year
+        %m - Month
+        %d - Day
+        %H - Hour
+        %M - Minute
+        %S - Second
+        """,
+    )
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder.path:
+            raise ValueError("folder cannot be empty")
+        if not self.filename:
+            raise ValueError("filename cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.exists(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        filename = datetime.datetime.now().strftime(self.filename)
+
+        expanded_path = os.path.join(expanded_folder, filename)
+        os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
+
+        image = await context.image_to_pil(self.image)
+        image.save(expanded_path)
+        return ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
 
 
 class LoadImageAssets(BaseNode):
@@ -89,7 +176,7 @@ class SaveImage(BaseNode):
             raise ValueError("The input image is not connected.")
 
         image = await context.image_to_pil(self.image)
-        filename = datetime.now().strftime(self.name)
+        filename = datetime.datetime.now().strftime(self.name)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
 
         return await context.image_from_pil(

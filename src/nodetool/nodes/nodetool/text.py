@@ -3,6 +3,7 @@ from io import BytesIO
 import json
 
 from typing import Any
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import FolderRef
@@ -52,12 +53,38 @@ class Join(BaseNode):
 
     @classmethod
     def get_title(cls):
-        return "Join Text"
+        return "Join"
 
     async def process(self, context: ProcessingContext) -> str:
         if len(self.strings) == 0:
             return ""
         return self.separator.join(self.strings)
+
+
+class Collect(BaseNode):
+    """
+    Collects a stream of text inputs into a single string.
+    text, collect, list, stream
+    """
+
+    input_item: str = Field(default="")
+    separator: str = Field(default="")
+
+    @classmethod
+    def get_title(cls):
+        return "Collect"
+
+    @classmethod
+    def return_type(cls):
+        return {"output": str}
+
+    async def run(
+        self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
+    ) -> None:
+        collected_items = []
+        async for input_item in inputs.stream("input_item"):
+            collected_items.append(input_item)
+        await outputs.emit("output", self.separator.join(collected_items))
 
 
 class FormatText(BaseNode):

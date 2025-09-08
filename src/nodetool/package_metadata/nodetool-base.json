@@ -3691,10 +3691,10 @@
       ]
     },
     {
-      "title": "Collector",
-      "description": "Collect items until a \"done\" event and return them as a list.\n    collector, aggregate, list, stream\n\n    Use cases:\n    - Gather results from multiple processing steps\n    - Collect streaming data into batches\n    - Aggregate outputs from parallel operations",
+      "title": "Collect",
+      "description": "Collect items until the end of the stream and return them as a list.\n    collector, aggregate, list, stream\n\n    Use cases:\n    - Gather results from multiple processing steps\n    - Collect streaming data into batches\n    - Aggregate outputs from parallel operations",
       "namespace": "nodetool.control",
-      "node_type": "nodetool.control.Collector",
+      "node_type": "nodetool.control.Collect",
       "properties": [
         {
           "name": "input_item",
@@ -3703,15 +3703,6 @@
           },
           "title": "Input Item",
           "description": "The input item to collect."
-        },
-        {
-          "name": "event",
-          "type": {
-            "type": "event"
-          },
-          "default": {},
-          "title": "Event",
-          "description": "Signal end of stream"
         }
       ],
       "outputs": [
@@ -3725,17 +3716,49 @@
             ]
           },
           "name": "output"
-        },
-        {
-          "type": {
-            "type": "event"
-          },
-          "name": "event"
         }
       ],
       "basic_fields": [
-        "input_item",
-        "event"
+        "input_item"
+      ]
+    },
+    {
+      "title": "For Each",
+      "description": "Iterate over a list and emit each item sequentially.\n    iterator, loop, list, sequence\n\n    Use cases:\n    - Process each item of a collection in order\n    - Drive downstream nodes with individual elements",
+      "namespace": "nodetool.control",
+      "node_type": "nodetool.control.ForEach",
+      "properties": [
+        {
+          "name": "input_list",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Input List",
+          "description": "The list of items to iterate over."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
+        }
+      ],
+      "basic_fields": [
+        "input_list"
       ]
     },
     {
@@ -3779,58 +3802,11 @@
       "basic_fields": [
         "condition",
         "value"
-      ],
-      "is_streaming": true
-    },
-    {
-      "title": "Iterator",
-      "description": "Iterate over a list and emit each item sequentially.\n    iterator, loop, list, sequence\n\n    Use cases:\n    - Process each item of a collection in order\n    - Drive downstream nodes with individual elements",
-      "namespace": "nodetool.control",
-      "node_type": "nodetool.control.Iterator",
-      "properties": [
-        {
-          "name": "input_list",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Input List",
-          "description": "The list of items to iterate over."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        },
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "index"
-        },
-        {
-          "type": {
-            "type": "event"
-          },
-          "name": "event"
-        }
-      ],
-      "basic_fields": [
-        "input_list"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Reroute",
-      "description": "Pass data through unchanged for tidier workflow layouts.\n    reroute, passthrough, organize, tidy, flow, connection, redirect\n    \n    Use cases:\n    - Organize complex workflows by routing connections\n    - Create cleaner visual layouts\n    - Redirect data flow without modification",
+      "description": "Pass data through unchanged for tidier workflow layouts.\n    reroute, passthrough, organize, tidy, flow, connection, redirect\n\n    Use cases:\n    - Organize complex workflows by routing connections\n    - Create cleaner visual layouts\n    - Redirect data flow without modification",
       "namespace": "nodetool.control",
       "node_type": "nodetool.control.Reroute",
       "properties": [
@@ -6179,6 +6155,42 @@
       ]
     },
     {
+      "title": "Collect",
+      "description": "Collects a list of text inputs into a single string.\n    text, collect, list, stream",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.Collect",
+      "properties": [
+        {
+          "name": "input_item",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input Item"
+        },
+        {
+          "name": "separator",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Separator"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "input_item",
+        "separator"
+      ]
+    },
+    {
       "title": "Concatenate Text",
       "description": "Concatenates two text inputs into a single output.\n    text, concatenation, combine, +\n\n    Use cases:\n    - Joining outputs from multiple text processing nodes\n    - Combining parts of sentences or paragraphs\n    - Merging text data from different sources",
       "namespace": "nodetool.text",
@@ -6773,7 +6785,7 @@
       ]
     },
     {
-      "title": "Join Text",
+      "title": "Join",
       "description": "Joins a list of strings into a single string using a specified separator.\n    text, join, combine, +, add, concatenate\n\n    Use cases:\n    - Combining multiple text elements with a consistent delimiter\n    - Creating comma-separated lists from individual items\n    - Assembling formatted text from array elements",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Join",
@@ -7367,6 +7379,623 @@
       ]
     },
     {
+      "title": "List Documents",
+      "description": "List documents in a directory.\n    files, list, directory",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.ListDocuments",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {
+            "path": "~"
+          },
+          "title": "Folder",
+          "description": "Directory to scan"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "*",
+          "title": "Pattern",
+          "description": "File pattern to match (e.g. *.txt)"
+        },
+        {
+          "name": "recursive",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Recursive",
+          "description": "Search subdirectories"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "document"
+          },
+          "name": "document"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "pattern",
+        "recursive"
+      ],
+      "is_streaming": true
+    },
+    {
+      "title": "Load Document File",
+      "description": "Read a document from disk.\n    files, document, read, input, load, file",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.LoadDocumentFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Path",
+          "description": "Path to the document to read"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "document"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Split Markdown",
+      "description": "Splits markdown text by headers while preserving header hierarchy in metadata.\n    markdown, split, headers\n\n    Use cases:\n    - Splitting markdown documentation while preserving structure\n    - Processing markdown files for semantic search\n    - Creating context-aware chunks from markdown content",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitMarkdown",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document"
+        },
+        {
+          "name": "headers_to_split_on",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tuple",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": [
+            [
+              "#",
+              "Header 1"
+            ],
+            [
+              "##",
+              "Header 2"
+            ],
+            [
+              "###",
+              "Header 3"
+            ]
+          ],
+          "title": "Headers To Split On",
+          "description": "List of tuples containing (header_symbol, header_name)"
+        },
+        {
+          "name": "strip_headers",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Strip Headers",
+          "description": "Whether to remove headers from the output content"
+        },
+        {
+          "name": "return_each_line",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Return Each Line",
+          "description": "Whether to split into individual lines instead of header sections"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "none"
+              }
+            ]
+          },
+          "title": "Chunk Size",
+          "description": "Optional maximum chunk size for further splitting"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Chunk Overlap",
+          "description": "Overlap size when using chunk_size"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "document",
+        "headers_to_split_on",
+        "strip_headers",
+        "return_each_line",
+        "chunk_size",
+        "chunk_overlap"
+      ]
+    },
+    {
+      "title": "Save Document File",
+      "description": "Write a document to disk.\n    files, document, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SaveDocumentFile",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document",
+          "description": "The document to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "Name of the file to save. Supports strftime format codes."
+        }
+      ],
+      "basic_fields": [
+        "document",
+        "folder",
+        "filename"
+      ]
+    },
+    {
+      "title": "Split Document",
+      "description": "Split text semantically.\n    chroma, embedding, collection, RAG, index, text, markdown, semantic",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitDocument",
+      "properties": [
+        {
+          "name": "embed_model",
+          "type": {
+            "type": "llama_model"
+          },
+          "default": {},
+          "title": "Embed Model",
+          "description": "Embedding model to use"
+        },
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document",
+          "description": "Document ID to associate with the text content"
+        },
+        {
+          "name": "buffer_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Buffer Size",
+          "description": "Buffer size for semantic splitting",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": 95,
+          "title": "Threshold",
+          "description": "Breakpoint percentile threshold for semantic splitting",
+          "min": 0.0,
+          "max": 100.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "embed_model",
+        "document",
+        "buffer_size",
+        "threshold"
+      ],
+      "is_streaming": true
+    },
+    {
+      "title": "Split HTML",
+      "description": "Split HTML content into semantic chunks based on HTML tags.\n    html, text, semantic, tags, parsing",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitHTML",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document",
+          "description": "Document ID to associate with the HTML content"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "document"
+      ],
+      "is_streaming": true
+    },
+    {
+      "title": "Split JSON",
+      "description": "Split JSON content into semantic chunks.\n    json, parsing, semantic, structured",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitJSON",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document",
+          "description": "Document ID to associate with the JSON content"
+        },
+        {
+          "name": "include_metadata",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Include Metadata",
+          "description": "Whether to include metadata in nodes"
+        },
+        {
+          "name": "include_prev_next_rel",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Include Prev Next Rel",
+          "description": "Whether to include prev/next relationships"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "document",
+        "include_metadata",
+        "include_prev_next_rel"
+      ]
+    },
+    {
+      "title": "Split Markdown",
+      "description": "Splits markdown text by headers while preserving header hierarchy in metadata.\n    markdown, split, headers\n\n    Use cases:\n    - Splitting markdown documentation while preserving structure\n    - Processing markdown files for semantic search\n    - Creating context-aware chunks from markdown content",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitMarkdown",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document"
+        },
+        {
+          "name": "headers_to_split_on",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tuple",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "str"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": [
+            [
+              "#",
+              "Header 1"
+            ],
+            [
+              "##",
+              "Header 2"
+            ],
+            [
+              "###",
+              "Header 3"
+            ]
+          ],
+          "title": "Headers To Split On",
+          "description": "List of tuples containing (header_symbol, header_name)"
+        },
+        {
+          "name": "strip_headers",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Strip Headers",
+          "description": "Whether to remove headers from the output content"
+        },
+        {
+          "name": "return_each_line",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Return Each Line",
+          "description": "Whether to split into individual lines instead of header sections"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "none"
+              }
+            ]
+          },
+          "title": "Chunk Size",
+          "description": "Optional maximum chunk size for further splitting"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Chunk Overlap",
+          "description": "Overlap size when using chunk_size"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "document",
+        "headers_to_split_on",
+        "strip_headers",
+        "return_each_line",
+        "chunk_size",
+        "chunk_overlap"
+      ]
+    },
+    {
+      "title": "Split Recursively",
+      "description": "Splits text recursively using LangChain's RecursiveCharacterTextSplitter.\n    text, split, chunks\n\n    Use cases:\n    - Splitting documents while preserving semantic relationships\n    - Creating chunks for language model processing\n    - Handling text in languages with/without word boundaries",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitRecursively",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 1000,
+          "title": "Chunk Size",
+          "description": "Maximum size of each chunk in characters"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 200,
+          "title": "Chunk Overlap",
+          "description": "Number of characters to overlap between chunks"
+        },
+        {
+          "name": "separators",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            "\n\n",
+            "\n",
+            "."
+          ],
+          "title": "Separators",
+          "description": "List of separators to use for splitting, in order of preference"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "document",
+        "chunk_size",
+        "chunk_overlap",
+        "separators"
+      ]
+    },
+    {
+      "title": "Split into Sentences",
+      "description": "Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.\n    sentences, split, nlp\n\n    Use cases:\n    - Natural sentence-based text splitting\n    - Creating semantically meaningful chunks\n    - Processing text for sentence-level analysis",
+      "namespace": "nodetool.document",
+      "node_type": "nodetool.document.SplitSentences",
+      "properties": [
+        {
+          "name": "document",
+          "type": {
+            "type": "document"
+          },
+          "default": {},
+          "title": "Document"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 40,
+          "title": "Chunk Size",
+          "description": "Maximum number of tokens per chunk"
+        },
+        {
+          "name": "chunk_overlap",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Chunk Overlap",
+          "description": "Number of tokens to overlap between chunks"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "text_chunk"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "document",
+        "chunk_size",
+        "chunk_overlap"
+      ]
+    },
+    {
       "title": "Audio Mixer",
       "description": "Mix up to 5 audio tracks together with individual volume controls.\n    audio, mix, volume, combine, blend, layer, add, overlay\n\n    Use cases:\n    - Mix multiple audio tracks into a single output\n    - Create layered soundscapes\n    - Combine music, voice, and sound effects\n    - Adjust individual track volumes",
       "namespace": "nodetool.audio",
@@ -7740,6 +8369,34 @@
       "is_streaming": true
     },
     {
+      "title": "Load Audio File",
+      "description": "Read an audio file from disk.\n    audio, input, load, file\n\n    Use cases:\n    - Load audio for processing\n    - Import sound files for editing\n    - Read audio assets for a workflow",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.LoadAudioFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Path",
+          "description": "Path to the audio file to read"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
       "title": "Mono To Stereo",
       "description": "Converts a mono audio signal to stereo.\n    audio, convert, channels\n\n    Use cases:\n    - Expand mono recordings for stereo playback systems\n    - Prepare audio for further stereo processing",
       "namespace": "nodetool.audio",
@@ -8042,6 +8699,54 @@
         "name"
       ],
       "expose_as_tool": true
+    },
+    {
+      "title": "Save Audio File",
+      "description": "Write an audio file to disk.\n    audio, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.SaveAudioFile",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "folder",
+        "filename"
+      ]
     },
     {
       "title": "Slice Audio",
@@ -8922,6 +9627,39 @@
       ]
     },
     {
+      "title": "Load CSVFile",
+      "description": "Read a CSV file from disk.\n    files, csv, read, input, load, file",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.LoadCSVFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Path",
+          "description": "Path to the CSV file to read"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
       "title": "Make Dictionary",
       "description": "Creates a simple dictionary with up to three key-value pairs.\n    dictionary, create, simple\n\n    Use cases:\n    - Create configuration entries\n    - Initialize simple data structures\n    - Build basic key-value mappings",
       "namespace": "nodetool.dictionary",
@@ -9124,6 +9862,51 @@
       "basic_fields": [
         "dictionary",
         "key"
+      ]
+    },
+    {
+      "title": "Save CSVFile",
+      "description": "Write a list of dictionaries to a CSV file.\n    files, csv, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.SaveCSVFile",
+      "properties": [
+        {
+          "name": "data",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Data",
+          "description": "list of dictionaries to write to CSV"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "Name of the CSV file to save. Supports strftime format codes."
+        }
+      ],
+      "basic_fields": [
+        "data",
+        "folder",
+        "filename"
       ]
     },
     {
@@ -9749,12 +10532,6 @@
             "type": "float"
           },
           "name": "fps"
-        },
-        {
-          "type": {
-            "type": "event"
-          },
-          "name": "event"
         }
       ],
       "basic_fields": [
@@ -9780,15 +10557,6 @@
           "description": "Collect input frames"
         },
         {
-          "name": "index",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Index",
-          "description": "Index of the current frame. -1 signals end of stream."
-        },
-        {
           "name": "fps",
           "type": {
             "type": "float"
@@ -9796,17 +10564,6 @@
           "default": 30,
           "title": "Fps",
           "description": "The FPS of the output video."
-        },
-        {
-          "name": "event",
-          "type": {
-            "type": "event"
-          },
-          "default": {
-            "name": "done"
-          },
-          "title": "Event",
-          "description": "Signal end of stream"
         }
       ],
       "outputs": [
@@ -9819,9 +10576,7 @@
       ],
       "basic_fields": [
         "frame",
-        "index",
-        "fps",
-        "event"
+        "fps"
       ]
     },
     {
@@ -9858,6 +10613,34 @@
         "folder"
       ],
       "is_streaming": true
+    },
+    {
+      "title": "Load Video File",
+      "description": "Read a video file from disk.\n    video, input, load, file\n\n    Use cases:\n    - Load videos for processing\n    - Import video files for editing\n    - Read video assets for a workflow",
+      "namespace": "nodetool.video",
+      "node_type": "nodetool.video.LoadVideoFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Path to the video file to read"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
     },
     {
       "title": "Overlay",
@@ -10141,6 +10924,54 @@
         "video",
         "folder",
         "name"
+      ]
+    },
+    {
+      "title": "Save Video File",
+      "description": "Write a video file to disk.\n    video, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.video",
+      "node_type": "nodetool.video.SaveVideoFile",
+      "properties": [
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {},
+          "title": "Video",
+          "description": "The video to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "video",
+        "folder",
+        "filename"
       ]
     },
     {
@@ -10701,6 +11532,34 @@
       "is_streaming": true
     },
     {
+      "title": "Load Image File",
+      "description": "Read an image file from disk.\n    image, input, load, file\n\n    Use cases:\n    - Load images for processing\n    - Import photos for editing\n    - Read image assets for a workflow",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.LoadImageFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Path",
+          "description": "Path to the image file to read"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
       "title": "Paste",
       "description": "Paste one image onto another at specified coordinates.\n    paste, composite, positioning, overlay\n\n    Use cases:\n    - Add watermarks or logos to images\n    - Combine multiple image elements\n    - Create collages or montages",
       "namespace": "nodetool.image",
@@ -10860,6 +11719,54 @@
         "image",
         "folder",
         "name"
+      ]
+    },
+    {
+      "title": "Save Image File",
+      "description": "Write an image to disk.\n    image, output, save, file\n\n    Use cases:\n    - Save processed images\n    - Export edited photos\n    - Archive image results",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.SaveImageFile",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "folder",
+        "filename"
       ]
     },
     {
@@ -11698,6 +12605,46 @@
         "dataframe"
       ],
       "is_streaming": true
+    },
+    {
+      "title": "Save CSVDataframe File",
+      "description": "Write a pandas DataFrame to a CSV file.\n    files, csv, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.SaveCSVDataframeFile",
+      "properties": [
+        {
+          "name": "dataframe",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {},
+          "title": "Dataframe",
+          "description": "DataFrame to write to CSV"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "Name of the CSV file to save. Supports strftime format codes."
+        }
+      ],
+      "basic_fields": [
+        "dataframe",
+        "folder",
+        "filename"
+      ]
     },
     {
       "title": "Save Dataframe",
@@ -13816,40 +14763,6 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "rss_entry"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "url"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Extract RSS Entry Fields",
-      "description": "Extracts fields from an RSS entry.\n    rss, entry, fields",
-      "namespace": "lib.rss",
-      "node_type": "lib.rss.RSSEntryFields",
-      "properties": [
-        {
-          "name": "entry",
-          "type": {
-            "type": "rss_entry"
-          },
-          "default": {},
-          "title": "Entry",
-          "description": "The RSS entry to extract fields from."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
             "type": "str"
           },
           "name": "title"
@@ -13880,8 +14793,10 @@
         }
       ],
       "basic_fields": [
-        "entry"
-      ]
+        "url"
+      ],
+      "is_streaming": true,
+      "expose_as_tool": true
     },
     {
       "title": "Dedent Text",
@@ -14219,66 +15134,105 @@
       "expose_as_tool": true
     },
     {
-      "title": "HTMLSplitter",
-      "description": "Split HTML content into semantic chunks based on HTML tags.\n    html, text, semantic, tags, parsing",
-      "namespace": "lib.llama_index",
-      "node_type": "lib.llama_index.HTMLSplitter",
+      "title": "Create Tar",
+      "description": "Create a tar archive from a directory.\n    files, tar, create\n\n    Use cases:\n    - Package multiple files into a single archive\n    - Backup directories\n    - Prepare archives for distribution",
+      "namespace": "lib.tar",
+      "node_type": "lib.tar.CreateTar",
       "properties": [
         {
-          "name": "document",
+          "name": "source_folder",
           "type": {
-            "type": "document"
+            "type": "file_path"
           },
           "default": {},
-          "title": "Document",
-          "description": "Document ID to associate with the HTML content"
+          "title": "Source Folder",
+          "description": "Folder to archive"
+        },
+        {
+          "name": "tar_path",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Tar Path",
+          "description": "Output tar file path"
+        },
+        {
+          "name": "gzip",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Gzip",
+          "description": "Use gzip compression"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "any"
+            "type": "file_path"
           },
           "name": "output"
         }
       ],
       "basic_fields": [
-        "document"
-      ],
-      "is_streaming": true
+        "source_folder",
+        "tar_path",
+        "gzip"
+      ]
     },
     {
-      "title": "JSONSplitter",
-      "description": "Split JSON content into semantic chunks.\n    json, parsing, semantic, structured",
-      "namespace": "lib.llama_index",
-      "node_type": "lib.llama_index.JSONSplitter",
+      "title": "Extract Tar",
+      "description": "Extract a tar archive to a folder.\n    files, tar, extract\n\n    Use cases:\n    - Unpack archived data\n    - Restore backups\n    - Retrieve files for processing",
+      "namespace": "lib.tar",
+      "node_type": "lib.tar.ExtractTar",
       "properties": [
         {
-          "name": "document",
+          "name": "tar_path",
           "type": {
-            "type": "document"
+            "type": "file_path"
           },
           "default": {},
-          "title": "Document",
-          "description": "Document ID to associate with the JSON content"
+          "title": "Tar Path",
+          "description": "Tar archive to extract"
         },
         {
-          "name": "include_metadata",
+          "name": "output_folder",
           "type": {
-            "type": "bool"
+            "type": "file_path"
           },
-          "default": true,
-          "title": "Include Metadata",
-          "description": "Whether to include metadata in nodes"
-        },
+          "default": {},
+          "title": "Output Folder",
+          "description": "Folder to extract into"
+        }
+      ],
+      "outputs": [
         {
-          "name": "include_prev_next_rel",
           "type": {
-            "type": "bool"
+            "type": "file_path"
           },
-          "default": true,
-          "title": "Include Prev Next Rel",
-          "description": "Whether to include prev/next relationships"
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "tar_path",
+        "output_folder"
+      ]
+    },
+    {
+      "title": "List Tar",
+      "description": "List contents of a tar archive.\n    files, tar, list\n\n    Use cases:\n    - Inspect archives without extracting\n    - Preview tar contents\n    - Verify archive contents",
+      "namespace": "lib.tar",
+      "node_type": "lib.tar.ListTar",
+      "properties": [
+        {
+          "name": "tar_path",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Tar Path",
+          "description": "Tar archive to inspect"
         }
       ],
       "outputs": [
@@ -14287,7 +15241,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "text_chunk"
+                "type": "str"
               }
             ]
           },
@@ -14295,73 +15249,8 @@
         }
       ],
       "basic_fields": [
-        "document",
-        "include_metadata",
-        "include_prev_next_rel"
+        "tar_path"
       ]
-    },
-    {
-      "title": "Semantic Splitter",
-      "description": "Split text semantically.\n    chroma, embedding, collection, RAG, index, text, markdown, semantic",
-      "namespace": "lib.llama_index",
-      "node_type": "lib.llama_index.SemanticSplitter",
-      "properties": [
-        {
-          "name": "embed_model",
-          "type": {
-            "type": "llama_model"
-          },
-          "default": {},
-          "title": "Embed Model",
-          "description": "Embedding model to use"
-        },
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
-          },
-          "default": {},
-          "title": "Document",
-          "description": "Document ID to associate with the text content"
-        },
-        {
-          "name": "buffer_size",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Buffer Size",
-          "description": "Buffer size for semantic splitting",
-          "min": 1.0,
-          "max": 100.0
-        },
-        {
-          "name": "threshold",
-          "type": {
-            "type": "int"
-          },
-          "default": 95,
-          "title": "Threshold",
-          "description": "Breakpoint percentile threshold for semantic splitting",
-          "min": 0.0,
-          "max": 100.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "embed_model",
-        "document",
-        "buffer_size",
-        "threshold"
-      ],
-      "is_streaming": true
     },
     {
       "title": "Escape",
@@ -14576,54 +15465,6 @@
       ]
     },
     {
-      "title": "Create Tar File",
-      "description": "Create a tar archive from a directory.\n    files, tar, create\n\n    Use cases:\n    - Package multiple files into a single archive\n    - Backup directories\n    - Prepare archives for distribution",
-      "namespace": "lib.os",
-      "node_type": "lib.os.CreateTarFile",
-      "properties": [
-        {
-          "name": "source_folder",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Source Folder",
-          "description": "Folder to archive"
-        },
-        {
-          "name": "tar_path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Tar Path",
-          "description": "Output tar file path"
-        },
-        {
-          "name": "gzip",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Gzip",
-          "description": "Use gzip compression"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "file_path"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "source_folder",
-        "tar_path",
-        "gzip"
-      ]
-    },
-    {
       "title": "Created Time",
       "description": "Get file creation timestamp.\n    files, metadata, created, time",
       "namespace": "lib.os",
@@ -14677,44 +15518,6 @@
       ],
       "basic_fields": [
         "path"
-      ]
-    },
-    {
-      "title": "Extract Tar File",
-      "description": "Extract a tar archive to a folder.\n    files, tar, extract\n\n    Use cases:\n    - Unpack archived data\n    - Restore backups\n    - Retrieve files for processing",
-      "namespace": "lib.os",
-      "node_type": "lib.os.ExtractTarFile",
-      "properties": [
-        {
-          "name": "tar_path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Tar Path",
-          "description": "Tar archive to extract"
-        },
-        {
-          "name": "output_folder",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Output Folder",
-          "description": "Folder to extract into"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "file_path"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "tar_path",
-        "output_folder"
       ]
     },
     {
@@ -15148,57 +15951,6 @@
       ]
     },
     {
-      "title": "List Documents",
-      "description": "List documents in a directory.\n    files, list, directory",
-      "namespace": "lib.os",
-      "node_type": "lib.os.ListDocuments",
-      "properties": [
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {
-            "path": "~"
-          },
-          "title": "Folder",
-          "description": "Directory to scan"
-        },
-        {
-          "name": "pattern",
-          "type": {
-            "type": "str"
-          },
-          "default": "*",
-          "title": "Pattern",
-          "description": "File pattern to match (e.g. *.txt)"
-        },
-        {
-          "name": "recursive",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Recursive",
-          "description": "Search subdirectories"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "document"
-        }
-      ],
-      "basic_fields": [
-        "folder",
-        "pattern",
-        "recursive"
-      ],
-      "is_streaming": true
-    },
-    {
       "title": "List Files",
       "description": "list files in a directory matching a pattern.\n    files, list, directory\n\n    Use cases:\n    - Get files for batch processing\n    - Filter files by extension or pattern",
       "namespace": "lib.os",
@@ -15246,212 +15998,6 @@
         "folder",
         "pattern",
         "recursive"
-      ]
-    },
-    {
-      "title": "List Tar File",
-      "description": "List contents of a tar archive.\n    files, tar, list\n\n    Use cases:\n    - Inspect archives without extracting\n    - Preview tar contents\n    - Verify archive contents",
-      "namespace": "lib.os",
-      "node_type": "lib.os.ListTarFile",
-      "properties": [
-        {
-          "name": "tar_path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Tar Path",
-          "description": "Tar archive to inspect"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "tar_path"
-      ]
-    },
-    {
-      "title": "Load Audio File",
-      "description": "Read an audio file from disk.\n    audio, input, load, file\n\n    Use cases:\n    - Load audio for processing\n    - Import sound files for editing\n    - Read audio assets for a workflow",
-      "namespace": "lib.os",
-      "node_type": "lib.os.LoadAudioFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Path",
-          "description": "Path to the audio file to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
-      ]
-    },
-    {
-      "title": "Load Bytes File",
-      "description": "Read raw bytes from a file on disk.\n    files, bytes, read, input, load, file\n\n    Use cases:\n    - Load binary data for processing\n    - Read binary files for a workflow",
-      "namespace": "lib.os",
-      "node_type": "lib.os.LoadBytesFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Path",
-          "description": "Path to the file to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
-      ]
-    },
-    {
-      "title": "Load CSVFile",
-      "description": "Read a CSV file from disk.\n    files, csv, read, input, load, file",
-      "namespace": "lib.os",
-      "node_type": "lib.os.LoadCSVFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Path",
-          "description": "Path to the CSV file to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
-      ]
-    },
-    {
-      "title": "Load Document File",
-      "description": "Read a document from disk.\n    files, document, read, input, load, file",
-      "namespace": "lib.os",
-      "node_type": "lib.os.LoadDocumentFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Path",
-          "description": "Path to the document to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
-      ]
-    },
-    {
-      "title": "Load Image File",
-      "description": "Read an image file from disk.\n    image, input, load, file\n\n    Use cases:\n    - Load images for processing\n    - Import photos for editing\n    - Read image assets for a workflow",
-      "namespace": "lib.os",
-      "node_type": "lib.os.LoadImageFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Path",
-          "description": "Path to the image file to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
-      ]
-    },
-    {
-      "title": "Load Video File",
-      "description": "Read a video file from disk.\n    video, input, load, file\n\n    Use cases:\n    - Load videos for processing\n    - Import video files for editing\n    - Read video assets for a workflow",
-      "namespace": "lib.os",
-      "node_type": "lib.os.LoadVideoFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Path",
-          "description": "Path to the video file to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
       ]
     },
     {
@@ -15618,322 +16164,6 @@
       "basic_fields": [
         "target_path",
         "start_path"
-      ]
-    },
-    {
-      "title": "Save Audio File",
-      "description": "Write an audio file to disk.\n    audio, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveAudioFile",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {},
-          "title": "Audio",
-          "description": "The audio to save"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "folder",
-        "filename"
-      ]
-    },
-    {
-      "title": "Save Bytes File",
-      "description": "Write raw bytes to a file on disk.\n    files, bytes, save, output\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveBytesFile",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "bytes"
-              },
-              {
-                "type": "none"
-              }
-            ]
-          },
-          "title": "Data",
-          "description": "The bytes to write to file"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "Name of the file to save. Supports strftime format codes."
-        }
-      ],
-      "basic_fields": [
-        "data",
-        "folder",
-        "filename"
-      ]
-    },
-    {
-      "title": "Save CSVDataframe File",
-      "description": "Write a pandas DataFrame to a CSV file.\n    files, csv, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveCSVDataframeFile",
-      "properties": [
-        {
-          "name": "dataframe",
-          "type": {
-            "type": "dataframe"
-          },
-          "default": {},
-          "title": "Dataframe",
-          "description": "DataFrame to write to CSV"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "Name of the CSV file to save. Supports strftime format codes."
-        }
-      ],
-      "basic_fields": [
-        "dataframe",
-        "folder",
-        "filename"
-      ]
-    },
-    {
-      "title": "Save CSVFile",
-      "description": "Write a list of dictionaries to a CSV file.\n    files, csv, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveCSVFile",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Data",
-          "description": "list of dictionaries to write to CSV"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "Name of the CSV file to save. Supports strftime format codes."
-        }
-      ],
-      "basic_fields": [
-        "data",
-        "folder",
-        "filename"
-      ]
-    },
-    {
-      "title": "Save Document File",
-      "description": "Write a document to disk.\n    files, document, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveDocumentFile",
-      "properties": [
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
-          },
-          "default": {},
-          "title": "Document",
-          "description": "The document to save"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "Name of the file to save. Supports strftime format codes."
-        }
-      ],
-      "basic_fields": [
-        "document",
-        "folder",
-        "filename"
-      ]
-    },
-    {
-      "title": "Save Image File",
-      "description": "Write an image to disk.\n    image, output, save, file\n\n    Use cases:\n    - Save processed images\n    - Export edited photos\n    - Archive image results",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveImageFile",
-      "properties": [
-        {
-          "name": "image",
-          "type": {
-            "type": "image"
-          },
-          "default": {},
-          "title": "Image",
-          "description": "The image to save"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "image",
-        "folder",
-        "filename"
-      ]
-    },
-    {
-      "title": "Save Video File",
-      "description": "Write a video file to disk.\n    video, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SaveVideoFile",
-      "properties": [
-        {
-          "name": "video",
-          "type": {
-            "type": "video"
-          },
-          "default": {},
-          "title": "Video",
-          "description": "The video to save"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "folder_path"
-          },
-          "default": {},
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "video",
-        "folder",
-        "filename"
       ]
     },
     {
@@ -17563,20 +17793,16 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "audio"
-              }
-            ]
+            "type": "audio"
           },
-          "name": "output"
+          "name": "audio"
         }
       ],
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Extract Images",
@@ -17606,20 +17832,16 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "name": "output"
+          "name": "image"
         }
       ],
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Extract Links",
@@ -17649,15 +17871,28 @@
       "outputs": [
         {
           "type": {
-            "type": "dataframe"
+            "type": "str"
           },
-          "name": "output"
+          "name": "href"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "type"
         }
       ],
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Extract Metadata",
@@ -17678,9 +17913,21 @@
       "outputs": [
         {
           "type": {
-            "type": "dict"
+            "type": "str"
           },
-          "name": "metadata"
+          "name": "title"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "description"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "keywords"
         }
       ],
       "basic_fields": [
@@ -17715,20 +17962,16 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "video"
-              }
-            ]
+            "type": "video"
           },
-          "name": "output"
+          "name": "video"
         }
       ],
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Convert HTML to Text",
@@ -19397,241 +19640,78 @@
       "expose_as_tool": true
     },
     {
-      "title": "Split Markdown",
-      "description": "Splits markdown text by headers while preserving header hierarchy in metadata.\n    markdown, split, headers\n\n    Use cases:\n    - Splitting markdown documentation while preserving structure\n    - Processing markdown files for semantic search\n    - Creating context-aware chunks from markdown content",
-      "namespace": "lib.langchain",
-      "node_type": "lib.langchain.MarkdownSplitter",
+      "title": "Load Bytes File",
+      "description": "Read raw bytes from a file on disk.\n    files, bytes, read, input, load, file\n\n    Use cases:\n    - Load binary data for processing\n    - Read binary files for a workflow",
+      "namespace": "lib.bytes",
+      "node_type": "lib.bytes.LoadBytesFile",
       "properties": [
         {
-          "name": "document",
+          "name": "path",
           "type": {
-            "type": "document"
+            "type": "file_path"
           },
           "default": {},
-          "title": "Document"
-        },
+          "title": "Path",
+          "description": "Path to the file to read"
+        }
+      ],
+      "outputs": [
         {
-          "name": "headers_to_split_on",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tuple",
-                "type_args": [
-                  {
-                    "type": "str"
-                  },
-                  {
-                    "type": "str"
-                  }
-                ]
-              }
-            ]
+            "type": "bytes"
           },
-          "default": [
-            [
-              "#",
-              "Header 1"
-            ],
-            [
-              "##",
-              "Header 2"
-            ],
-            [
-              "###",
-              "Header 3"
-            ]
-          ],
-          "title": "Headers To Split On",
-          "description": "List of tuples containing (header_symbol, header_name)"
-        },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Save Bytes File",
+      "description": "Write raw bytes to a file on disk.\n    files, bytes, save, output\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "lib.bytes",
+      "node_type": "lib.bytes.SaveBytesFile",
+      "properties": [
         {
-          "name": "strip_headers",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Strip Headers",
-          "description": "Whether to remove headers from the output content"
-        },
-        {
-          "name": "return_each_line",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Return Each Line",
-          "description": "Whether to split into individual lines instead of header sections"
-        },
-        {
-          "name": "chunk_size",
+          "name": "data",
           "type": {
             "type": "union",
             "type_args": [
               {
-                "type": "int"
+                "type": "bytes"
               },
               {
                 "type": "none"
               }
             ]
           },
-          "title": "Chunk Size",
-          "description": "Optional maximum chunk size for further splitting"
+          "title": "Data",
+          "description": "The bytes to write to file"
         },
         {
-          "name": "chunk_overlap",
+          "name": "folder",
           "type": {
-            "type": "int"
-          },
-          "default": 30,
-          "title": "Chunk Overlap",
-          "description": "Overlap size when using chunk_size"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "document",
-        "headers_to_split_on",
-        "strip_headers",
-        "return_each_line",
-        "chunk_size",
-        "chunk_overlap"
-      ]
-    },
-    {
-      "title": "Split Recursively",
-      "description": "Splits text recursively using LangChain's RecursiveCharacterTextSplitter.\n    text, split, chunks\n\n    Use cases:\n    - Splitting documents while preserving semantic relationships\n    - Creating chunks for language model processing\n    - Handling text in languages with/without word boundaries",
-      "namespace": "lib.langchain",
-      "node_type": "lib.langchain.RecursiveTextSplitter",
-      "properties": [
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
+            "type": "folder_path"
           },
           "default": {},
-          "title": "Document"
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
         },
         {
-          "name": "chunk_size",
+          "name": "filename",
           "type": {
-            "type": "int"
+            "type": "str"
           },
-          "default": 1000,
-          "title": "Chunk Size",
-          "description": "Maximum size of each chunk in characters"
-        },
-        {
-          "name": "chunk_overlap",
-          "type": {
-            "type": "int"
-          },
-          "default": 200,
-          "title": "Chunk Overlap",
-          "description": "Number of characters to overlap between chunks"
-        },
-        {
-          "name": "separators",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": [
-            "\n\n",
-            "\n",
-            "."
-          ],
-          "title": "Separators",
-          "description": "List of separators to use for splitting, in order of preference"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
-          },
-          "name": "output"
+          "default": "",
+          "title": "Filename",
+          "description": "Name of the file to save. Supports strftime format codes."
         }
       ],
       "basic_fields": [
-        "document",
-        "chunk_size",
-        "chunk_overlap",
-        "separators"
-      ]
-    },
-    {
-      "title": "Split into Sentences",
-      "description": "Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.\n    sentences, split, nlp\n\n    Use cases:\n    - Natural sentence-based text splitting\n    - Creating semantically meaningful chunks\n    - Processing text for sentence-level analysis",
-      "namespace": "lib.langchain",
-      "node_type": "lib.langchain.SentenceSplitter",
-      "properties": [
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
-          },
-          "default": {},
-          "title": "Document"
-        },
-        {
-          "name": "chunk_size",
-          "type": {
-            "type": "int"
-          },
-          "default": 40,
-          "title": "Chunk Size",
-          "description": "Maximum number of tokens per chunk"
-        },
-        {
-          "name": "chunk_overlap",
-          "type": {
-            "type": "int"
-          },
-          "default": 5,
-          "title": "Chunk Overlap",
-          "description": "Number of tokens to overlap between chunks"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "document",
-        "chunk_size",
-        "chunk_overlap"
+        "data",
+        "folder",
+        "filename"
       ]
     },
     {

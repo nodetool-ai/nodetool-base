@@ -522,6 +522,36 @@ class RowIterator(GraphNode):
         return "nodetool.data.RowIterator"
 
 
+class SaveCSVDataframeFile(GraphNode):
+    """
+    Write a pandas DataFrame to a CSV file.
+    files, csv, write, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="DataFrame to write to CSV",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the CSV file to save. Supports strftime format codes.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.SaveCSVDataframeFile"
+
+
 class SaveDataframe(GraphNode):
     """
     Save dataframe in specified folder.

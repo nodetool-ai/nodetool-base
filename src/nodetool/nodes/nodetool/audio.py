@@ -1,7 +1,10 @@
-from datetime import datetime
 import io
+import os
+import datetime
+from nodetool.config.environment import Environment
+from nodetool.io.uri_utils import create_file_uri
 from pydantic import Field
-from nodetool.metadata.types import AudioRef
+from nodetool.metadata.types import AudioRef, FilePath, FolderPath
 from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -51,6 +54,38 @@ class LoadAudioAssets(BaseNode):
             )
 
 
+class LoadAudioFile(BaseNode):
+    """
+    Read an audio file from disk.
+    audio, input, load, file
+
+    Use cases:
+    - Load audio for processing
+    - Import sound files for editing
+    - Read audio assets for a workflow
+    """
+
+    path: FilePath = Field(
+        default=FilePath(), description="Path to the audio file to read"
+    )
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.path.path:
+            raise ValueError("path cannot be empty")
+        expanded_path = os.path.expanduser(self.path.path)
+        if not os.path.exists(expanded_path):
+            raise ValueError(f"Audio file not found: {expanded_path}")
+
+        with open(expanded_path, "rb") as f:
+            audio_data = f.read()
+
+        audio = await context.audio_from_bytes(audio_data)
+        audio.uri = create_file_uri(expanded_path)
+        return audio
+
+
 class SaveAudio(BaseNode):
     """
     Save an audio file to a specified asset folder.
@@ -95,8 +130,59 @@ class SaveAudio(BaseNode):
         audio.export(file)
         file.seek(0)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
-        name = datetime.now().strftime(self.name)
+        name = datetime.datetime.now().strftime(self.name)
         return await context.audio_from_segment(audio, name, parent_id=parent_id)
+
+
+class SaveAudioFile(BaseNode):
+    """
+    Write an audio file to disk.
+    audio, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    audio: AudioRef = Field(default=AudioRef(), description="The audio to save")
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Folder where the file will be saved"
+    )
+    filename: str = Field(
+        default="",
+        description="""
+        Name of the file to save.
+        You can use time and date variables to create unique names:
+        %Y - Year
+        %m - Month
+        %d - Day
+        %H - Hour
+        %M - Minute
+        %S - Second
+        """,
+    )
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder.path:
+            raise ValueError("folder cannot be empty")
+        if not self.filename:
+            raise ValueError("filename cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.exists(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        filename = datetime.datetime.now().strftime(self.filename)
+        expanded_path = os.path.join(expanded_folder, filename)
+        os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
+
+        audio_io = await context.asset_to_io(self.audio)
+        audio_data = audio_io.read()
+        with open(expanded_path, "wb") as f:
+            f.write(audio_data)
+        return AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
 
 
 class Concat(BaseNode):

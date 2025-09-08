@@ -8,9 +8,12 @@ from nodetool.nodes.lib.os import (
     FileExists,
     ListFiles,
     CreateDirectory,
-    CreateTarFile,
-    ExtractTarFile,
-    ListTarFile,
+)
+
+from nodetool.nodes.lib.tar import (
+    CreateTar,
+    ExtractTar,
+    ListTar,
 )
 
 
@@ -53,21 +56,21 @@ async def test_tarfile_nodes(context: ProcessingContext, tmp_path):
     (src_dir / "b.txt").write_text("b")
 
     tar_path = tmp_path / "archive.tar"
-    create_tar = CreateTarFile(
+    create_tar = CreateTar(
         source_folder=FilePath(path=str(src_dir)),
         tar_path=FilePath(path=str(tar_path)),
     )
     await create_tar.process(context)
     assert tar_path.exists()
 
-    list_tar = ListTarFile(tar_path=FilePath(path=str(tar_path)))
+    list_tar = ListTar(tar_path=FilePath(path=str(tar_path)))
     contents = await list_tar.process(context)
     assert f"{src_dir.name}/a.txt" in contents
     assert f"{src_dir.name}/b.txt" in contents
 
     out_dir = tmp_path / "out"
     out_dir.mkdir()
-    extract_tar = ExtractTarFile(
+    extract_tar = ExtractTar(
         tar_path=FilePath(path=str(tar_path)),
         output_folder=FilePath(path=str(out_dir)),
     )

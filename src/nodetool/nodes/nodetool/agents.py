@@ -630,6 +630,8 @@ class Summarizer(BaseNode):
             Message(role="user", content=content),
         ]
 
+        text = ""
+
         provider = get_provider(self.model.provider)
         async for chunk in provider.generate_messages(
             messages=messages,
@@ -640,8 +642,9 @@ class Summarizer(BaseNode):
             if isinstance(chunk, Chunk):
                 if chunk.content_type == "text" or chunk.content_type is None:
                     yield "chunk", chunk
-                if chunk.done:
-                    yield "text", chunk.content
+                text += chunk.content
+
+        yield "text", text
 
 
 class Extractor(BaseNode):

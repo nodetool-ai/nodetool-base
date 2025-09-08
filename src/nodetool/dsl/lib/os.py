@@ -112,34 +112,6 @@ class CreateDirectory(GraphNode):
         return "lib.os.CreateDirectory"
 
 
-class CreateTarFile(GraphNode):
-    """
-    Create a tar archive from a directory.
-    files, tar, create
-
-    Use cases:
-    - Package multiple files into a single archive
-    - Backup directories
-    - Prepare archives for distribution
-    """
-
-    source_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Folder to archive",
-    )
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Output tar file path",
-    )
-    gzip: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description="Use gzip compression"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.CreateTarFile"
-
-
 class CreatedTime(GraphNode):
     """
     Get file creation timestamp.
@@ -173,31 +145,6 @@ class Dirname(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "lib.os.Dirname"
-
-
-class ExtractTarFile(GraphNode):
-    """
-    Extract a tar archive to a folder.
-    files, tar, extract
-
-    Use cases:
-    - Unpack archived data
-    - Restore backups
-    - Retrieve files for processing
-    """
-
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Tar archive to extract",
-    )
-    output_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Folder to extract into",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.ExtractTarFile"
 
 
 class FileExists(GraphNode):
@@ -449,8 +396,8 @@ class ListFiles(GraphNode):
     - Filter files by extension or pattern
     """
 
-    directory: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path="~"),
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path="~"),
         description="Directory to scan",
     )
     pattern: str | GraphNode | tuple[GraphNode, str] = Field(
@@ -463,141 +410,6 @@ class ListFiles(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "lib.os.ListFiles"
-
-
-class ListTarFile(GraphNode):
-    """
-    List contents of a tar archive.
-    files, tar, list
-
-    Use cases:
-    - Inspect archives without extracting
-    - Preview tar contents
-    - Verify archive contents
-    """
-
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Tar archive to inspect",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.ListTarFile"
-
-
-class LoadAudioFile(GraphNode):
-    """
-    Read an audio file from disk.
-    audio, input, load, file
-
-    Use cases:
-    - Load audio for processing
-    - Import sound files for editing
-    - Read audio assets for a workflow
-    """
-
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the audio file to read",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.LoadAudioFile"
-
-
-class LoadBytesFile(GraphNode):
-    """
-    Read raw bytes from a file on disk.
-    files, bytes, read, input, load, file
-
-    Use cases:
-    - Load binary data for processing
-    - Read binary files for a workflow
-    """
-
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the file to read",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.LoadBytesFile"
-
-
-class LoadCSVFile(GraphNode):
-    """
-    Read a CSV file from disk.
-    files, csv, read, input, load, file
-    """
-
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the CSV file to read",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.LoadCSVFile"
-
-
-class LoadDocumentFile(GraphNode):
-    """
-    Read a document from disk.
-    files, document, read, input, load, file
-    """
-
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the document to read",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.LoadDocumentFile"
-
-
-class LoadImageFile(GraphNode):
-    """
-    Read an image file from disk.
-    image, input, load, file
-
-    Use cases:
-    - Load images for processing
-    - Import photos for editing
-    - Read image assets for a workflow
-    """
-
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the image file to read",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.LoadImageFile"
-
-
-class LoadVideoFile(GraphNode):
-    """
-    Read a video file from disk.
-    video, input, load, file
-
-    Use cases:
-    - Load videos for processing
-    - Import video files for editing
-    - Read video assets for a workflow
-    """
-
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Path to the video file to read"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.LoadVideoFile"
 
 
 class ModifiedTime(GraphNode):
@@ -659,6 +471,17 @@ class NormalizePath(GraphNode):
         return "lib.os.NormalizePath"
 
 
+class OpenWorkspaceDirectory(GraphNode):
+    """
+    Open the workspace directory.
+    files, workspace, directory
+    """
+
+    @classmethod
+    def get_node_type(cls):
+        return "lib.os.OpenWorkspaceDirectory"
+
+
 class PathToString(GraphNode):
     """
     Convert a FilePath object to a string.
@@ -701,205 +524,6 @@ class RelativePath(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "lib.os.RelativePath"
-
-
-class SaveAudioFile(GraphNode):
-    """
-    Write an audio file to disk.
-    audio, output, save, file
-
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
-    """
-
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
-        description="The audio to save",
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveAudioFile"
-
-
-class SaveBytesFile(GraphNode):
-    """
-    Write raw bytes to a file on disk.
-    files, bytes, save, output
-
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
-    """
-
-    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description="The bytes to write to file"
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="Name of the file to save. Supports strftime format codes.",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveBytesFile"
-
-
-class SaveCSVDataframeFile(GraphNode):
-    """
-    Write a pandas DataFrame to a CSV file.
-    files, csv, write, output, save, file
-
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
-    """
-
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.DataframeRef(
-            type="dataframe", uri="", asset_id=None, data=None, columns=None
-        ),
-        description="DataFrame to write to CSV",
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="Name of the CSV file to save. Supports strftime format codes.",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveCSVDataframeFile"
-
-
-class SaveCSVFile(GraphNode):
-    """
-    Write a list of dictionaries to a CSV file.
-    files, csv, write, output, save, file
-
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
-    """
-
-    data: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="list of dictionaries to write to CSV"
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="Name of the CSV file to save. Supports strftime format codes.",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveCSVFile"
-
-
-class SaveDocumentFile(GraphNode):
-    """
-    Write a document to disk.
-    files, document, write, output, save, file
-
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
-    """
-
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
-        description="The document to save",
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="Name of the file to save. Supports strftime format codes.",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveDocumentFile"
-
-
-class SaveImageFile(GraphNode):
-    """
-    Write an image to disk.
-    image, output, save, file
-
-    Use cases:
-    - Save processed images
-    - Export edited photos
-    - Archive image results
-    """
-
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
-        description="The image to save",
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveImageFile"
-
-
-class SaveVideoFile(GraphNode):
-    """
-    Write a video file to disk.
-    video, output, save, file
-
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
-    """
-
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
-        ),
-        description="The video to save",
-    )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
-    )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="",
-        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.os.SaveVideoFile"
 
 
 class SetEnvironmentVariable(GraphNode):
@@ -989,3 +613,14 @@ class SplitPath(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "lib.os.SplitPath"
+
+
+class WorkspaceDirectory(GraphNode):
+    """
+    Get the workspace directory.
+    files, workspace, directory
+    """
+
+    @classmethod
+    def get_node_type(cls):
+        return "lib.os.WorkspaceDirectory"

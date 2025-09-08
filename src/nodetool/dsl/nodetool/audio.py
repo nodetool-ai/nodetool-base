@@ -206,6 +206,27 @@ class LoadAudioAssets(GraphNode):
         return "nodetool.audio.LoadAudioAssets"
 
 
+class LoadAudioFile(GraphNode):
+    """
+    Read an audio file from disk.
+    audio, input, load, file
+
+    Use cases:
+    - Load audio for processing
+    - Import sound files for editing
+    - Read audio assets for a workflow
+    """
+
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the audio file to read",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.LoadAudioFile"
+
+
 class MonoToStereo(GraphNode):
     """
     Converts a mono audio signal to stereo.
@@ -383,6 +404,34 @@ class SaveAudio(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.audio.SaveAudio"
+
+
+class SaveAudioFile(GraphNode):
+    """
+    Write an audio file to disk.
+    audio, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.SaveAudioFile"
 
 
 class SliceAudio(GraphNode):

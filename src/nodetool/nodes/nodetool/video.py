@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 import enum
 import os
 import tempfile
@@ -7,19 +7,20 @@ import ffmpeg
 import cv2
 import logging
 
-import PIL.ImageFilter
-import PIL.ImageOps
 import PIL.Image
 import PIL.ImageFont
-import PIL.ImageEnhance
 import PIL.ImageDraw
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 import numpy as np
 from pydantic import Field
 from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef, Event
+from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import VideoRef, FontRef
+from nodetool.workflows.processing_context import create_file_uri
+from nodetool.config.environment import Environment
+from nodetool.metadata.types import FolderPath
 
 logger = logging.getLogger(__name__)
 
@@ -29,6 +30,86 @@ def safe_unlink(path: str):
         safe_unlink(path)
     except Exception:
         pass
+
+
+class LoadVideoFile(BaseNode):
+    """
+    Read a video file from disk.
+    video, input, load, file
+
+    Use cases:
+    - Load videos for processing
+    - Import video files for editing
+    - Read video assets for a workflow
+    """
+
+    path: str = Field(default="", description="Path to the video file to read")
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        expanded_path = os.path.expanduser(self.path)
+        if not os.path.exists(expanded_path):
+            raise ValueError(f"Video file not found: {expanded_path}")
+
+        with open(expanded_path, "rb") as f:
+            video_data = f.read()
+            video = await context.video_from_bytes(video_data)
+            video.uri = create_file_uri(expanded_path)
+            return video
+
+
+class SaveVideoFile(BaseNode):
+    """
+    Write a video file to disk.
+    video, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    video: VideoRef = Field(default=VideoRef(), description="The video to save")
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Folder where the file will be saved"
+    )
+    filename: str = Field(
+        default="",
+        description="""
+        Name of the file to save.
+        You can use time and date variables to create unique names:
+        %Y - Year
+        %m - Month
+        %d - Day
+        %H - Hour
+        %M - Minute
+        %S - Second
+        """,
+    )
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder.path:
+            raise ValueError("folder cannot be empty")
+        if not self.filename:
+            raise ValueError("filename cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.exists(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        filename = datetime.datetime.now().strftime(self.filename)
+        expanded_path = os.path.join(expanded_folder, filename)
+        os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
+
+        video_io = await context.asset_to_io(self.video)
+        video_data = video_io.read()
+
+        with open(expanded_path, "wb") as f:
+            f.write(video_data)
+
+        return VideoRef(uri=create_file_uri(expanded_path), data=video_data)
 
 
 class LoadVideoAssets(BaseNode):
@@ -116,7 +197,7 @@ class SaveVideo(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         video = await context.asset_to_io(self.video)
-        filename = datetime.now().strftime(self.name)
+        filename = datetime.datetime.now().strftime(self.name)
         return await context.video_from_io(
             buffer=video,
             name=filename,
@@ -151,7 +232,6 @@ class FrameIterator(BaseNode):
             "frame": ImageRef,
             "index": int,
             "fps": float,
-            "event": Event,
         }
 
     async def gen_process(self, context: ProcessingContext):
@@ -180,7 +260,6 @@ class FrameIterator(BaseNode):
                     yield "frame", img_ref
                     yield "index", frame_count
                     yield "fps", fps
-                    yield "event", Event(name="frame")
 
                 if self.end > -1 and frame_count >= self.end:
                     break
@@ -188,8 +267,6 @@ class FrameIterator(BaseNode):
                 frame_count += 1
 
             cap.release()
-
-        yield "event", Event(name="done")
 
     async def get_fps(self, context: ProcessingContext) -> float:
         video_file = await context.asset_to_io(self.video)
@@ -244,33 +321,33 @@ class FrameToVideo(BaseNode):
     """
 
     frame: ImageRef = Field(default=ImageRef(), description="Collect input frames")
-    index: int = Field(
-        default=0, description="Index of the current frame. -1 signals end of stream."
-    )
     fps: float = Field(default=30, description="The FPS of the output video.")
-    event: Event = Field(default=Event(name="done"), description="Signal end of stream")
 
-    async def handle_event(self, context: ProcessingContext, event: Event):
+    async def run(
+        self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
+    ):
         if not self.frame:
             raise ValueError("No frames provided to create video.")
 
-        if event.name == "done":
-            yield "output", await self.create_video(context)
-        elif event.name == "frame":
-            # Save all frames as images in the temporary directory
-            img = await context.image_to_pil(self.frame)
-            frame_path = context.resolve_workspace_path(f"frame_{self.index:05d}.png")
-            img.save(frame_path)
-            logger.debug("Saved frame %s to %s", self.index, frame_path)
-        else:
-            raise ValueError(f"Unknown event: {event.name}")
+        index = 0
 
-    async def create_video(self, context: ProcessingContext) -> VideoRef:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            async for frame in inputs.stream("frame"):
+                # Save all frames as images in the temporary directory
+                img = await context.image_to_pil(self.frame)
+                frame_path = os.path.join(temp_dir, f"frame_{index:05d}.png")
+                img.save(frame_path)
+                logger.debug("Saved frame %s to %s", index, frame_path)
+                index += 1
+
+            await outputs.emit("output", await self.create_video(context, temp_dir))
+
+    async def create_video(self, context: ProcessingContext, temp_dir: str) -> VideoRef:
         # Create a temporary file for the output video
-        video_path = context.resolve_workspace_path(f"video_{str(uuid.uuid4())}.mp4")
+        video_path = os.path.join(temp_dir, f"video_{str(uuid.uuid4())}.mp4")
         try:
             # Use FFmpeg to create video from frames
-            frame_path = context.resolve_workspace_path("frame_%05d.png")
+            frame_path = os.path.join(temp_dir, "frame_%05d.png")
             logger.debug("Creating video from %s", frame_path)
             (
                 ffmpeg.input(frame_path, framerate=self.fps)
@@ -287,6 +364,9 @@ class FrameToVideo(BaseNode):
             logger.error("FFmpeg stdout:\n%s", e.stdout.decode("utf8"))
             logger.error("FFmpeg stderr:\n%s", e.stderr.decode("utf8"))
             raise RuntimeError(f"Error creating video: {e.stderr.decode('utf8')}")
+
+        finally:
+            safe_unlink(video_path)
 
 
 class Concat(BaseNode):

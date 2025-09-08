@@ -1,12 +1,15 @@
 from datetime import datetime
 from io import StringIO
 import json
+import os
 import pandas as pd
 from typing import Any
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import DataframeRef, FilePath, FolderRef
+from nodetool.config.environment import Environment
+from nodetool.metadata.types import FolderPath
 
 
 class Filter(BaseNode):
@@ -803,3 +806,42 @@ class FillNA(BaseNode):
             raise ValueError(f"Unknown fill method: {self.method}")
 
         return await context.dataframe_from_pandas(df)
+
+
+class SaveCSVDataframeFile(BaseNode):
+    """
+    Write a pandas DataFrame to a CSV file.
+    files, csv, write, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="DataFrame to write to CSV"
+    )
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Folder where the file will be saved"
+    )
+    filename: str = Field(
+        default="",
+        description="Name of the CSV file to save. Supports strftime format codes.",
+    )
+
+    async def process(self, context: ProcessingContext):
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder.path:
+            raise ValueError("folder cannot be empty")
+        if not self.filename:
+            raise ValueError("filename cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.exists(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        filename = datetime.now().strftime(self.filename)
+        expanded_path = os.path.join(expanded_folder, filename)
+        df = await context.dataframe_to_pandas(self.dataframe)
+        df.to_csv(expanded_path, index=False)

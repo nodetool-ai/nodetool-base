@@ -352,6 +352,26 @@ class LoadVideoAssets(GraphNode):
         return "nodetool.video.LoadVideoAssets"
 
 
+class LoadVideoFile(GraphNode):
+    """
+    Read a video file from disk.
+    video, input, load, file
+
+    Use cases:
+    - Load videos for processing
+    - Import video files for editing
+    - Read video assets for a workflow
+    """
+
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the video file to read"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.video.LoadVideoFile"
+
+
 class Overlay(GraphNode):
     """
     Overlay one video on top of another, including audio overlay when available.
@@ -523,6 +543,36 @@ class SaveVideo(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.SaveVideo"
+
+
+class SaveVideoFile(GraphNode):
+    """
+    Write a video file to disk.
+    video, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoRef(
+            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+        ),
+        description="The video to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.video.SaveVideoFile"
 
 
 class SetSpeed(GraphNode):

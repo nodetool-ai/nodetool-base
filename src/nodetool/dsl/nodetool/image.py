@@ -120,6 +120,27 @@ class LoadImageAssets(GraphNode):
         return "nodetool.image.LoadImageAssets"
 
 
+class LoadImageFile(GraphNode):
+    """
+    Read an image file from disk.
+    image, input, load, file
+
+    Use cases:
+    - Load images for processing
+    - Import photos for editing
+    - Read image assets for a workflow
+    """
+
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the image file to read",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.image.LoadImageFile"
+
+
 class Paste(GraphNode):
     """
     Paste one image onto another at specified coordinates.
@@ -204,6 +225,35 @@ class SaveImage(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.image.SaveImage"
+
+
+class SaveImageFile(GraphNode):
+    """
+    Write an image to disk.
+    image, output, save, file
+
+    Use cases:
+    - Save processed images
+    - Export edited photos
+    - Archive image results
+    """
+
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.image.SaveImageFile"
 
 
 class Scale(GraphNode):

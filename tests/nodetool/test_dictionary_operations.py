@@ -60,28 +60,28 @@ argmax_example = StringOutput(
 @pytest.mark.asyncio
 async def test_make_dict():
     result = await graph_result(make_dict)
-    assert result == "Developer"
+    assert result == ["Developer"]
 
 
 @pytest.mark.asyncio
 async def test_combined_dict():
     result = await graph_result(combined_dict)
-    assert result == 3
+    assert result == [3]
 
 
 @pytest.mark.asyncio
 async def test_filtered_dict():
     result = await graph_result(filtered_dict)
-    assert result == {"name": "Bob", "city": "London"}
+    assert result == [{"name": "Bob", "city": "London"}]
 
 
 @pytest.mark.asyncio
 async def test_zipped_dict():
     result = await graph_result(zipped_dict)
-    assert result == {"a": 1, "b": 2, "c": 3}
+    assert result == [{"a": 1, "b": 2, "c": 3}]
 
 
 @pytest.mark.asyncio
 async def test_argmax_example():
     result = await graph_result(argmax_example)
-    assert result == "dog"
+    assert result == ["dog"]

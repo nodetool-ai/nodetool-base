@@ -70,3 +70,23 @@ class IteratorNode(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.control.Iterator"
+
+
+class Reroute(GraphNode):
+    """
+    Pass data through unchanged for tidier workflow layouts.
+    reroute, passthrough, organize, tidy, flow, connection, redirect
+
+    Use cases:
+    - Organize complex workflows by routing connections
+    - Create cleaner visual layouts
+    - Redirect data flow without modification
+    """
+
+    input_value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Value to pass through unchanged"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.control.Reroute"

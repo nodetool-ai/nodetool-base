@@ -1,0 +1,282 @@
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
+from nodetool.dsl.graph import GraphNode
+
+
+class ListDocuments(GraphNode):
+    """
+    List documents in a directory.
+    files, list, directory
+    """
+
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path="~"),
+        description="Directory to scan",
+    )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="*", description="File pattern to match (e.g. *.txt)"
+    )
+    recursive: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Search subdirectories"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.ListDocuments"
+
+
+class LoadDocumentFile(GraphNode):
+    """
+    Read a document from disk.
+    files, document, read, input, load, file
+    """
+
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the document to read",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.LoadDocumentFile"
+
+
+class SplitMarkdown(GraphNode):
+    """
+    Splits markdown text by headers while preserving header hierarchy in metadata.
+    markdown, split, headers
+
+    Use cases:
+    - Splitting markdown documentation while preserving structure
+    - Processing markdown files for semantic search
+    - Creating context-aware chunks from markdown content
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    headers_to_split_on: list[tuple[str, str]] | GraphNode | tuple[GraphNode, str] = (
+        Field(
+            default=[("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")],
+            description="List of tuples containing (header_symbol, header_name)",
+        )
+    )
+    strip_headers: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Whether to remove headers from the output content"
+    )
+    return_each_line: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False,
+        description="Whether to split into individual lines instead of header sections",
+    )
+    chunk_size: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Optional maximum chunk size for further splitting"
+    )
+    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="Overlap size when using chunk_size"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitMarkdown"
+
+
+class SaveDocumentFile(GraphNode):
+    """
+    Write a document to disk.
+    files, document, write, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description="The document to save",
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the file to save. Supports strftime format codes.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SaveDocumentFile"
+
+
+class SplitDocument(GraphNode):
+    """
+    Split text semantically.
+    chroma, embedding, collection, RAG, index, text, markdown, semantic
+    """
+
+    embed_model: types.LlamaModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LlamaModel(
+            type="llama_model",
+            name="",
+            repo_id="",
+            modified_at="",
+            size=0,
+            digest="",
+            details={},
+        ),
+        description="Embedding model to use",
+    )
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description="Document ID to associate with the text content",
+    )
+    buffer_size: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Buffer size for semantic splitting"
+    )
+    threshold: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=95, description="Breakpoint percentile threshold for semantic splitting"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitDocument"
+
+
+class SplitHTML(GraphNode):
+    """
+    Split HTML content into semantic chunks based on HTML tags.
+    html, text, semantic, tags, parsing
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description="Document ID to associate with the HTML content",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitHTML"
+
+
+class SplitJSON(GraphNode):
+    """
+    Split JSON content into semantic chunks.
+    json, parsing, semantic, structured
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description="Document ID to associate with the JSON content",
+    )
+    include_metadata: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Whether to include metadata in nodes"
+    )
+    include_prev_next_rel: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Whether to include prev/next relationships"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitJSON"
+
+
+class SplitMarkdown(GraphNode):
+    """
+    Splits markdown text by headers while preserving header hierarchy in metadata.
+    markdown, split, headers
+
+    Use cases:
+    - Splitting markdown documentation while preserving structure
+    - Processing markdown files for semantic search
+    - Creating context-aware chunks from markdown content
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    headers_to_split_on: list[tuple[str, str]] | GraphNode | tuple[GraphNode, str] = (
+        Field(
+            default=[("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")],
+            description="List of tuples containing (header_symbol, header_name)",
+        )
+    )
+    strip_headers: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Whether to remove headers from the output content"
+    )
+    return_each_line: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False,
+        description="Whether to split into individual lines instead of header sections",
+    )
+    chunk_size: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="Optional maximum chunk size for further splitting"
+    )
+    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="Overlap size when using chunk_size"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitMarkdown"
+
+
+class SplitRecursively(GraphNode):
+    """
+    Splits text recursively using LangChain's RecursiveCharacterTextSplitter.
+    text, split, chunks
+
+    Use cases:
+    - Splitting documents while preserving semantic relationships
+    - Creating chunks for language model processing
+    - Handling text in languages with/without word boundaries
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1000, description="Maximum size of each chunk in characters"
+    )
+    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=200, description="Number of characters to overlap between chunks"
+    )
+    separators: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=["\n\n", "\n", "."],
+        description="List of separators to use for splitting, in order of preference",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitRecursively"
+
+
+class SplitSentences(GraphNode):
+    """
+    Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.
+    sentences, split, nlp
+
+    Use cases:
+    - Natural sentence-based text splitting
+    - Creating semantically meaningful chunks
+    - Processing text for sentence-level analysis
+    """
+
+    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        description=None,
+    )
+    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=40, description="Maximum number of tokens per chunk"
+    )
+    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=5, description="Number of tokens to overlap between chunks"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.document.SplitSentences"

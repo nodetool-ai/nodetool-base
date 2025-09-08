@@ -97,6 +97,22 @@ class GetValue(GraphNode):
         return "nodetool.dictionary.GetValue"
 
 
+class LoadCSVFile(GraphNode):
+    """
+    Read a CSV file from disk.
+    files, csv, read, input, load, file
+    """
+
+    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="Path to the CSV file to read",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.dictionary.LoadCSVFile"
+
+
 class MakeDictionary(GraphNode):
     """
     Creates a simple dictionary with up to three key-value pairs.
@@ -192,6 +208,33 @@ class Remove(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.Remove"
+
+
+class SaveCSVFile(GraphNode):
+    """
+    Write a list of dictionaries to a CSV file.
+    files, csv, write, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    data: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="list of dictionaries to write to CSV"
+    )
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder where the file will be saved",
+    )
+    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Name of the CSV file to save. Supports strftime format codes.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.dictionary.SaveCSVFile"
 
 
 class Update(GraphNode):

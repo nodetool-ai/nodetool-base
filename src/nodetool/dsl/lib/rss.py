@@ -44,37 +44,3 @@ class FetchRSSFeed(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "lib.rss.FetchRSSFeed"
-
-
-class RSSEntryFields(GraphNode):
-    """
-    Extracts fields from an RSS entry.
-    rss, entry, fields
-    """
-
-    entry: types.RSSEntry | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.RSSEntry(
-            type="rss_entry",
-            title="",
-            link="",
-            published=types.Datetime(
-                type="datetime",
-                year=0,
-                month=0,
-                day=0,
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo="UTC",
-                utc_offset=0,
-            ),
-            summary="",
-            author="",
-        ),
-        description="The RSS entry to extract fields from.",
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.rss.RSSEntryFields"

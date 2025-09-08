@@ -1,9 +1,9 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from nodetool.nodes.lib.langchain import (
-    RecursiveTextSplitter,
-    MarkdownSplitter,
-    SentenceSplitter,
+from nodetool.nodes.nodetool.document import (
+    SplitRecursively,
+    SplitMarkdown,
+    SplitSentences,
 )
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import TextChunk
@@ -20,7 +20,7 @@ def mock_document():
     return MagicMock(name="Document")
 
 
-class TestRecursiveTextSplitter:
+class TestSplitRecursively:
     @pytest.mark.asyncio
     @patch("langchain_text_splitters.RecursiveCharacterTextSplitter")
     @patch("langchain_core.documents.Document")
@@ -42,7 +42,7 @@ class TestRecursiveTextSplitter:
         from nodetool.metadata.types import DocumentRef
 
         doc_ref = DocumentRef(uri="test-doc", data="Sample text for testing")
-        node = RecursiveTextSplitter(
+        node = SplitRecursively(
             document=doc_ref,
             chunk_size=500,
             chunk_overlap=50,
@@ -78,7 +78,7 @@ class TestRecursiveTextSplitter:
         )
 
 
-class TestMarkdownSplitter:
+class TestSplitMarkdown:
     @pytest.mark.asyncio
     @patch("langchain_text_splitters.MarkdownHeaderTextSplitter")
     async def test_process_splits_markdown_correctly(
@@ -105,7 +105,7 @@ class TestMarkdownSplitter:
         doc_ref = DocumentRef(
             uri="test-md-doc", data="# Header 1\nContent 1\n## Header 2\nContent 2"
         )
-        node = MarkdownSplitter(
+        node = SplitMarkdown(
             document=doc_ref,
             headers_to_split_on=[("#", "Header 1"), ("##", "Header 2")],
             strip_headers=True,
@@ -163,7 +163,7 @@ class TestMarkdownSplitter:
         from nodetool.metadata.types import DocumentRef
 
         doc_ref = DocumentRef(uri="test-md-doc", data="# Long markdown content")
-        node = MarkdownSplitter(
+        node = SplitMarkdown(
             document=doc_ref,
             chunk_size=100,
             chunk_overlap=20,
@@ -203,7 +203,7 @@ class TestSentenceSplitter:
         from nodetool.metadata.types import DocumentRef
 
         doc_ref = DocumentRef(uri="test-sentence-doc", data="Sentence 1. Sentence 2.")
-        node = SentenceSplitter(
+        node = SplitSentences(
             document=doc_ref,
             chunk_size=30,
             chunk_overlap=5,

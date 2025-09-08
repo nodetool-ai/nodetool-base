@@ -17,8 +17,7 @@ def context():
     return ProcessingContext(user_id="test", auth_token="test")
 
 
-HTML_SAMPLE = (
-    """
+HTML_SAMPLE = """
 <!doctype html>
 <html>
   <head>
@@ -43,7 +42,6 @@ HTML_SAMPLE = (
   </body>
 </html>
     """
-)
 
 
 @pytest.mark.asyncio
@@ -76,9 +74,21 @@ async def test_extract_metadata(context: ProcessingContext):
 @pytest.mark.asyncio
 async def test_extract_images_videos_audio(context: ProcessingContext):
     base = "https://example.com/base/"
-    imgs = await ExtractImages(html=HTML_SAMPLE, base_url=base).process(context)
-    vids = await ExtractVideos(html=HTML_SAMPLE, base_url=base).process(context)
-    auds = await ExtractAudio(html=HTML_SAMPLE, base_url=base).process(context)
+    imgs = []
+    vids = []
+    auds = []
+    async for _, img in ExtractImages(html=HTML_SAMPLE, base_url=base).gen_process(
+        context
+    ):
+        imgs.append(img)
+    async for _, vid in ExtractVideos(html=HTML_SAMPLE, base_url=base).gen_process(
+        context
+    ):
+        vids.append(vid)
+    async for _, aud in ExtractAudio(html=HTML_SAMPLE, base_url=base).gen_process(
+        context
+    ):
+        auds.append(aud)
 
     assert any(img.uri.endswith("/img.png") for img in imgs)
     assert any(v.uri.endswith("/v.mp4") for v in vids) and any(
@@ -103,4 +113,3 @@ async def test_html_to_text(context: ProcessingContext):
     node = HTMLToText(text=html, preserve_linebreaks=True)
     out = await node.process(context)
     assert "Hello" in out and "World" in out
-

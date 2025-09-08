@@ -9,7 +9,7 @@ from nodetool.dsl.graph import GraphNode
 class Add(GraphNode):
     """
     Adds two numbers.
-    math, add, plus, +, sum
+    math, add, plus
     """
 
     a: int | float | GraphNode | tuple[GraphNode, str] = Field(
@@ -42,7 +42,7 @@ class Cosine(GraphNode):
 class Divide(GraphNode):
     """
     Divides A by B.
-    math, divide, division, quotient, /
+    math, divide, division, quotient
     """
 
     a: int | float | GraphNode | tuple[GraphNode, str] = Field(
@@ -101,7 +101,7 @@ class Modulus(GraphNode):
 class Multiply(GraphNode):
     """
     Multiplies two numbers.
-    math, multiply, product, *
+    math, multiply, product
     """
 
     a: int | float | GraphNode | tuple[GraphNode, str] = Field(
@@ -119,7 +119,7 @@ class Multiply(GraphNode):
 class Power(GraphNode):
     """
     Raises base to the given exponent.
-    math, power, exponent, ^, **
+    math, power, exponent
     """
 
     base: int | float | GraphNode | tuple[GraphNode, str] = Field(
@@ -167,7 +167,7 @@ class Sqrt(GraphNode):
 class Subtract(GraphNode):
     """
     Subtracts B from A.
-    math, subtract, minus, -, difference
+    math, subtract, minus
     """
 
     a: int | float | GraphNode | tuple[GraphNode, str] = Field(

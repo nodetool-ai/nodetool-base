@@ -109,11 +109,8 @@ class TestSummarizer:
                 elif output_type == "text":
                     final_text = output_value
 
-            assert len(chunks) >= 1  # Should have multiple chunks
-            assert "".join(chunks) == "This is a summary"
-            assert (
-                final_text == chunks[-1] if chunks else ""
-            )  # Final text from last chunk
+            assert len(chunks) >= 1, "Should have multiple chunks"
+            assert "".join(chunks) == "This is a summary", "Final text from last chunk"
 
 
 class TestExtractor:

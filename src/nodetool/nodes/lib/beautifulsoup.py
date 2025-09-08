@@ -9,6 +9,7 @@ from nodetool.metadata.types import (
     VideoRef,
 )
 from nodetool.workflows.base_node import BaseNode
+from nodetool.metadata.types import ColumnDef, DataframeRef
 from nodetool.workflows.processing_context import ProcessingContext
 
 from bs4 import BeautifulSoup, Tag
@@ -66,10 +67,17 @@ class ExtractLinks(BaseNode):
         description="The base URL of the page, used to determine internal/external links.",
     )
 
-    async def process(self, context: ProcessingContext) -> DataframeRef:
+    @classmethod
+    def return_type(cls):
+        return {
+            "href": str,
+            "text": str,
+            "type": str,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
         soup = BeautifulSoup(self.html, "html.parser")
 
-        links = []
         for a in soup.find_all("a", href=True):
             assert isinstance(a, Tag)
             href = str(a["href"])
@@ -79,15 +87,33 @@ class ExtractLinks(BaseNode):
                 if href.startswith(self.base_url) or href.startswith("/")
                 else "external"
             )
-            links.append({"href": href, "text": text, "type": link_type})
+            yield "href", href
+            yield "text", text
+            yield "type", link_type
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        soup = BeautifulSoup(self.html, "html.parser")
+
+        rows: list[list[str]] = []
+        for a in soup.find_all("a", href=True):
+            assert isinstance(a, Tag)
+            href = str(a["href"])
+            text = a.text.strip()
+            link_type = (
+                "internal"
+                if href.startswith(self.base_url) or href.startswith("/")
+                else "external"
+            )
+            rows.append([href, text, link_type])
 
         return DataframeRef(
+            type="dataframe",
             columns=[
                 ColumnDef(name="href", data_type="string"),
                 ColumnDef(name="text", data_type="string"),
                 ColumnDef(name="type", data_type="string"),
             ],
-            data=[[link["href"], link["text"], link["type"]] for link in links],
+            data=rows,
         )
 
 
@@ -110,7 +136,9 @@ class ExtractMetadata(BaseNode):
     @classmethod
     def return_type(cls):
         return {
-            "metadata": dict,
+            "title": str,
+            "description": str,
+            "keywords": str,
         }
 
     async def process(self, context: ProcessingContext):
@@ -153,20 +181,20 @@ class ExtractImages(BaseNode):
 
     @classmethod
     def return_type(cls):
-        return list[ImageRef]
+        return {
+            "image": ImageRef,
+        }
 
-    async def process(self, context: ProcessingContext) -> list[ImageRef]:
+    async def gen_process(self, context: ProcessingContext):
         soup = BeautifulSoup(self.html, "html.parser")
 
-        images = []
         for img in soup.find_all("img"):
             assert isinstance(img, Tag)
             src = img.get("src")
             if src:
                 full_url = urljoin(self.base_url, str(src))
-                images.append(ImageRef(uri=full_url))
 
-        return images
+            yield "image", ImageRef(uri=full_url)
 
 
 class ExtractVideos(BaseNode):
@@ -189,10 +217,15 @@ class ExtractVideos(BaseNode):
         description="The base URL of the page, used to resolve relative video URLs.",
     )
 
-    async def process(self, context: ProcessingContext) -> list[VideoRef]:
+    @classmethod
+    def return_type(cls):
+        return {
+            "video": VideoRef,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
         soup = BeautifulSoup(self.html, "html.parser")
 
-        videos = []
         for video in soup.find_all(["video", "iframe"]):
             assert isinstance(video, Tag)
             if video.name == "video":
@@ -202,9 +235,21 @@ class ExtractVideos(BaseNode):
 
             if src:
                 full_url = urljoin(self.base_url, str(src))
-                videos.append(VideoRef(uri=full_url))
+                yield "video", VideoRef(uri=full_url)
 
-        return videos
+    async def process(self, context: ProcessingContext) -> list[VideoRef]:
+        soup = BeautifulSoup(self.html, "html.parser")
+        results: list[VideoRef] = []
+        for video in soup.find_all(["video", "iframe"]):
+            assert isinstance(video, Tag)
+            if video.name == "video":
+                src = video.get("src") or (video.source and video.source.get("src"))
+            else:
+                src = video.get("src")
+            if src:
+                full_url = urljoin(self.base_url, str(src))
+                results.append(VideoRef(uri=full_url))
+        return results
 
 
 class ExtractAudio(BaseNode):
@@ -227,18 +272,32 @@ class ExtractAudio(BaseNode):
         description="The base URL of the page, used to resolve relative audio URLs.",
     )
 
-    async def process(self, context: ProcessingContext) -> list[AudioRef]:
+    @classmethod
+    def return_type(cls):
+        return {
+            "audio": AudioRef,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
         soup = BeautifulSoup(self.html, "html.parser")
 
-        audio_elements = []
         for audio in soup.find_all(["audio", "source"]):
             assert isinstance(audio, Tag)
             src = audio.get("src")
             if src:
                 full_url = urljoin(self.base_url, str(src))
-                audio_elements.append(AudioRef(uri=full_url))
+                yield "audio", AudioRef(uri=full_url)
 
-        return audio_elements
+    async def process(self, context: ProcessingContext) -> list[AudioRef]:
+        soup = BeautifulSoup(self.html, "html.parser")
+        results: list[AudioRef] = []
+        for audio in soup.find_all(["audio", "source"]):
+            assert isinstance(audio, Tag)
+            src = audio.get("src")
+            if src:
+                full_url = urljoin(self.base_url, str(src))
+                results.append(AudioRef(uri=full_url))
+        return results
 
 
 def extract_content(html_content: str) -> str:

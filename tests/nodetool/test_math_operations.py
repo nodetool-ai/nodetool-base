@@ -52,29 +52,29 @@ combined_operations = FloatOutput(
 @pytest.mark.asyncio
 async def test_basic_arithmetic():
     result = await graph_result(basic_arithmetic)
-    assert result == 20  # (2 + 3) * 4 = 20
+    assert result == [20]  # (2 + 3) * 4 = 20
 
 
 @pytest.mark.asyncio
 async def test_pythagorean():
     result = await graph_result(pythagorean)
-    assert pytest.approx(result, 0.0001) == 5.0  # √(3² + 4²) = 5
+    assert pytest.approx(result[0], 0.0001) == 5.0  # √(3² + 4²) = 5
 
 
 @pytest.mark.asyncio
 async def test_nested_operations():
     result = await graph_result(nested_operations)
-    assert result == 2.5  # (10 + 5) / (2 * 3) = 15 / 6 = 2.5
+    assert result == [2.5]  # (10 + 5) / (2 * 3) = 15 / 6 = 2.5
 
 
 @pytest.mark.asyncio
 async def test_trig_calculation():
     result = await graph_result(trig_calculation)
-    assert pytest.approx(result, 0.0001) == 0.5  # sin(π/4)² ≈ 0.5
+    assert pytest.approx(result[0], 0.0001) == 0.5  # sin(π/4)² ≈ 0.5
 
 
 @pytest.mark.asyncio
 async def test_combined_operations():
     result = await graph_result(combined_operations)
-    assert isinstance(result, (int, float))
-    assert result > 0
+    assert isinstance(result[0], (int, float))
+    assert result[0] > 0

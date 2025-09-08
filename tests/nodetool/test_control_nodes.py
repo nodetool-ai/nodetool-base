@@ -1,8 +1,20 @@
+import os
+from nodetool.config.logging_config import configure_logging
+from nodetool.workflows.io import NodeInputs, NodeOutputs
+from nodetool.workflows.types import OutputUpdate
+from nodetool.workflows.run_workflow import run_workflow
 import pytest
+import asyncio
+from typing import Any
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import Event
-from nodetool.nodes.nodetool.control import If, IteratorNode, CollectorNode
+from nodetool.workflows.workflow_runner import WorkflowRunner
+from nodetool.workflows.run_job_request import RunJobRequest
+from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
+
+
+# Reuse the generic OutputNode as a sink via API graph
+OUTPUT_NODE_TYPE = "nodetool.workflows.base_node.OutputNode"
 
 
 @pytest.fixture
@@ -11,46 +23,424 @@ def context():
 
 
 @pytest.mark.asyncio
-async def test_if_node_true_false(context: ProcessingContext):
-    true_node = If(condition=True, value=123)
-    false_node = If(condition=False, value=456)
+async def test_if_routes_true_and_not_false(context: ProcessingContext):
+    import nodetool.nodes.nodetool.control
 
-    async def collect(node):
-        outs = []
-        async for k, v in node.gen_process(context):
-            outs.append((k, v))
-        return outs
+    configure_logging(level="DEBUG")
 
-    true_outs = await collect(true_node)
-    false_outs = await collect(false_node)
+    nodes = [
+        APINode(
+            id="if",
+            type="nodetool.control.If",
+            data={"condition": True, "value": "hello"},
+        ),
+        APINode(id="out_true", type=OUTPUT_NODE_TYPE, data={"name": "true_sink"}),
+        APINode(id="out_false", type=OUTPUT_NODE_TYPE, data={"name": "false_sink"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="if",
+            sourceHandle="if_true",
+            target="out_true",
+            targetHandle="value",
+        ),
+        APIEdge(
+            id="e2",
+            source="if",
+            sourceHandle="if_false",
+            target="out_false",
+            targetHandle="value",
+        ),
+    ]
+    graph = APIGraph(nodes=nodes, edges=edges)
 
-    assert ("if_true", 123) in true_outs and all(k != "if_false" for k, _ in true_outs)
-    assert ("if_false", 456) in false_outs and all(k != "if_true" for k, _ in false_outs)
+    req = RunJobRequest(graph=graph)
+    context = ProcessingContext(user_id="test", auth_token="test")
+    found_true = False
+
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate):
+            if msg.node_name == "true_sink":
+                found_true = True
+                assert msg.value == ["hello"]
+            elif msg.node_name == "false_sink":
+                pytest.fail("False branch should not emit")
+
+    assert found_true, "True branch should emit"
 
 
 @pytest.mark.asyncio
-async def test_iterator_and_collector(context: ProcessingContext):
-    items = ["a", "b", "c"]
-    it = IteratorNode(input_list=items)
-    coll = CollectorNode()
+async def test_if_streams_values_with_static_true_condition(context: ProcessingContext):
+    import nodetool.nodes.nodetool.control
 
-    # Iterate and feed events into collector
-    emitted = []
-    async for k, v in it.gen_process(context):
-        emitted.append((k, v))
-        if k == "output":
-            coll.input_item = v
-        if k == "event" and isinstance(v, Event):
-            # handle events from iterator (iterator and done)
-            async for ck, cv in coll.handle_event(context, v):
-                emitted.append((ck, cv))
+    class ValueProducer:
+        @staticmethod
+        def node(items: list[Any], delay: float = 0.0) -> APINode:
+            return APINode(
+                id="vprod",
+                type="test.control.ValueProducer",
+                data={"items": items, "delay": delay},
+            )
 
-    # Find final output from collector
-    collected = None
-    for k, v in emitted:
-        if k == "output" and isinstance(v, list):
-            collected = v
-            break
+    # Define a streaming producer inline and register via NODE_BY_TYPE by creating the class
+    from nodetool.workflows.base_node import BaseNode
 
-    assert collected == items
+    class _ValueProducerNode(BaseNode):  # type: ignore
+        items: list[Any] = []
+        delay: float = 0.0
 
+        @classmethod
+        def get_node_type(cls) -> str:
+            return "test.control.ValueProducer"
+
+        @classmethod
+        def return_type(cls):
+            return {"out": Any}
+
+        async def gen_process(self, _):  # type: ignore
+            for x in self.items:
+                yield ("out", x)
+                if self.delay:
+                    await asyncio.sleep(self.delay)
+
+    nodes = [
+        ValueProducer.node(["a", "b", "c"], delay=0.01),
+        APINode(id="if", type="nodetool.control.If", data={"condition": True}),
+        APINode(id="out", type=OUTPUT_NODE_TYPE, data={"name": "passed"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="vprod",
+            sourceHandle="out",
+            target="if",
+            targetHandle="value",
+        ),
+        APIEdge(
+            id="e2",
+            source="if",
+            sourceHandle="if_true",
+            target="out",
+            targetHandle="value",
+        ),
+    ]
+    graph = APIGraph(nodes=nodes, edges=edges)
+
+    req = RunJobRequest(graph=graph)
+    last = None
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate) and msg.node_name == "passed":
+            last = msg.value
+
+    assert last == ["a", "b", "c"]
+
+
+@pytest.mark.asyncio
+async def test_if_toggles_between_branches_with_streaming_condition_and_values(
+    context: ProcessingContext,
+):
+    from nodetool.workflows.base_node import BaseNode
+    import nodetool.nodes.nodetool.control
+
+    class _CondProducer(BaseNode):  # type: ignore
+        values: list[bool] = [True, False]
+        delays: list[float] = [0.0, 0.02]
+
+        @classmethod
+        def get_node_type(cls) -> str:
+            return "test.control.CondProducer"
+
+        @classmethod
+        def return_type(cls):
+            return {"out": bool}
+
+        async def gen_process(self, _):  # type: ignore
+            for v, d in zip(self.values, self.delays):
+                yield ("out", v)
+                if d:
+                    await asyncio.sleep(d)
+
+    class _ValProducer(BaseNode):  # type: ignore
+        values: list[str] = ["A", "B", "C"]
+        delay: float = 0.01
+
+        @classmethod
+        def get_node_type(cls) -> str:
+            return "test.control.ValProducer"
+
+        @classmethod
+        def return_type(cls):
+            return {"out": str}
+
+        async def gen_process(self, _):  # type: ignore
+            for v in self.values:
+                yield ("out", v)
+                if self.delay:
+                    await asyncio.sleep(self.delay)
+
+    nodes = [
+        APINode(
+            id="cond",
+            type="test.control.CondProducer",
+            data={"values": [True, True, False], "delays": [0.0, 0.01, 0.02]},
+        ),
+        APINode(
+            id="val",
+            type="test.control.ValProducer",
+            data={"values": ["A", "B", "C"], "delay": 0.01},
+        ),
+        APINode(id="if", type="nodetool.control.If", data={}),
+        APINode(id="out_true", type=OUTPUT_NODE_TYPE, data={"name": "true_sink"}),
+        APINode(id="out_false", type=OUTPUT_NODE_TYPE, data={"name": "false_sink"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="cond",
+            sourceHandle="out",
+            target="if",
+            targetHandle="condition",
+        ),
+        APIEdge(
+            id="e2", source="val", sourceHandle="out", target="if", targetHandle="value"
+        ),
+        APIEdge(
+            id="e3",
+            source="if",
+            sourceHandle="if_true",
+            target="out_true",
+            targetHandle="value",
+        ),
+        APIEdge(
+            id="e4",
+            source="if",
+            sourceHandle="if_false",
+            target="out_false",
+            targetHandle="value",
+        ),
+    ]
+    # Ensure we pair inputs per index to avoid early None routes
+    graph = APIGraph(
+        nodes=[
+            APINode(**{**n.model_dump(), **({"sync_mode": "on_any"} if n.id != "if" else {})}) if isinstance(n, APINode) else n  # type: ignore
+            for n in nodes
+        ],
+        edges=edges,
+    )
+
+    req = RunJobRequest(graph=graph)
+    # Set sync_mode zip_all for If to pair per-index
+    req = RunJobRequest(
+        graph=APIGraph(
+            nodes=[
+                APINode(
+                    id=n.id,
+                    type=n.type,
+                    data=n.data,
+                    ui_properties=n.ui_properties,
+                    dynamic_properties=n.dynamic_properties,
+                    dynamic_outputs=n.dynamic_outputs,
+                    sync_mode=("zip_all" if n.id == "if" else n.sync_mode),
+                )
+                for n in graph.nodes
+            ],
+            edges=graph.edges,
+        )
+    )
+
+    last_true = None
+    last_false = None
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate):
+            if msg.node_name == "true_sink":
+                last_true = msg.value
+            elif msg.node_name == "false_sink":
+                last_false = msg.value
+
+    # With the delays configured, expected routing: A->true, B->true, C->false
+    assert last_true == ["A", "B"]
+    assert last_false == ["C"]
+
+
+@pytest.mark.asyncio
+async def test_reroute_passes_stream_through(context: ProcessingContext):
+    from nodetool.workflows.base_node import BaseNode
+    import nodetool.nodes.nodetool.control
+
+    class _Stream(BaseNode):  # type: ignore
+        values: list[int] = [1, 2, 3]
+
+        @classmethod
+        def get_node_type(cls) -> str:
+            return "test.control.IntStream"
+
+        @classmethod
+        def return_type(cls):
+            return {"out": int}
+
+        async def gen_process(self, _):  # type: ignore
+            for v in self.values:
+                yield ("out", v)
+
+    nodes = [
+        APINode(id="src", type="test.control.IntStream", data={"values": [1, 2, 3]}),
+        APINode(id="reroute", type="nodetool.control.Reroute", data={}),
+        APINode(id="out", type=OUTPUT_NODE_TYPE, data={"name": "sink"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="src",
+            sourceHandle="out",
+            target="reroute",
+            targetHandle="input_value",
+        ),
+        APIEdge(
+            id="e2",
+            source="reroute",
+            sourceHandle="output",
+            target="out",
+            targetHandle="value",
+        ),
+    ]
+    graph = APIGraph(nodes=nodes, edges=edges)
+
+    req = RunJobRequest(graph=graph)
+    last = None
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate) and msg.node_name == "sink":
+            last = msg.value
+
+    assert last == [1, 2, 3]
+
+
+@pytest.mark.asyncio
+async def test_collect_node_aggregates_stream(context: ProcessingContext):
+    from nodetool.workflows.base_node import BaseNode
+    import nodetool.nodes.nodetool.control
+
+    class _Stream(BaseNode):  # type: ignore
+        values: list[str] = ["x", "y", "z"]
+
+        @classmethod
+        def get_node_type(cls) -> str:
+            return "test.control.StrStream"
+
+        @classmethod
+        def return_type(cls):
+            return {"out": str}
+
+        async def gen_process(self, _):  # type: ignore
+            for v in self.values:
+                yield ("out", v)
+                await asyncio.sleep(0.005)
+
+    nodes = [
+        APINode(
+            id="src", type="test.control.StrStream", data={"values": ["x", "y", "z"]}
+        ),
+        APINode(id="collect", type="nodetool.control.CollectNode", data={}),
+        APINode(id="out", type=OUTPUT_NODE_TYPE, data={"name": "items"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="src",
+            sourceHandle="out",
+            target="collect",
+            targetHandle="input_item",
+        ),
+        APIEdge(
+            id="e2",
+            source="collect",
+            sourceHandle="output",
+            target="out",
+            targetHandle="value",
+        ),
+    ]
+    graph = APIGraph(nodes=nodes, edges=edges)
+
+    req = RunJobRequest(graph=graph)
+    last = None
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate) and msg.node_name == "items":
+            last = msg.value
+
+    assert last == [["x", "y", "z"]]
+
+
+@pytest.mark.asyncio
+async def test_collect_node_handles_empty_stream(context: ProcessingContext):
+    import nodetool.nodes.nodetool.control
+
+    nodes = [
+        APINode(id="collect", type="nodetool.control.CollectNode", data={}),
+        APINode(id="out", type=OUTPUT_NODE_TYPE, data={"name": "items"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="collect",
+            sourceHandle="output",
+            target="out",
+            targetHandle="value",
+        ),
+    ]
+    graph = APIGraph(nodes=nodes, edges=edges)
+
+    req = RunJobRequest(graph=graph)
+    last = None
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate) and msg.node_name == "items":
+            last = msg.value
+
+    assert last == [[]]
+
+
+@pytest.mark.asyncio
+async def test_foreach_emits_last_item_and_index_only_in_current_engine(
+    context: ProcessingContext,
+):
+    import nodetool.nodes.nodetool.control
+
+    # ForEach currently runs in non-streaming mode; multiple emits are collected, last one routed.
+    nodes = [
+        APINode(
+            id="each",
+            type="nodetool.control.ForEach",
+            data={"input_list": [10, 11, 12]},
+        ),
+        APINode(id="out_item", type=OUTPUT_NODE_TYPE, data={"name": "item"}),
+        APINode(id="out_index", type=OUTPUT_NODE_TYPE, data={"name": "idx"}),
+    ]
+    edges = [
+        APIEdge(
+            id="e1",
+            source="each",
+            sourceHandle="output",
+            target="out_item",
+            targetHandle="value",
+        ),
+        APIEdge(
+            id="e2",
+            source="each",
+            sourceHandle="index",
+            target="out_index",
+            targetHandle="value",
+        ),
+    ]
+    graph = APIGraph(nodes=nodes, edges=edges)
+
+    req = RunJobRequest(graph=graph)
+    last_item = None
+    last_idx = None
+    async for msg in run_workflow(req, context=context):
+        if isinstance(msg, OutputUpdate):
+            if msg.node_name == "item":
+                last_item = msg.value
+            elif msg.node_name == "idx":
+                last_idx = msg.value
+
+    assert last_item == [12]
+    assert last_idx == [2]

@@ -5,6 +5,12 @@ from typing import Any
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
+import os
+import csv
+import datetime
+
+from nodetool.config.environment import Environment
+from nodetool.metadata.types import FilePath, FolderPath
 
 logger = logging.getLogger(__name__)
 
@@ -262,3 +268,68 @@ class ArgMax(BaseNode):
         if not self.scores:
             raise ValueError("Input dictionary cannot be empty")
         return max(self.scores.items(), key=lambda x: x[1])[0]
+
+
+class LoadCSVFile(BaseNode):
+    """
+    Read a CSV file from disk.
+    files, csv, read, input, load, file
+    """
+
+    path: FilePath = Field(
+        default=FilePath(), description="Path to the CSV file to read"
+    )
+
+    async def process(self, context: ProcessingContext) -> list[dict]:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.path.path:
+            raise ValueError("path cannot be empty")
+        expanded_path = os.path.expanduser(self.path.path)
+        with open(expanded_path, "r") as f:
+            reader = csv.DictReader(f)
+            return [row for row in reader]
+
+
+class SaveCSVFile(BaseNode):
+    """
+    Write a list of dictionaries to a CSV file.
+    files, csv, write, output, save, file
+
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
+    """
+
+    data: list[dict] = Field(
+        default=[], description="list of dictionaries to write to CSV"
+    )
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Folder where the file will be saved"
+    )
+    filename: str = Field(
+        default="",
+        description="Name of the CSV file to save. Supports strftime format codes.",
+    )
+
+    async def process(self, context: ProcessingContext):
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.data:
+            raise ValueError("'data' field cannot be empty")
+        if not self.folder.path:
+            raise ValueError("folder cannot be empty")
+        if not self.filename:
+            raise ValueError("filename cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.exists(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        filename = datetime.datetime.now().strftime(self.filename)
+        expanded_path = os.path.join(expanded_folder, filename)
+        with open(expanded_path, "w") as f:
+            writer = csv.DictWriter(f, fieldnames=self.data[0].keys())
+            writer.writeheader()
+            for row in self.data:
+                writer.writerow(row)

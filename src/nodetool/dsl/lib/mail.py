@@ -111,6 +111,21 @@ class GmailSearch(GraphNode):
     max_results: int | GraphNode | tuple[GraphNode, str] = Field(
         default=50, description="Maximum number of emails to return"
     )
+    retry_attempts: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=3, description="Maximum retry attempts for Gmail operations"
+    )
+    retry_base_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.5, description="Base delay (seconds) for exponential backoff"
+    )
+    retry_max_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=5.0, description="Maximum delay (seconds) for exponential backoff"
+    )
+    retry_factor: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=2.0, description="Exponential growth factor for backoff"
+    )
+    retry_jitter: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.1, description="Random jitter (seconds) added to each backoff"
+    )
 
     @classmethod
     def get_node_type(cls):
@@ -164,6 +179,21 @@ class SendEmail(GraphNode):
     )
     body: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Email body"
+    )
+    retry_attempts: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=3, description="Maximum retry attempts for SMTP send"
+    )
+    retry_base_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.5, description="Base delay (seconds) for exponential backoff"
+    )
+    retry_max_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=5.0, description="Maximum delay (seconds) for exponential backoff"
+    )
+    retry_factor: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=2.0, description="Exponential growth factor for backoff"
+    )
+    retry_jitter: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.1, description="Random jitter (seconds) added to each backoff"
     )
 
     @classmethod

@@ -22,7 +22,7 @@ class Agent(GraphNode):
         description="Model to use for execution",
     )
     system: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="\nYou are a general purpose AI agent. \nResolve the user's task end-to-end with high accuracy and efficient tool use.\n\nBehavior\n- Be precise, concise, and actionable. Prefer acting over asking; proceed under the most reasonable assumptions and document them after you finish.\n- Keep going until the task is fully solved. Only hand back if blocked by missing credentials or an explicit safety boundary.\n- Use tools when they materially improve correctness or efficiency. Avoid unnecessary calls. Parallelize independent lookups. Stop searching once you can act.\n\nTool preambles\n- Briefly restate the goal.\n- Outline the next step(s) you will perform.\n- Provide short progress updates as actions complete.\n- After acting, summarize what changed and the impact.\n\nContext gathering strategy\n- Start broad, then narrow with targeted queries.\n- Batch related searches in parallel; deduplicate overlapping results.\n\nRendering\n- Use Markdown to display images, tables, and other rich content.\n- Display images, audio, and video assets using the appropriate HTML or Markdown.\n\n",
+        default="You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
         description="The system prompt for the LLM",
     )
     prompt: str | GraphNode | tuple[GraphNode, str] = Field(
@@ -36,9 +36,6 @@ class Agent(GraphNode):
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio to analyze",
     )
-    tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of tools to use for execution"
-    )
     messages: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="The messages for the LLM"
     )
@@ -47,6 +44,13 @@ class Agent(GraphNode):
     )
     context_window: int | GraphNode | tuple[GraphNode, str] = Field(
         default=4096, description=None
+    )
+    tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="List of tools to use for execution"
+    )
+    tool_call_limit: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=3,
+        description="Maximum iterations that make tool calls before forcing a final answer. 0 disables tools.",
     )
 
     @classmethod
@@ -67,7 +71,7 @@ class Classifier(GraphNode):
     """
 
     system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="\n        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.\n        ",
+        default='\nYou are a precise text classifier.\n\nGoal\n- Select exactly one category from the list provided by the user.\n\nTool-calling rules\n- You MUST respond by calling the tool "classify" exactly once.\n- Provide only the "category" field in the tool arguments.\n- Do not produce any assistant text, only the tool call.\n\nSelection criteria\n- Choose the single best category that captures the main intent of the text.\n- If multiple categories seem plausible, pick the most probable one; do not return multiple.\n- If none fit perfectly, choose the closest allowed category. If the list includes "Other" or "Unknown", prefer it when appropriate.\n- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., "not spam" ≠ spam).\n- Never invent categories that are not in the provided list.\n\nBehavior\n- Be deterministic for the same input.\n- Do not ask clarifying questions; make the best choice with what\'s given.\n',
         description="The system prompt for the classifier",
     )
     model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
@@ -137,6 +141,45 @@ class Extractor(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.agents.Extractor"
+
+
+import nodetool.nodes.nodetool.agents
+
+
+class RealtimeAgent(GraphNode):
+    """
+    Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
+    realtime, streaming, openai, audio-input, text-output
+
+    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
+    - Sends session settings via `session.update`
+    - Adds user input via `conversation.item.create`
+    - Streams back `response.text.delta` events until `response.done`
+    """
+
+    Voice: typing.ClassVar[type] = nodetool.nodes.nodetool.agents.RealtimeAgent.Voice
+    system: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+        description="System instructions for the realtime session",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Optional user text input for the session"
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="Optional audio input to send (base64 or bytes)",
+    )
+    voice: nodetool.nodes.nodetool.agents.RealtimeAgent.Voice = Field(
+        default=nodetool.nodes.nodetool.agents.RealtimeAgent.Voice.ALLOY,
+        description="The voice for the audio output",
+    )
+    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.8, description="The temperature for the response"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.agents.RealtimeAgent"
 
 
 class Summarizer(GraphNode):
