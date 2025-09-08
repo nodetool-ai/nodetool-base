@@ -1,6 +1,4 @@
 import os
-from nodetool.config.logging_config import configure_logging
-from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.workflows.types import OutputUpdate
 from nodetool.workflows.run_workflow import run_workflow
 import pytest
