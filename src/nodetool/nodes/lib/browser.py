@@ -18,14 +18,14 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
 # ServerDockerRunner is used at runtime to start a Playwright WS server in Docker
-from nodetool.config.environment import Environment
 from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.types import Notification, LogUpdate
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.code_runners.runtime_base import StreamRunnerBase
+from nodetool.config.logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 # Browser Use
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
@@ -776,6 +776,7 @@ class BrowserNavigation(BaseNode):
             return max(5.0, float(self.timeout) / 1000.0 + 20.0)
         except Exception:
             return 60.0
+
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         """Stop the Playwright driver container if still running.
 

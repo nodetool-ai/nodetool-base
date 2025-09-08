@@ -1,5 +1,5 @@
 import json
-import logging
+from nodetool.config.logging_config import get_logger
 import re
 from pydantic import Field
 
@@ -25,7 +25,7 @@ from nodetool.workflows.processing_context import ProcessingContext
 
 from nodetool.chat.dataframes import GenerateDataTool
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class DataGenerator(BaseNode):

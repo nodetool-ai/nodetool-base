@@ -1,6 +1,7 @@
 import ast
 from typing import Any
 from enum import Enum
+from nodetool.config.logging_config import get_logger
 from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
@@ -13,6 +14,8 @@ from nodetool.code_runners.ruby_runner import RubyDockerRunner
 from nodetool.code_runners.command_runner import CommandDockerRunner
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.code_runners.runtime_base import StreamRunnerBase
+
+log = get_logger(__name__)
 
 
 class ExecutePython(BaseNode):
@@ -134,8 +137,7 @@ class ExecutePython(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"ExecutePython finalize: {e}")
+            log.debug(f"ExecutePython finalize: {e}")
 
 
 class ExecuteJavaScript(BaseNode):
@@ -275,8 +277,7 @@ class ExecuteJavaScript(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"ExecuteJavaScript finalize: {e}")
+            log.debug(f"ExecuteJavaScript finalize: {e}")
 
 
 class ExecuteBash(BaseNode):
@@ -425,8 +426,7 @@ class ExecuteBash(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"ExecuteBash finalize: {e}")
+            log.debug(f"ExecuteBash finalize: {e}")
 
 
 class ExecuteRuby(BaseNode):
@@ -570,8 +570,7 @@ class ExecuteRuby(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"ExecuteRuby finalize: {e}")
+            log.debug(f"ExecuteRuby finalize: {e}")
 
 
 class ExecuteCommand(BaseNode):
@@ -718,8 +717,7 @@ class ExecuteCommand(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            import logging
-            logging.getLogger(__name__).debug(f"ExecuteCommand finalize: {e}")
+            log.debug(f"ExecuteCommand finalize: {e}")
 
 
 class EvaluateExpression(BaseNode):

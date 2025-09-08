@@ -3,7 +3,6 @@ import asyncio
 from enum import Enum
 import io
 import json
-import logging
 from typing import Any
 
 from nodetool.agents.tools.workflow_tool import GraphTool
@@ -57,8 +56,9 @@ from nodetool.chat.dataframes import json_schema_for_dataframe
 from nodetool.metadata.types import DataframeRef, RecordType
 from nodetool.metadata.types import Provider
 from nodetool.chat.providers import get_provider
+from nodetool.config.logging_config import get_logger
 
-log = logging.getLogger(__name__)
+log = get_logger(__name__)
 # Log level is controlled by env (DEBUG/NODETOOL_LOG_LEVEL)
 
 

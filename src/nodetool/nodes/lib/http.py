@@ -6,7 +6,6 @@ from typing import Any, List
 from urllib.parse import urljoin
 
 import aiohttp
-import logging
 from pydantic import Field
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -25,8 +24,9 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress
+from nodetool.config.logging_config import get_logger
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class HTTPBaseNode(BaseNode):

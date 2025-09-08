@@ -6,14 +6,14 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-import logging
+from nodetool.config.logging_config import get_logger
 
 from openai.types.create_embedding_response import CreateEmbeddingResponse
 from pydantic import Field
 
 from enum import Enum
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class ResponseFormat(str, Enum):

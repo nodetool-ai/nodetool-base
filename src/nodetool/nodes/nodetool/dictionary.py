@@ -1,6 +1,6 @@
 from enum import Enum
 import json
-import logging
+from nodetool.config.logging_config import get_logger
 from typing import Any
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
@@ -12,7 +12,7 @@ import datetime
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import FilePath, FolderPath
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 class GetValue(BaseNode):

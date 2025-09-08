@@ -5,7 +5,7 @@ import tempfile
 import uuid
 import ffmpeg
 import cv2
-import logging
+from nodetool.config.logging_config import get_logger
 
 import PIL.Image
 import PIL.ImageFont
@@ -22,7 +22,7 @@ from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import FolderPath
 
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 def safe_unlink(path: str):

@@ -26,8 +26,6 @@ def context():
 async def test_if_routes_true_and_not_false(context: ProcessingContext):
     import nodetool.nodes.nodetool.control
 
-    configure_logging(level="DEBUG")
-
     nodes = [
         APINode(
             id="if",
