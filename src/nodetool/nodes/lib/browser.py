@@ -24,6 +24,7 @@ from nodetool.workflows.types import Notification, LogUpdate
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.code_runners.runtime_base import StreamRunnerBase
 from nodetool.config.logging_config import get_logger
+from nodetool.config.environment import Environment
 
 logger = get_logger(__name__)
 
@@ -507,7 +508,13 @@ class WebFetch(BaseNode):
 
         try:
             # Make HTTP request
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    "Accept": "*/*",
+                    "Accept-Language": "en-US,en;q=0.9",
+                }
+            ) as session:
                 async with session.get(self.url) as response:
                     if response.status != 200:
                         raise ValueError(
@@ -576,7 +583,13 @@ class DownloadFile(BaseNode):
             raise ValueError("URL is required")
 
         try:
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(
+                headers={
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+                    "Accept": "*/*",
+                    "Accept-Language": "en-US,en;q=0.9",
+                }
+            ) as session:
                 async with session.get(self.url) as response:
                     if response.status != 200:
                         raise ValueError(

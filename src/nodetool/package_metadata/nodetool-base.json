@@ -3802,7 +3802,8 @@
       "basic_fields": [
         "condition",
         "value"
-      ]
+      ],
+      "is_streaming": true
     },
     {
       "title": "Reroute",
@@ -6156,7 +6157,7 @@
     },
     {
       "title": "Collect",
-      "description": "Collects a list of text inputs into a single string.\n    text, collect, list, stream",
+      "description": "Collects a stream of text inputs into a single string.\n    text, collect, list, stream",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Collect",
       "properties": [
@@ -13761,6 +13762,7 @@
             "type": "enum",
             "values": [
               "gemini-2.0-flash-preview-image-generation",
+              "gemini-2.5-flash-image-preview",
               "imagen-3.0-generate-001",
               "imagen-3.0-generate-002",
               "imagen-4.0-generate-preview-06-06",
@@ -13771,6 +13773,15 @@
           "default": "imagen-3.0-generate-002",
           "title": "Model",
           "description": "The image generation model to use"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {},
+          "title": "Image",
+          "description": "The image to use as a base for the generation."
         }
       ],
       "outputs": [
@@ -13783,7 +13794,8 @@
       ],
       "basic_fields": [
         "prompt",
-        "model"
+        "model",
+        "image"
       ],
       "expose_as_tool": true
     },
@@ -22052,6 +22064,15 @@
       ]
     },
     {
+      "id": "7c89894e8ce411f083b10000284d49a0",
+      "name": "Image Enhance",
+      "description": "Improve image quality with basic enhancement tools like sharpening, contrast and color adjustment",
+      "tags": [
+        "image",
+        "start"
+      ]
+    },
+    {
       "id": "43a125a6124611f0b49100005eb1b543",
       "name": "Image To Audio Story",
       "description": "Generate and narrate creative stories from images using AI",
@@ -22070,7 +22091,7 @@
       ]
     },
     {
-      "id": "4967c0b0d07b11efb3dc000010283958",
+      "id": "93102bfa8c8a11f0bcd000004fc538b3",
       "name": "Summarize RSS",
       "description": "",
       "tags": []
