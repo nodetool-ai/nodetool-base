@@ -120,7 +120,7 @@ jobs:
           twine check "$WHEEL_FILE"
           
       - name: Upload wheel artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: wheel-${{ env.PACKAGE_NAME }}-${{ needs.validate.outputs.version }}
           path: dist/*.whl
@@ -138,7 +138,7 @@ jobs:
           ref: ${{ needs.validate.outputs.tag-name }}
           
       - name: Download wheel artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: wheel-${{ env.PACKAGE_NAME }}-${{ needs.validate.outputs.version }}
           path: dist/
