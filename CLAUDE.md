@@ -97,7 +97,7 @@ class ExampleNode(BaseNode):
 ## Development Notes
 
 - Python 3.11+ required
-- Uses Poetry for dependency management
+- Uses uv for dependency management
 - `nodetool-core` dependency installed from git
 - Async/await patterns throughout
 - Strong typing with Pydantic models
