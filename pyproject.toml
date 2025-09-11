@@ -31,6 +31,16 @@ artifacts = [
     "src/nodetool/assets/nodetool-base/Data Visualization Pipeline.jpg",
     "src/nodetool/assets/nodetool-base/Index PDFs.jpg",
     "src/nodetool/assets/nodetool-base/Summarize Paper.jpg",
+    "package_metadata/nodetool-base.json",
+    "assets/nodetool-base/Categorize Mails.jpg",
+    "assets/nodetool-base/Simple Chat.jpg",
+    "assets/nodetool-base/Chat with Docs.jpg",
+    "assets/nodetool-base/Index PDFs.jpg",
+    "assets/nodetool-base/Daily Digest.jpg",
+    "assets/nodetool-base/Summarize Paper.jpg",
+    "assets/nodetool-base/Image To Audio Story.jpg",
+    "assets/nodetool-base/Data Generator.jpg",
+    "assets/nodetool-base/Data Visualization Pipeline.jpg",
 ]
 
 [tool.poetry]

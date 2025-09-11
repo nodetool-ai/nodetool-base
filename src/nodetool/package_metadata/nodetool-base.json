@@ -3,10 +3,7 @@
   "description": "Nodetool Base nodes",
   "version": "0.6.0",
   "authors": [
-    {
-      "name": "Matthias Georgi",
-      "email": "matti.georgi@gmail.com"
-    }
+    "Matthias Georgi <matti.georgi@gmail.com>"
   ],
   "repo_id": "",
   "nodes": [
