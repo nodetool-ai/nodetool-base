@@ -1,6 +1,5 @@
 import json
 from nodetool.config.logging_config import get_logger
-import re
 from pydantic import Field
 
 from nodetool.chat.dataframes import (
@@ -89,14 +88,7 @@ class DataGenerator(BaseNode):
             },
         )
         # Extract text content from the message
-        if assistant_message.content and len(assistant_message.content) > 0:
-            content_text = (
-                assistant_message.content[0].text
-                if hasattr(assistant_message.content[0], "text")
-                else str(assistant_message.content[0])
-            )
-        else:
-            content_text = str(assistant_message.content)
+        content_text = str(assistant_message.content)
 
         data = [
             [

@@ -32,3 +32,6 @@ artifacts = [
     "src/nodetool/assets/nodetool-base/Index PDFs.jpg",
     "src/nodetool/assets/nodetool-base/Summarize Paper.jpg",
 ]
+
+[tool.poetry]
+include = ["src/nodetool/package_metadata/nodetool-base.json", "src/nodetool/assets/nodetool-base/Categorize Mails.jpg", "src/nodetool/assets/nodetool-base/Simple Chat.jpg", "src/nodetool/assets/nodetool-base/Chat with Docs.jpg", "src/nodetool/assets/nodetool-base/Index PDFs.jpg", "src/nodetool/assets/nodetool-base/Daily Digest.jpg", "src/nodetool/assets/nodetool-base/Summarize Paper.jpg", "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg", "src/nodetool/assets/nodetool-base/Data Generator.jpg", "src/nodetool/assets/nodetool-base/Data Visualization Pipeline.jpg"]

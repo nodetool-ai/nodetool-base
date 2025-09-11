@@ -3,9 +3,12 @@
   "description": "Nodetool Base nodes",
   "version": "0.6.0",
   "authors": [
-    "Matthias Georgi <matti.georgi@gmail.com>"
+    {
+      "name": "Matthias Georgi",
+      "email": "matti.georgi@gmail.com"
+    }
   ],
-  "repo_id": "nodetool-ai/nodetool-base",
+  "repo_id": "",
   "nodes": [
     {
       "title": "Audio Classification",
@@ -11561,6 +11564,74 @@
       ]
     },
     {
+      "title": "Load Image Folder",
+      "description": "Load all images from a folder, optionally including subfolders.\n    image, load, folder, files\n\n    Use cases:\n    - Batch import images for processing\n    - Build datasets from a directory tree\n    - Iterate over photo collections",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.LoadImageFolder",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Folder to scan for images"
+        },
+        {
+          "name": "include_subdirectories",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Include Subdirectories",
+          "description": "Include images in subfolders"
+        },
+        {
+          "name": "extensions",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            ".png",
+            ".jpg",
+            ".jpeg",
+            ".bmp",
+            ".gif",
+            ".webp",
+            ".tiff"
+          ],
+          "title": "Extensions",
+          "description": "Image file extensions to include"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "image"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "name"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "include_subdirectories",
+        "extensions"
+      ],
+      "is_streaming": true
+    },
+    {
       "title": "Paste",
       "description": "Paste one image onto another at specified coordinates.\n    paste, composite, positioning, overlay\n\n    Use cases:\n    - Add watermarks or logos to images\n    - Combine multiple image elements\n    - Create collages or montages",
       "namespace": "nodetool.image",
@@ -15989,19 +16060,19 @@
           "description": "File pattern to match (e.g. *.txt)"
         },
         {
-          "name": "recursive",
+          "name": "include_subdirectories",
           "type": {
             "type": "bool"
           },
           "default": false,
-          "title": "Recursive",
+          "title": "Include Subdirectories",
           "description": "Search subdirectories"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "folder_path"
+            "type": "file_path"
           },
           "name": "file"
         }
@@ -16009,7 +16080,7 @@
       "basic_fields": [
         "folder",
         "pattern",
-        "recursive"
+        "include_subdirectories"
       ]
     },
     {

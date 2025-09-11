@@ -45,6 +45,76 @@ class LoadImageFile(BaseNode):
         return image
 
 
+class LoadImageFolder(BaseNode):
+    """
+    Load all images from a folder, optionally including subfolders.
+    image, load, folder, files
+
+    Use cases:
+    - Batch import images for processing
+    - Build datasets from a directory tree
+    - Iterate over photo collections
+    """
+
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Folder to scan for images"
+    )
+    include_subdirectories: bool = Field(
+        default=False, description="Include images in subfolders"
+    )
+    extensions: list[str] = Field(
+        default=[".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff"],
+        description="Image file extensions to include",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load Image Folder"
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "image": ImageRef,
+            "name": str,
+        }
+
+    async def gen_process(self, context: ProcessingContext):
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder.path:
+            raise ValueError("folder cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.isdir(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        allowed_exts = {ext.lower() for ext in self.extensions}
+
+        def iter_files(base_folder: str):
+            if self.include_subdirectories:
+                for root, _, files in os.walk(base_folder):
+                    for f in files:
+                        yield os.path.join(root, f)
+            else:
+                for f in os.listdir(base_folder):
+                    yield os.path.join(base_folder, f)
+
+        for path in iter_files(expanded_folder):
+            if not os.path.isfile(path):
+                continue
+            _, ext = os.path.splitext(path)
+            if ext.lower() not in allowed_exts:
+                continue
+
+            with open(path, "rb") as f:
+                image_data = f.read()
+
+            image = await context.image_from_bytes(image_data)
+            image.uri = create_file_uri(path)
+            yield "name", os.path.basename(path)
+            yield "image", image
+
+
 class SaveImageFile(BaseNode):
     """
     Write an image to disk.

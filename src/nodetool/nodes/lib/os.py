@@ -12,12 +12,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
     Datetime,
-    DocumentRef,
     FilePath,
-    ImageRef,
-    AudioRef,
-    VideoRef,
-    DataframeRef,
     FolderPath,
 )
 
@@ -158,27 +153,30 @@ class ListFiles(BaseNode):
         default=FolderPath(path="~"), description="Directory to scan"
     )
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
-    recursive: bool = Field(default=False, description="Search subdirectories")
+    include_subdirectories: bool = Field(
+        default=False, description="Search subdirectories"
+    )
 
     @classmethod
     def return_type(cls):
-        return {"file": FolderPath}
+        return {"file": FilePath}
 
-    async def process(self, context: ProcessingContext) -> list[FolderPath]:
+    async def get_process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder.path:
             raise ValueError("directory cannot be empty")
         expanded_directory = os.path.expanduser(self.folder.path)
 
-        if self.recursive:
+        if self.include_subdirectories:
             pattern = os.path.join(expanded_directory, "**", self.pattern)
             paths = glob.glob(pattern, recursive=True)
         else:
             pattern = os.path.join(expanded_directory, self.pattern)
             paths = glob.glob(pattern)
 
-        return [FolderPath(path=p) for p in paths]
+        for p in paths:
+            yield "file", FilePath(path=p)
 
 
 class CopyFile(BaseNode):
