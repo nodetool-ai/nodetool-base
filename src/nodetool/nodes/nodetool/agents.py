@@ -51,6 +51,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress, ToolCallUpdate, EdgeUpdate
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.chat.providers import Chunk
 from nodetool.chat.dataframes import json_schema_for_dataframe
 from nodetool.metadata.types import DataframeRef, RecordType
@@ -1070,45 +1071,23 @@ class Agent(BaseNode):
     def is_streaming_output(cls) -> bool:
         return True
 
-    async def gen_process(self, context: ProcessingContext):
-        if self.model.provider == Provider.Empty:
-            raise ValueError("Select a model")
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
 
+    def _prepare_messages(self) -> list[Message]:
         content = []
-
         content.append(MessageTextContent(text=self.prompt))
-        tools: list[Tool] = await asyncio.gather(
-            *[resolve_tool_by_name(tool.name, context.user_id) for tool in self.tools]
-        )
-        tools.extend(self.collect_tools_from_dynamic_outputs(context))
-
-        try:
-            tool_names = [t.name for t in tools if t is not None]
-        except Exception:
-            tool_names = []
-        log.debug(
-            "Agent setup: model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
-            self.model.id,
-            self.model.provider,
-            self.context_window,
-            self.max_tokens,
-            tool_names,
-            self.tool_call_limit,
-        )
-
         if self.image.is_set():
             content.append(MessageImageContent(image=self.image))
-
         if self.audio.is_set():
             content.append(MessageAudioContent(audio=self.audio))
 
-        messages = [
+        messages: list[Message] = [
             Message(role="system", content=self.system),
         ]
-
         for message in self.messages:
             messages.append(message)
-
         messages.append(Message(role="user", content=content))
         log.debug(
             "Agent initial messages prepared: num_messages=%d has_image=%s has_audio=%s prompt_len=%d",
@@ -1117,15 +1096,31 @@ class Agent(BaseNode):
             self.audio.is_set(),
             len(self.prompt or ""),
         )
+        return messages
+
+    async def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
+        tools: list[Tool] = await asyncio.gather(
+            *[resolve_tool_by_name(tool.name, context.user_id) for tool in self.tools]
+        )
+        tools.extend(self.collect_tools_from_dynamic_outputs(context))
+        return tools
+
+    async def _execute_agent_loop(
+        self,
+        context: ProcessingContext,
+        messages: list[Message],
+        tools: list[Tool],
+        outputs: NodeOutputs,
+    ) -> None:
         tools_called = False
         first_time = True
         iteration = 0
-        tool_iterations = 0  # Number of iterations where a tool was actually called
+        tool_iterations = 0
 
         while tools_called or first_time:
             iteration += 1
             log.debug(
-                "Agent loop start: iteration=%d tools_called_prev=%s first_time=%s num_messages=%d",
+                "Agent loop start (per-item): iteration=%d tools_called_prev=%s first_time=%s num_messages=%d",
                 iteration,
                 tools_called,
                 first_time,
@@ -1136,20 +1131,17 @@ class Agent(BaseNode):
             message_text_content = MessageTextContent(text="")
             assistant_message = Message(
                 role="assistant",
-                content=[
-                    message_text_content,
-                ],
+                content=[message_text_content],
                 tool_calls=[],
             )
 
             provider = get_provider(self.model.provider)
-            # Anti-loop guard: after N tool-calling iterations, disable tools to force a final answer
             tools_for_iteration = (
                 tools if tool_iterations < self.tool_call_limit else []
             )
             if tools_for_iteration is not tools:
                 log.debug(
-                    "Agent tools disabled for iteration=%d after %d tool iterations (limit=%d) to prevent looping",
+                    "Agent tools disabled for iteration=%d after %d tool iterations (limit=%d)",
                     iteration,
                     tool_iterations,
                     self.tool_call_limit,
@@ -1167,22 +1159,21 @@ class Agent(BaseNode):
                 if isinstance(chunk, Chunk):
                     if chunk.content_type == "text" or chunk.content_type is None:
                         message_text_content.text += chunk.content
-                        yield "chunk", chunk
-                        # Only log occasionally to avoid excessive logging per token
+                        await outputs.emit("chunk", chunk)
                         if chunk.done:
                             log.debug(
-                                "Agent chunk done: iteration=%d text_len=%d",
+                                "Agent chunk done (per-item): iteration=%d text_len=%d",
                                 iteration,
                                 len(message_text_content.text),
                             )
                     elif chunk.content_type == "audio":
                         data = base64.b64decode(chunk.content)
-                        yield "audio", AudioRef(data=data)
+                        await outputs.emit("audio", AudioRef(data=data))
                     elif chunk.content_type == "image":
-                        yield "chunk", chunk
+                        await outputs.emit("chunk", chunk)
 
                     if chunk.done:
-                        yield "text", message_text_content.text
+                        await outputs.emit("text", message_text_content.text)
 
                 elif isinstance(chunk, ToolCall):
                     tools_called = True
@@ -1199,7 +1190,7 @@ class Agent(BaseNode):
                     except Exception:
                         args_preview = "<unserializable>"
                     log.debug(
-                        "Agent tool call: iteration=%d id=%s name=%s has_args=%s args_preview=%s",
+                        "Agent tool call (per-item): iteration=%d id=%s name=%s has_args=%s args_preview=%s",
                         iteration,
                         getattr(chunk, "id", None),
                         getattr(chunk, "name", None),
@@ -1218,7 +1209,6 @@ class Agent(BaseNode):
                                     message=tool_instance.user_message(chunk.args),
                                 )
                             )
-                            # Emit EdgeUpdate to animate the edge connected to this tool output
                             initial_edges, _ = get_downstream_subgraph(
                                 context.graph, self.id, chunk.name
                             )
@@ -1237,7 +1227,7 @@ class Agent(BaseNode):
                                         serialize_tool_result(result)
                                     )
                                     log.debug(
-                                        "Agent tool result (parallel): iteration=%d id=%s name=%s result_len=%d",
+                                        "Agent tool result (parallel per-item): iteration=%d id=%s name=%s result_len=%d",
                                         iteration,
                                         getattr(call, "id", None),
                                         getattr(call, "name", None),
@@ -1251,7 +1241,7 @@ class Agent(BaseNode):
                                         {"error": f"Error executing tool: {str(e)}"}
                                     )
                                     log.debug(
-                                        "Agent tool result error recorded (parallel): iteration=%d id=%s name=%s",
+                                        "Agent tool result error recorded (parallel per-item): iteration=%d id=%s name=%s",
                                         iteration,
                                         getattr(call, "id", None),
                                         getattr(call, "name", None),
@@ -1262,16 +1252,14 @@ class Agent(BaseNode):
                                 asyncio.create_task(_run_tool(tool_instance, chunk))
                             )
                             break
-            # After provider finishes streaming this assistant turn, await all pending tool calls in parallel
             if pending_tool_tasks:
                 log.debug(
-                    "Agent executing %d tool call(s) in parallel for iteration=%d",
+                    "Agent executing %d tool call(s) in parallel for iteration=%d (per-item)",
                     len(pending_tool_tasks),
                     iteration,
                 )
                 results = await asyncio.gather(*pending_tool_tasks)
                 for tool_call_id, tool_name, tool_result_json in results:
-                    # Clear edge animation by posting drained after tool completes
                     initial_edges, _ = get_downstream_subgraph(
                         context.graph, self.id, tool_name
                     )
@@ -1287,9 +1275,8 @@ class Agent(BaseNode):
                             content=tool_result_json,
                         )
                     )
-            # End of provider.generate_messages loop for this iteration
             log.debug(
-                "Agent loop end: iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
+                "Agent loop end (per-item): iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
                 iteration,
                 tools_called,
                 assistant_message.tool_calls is not None
@@ -1297,16 +1284,41 @@ class Agent(BaseNode):
                 len(message_text_content.text),
                 len(messages),
             )
-
         log.debug(
-            "Agent loop complete: iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
+            "Agent loop complete (per-item): iteration=%d",
             iteration,
-            tools_called,
-            assistant_message.tool_calls is not None
-            and len(assistant_message.tool_calls) > 0,
-            len(message_text_content.text),
-            len(messages),
         )
+
+    async def run(
+        self,
+        context: ProcessingContext,
+        inputs: NodeInputs,
+        outputs: NodeOutputs,
+    ) -> None:
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+        # Consume streaming input and run one agent execution per item
+        async for handle, item in inputs.any():
+            try:
+                self.assign_property(handle, item)
+            except Exception:
+                pass
+
+            messages = self._prepare_messages()
+            tools = await self._resolve_tools(context)
+            tool_names = [t.name for t in tools if t is not None]
+
+            log.debug(
+                "Agent setup (per-item): model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+                self.model.id,
+                self.model.provider,
+                self.context_window,
+                self.max_tokens,
+                tool_names,
+                self.tool_call_limit,
+            )
+
+            await self._execute_agent_loop(context, messages, tools, outputs)
 
 
 class RealtimeAgent(BaseNode):
