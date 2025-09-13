@@ -3434,8 +3434,7 @@
         "start",
         "stop",
         "step"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Slice",
@@ -3802,8 +3801,7 @@
       "basic_fields": [
         "condition",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Reroute",
@@ -4558,7 +4556,7 @@
           "description": "The audio to analyze"
         },
         {
-          "name": "messages",
+          "name": "history",
           "type": {
             "type": "list",
             "type_args": [
@@ -4590,20 +4588,6 @@
           "title": "Context Window (Ollama)",
           "min": 1.0,
           "max": 65536.0
-        },
-        {
-          "name": "tools",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tool_name"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Tools",
-          "description": "List of tools to use for execution"
         },
         {
           "name": "tool_call_limit",
@@ -4639,12 +4623,8 @@
       "basic_fields": [
         "prompt",
         "model",
-        "messages",
-        "image",
-        "audio",
-        "tools"
+        "image"
       ],
-      "is_streaming": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -4791,103 +4771,6 @@
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Realtime Agent",
-      "description": "Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.\n    realtime, streaming, openai, audio-input, text-output\n\n    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:\n    - Sends session settings via `session.update`\n    - Adds user input via `conversation.item.create`\n    - Streams back `response.text.delta` events until `response.done`",
-      "namespace": "nodetool.agents",
-      "node_type": "nodetool.agents.RealtimeAgent",
-      "properties": [
-        {
-          "name": "system",
-          "type": {
-            "type": "str"
-          },
-          "default": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
-          "title": "System",
-          "description": "System instructions for the realtime session"
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "Optional user text input for the session"
-        },
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {},
-          "title": "Audio",
-          "description": "Optional audio input to send (base64 or bytes)"
-        },
-        {
-          "name": "voice",
-          "type": {
-            "type": "enum",
-            "values": [
-              "none",
-              "ash",
-              "alloy",
-              "ballad",
-              "coral",
-              "echo",
-              "fable",
-              "onyx",
-              "nova",
-              "shimmer",
-              "sage",
-              "verse"
-            ],
-            "type_name": "nodetool.nodes.nodetool.agents.Voice"
-          },
-          "default": "alloy",
-          "title": "Voice",
-          "description": "The voice for the audio output"
-        },
-        {
-          "name": "temperature",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.8,
-          "title": "Temperature",
-          "description": "The temperature for the response",
-          "min": 0.6,
-          "max": 1.2
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "chunk"
-          },
-          "name": "chunk"
-        },
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "audio"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        }
-      ],
-      "basic_fields": [
-        "system",
-        "prompt",
-        "audio",
-        "model"
-      ],
-      "is_streaming": true
-    },
-    {
       "title": "Summarizer",
       "description": "Generate concise summaries of text content using LLM providers with streaming output.\n    text, summarization, nlp, content, streaming\n\n    Specialized for creating high-quality summaries with real-time streaming:\n    - Condensing long documents into key points\n    - Creating executive summaries with live output\n    - Extracting main ideas from text as they're generated\n    - Maintaining factual accuracy while reducing length",
       "namespace": "nodetool.agents",
@@ -4960,8 +4843,7 @@
         "text",
         "max_tokens",
         "model"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Chart Generator",
@@ -5088,8 +4970,7 @@
         "prompt",
         "model",
         "columns"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "List Generator",
@@ -5164,8 +5045,7 @@
       "basic_fields": [
         "prompt",
         "model"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "SVGGenerator",
@@ -5280,7 +5160,13 @@
           "type": {
             "type": "audio"
           },
-          "name": "output"
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
         }
       ],
       "basic_fields": [
@@ -5945,6 +5831,62 @@
       "basic_fields": [
         "name",
         "value"
+      ]
+    },
+    {
+      "title": "Realtime Audio Input",
+      "description": "Accepts streaming audio data for workflows.\n    input, parameter, audio, sound, voice, speech, asset",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.RealtimeAudioInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "any"
+          },
+          "title": "Value",
+          "description": "The value of the input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {},
+          "title": "Audio",
+          "description": "The audio to use as input."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value",
+        "audio"
       ]
     },
     {
@@ -6858,8 +6800,7 @@
       ],
       "basic_fields": [
         "folder"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Parse JSON String",
@@ -7427,8 +7368,7 @@
         "folder",
         "pattern",
         "recursive"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Load Document File",
@@ -7673,8 +7613,7 @@
         "document",
         "buffer_size",
         "threshold"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Split HTML",
@@ -7702,8 +7641,7 @@
       ],
       "basic_fields": [
         "document"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Split JSON",
@@ -8366,8 +8304,7 @@
       ],
       "basic_fields": [
         "folder"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Load Audio File",
@@ -10539,8 +10476,7 @@
         "video",
         "start",
         "end"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Frame To Video",
@@ -10612,8 +10548,7 @@
       ],
       "basic_fields": [
         "folder"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Load Video File",
@@ -11529,8 +11464,7 @@
       ],
       "basic_fields": [
         "folder"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Load Image File",
@@ -11625,8 +11559,7 @@
         "folder",
         "include_subdirectories",
         "extensions"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Paste",
@@ -12432,7 +12365,6 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming": true,
       "expose_as_tool": true
     },
     {
@@ -12672,8 +12604,7 @@
       ],
       "basic_fields": [
         "dataframe"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Save CSVDataframe File",
@@ -12966,8 +12897,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Audio Output",
@@ -13013,8 +12943,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Boolean Output",
@@ -13060,8 +12989,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Dataframe Output",
@@ -13107,8 +13035,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Dictionary Output",
@@ -13162,8 +13089,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Document Output",
@@ -13209,8 +13135,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Float Output",
@@ -13256,8 +13181,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Image Output",
@@ -13303,8 +13227,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Integer Output",
@@ -13350,8 +13273,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "List Output",
@@ -13402,8 +13324,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "String Output",
@@ -13449,8 +13370,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Video Output",
@@ -13496,8 +13416,7 @@
       "basic_fields": [
         "name",
         "value"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Grounded Search",
@@ -14543,7 +14462,6 @@
         "date_filter",
         "max_results"
       ],
-      "is_streaming": true,
       "expose_as_tool": true
     },
     {
@@ -14875,7 +14793,6 @@
       "basic_fields": [
         "url"
       ],
-      "is_streaming": true,
       "expose_as_tool": true
     },
     {
@@ -17881,8 +17798,7 @@
       "basic_fields": [
         "html",
         "base_url"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Extract Images",
@@ -17920,8 +17836,7 @@
       "basic_fields": [
         "html",
         "base_url"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Extract Links",
@@ -17971,8 +17886,7 @@
       "basic_fields": [
         "html",
         "base_url"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Extract Metadata",
@@ -18050,8 +17964,7 @@
       "basic_fields": [
         "html",
         "base_url"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Convert HTML to Text",
@@ -20950,8 +20863,7 @@
       ],
       "basic_fields": [
         "folder"
-      ],
-      "is_streaming": true
+      ]
     },
     {
       "title": "Parse Dict",
@@ -21606,6 +21518,172 @@
       ],
       "basic_fields": [
         "event"
+      ]
+    },
+    {
+      "title": "Realtime Agent",
+      "description": "Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.\n    realtime, streaming, openai, audio-input, text-output\n\n    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:\n    - Sends session settings via `session.update`\n    - Adds user input via `conversation.item.create`\n    - Streams back `response.text.delta` events until `response.done`",
+      "namespace": "openai.agents",
+      "node_type": "openai.agents.RealtimeAgent",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "gpt-4o-realtime-preview",
+              "gpt-4o-mini-realtime-preview"
+            ],
+            "type_name": "nodetool.nodes.openai.agents.Model"
+          },
+          "default": "gpt-4o-mini-realtime-preview",
+          "title": "Model"
+        },
+        {
+          "name": "system",
+          "type": {
+            "type": "str"
+          },
+          "default": "\nYou are an AI assistant interacting in real-time. Follow these rules unless explicitly overridden by the user:\n\n1. Respond promptly \u2014 minimize delay. If you do not yet have a complete answer, acknowledge the question and indicate what you are doing to find the answer.\n2. Maintain correctness. Always aim for accuracy; if you\u2019re uncertain, say so and optionally offer to verify.\n3. Be concise but clear. Prioritize key information first, then supporting details if helpful.\n4. Ask clarifying questions when needed. If the user\u2019s request is ambiguous, request clarification rather than guessing.\n5. Be consistent in terminology and definitions. Once you adopt a term or abbreviation, use it consistently in this conversation.\n6. Respect politeness and neutrality. Do not use emotive language unless the conversation tone demands it.\n7. Stay within safe and ethical bounds. Avoid disallowed content; follow OpenAI policies.\n8. Adapt to the user\u2019s style and level. If the user seems technical, use technical detail; if non-technical, explain with simpler language.\n---\nYou are now active. Await the user\u2019s request.\n",
+          "title": "System",
+          "description": "System instructions for the realtime session"
+        },
+        {
+          "name": "chunk",
+          "type": {
+            "type": "chunk"
+          },
+          "default": {},
+          "title": "Chunk",
+          "description": "The audio chunk to use as input."
+        },
+        {
+          "name": "voice",
+          "type": {
+            "type": "enum",
+            "values": [
+              "none",
+              "ash",
+              "alloy",
+              "ballad",
+              "coral",
+              "echo",
+              "fable",
+              "onyx",
+              "nova",
+              "shimmer",
+              "sage",
+              "verse"
+            ],
+            "type_name": "nodetool.nodes.openai.agents.Voice"
+          },
+          "default": "alloy",
+          "title": "Voice",
+          "description": "The voice for the audio output"
+        },
+        {
+          "name": "speed",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Speed",
+          "description": "The speed of the model's spoken response",
+          "min": 0.25,
+          "max": 1.5
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.8,
+          "title": "Temperature",
+          "description": "The temperature for the response",
+          "min": 0.6,
+          "max": 1.2
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "prompt",
+        "chunk",
+        "speed"
+      ],
+      "supports_dynamic_outputs": true
+    },
+    {
+      "title": "Realtime Transcription",
+      "description": "Stream microphone or audio input to OpenAI Realtime and emit transcription.\n\n    Emits:\n      - `chunk` Chunk(content=..., done=False) for transcript deltas\n      - `chunk` Chunk(content=\"\", done=True) to mark segment end\n      - `text` final aggregated transcript when input ends",
+      "namespace": "openai.agents",
+      "node_type": "openai.agents.RealtimeTranscription",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {},
+          "title": "Model",
+          "description": "Model to use"
+        },
+        {
+          "name": "system",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "System",
+          "description": "System instructions (optional)"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.8,
+          "title": "Temperature",
+          "description": "Decoding temperature"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "system",
+        "temperature"
       ]
     },
     {

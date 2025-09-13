@@ -9,19 +9,22 @@ from nodetool.metadata.types import (
     MessageAudioContent,
     MessageDocumentContent,
     MessageVideoContent,
-)
-from nodetool.metadata.types import (
     MessageImageContent,
     MessageTextContent,
     TextRef,
 )
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.types import Chunk
 from nodetool.metadata.types import AudioRef
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import InputNode
 from nodetool.metadata.types import VideoRef
 from nodetool.metadata.types import Collection, ToolName
 from nodetool.config.environment import Environment
+from nodetool.workflows.io import NodeInputs, NodeOutputs
+from nodetool.config.logging_config import get_logger
+
+log = get_logger(__name__)
 
 
 class FloatInput(InputNode):
@@ -245,10 +248,41 @@ class AudioInput(InputNode):
 
     value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
 
+    @classmethod
+    def return_type(cls):
+        return {
+            "audio": AudioRef,
+            "chunk": Chunk,
+        }
+
     async def process(self, context: ProcessingContext) -> AudioRef:
         if self.value.is_empty():
             raise ValueError("Audio input is empty, please upload an audio file")
         return self.value
+
+
+class RealtimeAudioInput(InputNode):
+    """
+    Accepts streaming audio data for workflows.
+    input, parameter, audio, sound, voice, speech, asset
+    """
+
+    audio: AudioRef = Field(AudioRef(), description="The audio to use as input.")
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        basic_fields = super().get_basic_fields()
+        return basic_fields + ["audio"]
+
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "chunk": Chunk,
+        }
 
 
 class PathInput(InputNode):

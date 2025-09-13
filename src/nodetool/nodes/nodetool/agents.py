@@ -3,15 +3,28 @@ import asyncio
 from enum import Enum
 import io
 import json
-from typing import Any
+from typing import Any, cast
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
+
+from openai.resources.beta.realtime.realtime import AsyncRealtimeConnection
 from openai.types.beta.realtime import (
     ResponseAudioDoneEvent,
     ResponseDoneEvent,
     ResponseTextDeltaEvent,
     ResponseTextDoneEvent,
+    Session,
+)
+from openai.types.beta.realtime.session import (
+    Tool as OpenAITool,
+    TurnDetection,
+)
+from openai.types.beta.realtime.response_function_call_arguments_delta_event import (
+    ResponseFunctionCallArgumentsDeltaEvent,
+)
+from openai.types.beta.realtime.response_function_call_arguments_done_event import (
+    ResponseFunctionCallArgumentsDoneEvent,
 )
 from openai.types.beta.realtime.session_update_event_param import Session
 from openai.types.beta.realtime.response_create_event_param import Response
@@ -61,508 +74,6 @@ from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)
 # Log level is controlled by env (DEBUG/NODETOOL_LOG_LEVEL)
-
-
-# class TaskPlannerNode(BaseNode):
-#     """
-#     Generates a Task execution plan based on an objective, model, and tools. Outputs a Task object that can be used by an Agent executor.
-#     planning, task generation, workflow design
-#     """
-
-#     name: str = Field(
-#         default="Task Planner",
-#         description="The name of the task planner node",
-#     )
-
-#     objective: str = Field(
-#         default="", description="The objective or problem to create a plan for"
-#     )
-
-#     model: LanguageModel = Field(
-#         default=LanguageModel(),
-#         description="Model to use for planning",
-#     )
-
-#     reasoning_model: LanguageModel = Field(
-#         default=LanguageModel(),
-#         description="Model to use for reasoning",
-#     )
-
-#     tools: list[ToolName] = Field(
-#         default=[],
-#         description="List of EXECUTION tools available for the planned subtasks",
-#     )
-
-#     output_schema: Optional[dict] = Field(
-#         default=None, description="Optional JSON schema for the final task output"
-#     )
-
-#     enable_analysis_phase: bool = Field(
-#         default=True, description="Whether to use analysis in the planning phase"
-#     )
-
-#     enable_data_contracts_phase: bool = Field(
-#         default=True, description="Whether to use data contracts in the planning phase"
-#     )
-
-#     use_structured_output: bool = Field(
-#         default=False,
-#         description="Attempt to use structured output for plan generation",
-#     )
-
-#     _is_dynamic = True
-
-#     @classmethod
-#     def get_basic_fields(cls) -> list[str]:
-#         return [
-#             "objective",
-#             "model",
-#             "tools",
-#             "input_files",
-#             "output_schema",
-#             "enable_analysis_phase",
-#             "enable_data_contracts_phase",
-#             "use_structured_output",
-#         ]
-
-#     @classmethod
-#     def get_input_fields(cls) -> list[str]:
-#         return cls.get_basic_fields()
-
-#     @classmethod
-#     def get_output_fields(cls) -> list[str]:
-#         return ["task"]  # Output field name
-
-#     async def process(self, context: ProcessingContext) -> Task:
-#         if not self.objective:
-#             raise ValueError("Objective cannot be empty")
-
-#         if not self.model.provider:
-#             raise ValueError("Select a model for planning")
-
-#         provider = get_provider(self.model.provider)
-
-#         execution_tools_instances: Sequence[Tool] = [
-#             resolve_tool_by_name(tool.name) for tool in self.tools
-#         ]
-#         inputs = self.get_dynamic_properties()
-
-#         # Initialize the TaskPlanner
-#         task_planner = TaskPlanner(
-#             provider=provider,
-#             model=self.model.id,
-#             reasoning_model=self.reasoning_model.id,
-#             objective=self.objective,
-#             workspace_dir=context.workspace_dir,
-#             execution_tools=execution_tools_instances,
-#             inputs=inputs,
-#             output_schema=self.output_schema,
-#             enable_analysis_phase=self.enable_analysis_phase,
-#             enable_data_contracts_phase=self.enable_data_contracts_phase,
-#             verbose=True,  # Or make this configurable
-#         )
-
-#         # Create the task plan
-#         # Note: TaskPlanner.create_task now returns a Task directly
-#         async for chunk in task_planner.create_task(context, self.objective):
-#             if isinstance(chunk, Chunk):
-#                 chunk.node_id = self.id
-#                 context.post_message(chunk)
-#             elif isinstance(chunk, PlanningUpdate):
-#                 chunk.node_id = self.id
-#                 context.post_message(chunk)
-
-#         assert task_planner.task_plan is not None, "Task was not created"
-#         return task_planner.task_plan.tasks[0]
-
-
-# class MultiStepAgent(BaseNode):
-#     """
-#     Executes tasks using a multi-step agent that can call tools
-#     agent, execution, tasks
-
-#     Use cases:
-#     - Automate complex workflows with reasoning
-#     - Process tasks with tool calling capabilities
-#     - Solve problems step-by-step with LLM reasoning
-#     """
-
-#     name: str = Field(
-#         default="Agent",
-#         description="The name of the agent executor",
-#     )
-
-#     objective: str = Field(
-#         default="", description="The objective or problem to create a plan for"
-#     )
-
-#     model: LanguageModel = Field(
-#         default=LanguageModel(),
-#         description="Model to use for execution",
-#     )
-
-#     reasoning_model: LanguageModel = Field(
-#         default=LanguageModel(),
-#         description="Model to use for reasoning tasks",
-#     )
-
-#     task: Task = Field(
-#         default=Task(), description="Pre-defined task to execute, skipping planning"
-#     )
-
-#     tools: list[ToolName] = Field(
-#         default=[], description="List of tools to use for execution"
-#     )
-
-#     input_files: list[FilePath] = Field(
-#         default=[], description="List of input files to use for the agent"
-#     )
-
-#     max_steps: int = Field(
-#         default=30, description="Maximum execution steps to prevent infinite loops"
-#     )
-
-#     _is_dynamic = True
-
-#     @classmethod
-#     def get_basic_fields(cls) -> list[str]:
-#         return [
-#             "objective",
-#             "model",
-#             "task",
-#             "tools",
-#         ]
-
-#     async def process_agent(
-#         self,
-#         context: ProcessingContext,
-#         output_schema: dict[str, Any],
-#     ) -> Any:
-#         if not self.model.provider:
-#             raise ValueError("Select a model")
-
-#         if self.task.title:
-#             if self.objective:
-#                 raise ValueError(
-#                     "Objective cannot be provided if a pre-defined Task is used"
-#                 )
-#             self.objective = self.task.title
-#         elif not self.objective:
-#             raise ValueError(
-#                 "Objective cannot be empty if no pre-defined Task is provided"
-#             )
-
-#         provider = get_provider(self.model.provider)
-
-#         tools = [resolve_tool_by_name(tool.name) for tool in self.tools]
-#         tools_instances = [tool for tool in tools if tool is not None]
-
-#         inputs = self.get_dynamic_properties()
-
-#         agent = Agent(
-#             name=self.name,
-#             objective=self.objective,
-#             provider=provider,
-#             model=self.model.id,
-#             tools=tools_instances,
-#             enable_analysis_phase=True,
-#             enable_data_contracts_phase=False,
-#             output_schema=output_schema,
-#             reasoning_model=self.reasoning_model.id,
-#             inputs=inputs,
-#             task=self.task if self.task.title else None,
-#             docker_image="nodetool" if Environment.is_production() else None,
-#         )
-
-#         async for item in agent.execute(context):
-#             if isinstance(item, TaskUpdate):
-#                 item.node_id = self.id
-#                 context.post_message(item)
-#             elif isinstance(item, PlanningUpdate):
-#                 item.node_id = self.id
-#                 context.post_message(item)
-#             elif isinstance(item, ToolCall):
-#                 context.post_message(
-#                     ToolCallUpdate(
-#                         node_id=self.id,
-#                         name=item.name,
-#                         args=item.args,
-#                         message=item.message,
-#                     )
-#                 )
-#             elif isinstance(item, Chunk):
-#                 item.node_id = self.id
-#                 context.post_message(item)
-
-#         return agent.get_results()
-
-#     async def process(self, context: ProcessingContext) -> str:
-#         result = await self.process_agent(
-#             context=context,
-#             output_schema={"type": "string"},
-#         )
-#         print("--------------------------------")
-#         print(result)
-
-#         return result
-
-
-# class StructuredOutputAgent(MultiStepAgent):
-#     """
-#     Executes tasks using a multi-step agent that can call tools and return a structured output
-#     agent, execution, tasks
-#     """
-
-#     @classmethod
-#     def get_title(cls) -> str:
-#         return "Structured Output Agent"
-
-#     fields: RecordType = Field(
-#         default=RecordType(),
-#         description="The fields to use in the dictionary.",
-#     )
-
-#     @classmethod
-#     def get_basic_fields(cls) -> list[str]:
-#         return super().get_basic_fields() + ["fields"]
-
-#     async def process(self, context: ProcessingContext) -> dict[str, Any]:
-#         result = await self.process_agent(
-#             context,
-#             json_schema_for_dictionary(self.fields),
-#         )
-#         if not isinstance(result, dict):
-#             raise ValueError("Agent did not return a dictionary")
-#         return result
-
-
-# class DataframeAgent(MultiStepAgent):
-#     """
-#     Executes tasks using a multi-step agent that can call tools and return a structured output
-#     agent, execution, tasks
-
-#     Use cases:
-#     - Automate complex workflows with reasoning
-#     - Process tasks with tool calling capabilities
-#     - Solve problems step-by-step with LLM reasoning
-#     """
-
-#     @classmethod
-#     def get_title(cls) -> str:
-#         return "Dataframe Agent"
-
-#     columns: RecordType = Field(
-#         default=RecordType(),
-#         description="The columns to use in the dataframe.",
-#     )
-
-#     @classmethod
-#     def get_basic_fields(cls) -> list[str]:
-#         return super().get_basic_fields() + ["columns"]
-
-#     async def process(self, context: ProcessingContext) -> DataframeRef:
-#         json_schema = json_schema_for_dataframe(self.columns.columns)
-#         result = await self.process_agent(context, json_schema)
-#         if not isinstance(result, dict):
-#             raise ValueError("Agent did not return a dictionary")
-#         if "data" not in result:
-#             raise ValueError("Agent did not return a data key")
-#         if not isinstance(result["data"], list):
-#             raise ValueError("Agent did not return a list of data")
-
-#         def lowercase_keys(d: dict[str, Any]) -> dict[str, Any]:
-#             return {k.lower(): v for k, v in d.items()}
-
-#         rows = [lowercase_keys(row) for row in result["data"]]
-
-#         data = [
-#             [row.get(col.name, None) for col in self.columns.columns] for row in rows
-#         ]
-#         return DataframeRef(columns=self.columns.columns, data=data)
-
-
-# class ListAgent(MultiStepAgent):
-#     """
-#     Executes tasks using a multi-step agent that can call tools and return a list
-#     agent, execution, tasks, list
-
-#     Use cases:
-#     - Generate lists of items
-#     - Create sequences of steps
-#     - Collect multiple results
-#     """
-
-#     @classmethod
-#     def get_title(cls) -> str:
-#         return "List Agent"
-
-#     item_type: str = Field(
-#         default="string",
-#         description="The type of items in the list (string, number, object)",
-#     )
-
-#     @classmethod
-#     def get_basic_fields(cls) -> list[str]:
-#         return super().get_basic_fields() + ["item_type"]
-
-#     async def process(self, context: ProcessingContext) -> List[Any]:
-#         schema = {"type": "array", "items": {"type": self.item_type}}
-#         result = await self.process_agent(context, schema)
-#         if not isinstance(result, list):
-#             raise ValueError("Agent did not return a list")
-#         return result
-
-
-# class MultiStepAgentStreaming(MultiStepAgent):
-#     """
-#     Executes tasks using a multi-step agent that streams results as they're generated.
-#     agent, execution, tasks, streaming
-
-#     Use cases:
-#     - Real-time interactive applications
-#     - Progressive rendering of agent responses
-#     - Streaming AI interfaces
-#     - Live-updating workflows
-#     """
-
-#     @classmethod
-#     def get_title(cls) -> str:
-#         return "Multi-Step Agent (Streaming)"
-
-#     @classmethod
-#     def is_cacheable(cls) -> bool:
-#         return False
-
-#     @classmethod
-#     def return_type(cls):
-#         return {
-#             "text": str,
-#             "image": ImageRef,
-#             "audio": AudioRef,
-#         }
-
-#     _is_dynamic = True
-
-#     async def gen_process_agent(
-#         self,
-#         context: ProcessingContext,
-#     ) -> AsyncGenerator[tuple[str, Any], None]:
-#         if not self.model.provider:
-#             raise ValueError("Select a model")
-
-#         if self.task.title:
-#             if self.objective:
-#                 raise ValueError(
-#                     "Objective cannot be provided if a pre-defined Task is used"
-#                 )
-#             self.objective = self.task.title
-#         elif not self.objective:
-#             raise ValueError(
-#                 "Objective cannot be empty if no pre-defined Task is provided"
-#             )
-
-#         provider = get_provider(self.model.provider)
-
-#         tools = [resolve_tool_by_name(tool.name) for tool in self.tools]
-#         tools_instances = [tool for tool in tools if tool is not None]
-
-#         inputs = self.get_dynamic_properties()
-
-#         agent = Agent(
-#             name=self.name,
-#             objective=self.objective,
-#             provider=provider,
-#             model=self.model.id,
-#             tools=tools_instances,
-#             enable_analysis_phase=True,
-#             enable_data_contracts_phase=False,
-#             inputs=inputs,
-#             reasoning_model=self.reasoning_model.id,
-#             task=self.task if self.task.title else None,
-#             docker_image="nodetool" if Environment.is_production() else None,
-#         )
-
-#         async for item in agent.execute(context):
-#             if isinstance(item, TaskUpdate):
-#                 item.node_id = self.id
-#                 context.post_message(item)
-#             elif isinstance(item, PlanningUpdate):
-#                 item.node_id = self.id
-#                 context.post_message(item)
-#             elif isinstance(item, ToolCall):
-#                 context.post_message(
-#                     ToolCallUpdate(
-#                         node_id=self.id,
-#                         name=item.name,
-#                         args=item.args,
-#                         message=item.message,
-#                     )
-#                 )
-#                 for tool in tools:
-#                     if tool and tool.name == item.name:
-#                         context.post_message(
-#                             ToolCallUpdate(
-#                                 node_id=self.id,
-#                                 name=item.name,
-#                                 args=item.args,
-#                                 message=tool.user_message(item.args),
-#                             )
-#                         )
-#                         tool_result = await tool.process(context, item.args)
-#                         if isinstance(tool_result, dict) and "type" in tool_result:
-#                             if (
-#                                 tool_result["type"] == "image"
-#                                 and "output_file" in tool_result
-#                             ):
-#                                 file_path = context.resolve_workspace_path(
-#                                     tool_result["output_file"]
-#                                 )
-#                                 with open(file_path, "rb") as f:
-#                                     image = await context.image_from_io(f)
-#                                     yield "image", image
-#                             elif (
-#                                 tool_result["type"] == "audio"
-#                                 and "output_file" in tool_result
-#                             ):
-#                                 file_path = context.resolve_workspace_path(
-#                                     tool_result["output_file"]
-#                                 )
-#                                 with open(file_path, "rb") as f:
-#                                     audio = await context.audio_from_io(f)
-#                                     yield "audio", audio
-
-#             elif isinstance(item, Chunk):
-#                 item.node_id = self.id
-#                 context.post_message(item)
-#                 if item.content_type == "text" or item.content_type is None:
-#                     yield "text", item.content
-#                 elif item.content_type == "image":
-#                     yield "image", item
-#             elif isinstance(item, SubTaskResult):
-#                 workspace_path = context.resolve_workspace_path(item.result["path"])
-#                 if os.path.exists(workspace_path):
-#                     with open(workspace_path, "r", encoding="utf-8") as f:
-#                         yield "text", f.read()
-#                 else:
-#                     raise ValueError(
-#                         f"SubTaskResult path does not exist: {item.result['path']}"
-#                     )
-
-#     async def gen_process(
-#         self, context: ProcessingContext
-#     ) -> AsyncGenerator[tuple[str, Any], None]:
-#         async for data_type, data in self.gen_process_agent(
-#             context=context,
-#         ):
-#             yield data_type, data
-
-#     async def process(self, context: ProcessingContext) -> str:
-#         result = await self.process_agent(
-#             context=context,
-#             output_schema={"type": "string"},
-#         )
-
-#         return result
 
 
 class Summarizer(BaseNode):
@@ -1004,15 +515,12 @@ class Agent(BaseNode):
         default=AudioRef(),
         description="The audio to analyze",
     )
-    messages: list[Message] = Field(
+    history: list[Message] = Field(
         title="Messages", default=[], description="The messages for the LLM"
     )
     max_tokens: int = Field(title="Max Tokens", default=32768, ge=1, le=100000)
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
-    )
-    tools: list[ToolName] = Field(
-        default=[], description="List of tools to use for execution"
     )
     tool_call_limit: int = Field(
         title="Tool Call Limit",
@@ -1042,9 +550,7 @@ class Agent(BaseNode):
             "audio": AudioRef,
         }
 
-    def collect_tools_from_dynamic_outputs(
-        self, context: ProcessingContext
-    ) -> list[Tool]:
+    def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
         tools = []
         for name, type_meta in self._dynamic_outputs.items():
             initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
@@ -1061,10 +567,7 @@ class Agent(BaseNode):
         return [
             "prompt",
             "model",
-            "messages",
             "image",
-            "audio",
-            "tools",
         ]
 
     @classmethod
@@ -1076,6 +579,12 @@ class Agent(BaseNode):
         return True
 
     def _prepare_messages(self) -> list[Message]:
+        """Build the message history for a single model interaction.
+
+        Returns:
+            list[Message]: Ordered list of messages including system, prior history,
+                and the current user content (text/image/audio).
+        """
         content = []
         content.append(MessageTextContent(text=self.prompt))
         if self.image.is_set():
@@ -1086,7 +595,7 @@ class Agent(BaseNode):
         messages: list[Message] = [
             Message(role="system", content=self.system),
         ]
-        for message in self.messages:
+        for message in self.history:
             messages.append(message)
         messages.append(Message(role="user", content=content))
         log.debug(
@@ -1098,13 +607,6 @@ class Agent(BaseNode):
         )
         return messages
 
-    async def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
-        tools: list[Tool] = await asyncio.gather(
-            *[resolve_tool_by_name(tool.name, context.user_id) for tool in self.tools]
-        )
-        tools.extend(self.collect_tools_from_dynamic_outputs(context))
-        return tools
-
     async def _execute_agent_loop(
         self,
         context: ProcessingContext,
@@ -1112,6 +614,14 @@ class Agent(BaseNode):
         tools: list[Tool],
         outputs: NodeOutputs,
     ) -> None:
+        """Execute one or more model iterations, streaming chunks and handling tools.
+
+        Args:
+            context (ProcessingContext): Workflow execution context.
+            messages (list[Message]): Message history to seed the model.
+            tools (list[Tool]): Resolved tools available for tool-calling.
+            outputs (NodeOutputs): Output emitter for streamed chunks and results.
+        """
         tools_called = False
         first_time = True
         iteration = 0
@@ -1297,15 +807,77 @@ class Agent(BaseNode):
     ) -> None:
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
-        # Consume streaming input and run one agent execution per item
+        # Accumulators for streamed chunk input
+        chunk_text_buf: list[str] = []
+        audio_accum = bytearray()
+
+        # Consume streaming input and run one agent execution when a logical unit completes
         async for handle, item in inputs.any():
+            # Special handling for streamed chunk input
+            if handle == "chunk" and isinstance(item, Chunk):
+                if item.content_type == "audio":
+                    if item.content:
+                        try:
+                            audio_accum.extend(base64.b64decode(item.content))
+                        except Exception:
+                            pass
+                    if getattr(item, "done", False):
+                        # Set accumulated audio and execute once
+                        if len(audio_accum) > 0:
+                            self.audio = AudioRef(data=bytes(audio_accum))
+                        # reset accumulators
+                        chunk_text_buf = []
+                        audio_accum = bytearray()
+                        messages = self._prepare_messages()
+                        tools = self._resolve_tools(context)
+                        tool_names = [t.name for t in tools if t is not None]
+                        log.debug(
+                            "Agent setup (chunk-audio): model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+                            self.model.id,
+                            self.model.provider,
+                            self.context_window,
+                            self.max_tokens,
+                            tool_names,
+                            self.tool_call_limit,
+                        )
+                        await self._execute_agent_loop(
+                            context, messages, tools, outputs
+                        )
+                else:
+                    # Treat as text chunk
+                    if item.content:
+                        chunk_text_buf.append(item.content)
+                    if getattr(item, "done", False):
+                        self.prompt = "".join(chunk_text_buf)
+                        # reset accumulators
+                        chunk_text_buf = []
+                        audio_accum = bytearray()
+                        messages = self._prepare_messages()
+                        tools = self._resolve_tools(context)
+                        tool_names = [t.name for t in tools if t is not None]
+                        log.debug(
+                            "Agent setup (chunk-text): model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+                            self.model.id,
+                            self.model.provider,
+                            self.context_window,
+                            self.max_tokens,
+                            tool_names,
+                            self.tool_call_limit,
+                        )
+                        await self._execute_agent_loop(
+                            context, messages, tools, outputs
+                        )
+                # For intermediate chunks, wait for done signal
+                continue
+
+            # Default behavior: assign property and execute immediately per item
             try:
                 self.assign_property(handle, item)
             except Exception:
                 pass
 
             messages = self._prepare_messages()
-            tools = await self._resolve_tools(context)
+            tools = self._resolve_tools(context)
             tool_names = [t.name for t in tools if t is not None]
 
             log.debug(
@@ -1319,276 +891,3 @@ class Agent(BaseNode):
             )
 
             await self._execute_agent_loop(context, messages, tools, outputs)
-
-
-class RealtimeAgent(BaseNode):
-    """
-    Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
-    realtime, streaming, openai, audio-input, text-output
-
-    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
-    - Sends session settings via `session.update`
-    - Adds user input via `conversation.item.create`
-    - Streams back `response.text.delta` events until `response.done`
-    """
-
-    class Voice(str, Enum):
-        NONE = "none"
-        ASH = "ash"
-        ALLOY = "alloy"
-        BALLAD = "ballad"
-        CORAL = "coral"
-        ECHO = "echo"
-        FABLE = "fable"
-        ONYX = "onyx"
-        NOVA = "nova"
-        SHIMMER = "shimmer"
-        SAGE = "sage"
-        VERSE = "verse"
-
-    system: str = Field(
-        title="System",
-        default=DEFAULT_SYSTEM_PROMPT,
-        description="System instructions for the realtime session",
-    )
-    prompt: str = Field(
-        title="Prompt",
-        default="",
-        description="Optional user text input for the session",
-    )
-    audio: AudioRef = Field(
-        title="Audio",
-        default=AudioRef(),
-        description="Optional audio input to send (base64 or bytes)",
-    )
-    voice: Voice = Field(
-        title="Voice",
-        default=Voice.ALLOY,
-        description="The voice for the audio output",
-    )
-    temperature: float = Field(
-        title="Temperature",
-        ge=0.6,
-        le=1.2,
-        default=0.8,
-        description="The temperature for the response",
-    )
-
-    @classmethod
-    def is_streaming_output(cls) -> bool:
-        return True
-
-    @classmethod
-    def is_cacheable(cls) -> bool:
-        return False
-
-    @classmethod
-    def return_type(cls):
-        return {
-            "chunk": Chunk,
-            "audio": AudioRef,
-            "text": str,
-        }
-
-    @classmethod
-    def get_basic_fields(cls) -> list[str]:
-        return ["system", "prompt", "audio", "model"]
-
-    async def _prepare_audio_pcm16_chunks(
-        self, context: ProcessingContext
-    ) -> list[str]:
-        """Return base64-encoded PCM16 (s16le) chunks"""
-        if not self.audio or self.audio.is_empty():
-            return []
-
-        audio_segment = await context.audio_to_audio_segment(self.audio)
-
-        # Convert to PCM16 mono at desired sample rate when possible
-        pcm_bytes: bytes | None = None
-
-        # seg = audio_segment.set_frame_rate(16000).set_channels(1).set_sample_width(2)
-        with io.BytesIO() as buf:
-            audio_segment.export(buf, format="s16le")  # raw signed 16-bit little-endian
-            pcm_bytes = buf.getvalue()
-
-        # Chunk into reasonable sizes for multiple append events
-        # chunk_size = 8192
-        # chunks: list[str] = []
-        # for i in range(0, len(pcm_bytes), chunk_size):
-        #     chunk = pcm_bytes[i : i + chunk_size]
-        #     chunks.append(base64.b64encode(chunk).decode("utf-8"))
-        return [base64.b64encode(pcm_bytes).decode("utf-8")]
-
-    async def gen_process(self, context: ProcessingContext):
-        from openai import AsyncOpenAI  # Official SDK v1
-
-        env = Environment.get_environment()
-        api_key = env.get("OPENAI_API_KEY")
-        if not api_key:
-            raise ValueError("OPENAI_API_KEY is not set in environment/secrets")
-
-        client = AsyncOpenAI(api_key=api_key)
-
-        # Prepare inputs
-        prompt_text = self.prompt or ""
-        audio_b64_chunks = await self._prepare_audio_pcm16_chunks(context)
-
-        # Connect and stream events
-        async with client.beta.realtime.connect(model="gpt-realtime") as connection:
-            # Configure session
-            await connection.session.update(
-                session=Session(
-                    modalities=["text", "audio"] if audio_b64_chunks else ["text"],
-                    instructions=self.system or "",
-                )
-            )
-
-            # If audio provided, append PCM16 chunks to input buffer
-            if audio_b64_chunks:
-                for ch in audio_b64_chunks:
-                    # input_audio_buffer.append events
-                    await connection.input_audio_buffer.append(audio=ch)
-                # await connection.input_audio_buffer.commit()
-
-            # If text prompt provided, add as a user message item
-            if prompt_text.strip():
-                await connection.conversation.item.create(
-                    item={
-                        "type": "message",
-                        "role": "user",
-                        "content": [{"type": "input_text", "text": prompt_text}],
-                    }
-                )
-
-            # Request a response
-            await connection.response.create(
-                response=Response(
-                    modalities=(
-                        ["text", "audio"] if self.voice != self.Voice.NONE else ["text"]
-                    ),
-                    output_audio_format="pcm16",
-                    temperature=self.temperature,
-                    tools=[],
-                    voice=(
-                        self.voice.value if self.voice != self.Voice.NONE else "alloy"
-                    ),
-                    instructions=self.system or "",
-                )
-            )
-
-            # Stream response events, while aggregating full text and audio
-            full_text_parts: list[str] = []
-            audio_accum = bytearray()
-            async for event in connection:
-                print("EVENT", event.type)
-                if isinstance(event, ResponseTextDeltaEvent):
-                    if event.delta:
-                        full_text_parts.append(event.delta or "")
-                        yield "chunk", Chunk(content=event.delta or "", done=False)
-                elif isinstance(event, ResponseAudioTranscriptDeltaEvent):
-                    # Transcript is also textual; treat as part of the final text
-                    if event.delta:
-                        full_text_parts.append(event.delta or "")
-                        yield "chunk", Chunk(content=event.delta or "", done=False)
-                elif isinstance(event, ResponseAudioDeltaEvent):
-                    # Stream base64 PCM16 delta to output and aggregate raw bytes
-                    if event.delta:
-                        audio_accum.extend(base64.b64decode(event.delta))
-                        yield "chunk", Chunk(
-                            content=event.delta or "", done=False, content_type="audio"
-                        )
-                elif isinstance(event, ResponseTextDoneEvent):
-                    yield "chunk", Chunk(content="", done=True)
-                elif isinstance(event, ResponseAudioDoneEvent):
-                    yield "chunk", Chunk(content="", done=True, content_type="audio")
-                elif isinstance(event, ResponseDoneEvent):
-                    if event.response.status == "cancelled":
-                        raise RuntimeError("Realtime session cancelled")
-                    if len(audio_accum) > 0:
-                        yield "audio", AudioRef(data=bytes(audio_accum))
-                    final_text = "".join(full_text_parts)
-                    if final_text.strip():
-                        yield "text", final_text
-                    break
-                elif isinstance(event, ErrorEvent):
-                    # Normalize error event shape
-                    msg = event.error or str(event)
-                    raise RuntimeError(f"Realtime error: {msg}")
-
-
-if __name__ == "__main__":
-    # Build and run a workflow graph like the screenshot:
-    # Agent (dynamic output "Encode") -> lib.base64.Encode -> Tool Result (+ Preview)
-    from nodetool.types.graph import Node as ApiNode, Edge as ApiEdge, Graph as ApiGraph
-    from nodetool.workflows.run_workflow import run_workflow
-    from nodetool.workflows.run_job_request import RunJobRequest
-    from nodetool.metadata.type_metadata import TypeMetadata
-
-    # Define nodes
-    agent_node = ApiNode(
-        id="agent",
-        type="nodetool.agents.Agent",
-        data={
-            "model": {
-                "type": "language_model",
-                "provider": "openai",
-                "id": "gpt-5-nano",
-            },
-            "system": "You are an AI agent.",
-            "prompt": "encode hunger",
-            "tool_call_limit": 3,
-        },
-        dynamic_outputs={
-            # Expose a tool entry point named "Encode" which wires into the subgraph
-            "Encode": TypeMetadata(type="any"),
-        },
-    )
-
-    encode_node = ApiNode(
-        id="encode",
-        type="lib.base64.Encode",
-        data={},
-    )
-
-    preview_node = ApiNode(
-        id="preview",
-        type="nodetool.workflows.base_node.Preview",
-        data={"name": "PREVIEW"},
-    )
-
-    tool_result_node = ApiNode(
-        id="tool_result",
-        type="nodetool.workflows.base_node.ToolResult",
-        data={},
-    )
-
-    # Wire edges
-    edges = [
-        # Agent dynamic output "Encode" → Base64.Encode.text
-        ApiEdge(
-            source="agent", sourceHandle="Encode", target="encode", targetHandle="text"
-        ),
-        # Base64.Encode.output → ToolResult (so we capture results in messages)
-        ApiEdge(
-            source="encode",
-            sourceHandle="output",
-            target="tool_result",
-            targetHandle="output",
-        ),
-    ]
-
-    graph = ApiGraph(
-        nodes=[agent_node, encode_node, preview_node, tool_result_node], edges=edges
-    )
-
-    async def run():
-        print("Running Agent→Encode→ToolResult graph via run_workflow...\n")
-        ctx = ProcessingContext()
-        req = RunJobRequest(user_id="test_user", auth_token="test_token", graph=graph)
-        async for msg in run_workflow(
-            req,
-            context=ctx,
-        ):
-            print(msg)
-
-    asyncio.run(run())
