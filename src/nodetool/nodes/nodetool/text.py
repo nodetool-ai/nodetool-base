@@ -6,13 +6,14 @@ from typing import Any
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FolderRef
+from nodetool.metadata.types import FolderPath, FolderRef
 from nodetool.workflows.base_node import BaseNode
 import re
 from jsonpath_ng import parse
 from nodetool.metadata.types import TextRef
 from enum import Enum
 import html2text
+from nodetool.io.uri_utils import create_file_uri
 
 
 class Concat(BaseNode):
@@ -287,6 +288,44 @@ class Replace(BaseNode):
 
     async def process(self, context: ProcessingContext) -> str:
         return self.text.replace(self.old, self.new)
+
+
+class SaveTextFile(BaseNode):
+    """
+    Saves input text to a file in the assets folder.
+    text, save, file
+    """
+
+    text: str = Field(title="Text", default="")
+    folder: FolderPath = Field(
+        default=FolderPath(), description="Name of the output folder."
+    )
+    name: str = Field(
+        title="Name",
+        default="%Y-%m-%d-%H-%M-%S.txt",
+        description="""
+        Name of the output file.
+        You can use time and date variables to create unique names:
+        %Y - Year
+        %m - Month
+        %d - Day
+        %H - Hour
+        %M - Minute
+        %S - Second
+        """,
+    )
+
+    async def process(self, context: ProcessingContext) -> TextRef:
+        filename = datetime.now().strftime(self.name)
+        file = BytesIO(self.text.encode("utf-8"))
+        expanded_folder = os.path.expanduser(self.folder.path)
+        if not os.path.exists(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+        filename = datetime.now().strftime(self.name)
+        expanded_path = os.path.join(expanded_folder, filename)
+        with open(expanded_path, "wb") as f:
+            f.write(file.getvalue())
+        return TextRef(uri=create_file_uri(expanded_path), data=file.getvalue())
 
 
 class SaveText(BaseNode):

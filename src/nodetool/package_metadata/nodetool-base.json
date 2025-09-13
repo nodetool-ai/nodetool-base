@@ -7143,6 +7143,53 @@
       ]
     },
     {
+      "title": "Save Text File",
+      "description": "Saves input text to a file in the assets folder.\n    text, save, file",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.SaveTextFile",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
+          "title": "Folder",
+          "description": "Name of the output folder."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "%Y-%m-%d-%H-%M-%S.txt",
+          "title": "Name",
+          "description": "\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "text"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "folder",
+        "name"
+      ]
+    },
+    {
       "title": "Slice Text",
       "description": "Slices text using Python's slice notation (start:stop:step).\n    text, slice, substring\n\n    Use cases:\n    - Extracting specific portions of text with flexible indexing\n    - Reversing text using negative step\n    - Taking every nth character with step parameter\n\n    Examples:\n    - start=0, stop=5: first 5 characters\n    - start=-5: last 5 characters\n    - step=2: every second character\n    - step=-1: reverse the text",
       "namespace": "nodetool.text",
@@ -11564,7 +11611,7 @@
           "type": {
             "type": "str"
           },
-          "name": "filename"
+          "name": "path"
         }
       ],
       "basic_fields": [
@@ -22248,6 +22295,12 @@
         "start",
         "multimodal"
       ]
+    },
+    {
+      "id": "06d8221c907e11f0a4240000006ab9b5",
+      "name": "Realtime Agent",
+      "description": "",
+      "tags": []
     },
     {
       "id": "e25d8a38761211f080f7000017889565",

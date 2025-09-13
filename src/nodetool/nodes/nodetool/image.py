@@ -75,7 +75,7 @@ class LoadImageFolder(BaseNode):
     def return_type(cls):
         return {
             "image": ImageRef,
-            "filename": str,
+            "path": str,
         }
 
     async def gen_process(self, context: ProcessingContext):
@@ -111,7 +111,7 @@ class LoadImageFolder(BaseNode):
 
             image = await context.image_from_bytes(image_data)
             image.uri = create_file_uri(path)
-            yield "filename", os.path.basename(path)
+            yield "path", path
             yield "image", image
 
 
