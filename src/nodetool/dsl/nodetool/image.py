@@ -141,6 +141,34 @@ class LoadImageFile(GraphNode):
         return "nodetool.image.LoadImageFile"
 
 
+class LoadImageFolder(GraphNode):
+    """
+    Load all images from a folder, optionally including subfolders.
+    image, load, folder, files
+
+    Use cases:
+    - Batch import images for processing
+    - Build datasets from a directory tree
+    - Iterate over photo collections
+    """
+
+    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""),
+        description="Folder to scan for images",
+    )
+    include_subdirectories: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Include images in subfolders"
+    )
+    extensions: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff"],
+        description="Image file extensions to include",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.image.LoadImageFolder"
+
+
 class Paste(GraphNode):
     """
     Paste one image onto another at specified coordinates.
@@ -249,6 +277,10 @@ class SaveImageFile(GraphNode):
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",
         description="\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+    overwrite: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False,
+        description="Overwrite the file if it already exists, otherwise file will be renamed",
     )
 
     @classmethod

@@ -33,6 +33,24 @@ class Chunk(GraphNode):
         return "nodetool.text.Chunk"
 
 
+class Collect(GraphNode):
+    """
+    Collects a stream of text inputs into a single string.
+    text, collect, list, stream
+    """
+
+    input_item: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
+    separator: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description=None
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.text.Collect"
+
+
 class Concat(GraphNode):
     """
     Concatenates two text inputs into a single output.

@@ -29,6 +29,10 @@ class ImageGeneration(GraphNode):
         default=nodetool.nodes.gemini.image.ImageGenerationModel.IMAGEN_3_0_GENERATE_002,
         description="The image generation model to use",
     )
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The image to use as a base for the generation.",
+    )
 
     @classmethod
     def get_node_type(cls):

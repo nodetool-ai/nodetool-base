@@ -36,7 +36,7 @@ class Agent(GraphNode):
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio to analyze",
     )
-    messages: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
+    history: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="The messages for the LLM"
     )
     max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
@@ -44,9 +44,6 @@ class Agent(GraphNode):
     )
     context_window: int | GraphNode | tuple[GraphNode, str] = Field(
         default=4096, description=None
-    )
-    tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of tools to use for execution"
     )
     tool_call_limit: int | GraphNode | tuple[GraphNode, str] = Field(
         default=3,
@@ -141,45 +138,6 @@ class Extractor(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.agents.Extractor"
-
-
-import nodetool.nodes.nodetool.agents
-
-
-class RealtimeAgent(GraphNode):
-    """
-    Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
-    realtime, streaming, openai, audio-input, text-output
-
-    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
-    - Sends session settings via `session.update`
-    - Adds user input via `conversation.item.create`
-    - Streams back `response.text.delta` events until `response.done`
-    """
-
-    Voice: typing.ClassVar[type] = nodetool.nodes.nodetool.agents.RealtimeAgent.Voice
-    system: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
-        description="System instructions for the realtime session",
-    )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Optional user text input for the session"
-    )
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
-        description="Optional audio input to send (base64 or bytes)",
-    )
-    voice: nodetool.nodes.nodetool.agents.RealtimeAgent.Voice = Field(
-        default=nodetool.nodes.nodetool.agents.RealtimeAgent.Voice.ALLOY,
-        description="The voice for the audio output",
-    )
-    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0.8, description="The temperature for the response"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.agents.RealtimeAgent"
 
 
 class Summarizer(GraphNode):

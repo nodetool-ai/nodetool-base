@@ -6,9 +6,9 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
-class CollectorNode(GraphNode):
+class Collect(GraphNode):
     """
-    Collect items until a "done" event and return them as a list.
+    Collect items until the end of the stream and return them as a list.
     collector, aggregate, list, stream
 
     Use cases:
@@ -20,14 +20,29 @@ class CollectorNode(GraphNode):
     input_item: Any | GraphNode | tuple[GraphNode, str] = Field(
         default=None, description="The input item to collect."
     )
-    event: types.Event | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Event(type="event", name="", payload={}),
-        description="Signal end of stream",
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.control.Collect"
+
+
+class ForEach(GraphNode):
+    """
+    Iterate over a list and emit each item sequentially.
+    iterator, loop, list, sequence
+
+    Use cases:
+    - Process each item of a collection in order
+    - Drive downstream nodes with individual elements
+    """
+
+    input_list: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[], description="The list of items to iterate over."
     )
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.control.Collector"
+        return "nodetool.control.ForEach"
 
 
 class If(GraphNode):
@@ -51,25 +66,6 @@ class If(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.control.If"
-
-
-class IteratorNode(GraphNode):
-    """
-    Iterate over a list and emit each item sequentially.
-    iterator, loop, list, sequence
-
-    Use cases:
-    - Process each item of a collection in order
-    - Drive downstream nodes with individual elements
-    """
-
-    input_list: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The list of items to iterate over."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.control.Iterator"
 
 
 class Reroute(GraphNode):

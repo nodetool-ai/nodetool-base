@@ -403,7 +403,7 @@ class ListFiles(GraphNode):
     pattern: str | GraphNode | tuple[GraphNode, str] = Field(
         default="*", description="File pattern to match (e.g. *.txt)"
     )
-    recursive: bool | GraphNode | tuple[GraphNode, str] = Field(
+    include_subdirectories: bool | GraphNode | tuple[GraphNode, str] = Field(
         default=False, description="Search subdirectories"
     )
 

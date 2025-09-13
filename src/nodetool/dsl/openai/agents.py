@@ -1,0 +1,88 @@
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
+from nodetool.dsl.graph import GraphNode
+
+import nodetool.nodes.openai.agents
+import nodetool.nodes.openai.agents
+
+
+class RealtimeAgent(GraphNode):
+    """
+    Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
+    realtime, streaming, openai, audio-input, text-output
+
+    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
+    - Sends session settings via `session.update`
+    - Adds user input via `conversation.item.create`
+    - Streams back `response.text.delta` events until `response.done`
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.openai.agents.RealtimeAgent.Model
+    Voice: typing.ClassVar[type] = nodetool.nodes.openai.agents.RealtimeAgent.Voice
+    model: nodetool.nodes.openai.agents.RealtimeAgent.Model = Field(
+        default=nodetool.nodes.openai.agents.RealtimeAgent.Model.GPT_4O_MINI_REaltime,
+        description=None,
+    )
+    system: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\nYou are an AI assistant interacting in real-time. Follow these rules unless explicitly overridden by the user:\n\n1. Respond promptly — minimize delay. If you do not yet have a complete answer, acknowledge the question and indicate what you are doing to find the answer.\n2. Maintain correctness. Always aim for accuracy; if you’re uncertain, say so and optionally offer to verify.\n3. Be concise but clear. Prioritize key information first, then supporting details if helpful.\n4. Ask clarifying questions when needed. If the user’s request is ambiguous, request clarification rather than guessing.\n5. Be consistent in terminology and definitions. Once you adopt a term or abbreviation, use it consistently in this conversation.\n6. Respect politeness and neutrality. Do not use emotive language unless the conversation tone demands it.\n7. Stay within safe and ethical bounds. Avoid disallowed content; follow OpenAI policies.\n8. Adapt to the user’s style and level. If the user seems technical, use technical detail; if non-technical, explain with simpler language.\n---\nYou are now active. Await the user’s request.\n",
+        description="System instructions for the realtime session",
+    )
+    chunk: types.Chunk | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Chunk(
+            type="chunk",
+            node_id=None,
+            content_type="text",
+            content="",
+            content_metadata={},
+            done=False,
+        ),
+        description="The audio chunk to use as input.",
+    )
+    voice: nodetool.nodes.openai.agents.RealtimeAgent.Voice = Field(
+        default=nodetool.nodes.openai.agents.RealtimeAgent.Voice.ALLOY,
+        description="The voice for the audio output",
+    )
+    speed: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="The speed of the model's spoken response"
+    )
+    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.8, description="The temperature for the response"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "openai.agents.RealtimeAgent"
+
+
+class RealtimeTranscription(GraphNode):
+    """
+    Stream microphone or audio input to OpenAI Realtime and emit transcription.
+
+    Emits:
+      - `chunk` Chunk(content=..., done=False) for transcript deltas
+      - `chunk` Chunk(content="", done=True) to mark segment end
+      - `text` final aggregated transcript when input ends
+    """
+
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="Model to use",
+    )
+    system: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="System instructions (optional)"
+    )
+    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.8, description="Decoding temperature"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "openai.agents.RealtimeTranscription"

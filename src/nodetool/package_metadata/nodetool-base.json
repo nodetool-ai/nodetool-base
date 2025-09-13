@@ -11552,7 +11552,7 @@
           "type": {
             "type": "str"
           },
-          "name": "name"
+          "name": "filename"
         }
       ],
       "basic_fields": [
@@ -11755,6 +11755,15 @@
           "default": "",
           "title": "Filename",
           "description": "\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        },
+        {
+          "name": "overwrite",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Overwrite",
+          "description": "Overwrite the file if it already exists, otherwise file will be renamed"
         }
       ],
       "outputs": [
@@ -11768,7 +11777,8 @@
       "basic_fields": [
         "image",
         "folder",
-        "filename"
+        "filename",
+        "overwrite"
       ]
     },
     {

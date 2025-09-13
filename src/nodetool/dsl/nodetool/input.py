@@ -354,6 +354,31 @@ class PathInput(GraphNode):
         return "nodetool.input.PathInput"
 
 
+class RealtimeAudioInput(GraphNode):
+    """
+    Accepts streaming audio data for workflows.
+    input, parameter, audio, sound, voice, speech, asset
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="The value of the input."
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to use as input.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.RealtimeAudioInput"
+
+
 class StringInput(GraphNode):
     """
     Accepts a string value as a parameter for workflows.

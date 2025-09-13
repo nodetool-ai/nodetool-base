@@ -75,7 +75,7 @@ class LoadImageFolder(BaseNode):
     def return_type(cls):
         return {
             "image": ImageRef,
-            "name": str,
+            "filename": str,
         }
 
     async def gen_process(self, context: ProcessingContext):
@@ -111,7 +111,7 @@ class LoadImageFolder(BaseNode):
 
             image = await context.image_from_bytes(image_data)
             image.uri = create_file_uri(path)
-            yield "name", os.path.basename(path)
+            yield "filename", os.path.basename(path)
             yield "image", image
 
 
@@ -143,6 +143,10 @@ class SaveImageFile(BaseNode):
         %S - Second
         """,
     )
+    overwrite: bool = Field(
+        default=False,
+        description="Overwrite the file if it already exists, otherwise file will be renamed",
+    )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         if Environment.is_production():
@@ -162,6 +166,13 @@ class SaveImageFile(BaseNode):
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
 
         image = await context.image_to_pil(self.image)
+        if not self.overwrite:
+            count = 1
+            while os.path.exists(expanded_path):
+                fname, ext = os.path.splitext(filename)
+                filename = f"{fname}_{count}{ext}"
+                expanded_path = os.path.join(expanded_folder, filename)
+                count += 1
         image.save(expanded_path)
         return ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
 

@@ -315,15 +315,8 @@ class FrameToVideo(GraphNode):
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="Collect input frames",
     )
-    index: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description="Index of the current frame. -1 signals end of stream."
-    )
     fps: float | GraphNode | tuple[GraphNode, str] = Field(
         default=30, description="The FPS of the output video."
-    )
-    event: types.Event | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.Event(type="event", name="done", payload={}),
-        description="Signal end of stream",
     )
 
     @classmethod
