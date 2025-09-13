@@ -184,35 +184,6 @@ class ExecuteJavaScript(BaseNode):
     def return_type(cls):
         return {"stdout": str, "stderr": str}
 
-    # async def gen_process(self, context: ProcessingContext):
-    #     if not self.code.strip():
-    #         raise RuntimeError("Code is required")
-
-    #     async def create_stdin_stream():
-    #         if self.stdin:
-    #             yield self.stdin
-    #         async for handle, value in self.iter_any_input():
-    #             yield str(value) if value is not None else ""
-
-    #     if self.stdin or self.has_streaming_inputs():
-    #         stdin_stream = create_stdin_stream()
-    #     else:
-    #         stdin_stream = None
-
-    #     runner = JavaScriptDockerRunner(image=self.image.value)
-    #     async for slot, value in runner.stream(
-    #         user_code=self.code,
-    #         env_locals=self._dynamic_properties,
-    #         context=context,
-    #         node=self,
-    #         allow_dynamic_outputs=self.supports_dynamic_outputs(),
-    #         stdin_stream=stdin_stream,
-    #     ):
-    #         if value is None:
-    #             continue
-    #         text_value = value if isinstance(value, str) else str(value)
-    #         yield slot, text_value
-
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.code.strip():
             raise RuntimeError("Code is required")
@@ -477,35 +448,6 @@ class ExecuteRuby(BaseNode):
     def return_type(cls):
         return {"stdout": str, "stderr": str}
 
-    # async def gen_process(self, context: ProcessingContext):
-    #     if not self.code.strip():
-    #         raise RuntimeError("Code is required")
-
-    #     async def create_stdin_stream():
-    #         if self.stdin:
-    #             yield self.stdin
-    #         async for handle, value in self.iter_any_input():
-    #             yield str(value) if value is not None else ""
-
-    #     if self.stdin or self.has_streaming_inputs():
-    #         stdin_stream = create_stdin_stream()
-    #     else:
-    #         stdin_stream = None
-
-    #     runner = RubyDockerRunner(image=self.image.value)
-    #     async for slot, value in runner.stream(
-    #         user_code=self.code,
-    #         env_locals=self._dynamic_properties,
-    #         context=context,
-    #         node=self,
-    #         allow_dynamic_outputs=self.supports_dynamic_outputs(),
-    #         stdin_stream=stdin_stream,
-    #     ):
-    #         if value is None:
-    #             continue
-    #         text_value = value if isinstance(value, str) else str(value)
-    #         yield slot, text_value
-
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.code.strip():
             raise RuntimeError("Code is required")
@@ -623,35 +565,6 @@ class ExecuteCommand(BaseNode):
     @classmethod
     def return_type(cls):
         return {"stdout": str, "stderr": str}
-
-    # async def gen_process(self, context: ProcessingContext):
-    #     if not self.command.strip():
-    #         raise RuntimeError("Command is required")
-
-    #     async def create_stdin_stream():
-    #         if self.stdin:
-    #             yield self.stdin
-    #         async for handle, value in self.iter_any_input():
-    #             yield str(value) if value is not None else ""
-
-    #     if self.stdin or self.has_streaming_inputs():
-    #         stdin_stream = create_stdin_stream()
-    #     else:
-    #         stdin_stream = None
-
-    #     runner = CommandDockerRunner(image=self.image.value)
-    #     async for slot, value in runner.stream(
-    #         user_code=self.command,
-    #         env_locals=self._dynamic_properties,
-    #         context=context,
-    #         node=self,
-    #         allow_dynamic_outputs=self.supports_dynamic_outputs(),
-    #         stdin_stream=stdin_stream,
-    #     ):
-    #         if value is None:
-    #             continue
-    #         text_value = value if isinstance(value, str) else str(value)
-    #         yield slot, text_value
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.command.strip():
