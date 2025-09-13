@@ -4961,9 +4961,21 @@
       "outputs": [
         {
           "type": {
+            "type": "dict"
+          },
+          "name": "record"
+        },
+        {
+          "type": {
             "type": "dataframe"
           },
-          "name": "output"
+          "name": "dataframe"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "index"
         }
       ],
       "basic_fields": [

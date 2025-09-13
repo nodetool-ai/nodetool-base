@@ -1,4 +1,5 @@
 import json
+import re
 from nodetool.config.logging_config import get_logger
 from pydantic import Field
 
@@ -61,47 +62,17 @@ class DataGenerator(BaseNode):
         description="The columns to use in the dataframe.",
     )
 
-    async def process(self, context: ProcessingContext) -> DataframeRef:
-        system_message = Message(
-            role="system",
-            content="You are an assistant with access to tools.",
-        )
-
-        user_message = Message(
-            role="user",
-            content=self.prompt + "\n\n" + self.input_text,
-        )
-        messages = [system_message, user_message]
-
-        provider = get_provider(self.model.provider)
-        assistant_message = await provider.generate_message(
-            model=self.model.id,
-            messages=messages,
-            max_tokens=self.max_tokens,
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "datatable",
-                    "schema": json_schema_for_dataframe(self.columns.columns),
-                    "strict": True,
-                },
-            },
-        )
-        # Extract text content from the message
-        content_text = str(assistant_message.content)
-
-        data = [
-            [
-                (row[col.name] if col.name in row else None)
-                for col in self.columns.columns
-            ]
-            for row in json.loads(content_text).get("data", [])
-        ]
-        return DataframeRef(columns=self.columns.columns, data=data)
-
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return ["prompt", "model", "columns"]
+
+    @classmethod
+    def return_type(cls):
+        return {
+            "record": dict,
+            "dataframe": DataframeRef,
+            "index": int,
+        }
 
     async def gen_process(self, context: ProcessingContext):
         """
@@ -122,6 +93,7 @@ class DataGenerator(BaseNode):
         collected_rows: list[dict] = []
 
         provider = get_provider(self.model.provider)
+        index = 0
         async for chunk in provider.generate_messages(
             model=self.model.id,
             messages=messages,
@@ -138,6 +110,8 @@ class DataGenerator(BaseNode):
                 collected_rows.append(chunk.args)
                 # Yield each generated record immediately
                 yield "record", chunk.args
+                yield "index", index
+                index += 1
 
         # After streaming completes, yield the full dataframe once
         data = [
