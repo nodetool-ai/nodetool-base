@@ -4064,6 +4064,77 @@
       "supports_dynamic_outputs": true
     },
     {
+      "title": "Execute Lua",
+      "description": "Executes Lua code with a local sandbox (no Docker).\n    lua, code, execute, sandbox\n\n    IMPORTANT: Only enabled in non-production environments",
+      "namespace": "nodetool.code",
+      "node_type": "nodetool.code.ExecuteLua",
+      "properties": [
+        {
+          "name": "code",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Code",
+          "description": "Lua code to execute as-is in a restricted environment. Dynamic inputs are provided as variables. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+        },
+        {
+          "name": "executable",
+          "type": {
+            "type": "enum",
+            "values": [
+              "lua",
+              "luajit"
+            ],
+            "type_name": "nodetool.nodes.nodetool.code.LuaExecutable"
+          },
+          "default": "lua",
+          "title": "Executable",
+          "description": "Lua executable to use"
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "Timeout Seconds",
+          "description": "Max seconds to allow execution before forced stop"
+        },
+        {
+          "name": "stdin",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Stdin",
+          "description": "String to write to process stdin before any streaming input. Use newlines to separate lines."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stdout"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stderr"
+        }
+      ],
+      "basic_fields": [
+        "code",
+        "executable",
+        "timeout_seconds",
+        "stdin"
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
+    },
+    {
       "title": "Execute Python",
       "description": "Executes Python code with safety restrictions.\n    python, code, execute\n\n    Use cases:\n    - Run custom data transformations\n    - Prototype node functionality\n    - Debug and testing workflows\n\n    IMPORTANT: Only enabled in non-production environments",
       "namespace": "nodetool.code",
