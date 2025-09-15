@@ -294,6 +294,8 @@ class TestAgent:
 
         # Mock generate_messages
         from nodetool.chat.providers import FakeProvider
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
 
         fake_provider = FakeProvider(
             text_response="I'm doing well, thank you!", should_stream=False
@@ -302,17 +304,23 @@ class TestAgent:
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            result_text = None
-            result_chunks = []
-
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "text":
-                    result_text = output_value
-                elif output_type == "chunk":
-                    result_chunks.append(output_value)
-
-            assert result_text == "I'm doing well, thank you!"
-            assert len(result_chunks) == 1
+            # Mock inputs and outputs
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            # Make inputs.any() yield a prompt input to trigger execution
+            async def mock_any():
+                yield "prompt", "Hello, how are you?"
+            inbox.iter_any = mock_any
+            
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+            
+            await node.run(context, inputs, outputs)
+            
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "I'm doing well, thank you!"
 
     @pytest.mark.asyncio
     async def test_agent_with_image(
@@ -330,6 +338,8 @@ class TestAgent:
         )
 
         from nodetool.chat.providers import FakeProvider
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
 
         fake_provider = FakeProvider(
             text_response="This is a small test image", should_stream=False
@@ -338,12 +348,21 @@ class TestAgent:
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            result_text = None
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "text":
-                    result_text = output_value
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            async def mock_any():
+                yield "image", test_image
+            inbox.iter_any = mock_any
 
-            assert result_text == "This is a small test image"
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            await node.run(context, inputs, outputs)
+
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "This is a small test image"
 
     @pytest.mark.asyncio
     async def test_agent_with_audio(
@@ -361,6 +380,8 @@ class TestAgent:
         )
 
         from nodetool.chat.providers import FakeProvider
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
 
         fake_provider = FakeProvider(
             text_response="This is transcribed text", should_stream=False
@@ -369,12 +390,22 @@ class TestAgent:
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            result_text = None
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "text":
-                    result_text = output_value
-
-            assert result_text == "This is transcribed text"
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            async def mock_any():
+                return
+                yield
+            inbox.iter_any = mock_any
+            
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+            
+            await node.run(context, inputs, outputs)
+            
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "This is transcribed text"
 
     @pytest.mark.asyncio
     async def test_agent_no_model_error(self, context: ProcessingContext):
@@ -384,9 +415,22 @@ class TestAgent:
             model=LanguageModel(provider=Provider.Empty),
         )
 
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
+
+        inbox = MagicMock()
+        inputs = NodeInputs(inbox)
+        
+        async def mock_any():
+            return
+            yield
+        inbox.iter_any = mock_any
+        
+        runner = MagicMock()
+        outputs = NodeOutputs(runner, node, context, capture_only=True)
+
         with pytest.raises(ValueError, match="Select a model"):
-            async for _ in node.gen_process(context):
-                pass
+            await node.run(context, inputs, outputs)
 
     @pytest.mark.asyncio
     async def test_agent_with_messages(
@@ -402,23 +446,35 @@ class TestAgent:
 
         node = Agent(
             prompt="Now what's 3+3?",
-            messages=messages,
+            history=messages,
             model=mock_model,
         )
 
         from nodetool.chat.providers import FakeProvider
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
 
         fake_provider = FakeProvider(text_response="3+3 equals 6.", should_stream=False)
 
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            result_text = None
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "text":
-                    result_text = output_value
-
-            assert result_text == "3+3 equals 6."
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            async def mock_any():
+                return
+                yield
+            inbox.iter_any = mock_any
+            
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+            
+            await node.run(context, inputs, outputs)
+            
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "3+3 equals 6."
             # Verify the messages were passed correctly - should have system + conversation + user
             assert fake_provider.call_count == 1
 
@@ -433,6 +489,8 @@ class TestAgent:
         )
 
         from nodetool.chat.providers import FakeProvider
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
 
         fake_provider = FakeProvider(
             text_response="One, two, three", should_stream=True, chunk_size=5
@@ -441,20 +499,23 @@ class TestAgent:
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            chunks = []
-            final_text = None
-
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "chunk":
-                    if isinstance(output_value, Chunk):
-                        chunks.append(output_value.content)
-                elif output_type == "text":
-                    final_text = output_value
-
-            assert len(chunks) >= 1
-            assert "".join(chunks) == "One, two, three"
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            async def mock_any():
+                return
+                yield
+            inbox.iter_any = mock_any
+            
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+            
+            await node.run(context, inputs, outputs)
+            
+            collected = outputs.collected()
+            assert "text" in collected
             # final_text contains the complete text at the end
-            assert final_text == "One, two, three"
+            assert collected["text"] == "One, two, three"
 
     @pytest.mark.asyncio
     async def test_agent_audio_output(
@@ -472,6 +533,8 @@ class TestAgent:
 
         from nodetool.chat.providers import FakeProvider
         from nodetool.workflows.types import Chunk
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
 
         # Create custom response function that returns audio chunk
         async def audio_response_fn(messages, model, **kwargs):
@@ -496,14 +559,23 @@ class TestAgent:
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            audio_output = None
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "audio":
-                    audio_output = output_value
-
-            assert audio_output is not None
-            assert isinstance(audio_output, AudioRef)
-            assert audio_output.data == b"fake_audio_data"
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            async def mock_any():
+                return
+                yield
+            inbox.iter_any = mock_any
+            
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+            
+            await node.run(context, inputs, outputs)
+            
+            collected = outputs.collected()
+            assert "audio" in collected
+            assert isinstance(collected["audio"], AudioRef)
+            assert collected["audio"].data == b"fake_audio_data"
 
     def test_serialize_tool_result_dict(self):
         """Test serialization of dictionary tool result"""
@@ -565,6 +637,9 @@ class TestAgent:
             else:
                 return "I don't know about that."
 
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
+
         fake_provider = FakeProvider(
             custom_response_fn=smart_response, should_stream=False
         )
@@ -572,12 +647,22 @@ class TestAgent:
         with patch(
             "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
         ):
-            result_text = None
-            async for output_type, output_value in node.gen_process(context):
-                if output_type == "text":
-                    result_text = output_value
-
-            assert result_text == "Cats are wonderful pets!"
+            inbox = MagicMock()
+            inputs = NodeInputs(inbox)
+            
+            async def mock_any():
+                return
+                yield
+            inbox.iter_any = mock_any
+            
+            runner = MagicMock()
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+            
+            await node.run(context, inputs, outputs)
+            
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "Cats are wonderful pets!"
             assert fake_provider.call_count == 1
 
     @pytest.mark.asyncio
@@ -585,6 +670,9 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test that fake provider can handle multiple calls."""
+        from nodetool.workflows.io import NodeInputs, NodeOutputs
+        from unittest.mock import MagicMock
+
         fake_provider = create_simple_fake_provider("Response")
 
         with patch(
@@ -595,10 +683,19 @@ class TestAgent:
             agent2 = Agent(prompt="Question 2", model=mock_model)
 
             # Both should work with the same fake provider
-            async for _ in agent1.gen_process(context):
-                pass
-            async for _ in agent2.gen_process(context):
-                pass
+            for agent in [agent1, agent2]:
+                inbox = MagicMock()
+                inputs = NodeInputs(inbox)
+                
+                async def mock_any():
+                    return
+                    yield
+                inbox.iter_any = mock_any
+                
+                runner = MagicMock()
+                outputs = NodeOutputs(runner, agent, context, capture_only=True)
+                
+                await agent.run(context, inputs, outputs)
 
             assert fake_provider.call_count == 2
             assert fake_provider.last_model == mock_model.id
@@ -628,7 +725,7 @@ class TestAgentFields:
     def test_agent_basic_fields(self):
         """Test Agent basic fields"""
         fields = Agent.get_basic_fields()
-        expected = ["prompt", "model", "messages", "image", "audio", "tools"]
+        expected = ["model", "system", "prompt", "image", "audio", "history", "max_tokens", "context_window", "tool_call_limit"]
         assert fields == expected
 
     def test_summarizer_not_cacheable(self):

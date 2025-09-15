@@ -48,22 +48,38 @@ async def test_data_generator_process(context: ProcessingContext):
         ]
     }
 
-    # Create a MockProvider that returns the expected JSON response
-    from nodetool.chat.providers.base import MockProvider
-    mock_response = Message(
-        role="assistant",
-        content=[MessageTextContent(text=json.dumps(sample))]
-    )
-    fake_provider = MockProvider([mock_response])
+    # Create tool calls for each data row
+    from nodetool.metadata.types import ToolCall
+    from nodetool.chat.providers import FakeProvider
+
+    # Create a fake provider that returns tool calls
+    class DataGeneratorFakeProvider(FakeProvider):
+        async def generate_messages(self, **kwargs):
+            # Yield tool calls for each row
+            yield ToolCall(name="generate_data", args={"name": "Alice", "age": 30})
+            yield ToolCall(name="generate_data", args={"name": "Bob", "age": 25})
+
+    fake_provider = DataGeneratorFakeProvider()
 
     with patch("nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider):
-        # Act
-        result: DataframeRef = await node.process(context)
+        # Act - Use gen_process to collect all outputs
+        result_dataframe = None
+        records = []
+
+        async for output_type, output_value in node.gen_process(context):
+            if output_type == "record":
+                records.append(output_value)
+            elif output_type == "dataframe":
+                result_dataframe = output_value
 
         # Assert
-        assert result.columns is not None
-        assert [c.name for c in result.columns] == ["name", "age"]
-        assert result.data == [["Alice", 30], ["Bob", 25]]
+        assert result_dataframe is not None
+        assert result_dataframe.columns is not None
+        assert [c.name for c in result_dataframe.columns] == ["name", "age"]
+        assert result_dataframe.data == [["Alice", 30], ["Bob", 25]]
+        assert len(records) == 2
+        assert records[0] == {"name": "Alice", "age": 30}
+        assert records[1] == {"name": "Bob", "age": 25}
 
 
 @pytest.mark.asyncio

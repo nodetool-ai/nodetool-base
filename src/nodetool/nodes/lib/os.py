@@ -161,7 +161,7 @@ class ListFiles(BaseNode):
     def return_type(cls):
         return {"file": FilePath}
 
-    async def get_process(self, context: ProcessingContext):
+    async def gen_process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder.path:

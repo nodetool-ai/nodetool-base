@@ -1,10 +1,10 @@
 from enum import Enum
 import os
+import platform
 from nodetool.metadata.types import FolderPath, LeannSearchResult, TextChunk
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field, FilePath
-import leann
 
 
 class LeannSearcher(BaseNode):
@@ -56,6 +56,11 @@ class LeannSearcher(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> list[LeannSearchResult]:
+        if platform.system() == "Windows":
+            raise ValueError("Leann is not supported on Windows")
+
+        import leann
+
         searcher = leann.LeannSearcher(
             index_path=os.path.join(self.folder.path, self.name)
         )
@@ -150,6 +155,11 @@ class LeannBuilder(BaseNode):
         return {"output": bool}
 
     async def run(self, context: ProcessingContext, inputs, outputs) -> None:
+        if platform.system() == "Windows":
+            raise ValueError("Leann is not supported on Windows")
+
+        import leann
+
         builder = leann.LeannBuilder(
             backend_name=self.backend.value,
             model_name=self.model.value,

@@ -104,11 +104,14 @@ async def test_execute_python_streams_both_channels(context: ProcessingContext):
 
 @pytest.mark.asyncio
 async def test_evaluate_expression_basic(context: ProcessingContext):
-    node = EvaluateExpression(expression="a*b + 1", variables={"a": 3, "b": 4})  # type: ignore[call-arg]
+    node = EvaluateExpression(expression="a*b + 1")
+    node._dynamic_properties = {"a": 3, "b": 4}
     assert await node.process(context) == 13
 
 
 @pytest.mark.asyncio
 async def test_evaluate_expression_allows_whitelisted_calls(context: ProcessingContext):
-    node = EvaluateExpression(expression="len([1,2,3])", variables={})  # type: ignore[call-arg]
+    # Note: Lua doesn't have a len function, use # operator for length
+    node = EvaluateExpression(expression="#{1,2,3}")
+    node._dynamic_properties = {}
     assert await node.process(context) == 3
