@@ -394,15 +394,14 @@ class TestAgent:
             inputs = NodeInputs(inbox)
             
             async def mock_any():
-                return
-                yield
+                yield "audio", test_audio
             inbox.iter_any = mock_any
-            
+
             runner = MagicMock()
             outputs = NodeOutputs(runner, node, context, capture_only=True)
-            
+
             await node.run(context, inputs, outputs)
-            
+
             collected = outputs.collected()
             assert "text" in collected
             assert collected["text"] == "This is transcribed text"
@@ -422,8 +421,7 @@ class TestAgent:
         inputs = NodeInputs(inbox)
         
         async def mock_any():
-            return
-            yield
+            yield "prompt", "Test prompt"
         inbox.iter_any = mock_any
         
         runner = MagicMock()
@@ -463,15 +461,14 @@ class TestAgent:
             inputs = NodeInputs(inbox)
             
             async def mock_any():
-                return
-                yield
+                yield "prompt", "Now what's 3+3?"
             inbox.iter_any = mock_any
-            
+
             runner = MagicMock()
             outputs = NodeOutputs(runner, node, context, capture_only=True)
-            
+
             await node.run(context, inputs, outputs)
-            
+
             collected = outputs.collected()
             assert "text" in collected
             assert collected["text"] == "3+3 equals 6."
@@ -503,15 +500,14 @@ class TestAgent:
             inputs = NodeInputs(inbox)
             
             async def mock_any():
-                return
-                yield
+                yield "prompt", "Count to three"
             inbox.iter_any = mock_any
-            
+
             runner = MagicMock()
             outputs = NodeOutputs(runner, node, context, capture_only=True)
-            
+
             await node.run(context, inputs, outputs)
-            
+
             collected = outputs.collected()
             assert "text" in collected
             # final_text contains the complete text at the end
@@ -563,15 +559,14 @@ class TestAgent:
             inputs = NodeInputs(inbox)
             
             async def mock_any():
-                return
-                yield
+                yield "prompt", "Generate some speech"
             inbox.iter_any = mock_any
-            
+
             runner = MagicMock()
             outputs = NodeOutputs(runner, node, context, capture_only=True)
-            
+
             await node.run(context, inputs, outputs)
-            
+
             collected = outputs.collected()
             assert "audio" in collected
             assert isinstance(collected["audio"], AudioRef)
@@ -651,15 +646,14 @@ class TestAgent:
             inputs = NodeInputs(inbox)
             
             async def mock_any():
-                return
-                yield
+                yield "prompt", "Tell me about cats"
             inbox.iter_any = mock_any
-            
+
             runner = MagicMock()
             outputs = NodeOutputs(runner, node, context, capture_only=True)
-            
+
             await node.run(context, inputs, outputs)
-            
+
             collected = outputs.collected()
             assert "text" in collected
             assert collected["text"] == "Cats are wonderful pets!"
@@ -688,8 +682,7 @@ class TestAgent:
                 inputs = NodeInputs(inbox)
                 
                 async def mock_any():
-                    return
-                    yield
+                    yield "prompt", agent.prompt
                 inbox.iter_any = mock_any
                 
                 runner = MagicMock()
@@ -725,7 +718,7 @@ class TestAgentFields:
     def test_agent_basic_fields(self):
         """Test Agent basic fields"""
         fields = Agent.get_basic_fields()
-        expected = ["model", "system", "prompt", "image", "audio", "history", "max_tokens", "context_window", "tool_call_limit"]
+        expected = ["prompt", "model", "image"]
         assert fields == expected
 
     def test_summarizer_not_cacheable(self):

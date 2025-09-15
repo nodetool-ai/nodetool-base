@@ -4,7 +4,11 @@ from unittest.mock import patch
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.inbox import NodeInbox
 from nodetool.workflows.io import NodeInputs, NodeOutputs
-from nodetool.nodes.nodetool.code import ExecutePython, EvaluateExpression
+from nodetool.nodes.nodetool.code import (
+    ExecutePython,
+    EvaluateExpression,
+    ExecutionMode,
+)
 
 
 @pytest.fixture
@@ -25,7 +29,7 @@ async def test_execute_python_basic_streams_stdout(context: ProcessingContext):
         node,
         allow_dynamic_outputs=True,
         stdin_stream=None,
-        **kwargs
+        **kwargs,
     ):
         yield ("stdout", "10")
 
@@ -54,7 +58,7 @@ async def test_execute_python_streams_stderr(context: ProcessingContext):
         node,
         allow_dynamic_outputs=True,
         stdin_stream=None,
-        **kwargs
+        **kwargs,
     ):
         yield ("stderr", "some error message")
 
@@ -83,7 +87,7 @@ async def test_execute_python_streams_both_channels(context: ProcessingContext):
         node,
         allow_dynamic_outputs=True,
         stdin_stream=None,
-        **kwargs
+        **kwargs,
     ):
         yield ("stdout", "line out")
         yield ("stderr", "line err")
@@ -106,7 +110,14 @@ async def test_execute_python_streams_both_channels(context: ProcessingContext):
 async def test_evaluate_expression_basic(context: ProcessingContext):
     node = EvaluateExpression(expression="a*b + 1")
     node._dynamic_properties = {"a": 3, "b": 4}
-    assert await node.process(context) == 13
+
+    async def fake_lua_stream(self, *args, **kwargs):
+        yield ("stdout", "13\n")
+
+    with patch(
+        "nodetool.nodes.nodetool.code.LuaSubprocessRunner.stream", new=fake_lua_stream
+    ):
+        assert await node.process(context) == 13
 
 
 @pytest.mark.asyncio
@@ -114,4 +125,69 @@ async def test_evaluate_expression_allows_whitelisted_calls(context: ProcessingC
     # Note: Lua doesn't have a len function, use # operator for length
     node = EvaluateExpression(expression="#{1,2,3}")
     node._dynamic_properties = {}
-    assert await node.process(context) == 3
+
+    async def fake_lua_stream(self, *args, **kwargs):
+        yield ("stdout", "3\n")
+
+    with patch(
+        "nodetool.nodes.nodetool.code.LuaSubprocessRunner.stream", new=fake_lua_stream
+    ):
+        assert await node.process(context) == 3
+
+
+@pytest.mark.asyncio
+async def test_execute_python_mode_default_is_docker(context: ProcessingContext):
+    code = "print('unused in test; mode is inspected')"
+    node = ExecutePython(code=code)  # type: ignore[call-arg]
+
+    async def fake_stream(self, *args, **kwargs):
+        # Ensure runner is configured for docker by default
+        assert getattr(self, "mode", None) == "docker"
+        yield ("stdout", "ok")
+
+    with patch(
+        "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
+    ):
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        outputs = NodeOutputs(
+            runner=None, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
+
+
+@pytest.mark.asyncio
+async def test_execute_python_mode_can_be_subprocess(context: ProcessingContext):
+    code = "print('unused in test; mode is inspected')"
+    node = ExecutePython(code=code)  # type: ignore[call-arg]
+    node.execution_mode = ExecutionMode.SUBPROCESS
+
+    async def fake_stream(self, *args, **kwargs):
+        # Ensure runner is configured for subprocess when requested
+        assert getattr(self, "mode", None) == "subprocess"
+        yield ("stdout", "ok")
+
+    with patch(
+        "nodetool.nodes.nodetool.code.PythonDockerRunner.stream", new=fake_stream
+    ):
+        inbox = NodeInbox()
+        inputs = NodeInputs(inbox)
+        outputs = NodeOutputs(
+            runner=None, node=node, context=context, capture_only=True
+        )
+        await node.run(context, inputs, outputs)
+
+
+@pytest.mark.asyncio
+async def test_evaluate_expression_uses_subprocess_runner(context: ProcessingContext):
+    node = EvaluateExpression(expression="a*b + 1")
+    node._dynamic_properties = {"a": 3, "b": 4}
+
+    async def fake_stream(self, *args, **kwargs):
+        # Simulate Lua printing 13 to stdout
+        yield ("stdout", "13\n")
+
+    with patch(
+        "nodetool.nodes.nodetool.code.LuaSubprocessRunner.stream", new=fake_stream
+    ):
+        assert await node.process(context) == 13

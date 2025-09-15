@@ -12,11 +12,16 @@ from nodetool.code_runners.javascript_runner import JavaScriptDockerRunner
 from nodetool.code_runners.bash_runner import BashDockerRunner
 from nodetool.code_runners.ruby_runner import RubyDockerRunner
 from nodetool.code_runners.command_runner import CommandDockerRunner
-from nodetool.code_runners.lua_runner import LuaSubprocessRunner
+from nodetool.code_runners.lua_runner import LuaRunner, LuaSubprocessRunner
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.code_runners.runtime_base import StreamRunnerBase
 
 log = get_logger(__name__)
+
+
+class ExecutionMode(Enum):
+    DOCKER = "docker"
+    SUBPROCESS = "subprocess"
 
 
 class ExecutePython(BaseNode):
@@ -51,6 +56,11 @@ class ExecutePython(BaseNode):
     image: PythonImage = Field(
         default=PythonImage.PYTHON_3_11_SLIM,
         description="Docker image to use for execution",
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
     )
 
     stdin: str = Field(
@@ -92,7 +102,8 @@ class ExecutePython(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = PythonDockerRunner(
-            image=self.image.value, allow_subprocess=not Environment.is_production()
+            image=self.image.value,
+            mode=self.execution_mode.value,
         )
         self._runner = runner
         async for slot, value in runner.stream(
@@ -169,6 +180,11 @@ class ExecuteJavaScript(BaseNode):
         description="Docker image to use for execution",
     )
 
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
     stdin: str = Field(
         default="",
         description=(
@@ -203,7 +219,8 @@ class ExecuteJavaScript(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = JavaScriptDockerRunner(
-            image=self.image.value, allow_subprocess=not Environment.is_production()
+            image=self.image.value,
+            mode=self.execution_mode.value,
         )
         self._runner = runner
         async for slot, value in runner.stream(
@@ -284,6 +301,11 @@ class ExecuteBash(BaseNode):
         description="Docker image to use for execution",
     )
 
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
     stdin: str = Field(
         default="",
         description=(
@@ -322,7 +344,8 @@ class ExecuteBash(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = BashDockerRunner(
-            image=self.image.value, allow_subprocess=not Environment.is_production()
+            image=self.image.value,
+            mode=self.execution_mode.value,
         )
         self._runner = runner
         async for slot, value in runner.stream(
@@ -400,6 +423,11 @@ class ExecuteRuby(BaseNode):
         description="Docker image to use for execution",
     )
 
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
     stdin: str = Field(
         default="",
         description=(
@@ -438,7 +466,8 @@ class ExecuteRuby(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = RubyDockerRunner(
-            image=self.image.value, allow_subprocess=not Environment.is_production()
+            image=self.image.value,
+            mode=self.execution_mode.value,
         )
         self._runner = runner
         async for slot, value in runner.stream(
@@ -515,6 +544,11 @@ class ExecuteLua(BaseNode):
         default=LuaExecutable.LUA, description="Lua executable to use"
     )
 
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.SUBPROCESS,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
     timeout_seconds: int = Field(
         default=10, description="Max seconds to allow execution before forced stop"
     )
@@ -556,11 +590,17 @@ class ExecuteLua(BaseNode):
         )
         stdin_stream = create_stdin_stream() if use_stdin else None
 
-        runner = LuaSubprocessRunner(
-            allow_subprocess=not Environment.is_production(),
-            executable=self.executable.value,
-            timeout_seconds=int(self.timeout_seconds),
-        )
+        if self.execution_mode == ExecutionMode.SUBPROCESS:
+            runner = LuaSubprocessRunner(
+                executable=self.executable.value,
+                timeout_seconds=int(self.timeout_seconds),
+            )
+        else:
+            runner = LuaRunner(
+                image="nickblah/lua:5.2.4-luarocks-ubuntu",
+                timeout_seconds=int(self.timeout_seconds),
+                mode=self.execution_mode.value,
+            )
         # type: ignore[assignment]
         self._runner = runner  # StreamRunnerBase-compatible API
         async for slot, value in runner.stream(
@@ -634,6 +674,11 @@ class ExecuteCommand(BaseNode):
         description="Docker image to use for execution",
     )
 
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
     stdin: str = Field(
         default="",
         description=(
@@ -672,7 +717,8 @@ class ExecuteCommand(BaseNode):
         stdin_stream = create_stdin_stream() if use_stdin else None
 
         runner = CommandDockerRunner(
-            image=self.image.value, allow_subprocess=not Environment.is_production()
+            image=self.image.value,
+            mode=self.execution_mode.value,
         )
         self._runner = runner
         async for slot, value in runner.stream(
@@ -741,6 +787,11 @@ class EvaluateExpression(BaseNode):
 
     _is_dynamic = True
 
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.SUBPROCESS,
+        description="Execution mode for evaluation (always subprocess by default)",
+    )
+
     async def process(self, context: ProcessingContext) -> Any:
         expr = (self.expression or "").strip()
         if not expr:
@@ -760,7 +811,8 @@ class EvaluateExpression(BaseNode):
 
         env_locals = self._dynamic_properties or {}
 
-        runner = LuaSubprocessRunner()
+        # Always run in subprocess mode for fast, local evaluation
+        runner = LuaSubprocessRunner(executable="lua")
         stdout_lines: list[str] = []
         try:
             async for slot, value in runner.stream(
