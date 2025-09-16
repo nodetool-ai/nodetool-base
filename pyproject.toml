@@ -10,13 +10,26 @@ readme = "README.md"
 authors = [{ name = "Matthias Georgi", email = "matti.georgi@gmail.com" }]
 requires-python = ">=3.11"
 
-dependencies = ["nodetool-core>=0.6.0,<0.7.0", "plyer==2.1.0", "jinja2"]
+dependencies = [
+    "nodetool-core>=0.6.0,<0.7.0",
+    "plyer==2.1.0",
+    "selenium>=4.26.1",
+    "trafilatura>=2.0.0",
+    "browser-use",
+    "faiss-cpu>=1.12.0",
+    "langchain-openai",
+    "langchain-ollama",
+    "langchain-anthropic",
+    "leann>=0.3.2; platform_system == \"Darwin\" or platform_system == \"Linux\"",
+    "pywhispercpp @ git+https://github.com/absadiki/pywhispercpp",
+]
 
 [project.optional-dependencies]
 # For exact version pinning in production
 stable = ["nodetool-core==0.6.0"]
 
 [tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nodetool"]
@@ -44,4 +57,15 @@ artifacts = [
 ]
 
 [tool.poetry]
-include = ["src/nodetool/package_metadata/nodetool-base.json", "src/nodetool/assets/nodetool-base/Categorize Mails.jpg", "src/nodetool/assets/nodetool-base/Simple Chat.jpg", "src/nodetool/assets/nodetool-base/Chat with Docs.jpg", "src/nodetool/assets/nodetool-base/Index PDFs.jpg", "src/nodetool/assets/nodetool-base/Daily Digest.jpg", "src/nodetool/assets/nodetool-base/Summarize Paper.jpg", "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg", "src/nodetool/assets/nodetool-base/Data Generator.jpg", "src/nodetool/assets/nodetool-base/Data Visualization Pipeline.jpg"]
+include = [
+    "src/nodetool/package_metadata/nodetool-base.json",
+    "src/nodetool/assets/nodetool-base/Categorize Mails.jpg",
+    "src/nodetool/assets/nodetool-base/Simple Chat.jpg",
+    "src/nodetool/assets/nodetool-base/Chat with Docs.jpg",
+    "src/nodetool/assets/nodetool-base/Index PDFs.jpg",
+    "src/nodetool/assets/nodetool-base/Daily Digest.jpg",
+    "src/nodetool/assets/nodetool-base/Summarize Paper.jpg",
+    "src/nodetool/assets/nodetool-base/Image To Audio Story.jpg",
+    "src/nodetool/assets/nodetool-base/Data Generator.jpg",
+    "src/nodetool/assets/nodetool-base/Data Visualization Pipeline.jpg",
+]
