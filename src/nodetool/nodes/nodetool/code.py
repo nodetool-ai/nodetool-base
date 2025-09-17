@@ -111,7 +111,6 @@ class ExecutePython(BaseNode):
             env_locals=self._dynamic_properties,
             context=context,
             node=self,
-            allow_dynamic_outputs=self.supports_dynamic_outputs(),
             stdin_stream=stdin_stream,
         ):
             if value is None:
@@ -228,7 +227,6 @@ class ExecuteJavaScript(BaseNode):
             env_locals=self._dynamic_properties,
             context=context,
             node=self,
-            allow_dynamic_outputs=self.supports_dynamic_outputs(),
             stdin_stream=stdin_stream,
         ):
             if value is None:
@@ -353,7 +351,6 @@ class ExecuteBash(BaseNode):
             env_locals=self._dynamic_properties,
             context=context,
             node=self,
-            allow_dynamic_outputs=self.supports_dynamic_outputs(),
             stdin_stream=stdin_stream,
         ):
             if value is None:
@@ -475,7 +472,6 @@ class ExecuteRuby(BaseNode):
             env_locals=self._dynamic_properties,
             context=context,
             node=self,
-            allow_dynamic_outputs=self.supports_dynamic_outputs(),
             stdin_stream=stdin_stream,
         ):
             if value is None:
@@ -608,7 +604,6 @@ class ExecuteLua(BaseNode):
             env_locals=self._dynamic_properties,
             context=context,
             node=self,
-            allow_dynamic_outputs=self.supports_dynamic_outputs(),
             stdin_stream=stdin_stream,
         ):
             if value is None:
@@ -726,7 +721,6 @@ class ExecuteCommand(BaseNode):
             env_locals=self._dynamic_properties,
             context=context,
             node=self,
-            allow_dynamic_outputs=self.supports_dynamic_outputs(),
             stdin_stream=stdin_stream,
         ):
             if value is None:
@@ -767,89 +761,3 @@ class ExecuteCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"ExecuteCommand finalize: {e}")
-
-
-class EvaluateExpression(BaseNode):
-    """
-    Evaluates a lua expression in a restricted sandbox. Connect dynamic inputs as variables.
-    expression, evaluate, lua
-
-    Use cases:
-    - Calculate values dynamically
-    - Transform data with simple expressions
-    - Quick data validation
-    """
-
-    expression: str = Field(
-        default="",
-        description="Lua expression to evaluate. Variables are available as locals.",
-    )
-
-    _is_dynamic = True
-
-    execution_mode: ExecutionMode = Field(
-        default=ExecutionMode.SUBPROCESS,
-        description="Execution mode for evaluation (always subprocess by default)",
-    )
-
-    async def process(self, context: ProcessingContext) -> Any:
-        expr = (self.expression or "").strip()
-        if not expr:
-            return None
-
-        # Build a tiny Lua program that evaluates the expression and prints a
-        # normalized representation to stdout for capture.
-        lua_code = (
-            "local __val = (" + expr + ")\n"
-            "local t = type(__val)\n"
-            "if t == 'nil' then print('nil') \n"
-            "elseif t == 'boolean' then print(__val and 'true' or 'false') \n"
-            "elseif t == 'number' then print(tostring(__val)) \n"
-            "elseif t == 'string' then print(__val) \n"
-            "else print(tostring(__val)) end\n"
-        )
-
-        env_locals = self._dynamic_properties or {}
-
-        # Always run in subprocess mode for fast, local evaluation
-        runner = LuaSubprocessRunner(executable="lua")
-        stdout_lines: list[str] = []
-        try:
-            async for slot, value in runner.stream(
-                user_code=lua_code,
-                env_locals=env_locals,
-                context=context,
-                node=self,
-                allow_dynamic_outputs=False,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                if slot == "stdout":
-                    try:
-                        stdout_lines.append(str(value))
-                    except Exception:
-                        pass
-        finally:
-            try:
-                runner.stop()
-            except Exception:
-                pass
-
-        # Combine and parse basic scalar types back into Python
-        out = ("".join(stdout_lines)).strip()
-        if out == "":
-            return None
-        if out == "nil":
-            return None
-        if out == "true":
-            return True
-        if out == "false":
-            return False
-        # Try numeric
-        try:
-            if any(ch in out for ch in [".", "e", "E"]):
-                return float(out)
-            return int(out)
-        except Exception:
-            return out
