@@ -2,16 +2,22 @@ from typing import Any
 import inspect
 from pydantic import Field
 from nodetool.metadata.types import (
+    ColorRef,
     DataframeRef,
     DocumentRef,
     FilePath,
+    FolderRef,
+    HuggingFaceModel,
+    LanguageModel,
     Message,
     MessageAudioContent,
     MessageDocumentContent,
     MessageVideoContent,
     MessageImageContent,
     MessageTextContent,
-    TextRef,
+    InferenceProvider,
+    FolderPath,
+    FolderRef,
 )
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk
@@ -101,6 +107,72 @@ class StringInput(InputNode):
         return self.value
 
 
+class StringListInput(InputNode):
+    """
+    Accepts a list of strings as a parameter for workflows.
+    input, parameter, string, text, label, name, value
+    """
+
+    value: list[str] = Field(
+        default_factory=list, description="The list of strings to use as input."
+    )
+
+    async def process(self, context: ProcessingContext) -> list[str]:
+        return self.value
+
+
+class FilePathInput(InputNode):
+    """
+    Accepts a file path as a parameter for workflows.
+    input, parameter, file, path, filepath, local_file, filesystem
+    """
+
+    value: FilePath = Field(FilePath(), description="The file path to use as input.")
+
+    async def process(self, context: ProcessingContext) -> FilePath:
+        return self.value
+
+
+class FolderPathInput(InputNode):
+    """
+    Accepts a folder path as a parameter for workflows.
+    input, parameter, folder, path, folderpath, local_folder, filesystem
+    """
+
+    value: FilePath = Field(FilePath(), description="The folder path to use as input.")
+
+    async def process(self, context: ProcessingContext) -> FilePath:
+        return self.value
+
+
+class HuggingFaceModelInput(InputNode):
+    """
+    Accepts a Hugging Face model as a parameter for workflows.
+    input, parameter, model, huggingface, hugging_face, model_name
+    """
+
+    value: HuggingFaceModel = Field(
+        HuggingFaceModel(), description="The Hugging Face model to use as input."
+    )
+
+    async def process(self, context: ProcessingContext) -> HuggingFaceModel:
+        return self.value
+
+
+class InferenceProviderInput(InputNode):
+    """
+    Accepts an inference provider as a parameter for workflows.
+    input, parameter, provider, inference, provider_name
+    """
+
+    value: InferenceProvider = Field(
+        InferenceProvider.none, description="The inference provider to use as input."
+    )
+
+    async def process(self, context: ProcessingContext) -> InferenceProvider:
+        return self.value
+
+
 class ChatInput(InputNode):
     """
     Accepts a list of chat messages as input for workflows, typically representing a conversation history.  The input is structured as a sequence of 'Message' objects. The node processes this list to extract elements like the latest message content (text, image, audio, video, document), the history, and any associated tool calls.
@@ -170,6 +242,32 @@ class ChatInput(InputNode):
                 else []
             ),
         }
+
+
+class ColorInput(InputNode):
+    """
+    Accepts a color value as a parameter for workflows.
+    input, parameter, color, color_picker, color_input
+    """
+
+    value: ColorRef = Field(ColorRef(), description="The color to use as input.")
+
+    async def process(self, context: ProcessingContext) -> ColorRef:
+        return self.value
+
+
+class LanguageModelInput(InputNode):
+    """
+    Accepts a language model as a parameter for workflows.
+    input, parameter, model, language, model_name
+    """
+
+    value: LanguageModel = Field(
+        LanguageModel(), description="The language model to use as input."
+    )
+
+    async def process(self, context: ProcessingContext) -> LanguageModel:
+        return self.value
 
 
 class DocumentInput(InputNode):
@@ -285,6 +383,18 @@ class RealtimeAudioInput(InputNode):
         }
 
 
+class AssetFolderInput(InputNode):
+    """
+    Accepts an asset folder as a parameter for workflows.
+    input, parameter, folder, path, folderpath, local_folder, filesystem
+    """
+
+    value: FolderRef = Field(FolderRef(), description="The folder to use as input.")
+
+    async def process(self, context: ProcessingContext) -> FolderRef:
+        return self.value
+
+
 class PathInput(InputNode):
     """
     Accepts a local filesystem path (to a file or directory) as input for workflows.  This input provides a 'FilePath' object. Its usage is typically restricted to non-production environments due to security considerations around direct filesystem access.
@@ -339,38 +449,6 @@ class DocumentFileInput(InputNode):
         }
 
 
-class DataframeInput(InputNode):
-    """
-    Accepts a pandas DataFrame as input for workflows.
-    input, parameter, dataframe, table, structured, csv, tabular_data, rows, columns
-
-    Use cases:
-    - Provide a pandas DataFrame as input to a workflow.
-    """
-
-    value: DataframeRef = Field(
-        DataframeRef(), description="The dataframe to use as input."
-    )
-
-    async def process(self, context: ProcessingContext) -> DataframeRef:
-        return self.value
-
-
-class ListInput(InputNode):
-    """
-    Accepts a list of items as input for workflows.
-    input, parameter, list, array, sequence, collection
-
-    Use cases:
-    - Provide a list of items to a workflow.
-    """
-
-    value: list[Any] = Field([], description="The list of items to use as input.")
-
-    async def process(self, context: ProcessingContext) -> list[Any]:
-        return self.value
-
-
 class CollectionInput(InputNode):
     """
     Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
@@ -391,31 +469,3 @@ class CollectionInput(InputNode):
         if not self.value:
             raise ValueError("Collection input is empty, please select a collection")
         return self.value
-
-
-class TextInput(InputNode):
-    """Accepts a single line of text (``TextRef``) as a parameter for workflows.
-    input, parameter, text, string, line, reference
-
-    This node is a convenience wrapper around ``StringInput`` when the text value
-    should be treated as a standalone asset reference (``TextRef``) rather than
-    a raw ``str``.
-    """
-
-    value: TextRef = Field(TextRef(), description="The text asset to use as input.")
-
-    async def process(self, context: ProcessingContext) -> TextRef:  # type: ignore[override]
-        if self.value.is_empty():
-            raise ValueError("Text input is empty, please provide a text asset")
-        return self.value
-
-
-class GroupInput(InputNode):
-    """
-    A minimal group input placeholder to satisfy imports in tests.
-    """
-
-    _value: Any | None = None
-
-    async def process(self, context: ProcessingContext) -> Any:
-        return self._value

@@ -14,11 +14,9 @@ from nodetool.nodes.nodetool.input import (
     IntegerInput,
     StringInput,
     ChatInput,
-    TextInput,
     ImageInput,
     VideoInput,
     AudioInput,
-    GroupInput,
 )
 
 
@@ -35,6 +33,7 @@ def context():
             FloatInput(
                 name="float_input",
                 value=3.14,
+                description="test",
             ),
             3.14,
             float,
@@ -43,6 +42,7 @@ def context():
             BooleanInput(
                 name="bool_input",
                 value=True,
+                description="test",
             ),
             True,
             bool,
@@ -51,6 +51,7 @@ def context():
             IntegerInput(
                 name="int_input",
                 value=42,
+                description="test",
             ),
             42,
             int,
@@ -59,6 +60,7 @@ def context():
             StringInput(
                 name="string_input",
                 value="test",
+                description="test",
             ),
             "test",
             str,
@@ -72,6 +74,7 @@ def context():
                         content=[MessageTextContent(text="hello")],
                     )
                 ],
+                description="test",
             ),
             [
                 Message(
@@ -82,17 +85,10 @@ def context():
             dict,
         ),
         (
-            TextInput(
-                name="text_input",
-                value=TextRef(uri="test.txt"),
-            ),
-            TextRef(uri="test.txt"),
-            TextRef,
-        ),
-        (
             ImageInput(
                 name="image_input",
                 value=ImageRef(uri="test.jpg"),
+                description="test",
             ),
             ImageRef(uri="test.jpg"),
             ImageRef,
@@ -101,6 +97,7 @@ def context():
             VideoInput(
                 name="video_input",
                 value=VideoRef(uri="test.mp4"),
+                description="test",
             ),
             VideoRef(uri="test.mp4"),
             VideoRef,
@@ -109,6 +106,7 @@ def context():
             AudioInput(
                 name="audio_input",
                 value=AudioRef(uri="test.mp3"),
+                description="test",
             ),
             AudioRef(uri="test.mp3"),
             AudioRef,
@@ -118,10 +116,6 @@ def context():
 async def test_input_nodes(
     context: ProcessingContext, node, input_value, expected_type
 ):
-    # For nodes that require setup
-    if isinstance(node, GroupInput):
-        node._value = input_value
-
     if isinstance(node, ChatInput):
         result = await node.process(context)
         assert isinstance(result, dict)
@@ -148,7 +142,6 @@ async def test_input_nodes(
         IntegerInput,
         StringInput,
         ChatInput,
-        TextInput,
         ImageInput,
         VideoInput,
         AudioInput,
