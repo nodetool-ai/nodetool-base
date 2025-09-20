@@ -1,46 +1,14 @@
 import base64
 import asyncio
-from enum import Enum
-import io
 import json
 from typing import Any, cast
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
-
-from openai.resources.beta.realtime.realtime import AsyncRealtimeConnection
-from openai.types.beta.realtime import (
-    ResponseAudioDoneEvent,
-    ResponseDoneEvent,
-    ResponseTextDeltaEvent,
-    ResponseTextDoneEvent,
-    Session,
-)
-from openai.types.beta.realtime.session import (
-    Tool as OpenAITool,
-    TurnDetection,
-)
-from openai.types.beta.realtime.response_function_call_arguments_delta_event import (
-    ResponseFunctionCallArgumentsDeltaEvent,
-)
-from openai.types.beta.realtime.response_function_call_arguments_done_event import (
-    ResponseFunctionCallArgumentsDoneEvent,
-)
-from openai.types.beta.realtime.session_update_event_param import Session
-from openai.types.beta.realtime.response_create_event_param import Response
-from openai.types.beta.realtime.error_event import ErrorEvent
-from openai.types.beta.realtime.response_audio_delta_event import (
-    ResponseAudioDeltaEvent,
-)
-from openai.types.beta.realtime.response_audio_transcript_delta_event import (
-    ResponseAudioTranscriptDeltaEvent,
-)
 from pydantic import Field
 
-from nodetool.agents.tools.tool_registry import resolve_tool_by_name
 from nodetool.agents.tools.base import Tool
 from nodetool.chat.providers import get_provider
-from nodetool.config.environment import Environment
 
 from nodetool.workflows.types import (
     ToolCallUpdate,
@@ -63,11 +31,9 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import NodeProgress, ToolCallUpdate, EdgeUpdate
+from nodetool.workflows.types import ToolCallUpdate, EdgeUpdate
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.chat.providers import Chunk
-from nodetool.chat.dataframes import json_schema_for_dataframe
-from nodetool.metadata.types import DataframeRef, RecordType
 from nodetool.metadata.types import Provider
 from nodetool.chat.providers import get_provider
 from nodetool.config.logging_config import get_logger
@@ -522,12 +488,6 @@ class Agent(BaseNode):
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
-    tool_call_limit: int = Field(
-        title="Tool Call Limit",
-        default=3,
-        ge=0,
-        description="Maximum iterations that make tool calls before forcing a final answer. 0 disables tools.",
-    )
 
     _supports_dynamic_outputs = True
 
@@ -646,21 +606,11 @@ class Agent(BaseNode):
             )
 
             provider = get_provider(self.model.provider)
-            tools_for_iteration = (
-                tools if tool_iterations < self.tool_call_limit else []
-            )
-            if tools_for_iteration is not tools:
-                log.debug(
-                    "Agent tools disabled for iteration=%d after %d tool iterations (limit=%d)",
-                    iteration,
-                    tool_iterations,
-                    self.tool_call_limit,
-                )
             pending_tool_tasks: list[asyncio.Task] = []
             async for chunk in provider.generate_messages(
                 messages=messages,
                 model=self.model.id,
-                tools=tools_for_iteration,
+                tools=tools,
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
             ):
@@ -687,7 +637,6 @@ class Agent(BaseNode):
 
                 elif isinstance(chunk, ToolCall):
                     tools_called = True
-                    tool_iterations += 1
                     try:
                         args_preview = (
                             (
@@ -719,6 +668,7 @@ class Agent(BaseNode):
                                     message=tool_instance.user_message(chunk.args),
                                 )
                             )
+                            # Mark edges as message_sent after tool call is announced
                             initial_edges, _ = get_downstream_subgraph(
                                 context.graph, self.id, chunk.name
                             )
@@ -807,6 +757,26 @@ class Agent(BaseNode):
     ) -> None:
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
+        # If this Agent has no inbound edges, execute once using configured properties.
+        # This enables simple graphs (Agent → Preview) to run without an explicit trigger.
+        try:
+            has_inbound = any(e.target == self.id for e in context.graph.edges)
+        except Exception:
+            has_inbound = False
+        if not has_inbound:
+            messages = self._prepare_messages()
+            tools = self._resolve_tools(context)
+            tool_names = [t.name for t in tools if t is not None]
+            log.debug(
+                "Agent setup (fallback no-input): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
+                self.model.id,
+                self.model.provider,
+                self.context_window,
+                self.max_tokens,
+                tool_names,
+            )
+            await self._execute_agent_loop(context, messages, tools, outputs)
+            return
         # Accumulators for streamed chunk input
         chunk_text_buf: list[str] = []
         audio_accum = bytearray()
@@ -832,13 +802,12 @@ class Agent(BaseNode):
                         tools = self._resolve_tools(context)
                         tool_names = [t.name for t in tools if t is not None]
                         log.debug(
-                            "Agent setup (chunk-audio): model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+                            "Agent setup (chunk-audio): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
                             self.model.id,
                             self.model.provider,
                             self.context_window,
                             self.max_tokens,
                             tool_names,
-                            self.tool_call_limit,
                         )
                         await self._execute_agent_loop(
                             context, messages, tools, outputs
@@ -856,13 +825,12 @@ class Agent(BaseNode):
                         tools = self._resolve_tools(context)
                         tool_names = [t.name for t in tools if t is not None]
                         log.debug(
-                            "Agent setup (chunk-text): model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+                            "Agent setup (chunk-text): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
                             self.model.id,
                             self.model.provider,
                             self.context_window,
                             self.max_tokens,
                             tool_names,
-                            self.tool_call_limit,
                         )
                         await self._execute_agent_loop(
                             context, messages, tools, outputs
@@ -881,13 +849,12 @@ class Agent(BaseNode):
             tool_names = [t.name for t in tools if t is not None]
 
             log.debug(
-                "Agent setup (per-item): model=%s provider=%s context_window=%s max_tokens=%s tools=%s tool_call_limit=%s",
+                "Agent setup (per-item): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
                 self.model.id,
                 self.model.provider,
                 self.context_window,
                 self.max_tokens,
                 tool_names,
-                self.tool_call_limit,
             )
 
             await self._execute_agent_loop(context, messages, tools, outputs)
