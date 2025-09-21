@@ -10,7 +10,7 @@ from nodetool.config.logging_config import get_logger
 
 from openai.types.create_embedding_response import CreateEmbeddingResponse
 from pydantic import Field
-
+from typing import ClassVar
 from enum import Enum
 
 logger = get_logger(__name__)

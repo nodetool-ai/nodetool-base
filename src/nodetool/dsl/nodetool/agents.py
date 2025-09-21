@@ -83,6 +83,14 @@ class Classifier(GraphNode):
     text: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Text to classify"
     )
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="Optional image to classify in context",
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="Optional audio to classify in context",
+    )
     categories: list[str] | GraphNode | tuple[GraphNode, str] = Field(
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
@@ -123,6 +131,14 @@ class Extractor(GraphNode):
     )
     text: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The text to extract data from"
+    )
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="Optional image to assist extraction",
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="Optional audio to assist extraction",
     )
     extraction_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
         default="Extract the following information from the text:",
@@ -167,6 +183,14 @@ class Summarizer(GraphNode):
     )
     text: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The text to summarize"
+    )
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="Optional image to condition the summary",
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="Optional audio to condition the summary",
     )
     max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
         default=200, description="Target maximum number of tokens for the summary"

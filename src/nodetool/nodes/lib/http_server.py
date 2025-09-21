@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode
@@ -19,7 +19,7 @@ class SimpleHttpServer(BaseNode):
     then streams stdout/stderr lines on the corresponding outputs.
     """
 
-    _supports_dynamic_outputs: bool = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     image: str = Field(

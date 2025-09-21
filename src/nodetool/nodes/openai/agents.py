@@ -3,6 +3,7 @@ import asyncio
 from enum import Enum
 import io
 import json
+from typing import ClassVar
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.nodes.nodetool.agents import serialize_tool_result
@@ -128,7 +129,7 @@ class RealtimeAgent(BaseNode):
         description="The temperature for the response",
     )
 
-    _supports_dynamic_outputs = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
 
     def should_route_output(self, output_name: str) -> bool:
         """

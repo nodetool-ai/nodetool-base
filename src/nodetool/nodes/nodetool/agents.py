@@ -1,7 +1,8 @@
 import base64
 import asyncio
 import json
-from typing import Any, cast
+import re
+from typing import Any, cast, ClassVar
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
@@ -23,6 +24,7 @@ from nodetool.metadata.types import (
     MessageTextContent,
     MessageImageContent,
     MessageAudioContent,
+    MessageContent,
     ImageRef,
     ToolName,
     ToolCall,
@@ -82,6 +84,14 @@ class Summarizer(BaseNode):
         description="Model to use for summarization",
     )
     text: str = Field(default="", description="The text to summarize")
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Optional image to condition the summary",
+    )
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="Optional audio to condition the summary",
+    )
     max_tokens: int = Field(
         default=200,
         description="Target maximum number of tokens for the summary",
@@ -94,14 +104,18 @@ class Summarizer(BaseNode):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["text", "max_tokens", "model"]
+        return ["text", "max_tokens", "model", "image", "audio"]
 
     async def gen_process(self, context: ProcessingContext):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        content = []
+        content: list[MessageContent] = []
         content.append(MessageTextContent(text=self.text))
+        if self.image.is_set():
+            content.append(MessageImageContent(image=self.image))
+        if self.audio.is_set():
+            content.append(MessageAudioContent(audio=self.audio))
 
         messages = [
             Message(role="system", content=self.system_prompt),
@@ -125,6 +139,37 @@ class Summarizer(BaseNode):
         yield "text", text
 
 
+DEFAULT_EXTRACTOR_SYSTEM_PROMPT = """
+You are a precise structured data extractor.
+
+Goal
+- Extract exactly the fields described in <JSON_SCHEMA> from the content in <TEXT> (and any attached media).
+
+Output format (MANDATORY)
+- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:
+
+  ```json
+  { ...single JSON object matching <JSON_SCHEMA>... }
+  ```
+
+- No additional prose before or after the block.
+
+Extraction rules
+- Use only information found in <TEXT> or attached media. Do not invent facts.
+- Preserve source values; normalize internal whitespace and trim leading/trailing spaces.
+- If a required field is missing or not explicitly stated, return the closest reasonable default consistent with its type:
+  - string: ""
+  - number: 0
+  - boolean: false
+  - array/object: empty value of that type (only if allowed by the schema)
+- Dates/times: prefer ISO 8601 when the schema type is string and the value represents a date/time.
+- If multiple candidates exist, choose the most precise and unambiguous one.
+
+Validation
+- Ensure the final JSON validates against <JSON_SCHEMA> exactly.
+"""
+
+
 class Extractor(BaseNode):
     """
     Extract structured data from text content using LLM providers.
@@ -137,16 +182,14 @@ class Extractor(BaseNode):
     - Creating structured records from natural language content
     """
 
-    _supports_dynamic_outputs = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls) -> str:
         return "Extractor"
 
     system_prompt: str = Field(
-        default="""
-        You are an expert data extractor. Your task is to extract specific information from text according to a defined schema.
-        """,
+        default=DEFAULT_EXTRACTOR_SYSTEM_PROMPT,
         description="The system prompt for the data extractor",
     )
 
@@ -155,9 +198,13 @@ class Extractor(BaseNode):
         description="Model to use for data extraction",
     )
     text: str = Field(default="", description="The text to extract data from")
-    extraction_prompt: str = Field(
-        default="Extract the following information from the text:",
-        description="Additional instructions for the extraction process",
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Optional image to assist extraction",
+    )
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="Optional audio to assist extraction",
     )
     max_tokens: int = Field(
         default=4096,
@@ -171,7 +218,7 @@ class Extractor(BaseNode):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["text", "extraction_prompt", "model"]
+        return ["text", "model", "image", "audio"]
 
     @classmethod
     def return_type(cls):
@@ -183,15 +230,14 @@ class Extractor(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        messages = [
-            Message(role="system", content=self.system_prompt),
-            Message(role="user", content=f"{self.extraction_prompt}\n\n{self.text}"),
-        ]
-
         provider = get_provider(self.model.provider)
 
         # Build JSON schema from instance dynamic outputs (default each to string)
-        output_slots = self.outputs_for_instance()
+        output_slots = self.get_dynamic_output_slots()
+
+        if len(output_slots) == 0:
+            raise ValueError("Declare outputs for the fields you want to extract")
+
         properties: dict[str, Any] = {
             slot.name: slot.type.get_json_schema() for slot in output_slots
         }
@@ -205,37 +251,85 @@ class Extractor(BaseNode):
             "required": required,
         }
 
+        additional_instructions = (
+            "\n<JSON_SCHEMA>\n" + json.dumps(schema, indent=2) + "\n</JSON_SCHEMA>\n"
+        )
+        if self.image.is_set():
+            additional_instructions += (
+                "Use the attached image to assist with the extraction.\n"
+            )
+        if self.audio.is_set():
+            additional_instructions += (
+                "Use the attached audio to assist with the extraction.\n"
+            )
+
+        user_content: list[MessageContent] = [
+            MessageTextContent(text=self.text),
+        ]
+
+        if self.image.is_set():
+            user_content.append(MessageImageContent(image=self.image))
+        if self.audio.is_set():
+            user_content.append(MessageAudioContent(audio=self.audio))
+
+        messages = [
+            Message(
+                role="system", content=self.system_prompt + additional_instructions
+            ),
+            Message(role="user", content=user_content),
+        ]
+
+        # Prefer model to emit a fenced ```json block; fall back to curly-brace extraction
         assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
             context_window=self.context_window,
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "name": "extraction_results",
-                    "schema": schema,
-                    "strict": True,
-                },
-            },
         )
 
-        result_obj = json.loads(str(assistant_message.content))
+        raw = str(assistant_message.content or "").strip()
+        # 1) Try to extract content from a ```json ... ``` fenced block
+        fenced_match = None
+        try:
+            fenced_match = re.search(r"```json\s*([\s\S]*?)\s*```", raw, re.IGNORECASE)
+        except Exception:
+            fenced_match = None
+        if fenced_match:
+            candidate = fenced_match.group(1).strip()
+            try:
+                result_obj = json.loads(candidate)
+            except Exception:
+                # fall through to brace extraction below
+                result_obj = None  # type: ignore[assignment]
+        else:
+            result_obj = None  # type: ignore[assignment]
+
+        # 2) Fallback: extract minimal substring between first { and last }
+        if result_obj is None:
+            try:
+                start = raw.find("{")
+                end = raw.rfind("}")
+                if 0 <= start < end:
+                    snippet = raw[start : end + 1]
+                    result_obj = json.loads(snippet)
+            except Exception:
+                result_obj = None  # type: ignore[assignment]
+
         if not isinstance(result_obj, dict):
             raise ValueError("Extractor did not return a dictionary")
         return result_obj
 
 
 DEFAULT_CLASSIFY_SYSTEM_PROMPT = """
-You are a precise text classifier.
+You are a precise classifier.
 
 Goal
 - Select exactly one category from the list provided by the user.
 
-Tool-calling rules
-- You MUST respond by calling the tool "classify" exactly once.
-- Provide only the "category" field in the tool arguments.
-- Do not produce any assistant text, only the tool call.
+Output format (MANDATORY)
+- Return ONLY a single JSON object with this exact schema and nothing else:
+  {"category": "<one-of-the-allowed-categories>"}
+- No prose, no Markdown, no code fences, no explanations, no extra keys.
 
 Selection criteria
 - Choose the single best category that captures the main intent of the text.
@@ -276,9 +370,23 @@ class Classifier(BaseNode):
         description="Model to use for classification",
     )
     text: str = Field(default="", description="Text to classify")
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Optional image to classify in context",
+    )
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="Optional audio to classify in context",
+    )
     categories: list[str] = Field(
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
+    )
+    max_tokens: int = Field(
+        default=1024,
+        ge=1,
+        le=16384,
+        description="The maximum number of tokens to generate.",
     )
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
@@ -286,7 +394,7 @@ class Classifier(BaseNode):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["text", "categories", "model"]
+        return ["text", "categories", "model", "image", "audio"]
 
     async def process(self, context: ProcessingContext) -> str:
         if self.model.provider == Provider.Empty:
@@ -295,61 +403,137 @@ class Classifier(BaseNode):
         if len(self.categories) < 2:
             raise ValueError("At least 2 categories are required")
 
-        # Build messages instructing the model to pick a category via tool call
+        # Build messages instructing the model to pick a category and emit strict JSON
+        user_text = (
+            "Classify the given input into exactly one category from the list.\n"
+            f"Allowed categories: {', '.join(self.categories)}\n\n"
+            f"Text: {self.text}"
+        )
+        user_content: list[MessageContent] = [MessageTextContent(text=user_text)]
+        if self.image.is_set():
+            user_content.append(MessageImageContent(image=self.image))
+        if self.audio.is_set():
+            user_content.append(MessageAudioContent(audio=self.audio))
+
         messages = [
             Message(role="system", content=self.system_prompt),
-            Message(
-                role="user",
-                content=(
-                    "Classify the given text by calling the provided tool to choose one category.\n"
-                    f"Categories: {', '.join(self.categories)}\n\n"
-                    f"Text: {self.text}"
-                ),
-            ),
+            Message(role="user", content=user_content),
         ]
 
-        # Define a dynamic tool with an enum of the categories
-        class ClassificationTool(Tool):
-            name = "classify"
-            description = "Select the best matching category for the provided text."
-            input_schema = {
-                "type": "object",
-                "additionalProperties": False,
-                "required": ["category"],
-                "properties": {
-                    "category": {
-                        "type": "string",
-                        "enum": self.categories,
-                        "description": "One of the allowed categories",
-                    },
-                },
-            }
+        # Response schema forcing a single enum field
+        schema = {
+            "type": "object",
+            "additionalProperties": False,
+            "required": ["category"],
+            "properties": {
+                "category": {
+                    "type": "string",
+                    "enum": self.categories,
+                    "description": "One of the allowed categories",
+                }
+            },
+        }
 
-        tool_instance = ClassificationTool()
         provider = get_provider(self.model.provider)
 
-        # Stream until the model calls the tool and return the selected category
-        selected_category: str | None = None
-        async for chunk in provider.generate_messages(
-            messages=messages,
-            model=self.model.id,
-            tools=[tool_instance],
-            context_window=self.context_window,
-        ):
-            if isinstance(chunk, ToolCall) and chunk.name == tool_instance.name:
-                try:
-                    args = chunk.args or {}
-                    category = args.get("category")
-                    if isinstance(category, str) and category in self.categories:
-                        selected_category = category
-                        break
-                except Exception:
-                    pass
+        try:
+            assistant_message = await provider.generate_message(
+                model=self.model.id,
+                messages=messages,
+                context_window=self.context_window,
+                max_tokens=self.max_tokens,
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "classification_result",
+                        "schema": schema,
+                        "strict": True,
+                    },
+                },
+            )
+            raw = str(assistant_message.content)
+        except Exception as e:
+            # Fall back to a best-effort mapping using the model without response_format
+            log.debug(f"Classifier: response_format failed ({e}); retrying without it")
+            assistant_message = await provider.generate_message(
+                model=self.model.id,
+                messages=messages,
+                context_window=self.context_window,
+            )
+            raw = str(assistant_message.content)
 
-        if selected_category is None:
-            raise ValueError("Model did not select a category via tool calling")
+        # Parse robustly, then validate and coerce to an allowed category
+        category = _parse_or_infer_category(raw, self.categories)
+        return category
 
-        return selected_category
+
+def _parse_or_infer_category(raw: str, categories: list[str]) -> str:
+    """Parse JSON {"category": ...} or infer from free text, always returning a valid category.
+
+    Strategy:
+    1) Try strict JSON parse for key "category"
+    2) Try to extract minimal JSON object substring and parse again
+    3) Try to find a direct category mention in the text (case-insensitive)
+    4) Fallback to similarity match using difflib
+    5) Final fallback: return "Other"/"Unknown" if present; otherwise first category
+    """
+    try:
+        obj = json.loads(raw)
+        if isinstance(obj, dict):
+            value = obj.get("category")
+            if isinstance(value, str):
+                for c in categories:
+                    if value.strip().lower() == c.strip().lower():
+                        return c
+    except Exception:
+        pass
+
+    # Attempt to extract a JSON object substring
+    try:
+        start = raw.find("{")
+        end = raw.rfind("}")
+        if 0 <= start < end:
+            snippet = raw[start : end + 1]
+            obj = json.loads(snippet)
+            if isinstance(obj, dict):
+                value = obj.get("category")
+                if isinstance(value, str):
+                    for c in categories:
+                        if value.strip().lower() == c.strip().lower():
+                            return c
+    except Exception:
+        pass
+
+    # Direct mention match
+    lowered = raw.lower()
+    for c in categories:
+        if c.lower() in lowered:
+            return c
+
+    # Similarity match
+    try:
+        import difflib
+
+        best = None
+        best_score = 0.0
+        for c in categories:
+            score = difflib.SequenceMatcher(
+                None, lowered.strip(), c.lower().strip()
+            ).ratio()
+            if score > best_score:
+                best = c
+                best_score = score
+        if best is not None and best_score >= 0.5:
+            return best
+    except Exception:
+        pass
+
+    # Final fallback
+    for fallback in ("other", "unknown"):
+        for c in categories:
+            if c.strip().lower() == fallback:
+                return c
+    return categories[0]
 
 
 DEFAULT_SYSTEM_PROMPT = """You are a an AI agent. 
@@ -489,7 +673,7 @@ class Agent(BaseNode):
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
-    _supports_dynamic_outputs = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
 
     def should_route_output(self, output_name: str) -> bool:
         """

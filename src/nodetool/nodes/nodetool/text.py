@@ -3,7 +3,7 @@ from io import BytesIO
 import json
 import os
 
-from typing import Any
+from typing import Any, ClassVar
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
@@ -121,7 +121,7 @@ class FormatText(BaseNode):
     - join(delimiter): Joins list with delimiter
     """
 
-    _is_dynamic = True
+    _is_dynamic: ClassVar[bool] = True
 
     template: str = Field(
         default="",

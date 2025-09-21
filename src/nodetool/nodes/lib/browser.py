@@ -1,11 +1,8 @@
 import asyncio
-import logging
 import os
 import re
-import traceback
 from enum import Enum
-from typing import Any, Dict, Iterator, Optional
-import json
+from typing import Any, Dict, Optional, ClassVar
 import hashlib
 
 import aiohttp

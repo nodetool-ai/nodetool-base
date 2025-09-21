@@ -1,5 +1,5 @@
 import ast
-from typing import Any
+from typing import Any, ClassVar
 from enum import Enum
 from nodetool.config.environment import Environment
 from nodetool.config.logging_config import get_logger
@@ -37,8 +37,8 @@ class ExecutePython(BaseNode):
     IMPORTANT: Only enabled in non-production environments
     """
 
-    _is_dynamic = True
-    _supports_dynamic_outputs = True
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     class PythonImage(Enum):
@@ -159,8 +159,8 @@ class ExecuteJavaScript(BaseNode):
     javascript, nodejs, code, execute
     """
 
-    _is_dynamic = True
-    _supports_dynamic_outputs = True
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     class JavaScriptImage(Enum):
@@ -275,8 +275,8 @@ class ExecuteBash(BaseNode):
     bash, shell, code, execute
     """
 
-    _is_dynamic = True
-    _supports_dynamic_outputs = True
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     class BashImage(Enum):
@@ -400,8 +400,8 @@ class ExecuteRuby(BaseNode):
     ruby, code, execute
     """
 
-    _is_dynamic = True
-    _supports_dynamic_outputs = True
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     class RubyImage(Enum):
@@ -520,8 +520,8 @@ class ExecuteLua(BaseNode):
     lua, code, execute, sandbox
     """
 
-    _is_dynamic = True
-    _supports_dynamic_outputs = True
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     class LuaExecutable(Enum):
@@ -646,8 +646,8 @@ class ExecuteCommand(BaseNode):
     IMPORTANT: Only enabled in non-production environments
     """
 
-    _is_dynamic = True
-    _supports_dynamic_outputs = True
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
     _runner: StreamRunnerBase | None = None
 
     class CommandImage(Enum):

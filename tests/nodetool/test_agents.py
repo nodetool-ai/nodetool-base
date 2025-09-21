@@ -13,6 +13,7 @@ from nodetool.metadata.types import (
     MessageTextContent,
     ToolName,
 )
+from typing import ClassVar
 from nodetool.chat.providers import (
     Chunk,
     FakeProvider,
@@ -220,23 +221,16 @@ class TestClassifier:
             model=mock_model,
         )
 
-        # Mock the provider to return proper Message with tool call
-        from nodetool.metadata.types import Message, ToolCall
-        from nodetool.chat.providers.base import MockProvider
+            # Mock the provider to return a JSON content response
+            mock_provider = MagicMock()
+            mock_message = MagicMock()
+            mock_message.content = '{"category": "positive"}'
+            mock_provider.generate_message = AsyncMock(return_value=mock_message)
 
-        tool_call = ToolCall(
-            id="test_call", name="classify", args={"category": "positive"}
-        )
-        mock_response = Message(
-            role="assistant",
-            tool_calls=[tool_call],
-        )
-        mock_provider = MockProvider([mock_response])
-
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=mock_provider
-        ):
-            result = await node.process(context)
+            with patch(
+                "nodetool.nodes.nodetool.agents.get_provider", return_value=mock_provider
+            ):
+                result = await node.process(context)
 
         assert result == "positive"
 
@@ -729,13 +723,13 @@ class TestAgentFields:
         """Test that Agent is not cacheable"""
         assert not Agent.is_cacheable()
 
-    def test_extractor_supports_dynamic_outputs(self):
+    def test_extractor_supports_dynamic_outputs: ClassVar[bool] (self):
         """Test that Extractor supports dynamic outputs"""
-        assert Extractor._supports_dynamic_outputs
+        assert Extractor._supports_dynamic_outputs: ClassVar[bool] 
 
-    def test_agent_supports_dynamic_outputs(self):
+    def test_agent_supports_dynamic_outputs: ClassVar[bool] (self):
         """Test that Agent supports dynamic outputs"""
-        assert Agent._supports_dynamic_outputs
+        assert Agent._supports_dynamic_outputs: ClassVar[bool] 
 
     def test_summarizer_return_types(self):
         """Test Summarizer return types"""

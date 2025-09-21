@@ -3,6 +3,7 @@ from enum import Enum
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
+from typing import ClassVar
 
 
 class Add(BaseNode):
@@ -11,7 +12,7 @@ class Add(BaseNode):
     math, add, plus
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     a: int | float = Field(title="A", default=0.0)
@@ -27,7 +28,7 @@ class Subtract(BaseNode):
     math, subtract, minus
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     a: int | float = Field(title="A", default=0.0)
@@ -43,7 +44,7 @@ class Multiply(BaseNode):
     math, multiply, product
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
     a: int | float = Field(title="A", default=0.0)
     b: int | float = Field(title="B", default=0.0)
@@ -58,7 +59,7 @@ class Divide(BaseNode):
     math, divide, division, quotient
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     a: int | float = Field(title="A", default=0.0)
@@ -74,7 +75,7 @@ class Modulus(BaseNode):
     math, modulus, modulo, remainder
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
     a: int | float = Field(title="A", default=0.0)
     b: int | float = Field(title="B", default=1.0)
@@ -89,7 +90,7 @@ class MathFunction(BaseNode):
     math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     class Operation(str, Enum):
@@ -151,7 +152,7 @@ class Sine(BaseNode):
     math, sine, trig
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     angle_rad: int | float = Field(title="Angle (rad)", default=0.0)
@@ -166,7 +167,7 @@ class Cosine(BaseNode):
     math, cosine, trig
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     angle_rad: int | float = Field(title="Angle (rad)", default=0.0)
@@ -181,7 +182,7 @@ class Power(BaseNode):
     math, power, exponent
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     base: int | float = Field(title="Base", default=0.0)
@@ -197,7 +198,7 @@ class Sqrt(BaseNode):
     math, sqrt, square_root
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _expose_as_tool = True
 
     x: int | float = Field(title="X", default=0.0)

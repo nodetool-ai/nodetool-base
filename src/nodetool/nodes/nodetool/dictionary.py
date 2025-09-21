@@ -1,7 +1,7 @@
 from enum import Enum
 import json
 from nodetool.config.logging_config import get_logger
-from typing import Any
+from typing import Any, ClassVar
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
@@ -26,7 +26,7 @@ class GetValue(BaseNode):
     - Extract a particular field from a data structure
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
 
     dictionary: dict[(str, Any)] = Field(default={})
     key: str = Field(default="")
@@ -47,7 +47,7 @@ class Update(BaseNode):
     - Merge user input with existing data
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
     _ = "new_pairs"
 
     dictionary: dict[(str, Any)] = Field(default={})
@@ -69,7 +69,7 @@ class Remove(BaseNode):
     - Clean up temporary entries in a data structure
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
 
     dictionary: dict[(str, Any)] = Field(default={})
     key: str = Field(default="")
@@ -91,7 +91,7 @@ class ParseJSON(BaseNode):
     - Deserialize stored data
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
 
     json_string: str = Field(default="")
 
@@ -113,7 +113,7 @@ class Zip(BaseNode):
     - Transform list data into associative arrays
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
 
     keys: list[Any] = Field(default=[])
     values: list[Any] = Field(default=[])
@@ -133,7 +133,7 @@ class Combine(BaseNode):
     - Create aggregate data structures
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
 
     dict_a: dict[(str, Any)] = Field(default={})
     dict_b: dict[(str, Any)] = Field(default={})
@@ -238,8 +238,8 @@ class MakeDictionary(BaseNode):
     - Build basic key-value mappings
     """
 
-    _layout = "small"
-    _is_dynamic = True
+    _layout: ClassVar[str] = "small"
+    _is_dynamic: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         logger.debug("Dynamic properties: %s", self._dynamic_properties)
@@ -257,7 +257,7 @@ class ArgMax(BaseNode):
     - Identify the winner in a voting/ranking system
     """
 
-    _layout = "small"
+    _layout: ClassVar[str] = "small"
 
     scores: dict[str, float] = Field(
         default={},

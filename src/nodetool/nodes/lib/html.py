@@ -1,4 +1,5 @@
 import html
+from typing import ClassVar
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
