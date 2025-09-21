@@ -28,6 +28,9 @@ log = get_logger(__name__)
 
 REPO_ID = "ggerganov/whisper.cpp"
 
+# Text utils
+from nodetool.nodes.lib.text_utils import compute_incremental_suffix
+
 
 def _resolve_model_path(model_name: str) -> str:
     """Map model short name (e.g., 'tiny.en') to ggml file in HF cache.
@@ -44,16 +47,6 @@ def _resolve_model_path(model_name: str) -> str:
             f"Model file not found in HF cache: {REPO_ID}:{filename}"
         )
     raise FileNotFoundError(f"Model file not found in HF cache: {REPO_ID}:{filename}")
-
-
-def _audio_segment_to_float32_mono_16k(
-    context: ProcessingContext, audio: AudioRef
-) -> np.ndarray:
-    """
-    Convert an AudioRef to float32 mono PCM at 16 kHz suitable for whispercpp.
-    """
-    # This function is sync by design; the heavy lifting happens in the awaited caller
-    raise NotImplementedError
 
 
 class WhisperCpp(BaseNode):
@@ -170,7 +163,10 @@ class WhisperCpp(BaseNode):
             audio_segment.set_channels(1).set_frame_rate(16000).set_sample_width(2)
         )
         # Convert to float32 in range [-1.0, 1.0]
-        pcm = np.frombuffer(audio_segment.raw_data, dtype=np.int16)
+        raw_data = audio_segment.raw_data
+        if not isinstance(raw_data, (bytes, bytearray, memoryview)):
+            raise TypeError("AudioSegment.raw_data is not bytes-like")
+        pcm = np.frombuffer(raw_data, dtype=np.int16)
         arr = (pcm.astype(np.float32) / 32768.0).flatten()
         return arr, 16000
 
@@ -225,8 +221,7 @@ class WhisperCpp(BaseNode):
             min_samples = max(
                 1, int(self.length_ms * pwconstants.WHISPER_SAMPLE_RATE / 1000)
             )
-            aggregated: list[str] = []
-            last_text = ""
+            full_text = ""
 
             loop = asyncio.get_running_loop()
 
@@ -263,7 +258,7 @@ class WhisperCpp(BaseNode):
 
                     # Blocking transcription in executor
                     def _do_transcribe(a: np.ndarray) -> list[Segment]:
-                        return model.transcribe(a, n_processors=None)
+                        return model.transcribe(a, n_processors=self.n_threads)
 
                     try:
                         result = await loop.run_in_executor(None, _do_transcribe, arr)
@@ -272,13 +267,17 @@ class WhisperCpp(BaseNode):
                             f"Whisper (pywhispercpp) transcription failed: {e}"
                         ) from e
 
-                    # Normalize to string
-                    for segment in result:
-                        # Try emit only the delta when prefix grows
-                        aggregated.append(segment.text)
+                    # Emit only the non-overlapping delta of concatenated segments
+                    joined_text = "".join(seg.text for seg in result)
+                    delta_text = compute_incremental_suffix(full_text, joined_text)
+                    if delta_text:
                         await outputs.emit(
-                            "chunk", Chunk(content=segment.text, done=False)
+                            "chunk", Chunk(content=delta_text, done=False)
                         )
+                        full_text = full_text + delta_text
+
+                    # Still emit timing/probability for each segment
+                    for segment in result:
                         await outputs.emit("t0", segment.t0)
                         await outputs.emit("t1", segment.t1)
                         await outputs.emit("probability", segment.probability)
@@ -287,7 +286,7 @@ class WhisperCpp(BaseNode):
 
             # Flush
             await outputs.emit("chunk", Chunk(content="", done=True))
-            final_text = "".join(aggregated).strip()
+            final_text = full_text.strip()
             if final_text:
                 await outputs.emit("text", final_text)
             outputs.complete("text")
