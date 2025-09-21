@@ -124,8 +124,6 @@ class MLXWhisper(BaseNode):
         `audio` input. Maintains an audio buffer so decoding incorporates prior
         context. Emits text deltas on `chunk` and final `text` on completion.
         """
-        sample_rate = 16000
-
         # Queues for streaming audio samples
         input_q: asyncio.Queue[np.ndarray] = asyncio.Queue(maxsize=64)
         done_flag = {"done": False}
@@ -158,9 +156,6 @@ class MLXWhisper(BaseNode):
             done_flag["done"] = True
 
         async def consumer() -> None:
-            full_buffer = np.array([], dtype=np.float32)
-            since_last_decode = 0
-            min_samples = max(1, int(self.length_ms * sample_rate / 1000))
             full_text = ""
 
             loop = asyncio.get_running_loop()
@@ -171,54 +166,42 @@ class MLXWhisper(BaseNode):
                 except asyncio.TimeoutError:
                     chunk = None  # type: ignore
 
-                trigger_decode = False
+                # Trigger decode on each non-empty chunk or explicit boundary
+                if chunk is None:
+                    await asyncio.sleep(0)
+                    continue
 
-                if chunk is not None:
-                    if chunk.size == 0:
-                        trigger_decode = True
-                    else:
-                        # Append to running buffer, keep context
-                        if full_buffer.size == 0:
-                            full_buffer = chunk
-                        else:
-                            full_buffer = np.concatenate([full_buffer, chunk])
-                        since_last_decode += int(chunk.size)
-                        if since_last_decode >= min_samples:
-                            trigger_decode = True
+                # Empty array indicates boundary; skip decoding if no new audio
+                if chunk.size == 0:
+                    await asyncio.sleep(0)
+                    continue
 
-                if trigger_decode and full_buffer.size > 0:
-                    arr = full_buffer.astype(np.float32, copy=False)
+                arr = chunk.astype(np.float32, copy=False)
 
-                    def _do_transcribe(a: np.ndarray) -> dict[str, Any]:
-                        return mlx_whisper.transcribe(
-                            a,
-                            path_or_hf_repo=self.model.value,
-                            compression_ratio_threshold=self.compression_ratio_threshold,
-                            logprob_threshold=self.logprob_threshold,
-                            no_speech_threshold=self.no_speech_threshold,
-                            condition_on_previous_text=self.condition_on_previous_text,
-                            word_timestamps=self.word_timestamps,
-                        )
+                def _do_transcribe(a: np.ndarray) -> dict[str, Any]:
+                    return mlx_whisper.transcribe(
+                        a,
+                        path_or_hf_repo=self.model.value,
+                        compression_ratio_threshold=self.compression_ratio_threshold,
+                        logprob_threshold=self.logprob_threshold,
+                        no_speech_threshold=self.no_speech_threshold,
+                        condition_on_previous_text=self.condition_on_previous_text,
+                        word_timestamps=self.word_timestamps,
+                    )
 
-                    try:
-                        result: dict[str, Any] = await loop.run_in_executor(
-                            None, _do_transcribe, arr
-                        )
-                    except Exception as e:
-                        raise RuntimeError(
-                            f"MLX Whisper transcription failed: {e}"
-                        ) from e
+                try:
+                    result: dict[str, Any] = await loop.run_in_executor(
+                        None, _do_transcribe, arr
+                    )
+                except Exception as e:
+                    raise RuntimeError(f"MLX Whisper transcription failed: {e}") from e
 
-                    new_text = result.get("text", "") or ""
-                    print(f"new_text: {new_text}")
-                    delta_text = compute_incremental_suffix(full_text, new_text)
-                    if delta_text:
-                        await outputs.emit(
-                            "chunk", Chunk(content=delta_text, done=False)
-                        )
-                        full_text = full_text + delta_text
-                    await outputs.emit("segments", result.get("segments", []) or [])
-                    since_last_decode = 0
+                new_text = result.get("text", "") or ""
+                delta_text = compute_incremental_suffix(full_text, new_text)
+                if delta_text:
+                    await outputs.emit("chunk", Chunk(content=delta_text, done=False))
+                    full_text = full_text + delta_text
+                await outputs.emit("segments", result.get("segments", []) or [])
 
                 await asyncio.sleep(0)
 
