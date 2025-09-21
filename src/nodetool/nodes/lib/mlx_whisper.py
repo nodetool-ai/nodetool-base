@@ -210,6 +210,7 @@ class MLXWhisper(BaseNode):
                         ) from e
 
                     new_text = result.get("text", "") or ""
+                    print(f"new_text: {new_text}")
                     delta_text = compute_incremental_suffix(full_text, new_text)
                     if delta_text:
                         await outputs.emit(
