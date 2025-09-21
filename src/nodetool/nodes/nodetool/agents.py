@@ -484,7 +484,7 @@ class Agent(BaseNode):
     history: list[Message] = Field(
         title="Messages", default=[], description="The messages for the LLM"
     )
-    max_tokens: int = Field(title="Max Tokens", default=32768, ge=1, le=100000)
+    max_tokens: int = Field(title="Max Tokens", default=8192, ge=1, le=100000)
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
@@ -507,7 +507,6 @@ class Agent(BaseNode):
         return {
             "text": str,
             "chunk": Chunk,
-            "audio": AudioRef,
         }
 
     def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
@@ -528,6 +527,7 @@ class Agent(BaseNode):
             "prompt",
             "model",
             "image",
+            "audio",
         ]
 
     @classmethod
@@ -626,11 +626,10 @@ class Agent(BaseNode):
                                 iteration,
                                 len(message_text_content.text),
                             )
-                    elif chunk.content_type == "audio":
-                        data = base64.b64decode(chunk.content)
-                        await outputs.emit("audio", AudioRef(data=data))
-                    elif chunk.content_type == "image":
-                        await outputs.emit("chunk", chunk)
+                    else:
+                        raise ValueError(
+                            f"Unknown chunk content type: {chunk.content_type}"
+                        )
 
                     if chunk.done:
                         await outputs.emit("text", message_text_content.text)

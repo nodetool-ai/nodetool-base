@@ -3791,7 +3791,7 @@
           "type": {
             "type": "int"
           },
-          "default": 32768,
+          "default": 8192,
           "title": "Max Tokens",
           "min": 1.0,
           "max": 100000.0
@@ -3819,18 +3819,13 @@
             "type": "chunk"
           },
           "name": "chunk"
-        },
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "audio"
         }
       ],
       "basic_fields": [
         "prompt",
         "model",
-        "image"
+        "image",
+        "audio"
       ],
       "supports_dynamic_outputs": true
     },
