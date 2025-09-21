@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import ClassVar
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import (
     AudioChunk,
@@ -54,7 +55,7 @@ class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
     audio, speech, recognition, huggingface, inference
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     model: InferenceProviderAutomaticSpeechRecognitionModel = Field(
         default=InferenceProviderAutomaticSpeechRecognitionModel(
@@ -116,7 +117,7 @@ class AudioClassification(HuggingFaceInferenceNode):
     )
     top_k: int = Field(default=1, description="The number of top predictions to return")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict[str, float]:
         client = self.get_client(self.model.provider)
@@ -164,7 +165,7 @@ class ImageClassification(HuggingFaceInferenceNode):
     )
     top_k: int = Field(default=1, description="The number of top predictions to return")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict[str, float]:
         client = self.get_client(self.model.provider)
@@ -222,7 +223,7 @@ class ImageSegmentation(HuggingFaceInferenceNode):
         default=0.5, description="Probability threshold to filter out predicted masks"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(
         self, context: ProcessingContext
@@ -290,7 +291,7 @@ class ImageToImage(HuggingFaceInferenceNode):
         default=512, description="The target height in pixels of the output image"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def return_type(cls):
@@ -358,7 +359,7 @@ class TextToImage(HuggingFaceInferenceNode):
         description="Override the scheduler with a compatible one",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         client = self.get_client(self.model.provider)
@@ -430,7 +431,7 @@ class Translation(HuggingFaceInferenceNode):
         le=2.0,
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         client = self.get_client(self.model.provider)
@@ -489,7 +490,7 @@ class TextClassification(HuggingFaceInferenceNode):
         description="When specified, limits the output to the top K most probable classes",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> dict[str, float]:
         client = self.get_client(self.model.provider)
@@ -561,7 +562,7 @@ class Summarization(HuggingFaceInferenceNode):
         le=2.0,
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         client = self.get_client(self.model.provider)

@@ -6,7 +6,7 @@ Provides nodes for Google Search, News, Images, Finance, Jobs, Lens, Maps, and S
 """
 
 from pydantic import Field
-from typing import Any, Dict
+from typing import Any, Dict, ClassVar
 
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -34,8 +34,6 @@ from nodetool.agents.tools.serp_tools import (
     _get_configured_serp_provider,
 )
 
-# Node implementations
-
 
 class GoogleSearch(BaseNode):
     """
@@ -50,7 +48,7 @@ class GoogleSearch(BaseNode):
         default=10, description="Maximum number of results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> list[OrganicResult]:
         if not self.keyword:
@@ -87,7 +85,7 @@ class GoogleNews(BaseNode):
         default=10, description="Maximum number of news results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> list[NewsResult]:
         if not self.keyword:
@@ -125,7 +123,7 @@ class GoogleImages(BaseNode):
         default=20, description="Maximum number of image results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.keyword and not self.image_url:
@@ -174,7 +172,7 @@ class GoogleFinance(BaseNode):
         description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.query:
@@ -211,7 +209,7 @@ class GoogleJobs(BaseNode):
         default=10, description="Maximum number of job results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> list[JobResult]:
         if not self.query:
@@ -253,7 +251,7 @@ class GoogleLens(BaseNode):
         default=10, description="Maximum number of visual search results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext):
         if not self.image_url:
@@ -303,7 +301,7 @@ class GoogleMaps(BaseNode):
         default=10, description="Maximum number of map results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> list[LocalResult]:
         if not self.query:
@@ -362,7 +360,7 @@ class GoogleShopping(BaseNode):
         default=10, description="Maximum number of shopping results to return"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> list[ShoppingResult]:
         if not self.query:

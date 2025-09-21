@@ -1,9 +1,10 @@
 from datetime import datetime
 from io import StringIO
+from typing import ClassVar
 import json
 import os
 import pandas as pd
-from typing import Any
+from typing import Any, ClassVar
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -31,7 +32,7 @@ class Filter(BaseNode):
     - Focus analysis on relevant data segments
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     df: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame to filter."
@@ -58,7 +59,7 @@ class Slice(BaseNode):
     - Analyze data in smaller chunks
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The input dataframe to be sliced."
@@ -91,7 +92,7 @@ class SaveDataframe(BaseNode):
     - Create backups of dataframes
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     df: DataframeRef = DataframeRef()
     folder: FolderRef = Field(
         default=FolderRef(), description="Name of the output folder."
@@ -130,7 +131,7 @@ class ImportCSV(BaseNode):
     - Convert CSV responses from APIs to dataframe
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     csv_data: str = Field(
         default="", title="CSV Data", description="String input of CSV formatted text."
     )
@@ -146,7 +147,7 @@ class LoadCSVURL(BaseNode):
     csv, dataframe, import
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     url: str = Field(default="", description="The URL of the CSV file to load.")
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
@@ -160,7 +161,7 @@ class LoadCSVFile(BaseNode):
     csv, dataframe, import
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     file_path: FilePath = Field(
         default=FilePath(), description="The path to the CSV file to load."
     )
@@ -181,7 +182,7 @@ class FromList(BaseNode):
     - Convert API responses to dataframe format
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     values: list[Any] = Field(
         title="Values",
         default=[],
@@ -217,7 +218,7 @@ class JSONToDataframe(BaseNode):
     - Structuring unstructured JSON data for further processing
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     text: str = Field(title="JSON", default="")
 
     @classmethod
@@ -241,7 +242,7 @@ class ToList(BaseNode):
     - Prepare data for document-based storage
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The input dataframe to convert."
     )
@@ -262,7 +263,7 @@ class SelectColumn(BaseNode):
     - Prepare data for specific visualizations or models
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(),
         description="a dataframe from which columns are to be selected",
@@ -286,7 +287,7 @@ class ExtractColumn(BaseNode):
     - Convert categorical data to list for encoding
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The input dataframe."
     )
@@ -310,7 +311,7 @@ class AddColumn(BaseNode):
     - Augment dataframe with additional features
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(),
         description="Dataframe object to add a new column to.",
@@ -341,7 +342,7 @@ class Merge(BaseNode):
     - Merge time series data from different periods
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe_a: DataframeRef = Field(
         default=DataframeRef(), description="First DataFrame to be merged."
     )
@@ -367,7 +368,7 @@ class Append(BaseNode):
     - Aggregate data from different sources
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe_a: DataframeRef = Field(
         default=DataframeRef(), description="First DataFrame to be appended."
     )
@@ -406,7 +407,7 @@ class Join(BaseNode):
     - Link data based on common identifiers
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe_a: DataframeRef = Field(
         default=DataframeRef(), description="First DataFrame to be merged."
     )
@@ -475,7 +476,7 @@ class FindRow(BaseNode):
     - Extract single data point for further analysis
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     df: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame to search."
     )
@@ -521,7 +522,7 @@ class DropDuplicates(BaseNode):
     - Prepare data for unique value operations
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     df: DataframeRef = Field(default=DataframeRef(), description="The input DataFrame.")
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
@@ -541,7 +542,7 @@ class DropNA(BaseNode):
     - Improve data quality for modeling
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     df: DataframeRef = Field(default=DataframeRef(), description="The input DataFrame.")
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
@@ -561,7 +562,7 @@ class LoadCSVAssets(BaseNode):
     - Batch import of data files
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     folder: FolderRef = Field(
         default=FolderRef(), description="The asset folder to load the dataframes from."
     )
@@ -604,7 +605,7 @@ class Aggregate(BaseNode):
     - Create summary statistics by groups
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame to group."
     )
@@ -661,7 +662,7 @@ class Pivot(BaseNode):
     - Reorganize data for visualization
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame to pivot."
     )
@@ -727,7 +728,7 @@ class Rename(BaseNode):
     - Prepare data for specific requirements
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame to rename columns."
     )
@@ -763,7 +764,7 @@ class FillNA(BaseNode):
     - Improve data quality
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame with missing values."
     )

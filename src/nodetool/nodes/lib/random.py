@@ -1,5 +1,5 @@
 import random
-from typing import Any
+from typing import Any, ClassVar
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -19,7 +19,7 @@ class RandomInt(BaseNode):
     minimum: int = Field(default=0, description="Minimum value (inclusive)")
     maximum: int = Field(default=100, description="Maximum value (inclusive)")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> int:
         return random.randint(self.minimum, self.maximum)
@@ -39,7 +39,7 @@ class RandomFloat(BaseNode):
     minimum: float = Field(default=0.0, description="Minimum value")
     maximum: float = Field(default=1.0, description="Maximum value")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> float:
         return random.uniform(self.minimum, self.maximum)
@@ -58,7 +58,7 @@ class RandomChoice(BaseNode):
 
     options: list[Any] = Field(default=[], description="List of options")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Any:
         if not self.options:
@@ -77,7 +77,7 @@ class RandomBool(BaseNode):
     - Introduce randomness in control flow
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> bool:
         return random.choice([True, False])

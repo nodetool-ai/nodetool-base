@@ -1,5 +1,6 @@
 from pydantic import Field
 from enum import Enum
+from typing import ClassVar
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -43,7 +44,7 @@ class ImageGeneration(BaseNode):
     - Explore AI-powered image synthesis
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
         default="", description="The text prompt describing the image to generate."

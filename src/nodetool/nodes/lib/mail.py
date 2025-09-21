@@ -3,6 +3,7 @@ import random
 import imaplib
 import socket
 import ssl
+from typing import ClassVar
 from typing import Callable, Awaitable, Optional, TypeVar, Tuple, Type
 from datetime import datetime, timedelta
 from enum import Enum
@@ -203,7 +204,7 @@ class GmailSearch(BaseNode):
         description="Random jitter (seconds) added to each backoff",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -294,7 +295,7 @@ class MoveToArchive(BaseNode):
         description="Message ID to archive",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> bool:
         attempts = 3
@@ -350,7 +351,7 @@ class AddLabel(BaseNode):
         description="Label to add to the message",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> bool:
         if not self.message_id:
@@ -439,7 +440,7 @@ class SendEmail(BaseNode):
         description="Email body",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     # Retry configuration
     retry_attempts: int = Field(

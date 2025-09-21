@@ -2,6 +2,7 @@ import base64
 from enum import Enum
 from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
+from typing import ClassVar
 from io import BytesIO
 from pydub import AudioSegment
 from nodetool.metadata.types import AudioChunk, AudioRef, Provider
@@ -47,7 +48,7 @@ class TextToSpeech(BaseNode):
     input: str = Field(title="Input", default="")
     speed: float = Field(title="Speed", default=1.0, ge=0.25, le=4.0)
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> AudioRef:
         res = await context.run_prediction(
@@ -90,7 +91,7 @@ class Translate(BaseNode):
         default=0.0, description="The temperature to use for the translation."
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         audio_bytes = await context.asset_to_io(self.audio)
@@ -217,7 +218,7 @@ class Transcribe(BaseNode):
         description="The sampling temperature between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def return_type(cls):

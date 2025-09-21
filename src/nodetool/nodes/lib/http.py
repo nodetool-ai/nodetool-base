@@ -1,5 +1,6 @@
 import asyncio
 import datetime
+from typing import ClassVar
 import os
 from enum import Enum
 from typing import Any, List
@@ -69,7 +70,7 @@ class GetRequest(HTTPBaseNode):
     - Check website availability
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -92,7 +93,7 @@ class PostRequest(HTTPBaseNode):
     - Authenticate users
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -122,7 +123,7 @@ class PutRequest(HTTPBaseNode):
     - Set configuration values
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -152,7 +153,7 @@ class DeleteRequest(HTTPBaseNode):
     - Clear cache entries
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -203,7 +204,7 @@ class FetchPage(BaseNode):
         description="Maximum time to wait for page load (in seconds).",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def return_type(cls):
@@ -266,7 +267,7 @@ class ImageDownloader(BaseNode):
         description="Maximum number of concurrent image downloads.",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def return_type(cls):
@@ -342,7 +343,7 @@ class GetRequestBinary(HTTPBaseNode):
     - Download any non-text content
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -365,7 +366,7 @@ class GetRequestDocument(HTTPBaseNode):
     - Download any document format
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -388,7 +389,7 @@ class PostRequestBinary(HTTPBaseNode):
     - Handle binary file transformations
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -418,7 +419,7 @@ class DownloadDataframe(HTTPBaseNode):
     - Process data files from URLs
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -718,7 +719,7 @@ class DownloadFiles(BaseNode):
         description="Local folder path where files will be saved.",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def is_visible(cls) -> bool:

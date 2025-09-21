@@ -1,4 +1,5 @@
 import hashlib
+from typing import ClassVar
 from pydantic import Field
 from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import BaseNode
@@ -21,7 +22,7 @@ class HashString(BaseNode):
         description="Hash algorithm name (e.g. md5, sha1, sha256)",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         try:
@@ -51,7 +52,7 @@ class HashFile(BaseNode):
         default=8192, ge=1, description="Read size for hashing in bytes"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         try:

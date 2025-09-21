@@ -1,5 +1,6 @@
 import base64
 from pydantic import Field
+from typing import ClassVar
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -13,7 +14,7 @@ class Encode(BaseNode):
     - Embed data in JSON or HTML
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     text: str = Field(default="", description="Text to encode")
 
@@ -34,7 +35,7 @@ class Decode(BaseNode):
     - Extract original text from Base64
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     data: str = Field(default="", description="Base64 encoded text")
 

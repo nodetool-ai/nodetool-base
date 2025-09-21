@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta, date
 from enum import Enum
 from pydantic import Field
+from typing import ClassVar
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import Datetime, Date
@@ -24,7 +25,7 @@ class Today(BaseNode):
     date, today, now
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Date:
         return Date.from_date(date.today())
@@ -36,7 +37,7 @@ class Now(BaseNode):
     datetime, current, now
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Datetime:
         from datetime import timezone
@@ -50,7 +51,7 @@ class ParseDate(BaseNode):
     date, parse, format
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     date_string: str = Field(default="", description="The date string to parse")
     input_format: DateFormat = Field(
@@ -73,7 +74,7 @@ class ParseDateTime(BaseNode):
     - Convert between date formats
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     datetime_string: str = Field(default="", description="The datetime string to parse")
     input_format: DateFormat = Field(
@@ -96,7 +97,7 @@ class AddTimeDelta(BaseNode):
     - Generate date ranges
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_datetime: Datetime = Field(
         default=Datetime(), description="Starting datetime"
@@ -135,7 +136,7 @@ class DateDifference(BaseNode):
     - Measure durations
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     start_date: Datetime = Field(default=Datetime(), description="Start datetime")
     end_date: Datetime = Field(default=Datetime(), description="End datetime")
@@ -171,7 +172,7 @@ class FormatDateTime(BaseNode):
     - Prepare dates for different systems
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_datetime: Datetime = Field(
         default=Datetime(),
@@ -195,7 +196,7 @@ class GetWeekday(BaseNode):
     - Filter events by weekday
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
     as_name: bool = Field(
@@ -218,7 +219,7 @@ class DateRange(BaseNode):
     - Create date-based iterations
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     start_date: Datetime = Field(
         default=Datetime(),
@@ -251,7 +252,7 @@ class IsDateInRange(BaseNode):
     - Filter date-based data
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     check_date: Datetime = Field(default=Datetime(), description="Date to check")
     start_date: Datetime = Field(
@@ -290,7 +291,7 @@ class GetQuarter(BaseNode):
     - Quarterly analytics
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
 
@@ -329,7 +330,7 @@ class DateToDatetime(BaseNode):
     date, datetime, convert
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_date: Date = Field(default=Date(), description="Date to convert")
 
@@ -345,7 +346,7 @@ class DatetimeToDate(BaseNode):
     date, datetime, convert
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_datetime: Datetime = Field(
         default=Datetime(),
@@ -377,7 +378,7 @@ class RelativeTime(BaseNode):
     - Generate relative timestamps
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     amount: int = Field(ge=0, default=1, description="Amount of time units")
     unit: TimeUnitType = Field(default=TimeUnitType.DAYS, description="Time unit type")
@@ -442,7 +443,7 @@ class BoundaryTime(BaseNode):
     - Normalize dates to period starts/ends
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
     period: PeriodType = Field(default=PeriodType.DAY, description="Time period type")

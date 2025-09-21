@@ -1,4 +1,5 @@
 from io import BytesIO
+from typing import ClassVar
 from base64 import b64decode
 from pydantic import Field
 from enum import Enum
@@ -76,7 +77,7 @@ class TextToSpeech(BaseNode):
     - Generate multilingual audio content
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     text: str = Field(default="", description="The text to convert to speech.")
 

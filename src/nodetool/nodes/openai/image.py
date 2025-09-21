@@ -1,5 +1,6 @@
 import PIL.Image
 from io import BytesIO
+from typing import ClassVar
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef, Provider
 from nodetool.workflows.base_node import BaseNode
@@ -54,7 +55,7 @@ class CreateImage(BaseNode):
         default=Quality.high, description="The quality of the image to generate."
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         params = {

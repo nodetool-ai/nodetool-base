@@ -1,5 +1,6 @@
 import uuid
 from pydantic import Field
+from typing import ClassVar
 from enum import Enum
 from nodetool.metadata.types import ImageRef, VideoRef
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
@@ -45,7 +46,7 @@ class TextToVideo(BaseNode):
     - Create animated content with accompanying audio
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
         default="", description="The text prompt describing the video to generate"
@@ -120,7 +121,7 @@ class ImageToVideo(BaseNode):
     - Create video presentations from slide images
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to animate into a video"

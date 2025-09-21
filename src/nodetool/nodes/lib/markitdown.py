@@ -2,6 +2,7 @@ import os
 import tempfile
 from markitdown import MarkItDown
 from pydantic import Field
+from typing import ClassVar
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import DocumentRef
@@ -22,7 +23,7 @@ class ConvertToMarkdown(BaseNode):
         default=DocumentRef(), description="The document to convert to markdown"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
         temp_file = None

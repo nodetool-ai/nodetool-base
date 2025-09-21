@@ -1,5 +1,6 @@
 from difflib import SequenceMatcher, get_close_matches, unified_diff
 from pydantic import Field
+from typing import ClassVar
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -18,7 +19,7 @@ class SimilarityRatio(BaseNode):
     a: str = Field(default="", description="First string to compare")
     b: str = Field(default="", description="Second string to compare")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -46,7 +47,7 @@ class GetCloseMatches(BaseNode):
         default=0.6, ge=0.0, le=1.0, description="Minimum similarity ratio"
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
@@ -75,7 +76,7 @@ class UnifiedDiff(BaseNode):
     tofile: str = Field(default="b", description="Name of the modified file")
     lineterm: str = Field(default="\n", description="Line terminator")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):

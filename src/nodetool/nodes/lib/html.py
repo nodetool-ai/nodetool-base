@@ -17,7 +17,7 @@ class Escape(BaseNode):
 
     text: str = Field(default="", description="The text to escape")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         escaped = html.escape(self.text)
@@ -39,7 +39,7 @@ class Unescape(BaseNode):
 
     text: str = Field(default="", description="The HTML text to unescape")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         return html.unescape(self.text)

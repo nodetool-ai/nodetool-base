@@ -1,4 +1,5 @@
 import gzip
+from typing import ClassVar
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -17,7 +18,7 @@ class GzipCompress(BaseNode):
 
     data: bytes | None = Field(default=None, description="Data to compress")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> bytes:
         if not self.data:
@@ -41,7 +42,7 @@ class GzipDecompress(BaseNode):
         description="Gzip data to decompress",
     )
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> bytes:
         if not self.data:

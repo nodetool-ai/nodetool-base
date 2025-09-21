@@ -212,7 +212,7 @@ class Browser(BaseNode):
     - Save extracted content to files
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     url: str = Field(default="", description="URL to navigate to")
 
@@ -351,7 +351,7 @@ class Screenshot(BaseNode):
     - Create visual records of web content
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     url: str = Field(
         default="", description="URL to navigate to before taking screenshot"
@@ -494,7 +494,7 @@ class WebFetch(BaseNode):
     - Save web content to files
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     url: str = Field(default="", description="URL to fetch content from")
 
@@ -574,7 +574,7 @@ class DownloadFile(BaseNode):
     - Retrieve file assets for analysis
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     url: str = Field(default="", description="URL of the file to download")
 
@@ -826,7 +826,7 @@ class BrowserUseNode(BaseNode):
     - Automate multi-step web workflows.
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     model: BrowserUseModel = Field(
         default=BrowserUseModel.GPT_4O,

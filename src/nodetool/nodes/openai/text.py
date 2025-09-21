@@ -46,7 +46,7 @@ class Embedding(BaseNode):
     )
     chunk_size: int = 4096
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> NPArray:
         # chunk the input into smaller pieces

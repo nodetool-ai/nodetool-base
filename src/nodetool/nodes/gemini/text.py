@@ -1,7 +1,9 @@
 from typing import Dict, Any
 from nodetool.metadata.types import Source
 from pydantic import Field
+from typing import ClassVar
 from enum import Enum
+from typing import ClassVar
 from google.genai import Client
 from google.genai.client import AsyncClient
 from google.genai.types import (
@@ -45,7 +47,7 @@ class GroundedSearch(BaseNode):
     - Get up-to-date information beyond the model's training data
     """
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     query: str = Field(default="", description="The search query to execute")
 

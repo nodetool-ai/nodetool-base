@@ -3,6 +3,7 @@ from __future__ import annotations
 import asyncio
 import logging
 from enum import Enum
+import sys
 from typing import Any, Optional, cast
 
 from huggingface_hub import try_to_load_from_cache
@@ -16,9 +17,6 @@ from nodetool.workflows.io import NodeInputs, NodeOutputs
 
 # Optional: used for streaming string chunks
 from nodetool.chat.providers import Chunk
-
-# MLX Whisper
-import mlx_whisper
 
 log = logging.getLogger(__name__)
 
@@ -127,6 +125,11 @@ class MLXWhisper(BaseNode):
         # Queues for streaming audio samples
         input_q: asyncio.Queue[np.ndarray] = asyncio.Queue(maxsize=64)
         done_flag = {"done": False}
+
+        if sys.platform != "darwin":
+            raise RuntimeError("MLX Whisper is only supported on macOS")
+
+        import mlx_whisper
 
         async def producer() -> None:
             async for handle, item in inputs.any():

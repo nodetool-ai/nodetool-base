@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import ClassVar
 import feedparser
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
@@ -19,7 +20,7 @@ class FetchRSSFeed(BaseNode):
 
     url: str = Field(default="", description="URL of the RSS feed to fetch")
 
-    _expose_as_tool: bool = True
+    _expose_as_tool: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls):
