@@ -22,7 +22,8 @@ dependencies = [
     "langchain-anthropic",
     "leann>=0.3.2; platform_system == \"Darwin\" or platform_system == \"Linux\"",
     "pywhispercpp @ git+https://github.com/absadiki/pywhispercpp",
-    "mlx_whisper"
+    "mflux @ git+https://github.com/nodetool-ai/mflux; platform_system == \"Darwin\"",
+    "mlx_whisper; platform_system == \"Darwin\"",
 ]
 
 [project.optional-dependencies]

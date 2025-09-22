@@ -3939,7 +3939,7 @@
           "type": {
             "type": "str"
           },
-          "default": "\nYou are a precise structured data extractor.\n\nGoal\n- Extract exactly the fields described in <JSON_SCHEMA> from the content in <TEXT> (and any attached media).\n\nOutput format (MANDATORY)\n- Return ONLY a single JSON object that strictly conforms to <JSON_SCHEMA>.\n- No prose, no Markdown, no code fences, and no trailing text.\n\nExtraction rules\n- Use only information found in <TEXT> or attached media. Do not invent facts.\n- Preserve source values; normalize internal whitespace and trim leading/trailing spaces.\n- If a required field is missing or not explicitly stated, return the closest reasonable default consistent with its type:\n  - string: \"\"\n  - number: 0\n  - boolean: false\n  - array/object: empty value of that type (only if allowed by the schema)\n- Dates/times: prefer ISO 8601 when the schema type is string and the value represents a date/time.\n- If multiple candidates exist, choose the most precise and unambiguous one.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n",
+          "default": "\nYou are a precise structured data extractor.\n\nGoal\n- Extract exactly the fields described in <JSON_SCHEMA> from the content in <TEXT> (and any attached media).\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nExtraction rules\n- Use only information found in <TEXT> or attached media. Do not invent facts.\n- Preserve source values; normalize internal whitespace and trim leading/trailing spaces.\n- If a required field is missing or not explicitly stated, return the closest reasonable default consistent with its type:\n  - string: \"\"\n  - number: 0\n  - boolean: false\n  - array/object: empty value of that type (only if allowed by the schema)\n- Dates/times: prefer ISO 8601 when the schema type is string and the value represents a date/time.\n- If multiple candidates exist, choose the most precise and unambiguous one.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n",
           "title": "System Prompt",
           "description": "The system prompt for the data extractor"
         },
@@ -20707,136 +20707,796 @@
       ],
       "recommended_models": [
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-tiny.bin"
+          "path": "ggml-tiny.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-tiny-q5_1.bin"
+          "path": "ggml-tiny-q5_1.bin",
+          "cache_path": "/Users/mg/.cache/huggingface/hub/models--ggerganov--whisper.cpp/snapshots/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny-q5_1.bin",
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": true,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-tiny-q8_0.bin"
+          "path": "ggml-tiny-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-tiny.en.bin"
+          "path": "ggml-tiny.en.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-tiny.en-q5_1.bin"
+          "path": "ggml-tiny.en-q5_1.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-tiny.en-q8_0.bin"
+          "path": "ggml-tiny.en-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-base.bin"
+          "path": "ggml-base.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-base-q5_1.bin"
+          "path": "ggml-base-q5_1.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-base-q8_0.bin"
+          "path": "ggml-base-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-base.en.bin"
+          "path": "ggml-base.en.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-base.en-q5_1.bin"
+          "path": "ggml-base.en-q5_1.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-base.en-q8_0.bin"
+          "path": "ggml-base.en-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-small.bin"
+          "path": "ggml-small.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-small-q5_1.bin"
+          "path": "ggml-small-q5_1.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-small-q8_0.bin"
+          "path": "ggml-small-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-small.en.bin"
+          "path": "ggml-small.en.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-small.en-q5_1.bin"
+          "path": "ggml-small.en-q5_1.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-small.en-q8_0.bin"
+          "path": "ggml-small.en-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-medium.bin"
+          "path": "ggml-medium.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-medium-q5_0.bin"
+          "path": "ggml-medium-q5_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-medium-q8_0.bin"
+          "path": "ggml-medium-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-medium.en.bin"
+          "path": "ggml-medium.en.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-medium.en-q5_0.bin"
+          "path": "ggml-medium.en-q5_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-medium.en-q8_0.bin"
+          "path": "ggml-medium.en-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v1.bin"
+          "path": "ggml-large-v1.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v2.bin"
+          "path": "ggml-large-v2.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v2-q5_0.bin"
+          "path": "ggml-large-v2-q5_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v2-q8_0.bin"
+          "path": "ggml-large-v2-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v3.bin"
+          "path": "ggml-large-v3.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v3-q5_0.bin"
+          "path": "ggml-large-v3-q5_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v3-turbo.bin"
+          "path": "ggml-large-v3-turbo.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v3-turbo-q5_0.bin"
+          "path": "ggml-large-v3-turbo-q5_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         },
         {
+          "id": "ggerganov/whisper.cpp",
+          "type": "hf.model",
+          "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
-          "path": "ggml-large-v3-turbo-q8_0.bin"
+          "path": "ggml-large-v3-turbo-q8_0.bin",
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 31005921914,
+          "downloaded": false,
+          "pipeline_tag": "automatic-speech-recognition",
+          "tags": [
+            "automatic-speech-recognition",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 1122,
+          "trending_score": null
         }
       ],
       "basic_fields": [
@@ -20963,31 +21623,221 @@
       ],
       "recommended_models": [
         {
-          "repo_id": "mlx-community/whisper-tiny-mlx"
+          "id": "mlx-community/whisper-tiny-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-tiny-mlx",
+          "repo_id": "mlx-community/whisper-tiny-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 74420620,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 153,
+          "likes": 2,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-tiny.en-mlx"
+          "id": "mlx-community/whisper-tiny.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-tiny.en-mlx",
+          "repo_id": "mlx-community/whisper-tiny.en-mlx",
+          "path": null,
+          "cache_path": "/Users/mg/.cache/huggingface/hub/models--mlx-community--whisper-tiny.en-mlx/snapshots/5f4dafbb28e62a53c1b10426ff7eed36ca733bf7/config.json",
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 74419890,
+          "downloaded": true,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 253,
+          "likes": 0,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-base-mlx"
+          "id": "mlx-community/whisper-base-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-base-mlx",
+          "repo_id": "mlx-community/whisper-base-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 143726284,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2214,
+          "likes": 0,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-base.en-mlx"
+          "id": "mlx-community/whisper-base.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-base.en-mlx",
+          "repo_id": "mlx-community/whisper-base.en-mlx",
+          "path": null,
+          "cache_path": "/Users/mg/.cache/huggingface/hub/models--mlx-community--whisper-base.en-mlx/snapshots/aa0678c3466ed62c5c6114ec600a0e1f96820089/config.json",
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 143725218,
+          "downloaded": true,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 41,
+          "likes": 0,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-small-mlx"
+          "id": "mlx-community/whisper-small-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-small-mlx",
+          "repo_id": "mlx-community/whisper-small-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 481309678,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2685,
+          "likes": 3,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-small.en-mlx"
+          "id": "mlx-community/whisper-small.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-small.en-mlx",
+          "repo_id": "mlx-community/whisper-small.en-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 481308292,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 64,
+          "likes": 0,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-medium-mlx"
+          "id": "mlx-community/whisper-medium-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-medium-mlx",
+          "repo_id": "mlx-community/whisper-medium-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 1524927002,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2426,
+          "likes": 3,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-medium.en-mlx"
+          "id": "mlx-community/whisper-medium.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-medium.en-mlx",
+          "repo_id": "mlx-community/whisper-medium.en-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 1524925152,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 80,
+          "likes": 1,
+          "trending_score": null
         },
         {
-          "repo_id": "mlx-community/whisper-large-v3-mlx"
+          "id": "mlx-community/whisper-large-v3-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-large-v3-mlx",
+          "repo_id": "mlx-community/whisper-large-v3-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 3083522444,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2448,
+          "likes": 56,
+          "trending_score": null
         }
       ],
       "basic_fields": [
@@ -22621,6 +23471,285 @@
         "documents",
         "min_overlap_words"
       ]
+    },
+    {
+      "title": "MFlux Image Generation",
+      "description": "Generate images locally using the MFLUX MLX implementation of FLUX.1.\n    mlx, flux, image generation, apple-silicon\n\n    Use cases:\n    - Create high quality images on Apple Silicon without external APIs\n    - Prototype prompts locally before running on cloud inference providers\n    - Experiment with quantized FLUX models (schnell/dev/krea-dev variants)\n\n    Recommended models:\n    - schnell: Fastest model, good for quick generations (2-4 steps)\n    - dev: More powerful model, higher quality (20-25 steps)\n    - krea-dev: Enhanced photorealism with distinctive aesthetics\n    - Freepik/flux.1-lite-8B-alpha: Lighter version of FLUX\n    - Quantized 4-bit models: Reduced memory usage versions of the official models",
+      "namespace": "mlx.mflux",
+      "node_type": "mlx.mflux.ImageGeneration",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A vivid concept art piece of a futuristic city at sunset",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "hf.flux"
+          },
+          "default": {
+            "repo_id": "dhairyashil/FLUX.1-schnell-mflux-v0.6.2-4bit"
+          },
+          "title": "Model",
+          "description": "MFLUX model variant to load. Options include official models (schnell, dev, krea-dev), third-party community models (Freepik/flux.1-lite-8B-alpha), and quantized 4-bit versions for reduced memory usage."
+        },
+        {
+          "name": "quantize",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "enum",
+                "values": [
+                  3,
+                  4,
+                  5,
+                  6,
+                  8
+                ],
+                "type_name": "nodetool.nodes.mlx.mflux.QuantizationLevel"
+              },
+              {
+                "type": "none"
+              }
+            ]
+          },
+          "default": 4,
+          "title": "Quantize",
+          "description": "Optional quantization level for model weights (reduces memory usage)."
+        },
+        {
+          "name": "steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 4,
+          "title": "Steps",
+          "description": "Number of denoising steps for the generation run.",
+          "min": 1.0,
+          "max": 50.0
+        },
+        {
+          "name": "guidance",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "none"
+              }
+            ]
+          },
+          "default": 3.5,
+          "title": "Guidance",
+          "description": "Classifier-free guidance scale. Used by dev/krea-dev models.",
+          "min": 0.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 1024,
+          "title": "Height",
+          "description": "Height of the generated image in pixels.",
+          "min": 256.0,
+          "max": 2048.0
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1024,
+          "title": "Width",
+          "description": "Width of the generated image in pixels.",
+          "min": 256.0,
+          "max": 2048.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Seed",
+          "description": "Seed for deterministic generation. Leave as 0 for random."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "recommended_models": [
+        {
+          "id": "Freepik/flux.1-lite-8B-alpha",
+          "type": "hf.flux",
+          "name": "Freepik/flux.1-lite-8B-alpha",
+          "repo_id": "Freepik/flux.1-lite-8B-alpha",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 42642793609,
+          "downloaded": false,
+          "pipeline_tag": "text-to-image",
+          "tags": [
+            "diffusers",
+            "safetensors",
+            "flux",
+            "text-to-image",
+            "base_model:black-forest-labs/FLUX.1-dev",
+            "base_model:finetune:black-forest-labs/FLUX.1-dev",
+            "license:other",
+            "endpoints_compatible",
+            "diffusers:FluxPipeline",
+            "region:us"
+          ],
+          "has_model_index": true,
+          "downloads": 1584,
+          "likes": 427,
+          "trending_score": null
+        },
+        {
+          "id": "dhairyashil/FLUX.1-schnell-mflux-v0.6.2-4bit",
+          "type": "hf.flux",
+          "name": "dhairyashil/FLUX.1-schnell-mflux-v0.6.2-4bit",
+          "repo_id": "dhairyashil/FLUX.1-schnell-mflux-v0.6.2-4bit",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 9615583654,
+          "downloaded": false,
+          "pipeline_tag": "text-to-image",
+          "tags": [
+            "flux-rectified-flow",
+            "text-to-image",
+            "diffusion",
+            "mflux",
+            "en",
+            "dataset:custom",
+            "license:apache-2.0",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 20,
+          "likes": 1,
+          "trending_score": null
+        },
+        {
+          "id": "dhairyashil/FLUX.1-dev-mflux-4bit",
+          "type": "hf.flux",
+          "name": "dhairyashil/FLUX.1-dev-mflux-4bit",
+          "repo_id": "dhairyashil/FLUX.1-dev-mflux-4bit",
+          "path": null,
+          "cache_path": "/Users/mg/.cache/huggingface/hub/models--dhairyashil--FLUX.1-dev-mflux-4bit/snapshots/f15c8a9231c3142976e8a1aa8c6d18b34a442a53/config.json",
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 9621508754,
+          "downloaded": true,
+          "pipeline_tag": "text-to-image",
+          "tags": [
+            "flux-rectified-flow",
+            "text-to-image",
+            "diffusion",
+            "mflux",
+            "development",
+            "en",
+            "dataset:custom",
+            "license:apache-2.0",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 10,
+          "likes": 2,
+          "trending_score": null
+        },
+        {
+          "id": "filipstrand/FLUX.1-Krea-dev-mflux-4bit",
+          "type": "hf.flux",
+          "name": "filipstrand/FLUX.1-Krea-dev-mflux-4bit",
+          "repo_id": "filipstrand/FLUX.1-Krea-dev-mflux-4bit",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 9614920957,
+          "downloaded": false,
+          "pipeline_tag": "text-to-image",
+          "tags": [
+            "mflux",
+            "flux",
+            "krea-dev",
+            "text-to-image",
+            "base_model:black-forest-labs/FLUX.1-Krea-dev",
+            "base_model:finetune:black-forest-labs/FLUX.1-Krea-dev",
+            "license:other",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 3,
+          "trending_score": null
+        },
+        {
+          "id": "akx/FLUX.1-Kontext-dev-mflux-4bit",
+          "type": "hf.flux",
+          "name": "akx/FLUX.1-Kontext-dev-mflux-4bit",
+          "repo_id": "akx/FLUX.1-Kontext-dev-mflux-4bit",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 9614920180,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mflux",
+            "base_model:black-forest-labs/FLUX.1-Kontext-dev",
+            "base_model:quantized:black-forest-labs/FLUX.1-Kontext-dev",
+            "license:other",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 0,
+          "likes": 2,
+          "trending_score": null
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "model",
+        "quantize",
+        "steps",
+        "guidance",
+        "height",
+        "width",
+        "seed"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Realtime Agent",
