@@ -371,7 +371,8 @@ class SaveText(BaseNode):
         file = BytesIO(self.text.encode("utf-8"))
         parent_id = self.folder.asset_id if self.folder.is_set() else None
         asset = await context.create_asset(filename, "text/plain", file, parent_id)
-        return TextRef(uri=asset.get_url or "", asset_id=asset.id)
+        asset_uri = await context.get_asset_url(asset.id)
+        return TextRef(uri=asset_uri or "", asset_id=asset.id)
 
 
 class Split(BaseNode):

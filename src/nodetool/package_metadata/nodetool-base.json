@@ -20717,7 +20717,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 77691713,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20736,13 +20736,13 @@
           "name": "ggerganov/whisper.cpp",
           "repo_id": "ggerganov/whisper.cpp",
           "path": "ggml-tiny-q5_1.bin",
-          "cache_path": "/Users/mg/.cache/huggingface/hub/models--ggerganov--whisper.cpp/snapshots/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny-q5_1.bin",
+          "cache_path": null,
           "allow_patterns": null,
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
-          "downloaded": true,
+          "size_on_disk": 32152673,
+          "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
             "automatic-speech-recognition",
@@ -20765,7 +20765,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 43537433,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20789,7 +20789,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 77704715,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20813,7 +20813,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 32166155,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20837,7 +20837,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 43550795,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20861,7 +20861,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 147951465,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20885,7 +20885,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 59707625,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20909,7 +20909,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 81768585,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20933,7 +20933,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 147964211,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20957,7 +20957,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 59721011,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -20981,7 +20981,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 81781811,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21005,7 +21005,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 487601967,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21029,7 +21029,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 190085487,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21053,7 +21053,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 264464607,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21077,7 +21077,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 487614201,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21101,7 +21101,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 190098681,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21125,7 +21125,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 264477561,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21149,7 +21149,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 1533763059,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21173,7 +21173,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 539212467,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21197,7 +21197,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 823369779,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21221,7 +21221,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 1533774781,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21245,7 +21245,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 539225533,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21269,7 +21269,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 823382461,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21293,7 +21293,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 3094623691,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21317,7 +21317,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 3094623691,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21341,7 +21341,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 1080732091,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21365,7 +21365,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 1656129691,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21389,7 +21389,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 3095033483,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21413,7 +21413,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 1081140203,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21437,7 +21437,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 1624555275,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21461,7 +21461,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 574041195,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21485,7 +21485,7 @@
           "ignore_patterns": null,
           "description": null,
           "readme": null,
-          "size_on_disk": 31005921914,
+          "size_on_disk": 874188075,
           "downloaded": false,
           "pipeline_tag": "automatic-speech-recognition",
           "tags": [
@@ -21504,350 +21504,6 @@
         "n_threads",
         "length_ms",
         "audio",
-        "chunk"
-      ]
-    },
-    {
-      "title": "MLX Whisper",
-      "description": "Transcribe an audio asset using MLX Whisper.\n    whisper, mlx, asr, speech-to-text\n\n    - Uses MLX for efficient Apple Silicon acceleration\n    - Emits final transcript on `text` and segments on `segments`",
-      "namespace": "lib.mlx_whisper",
-      "node_type": "lib.mlx_whisper.MLXWhisper",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "enum",
-            "values": [
-              "mlx-community/whisper-tiny-mlx",
-              "mlx-community/whisper-tiny.en-mlx",
-              "mlx-community/whisper-base-mlx",
-              "mlx-community/whisper-base.en-mlx",
-              "mlx-community/whisper-small-mlx",
-              "mlx-community/whisper-small.en-mlx",
-              "mlx-community/whisper-medium-mlx",
-              "mlx-community/whisper-medium.en-mlx",
-              "mlx-community/whisper-large-v3-mlx"
-            ],
-            "type_name": "nodetool.nodes.lib.mlx_whisper.Model"
-          },
-          "default": "mlx-community/whisper-tiny.en-mlx",
-          "title": "Model",
-          "description": "Model to use for transcription"
-        },
-        {
-          "name": "length_ms",
-          "type": {
-            "type": "int"
-          },
-          "default": 5000,
-          "title": "Length Ms",
-          "description": "Chunk length in milliseconds before decode"
-        },
-        {
-          "name": "compression_ratio_threshold",
-          "type": {
-            "type": "float",
-            "optional": true
-          },
-          "default": 2.4,
-          "title": "Compression Ratio Threshold",
-          "description": "Threshold for gzip compression ratio; above this, the result is treated as failed."
-        },
-        {
-          "name": "logprob_threshold",
-          "type": {
-            "type": "float",
-            "optional": true
-          },
-          "default": -1.0,
-          "title": "Logprob Threshold",
-          "description": "Average log probability threshold; below this, the result is treated as failed."
-        },
-        {
-          "name": "no_speech_threshold",
-          "type": {
-            "type": "float",
-            "optional": true
-          },
-          "default": 0.6,
-          "title": "No Speech Threshold",
-          "description": "Threshold for no-speech probability; if exceeded and logprob is low, the segment is considered silent."
-        },
-        {
-          "name": "condition_on_previous_text",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Condition On Previous Text",
-          "description": "If True, the previous output is used as a prompt for the next window, improving consistency."
-        },
-        {
-          "name": "word_timestamps",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Word Timestamps",
-          "description": "If True, extracts word-level timestamps using cross-attention and dynamic time warping."
-        },
-        {
-          "name": "chunk",
-          "type": {
-            "type": "chunk"
-          },
-          "default": {},
-          "title": "Chunk",
-          "description": "Streaming input chunk. Provide audio chunks (PCM16 base64 or bytes)."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "chunk"
-          },
-          "name": "chunk"
-        },
-        {
-          "type": {
-            "type": "list"
-          },
-          "name": "segments"
-        }
-      ],
-      "recommended_models": [
-        {
-          "id": "mlx-community/whisper-tiny-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-tiny-mlx",
-          "repo_id": "mlx-community/whisper-tiny-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 74420620,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 153,
-          "likes": 2,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-tiny.en-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-tiny.en-mlx",
-          "repo_id": "mlx-community/whisper-tiny.en-mlx",
-          "path": null,
-          "cache_path": "/Users/mg/.cache/huggingface/hub/models--mlx-community--whisper-tiny.en-mlx/snapshots/5f4dafbb28e62a53c1b10426ff7eed36ca733bf7/config.json",
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 74419890,
-          "downloaded": true,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 253,
-          "likes": 0,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-base-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-base-mlx",
-          "repo_id": "mlx-community/whisper-base-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 143726284,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 2214,
-          "likes": 0,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-base.en-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-base.en-mlx",
-          "repo_id": "mlx-community/whisper-base.en-mlx",
-          "path": null,
-          "cache_path": "/Users/mg/.cache/huggingface/hub/models--mlx-community--whisper-base.en-mlx/snapshots/aa0678c3466ed62c5c6114ec600a0e1f96820089/config.json",
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 143725218,
-          "downloaded": true,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 41,
-          "likes": 0,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-small-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-small-mlx",
-          "repo_id": "mlx-community/whisper-small-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 481309678,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 2685,
-          "likes": 3,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-small.en-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-small.en-mlx",
-          "repo_id": "mlx-community/whisper-small.en-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 481308292,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 64,
-          "likes": 0,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-medium-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-medium-mlx",
-          "repo_id": "mlx-community/whisper-medium-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 1524927002,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 2426,
-          "likes": 3,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-medium.en-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-medium.en-mlx",
-          "repo_id": "mlx-community/whisper-medium.en-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 1524925152,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 80,
-          "likes": 1,
-          "trending_score": null
-        },
-        {
-          "id": "mlx-community/whisper-large-v3-mlx",
-          "type": "hf.model",
-          "name": "mlx-community/whisper-large-v3-mlx",
-          "repo_id": "mlx-community/whisper-large-v3-mlx",
-          "path": null,
-          "cache_path": null,
-          "allow_patterns": null,
-          "ignore_patterns": null,
-          "description": null,
-          "readme": null,
-          "size_on_disk": 3083522444,
-          "downloaded": false,
-          "pipeline_tag": null,
-          "tags": [
-            "mlx",
-            "whisper",
-            "license:mit",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 2448,
-          "likes": 56,
-          "trending_score": null
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "length_ms",
-        "compression_ratio_threshold",
-        "logprob_threshold",
-        "no_speech_threshold",
-        "condition_on_previous_text",
-        "word_timestamps",
         "chunk"
       ]
     },
@@ -23620,7 +23276,7 @@
             "region:us"
           ],
           "has_model_index": true,
-          "downloads": 1584,
+          "downloads": 1588,
           "likes": 427,
           "trending_score": null
         },
@@ -23649,7 +23305,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 20,
+          "downloads": 27,
           "likes": 1,
           "trending_score": null
         },
@@ -23659,13 +23315,13 @@
           "name": "dhairyashil/FLUX.1-dev-mflux-4bit",
           "repo_id": "dhairyashil/FLUX.1-dev-mflux-4bit",
           "path": null,
-          "cache_path": "/Users/mg/.cache/huggingface/hub/models--dhairyashil--FLUX.1-dev-mflux-4bit/snapshots/f15c8a9231c3142976e8a1aa8c6d18b34a442a53/config.json",
+          "cache_path": null,
           "allow_patterns": null,
           "ignore_patterns": null,
           "description": null,
           "readme": null,
           "size_on_disk": 9621508754,
-          "downloaded": true,
+          "downloaded": false,
           "pipeline_tag": "text-to-image",
           "tags": [
             "flux-rectified-flow",
@@ -23750,6 +23406,534 @@
         "seed"
       ],
       "expose_as_tool": true
+    },
+    {
+      "title": "MLX Text To Speech",
+      "description": "Generate speech locally using mlx-audio TTS models on Apple Silicon.\n    tts, audio, speech, mlx, kokoro, sesame\n\n    Use cases:\n    - Fast offline TTS generation on Apple Silicon devices\n    - Experiment with Kokoro/Sesame voices without GPU dependencies\n    - Produce narration or assistant voices with low-latency local inference",
+      "namespace": "mlx.tts",
+      "node_type": "mlx.tts.TTS",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "Hello from MLX TTS.",
+          "title": "Text",
+          "description": "Text content to synthesize into speech."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "prince-canuma/Kokoro-82M",
+              "mlx-community/Kokoro-82M-bf16",
+              "mlx-community/csm-1b"
+            ],
+            "type_name": "nodetool.nodes.mlx.tts.Model"
+          },
+          "default": "prince-canuma/Kokoro-82M",
+          "title": "Model",
+          "description": "MLX TTS model repo ID or local path."
+        },
+        {
+          "name": "voice",
+          "type": {
+            "type": "str"
+          },
+          "default": "af_heart",
+          "title": "Voice",
+          "description": "Voice preset supported by the selected model. Kokoro exposes af_*/am_*/bf_* voices; Sesame expects reference-audio-assisted voices."
+        },
+        {
+          "name": "speed",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Speed",
+          "description": "Playback speed multiplier supported by Kokoro models.",
+          "min": 0.5,
+          "max": 2.0
+        },
+        {
+          "name": "lang_code",
+          "type": {
+            "type": "str"
+          },
+          "default": "a",
+          "title": "Lang Code",
+          "description": "Language code when supported (Kokoro: a=American English, b=British English, j=Japanese, etc.)."
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.7,
+          "title": "Temperature",
+          "description": "Sampling temperature passed to the underlying generator when supported.",
+          "min": 0.0,
+          "max": 1.5
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        }
+      ],
+      "recommended_models": [
+        {
+          "id": "prince-canuma/Kokoro-82M",
+          "type": "hf.model",
+          "name": "prince-canuma/Kokoro-82M",
+          "repo_id": "prince-canuma/Kokoro-82M",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 361213864,
+          "downloaded": false,
+          "pipeline_tag": "text-to-speech",
+          "tags": [
+            "text-to-speech",
+            "en",
+            "arxiv:2306.07691",
+            "arxiv:2203.02395",
+            "base_model:yl4579/StyleTTS2-LJSpeech",
+            "base_model:finetune:yl4579/StyleTTS2-LJSpeech",
+            "license:apache-2.0",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 1813,
+          "likes": 4,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/Kokoro-82M-bf16",
+          "type": "hf.model",
+          "name": "mlx-community/Kokoro-82M-bf16",
+          "repo_id": "mlx-community/Kokoro-82M-bf16",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 361205527,
+          "downloaded": false,
+          "pipeline_tag": "text-to-speech",
+          "tags": [
+            "mlx",
+            "text-to-speech",
+            "en",
+            "base_model:yl4579/StyleTTS2-LJSpeech",
+            "base_model:finetune:yl4579/StyleTTS2-LJSpeech",
+            "license:apache-2.0",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 4724,
+          "likes": 24,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/csm-1b",
+          "type": "hf.model",
+          "name": "mlx-community/csm-1b",
+          "repo_id": "mlx-community/csm-1b",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 6218711994,
+          "downloaded": false,
+          "pipeline_tag": "text-to-speech",
+          "tags": [
+            "mlx",
+            "safetensors",
+            "sesame",
+            "text-to-speech",
+            "en",
+            "base_model:sesame/csm-1b",
+            "base_model:finetune:sesame/csm-1b",
+            "license:apache-2.0",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 175,
+          "likes": 18,
+          "trending_score": null
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "model",
+        "voice",
+        "speed",
+        "lang_code",
+        "temperature"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "MLX Whisper",
+      "description": "Transcribe an audio asset using MLX Whisper.\n    whisper, mlx, asr, speech-to-text\n\n    - Uses MLX for efficient Apple Silicon acceleration\n    - Emits final transcript on `text` and segments on `segments`",
+      "namespace": "mlx.whisper",
+      "node_type": "mlx.whisper.MLXWhisper",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "mlx-community/whisper-tiny-mlx",
+              "mlx-community/whisper-tiny.en-mlx",
+              "mlx-community/whisper-base-mlx",
+              "mlx-community/whisper-base.en-mlx",
+              "mlx-community/whisper-small-mlx",
+              "mlx-community/whisper-small.en-mlx",
+              "mlx-community/whisper-medium-mlx",
+              "mlx-community/whisper-medium.en-mlx",
+              "mlx-community/whisper-large-v3-mlx"
+            ],
+            "type_name": "nodetool.nodes.mlx.whisper.Model"
+          },
+          "default": "mlx-community/whisper-tiny.en-mlx",
+          "title": "Model",
+          "description": "Model to use for transcription"
+        },
+        {
+          "name": "length_ms",
+          "type": {
+            "type": "int"
+          },
+          "default": 5000,
+          "title": "Length Ms",
+          "description": "Chunk length in milliseconds before decode"
+        },
+        {
+          "name": "compression_ratio_threshold",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": 2.4,
+          "title": "Compression Ratio Threshold",
+          "description": "Threshold for gzip compression ratio; above this, the result is treated as failed."
+        },
+        {
+          "name": "logprob_threshold",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": -1.0,
+          "title": "Logprob Threshold",
+          "description": "Average log probability threshold; below this, the result is treated as failed."
+        },
+        {
+          "name": "no_speech_threshold",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": 0.6,
+          "title": "No Speech Threshold",
+          "description": "Threshold for no-speech probability; if exceeded and logprob is low, the segment is considered silent."
+        },
+        {
+          "name": "condition_on_previous_text",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Condition On Previous Text",
+          "description": "If True, the previous output is used as a prompt for the next window, improving consistency."
+        },
+        {
+          "name": "word_timestamps",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Word Timestamps",
+          "description": "If True, extracts word-level timestamps using cross-attention and dynamic time warping."
+        },
+        {
+          "name": "chunk",
+          "type": {
+            "type": "chunk"
+          },
+          "default": {},
+          "title": "Chunk",
+          "description": "Streaming input chunk. Provide audio chunks (PCM16 base64 or bytes)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        },
+        {
+          "type": {
+            "type": "list"
+          },
+          "name": "segments"
+        }
+      ],
+      "recommended_models": [
+        {
+          "id": "mlx-community/whisper-tiny-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-tiny-mlx",
+          "repo_id": "mlx-community/whisper-tiny-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 74420620,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 152,
+          "likes": 2,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-tiny.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-tiny.en-mlx",
+          "repo_id": "mlx-community/whisper-tiny.en-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 74419890,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 256,
+          "likes": 0,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-base-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-base-mlx",
+          "repo_id": "mlx-community/whisper-base-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 143726284,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2293,
+          "likes": 0,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-base.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-base.en-mlx",
+          "repo_id": "mlx-community/whisper-base.en-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 143725218,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 40,
+          "likes": 0,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-small-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-small-mlx",
+          "repo_id": "mlx-community/whisper-small-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 481309678,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 3038,
+          "likes": 3,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-small.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-small.en-mlx",
+          "repo_id": "mlx-community/whisper-small.en-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 481308292,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 66,
+          "likes": 0,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-medium-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-medium-mlx",
+          "repo_id": "mlx-community/whisper-medium-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 1524927002,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2442,
+          "likes": 3,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-medium.en-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-medium.en-mlx",
+          "repo_id": "mlx-community/whisper-medium.en-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 1524925152,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 80,
+          "likes": 1,
+          "trending_score": null
+        },
+        {
+          "id": "mlx-community/whisper-large-v3-mlx",
+          "type": "hf.model",
+          "name": "mlx-community/whisper-large-v3-mlx",
+          "repo_id": "mlx-community/whisper-large-v3-mlx",
+          "path": null,
+          "cache_path": null,
+          "allow_patterns": null,
+          "ignore_patterns": null,
+          "description": null,
+          "readme": null,
+          "size_on_disk": 3083522444,
+          "downloaded": false,
+          "pipeline_tag": null,
+          "tags": [
+            "mlx",
+            "whisper",
+            "license:mit",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 2383,
+          "likes": 56,
+          "trending_score": null
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "length_ms",
+        "compression_ratio_threshold",
+        "logprob_threshold",
+        "no_speech_threshold",
+        "condition_on_previous_text",
+        "word_timestamps",
+        "chunk"
+      ]
     },
     {
       "title": "Realtime Agent",
