@@ -1,10 +1,12 @@
 from enum import Enum
 import os
 import platform
+import leann
 from nodetool.metadata.types import FolderPath, LeannSearchResult, TextChunk
 from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.workflows.processing_context import ProcessingContext
-from pydantic import Field, FilePath
+from pydantic import Field, FilePath, PrivateAttr
 
 
 class LeannSearcher(BaseNode):
@@ -140,44 +142,41 @@ class LeannBuilder(BaseNode):
         default=Backend.hnsw,
         description="Index backend optimized for your scale. HNSW for most use cases, DiskANN for large datasets. See Backend documentation for details.",
     )
-    text_chunks: list[TextChunk] = Field(
-        default=[],
-        description="Text chunks to be indexed. Each chunk should contain: text content, unique source_id, and optional metadata for filtering.",
+    text: str = Field(
+        default="",
+        description="The text to index",
     )
+    metadata: dict = Field(
+        default={},
+        description="The metadata to associate with the text",
+    )
+
+    _builder: leann.LeannBuilder | None = PrivateAttr(default=None)
 
     @classmethod
     def is_streaming_input(cls) -> bool:  # type: ignore[override]
         # Consume chunks as a stream; build the index once when input stream ends
         return True
 
-    @classmethod
-    def return_type(cls):
-        return {"output": bool}
+    def get_sync_mode(self) -> str:
+        return "zip_all"
 
-    async def run(self, context: ProcessingContext, inputs, outputs) -> None:
+    def pre_process(self, context: ProcessingContext) -> None:
+        if self._builder is None:
+            self._builder = leann.LeannBuilder(
+                backend_name=self.backend.value,
+                model_name=self.model.value,
+            )
+
+    async def process(
+        self,
+        context: ProcessingContext,
+    ) -> None:
         if platform.system() == "Windows":
             raise ValueError("Leann is not supported on Windows")
+        assert self._builder is not None
+        self._builder.add_text(self.text, self.metadata)
 
-        import leann
-
-        builder = leann.LeannBuilder(
-            backend_name=self.backend.value,
-            model_name=self.model.value,
-        )
-
-        # Include any statically configured chunks as initial items
-        for c in self.text_chunks:
-            builder.add_text(c.text, {"source_id": c.source_id})
-
-        # Drain the input stream until EOS across all handles
-        if inputs is not None:
-            async for item in inputs.stream("text_chunks"):
-                assert isinstance(item, list)
-                for it in item:
-                    assert isinstance(it, TextChunk)
-                    builder.add_text(it.text, {"source_id": it.source_id})
-                    await outputs.emit("output", f"Added text chunk {it.source_id}")
-
-        builder.build_index(os.path.join(self.folder.path, self.name))
-
-        await outputs.emit("output", "Index built successfully")
+    async def handle_eos(self) -> None:
+        assert self._builder is not None
+        self._builder.build_index(os.path.join(self.folder.path, self.name))

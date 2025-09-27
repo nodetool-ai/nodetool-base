@@ -77,18 +77,20 @@ async def test_extract_images_videos_audio(context: ProcessingContext):
     imgs = []
     vids = []
     auds = []
-    async for _, img in ExtractImages(html=HTML_SAMPLE, base_url=base).gen_process(
+    async for item in ExtractImages(html=HTML_SAMPLE, base_url=base).gen_process(
         context
     ):
-        imgs.append(img)
-    async for _, vid in ExtractVideos(html=HTML_SAMPLE, base_url=base).gen_process(
+        imgs.append(item["image"])
+
+    async for item in ExtractVideos(html=HTML_SAMPLE, base_url=base).gen_process(
         context
     ):
-        vids.append(vid)
-    async for _, aud in ExtractAudio(html=HTML_SAMPLE, base_url=base).gen_process(
+        vids.append(item["video"])
+
+    async for item in ExtractAudio(html=HTML_SAMPLE, base_url=base).gen_process(
         context
     ):
-        auds.append(aud)
+        auds.append(item["audio"])
 
     assert any(img.uri.endswith("/img.png") for img in imgs)
     assert any(v.uri.endswith("/v.mp4") for v in vids) and any(

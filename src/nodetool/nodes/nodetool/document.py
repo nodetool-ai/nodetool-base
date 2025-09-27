@@ -1,6 +1,8 @@
 import datetime
 import os
 import glob
+from typing import TypedDict
+from nodetool.chat.providers.base import AsyncGenerator
 from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
@@ -94,11 +96,12 @@ class ListDocuments(BaseNode):
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
     recursive: bool = Field(default=False, description="Search subdirectories")
 
-    @classmethod
-    def return_type(cls):
-        return {"document": DocumentRef}
+    class OutputType(TypedDict):
+        document: DocumentRef
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder.path:
@@ -113,7 +116,7 @@ class ListDocuments(BaseNode):
             paths = glob.glob(pattern)
 
         for p in paths:
-            yield "document", DocumentRef(uri=create_file_uri(p))
+            yield {"document": DocumentRef(uri=create_file_uri(p))}
 
 
 class SplitDocument(BaseNode):
@@ -144,7 +147,14 @@ class SplitDocument(BaseNode):
         le=100,
     )
 
-    async def gen_process(self, context: ProcessingContext):
+    class OutputType(TypedDict):
+        text: str
+        source_id: str
+        start_index: int
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         assert self.embed_model.repo_id, "embed_model is required"
 
         splitter = SemanticSplitterNodeParser(
@@ -159,14 +169,12 @@ class SplitDocument(BaseNode):
         nodes = splitter.build_semantic_nodes_from_documents(documents)
 
         # Convert nodes to TextChunks
-        return [
-            TextChunk(
-                text=node.get_content(),
-                source_id=self.document.uri,
-                start_index=i,
-            )
-            for i, node in enumerate(nodes)
-        ]
+        for i, node in enumerate(nodes):
+            yield {
+                "text": node.get_content(),
+                "source_id": self.document.uri,
+                "start_index": i,
+            }
 
 
 class SplitHTML(BaseNode):
@@ -180,7 +188,14 @@ class SplitHTML(BaseNode):
         description="Document ID to associate with the HTML content",
     )
 
-    async def gen_process(self, context: ProcessingContext):
+    class OutputType(TypedDict):
+        text: str
+        source_id: str
+        start_index: int
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         parser = HTMLNodeParser(
             tags=[
                 "p",
@@ -204,14 +219,12 @@ class SplitHTML(BaseNode):
 
         nodes = parser.get_nodes_from_node(doc)
 
-        return [
-            TextChunk(
-                text=node.text,
-                source_id=self.document.uri,
-                start_index=i,
-            )
-            for i, node in enumerate(nodes)
-        ]
+        for i, node in enumerate(nodes):
+            yield {
+                "text": node.text,
+                "source_id": self.document.uri,
+                "start_index": i,
+            }
 
 
 class SplitJSON(BaseNode):
@@ -231,7 +244,14 @@ class SplitJSON(BaseNode):
         default=True, description="Whether to include prev/next relationships"
     )
 
-    async def process(self, context: ProcessingContext) -> list[TextChunk]:
+    class OutputType(TypedDict):
+        text: str
+        source_id: str
+        start_index: int
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         parser = JSONNodeParser(
             include_metadata=self.include_metadata,
             include_prev_next_rel=self.include_prev_next_rel,
@@ -241,14 +261,12 @@ class SplitJSON(BaseNode):
 
         nodes = parser.get_nodes_from_node(doc)
 
-        return [
-            TextChunk(
-                text=node.text,
-                source_id=self.document.uri,
-                start_index=i,
-            )
-            for i, node in enumerate(nodes)
-        ]
+        for i, node in enumerate(nodes):
+            yield {
+                "text": node.text,
+                "source_id": self.document.uri,
+                "start_index": i,
+            }
 
 
 class SplitRecursively(BaseNode):
@@ -281,7 +299,14 @@ class SplitRecursively(BaseNode):
     def get_title(cls):
         return "Split Recursively"
 
-    async def process(self, context: ProcessingContext) -> list[TextChunk]:
+    class OutputType(TypedDict):
+        text: str
+        source_id: str
+        start_index: int
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         from langchain_text_splitters import RecursiveCharacterTextSplitter
         from langchain_core.documents import Document
 
@@ -296,14 +321,12 @@ class SplitRecursively(BaseNode):
 
         docs = splitter.split_documents([Document(page_content=self.document.data)])
 
-        return [
-            TextChunk(
-                text=doc.page_content,
-                source_id=f"{self.document.uri}:{i}",
-                start_index=doc.metadata.get("start_index", 0),
-            )
-            for i, doc in enumerate(docs)
-        ]
+        for i, doc in enumerate(docs):
+            yield {
+                "text": doc.page_content,
+                "source_id": f"{self.document.uri}:{i}",
+                "start_index": doc.metadata.get("start_index", 0),
+            }
 
 
 class SplitMarkdown(BaseNode):
@@ -347,7 +370,14 @@ class SplitMarkdown(BaseNode):
     def get_title(cls):
         return "Split Markdown"
 
-    async def process(self, context: ProcessingContext) -> list[TextChunk]:
+    class OutputType(TypedDict):
+        text: str
+        source_id: str
+        start_index: int
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         from langchain_text_splitters import (
             MarkdownHeaderTextSplitter,
             RecursiveCharacterTextSplitter,
@@ -371,14 +401,12 @@ class SplitMarkdown(BaseNode):
             splits = text_splitter.split_documents(splits)
 
         # Convert Document objects to dictionaries
-        return [
-            TextChunk(
-                text=doc.page_content,
-                source_id=self.document.uri,
-                start_index=doc.metadata.get("start_index", 0),
-            )
-            for doc in splits
-        ]
+        for i, doc in enumerate(splits):
+            yield {
+                "text": doc.page_content,
+                "source_id": self.document.uri,
+                "start_index": doc.metadata.get("start_index", 0),
+            }
 
 
 # Backwards-compatible alias used in tests
@@ -410,7 +438,14 @@ class SplitSentences(BaseNode):
     def get_title(cls):
         return "Split into Sentences"
 
-    async def process(self, context: ProcessingContext) -> list[TextChunk]:
+    class OutputType(TypedDict):
+        text: str
+        source_id: str
+        start_index: int
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         from langchain_text_splitters import SentenceTransformersTokenTextSplitter
         from langchain_core.documents import Document
 
@@ -422,11 +457,9 @@ class SplitSentences(BaseNode):
 
         docs = splitter.split_documents([Document(page_content=self.document.data)])
 
-        return [
-            TextChunk(
-                text=doc.page_content,
-                source_id=f"{self.document.uri}:{i}",
-                start_index=doc.metadata.get("start_index", 0),
-            )
-            for i, doc in enumerate(docs)
-        ]
+        for i, doc in enumerate(docs):
+            yield {
+                "text": doc.page_content,
+                "source_id": f"{self.document.uri}:{i}",
+                "start_index": doc.metadata.get("start_index", 0),
+            }

@@ -1,6 +1,6 @@
 import asyncio
 import datetime
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 import os
 from enum import Enum
 from typing import Any, List
@@ -206,15 +206,12 @@ class FetchPage(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "html": str,
-            "success": bool,
-            "error_message": str | None,
-        }
+    class OutputType(TypedDict):
+        html: str
+        success: bool
+        error_message: str | None
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         options = Options()
         options.add_argument("--headless")
         driver = webdriver.Chrome(options=options)
@@ -269,12 +266,9 @@ class ImageDownloader(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "images": list[ImageRef],
-            "failed_urls": list[str],
-        }
+    class OutputType(TypedDict):
+        images: list[ImageRef]
+        failed_urls: list[str]
 
     async def download_image(
         self,
@@ -297,7 +291,7 @@ class ImageDownloader(BaseNode):
             logger.warning(error_msg)
             return None, url
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         images = []
         failed_urls = []
 
@@ -765,14 +759,11 @@ class DownloadFiles(BaseNode):
         except Exception:
             return ""
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "success": list[str],
-            "failed": list[str],
-        }
+    class OutputType(TypedDict):
+        success: list[str]
+        failed: list[str]
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         successful = []
         failed = []
 

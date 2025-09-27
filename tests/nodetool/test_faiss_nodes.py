@@ -1,8 +1,5 @@
 import numpy as np
 import pytest
-
-faiss = pytest.importorskip("faiss")
-
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import NPArray
 from nodetool.nodes.vector.faiss import (

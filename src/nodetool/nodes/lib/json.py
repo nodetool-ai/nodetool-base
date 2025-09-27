@@ -1,7 +1,7 @@
 # src/nodetool/nodes/nodetool/json.py
 
 import json
-from typing import Any
+from typing import Any, AsyncGenerator, TypedDict
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -293,14 +293,13 @@ class LoadJSONAssets(BaseNode):
     def get_title(cls):
         return "Load JSON Folder"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "json": dict,
-            "name": str,
-        }
+    class OutputType(TypedDict):
+        json: dict
+        name: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
 
@@ -310,10 +309,9 @@ class LoadJSONAssets(BaseNode):
         )
 
         for asset in list_assets:
-            yield "name", asset.name
             content = await context.download_asset(asset.id)
             try:
                 json_data = json.load(content)
-                yield "json", json_data
+                yield {"json": json_data, "name": asset.name}
             except json.JSONDecodeError as e:
                 raise ValueError(f"Invalid JSON in file {asset.name}: {e}")

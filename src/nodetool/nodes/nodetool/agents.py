@@ -2,7 +2,7 @@ import base64
 import asyncio
 import json
 import re
-from typing import Any, cast, ClassVar
+from typing import Any, AsyncGenerator, cast, ClassVar, TypedDict
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
@@ -60,12 +60,9 @@ class Summarizer(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": str,
-            "chunk": Chunk,
-        }
+    class OutputType(TypedDict):
+        text: str | None
+        chunk: Chunk | None
 
     system_prompt: str = Field(
         default="""
@@ -106,7 +103,9 @@ class Summarizer(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["text", "max_tokens", "model", "image", "audio"]
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
@@ -133,10 +132,10 @@ class Summarizer(BaseNode):
         ):
             if isinstance(chunk, Chunk):
                 if chunk.content_type == "text" or chunk.content_type is None:
-                    yield "chunk", chunk
+                    yield {"chunk": chunk, "text": None}
                 text += chunk.content
 
-        yield "text", text
+        yield {"text": text, "chunk": None}
 
 
 DEFAULT_EXTRACTOR_SYSTEM_PROMPT = """
@@ -220,11 +219,7 @@ class Extractor(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["text", "model", "image", "audio"]
 
-    @classmethod
-    def return_type(cls):
-        return {}
-
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> dict[str, Any]:
         import json
 
         if self.model.provider == Provider.Empty:
@@ -686,12 +681,10 @@ class Agent(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": str,
-            "chunk": Chunk,
-        }
+    class OutputType(TypedDict, total=False):
+        text: str
+        chunk: Chunk
+        audio: AudioRef
 
     def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
         tools = []
@@ -801,7 +794,7 @@ class Agent(BaseNode):
                 if messages[-1] != assistant_message:
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
-                    if chunk.content_type == "text" or chunk.content_type is None:
+                    if chunk.content_type in ("text", None):
                         message_text_content.text += chunk.content
                         await outputs.emit("chunk", chunk)
                         if chunk.done:
@@ -810,9 +803,15 @@ class Agent(BaseNode):
                                 iteration,
                                 len(message_text_content.text),
                             )
+                            await outputs.emit("text", message_text_content.text)
+                    elif chunk.content_type == "audio":
+                        audio_bytes = base64.b64decode(chunk.content or "")
+                        audio_ref = AudioRef(data=audio_bytes)
+                        await outputs.emit("audio", audio_ref)
                     else:
-                        raise ValueError(
-                            f"Unknown chunk content type: {chunk.content_type}"
+                        log.warning(
+                            "Agent received unsupported chunk type %s; ignoring",
+                            chunk.content_type,
                         )
 
                     if chunk.done:

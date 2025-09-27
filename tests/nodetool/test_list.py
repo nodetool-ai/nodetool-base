@@ -3,7 +3,7 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.nodes.nodetool.list import (
     Length,
-    GenerateSequence,
+    ListRange,
     Slice,
     SelectElements,
     GetElement,
@@ -28,7 +28,7 @@ def context():
     "node, expected_type",
     [
         (Length(values=dummy_list), int),
-        (GenerateSequence(start=0, stop=5, step=1), list),
+        (ListRange(start=0, stop=5, step=1), list),
         (Slice(values=dummy_list, start=1, stop=4, step=1), list),
         (SelectElements(values=dummy_list, indices=[0, 2, 4]), list),
         (GetElement(values=dummy_list, index=2), (int, float, str)),
@@ -58,7 +58,7 @@ async def test_length_node(context: ProcessingContext):
 
 @pytest.mark.asyncio
 async def test_generate_sequence_node(context: ProcessingContext):
-    node = GenerateSequence(start=0, stop=5, step=2)
+    node = ListRange(start=0, stop=5, step=2)
     result = await node.process(context)
     assert result == [0, 2, 4]
 
@@ -74,7 +74,7 @@ async def test_get_element_out_of_range(context: ProcessingContext):
     "NodeClass",
     [
         Length,
-        GenerateSequence,
+        ListRange,
         Slice,
         SelectElements,
         GetElement,

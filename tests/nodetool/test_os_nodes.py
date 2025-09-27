@@ -44,9 +44,8 @@ async def test_file_operations(context: ProcessingContext, tmp_path):
 
     list_node = ListFiles(folder=FolderPath(path=str(test_dir)), pattern="*.txt")
     files = []
-    async for output_type, output_value in list_node.gen_process(context):
-        if output_type == "file":
-            files.append(output_value)
+    async for item in list_node.gen_process(context):
+        files.append(item["file"])
     assert len(files) == 1
     assert files[0].path == str(file_path)
 

@@ -2,6 +2,7 @@ import datetime
 import enum
 import os
 import tempfile
+from typing import AsyncGenerator, TypedDict
 import uuid
 import ffmpeg
 import cv2
@@ -135,14 +136,13 @@ class LoadVideoAssets(BaseNode):
     def required_inputs(self):
         return ["folder"]
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "video": VideoRef,
-            "name": str,
-        }
+    class OutputType(TypedDict):
+        video: VideoRef
+        name: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
 
@@ -151,12 +151,14 @@ class LoadVideoAssets(BaseNode):
             parent_id=parent_id, content_type="video"
         )
         for asset in list_assets:
-            yield "name", asset.name
-            yield "video", VideoRef(
-                type="video",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            yield {
+                "name": asset.name,
+                "video": VideoRef(
+                    type="video",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                ),
+            }
 
 
 class SaveVideo(BaseNode):
@@ -226,15 +228,14 @@ class FrameIterator(BaseNode):
     def get_title(cls):
         return "Frame Iterator"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "frame": ImageRef,
-            "index": int,
-            "fps": float,
-        }
+    class OutputType(TypedDict):
+        frame: ImageRef
+        index: int
+        fps: float
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         video_file = await context.asset_to_io(self.video)
 
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
@@ -257,9 +258,7 @@ class FrameIterator(BaseNode):
                     rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                     img = PIL.Image.fromarray(rgb_frame)
                     img_ref = await context.image_from_pil(img)
-                    yield "frame", img_ref
-                    yield "index", frame_count
-                    yield "fps", fps
+                    yield {"frame": img_ref, "index": frame_count, "fps": fps}
 
                 if self.end > -1 and frame_count >= self.end:
                     break
@@ -391,15 +390,12 @@ class Concat(BaseNode):
         video_a = await context.asset_to_io(self.video_a)
         video_b = await context.asset_to_io(self.video_b)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_a, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_b, tempfile.NamedTemporaryFile(
-            suffix=".txt", delete=False
-        ) as temp_list, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as output_temp:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_a,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_b,
+            tempfile.NamedTemporaryFile(suffix=".txt", delete=False) as temp_list,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+        ):
             try:
                 temp_a.write(video_a.read())
                 temp_b.write(video_b.read())
@@ -481,9 +477,10 @@ class Trim(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp, tempfile.NamedTemporaryFile(suffix=".mp4") as output_temp:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
+            tempfile.NamedTemporaryFile(suffix=".mp4") as output_temp,
+        ):
             try:
                 temp.write(video_file.read())
                 temp.close()
@@ -565,11 +562,10 @@ class ResizeNode(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as output_temp:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+        ):
             try:
                 temp.write(video_file.read())
                 temp.close()
@@ -632,11 +628,10 @@ class Rotate(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as output_temp:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+        ):
             try:
                 temp.write(video_file.read())
                 temp.close()
@@ -702,11 +697,10 @@ class SetSpeed(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as output_temp:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+        ):
             try:
                 temp.write(video_file.read())
                 temp.close()
@@ -793,13 +787,11 @@ class Overlay(BaseNode):
         main_video_file = await context.asset_to_io(self.main_video)
         overlay_video_file = await context.asset_to_io(self.overlay_video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as main_temp, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as overlay_temp, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as output_temp:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as main_temp,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as overlay_temp,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as output_temp,
+        ):
             try:
                 main_temp.write(main_video_file.read())
                 overlay_temp.write(overlay_video_file.read())
@@ -908,11 +900,10 @@ class ColorBalance(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
 
             # Write input video to temporary file
             temp_input.write(video_file.read())
@@ -1000,11 +991,10 @@ class Denoise(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
 
             # Write input video to temporary file
             temp_input.write(video_file.read())
@@ -1083,11 +1073,10 @@ class Stabilize(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
 
             # Write input video to temporary file
             temp_input.write(video_file.read())
@@ -1167,11 +1156,10 @@ class Sharpness(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
 
             # Write input video to temporary file
             temp_input.write(video_file.read())
@@ -1251,11 +1239,10 @@ class Blur(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
 
             # Write input video to temporary file
             temp_input.write(video_file.read())
@@ -1329,11 +1316,10 @@ class Saturation(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
 
             # Write input video to temporary file
             temp_input.write(video_file.read())
@@ -1413,11 +1399,10 @@ class AddSubtitles(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
             try:
                 # Write input video to temporary file
                 temp_input.write(video_file.read())
@@ -1586,11 +1571,10 @@ class Reverse(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
             try:
                 temp_input.write(video_file.read())
                 temp_input.close()
@@ -1712,13 +1696,11 @@ class Transition(BaseNode):
         video_a_file = await context.asset_to_io(self.video_a)
         video_b_file = await context.asset_to_io(self.video_b)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_a, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_b, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_a,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_b,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
             try:
                 temp_a.write(video_a_file.read())
                 temp_b.write(video_b_file.read())
@@ -1818,13 +1800,11 @@ class AddAudio(BaseNode):
         video_file = await context.asset_to_io(self.video)
         audio_file = await context.asset_to_io(self.audio)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_video, tempfile.NamedTemporaryFile(
-            suffix=".opus", delete=False
-        ) as temp_audio, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_video,
+            tempfile.NamedTemporaryFile(suffix=".opus", delete=False) as temp_audio,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
             try:
                 temp_video.write(video_file.read())
                 temp_audio.write(audio_file.read())
@@ -1904,11 +1884,10 @@ class ChromaKey(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_output:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
+        ):
             try:
                 temp_input.write(video_file.read())
                 temp_input.close()
@@ -1960,11 +1939,10 @@ class ExtractAudio(BaseNode):
 
         video_file = await context.asset_to_io(self.video)
 
-        with tempfile.NamedTemporaryFile(
-            suffix=".mp4", delete=False
-        ) as temp_input, tempfile.NamedTemporaryFile(
-            suffix=".opus", delete=False
-        ) as temp_audio:
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".opus", delete=False) as temp_audio,
+        ):
             try:
                 temp_input.write(video_file.read())
                 temp_input.close()

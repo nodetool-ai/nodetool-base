@@ -3,7 +3,7 @@ import asyncio
 from enum import Enum
 import io
 import json
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.nodes.nodetool.agents import serialize_tool_result
@@ -150,13 +150,14 @@ class RealtimeAgent(BaseNode):
     def is_streaming_input(cls) -> bool:
         return True
 
+    class OutputType(TypedDict):
+        chunk: Chunk
+        audio: AudioRef | None
+        text: str
+
     @classmethod
     def return_type(cls):
-        return {
-            "chunk": Chunk,
-            "audio": AudioRef,
-            "text": str,
-        }
+        return cls.OutputType
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -616,12 +617,9 @@ class RealtimeTranscription(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": str,
-            "chunk": Chunk,
-        }
+    class OutputType(TypedDict):
+        text: str
+        chunk: Chunk
 
     @classmethod
     def is_streaming_output(cls) -> bool:

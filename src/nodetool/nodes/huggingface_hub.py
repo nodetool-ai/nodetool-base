@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import (
     AudioChunk,
@@ -55,6 +55,10 @@ class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
     audio, speech, recognition, huggingface, inference
     """
 
+    class OutputType(TypedDict):
+        text: str
+        chunks: list[AudioChunk]
+
     _expose_as_tool: ClassVar[bool] = True
 
     model: InferenceProviderAutomaticSpeechRecognitionModel = Field(
@@ -64,14 +68,7 @@ class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
     )
     audio: AudioRef = Field(default=AudioRef(), description="The audio to transcribe")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": str,
-            "chunks": list[AudioChunk],
-        }
-
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         client = self.get_client(self.model.provider)
         audio_bytes = await context.asset_to_bytes(self.audio)
         output = await client.automatic_speech_recognition(
@@ -293,11 +290,10 @@ class ImageToImage(HuggingFaceInferenceNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    @classmethod
-    def return_type(cls):
-        return ImageRef
+    class OutputType(TypedDict):
+        output: ImageRef
 
-    async def process(self, context: ProcessingContext) -> ImageRef:
+    async def process(self, context: ProcessingContext) -> OutputType:
         client = self.get_client(self.model.provider)
         image_bytes = await context.asset_to_bytes(self.image)
 
@@ -314,7 +310,7 @@ class ImageToImage(HuggingFaceInferenceNode):
             },  # type: ignore
         )
 
-        return await context.image_from_pil(output)
+        return {"output": await context.image_from_pil(output)}
 
 
 class TextToImage(HuggingFaceInferenceNode):
@@ -696,11 +692,10 @@ class TextToSpeech(HuggingFaceInferenceNode):
         description="Whether the model should use the past last key/values attentions to speed up decoding",
     )
 
-    @classmethod
-    def return_type(cls):
-        return AudioRef
+    class OutputType(TypedDict):
+        output: AudioRef
 
-    async def process(self, context: ProcessingContext) -> AudioRef:
+    async def process(self, context: ProcessingContext) -> OutputType:
         client = self.get_client(self.model.provider)
 
         output = await client.text_to_speech(
@@ -715,4 +710,4 @@ class TextToSpeech(HuggingFaceInferenceNode):
             use_cache=self.use_cache if not self.use_cache else None,
         )
 
-        return await context.audio_from_bytes(output)
+        return {"output": await context.audio_from_bytes(output)}

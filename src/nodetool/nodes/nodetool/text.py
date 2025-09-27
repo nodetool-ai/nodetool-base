@@ -3,7 +3,7 @@ from io import BytesIO
 import json
 import os
 
-from typing import Any, ClassVar
+from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
@@ -76,9 +76,8 @@ class Collect(BaseNode):
     def get_title(cls):
         return "Collect"
 
-    @classmethod
-    def return_type(cls):
-        return {"output": str}
+    class OutputType(TypedDict):
+        output: str
 
     async def run(
         self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
@@ -928,14 +927,13 @@ class LoadTextAssets(BaseNode):
     def get_title(cls):
         return "Load Text Assets"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": TextRef,
-            "name": str,
-        }
+    class OutputType(TypedDict):
+        text: TextRef
+        name: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
 
@@ -945,9 +943,11 @@ class LoadTextAssets(BaseNode):
         )
 
         for asset in list_assets:
-            yield "name", asset.name
-            yield "text", TextRef(
-                type="text",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            yield {
+                "name": asset.name,
+                "text": TextRef(
+                    type="text",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                ),
+            }

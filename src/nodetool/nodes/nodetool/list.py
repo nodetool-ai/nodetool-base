@@ -7,7 +7,7 @@ from pydantic import Field
 from nodetool.metadata.types import TextRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
-from typing import Any
+from typing import Any, AsyncGenerator, TypedDict
 import pandas as pd
 
 
@@ -28,7 +28,7 @@ class Length(BaseNode):
         return len(self.values)
 
 
-class GenerateSequence(BaseNode):
+class ListRange(BaseNode):
     """
     Generates a list of integers within a specified range.
     list, range, sequence, numbers
@@ -47,7 +47,7 @@ class GenerateSequence(BaseNode):
         return list(range(self.start, self.stop, self.step))
 
 
-class SequenceIterator(BaseNode):
+class GenerateSequence(BaseNode):
     """
     Iterates over a sequence of numbers.
     list, range, sequence, numbers
@@ -57,13 +57,14 @@ class SequenceIterator(BaseNode):
     stop: int = 0
     step: int = 1
 
-    @classmethod
-    def return_type(cls):
-        return {"output": int}
+    class OutputType(TypedDict):
+        output: int
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         for i in range(self.start, self.stop, self.step):
-            yield "output", i
+            yield {"output": i}
 
 
 class Slice(BaseNode):

@@ -4,7 +4,16 @@ import imaplib
 import socket
 import ssl
 from typing import ClassVar
-from typing import Callable, Awaitable, Optional, TypeVar, Tuple, Type
+from typing import (
+    Callable,
+    Awaitable,
+    Optional,
+    TypeVar,
+    Tuple,
+    Type,
+    AsyncGenerator,
+    TypedDict,
+)
 from datetime import datetime, timedelta
 from enum import Enum
 from pydantic import Field
@@ -97,15 +106,12 @@ class EmailFields(BaseNode):
 
     email: Email = Field(default=Email(), description="Email object to decompose")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "id": str,
-            "subject": str,
-            "sender": str,
-            "date": Datetime,
-            "body": str,
-        }
+    class OutputType(TypedDict):
+        id: str
+        subject: str
+        sender: str
+        date: Datetime
+        body: str
 
     async def process(self, context: ProcessingContext):
         if not self.email:
@@ -210,14 +216,13 @@ class GmailSearch(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["from_address", "subject", "body", "date_filter", "max_results"]
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "email": Email,
-            "message_id": str,
-        }
+    class OutputType(TypedDict):
+        email: Email
+        message_id: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         search_criteria = EmailSearchCriteria(
             from_address=(
                 self.from_address.strip() if self.from_address.strip() else None
@@ -280,8 +285,7 @@ class GmailSearch(BaseNode):
                 on_retry=_on_retry,
             )
             if email:
-                yield "email", email
-                yield "message_id", message_id
+                yield {"email": email, "message_id": message_id}
 
 
 class MoveToArchive(BaseNode):

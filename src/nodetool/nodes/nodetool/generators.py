@@ -1,5 +1,6 @@
 import json
 import re
+from typing import AsyncGenerator, TypedDict
 from nodetool.config.logging_config import get_logger
 from pydantic import Field
 
@@ -66,15 +67,14 @@ class DataGenerator(BaseNode):
     def get_basic_fields(cls) -> list[str]:
         return ["prompt", "model", "columns"]
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "record": dict,
-            "dataframe": DataframeRef,
-            "index": int,
-        }
+    class OutputType(TypedDict):
+        record: dict | None
+        dataframe: DataframeRef | None
+        index: int | None
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         """
         Streaming generation that yields individual records as they are generated
         and a final dataframe once all records are ready.
@@ -109,8 +109,7 @@ class DataGenerator(BaseNode):
                 logger.debug("Tool call args: %s", chunk.args)
                 collected_rows.append(chunk.args)
                 # Yield each generated record immediately
-                yield "record", chunk.args
-                yield "index", index
+                yield {"record": chunk.args, "index": index, "dataframe": None}
                 index += 1
 
         # After streaming completes, yield the full dataframe once
@@ -121,7 +120,11 @@ class DataGenerator(BaseNode):
             ]
             for row in collected_rows
         ]
-        yield "dataframe", DataframeRef(columns=self.columns.columns, data=data)
+        yield {
+            "dataframe": DataframeRef(columns=self.columns.columns, data=data),
+            "index": None,
+            "record": None,
+        }
 
 
 class ListGenerator(BaseNode):
@@ -153,15 +156,14 @@ class ListGenerator(BaseNode):
         description="The maximum number of tokens to generate.",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "items": str,
-            "index": int,
-            "list": list[str],
-        }
+    class OutputType(TypedDict):
+        items: str
+        index: int
+        list: list[str]
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         system_message = Message(
             role="system",
             content="""You are an assistant that generates lists.

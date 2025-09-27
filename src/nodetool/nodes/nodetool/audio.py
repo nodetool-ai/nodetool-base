@@ -1,6 +1,7 @@
 import io
 import os
 import datetime
+from typing import AsyncGenerator, TypedDict
 from nodetool.config.environment import Environment
 from nodetool.io.uri_utils import create_file_uri
 from pydantic import Field
@@ -30,14 +31,13 @@ class LoadAudioAssets(BaseNode):
     def get_title(cls):
         return "Load Audio Assets"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "audio": AudioRef,
-            "name": str,
-        }
+    class OutputType(TypedDict):
+        audio: AudioRef
+        name: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
 
@@ -46,12 +46,14 @@ class LoadAudioAssets(BaseNode):
             parent_id=parent_id, content_type="audio"
         )
         for asset in list_assets:
-            yield "name", asset.name
-            yield "audio", AudioRef(
-                type="audio",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            yield {
+                "name": asset.name,
+                "audio": AudioRef(
+                    type="audio",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                ),
+            }
 
 
 class LoadAudioFile(BaseNode):

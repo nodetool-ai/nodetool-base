@@ -1,4 +1,5 @@
 import re
+from typing import AsyncGenerator, TypedDict
 from urllib.parse import urljoin
 from pydantic import Field
 from nodetool.metadata.types import (
@@ -67,15 +68,14 @@ class ExtractLinks(BaseNode):
         description="The base URL of the page, used to determine internal/external links.",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "href": str,
-            "text": str,
-            "type": str,
-        }
+    class OutputType(TypedDict):
+        href: str
+        text: str
+        type: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         soup = BeautifulSoup(self.html, "html.parser")
 
         for a in soup.find_all("a", href=True):
@@ -87,9 +87,7 @@ class ExtractLinks(BaseNode):
                 if href.startswith(self.base_url) or href.startswith("/")
                 else "external"
             )
-            yield "href", href
-            yield "text", text
-            yield "type", link_type
+            yield {"href": href, "text": text, "type": link_type}
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
         soup = BeautifulSoup(self.html, "html.parser")
@@ -133,13 +131,10 @@ class ExtractMetadata(BaseNode):
         description="The HTML content to extract metadata from.",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "title": str,
-            "description": str,
-            "keywords": str,
-        }
+    class OutputType(TypedDict):
+        title: str
+        description: str
+        keywords: str
 
     async def process(self, context: ProcessingContext):
         soup = BeautifulSoup(self.html, "html.parser")
@@ -179,13 +174,12 @@ class ExtractImages(BaseNode):
         description="The base URL of the page, used to resolve relative image URLs.",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "image": ImageRef,
-        }
+    class OutputType(TypedDict):
+        image: ImageRef
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         soup = BeautifulSoup(self.html, "html.parser")
 
         for img in soup.find_all("img"):
@@ -194,7 +188,7 @@ class ExtractImages(BaseNode):
             if src:
                 full_url = urljoin(self.base_url, str(src))
 
-            yield "image", ImageRef(uri=full_url)
+            yield {"image": ImageRef(uri=full_url)}
 
 
 class ExtractVideos(BaseNode):
@@ -217,13 +211,12 @@ class ExtractVideos(BaseNode):
         description="The base URL of the page, used to resolve relative video URLs.",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "video": VideoRef,
-        }
+    class OutputType(TypedDict):
+        video: VideoRef
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         soup = BeautifulSoup(self.html, "html.parser")
 
         for video in soup.find_all(["video", "iframe"]):
@@ -235,7 +228,7 @@ class ExtractVideos(BaseNode):
 
             if src:
                 full_url = urljoin(self.base_url, str(src))
-                yield "video", VideoRef(uri=full_url)
+                yield {"video": VideoRef(uri=full_url)}
 
     async def process(self, context: ProcessingContext) -> list[VideoRef]:
         soup = BeautifulSoup(self.html, "html.parser")
@@ -272,13 +265,12 @@ class ExtractAudio(BaseNode):
         description="The base URL of the page, used to resolve relative audio URLs.",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "audio": AudioRef,
-        }
+    class OutputType(TypedDict):
+        audio: AudioRef
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         soup = BeautifulSoup(self.html, "html.parser")
 
         for audio in soup.find_all(["audio", "source"]):
@@ -286,7 +278,7 @@ class ExtractAudio(BaseNode):
             src = audio.get("src")
             if src:
                 full_url = urljoin(self.base_url, str(src))
-                yield "audio", AudioRef(uri=full_url)
+                yield {"audio": AudioRef(uri=full_url)}
 
     async def process(self, context: ProcessingContext) -> list[AudioRef]:
         soup = BeautifulSoup(self.html, "html.parser")

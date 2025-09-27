@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, ClassVar
+from typing import Any, ClassVar, TypedDict
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode
@@ -46,9 +46,10 @@ class SimpleHttpServer(BaseNode):
     def is_streaming_output(cls) -> bool:
         return True
 
-    @classmethod
-    def return_type(cls) -> dict[str, Any]:
-        return {"endpoint": str, "stdout": str, "stderr": str}
+    class OutputType(TypedDict):
+        endpoint: str
+        stdout: str
+        stderr: str
 
     def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
         """Return an overall timeout for the server container.

@@ -46,7 +46,7 @@ dummy_text = TextRef(data=b"Hello, world!")
         ),
     ],
 )
-async def test_text_nodes(context: ProcessingContext, node, expected_type, mocker):
+async def test_text_nodes(context: ProcessingContext, node, expected_type):
     try:
         result = await node.process(context)
         assert isinstance(result, expected_type)

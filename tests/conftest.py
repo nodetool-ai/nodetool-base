@@ -1,6 +1,10 @@
 import sys
 from pathlib import Path
 
+from nodetool.config.logging_config import configure_logging
+
+configure_logging("DEBUG")
+
 # Ensure local src is on path so tests import local package
 SRC_PATH = Path(__file__).resolve().parents[1] / "src"
 if str(SRC_PATH) not in sys.path:

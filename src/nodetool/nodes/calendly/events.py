@@ -2,7 +2,7 @@ import asyncio
 from datetime import datetime
 import requests
 from pydantic import Field
-from typing import Literal
+from typing import Literal, TypedDict
 
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -89,15 +89,12 @@ class ScheduledEventFields(BaseNode):
         default=CalendlyEvent(), description="The Calendly event to extract"
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "uri": str,
-            "name": str,
-            "start_time": Datetime,
-            "end_time": Datetime,
-            "location": str,
-        }
+    class OutputType(TypedDict):
+        uri: str
+        name: str
+        start_time: Datetime
+        end_time: Datetime
+        location: str
 
     async def process(self, context: ProcessingContext):
         return {

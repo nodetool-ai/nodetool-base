@@ -1,5 +1,5 @@
 import ast
-from typing import Any, ClassVar
+from typing import Any, ClassVar, TypedDict
 from enum import Enum
 from nodetool.config.environment import Environment
 from nodetool.config.logging_config import get_logger
@@ -75,9 +75,13 @@ class ExecutePython(BaseNode):
     def is_streaming_input(cls):
         return True
 
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
     @classmethod
     def return_type(cls):
-        return {"stdout": str, "stderr": str}
+        return cls.OutputType
 
     @classmethod
     def is_streaming_output(cls):
@@ -196,9 +200,13 @@ class ExecuteJavaScript(BaseNode):
     def is_streaming_input(cls):
         return True
 
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
     @classmethod
     def return_type(cls):
-        return {"stdout": str, "stderr": str}
+        return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.code.strip():
@@ -320,9 +328,13 @@ class ExecuteBash(BaseNode):
     def is_streaming_output(cls):
         return True
 
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
     @classmethod
     def return_type(cls):
-        return {"stdout": str, "stderr": str}
+        return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.code.strip():
@@ -441,9 +453,13 @@ class ExecuteRuby(BaseNode):
     def is_streaming_output(cls):
         return True
 
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
     @classmethod
     def return_type(cls):
-        return {"stdout": str, "stderr": str}
+        return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.code.strip():
@@ -565,9 +581,13 @@ class ExecuteLua(BaseNode):
     def is_streaming_output(cls):
         return True
 
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
     @classmethod
     def return_type(cls):
-        return {"stdout": str, "stderr": str}
+        return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.code.strip():
@@ -690,9 +710,13 @@ class ExecuteCommand(BaseNode):
     def is_streaming_output(cls):
         return True
 
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
     @classmethod
     def return_type(cls):
-        return {"stdout": str, "stderr": str}
+        return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         if not self.command.strip():

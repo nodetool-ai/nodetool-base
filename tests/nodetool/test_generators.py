@@ -7,8 +7,6 @@ from nodetool.metadata.types import (
     ColumnDef,
     DataframeRef,
     LanguageModel,
-    Message,
-    MessageTextContent,
     Provider,
     RecordType,
     ToolCall,
@@ -40,14 +38,6 @@ async def test_data_generator_process(context: ProcessingContext):
         columns=columns,
         max_tokens=256,
     )
-
-    sample = {
-        "data": [
-            {"name": "Alice", "age": 30},
-            {"name": "Bob", "age": 25},
-        ]
-    }
-
     # Create tool calls for each data row
     from nodetool.metadata.types import ToolCall
     from nodetool.chat.providers import FakeProvider
@@ -61,16 +51,18 @@ async def test_data_generator_process(context: ProcessingContext):
 
     fake_provider = DataGeneratorFakeProvider()
 
-    with patch("nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider):
+    with patch(
+        "nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider
+    ):
         # Act - Use gen_process to collect all outputs
         result_dataframe = None
         records = []
 
-        async for output_type, output_value in node.gen_process(context):
-            if output_type == "record":
-                records.append(output_value)
-            elif output_type == "dataframe":
-                result_dataframe = output_value
+        async for output in node.gen_process(context):
+            if output["record"] is not None:
+                records.append(output["record"])
+            if output["dataframe"] is not None:
+                result_dataframe = output["dataframe"]
 
         # Assert
         assert result_dataframe is not None
@@ -108,16 +100,17 @@ async def test_data_generator_gen_process_streaming(context: ProcessingContext):
     # Create a FakeProvider that yields tool calls
     fake_provider = create_tool_calling_fake_provider(tool_calls)
 
-    with patch("nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider):
+    with patch(
+        "nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider
+    ):
         # Act: collect stream
         streamed_records = []
         final_df: DataframeRef | None = None
-        async for output_name, value in node.gen_process(context):
-            if output_name == "record":
-                streamed_records.append(value)
-            elif output_name == "dataframe":
-                assert isinstance(value, DataframeRef)
-                final_df = value
+        async for output in node.gen_process(context):
+            if output["record"] is not None:
+                streamed_records.append(output["record"])
+            if output["dataframe"] is not None:
+                final_df = output["dataframe"]
 
         # Assert per-record
         assert streamed_records == [
@@ -148,25 +141,24 @@ async def test_list_generator_gen_process_streaming(context: ProcessingContext):
 """.strip()
 
     # Create a FakeProvider that streams the text as chunks
-    fake_provider = FakeProvider(
-        text_response=text,
-        should_stream=True,
-        chunk_size=10
-    )
+    fake_provider = FakeProvider(text_response=text, should_stream=True, chunk_size=10)
 
-    with patch("nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider):
+    with patch(
+        "nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider
+    ):
         # Act
         items: list[str] = []
         indices: list[int] = []
         final_list: list[str] | None = None
-        async for output_name, value in node.gen_process(context):
-            if output_name == "items":
+        async for output in node.gen_process(context):
+            key, value = output
+            if key == "items":
                 assert isinstance(value, str)
                 items.append(value)
-            elif output_name == "index":
+            elif key == "index":
                 assert isinstance(value, int)
                 indices.append(value)
-            elif output_name == "list":
+            elif key == "list":
                 assert isinstance(value, list)
                 final_list = value
 

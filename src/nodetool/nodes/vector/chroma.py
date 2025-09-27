@@ -4,7 +4,7 @@ Chroma nodes for Nodetool.
 
 import asyncio
 from enum import Enum
-from typing import Any, Dict
+from typing import Any, Dict, TypedDict
 
 import numpy as np
 from pydantic import Field
@@ -246,22 +246,23 @@ class IndexTextChunk(ChromaNode):
     collection: Collection = Field(
         default=Collection(), description="The collection to index"
     )
-    text_chunk: TextChunk = Field(
-        default=TextChunk(), description="Text chunk to index"
+    document_id: str = Field(
+        default="", description="The document ID to associate with the text chunk"
     )
+    text: str = Field(default="", description="The text to index")
     metadata: dict = Field(
         default={},
         description="The metadata to associate with the text chunk",
     )
 
     async def process(self, context: ProcessingContext):
-        if not self.text_chunk.source_id.strip():
-            raise ValueError("The source ID cannot be empty")
+        if not self.document_id.strip():
+            raise ValueError("The document ID cannot be empty")
 
         collection = await get_async_collection(self.collection.name)
         await collection.add(
-            ids=[self.text_chunk.get_document_id()],
-            documents=[self.text_chunk.text],
+            ids=[self.document_id],
+            documents=[self.text],
             metadatas=[self.metadata or {}],
         )
 
@@ -400,16 +401,13 @@ class QueryImage(ChromaNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to query")
     n_results: int = Field(default=1, description="The number of results to return")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "ids": list[str],
-            "documents": list[str],
-            "metadatas": list[dict],
-            "distances": list[float],
-        }
+    class OutputType(TypedDict):
+        ids: list[str]
+        documents: list[str]
+        metadatas: list[dict]
+        distances: list[float]
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.image.asset_id and not self.image.uri:
             raise ValueError("Image is not connected")
 
@@ -459,16 +457,13 @@ class QueryText(ChromaNode):
     text: str = Field(default="", description="The text to query")
     n_results: int = Field(default=1, description="The number of results to return")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "ids": list[str],
-            "documents": list[str],
-            "metadatas": list[dict],
-            "distances": list[float],
-        }
+    class OutputType(TypedDict):
+        ids: list[str]
+        documents: list[str]
+        metadatas: list[dict]
+        distances: list[float]
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         collection = await get_async_collection(self.collection.name)
         result = await collection.query(
             query_texts=[self.text], n_results=self.n_results
@@ -518,9 +513,8 @@ class RemoveOverlap(ChromaNode):
         description="Minimum number of words that must overlap to be considered",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {"documents": list[str]}
+    class OutputType(TypedDict):
+        documents: list[str]
 
     def _split_into_words(self, text: str) -> list[str]:
         """Split text into words, preserving spacing."""
@@ -539,7 +533,7 @@ class RemoveOverlap(ChromaNode):
                 return overlap_size
         return 0
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.documents:
             return {"documents": []}
 
@@ -582,15 +576,12 @@ class HybridSearch(ChromaNode):
         default=3, description="Minimum length for keyword tokens"
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "ids": list[str],
-            "documents": list[str],
-            "metadatas": list[dict],
-            "distances": list[float],
-            "scores": list[float],
-        }
+    class OutputType(TypedDict):
+        ids: list[str]
+        documents: list[str]
+        metadatas: list[dict]
+        distances: list[float]
+        scores: list[float]
 
     def _normalize_scores(self, scores: list[float]) -> list[float]:
         """Normalize scores to range [0, 1]"""
@@ -686,7 +677,7 @@ class HybridSearch(ChromaNode):
             return {"$or": [{"$contains": token} for token in query_tokens]}
         return {"$contains": query_tokens[0]}
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.text.strip():
             raise ValueError("Search text cannot be empty")
 

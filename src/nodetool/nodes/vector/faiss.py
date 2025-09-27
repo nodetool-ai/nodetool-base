@@ -5,7 +5,7 @@ FAISS nodes for Nodetool.
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any
+from typing import Any, TypedDict
 
 import numpy as np
 from pydantic import Field
@@ -17,13 +17,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-try:
-    import faiss  # type: ignore
-
-    FAISS_AVAILABLE = True
-except Exception:  # pragma: no cover - optional dependency
-    faiss = None  # type: ignore
-    FAISS_AVAILABLE = False
+import faiss  # type: ignore
 
 
 class FaissNode(BaseNode):
@@ -39,12 +33,6 @@ class FaissNode(BaseNode):
     @classmethod
     def is_visible(cls):
         return cls is not FaissNode
-
-    def _require_faiss(self) -> None:
-        if not FAISS_AVAILABLE:  # pragma: no cover - environment guard
-            raise RuntimeError(
-                "faiss is not installed. Install 'faiss-cpu' to use FAISS nodes."
-            )
 
 
 def _ensure_2d_float32(array: np.ndarray) -> np.ndarray:
@@ -72,7 +60,6 @@ class CreateIndexFlatL2(FaissNode):
     dim: int = Field(default=768, ge=1, description="Embedding dimensionality")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
-        self._require_faiss()
         idx = faiss.IndexFlatL2(self.dim)
         return FaissIndex(index=idx)
 
@@ -86,7 +73,6 @@ class CreateIndexFlatIP(FaissNode):
     dim: int = Field(default=768, ge=1, description="Embedding dimensionality")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
-        self._require_faiss()
         idx = faiss.IndexFlatIP(self.dim)
         return FaissIndex(index=idx)
 
@@ -102,7 +88,6 @@ class CreateIndexIVFFlat(FaissNode):
     metric: Metric = Field(default=Metric.L2, description="Distance metric")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
-        self._require_faiss()
         if self.metric == Metric.L2:
             quantizer = faiss.IndexFlatL2(self.dim)
             metric_const = faiss.METRIC_L2
@@ -124,7 +109,6 @@ class TrainIndex(FaissNode):
     vectors: NPArray = Field(default=NPArray(), description="Training vectors (n, d)")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
-        self._require_faiss()
         if self.index.index is None:
             raise ValueError("FAISS index is not set")
         if self.vectors.is_empty():
@@ -152,7 +136,6 @@ class AddVectors(FaissNode):
     vectors: NPArray = Field(default=NPArray(), description="Vectors to add (n, d)")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
-        self._require_faiss()
         if self.index.index is None:
             raise ValueError("FAISS index is not set")
         if self.vectors.is_empty():
@@ -183,7 +166,6 @@ class AddWithIds(FaissNode):
     ids: NPArray = Field(default=NPArray(), description="1-D int64 IDs (n,)")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
-        self._require_faiss()
         if self.index.index is None:
             raise ValueError("FAISS index is not set")
         if self.vectors.is_empty():
@@ -214,7 +196,7 @@ class AddWithIds(FaissNode):
             self.index.index = idmap
             idx = idmap
 
-        idx.add_with_ids(x, labels)
+        idx.add_with_ids(x, labels)  # type: ignore
         return self.index
 
 
@@ -231,12 +213,11 @@ class Search(FaissNode):
     k: int = Field(default=5, ge=1, description="Number of nearest neighbors")
     nprobe: int | None = Field(default=None, description="nprobe for IVF indices")
 
-    @classmethod
-    def return_type(cls):
-        return {"distances": NPArray, "indices": NPArray}
+    class OutputType(TypedDict):
+        distances: NPArray
+        indices: NPArray
 
-    async def process(self, context: ProcessingContext):
-        self._require_faiss()
+    async def process(self, context: ProcessingContext) -> OutputType:
         if self.index.index is None:
             raise ValueError("FAISS index is not set")
         if self.query.is_empty():

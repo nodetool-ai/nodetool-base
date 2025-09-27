@@ -1,6 +1,6 @@
 from datetime import datetime
 from io import StringIO
-from typing import ClassVar
+from typing import AsyncGenerator, ClassVar, TypedDict
 import json
 import os
 import pandas as pd
@@ -443,18 +443,16 @@ class RowIterator(BaseNode):
     def get_title(cls):
         return "Row Iterator"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "dict": dict,
-            "index": int,
-        }
+    class OutputType(TypedDict):
+        dict: dict
+        index: Any
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         df = await context.dataframe_to_pandas(self.dataframe)
         for index, row in df.iterrows():
-            yield "dict", row.to_dict()
-            yield "index", index
+            yield {"dict": row.to_dict(), "index": index}
 
 
 class FindRow(BaseNode):
@@ -571,14 +569,13 @@ class LoadCSVAssets(BaseNode):
     def get_title(cls):
         return "Load CSV Assets"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "dataframe": DataframeRef,
-            "name": str,
-        }
+    class OutputType(TypedDict):
+        dataframe: DataframeRef
+        name: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
 
@@ -590,8 +587,10 @@ class LoadCSVAssets(BaseNode):
         for asset in list_assets:
             bytes_io = await context.download_asset(asset.id)
             df = pd.read_csv(bytes_io)
-            yield "name", asset.name
-            yield "dataframe", await context.dataframe_from_pandas(df)
+            yield {
+                "name": asset.name,
+                "dataframe": await context.dataframe_from_pandas(df),
+            }
 
 
 class Aggregate(BaseNode):

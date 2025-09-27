@@ -6,6 +6,7 @@ code node can be streamed as input to another code node.
 """
 
 import asyncio
+from nodetool.workflows.run_workflow import WorkflowRunner
 import pytest
 from unittest.mock import AsyncMock, Mock, patch
 
@@ -78,8 +79,9 @@ class TestCodeNodeStreaming:
         ):
             # Execute and collect results via run API
             inputs = NodeInputs(inbox)
+            runner = WorkflowRunner(job_id="test")
             outputs = NodeOutputs(
-                runner=None, node=python_node, context=context, capture_only=True
+                runner=runner, node=python_node, context=context, capture_only=True
             )
             await python_node.run(context, inputs, outputs)
 
@@ -122,8 +124,9 @@ class TestCodeNodeStreaming:
         ):
             # Execute and collect results via run API
             inputs = NodeInputs(inbox)
+            runner = WorkflowRunner(job_id="test")
             outputs = NodeOutputs(
-                runner=None, node=bash_node, context=context, capture_only=True
+                runner=runner, node=bash_node, context=context, capture_only=True
             )
             await bash_node.run(context, inputs, outputs)
 
@@ -149,8 +152,9 @@ class TestCodeNodeStreaming:
             new=mock_stream,
         ):
             inputs = NodeInputs(NodeInbox())
+            runner = WorkflowRunner(job_id="test")
             outputs = NodeOutputs(
-                runner=None, node=python_node, context=context, capture_only=True
+                runner=runner, node=python_node, context=context, capture_only=True
             )
             await python_node.run(context, inputs, outputs)
 
@@ -173,6 +177,7 @@ class TestCodeNodeStreaming:
 
         # Mark sources done
         inbox.mark_source_done("stdin")
+        runner = WorkflowRunner(job_id="test")
 
         # Mock the runner to capture stdin_stream
         captured_stdin_data = []
@@ -192,7 +197,7 @@ class TestCodeNodeStreaming:
         ):
             inputs = NodeInputs(inbox)
             outputs = NodeOutputs(
-                runner=None, node=python_node, context=context, capture_only=True
+                runner=runner, node=python_node, context=context, capture_only=True
             )
             await python_node.run(context, inputs, outputs)
 

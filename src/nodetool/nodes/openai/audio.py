@@ -2,7 +2,7 @@ import base64
 from enum import Enum
 from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 from io import BytesIO
 from pydub import AudioSegment
 from nodetool.metadata.types import AudioChunk, AudioRef, Provider
@@ -220,15 +220,12 @@ class Transcribe(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "text": str,
-            "words": list[AudioChunk],
-            "segments": list[AudioChunk],
-        }
+    class OutputType(TypedDict):
+        text: str
+        words: list[AudioChunk]
+        segments: list[AudioChunk]
 
-    async def process(self, context: ProcessingContext) -> dict:
+    async def process(self, context: ProcessingContext) -> OutputType:
         audio_bytes = await context.audio_to_base64(self.audio)
 
         params = {

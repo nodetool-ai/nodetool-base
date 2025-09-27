@@ -16,27 +16,30 @@ async def test_load_json_assets_yields_pairs():
     folder = FolderRef(asset_id="parent-1")
 
     # Mock assets returned by list_assets
-    assets = [SimpleNamespace(id="a1", name="one.json"), SimpleNamespace(id="a2", name="two.json")]
+    assets = [
+        SimpleNamespace(id="a1", name="one.json"),
+        SimpleNamespace(id="a2", name="two.json"),
+    ]
     ctx.list_assets = AsyncMock(return_value=(assets, None))
 
     # Mock download_asset to return file-like objects
     downloads = {
-        "a1": io.StringIO("{\"x\": 1}"),
-        "a2": io.StringIO("{\"y\": 2}"),
+        "a1": io.StringIO('{"x": 1}'),
+        "a2": io.StringIO('{"y": 2}'),
     }
+
     async def download(asset_id):
         return downloads[asset_id]
+
     ctx.download_asset = AsyncMock(side_effect=download)
 
     node = LoadJSONAssets(folder=folder)
 
-    seen = {"names": [], "jsons": []}
-    async for k, v in node.gen_process(ctx):
-        if k == "name":
-            seen["names"].append(v)
-        elif k == "json":
-            seen["jsons"].append(v)
+    seen = []
+    async for item in node.gen_process(ctx):
+        seen.append(item)
 
-    assert seen["names"] == ["one.json", "two.json"]
-    assert seen["jsons"] == [{"x": 1}, {"y": 2}]
-
+    assert seen == [
+        {"name": "one.json", "json": {"x": 1}},
+        {"name": "two.json", "json": {"y": 2}},
+    ]

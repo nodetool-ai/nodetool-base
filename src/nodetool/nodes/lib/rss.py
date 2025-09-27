@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import ClassVar
+from typing import AsyncGenerator, ClassVar, TypedDict
 import feedparser
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
@@ -26,17 +26,16 @@ class FetchRSSFeed(BaseNode):
     def get_title(cls):
         return "Fetch RSS Feed"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "title": str,
-            "link": str,
-            "published": Datetime,
-            "summary": str,
-            "author": str,
-        }
+    class OutputType(TypedDict):
+        title: str
+        link: str
+        published: Datetime
+        summary: str
+        author: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         feed = feedparser.parse(self.url)
 
         data = []
@@ -46,11 +45,13 @@ class FetchRSSFeed(BaseNode):
             if entry.get("published_parsed"):
                 published = datetime(*entry.published_parsed[:6])  # type: ignore
 
-            yield "title", entry.get("title", "")
-            yield "link", entry.get("link", "")
-            yield "published", Datetime.from_datetime(published)
-            yield "summary", entry.get("summary", "")
-            yield "author", entry.get("author", "")
+            yield {
+                "title": str(entry.get("title", "")),
+                "link": str(entry.get("link", "")),
+                "published": Datetime.from_datetime(published),
+                "summary": str(entry.get("summary", "")),
+                "author": str(entry.get("author", "")),
+            }
 
 
 class ExtractFeedMetadata(BaseNode):

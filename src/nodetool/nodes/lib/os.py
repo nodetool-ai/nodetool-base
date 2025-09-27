@@ -5,6 +5,7 @@ import glob
 import tarfile
 from datetime import datetime
 from pathlib import Path
+from typing import AsyncGenerator, TypedDict
 import pandas as pd
 from pydantic import Field
 from nodetool.config.environment import Environment
@@ -157,11 +158,12 @@ class ListFiles(BaseNode):
         default=False, description="Search subdirectories"
     )
 
-    @classmethod
-    def return_type(cls):
-        return {"file": FilePath}
+    class OutputType(TypedDict):
+        file: FilePath
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder.path:
@@ -176,7 +178,7 @@ class ListFiles(BaseNode):
             paths = glob.glob(pattern)
 
         for p in paths:
-            yield "file", FilePath(path=p)
+            yield {"file": FilePath(path=p)}
 
 
 class CopyFile(BaseNode):

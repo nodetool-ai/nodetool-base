@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Dict, Any, TypedDict
 from nodetool.metadata.types import Source
 from pydantic import Field
 from typing import ClassVar
@@ -56,14 +56,11 @@ class GroundedSearch(BaseNode):
         description="The Gemini model to use for search",
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "results": list[str],
-            "sources": list[Source],
-        }
+    class OutputType(TypedDict):
+        results: list[str]
+        sources: list[Source]
 
-    async def process(self, context: ProcessingContext) -> Dict[str, Any]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         """
         Execute a web search using Gemini API with grounding.
 

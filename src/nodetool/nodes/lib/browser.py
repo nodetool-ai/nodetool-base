@@ -2,7 +2,7 @@ import asyncio
 import os
 import re
 from enum import Enum
-from typing import Any, Dict, Optional, ClassVar
+from typing import Any, Dict, Optional, ClassVar, TypedDict
 import hashlib
 
 import aiohttp
@@ -217,13 +217,10 @@ class Browser(BaseNode):
         default=20000, description="Timeout in milliseconds for page navigation"
     )
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "success": bool,
-            "content": str,
-            "metadata": Dict[str, Any],
-        }
+    class OutputType(TypedDict):
+        success: bool
+        content: str
+        metadata: Dict[str, Any]
 
     def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
         """Return a conservative overall timeout for the browser task.
@@ -241,7 +238,7 @@ class Browser(BaseNode):
 
     _runner: StreamRunnerBase | None = None
 
-    async def process(self, context: ProcessingContext) -> Dict[str, Any]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.url:
             raise ValueError("URL is required")
 
@@ -853,16 +850,13 @@ class BrowserUseNode(BaseNode):
     def category(cls):
         return "Browser"  # Categorize the node
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "success": bool,
-            "task": str,
-            "result": Any,  # Result can be varied
-            "error": Optional[str],  # Include optional error field
-        }
+    class OutputType(TypedDict):
+        success: bool
+        task: str
+        result: Any  # Result can be varied
+        error: Optional[str]  # Include optional error field
 
-    async def process(self, context: ProcessingContext) -> Dict[str, Any]:
+    async def process(self, context: ProcessingContext) -> OutputType:
         """
         Execute a browser agent task.
         """

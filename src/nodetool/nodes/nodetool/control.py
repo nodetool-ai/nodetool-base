@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, AsyncGenerator, Type, TypedDict
 from collections import deque
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
@@ -28,11 +28,11 @@ class If(BaseNode):
         # Treat inbound values/conditions as streams when present
         return True
 
-    @classmethod
-    def return_type(cls):
-        return {"if_true": Any, "if_false": Any}
+    class OutputType(TypedDict):
+        if_true: Any
+        if_false: Any
 
-    async def gen_process(self, context: Any) -> Any:
+    async def gen_process(self, context: Any) -> AsyncGenerator[OutputType, None]:
         # Stream-aware implementation: route each incoming value according to the
         # latest condition (static property or streamed condition updates). If no
         # inbound streams arrive, fall back to a single emission using configured properties.
@@ -63,16 +63,16 @@ class If(BaseNode):
                 )
                 emitted_any = True
                 if cond:
-                    yield "if_true", value
+                    yield {"if_true": value, "if_false": None}
                 else:
-                    yield "if_false", value
+                    yield {"if_true": None, "if_false": value}
 
         # Fallback for the case with no inbound streams: emit once using configured properties
         if not emitted_any:
             if current_condition:
-                yield "if_true", self.value
+                yield {"if_true": self.value, "if_false": None}
             else:
-                yield "if_false", self.value
+                yield {"if_true": None, "if_false": self.value}
 
 
 class ForEach(BaseNode):
@@ -93,14 +93,13 @@ class ForEach(BaseNode):
     def get_title(cls) -> str:
         return "For Each"
 
-    @classmethod
-    def return_type(cls):
-        return {"output": Any, "index": int}
+    class OutputType(TypedDict):
+        output: Any
+        index: int
 
-    async def run(self, context: Any, inputs: NodeInputs, outputs: NodeOutputs):
+    async def gen_process(self, context: Any) -> AsyncGenerator[OutputType, None]:
         for index, item in enumerate(self.input_list):
-            await outputs.emit("output", item)
-            await outputs.emit("index", index)
+            yield {"output": item, "index": index}
 
 
 class Collect(BaseNode):
@@ -120,11 +119,10 @@ class Collect(BaseNode):
     def get_title(cls) -> str:
         return "Collect"
 
-    @classmethod
-    def return_type(cls):
-        return {"output": list[Any]}
+    class OutputType(TypedDict):
+        output: list[Any]
 
-    async def run(self, context: Any, inputs: NodeInputs, outputs: NodeOutputs):
+    async def run(self, context: Any, inputs: NodeInputs, outputs: NodeOutputs) -> None:
         collected_items = []
         async for input_item in inputs.stream("input_item"):
             collected_items.append(input_item)
@@ -156,9 +154,17 @@ class Reroute(BaseNode):
         return "Reroute"
 
     @classmethod
-    def return_type(cls):
-        return {"output": Any}
+    def is_streaming_input(cls) -> bool:
+        return True
 
-    async def process(self, context: Any) -> Any:
-        # Return a mapping from output slot name to value as expected by the runner
-        return {"output": self.input_value}
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def return_type(cls) -> Type:
+        return Any  # type: ignore
+
+    async def run(self, context: Any, inputs: NodeInputs, outputs: NodeOutputs):
+        async for input_item in inputs.stream("input_value"):
+            await outputs.emit("output", input_item)

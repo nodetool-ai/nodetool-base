@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, AsyncGenerator, TypedDict
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import FolderRef, FilePath, FolderPath
 from nodetool.workflows.processing_context import ProcessingContext
@@ -71,14 +71,13 @@ class LoadImageFolder(BaseNode):
     def get_title(cls):
         return "Load Image Folder"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "image": ImageRef,
-            "path": str,
-        }
+    class OutputType(TypedDict):
+        image: ImageRef
+        path: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder.path:
@@ -111,8 +110,7 @@ class LoadImageFolder(BaseNode):
 
             image = await context.image_from_bytes(image_data)
             image.uri = create_file_uri(path)
-            yield "path", path
-            yield "image", image
+            yield {"path": path, "image": image}
 
 
 class SaveImageFile(BaseNode):
@@ -191,14 +189,13 @@ class LoadImageAssets(BaseNode):
     def get_title(cls):
         return "Load Image Assets"
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "image": ImageRef,
-            "name": str,
-        }
+    class OutputType(TypedDict):
+        image: ImageRef
+        name: str
 
-    async def gen_process(self, context: ProcessingContext):
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         if self.folder.is_empty():
             raise ValueError("Please select an asset folder.")
 
@@ -208,12 +205,14 @@ class LoadImageAssets(BaseNode):
         )
 
         for asset in list_assets:
-            yield "name", asset.name
-            yield "image", ImageRef(
-                type="image",
-                uri=await context.get_asset_url(asset.id),
-                asset_id=asset.id,
-            )
+            yield {
+                "name": asset.name,
+                "image": ImageRef(
+                    type="image",
+                    uri=await context.get_asset_url(asset.id),
+                    asset_id=asset.id,
+                ),
+            }
 
 
 class SaveImage(BaseNode):
@@ -281,17 +280,14 @@ class GetMetadata(BaseNode):
 
     image: ImageRef = Field(default=ImageRef(), description="The input image.")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "format": str,
-            "mode": str,
-            "width": int,
-            "height": int,
-            "channels": int,
-        }
+    class OutputType(TypedDict):
+        format: str
+        mode: str
+        width: int
+        height: int
+        channels: int
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if self.image.is_empty():
             raise ValueError("The input image is not connected.")
 

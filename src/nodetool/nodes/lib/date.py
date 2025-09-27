@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta, date
 from enum import Enum
 from pydantic import Field
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import Datetime, Date
@@ -141,17 +141,14 @@ class DateDifference(BaseNode):
     start_date: Datetime = Field(default=Datetime(), description="Start datetime")
     end_date: Datetime = Field(default=Datetime(), description="End datetime")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "total_seconds": int,
-            "days": int,
-            "hours": int,
-            "minutes": int,
-            "seconds": int,
-        }
+    class OutputType(TypedDict):
+        total_seconds: int
+        days: int
+        hours: int
+        minutes: int
+        seconds: int
 
-    async def process(self, context: ProcessingContext) -> dict:
+    async def process(self, context: ProcessingContext) -> OutputType:
         diff = self.end_date.to_datetime() - self.start_date.to_datetime()
         return {
             "total_seconds": int(diff.total_seconds()),
@@ -295,15 +292,12 @@ class GetQuarter(BaseNode):
 
     input_datetime: Datetime = Field(default=Datetime(), description="Input datetime")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "quarter": int,
-            "quarter_start": Datetime,
-            "quarter_end": Datetime,
-        }
+    class OutputType(TypedDict):
+        quarter: int
+        quarter_start: Datetime
+        quarter_end: Datetime
 
-    async def process(self, context: ProcessingContext) -> dict:
+    async def process(self, context: ProcessingContext) -> OutputType:
         quarter = (self.input_datetime.month - 1) // 3 + 1
         quarter_start = datetime(self.input_datetime.year, 3 * quarter - 2, 1)
 
@@ -319,7 +313,7 @@ class GetQuarter(BaseNode):
 
         return {
             "quarter": quarter,
-            "quarter_start": quarter_start,
+            "quarter_start": Datetime.from_datetime(quarter_start),
             "quarter_end": quarter_end,
         }
 

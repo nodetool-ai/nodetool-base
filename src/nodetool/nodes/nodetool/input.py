@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, TypedDict
 import inspect
 from pydantic import Field
 from nodetool.metadata.types import (
@@ -187,19 +187,16 @@ class ChatInput(InputNode):
 
     value: list[Message] = Field([], description="The chat message to use as input.")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "history": list[Message],
-            "text": str,
-            "image": ImageRef,
-            "audio": AudioRef,
-            "video": VideoRef,
-            "document": DocumentRef,
-            "tools": list[ToolName],
-        }
+    class OutputType(TypedDict):
+        history: list[Message]
+        text: str
+        image: ImageRef | None
+        audio: AudioRef | None
+        video: VideoRef | None
+        document: DocumentRef | None
+        tools: list[ToolName]
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if not self.value:
             raise ValueError("Chat input is empty, use the workflow chat bottom right")
 
@@ -346,13 +343,6 @@ class AudioInput(InputNode):
 
     value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "audio": AudioRef,
-            "chunk": Chunk,
-        }
-
     async def process(self, context: ProcessingContext) -> AudioRef:
         if self.value.is_empty():
             raise ValueError("Audio input is empty, please upload an audio file")
@@ -376,11 +366,12 @@ class RealtimeAudioInput(InputNode):
     def is_streaming_output(cls) -> bool:
         return True
 
+    class OutputType(TypedDict):
+        chunk: Chunk
+
     @classmethod
     def return_type(cls):
-        return {
-            "chunk": Chunk,
-        }
+        return cls.OutputType
 
 
 class AssetFolderInput(InputNode):
@@ -431,14 +422,11 @@ class DocumentFileInput(InputNode):
 
     value: FilePath = Field(FilePath(), description="The path to the document file.")
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "document": DocumentRef,
-            "path": FilePath,
-        }
+    class OutputType(TypedDict):
+        document: DocumentRef
+        path: FilePath
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> OutputType:
         if Environment.is_production():
             raise ValueError("Document file input is not available in production")
         if self.value.path == "":
