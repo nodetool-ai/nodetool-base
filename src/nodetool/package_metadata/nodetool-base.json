@@ -6699,7 +6699,7 @@
           },
           "default": "",
           "title": "Folder",
-          "description": "Name of the output folder."
+          "description": "Path to the output folder."
         },
         {
           "name": "name",
@@ -11175,6 +11175,15 @@
           ],
           "title": "Extensions",
           "description": "Image file extensions to include"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Pattern",
+          "description": "Pattern to match image files"
         }
       ],
       "outputs": [
@@ -11194,7 +11203,8 @@
       "basic_fields": [
         "folder",
         "include_subdirectories",
-        "extensions"
+        "extensions",
+        "pattern"
       ]
     },
     {

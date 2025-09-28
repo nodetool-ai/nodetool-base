@@ -168,6 +168,9 @@ class LoadImageFolder(GraphNode):
         default=[".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff"],
         description="Image file extensions to include",
     )
+    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Pattern to match image files"
+    )
 
     @classmethod
     def get_node_type(cls):

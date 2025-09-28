@@ -593,7 +593,7 @@ class SaveTextFile(GraphNode):
 
     text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
     folder: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Name of the output folder."
+        default="", description="Path to the output folder."
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="%Y-%m-%d-%H-%M-%S.txt",

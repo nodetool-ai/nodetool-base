@@ -168,7 +168,7 @@ class ColorInput(GraphNode):
 
 class DocumentFileInput(GraphNode):
     """
-    Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.  This node is a utility for loading a document directly from the local filesystem for use in workflows. It outputs both the 'DocumentRef' for the loaded document and the original 'FilePath'.  Note: This input type is generally not available in production environments due to filesystem access restrictions.
+    Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
     input, parameter, document, file, path, local_file, load
 
     Use cases:
@@ -181,9 +181,8 @@ class DocumentFileInput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="The path to the document file.",
+    value: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The path to the document file."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -224,7 +223,7 @@ class DocumentInput(GraphNode):
 
 class FilePathInput(GraphNode):
     """
-    Accepts a local filesystem path (to a file or directory) as input for workflows.  This input provides a 'FilePath' object. Its usage is typically restricted to non-production environments due to security considerations around direct filesystem access.
+    Accepts a local filesystem path (to a file or directory) as input for workflows.
     input, parameter, path, filepath, directory, local_file, filesystem
 
     Use cases:
@@ -237,9 +236,8 @@ class FilePathInput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="The path to use as input.",
+    value: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The path to use as input."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -289,9 +287,8 @@ class FolderPathInput(GraphNode):
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="The folder path to use as input.",
+    value: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The folder path to use as input."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."

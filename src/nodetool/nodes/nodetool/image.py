@@ -1,3 +1,4 @@
+import fnmatch
 from typing import Any, AsyncGenerator, TypedDict
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import FolderRef
@@ -62,6 +63,7 @@ class LoadImageFolder(BaseNode):
         default=[".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff"],
         description="Image file extensions to include",
     )
+    pattern: str = Field(default="", description="Pattern to match image files")
 
     @classmethod
     def get_title(cls):
@@ -99,6 +101,9 @@ class LoadImageFolder(BaseNode):
                 continue
             _, ext = os.path.splitext(path)
             if ext.lower() not in allowed_exts:
+                continue
+
+            if self.pattern and not fnmatch.fnmatch(path, self.pattern):
                 continue
 
             with open(path, "rb") as f:
