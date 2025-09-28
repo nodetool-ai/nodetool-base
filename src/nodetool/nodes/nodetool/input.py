@@ -121,27 +121,21 @@ class StringListInput(InputNode):
         return self.value
 
 
-class FilePathInput(InputNode):
-    """
-    Accepts a file path as a parameter for workflows.
-    input, parameter, file, path, filepath, local_file, filesystem
-    """
-
-    value: FilePath = Field(FilePath(), description="The file path to use as input.")
-
-    async def process(self, context: ProcessingContext) -> str:
-        return self.value.path
-
-
 class FolderPathInput(InputNode):
     """
     Accepts a folder path as a parameter for workflows.
     input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
-    value: FilePath = Field(FilePath(), description="The folder path to use as input.")
+    value: FolderPath = Field(
+        FolderPath(), description="The folder path to use as input."
+    )
 
     async def process(self, context: ProcessingContext) -> str:
+        if self.value.path == "":
+            raise ValueError("Folder path input is empty, please provide a folder path")
+        if Environment.is_production():
+            raise ValueError("Folder path input is not available in production")
         return self.value.path
 
 
@@ -386,7 +380,7 @@ class AssetFolderInput(InputNode):
         return self.value
 
 
-class PathInput(InputNode):
+class FilePathInput(InputNode):
     """
     Accepts a local filesystem path (to a file or directory) as input for workflows.  This input provides a 'FilePath' object. Its usage is typically restricted to non-production environments due to security considerations around direct filesystem access.
     input, parameter, path, filepath, directory, local_file, filesystem
@@ -400,12 +394,12 @@ class PathInput(InputNode):
 
     value: FilePath = Field(FilePath(), description="The path to use as input.")
 
-    async def process(self, context: ProcessingContext) -> FilePath:
+    async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("Path input is not available in production")
         if self.value.path == "":
             raise ValueError("Path input is empty, please provide a path")
-        return self.value
+        return self.value.path
 
 
 class DocumentFileInput(InputNode):
