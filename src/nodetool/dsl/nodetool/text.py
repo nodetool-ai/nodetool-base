@@ -578,6 +578,26 @@ class SaveText(GraphNode):
         return "nodetool.text.SaveText"
 
 
+class SaveTextFile(GraphNode):
+    """
+    Saves input text to a file in the assets folder.
+    text, save, file
+    """
+
+    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Name of the output folder."
+    )
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="%Y-%m-%d-%H-%M-%S.txt",
+        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.text.SaveTextFile"
+
+
 class Slice(GraphNode):
     """
     Slices text using Python's slice notation (start:stop:step).

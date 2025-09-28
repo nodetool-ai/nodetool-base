@@ -1,7 +1,6 @@
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FilePath, FolderPath
 from pydantic import Field
 import os
 import datetime
@@ -17,14 +16,14 @@ class LoadBytesFile(BaseNode):
     - Read binary files for a workflow
     """
 
-    path: FilePath = Field(default=FilePath(), description="Path to the file to read")
+    path: str = Field(default="", description="Path to the file to read")
 
     async def process(self, context: ProcessingContext) -> bytes:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.path.path:
+        if not self.path:
             raise ValueError("path cannot be empty")
-        expanded_path = os.path.expanduser(self.path.path)
+        expanded_path = os.path.expanduser(self.path)
         with open(expanded_path, "rb") as f:
             return f.read()
 
@@ -40,9 +39,7 @@ class SaveBytesFile(BaseNode):
     """
 
     data: bytes | None = Field(default=None, description="The bytes to write to file")
-    folder: FolderPath = Field(
-        default=FolderPath(), description="Folder where the file will be saved"
-    )
+    folder: str = Field(default="", description="Folder where the file will be saved")
     filename: str = Field(
         default="",
         description="Name of the file to save. Supports strftime format codes.",
@@ -53,12 +50,12 @@ class SaveBytesFile(BaseNode):
             raise ValueError("This node is not available in production")
         if not self.data:
             raise ValueError("data cannot be empty")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("folder cannot be empty")
         if not self.filename:
             raise ValueError("filename cannot be empty")
 
-        expanded_folder = os.path.expanduser(self.folder.path)
+        expanded_folder = os.path.expanduser(self.folder)
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 

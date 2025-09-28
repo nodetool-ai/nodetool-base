@@ -1,6 +1,6 @@
 from typing import Any, AsyncGenerator, TypedDict
 from nodetool.config.environment import Environment
-from nodetool.metadata.types import FolderRef, FilePath, FolderPath
+from nodetool.metadata.types import FolderRef
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -23,17 +23,15 @@ class LoadImageFile(BaseNode):
     - Read image assets for a workflow
     """
 
-    path: FilePath = Field(
-        default=FilePath(), description="Path to the image file to read"
-    )
+    path: str = Field(default="", description="Path to the image file to read")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.path.path:
+        if not self.path:
             raise ValueError("path cannot be empty")
 
-        expanded_path = os.path.expanduser(self.path.path)
+        expanded_path = os.path.expanduser(self.path)
         if not os.path.exists(expanded_path):
             raise ValueError(f"Image file not found: {expanded_path}")
 
@@ -56,9 +54,7 @@ class LoadImageFolder(BaseNode):
     - Iterate over photo collections
     """
 
-    folder: FolderPath = Field(
-        default=FolderPath(), description="Folder to scan for images"
-    )
+    folder: str = Field(default="", description="Folder to scan for images")
     include_subdirectories: bool = Field(
         default=False, description="Include images in subfolders"
     )
@@ -80,10 +76,10 @@ class LoadImageFolder(BaseNode):
     ) -> AsyncGenerator[OutputType, None]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("folder cannot be empty")
 
-        expanded_folder = os.path.expanduser(self.folder.path)
+        expanded_folder = os.path.expanduser(self.folder)
         if not os.path.isdir(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
@@ -125,9 +121,7 @@ class SaveImageFile(BaseNode):
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to save")
-    folder: FolderPath = Field(
-        default=FolderPath(), description="Folder where the file will be saved"
-    )
+    folder: str = Field(default="", description="Folder where the file will be saved")
     filename: str = Field(
         default="",
         description="""
@@ -149,12 +143,12 @@ class SaveImageFile(BaseNode):
     async def process(self, context: ProcessingContext) -> ImageRef:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("folder cannot be empty")
         if not self.filename:
             raise ValueError("filename cannot be empty")
 
-        expanded_folder = os.path.expanduser(self.folder.path)
+        expanded_folder = os.path.expanduser(self.folder)
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 

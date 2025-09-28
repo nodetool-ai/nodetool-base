@@ -32,8 +32,8 @@ class AccessedTime(GraphNode):
     files, metadata, accessed, time
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -75,13 +75,11 @@ class CopyFile(GraphNode):
     - Copy files to new locations
     """
 
-    source_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Source file path",
+    source_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Source file path"
     )
-    destination_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Destination file path",
+    destination_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Destination file path"
     )
 
     @classmethod
@@ -99,9 +97,8 @@ class CreateDirectory(GraphNode):
     - Create output directories for processed files
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Directory path to create",
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Directory path to create"
     )
     exist_ok: bool | GraphNode | tuple[GraphNode, str] = Field(
         default=True, description="Don't error if directory already exists"
@@ -118,8 +115,8 @@ class CreatedTime(GraphNode):
     files, metadata, created, time
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -157,9 +154,8 @@ class FileExists(GraphNode):
     - Implement conditional logic based on file existence
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to check for existence",
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to check for existence"
     )
 
     @classmethod
@@ -173,8 +169,8 @@ class FileExtension(GraphNode):
     files, metadata, extension
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -188,8 +184,8 @@ class FileName(GraphNode):
     files, metadata, name
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -257,8 +253,8 @@ class GetDirectory(GraphNode):
     files, metadata, directory
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -294,8 +290,8 @@ class GetFileSize(GraphNode):
     files, metadata, size
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -343,8 +339,8 @@ class IsDirectory(GraphNode):
     files, metadata, type
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to check"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to check"
     )
 
     @classmethod
@@ -358,8 +354,8 @@ class IsFile(GraphNode):
     files, metadata, type
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to check"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to check"
     )
 
     @classmethod
@@ -396,9 +392,8 @@ class ListFiles(GraphNode):
     - Filter files by extension or pattern
     """
 
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path="~"),
-        description="Directory to scan",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="~", description="Directory to scan"
     )
     pattern: str | GraphNode | tuple[GraphNode, str] = Field(
         default="*", description="File pattern to match (e.g. *.txt)"
@@ -418,8 +413,8 @@ class ModifiedTime(GraphNode):
     files, metadata, modified, time
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""), description="Path to file"
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to file"
     )
 
     @classmethod
@@ -438,13 +433,11 @@ class MoveFile(GraphNode):
     - Relocate completed files
     """
 
-    source_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Source file path",
+    source_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Source file path"
     )
-    destination_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Destination file path",
+    destination_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Destination file path"
     )
 
     @classmethod
@@ -493,9 +486,8 @@ class PathToString(GraphNode):
     - Extract path string for external use
     """
 
-    file_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="FilePath object to convert to string",
+    file_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="File path to convert to string"
     )
 
     @classmethod

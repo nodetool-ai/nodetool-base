@@ -708,8 +708,8 @@ class DownloadFiles(BaseNode):
         default=[],
         description="List of URLs to download.",
     )
-    output_folder: FilePath = Field(
-        default=FilePath(path="downloads"),
+    output_folder: str = Field(
+        default="downloads",
         description="Local folder path where files will be saved.",
     )
 
@@ -744,10 +744,12 @@ class DownloadFiles(BaseNode):
                         if not filename:
                             filename = "unnamed_file"
 
-                    expanded_path = os.path.expanduser(self.output_folder.path)
-                    os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
+                    if not self.output_folder:
+                        raise ValueError("output_folder cannot be empty")
+                    expanded_folder = os.path.expanduser(self.output_folder)
+                    os.makedirs(expanded_folder, exist_ok=True)
 
-                    filepath = os.path.join(expanded_path, filename)
+                    filepath = os.path.join(expanded_folder, filename)
                     content = await response.read()
 
                     with open(filepath, "wb") as f:

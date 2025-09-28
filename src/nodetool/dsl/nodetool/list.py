@@ -511,13 +511,8 @@ class Flatten(GraphNode):
 
 class GenerateSequence(GraphNode):
     """
-    Generates a list of integers within a specified range.
+    Iterates over a sequence of numbers.
     list, range, sequence, numbers
-
-    Use cases:
-    - Create numbered lists
-    - Generate index sequences
-    - Produce arithmetic progressions
     """
 
     start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
@@ -591,6 +586,26 @@ class Length(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.Length"
+
+
+class ListRange(GraphNode):
+    """
+    Generates a list of integers within a specified range.
+    list, range, sequence, numbers
+
+    Use cases:
+    - Create numbered lists
+    - Generate index sequences
+    - Produce arithmetic progressions
+    """
+
+    start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    stop: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    step: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description=None)
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.list.ListRange"
 
 
 class MapField(GraphNode):
@@ -757,21 +772,6 @@ class SelectElements(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.list.SelectElements"
-
-
-class SequenceIterator(GraphNode):
-    """
-    Iterates over a sequence of numbers.
-    list, range, sequence, numbers
-    """
-
-    start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    stop: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    step: int | GraphNode | tuple[GraphNode, str] = Field(default=1, description=None)
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.list.SequenceIterator"
 
 
 class Slice(GraphNode):

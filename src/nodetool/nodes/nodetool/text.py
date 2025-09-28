@@ -7,7 +7,7 @@ from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FolderPath, FolderRef
+from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 import re
 from jsonpath_ng import parse
@@ -297,9 +297,7 @@ class SaveTextFile(BaseNode):
     """
 
     text: str = Field(title="Text", default="")
-    folder: FolderPath = Field(
-        default=FolderPath(), description="Name of the output folder."
-    )
+    folder: str = Field(default="", description="Name of the output folder.")
     name: str = Field(
         title="Name",
         default="%Y-%m-%d-%H-%M-%S.txt",
@@ -318,7 +316,9 @@ class SaveTextFile(BaseNode):
     async def process(self, context: ProcessingContext) -> TextRef:
         filename = datetime.now().strftime(self.name)
         file = BytesIO(self.text.encode("utf-8"))
-        expanded_folder = os.path.expanduser(self.folder.path)
+        if not self.folder:
+            raise ValueError("folder cannot be empty")
+        expanded_folder = os.path.expanduser(self.folder)
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
         filename = datetime.now().strftime(self.name)

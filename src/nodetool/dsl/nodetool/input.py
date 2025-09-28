@@ -6,6 +6,28 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
+class AssetFolderInput(GraphNode):
+    """
+    Accepts an asset folder as a parameter for workflows.
+    input, parameter, folder, path, folderpath, local_folder, filesystem
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        description="The folder to use as input.",
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.AssetFolderInput"
+
+
 class AudioInput(GraphNode):
     """
     Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
@@ -115,23 +137,18 @@ class CollectionInput(GraphNode):
         return "nodetool.input.CollectionInput"
 
 
-class DataframeInput(GraphNode):
+class ColorInput(GraphNode):
     """
-    Accepts a pandas DataFrame as input for workflows.
-    input, parameter, dataframe, table, structured, csv, tabular_data, rows, columns
-
-    Use cases:
-    - Provide a pandas DataFrame as input to a workflow.
+    Accepts a color value as a parameter for workflows.
+    input, parameter, color, color_picker, color_input
     """
 
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.DataframeRef(
-            type="dataframe", uri="", asset_id=None, data=None, columns=None
-        ),
-        description="The dataframe to use as input.",
+    value: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ColorRef(type="color", value=None),
+        description="The color to use as input.",
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -139,7 +156,7 @@ class DataframeInput(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.input.DataframeInput"
+        return "nodetool.input.ColorInput"
 
 
 class DocumentFileInput(GraphNode):
@@ -198,6 +215,28 @@ class DocumentInput(GraphNode):
         return "nodetool.input.DocumentInput"
 
 
+class FilePathInput(GraphNode):
+    """
+    Accepts a file path as a parameter for workflows.
+    input, parameter, file, path, filepath, local_file, filesystem
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="The file path to use as input.",
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.FilePathInput"
+
+
 class FloatInput(GraphNode):
     """
     Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
@@ -228,16 +267,18 @@ class FloatInput(GraphNode):
         return "nodetool.input.FloatInput"
 
 
-class GroupInput(GraphNode):
+class FolderPathInput(GraphNode):
     """
-    A minimal group input placeholder to satisfy imports in tests.
+    Accepts a folder path as a parameter for workflows.
+    input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description="The value of the input."
+    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""),
+        description="The folder path to use as input.",
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -245,7 +286,36 @@ class GroupInput(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.input.GroupInput"
+        return "nodetool.input.FolderPathInput"
+
+
+class HuggingFaceModelInput(GraphNode):
+    """
+    Accepts a Hugging Face model as a parameter for workflows.
+    input, parameter, model, huggingface, hugging_face, model_name
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.HuggingFaceModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.HuggingFaceModel(
+            type="hf.model",
+            repo_id="",
+            path=None,
+            variant=None,
+            allow_patterns=None,
+            ignore_patterns=None,
+        ),
+        description="The Hugging Face model to use as input.",
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.HuggingFaceModelInput"
 
 
 class ImageInput(GraphNode):
@@ -276,6 +346,32 @@ class ImageInput(GraphNode):
         return "nodetool.input.ImageInput"
 
 
+import nodetool.metadata.types
+
+
+class InferenceProviderInput(GraphNode):
+    """
+    Accepts an inference provider as a parameter for workflows.
+    input, parameter, provider, inference, provider_name
+    """
+
+    InferenceProvider: typing.ClassVar[type] = nodetool.metadata.types.InferenceProvider
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: nodetool.metadata.types.InferenceProvider = Field(
+        default=nodetool.metadata.types.InferenceProvider.none,
+        description="The inference provider to use as input.",
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.InferenceProviderInput"
+
+
 class IntegerInput(GraphNode):
     """
     Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
@@ -302,20 +398,23 @@ class IntegerInput(GraphNode):
         return "nodetool.input.IntegerInput"
 
 
-class ListInput(GraphNode):
+class LanguageModelInput(GraphNode):
     """
-    Accepts a list of items as input for workflows.
-    input, parameter, list, array, sequence, collection
-
-    Use cases:
-    - Provide a list of items to a workflow.
+    Accepts a language model as a parameter for workflows.
+    input, parameter, model, language, model_name
     """
 
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The list of items to use as input."
+    value: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="The language model to use as input.",
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -323,7 +422,7 @@ class ListInput(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.input.ListInput"
+        return "nodetool.input.LanguageModelInput"
 
 
 class PathInput(GraphNode):
@@ -405,21 +504,17 @@ class StringInput(GraphNode):
         return "nodetool.input.StringInput"
 
 
-class TextInput(GraphNode):
-    """Accepts a single line of text (``TextRef``) as a parameter for workflows.
-    input, parameter, text, string, line, reference
-
-    This node is a convenience wrapper around ``StringInput`` when the text value
-    should be treated as a standalone asset reference (``TextRef``) rather than
-    a raw ``str``.
+class StringListInput(GraphNode):
+    """
+    Accepts a list of strings as a parameter for workflows.
+    input, parameter, string, text, label, name, value
     """
 
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.TextRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.TextRef(type="text", uri="", asset_id=None, data=None),
-        description="The text asset to use as input.",
+    value: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=PydanticUndefined, description="The list of strings to use as input."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."
@@ -427,7 +522,7 @@ class TextInput(GraphNode):
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.input.TextInput"
+        return "nodetool.input.StringListInput"
 
 
 class VideoInput(GraphNode):

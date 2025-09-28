@@ -16,9 +16,8 @@ class LoadBytesFile(GraphNode):
     - Read binary files for a workflow
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the file to read",
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the file to read"
     )
 
     @classmethod
@@ -39,9 +38,8 @@ class SaveBytesFile(GraphNode):
     data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
         default=None, description="The bytes to write to file"
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder where the file will be saved"
     )
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",

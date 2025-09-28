@@ -5,8 +5,8 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
-import nodetool.nodes.lib.leann
-import nodetool.nodes.lib.leann
+import nodetool.nodes.vector.leann
+import nodetool.nodes.vector.leann
 
 
 class LeannBuilder(GraphNode):
@@ -43,36 +43,38 @@ class LeannBuilder(GraphNode):
     """
 
     EmbeddingModel: typing.ClassVar[type] = (
-        nodetool.nodes.lib.leann.LeannBuilder.EmbeddingModel
+        nodetool.nodes.vector.leann.LeannBuilder.EmbeddingModel
     )
-    Backend: typing.ClassVar[type] = nodetool.nodes.lib.leann.LeannBuilder.Backend
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
+    Backend: typing.ClassVar[type] = nodetool.nodes.vector.leann.LeannBuilder.Backend
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
         description="Output folder where the LEANN index will be stored. Choose a location with sufficient disk space for your dataset.",
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",
         description="Unique identifier for this index. Used for organizing and retrieving specific indexes.",
     )
-    model: nodetool.nodes.lib.leann.LeannBuilder.EmbeddingModel = Field(
-        default=nodetool.nodes.lib.leann.LeannBuilder.EmbeddingModel.sentence_transformers_all_minilm_l6_v2,
+    model: nodetool.nodes.vector.leann.LeannBuilder.EmbeddingModel = Field(
+        default=nodetool.nodes.vector.leann.LeannBuilder.EmbeddingModel.sentence_transformers_all_minilm_l6_v2,
         description="Select embedding model based on your quality-speed trade-off. See EmbeddingModel documentation for detailed guidance.",
     )
-    backend: nodetool.nodes.lib.leann.LeannBuilder.Backend = Field(
-        default=nodetool.nodes.lib.leann.LeannBuilder.Backend.hnsw,
+    backend: nodetool.nodes.vector.leann.LeannBuilder.Backend = Field(
+        default=nodetool.nodes.vector.leann.LeannBuilder.Backend.hnsw,
         description="Index backend optimized for your scale. HNSW for most use cases, DiskANN for large datasets. See Backend documentation for details.",
     )
-    text_chunks: list[types.TextChunk] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[],
-        description="Text chunks to be indexed. Each chunk should contain: text content, unique source_id, and optional metadata for filtering.",
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The text to index"
+    )
+    metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
+        default={}, description="The metadata to associate with the text"
     )
 
     @classmethod
     def get_node_type(cls):
-        return "lib.leann.LeannBuilder"
+        return "vector.leann.LeannBuilder"
 
 
-import nodetool.nodes.lib.leann
+import nodetool.nodes.vector.leann
 
 
 class LeannSearcher(GraphNode):
@@ -82,11 +84,10 @@ class LeannSearcher(GraphNode):
     """
 
     PruningStrategy: typing.ClassVar[type] = (
-        nodetool.nodes.lib.leann.LeannSearcher.PruningStrategy
+        nodetool.nodes.vector.leann.LeannSearcher.PruningStrategy
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="The folder where the index is stored",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The folder where the index is stored"
     )
     name: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The name of the index"
@@ -109,11 +110,11 @@ class LeannSearcher(GraphNode):
     recompute_embeddings: bool | GraphNode | tuple[GraphNode, str] = Field(
         default=True, description="Whether to recompute the embeddings"
     )
-    pruning_strategy: nodetool.nodes.lib.leann.LeannSearcher.PruningStrategy = Field(
-        default=nodetool.nodes.lib.leann.LeannSearcher.PruningStrategy._global,
+    pruning_strategy: nodetool.nodes.vector.leann.LeannSearcher.PruningStrategy = Field(
+        default=nodetool.nodes.vector.leann.LeannSearcher.PruningStrategy._global,
         description="The pruning strategy of the search",
     )
 
     @classmethod
     def get_node_type(cls):
-        return "lib.leann.LeannSearcher"
+        return "vector.leann.LeannSearcher"

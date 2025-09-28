@@ -12,9 +12,8 @@ class ListDocuments(GraphNode):
     files, list, directory
     """
 
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path="~"),
-        description="Directory to scan",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="~", description="Directory to scan"
     )
     pattern: str | GraphNode | tuple[GraphNode, str] = Field(
         default="*", description="File pattern to match (e.g. *.txt)"
@@ -34,9 +33,8 @@ class LoadDocumentFile(GraphNode):
     files, document, read, input, load, file
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the document to read",
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the document to read"
     )
 
     @classmethod
@@ -98,9 +96,8 @@ class SaveDocumentFile(GraphNode):
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to save",
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder where the file will be saved"
     )
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",

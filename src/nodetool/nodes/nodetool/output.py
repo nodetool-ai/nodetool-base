@@ -1,7 +1,6 @@
 from typing import Any
 import inspect
 
-from pydantic import Field
 from nodetool.metadata.types import DocumentRef
 from nodetool.metadata.types import NPArray
 from nodetool.workflows.processing_context import ProcessingContext
@@ -13,6 +12,7 @@ from nodetool.workflows.base_node import (
     BaseNode,
     OutputNode,
 )
+from nodetool.metadata.types import FilePath, FolderPath
 from nodetool.metadata.types import TextRef
 from nodetool.metadata.types import VideoRef
 
@@ -218,4 +218,28 @@ class DocumentOutput(OutputNode):
     value: DocumentRef = DocumentRef()
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
+        return self.value
+
+
+class FilePathOutput(OutputNode):
+    """
+    Output node for a file path.
+    file, path, file_path
+    """
+
+    value: FilePath = FilePath()
+
+    async def process(self, context: ProcessingContext) -> FilePath:
+        return self.value
+
+
+class FolderPathOutput(OutputNode):
+    """
+    Output node for a folder path.
+    folder, path, folder_path
+    """
+
+    value: FolderPath = FolderPath()
+
+    async def process(self, context: ProcessingContext) -> FolderPath:
         return self.value

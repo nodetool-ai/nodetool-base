@@ -2,8 +2,6 @@
 FAISS nodes for Nodetool.
 """
 
-from __future__ import annotations
-
 from enum import Enum
 from typing import Any, TypedDict
 
@@ -17,7 +15,8 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-import faiss  # type: ignore
+import faiss
+from nodetool.metadata.types import FaissIndex, NPArray
 
 
 class FaissNode(BaseNode):

@@ -2,11 +2,11 @@ from enum import Enum
 import os
 import platform
 import leann
-from nodetool.metadata.types import FolderPath, LeannSearchResult, TextChunk
+from nodetool.metadata.types import LeannSearchResult, TextChunk
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.workflows.processing_context import ProcessingContext
-from pydantic import Field, FilePath, PrivateAttr
+from pydantic import Field, PrivateAttr
 
 
 class LeannSearcher(BaseNode):
@@ -20,8 +20,8 @@ class LeannSearcher(BaseNode):
         local = "local"
         proportional = "proportional"
 
-    folder: FolderPath = Field(
-        default=FolderPath(),
+    folder: str = Field(
+        default="",
         description="The folder where the index is stored",
     )
     name: str = Field(
@@ -63,9 +63,12 @@ class LeannSearcher(BaseNode):
 
         import leann
 
-        searcher = leann.LeannSearcher(
-            index_path=os.path.join(self.folder.path, self.name)
-        )
+        if not self.folder:
+            raise ValueError("folder cannot be empty")
+        if not self.name:
+            raise ValueError("name cannot be empty")
+
+        searcher = leann.LeannSearcher(index_path=os.path.join(self.folder, self.name))
         results = searcher.search(
             query=self.query,
             top_k=self.top_k,
@@ -126,8 +129,8 @@ class LeannBuilder(BaseNode):
         hnsw = "hnsw"
         diskann = "diskann"
 
-    folder: FolderPath = Field(
-        default=FolderPath(),
+    folder: str = Field(
+        default="",
         description="Output folder where the LEANN index will be stored. Choose a location with sufficient disk space for your dataset.",
     )
     name: str = Field(
@@ -179,4 +182,8 @@ class LeannBuilder(BaseNode):
 
     async def handle_eos(self) -> None:
         assert self._builder is not None
-        self._builder.build_index(os.path.join(self.folder.path, self.name))
+        if not self.folder:
+            raise ValueError("folder cannot be empty")
+        if not self.name:
+            raise ValueError("name cannot be empty")
+        self._builder.build_index(os.path.join(self.folder, self.name))

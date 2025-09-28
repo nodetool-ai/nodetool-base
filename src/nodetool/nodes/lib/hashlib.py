@@ -1,7 +1,6 @@
 import hashlib
 from typing import ClassVar
 from pydantic import Field
-from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -43,7 +42,7 @@ class HashFile(BaseNode):
     - Identify duplicates
     """
 
-    file: FilePath = Field(default=FilePath(), description="The file to hash")
+    file: str = Field(default="", description="The file to hash")
     algorithm: str = Field(
         default="md5",
         description="Hash algorithm name (e.g. md5, sha1, sha256)",
@@ -60,7 +59,9 @@ class HashFile(BaseNode):
         except AttributeError as exc:
             raise ValueError(f"Unsupported algorithm: {self.algorithm}") from exc
 
-        with open(self.file.path, "rb") as f:
+        if not self.file:
+            raise ValueError("file cannot be empty")
+        with open(self.file, "rb") as f:
             for chunk in iter(lambda: f.read(self.chunk_size), b""):
                 hasher.update(chunk)
         return hasher.hexdigest()

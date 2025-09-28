@@ -554,9 +554,8 @@ class SaveVideoFile(GraphNode):
         ),
         description="The video to save",
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder where the file will be saved"
     )
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",

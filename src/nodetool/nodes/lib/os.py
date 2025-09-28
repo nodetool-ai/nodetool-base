@@ -11,11 +11,7 @@ from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import (
-    Datetime,
-    FilePath,
-    FolderPath,
-)
+from nodetool.metadata.types import Datetime
 
 import subprocess
 from nodetool.io.uri_utils import create_file_uri
@@ -123,16 +119,14 @@ class FileExists(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(
-        default=FilePath(), description="Path to check for existence"
-    )
+    path: str = Field(default="", description="Path to check for existence")
 
     async def process(self, context: ProcessingContext) -> bool:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.path or not self.path.path:
+        if not self.path:
             raise ValueError("'path' field cannot be empty")
-        expanded_path = os.path.expanduser(self.path.path)
+        expanded_path = os.path.expanduser(self.path)
         return os.path.exists(expanded_path)
 
 
@@ -150,25 +144,23 @@ class ListFiles(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    folder: FolderPath = Field(
-        default=FolderPath(path="~"), description="Directory to scan"
-    )
+    folder: str = Field(default="~", description="Directory to scan")
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
     include_subdirectories: bool = Field(
         default=False, description="Search subdirectories"
     )
 
     class OutputType(TypedDict):
-        file: FilePath
+        file: str
 
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("directory cannot be empty")
-        expanded_directory = os.path.expanduser(self.folder.path)
+        expanded_directory = os.path.expanduser(self.folder)
 
         if self.include_subdirectories:
             pattern = os.path.join(expanded_directory, "**", self.pattern)
@@ -178,7 +170,7 @@ class ListFiles(BaseNode):
             paths = glob.glob(pattern)
 
         for p in paths:
-            yield {"file": FilePath(path=p)}
+            yield {"file": p}
 
 
 class CopyFile(BaseNode):
@@ -192,20 +184,18 @@ class CopyFile(BaseNode):
     - Copy files to new locations
     """
 
-    source_path: FilePath = Field(default=FilePath(), description="Source file path")
-    destination_path: FilePath = Field(
-        default=FilePath(), description="Destination file path"
-    )
+    source_path: str = Field(default="", description="Source file path")
+    destination_path: str = Field(default="", description="Destination file path")
 
     async def process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.source_path or not self.source_path.path:
+        if not self.source_path:
             raise ValueError("'source_path' field cannot be empty")
-        if not self.destination_path or not self.destination_path.path:
+        if not self.destination_path:
             raise ValueError("'destination_path' field cannot be empty")
-        expanded_source = os.path.expanduser(self.source_path.path)
-        expanded_dest = os.path.expanduser(self.destination_path.path)
+        expanded_source = os.path.expanduser(self.source_path)
+        expanded_dest = os.path.expanduser(self.destination_path)
 
         shutil.copy2(expanded_source, expanded_dest)
 
@@ -221,16 +211,14 @@ class MoveFile(BaseNode):
     - Relocate completed files
     """
 
-    source_path: FilePath = Field(default=FilePath(), description="Source file path")
-    destination_path: FilePath = Field(
-        default=FilePath(), description="Destination file path"
-    )
+    source_path: str = Field(default="", description="Source file path")
+    destination_path: str = Field(default="", description="Destination file path")
 
     async def process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_source = os.path.expanduser(self.source_path.path)
-        expanded_dest = os.path.expanduser(self.destination_path.path)
+        expanded_source = os.path.expanduser(self.source_path)
+        expanded_dest = os.path.expanduser(self.destination_path)
 
         shutil.move(expanded_source, expanded_dest)
 
@@ -245,7 +233,7 @@ class CreateDirectory(BaseNode):
     - Create output directories for processed files
     """
 
-    path: FilePath = Field(default=FilePath(), description="Directory path to create")
+    path: str = Field(default="", description="Directory path to create")
     exist_ok: bool = Field(
         default=True, description="Don't error if directory already exists"
     )
@@ -253,7 +241,9 @@ class CreateDirectory(BaseNode):
     async def process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         os.makedirs(expanded_path, exist_ok=self.exist_ok)
 
 
@@ -267,12 +257,14 @@ class GetFileSize(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> int:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         stats = os.stat(expanded_path)
         return stats.st_size
 
@@ -287,12 +279,14 @@ class CreatedTime(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> Datetime:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         stats = os.stat(expanded_path)
         return Datetime.from_datetime(datetime.fromtimestamp(stats.st_ctime))
 
@@ -307,12 +301,14 @@ class ModifiedTime(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> Datetime:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         stats = os.stat(expanded_path)
         return Datetime.from_datetime(datetime.fromtimestamp(stats.st_mtime))
 
@@ -327,12 +323,14 @@ class AccessedTime(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> Datetime:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         stats = os.stat(expanded_path)
         return Datetime.from_datetime(datetime.fromtimestamp(stats.st_atime))
 
@@ -347,12 +345,14 @@ class IsFile(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(default=FilePath(), description="Path to check")
+    path: str = Field(default="", description="Path to check")
 
     async def process(self, context: ProcessingContext) -> bool:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         return os.path.isfile(expanded_path)
 
 
@@ -366,12 +366,14 @@ class IsDirectory(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    path: FilePath = Field(default=FilePath(), description="Path to check")
+    path: str = Field(default="", description="Path to check")
 
     async def process(self, context: ProcessingContext) -> bool:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         return os.path.isdir(expanded_path)
 
 
@@ -381,12 +383,14 @@ class FileExtension(BaseNode):
     files, metadata, extension
     """
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         return os.path.splitext(expanded_path)[1]
 
 
@@ -396,12 +400,14 @@ class FileName(BaseNode):
     files, metadata, name
     """
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         return os.path.basename(expanded_path)
 
 
@@ -411,12 +417,14 @@ class GetDirectory(BaseNode):
     files, metadata, directory
     """
 
-    path: FilePath = Field(default=FilePath(), description="Path to file")
+    path: str = Field(default="", description="Path to file")
 
     async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        expanded_path = os.path.expanduser(self.path.path)
+        if not self.path:
+            raise ValueError("'path' field cannot be empty")
+        expanded_path = os.path.expanduser(self.path)
         return os.path.dirname(expanded_path)
 
 
@@ -544,10 +552,12 @@ class JoinPaths(BaseNode):
 
     paths: list[str] = Field(default=[], description="Path components to join")
 
-    async def process(self, context: ProcessingContext) -> FilePath:
+    async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        return FilePath(path=os.path.join(*self.paths))
+        if not self.paths:
+            raise ValueError("paths cannot be empty")
+        return os.path.join(*self.paths)
 
 
 class NormalizePath(BaseNode):
@@ -562,10 +572,12 @@ class NormalizePath(BaseNode):
 
     path: str = Field(default="", description="Path to normalize")
 
-    async def process(self, context: ProcessingContext) -> FilePath:
+    async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        return FilePath(path=os.path.normpath(self.path))
+        if not self.path:
+            raise ValueError("path cannot be empty")
+        return os.path.normpath(self.path)
 
 
 class GetPathInfo(BaseNode):
@@ -608,11 +620,13 @@ class AbsolutePath(BaseNode):
 
     path: str = Field(default="", description="Path to convert to absolute")
 
-    async def process(self, context: ProcessingContext) -> FilePath:
+    async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         expanded_path = os.path.expanduser(self.path)
-        return FilePath(path=os.path.abspath(expanded_path))
+        if not expanded_path:
+            raise ValueError("path cannot be empty")
+        return os.path.abspath(expanded_path)
 
 
 class SplitPath(BaseNode):
@@ -675,12 +689,14 @@ class RelativePath(BaseNode):
         default=".", description="Start path for relative conversion"
     )
 
-    async def process(self, context: ProcessingContext) -> FilePath:
+    async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         expanded_target = os.path.expanduser(self.target_path)
         expanded_start = os.path.expanduser(self.start_path)
-        return FilePath(path=os.path.relpath(expanded_target, expanded_start))
+        if not expanded_target:
+            raise ValueError("target_path cannot be empty")
+        return os.path.relpath(expanded_target, expanded_start)
 
 
 class PathToString(BaseNode):
@@ -694,16 +710,14 @@ class PathToString(BaseNode):
     - Extract path string for external use
     """
 
-    file_path: FilePath = Field(
-        default=FilePath(), description="FilePath object to convert to string"
-    )
+    file_path: str = Field(default="", description="File path to convert to string")
 
     async def process(self, context: ProcessingContext) -> str:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.file_path:
             raise ValueError("file_path cannot be empty")
-        return self.file_path.path
+        return self.file_path
 
 
 class ShowNotification(BaseNode):

@@ -17,13 +17,11 @@ class CreateTar(GraphNode):
     - Prepare archives for distribution
     """
 
-    source_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Folder to archive",
+    source_folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder to archive"
     )
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Output tar file path",
+    tar_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Output tar file path"
     )
     gzip: bool | GraphNode | tuple[GraphNode, str] = Field(
         default=False, description="Use gzip compression"
@@ -45,13 +43,11 @@ class ExtractTar(GraphNode):
     - Retrieve files for processing
     """
 
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Tar archive to extract",
+    tar_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Tar archive to extract"
     )
-    output_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Folder to extract into",
+    output_folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder to extract into"
     )
 
     @classmethod
@@ -70,9 +66,8 @@ class ListTar(GraphNode):
     - Verify archive contents
     """
 
-    tar_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Tar archive to inspect",
+    tar_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Tar archive to inspect"
     )
 
     @classmethod

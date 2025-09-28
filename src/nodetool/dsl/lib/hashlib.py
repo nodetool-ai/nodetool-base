@@ -16,9 +16,8 @@ class HashFile(GraphNode):
     - Identify duplicates
     """
 
-    file: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="The file to hash",
+    file: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The file to hash"
     )
     algorithm: str | GraphNode | tuple[GraphNode, str] = Field(
         default="md5", description="Hash algorithm name (e.g. md5, sha1, sha256)"

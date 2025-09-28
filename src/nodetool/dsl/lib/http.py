@@ -83,9 +83,8 @@ class DownloadFiles(GraphNode):
     urls: list[str] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="List of URLs to download."
     )
-    output_folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path="downloads"),
-        description="Local folder path where files will be saved.",
+    output_folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="downloads", description="Local folder path where files will be saved."
     )
     max_concurrent_downloads: int | GraphNode | tuple[GraphNode, str] = Field(
         default=5, description="Maximum number of concurrent downloads."

@@ -168,6 +168,27 @@ class DocumentOutput(GraphNode):
         return "nodetool.output.DocumentOutput"
 
 
+class FilePathOutput(GraphNode):
+    """
+    Output node for a file path.
+    file, path, file_path
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FilePath(type="file_path", path=""), description=None
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.output.FilePathOutput"
+
+
 class FloatOutput(GraphNode):
     """
     Output node for a single float value.
@@ -192,6 +213,27 @@ class FloatOutput(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.FloatOutput"
+
+
+class FolderPathOutput(GraphNode):
+    """
+    Output node for a folder path.
+    folder, path, folder_path
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FolderPath(type="folder_path", path=""), description=None
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the output for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.output.FolderPathOutput"
 
 
 class ImageOutput(GraphNode):

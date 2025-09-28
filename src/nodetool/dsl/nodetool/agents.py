@@ -40,14 +40,10 @@ class Agent(GraphNode):
         default=[], description="The messages for the LLM"
     )
     max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=32768, description=None
+        default=8192, description=None
     )
     context_window: int | GraphNode | tuple[GraphNode, str] = Field(
         default=4096, description=None
-    )
-    tool_call_limit: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=3,
-        description="Maximum iterations that make tool calls before forcing a final answer. 0 disables tools.",
     )
 
     @classmethod
@@ -68,7 +64,7 @@ class Classifier(GraphNode):
     """
 
     system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
-        default='\nYou are a precise text classifier.\n\nGoal\n- Select exactly one category from the list provided by the user.\n\nTool-calling rules\n- You MUST respond by calling the tool "classify" exactly once.\n- Provide only the "category" field in the tool arguments.\n- Do not produce any assistant text, only the tool call.\n\nSelection criteria\n- Choose the single best category that captures the main intent of the text.\n- If multiple categories seem plausible, pick the most probable one; do not return multiple.\n- If none fit perfectly, choose the closest allowed category. If the list includes "Other" or "Unknown", prefer it when appropriate.\n- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., "not spam" ≠ spam).\n- Never invent categories that are not in the provided list.\n\nBehavior\n- Be deterministic for the same input.\n- Do not ask clarifying questions; make the best choice with what\'s given.\n',
+        default='\nYou are a precise classifier.\n\nGoal\n- Select exactly one category from the list provided by the user.\n\nOutput format (MANDATORY)\n- Return ONLY a single JSON object with this exact schema and nothing else:\n  {"category": "<one-of-the-allowed-categories>"}\n- No prose, no Markdown, no code fences, no explanations, no extra keys.\n\nSelection criteria\n- Choose the single best category that captures the main intent of the text.\n- If multiple categories seem plausible, pick the most probable one; do not return multiple.\n- If none fit perfectly, choose the closest allowed category. If the list includes "Other" or "Unknown", prefer it when appropriate.\n- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., "not spam" ≠ spam).\n- Never invent categories that are not in the provided list.\n\nBehavior\n- Be deterministic for the same input.\n- Do not ask clarifying questions; make the best choice with what\'s given.\n',
         description="The system prompt for the classifier",
     )
     model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
@@ -95,6 +91,9 @@ class Classifier(GraphNode):
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
     )
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1024, description="The maximum number of tokens to generate."
+    )
     context_window: int | GraphNode | tuple[GraphNode, str] = Field(
         default=4096, description=None
     )
@@ -117,7 +116,7 @@ class Extractor(GraphNode):
     """
 
     system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="\n        You are an expert data extractor. Your task is to extract specific information from text according to a defined schema.\n        ",
+        default='\nYou are a precise structured data extractor.\n\nGoal\n- Extract exactly the fields described in <JSON_SCHEMA> from the content in <TEXT> (and any attached media).\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nExtraction rules\n- Use only information found in <TEXT> or attached media. Do not invent facts.\n- Preserve source values; normalize internal whitespace and trim leading/trailing spaces.\n- If a required field is missing or not explicitly stated, return the closest reasonable default consistent with its type:\n  - string: ""\n  - number: 0\n  - boolean: false\n  - array/object: empty value of that type (only if allowed by the schema)\n- Dates/times: prefer ISO 8601 when the schema type is string and the value represents a date/time.\n- If multiple candidates exist, choose the most precise and unambiguous one.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n',
         description="The system prompt for the data extractor",
     )
     model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
@@ -139,10 +138,6 @@ class Extractor(GraphNode):
     audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="Optional audio to assist extraction",
-    )
-    extraction_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="Extract the following information from the text:",
-        description="Additional instructions for the extraction process",
     )
     max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
         default=4096, description="The maximum number of tokens to generate."

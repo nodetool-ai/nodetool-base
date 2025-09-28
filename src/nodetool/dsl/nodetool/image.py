@@ -131,9 +131,8 @@ class LoadImageFile(GraphNode):
     - Read image assets for a workflow
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the image file to read",
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the image file to read"
     )
 
     @classmethod
@@ -152,9 +151,8 @@ class LoadImageFolder(GraphNode):
     - Iterate over photo collections
     """
 
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder to scan for images",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder to scan for images"
     )
     include_subdirectories: bool | GraphNode | tuple[GraphNode, str] = Field(
         default=False, description="Include images in subfolders"
@@ -270,9 +268,8 @@ class SaveImageFile(GraphNode):
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to save",
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder where the file will be saved"
     )
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",

@@ -103,9 +103,8 @@ class LoadCSVFile(GraphNode):
     files, csv, read, input, load, file
     """
 
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="Path to the CSV file to read",
+    path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Path to the CSV file to read"
     )
 
     @classmethod
@@ -223,9 +222,8 @@ class SaveCSVFile(GraphNode):
     data: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="list of dictionaries to write to CSV"
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder where the file will be saved"
     )
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",

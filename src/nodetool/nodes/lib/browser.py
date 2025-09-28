@@ -15,7 +15,6 @@ from langchain_openai import ChatOpenAI
 from langchain_anthropic import ChatAnthropic
 
 # ServerDockerRunner is used at runtime to start a Playwright WS server in Docker
-from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.types import Notification, LogUpdate
 from nodetool.workflows.processing_context import ProcessingContext
@@ -355,8 +354,8 @@ class Screenshot(BaseNode):
         default="", description="Optional CSS selector for capturing a specific element"
     )
 
-    output_file: FilePath = Field(
-        default=FilePath(path="screenshot.png"),
+    output_file: str = Field(
+        default="screenshot.png",
         description="Path to save the screenshot (relative to workspace)",
     )
 
@@ -370,7 +369,9 @@ class Screenshot(BaseNode):
         if not self.url:
             raise ValueError("URL is required")
 
-        host_path = context.resolve_workspace_path(self.output_file.path)
+        if not self.output_file:
+            raise ValueError("output_file cannot be empty")
+        host_path = context.resolve_workspace_path(self.output_file)
         os.makedirs(os.path.dirname(host_path), exist_ok=True)
         container_path = _container_workspace_path(context, host_path)
 

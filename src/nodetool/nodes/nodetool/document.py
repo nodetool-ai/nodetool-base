@@ -7,7 +7,7 @@ from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
-from nodetool.metadata.types import DocumentRef, FolderPath, FilePath
+from nodetool.metadata.types import DocumentRef
 from llama_index.core.node_parser import (
     SemanticSplitterNodeParser,
     HTMLNodeParser,
@@ -31,16 +31,14 @@ class LoadDocumentFile(BaseNode):
     files, document, read, input, load, file
     """
 
-    path: FilePath = Field(
-        default=FilePath(), description="Path to the document to read"
-    )
+    path: str = Field(default="", description="Path to the document to read")
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.path.path:
+        if not self.path:
             raise ValueError("path cannot be empty")
-        expanded_path = os.path.expanduser(self.path.path)
+        expanded_path = os.path.expanduser(self.path)
         return DocumentRef(uri=create_file_uri(expanded_path))
 
 
@@ -57,9 +55,7 @@ class SaveDocumentFile(BaseNode):
     document: DocumentRef = Field(
         default=DocumentRef(), description="The document to save"
     )
-    folder: FolderPath = Field(
-        default=FolderPath(), description="Folder where the file will be saved"
-    )
+    folder: str = Field(default="", description="Folder where the file will be saved")
     filename: str = Field(
         default="",
         description="Name of the file to save. Supports strftime format codes.",
@@ -68,12 +64,12 @@ class SaveDocumentFile(BaseNode):
     async def process(self, context: ProcessingContext):
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("folder cannot be empty")
         if not self.filename:
             raise ValueError("filename cannot be empty")
 
-        expanded_folder = os.path.expanduser(self.folder.path)
+        expanded_folder = os.path.expanduser(self.folder)
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 
@@ -90,9 +86,7 @@ class ListDocuments(BaseNode):
     files, list, directory
     """
 
-    folder: FolderPath = Field(
-        default=FolderPath(path="~"), description="Directory to scan"
-    )
+    folder: str = Field(default="~", description="Directory to scan")
     pattern: str = Field(default="*", description="File pattern to match (e.g. *.txt)")
     recursive: bool = Field(default=False, description="Search subdirectories")
 
@@ -104,9 +98,9 @@ class ListDocuments(BaseNode):
     ) -> AsyncGenerator[OutputType, None]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("directory cannot be empty")
-        expanded_directory = os.path.expanduser(self.folder.path)
+        expanded_directory = os.path.expanduser(self.folder)
 
         if self.recursive:
             pattern = os.path.join(expanded_directory, "**", self.pattern)

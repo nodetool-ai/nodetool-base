@@ -129,8 +129,8 @@ class FilePathInput(InputNode):
 
     value: FilePath = Field(FilePath(), description="The file path to use as input.")
 
-    async def process(self, context: ProcessingContext) -> FilePath:
-        return self.value
+    async def process(self, context: ProcessingContext) -> str:
+        return self.value.path
 
 
 class FolderPathInput(InputNode):
@@ -141,8 +141,8 @@ class FolderPathInput(InputNode):
 
     value: FilePath = Field(FilePath(), description="The folder path to use as input.")
 
-    async def process(self, context: ProcessingContext) -> FilePath:
-        return self.value
+    async def process(self, context: ProcessingContext) -> str:
+        return self.value.path
 
 
 class HuggingFaceModelInput(InputNode):

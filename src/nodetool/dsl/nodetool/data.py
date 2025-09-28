@@ -389,9 +389,8 @@ class LoadCSVFile(GraphNode):
     csv, dataframe, import
     """
 
-    file_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path=""),
-        description="The path to the CSV file to load.",
+    file_path: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The path to the CSV file to load."
     )
 
     @classmethod
@@ -538,9 +537,8 @@ class SaveCSVDataframeFile(GraphNode):
         ),
         description="DataFrame to write to CSV",
     )
-    folder: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FolderPath(type="folder_path", path=""),
-        description="Folder where the file will be saved",
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder where the file will be saved"
     )
     filename: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",

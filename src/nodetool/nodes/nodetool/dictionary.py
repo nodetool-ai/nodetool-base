@@ -10,7 +10,6 @@ import csv
 import datetime
 
 from nodetool.config.environment import Environment
-from nodetool.metadata.types import FilePath, FolderPath
 
 logger = get_logger(__name__)
 
@@ -276,16 +275,14 @@ class LoadCSVFile(BaseNode):
     files, csv, read, input, load, file
     """
 
-    path: FilePath = Field(
-        default=FilePath(), description="Path to the CSV file to read"
-    )
+    path: str = Field(default="", description="Path to the CSV file to read")
 
     async def process(self, context: ProcessingContext) -> list[dict]:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
-        if not self.path.path:
+        if not self.path:
             raise ValueError("path cannot be empty")
-        expanded_path = os.path.expanduser(self.path.path)
+        expanded_path = os.path.expanduser(self.path)
         with open(expanded_path, "r") as f:
             reader = csv.DictReader(f)
             return [row for row in reader]
@@ -304,9 +301,7 @@ class SaveCSVFile(BaseNode):
     data: list[dict] = Field(
         default=[], description="list of dictionaries to write to CSV"
     )
-    folder: FolderPath = Field(
-        default=FolderPath(), description="Folder where the file will be saved"
-    )
+    folder: str = Field(default="", description="Folder where the file will be saved")
     filename: str = Field(
         default="",
         description="Name of the CSV file to save. Supports strftime format codes.",
@@ -317,12 +312,12 @@ class SaveCSVFile(BaseNode):
             raise ValueError("This node is not available in production")
         if not self.data:
             raise ValueError("'data' field cannot be empty")
-        if not self.folder.path:
+        if not self.folder:
             raise ValueError("folder cannot be empty")
         if not self.filename:
             raise ValueError("filename cannot be empty")
 
-        expanded_folder = os.path.expanduser(self.folder.path)
+        expanded_folder = os.path.expanduser(self.folder)
         if not os.path.exists(expanded_folder):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
 

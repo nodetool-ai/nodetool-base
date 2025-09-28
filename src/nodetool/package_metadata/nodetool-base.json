@@ -1991,7 +1991,7 @@
     },
     {
       "title": "Generate Sequence",
-      "description": "Generates a list of integers within a specified range.\n    list, range, sequence, numbers\n\n    Use cases:\n    - Create numbered lists\n    - Generate index sequences\n    - Produce arithmetic progressions",
+      "description": "Iterates over a sequence of numbers.\n    list, range, sequence, numbers",
       "namespace": "nodetool.list",
       "node_type": "nodetool.list.GenerateSequence",
       "properties": [
@@ -2023,12 +2023,7 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "int"
-              }
-            ]
+            "type": "int"
           },
           "name": "output"
         }
@@ -2161,6 +2156,56 @@
       ],
       "basic_fields": [
         "values"
+      ]
+    },
+    {
+      "title": "List Range",
+      "description": "Generates a list of integers within a specified range.\n    list, range, sequence, numbers\n\n    Use cases:\n    - Create numbered lists\n    - Generate index sequences\n    - Produce arithmetic progressions",
+      "namespace": "nodetool.list",
+      "node_type": "nodetool.list.ListRange",
+      "properties": [
+        {
+          "name": "start",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start"
+        },
+        {
+          "name": "stop",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Stop"
+        },
+        {
+          "name": "step",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Step"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "start",
+        "stop",
+        "step"
       ]
     },
     {
@@ -2486,51 +2531,6 @@
       "basic_fields": [
         "values",
         "indices"
-      ]
-    },
-    {
-      "title": "Sequence Iterator",
-      "description": "Iterates over a sequence of numbers.\n    list, range, sequence, numbers",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.SequenceIterator",
-      "properties": [
-        {
-          "name": "start",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Start"
-        },
-        {
-          "name": "stop",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Stop"
-        },
-        {
-          "name": "step",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Step"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "start",
-        "stop",
-        "step"
       ]
     },
     {
@@ -3002,7 +3002,9 @@
         "image",
         "execution_mode",
         "stdin"
-      ]
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Execute Command",
@@ -3078,7 +3080,9 @@
         "image",
         "execution_mode",
         "stdin"
-      ]
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Execute Java Script",
@@ -3151,7 +3155,9 @@
         "image",
         "execution_mode",
         "stdin"
-      ]
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Execute Lua",
@@ -3235,7 +3241,9 @@
         "execution_mode",
         "timeout_seconds",
         "stdin"
-      ]
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Execute Python",
@@ -3309,7 +3317,9 @@
         "image",
         "execution_mode",
         "stdin"
-      ]
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Execute Ruby",
@@ -3382,7 +3392,9 @@
         "image",
         "execution_mode",
         "stdin"
-      ]
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
     },
     {
       "title": "All",
@@ -3802,6 +3814,12 @@
             "type": "chunk"
           },
           "name": "chunk"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
         }
       ],
       "basic_fields": [
@@ -3809,7 +3827,8 @@
         "model",
         "image",
         "audio"
-      ]
+      ],
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Classifier",
@@ -3987,12 +4006,29 @@
           "max": 65536.0
         }
       ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
       "basic_fields": [
         "text",
         "model",
         "image",
         "audio"
-      ]
+      ],
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Summarizer",
@@ -4070,13 +4106,29 @@
       "outputs": [
         {
           "type": {
-            "type": "str"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "text"
         },
         {
           "type": {
-            "type": "chunk"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "chunk"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "chunk"
         }
@@ -4205,19 +4257,43 @@
       "outputs": [
         {
           "type": {
-            "type": "dict"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "dict"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "record"
         },
         {
           "type": {
-            "type": "dataframe"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "dataframe"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "dataframe"
         },
         {
           "type": {
-            "type": "int"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "index"
         }
@@ -4463,13 +4539,7 @@
           "type": {
             "type": "audio"
           },
-          "name": "audio"
-        },
-        {
-          "type": {
-            "type": "chunk"
-          },
-          "name": "chunk"
+          "name": "output"
         }
       ],
       "basic_fields": [
@@ -4582,25 +4652,57 @@
         },
         {
           "type": {
-            "type": "image"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "image"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "image"
         },
         {
           "type": {
-            "type": "audio"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "audio"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "audio"
         },
         {
           "type": {
-            "type": "video"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "video"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "video"
         },
         {
           "type": {
-            "type": "document"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "document"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "document"
         },
@@ -4852,7 +4954,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -4961,7 +5063,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -6029,7 +6131,8 @@
       ],
       "basic_fields": [
         "template"
-      ]
+      ],
+      "is_dynamic": true
     },
     {
       "title": "Check Length",
@@ -6630,9 +6733,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Name of the output folder."
         },
@@ -6859,11 +6962,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {
-            "path": "~"
-          },
+          "default": "~",
           "title": "Folder",
           "description": "Directory to scan"
         },
@@ -6909,9 +7010,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to the document to read"
         }
@@ -7024,14 +7125,21 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7061,9 +7169,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -7133,9 +7241,21 @@
       "outputs": [
         {
           "type": {
-            "type": "any"
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7164,9 +7284,21 @@
       "outputs": [
         {
           "type": {
-            "type": "any"
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7210,14 +7342,21 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7322,14 +7461,21 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7395,14 +7541,21 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7448,14 +7601,21 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "str"
           },
-          "name": "output"
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source_id"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "start_index"
         }
       ],
       "basic_fields": [
@@ -7845,9 +8005,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to the audio file to read"
         }
@@ -8186,9 +8346,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -8417,15 +8577,7 @@
       "title": "Constant",
       "description": "Base class for fixed-value nodes.\n\n    constant, parameter, default\n\n    Use cases:\n    - Provide static inputs to a workflow\n    - Hold configuration values\n    - Simplify testing with deterministic outputs",
       "namespace": "nodetool.constant",
-      "node_type": "nodetool.constant.Constant",
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ]
+      "node_type": "nodetool.constant.Constant"
     },
     {
       "title": "Data Frame",
@@ -8891,6 +9043,7 @@
       "description": "Returns the label associated with the highest value in a dictionary.\n    dictionary, maximum, label, argmax\n\n    Use cases:\n    - Get the most likely class from classification probabilities\n    - Find the category with highest score\n    - Identify the winner in a voting/ranking system",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.ArgMax",
+      "layout": "small",
       "properties": [
         {
           "name": "scores",
@@ -8927,6 +9080,7 @@
       "description": "Merges two dictionaries, with second dictionary values taking precedence.\n    dictionary, merge, update, +, add, concatenate\n\n    Use cases:\n    - Combine default and custom configurations\n    - Merge partial updates with existing data\n    - Create aggregate data structures",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.Combine",
+      "layout": "small",
       "properties": [
         {
           "name": "dict_a",
@@ -9044,6 +9198,7 @@
       "description": "Retrieves a value from a dictionary using a specified key.\n    dictionary, get, value, key\n\n    Use cases:\n    - Access a specific item in a configuration dictionary\n    - Retrieve a value from a parsed JSON object\n    - Extract a particular field from a data structure",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.GetValue",
+      "layout": "small",
       "properties": [
         {
           "name": "dictionary",
@@ -9100,9 +9255,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to the CSV file to read"
         }
@@ -9129,6 +9284,7 @@
       "description": "Creates a simple dictionary with up to three key-value pairs.\n    dictionary, create, simple\n\n    Use cases:\n    - Create configuration entries\n    - Initialize simple data structures\n    - Build basic key-value mappings",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.MakeDictionary",
+      "layout": "small",
       "outputs": [
         {
           "type": {
@@ -9144,13 +9300,15 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "is_dynamic": true
     },
     {
       "title": "Parse JSON",
       "description": "Parses a JSON string into a Python dictionary.\n    json, parse, dictionary\n\n    Use cases:\n    - Process API responses\n    - Load configuration files\n    - Deserialize stored data",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.ParseJSON",
+      "layout": "small",
       "properties": [
         {
           "name": "json_string",
@@ -9278,6 +9436,7 @@
       "description": "Removes a key-value pair from a dictionary.\n    dictionary, remove, delete\n\n    Use cases:\n    - Delete a specific configuration option\n    - Remove sensitive information before processing\n    - Clean up temporary entries in a data structure",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.Remove",
+      "layout": "small",
       "properties": [
         {
           "name": "dictionary",
@@ -9348,9 +9507,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -9375,6 +9534,7 @@
       "description": "Updates a dictionary with new key-value pairs.\n    dictionary, add, update\n\n    Use cases:\n    - Extend a configuration with additional settings\n    - Add new entries to a cache or lookup table\n    - Merge user input with existing data",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.Update",
+      "layout": "small",
       "properties": [
         {
           "name": "dictionary",
@@ -9435,6 +9595,7 @@
       "description": "Creates a dictionary from parallel lists of keys and values.\n    dictionary, create, zip\n\n    Use cases:\n    - Convert separate data columns into key-value pairs\n    - Create lookups from parallel data structures\n    - Transform list data into associative arrays",
       "namespace": "nodetool.dictionary",
       "node_type": "nodetool.dictionary.Zip",
+      "layout": "small",
       "properties": [
         {
           "name": "keys",
@@ -10024,14 +10185,6 @@
           "description": "The FPS of the output video."
         }
       ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ],
       "basic_fields": [
         "frame",
         "fps"
@@ -10401,9 +10554,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -10996,9 +11149,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to the image file to read"
         }
@@ -11024,9 +11177,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder to scan for images"
         },
@@ -11262,9 +11415,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -11907,9 +12060,9 @@
         {
           "name": "file_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "File Path",
           "description": "The path to the CSV file to load."
         }
@@ -12128,7 +12281,7 @@
         },
         {
           "type": {
-            "type": "int"
+            "type": "any"
           },
           "name": "index"
         }
@@ -12155,9 +12308,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -12669,6 +12822,52 @@
       ]
     },
     {
+      "title": "File Path Output",
+      "description": "Output node for a file path.\n    file, path, file_path",
+      "namespace": "nodetool.output",
+      "node_type": "nodetool.output.FilePathOutput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "file_path"
+          },
+          "default": {},
+          "title": "Value"
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the output for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Float Output",
       "description": "Output node for a single float value.\n    float, decimal, number\n\n    Use cases:\n    - Returning decimal results (e.g. percentages, ratios)\n    - Passing floating-point parameters between nodes\n    - Displaying numeric metrics with decimal precision",
       "namespace": "nodetool.output",
@@ -12689,6 +12888,52 @@
             "type": "float"
           },
           "default": 0,
+          "title": "Value"
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the output for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Folder Path Output",
+      "description": "Output node for a folder path.\n    folder, path, folder_path",
+      "namespace": "nodetool.output",
+      "node_type": "nodetool.output.FolderPathOutput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "folder_path"
+          },
+          "default": {},
           "title": "Value"
         },
         {
@@ -14581,9 +14826,9 @@
         {
           "name": "file",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "File",
           "description": "The file to hash"
         },
@@ -14670,18 +14915,18 @@
         {
           "name": "source_folder",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Source Folder",
           "description": "Folder to archive"
         },
         {
           "name": "tar_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Tar Path",
           "description": "Output tar file path"
         },
@@ -14698,7 +14943,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -14718,18 +14963,18 @@
         {
           "name": "tar_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Tar Path",
           "description": "Tar archive to extract"
         },
         {
           "name": "output_folder",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Output Folder",
           "description": "Folder to extract into"
         }
@@ -14737,7 +14982,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -14756,9 +15001,9 @@
         {
           "name": "tar_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Tar Path",
           "description": "Tar archive to inspect"
         }
@@ -14857,7 +15102,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -14875,9 +15120,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -14941,18 +15186,18 @@
         {
           "name": "source_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Source Path",
           "description": "Source file path"
         },
         {
           "name": "destination_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Destination Path",
           "description": "Destination file path"
         }
@@ -14971,9 +15216,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Directory path to create"
         },
@@ -15001,9 +15246,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -15057,9 +15302,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to check for existence"
         }
@@ -15085,9 +15330,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -15113,9 +15358,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -15247,9 +15492,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -15328,9 +15573,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -15398,9 +15643,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to check"
         }
@@ -15426,9 +15671,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to check"
         }
@@ -15469,7 +15714,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -15487,11 +15732,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {
-            "path": "~"
-          },
+          "default": "~",
           "title": "Folder",
           "description": "Directory to scan"
         },
@@ -15517,7 +15760,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "file"
         }
@@ -15537,9 +15780,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to file"
         }
@@ -15565,18 +15808,18 @@
         {
           "name": "source_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Source Path",
           "description": "Source file path"
         },
         {
           "name": "destination_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Destination Path",
           "description": "Destination file path"
         }
@@ -15605,7 +15848,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -15637,11 +15880,11 @@
         {
           "name": "file_path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "File Path",
-          "description": "FilePath object to convert to string"
+          "description": "File path to convert to string"
         }
       ],
       "outputs": [
@@ -15684,7 +15927,7 @@
       "outputs": [
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "output"
         }
@@ -16108,7 +16351,8 @@
         "command",
         "timeout_seconds",
         "ready_timeout_seconds"
-      ]
+      ],
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Random Bool",
@@ -16739,8 +16983,7 @@
         },
         {
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "str"
           },
           "name": "error"
         }
@@ -16809,11 +17052,9 @@
         {
           "name": "output_file",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {
-            "path": "screenshot.png"
-          },
+          "default": "screenshot.png",
           "title": "Output File",
           "description": "Path to save the screenshot (relative to workspace)"
         },
@@ -17684,11 +17925,9 @@
         {
           "name": "output_folder",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {
-            "path": "downloads"
-          },
+          "default": "downloads",
           "title": "Output Folder",
           "description": "Local folder path where files will be saved."
         },
@@ -18307,6 +18546,7 @@
       "description": "Adds two numbers.\n    math, add, plus",
       "namespace": "lib.math",
       "node_type": "lib.math.Add",
+      "layout": "small",
       "properties": [
         {
           "name": "a",
@@ -18368,6 +18608,7 @@
       "description": "Computes cosine of the given angle in radians.\n    math, cosine, trig",
       "namespace": "lib.math",
       "node_type": "lib.math.Cosine",
+      "layout": "small",
       "properties": [
         {
           "name": "angle_rad",
@@ -18412,6 +18653,7 @@
       "description": "Divides A by B.\n    math, divide, division, quotient",
       "namespace": "lib.math",
       "node_type": "lib.math.Divide",
+      "layout": "small",
       "properties": [
         {
           "name": "a",
@@ -18473,6 +18715,7 @@
       "description": "Performs a selected unary math operation on an input.\n    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log",
       "namespace": "lib.math",
       "node_type": "lib.math.MathFunction",
+      "layout": "small",
       "properties": [
         {
           "name": "input",
@@ -18543,6 +18786,7 @@
       "description": "Computes A modulo B.\n    math, modulus, modulo, remainder",
       "namespace": "lib.math",
       "node_type": "lib.math.Modulus",
+      "layout": "small",
       "properties": [
         {
           "name": "a",
@@ -18604,6 +18848,7 @@
       "description": "Multiplies two numbers.\n    math, multiply, product",
       "namespace": "lib.math",
       "node_type": "lib.math.Multiply",
+      "layout": "small",
       "properties": [
         {
           "name": "a",
@@ -18665,6 +18910,7 @@
       "description": "Raises base to the given exponent.\n    math, power, exponent",
       "namespace": "lib.math",
       "node_type": "lib.math.Power",
+      "layout": "small",
       "properties": [
         {
           "name": "base",
@@ -18726,6 +18972,7 @@
       "description": "Computes sine of the given angle in radians.\n    math, sine, trig",
       "namespace": "lib.math",
       "node_type": "lib.math.Sine",
+      "layout": "small",
       "properties": [
         {
           "name": "angle_rad",
@@ -18770,6 +19017,7 @@
       "description": "Computes square root of x.\n    math, sqrt, square_root",
       "namespace": "lib.math",
       "node_type": "lib.math.Sqrt",
+      "layout": "small",
       "properties": [
         {
           "name": "x",
@@ -18814,6 +19062,7 @@
       "description": "Subtracts B from A.\n    math, subtract, minus",
       "namespace": "lib.math",
       "node_type": "lib.math.Subtract",
+      "layout": "small",
       "properties": [
         {
           "name": "a",
@@ -18879,9 +19128,9 @@
         {
           "name": "path",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Path",
           "description": "Path to the file to read"
         }
@@ -18923,9 +19172,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Folder where the file will be saved"
         },
@@ -20730,9 +20979,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "Output folder where the LEANN index will be stored. Choose a location with sufficient disk space for your dataset."
         },
@@ -20777,24 +21026,28 @@
           "description": "Index backend optimized for your scale. HNSW for most use cases, DiskANN for large datasets. See Backend documentation for details."
         },
         {
-          "name": "text_chunks",
+          "name": "text",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "text_chunk"
-              }
-            ]
+            "type": "str"
           },
-          "default": [],
-          "title": "Text Chunks",
-          "description": "Text chunks to be indexed. Each chunk should contain: text content, unique source_id, and optional metadata for filtering."
+          "default": "",
+          "title": "Text",
+          "description": "The text to index"
+        },
+        {
+          "name": "metadata",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Metadata",
+          "description": "The metadata to associate with the text"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "bool"
+            "type": "none"
           },
           "name": "output"
         }
@@ -20804,7 +21057,8 @@
         "name",
         "model",
         "backend",
-        "text_chunks"
+        "text",
+        "metadata"
       ]
     },
     {
@@ -20816,9 +21070,9 @@
         {
           "name": "folder",
           "type": {
-            "type": "folder_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Folder",
           "description": "The folder where the index is stored"
         },
@@ -21763,13 +22017,22 @@
           "description": "The collection to index"
         },
         {
-          "name": "text_chunk",
+          "name": "document_id",
           "type": {
-            "type": "text_chunk"
+            "type": "str"
           },
-          "default": {},
-          "title": "Text Chunk",
-          "description": "Text chunk to index"
+          "default": "",
+          "title": "Document Id",
+          "description": "The document ID to associate with the text chunk"
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to index"
         },
         {
           "name": "metadata",
@@ -21783,7 +22046,8 @@
       ],
       "basic_fields": [
         "collection",
-        "text_chunk",
+        "document_id",
+        "text",
         "metadata"
       ]
     },
@@ -22143,7 +22407,15 @@
         },
         {
           "type": {
-            "type": "audio"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "audio"
+              },
+              {
+                "type": "none"
+              }
+            ]
           },
           "name": "audio"
         },
@@ -22159,7 +22431,8 @@
         "prompt",
         "chunk",
         "speed"
-      ]
+      ],
+      "supports_dynamic_outputs": true
     },
     {
       "title": "Realtime Transcription",

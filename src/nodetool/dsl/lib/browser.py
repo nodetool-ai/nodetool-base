@@ -158,8 +158,8 @@ class Screenshot(GraphNode):
     selector: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="Optional CSS selector for capturing a specific element"
     )
-    output_file: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.FilePath(type="file_path", path="screenshot.png"),
+    output_file: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="screenshot.png",
         description="Path to save the screenshot (relative to workspace)",
     )
     timeout: int | GraphNode | tuple[GraphNode, str] = Field(

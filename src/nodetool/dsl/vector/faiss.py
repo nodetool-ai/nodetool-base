@@ -1,0 +1,151 @@
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
+import nodetool.metadata.types
+import nodetool.metadata.types as types
+from nodetool.dsl.graph import GraphNode
+
+
+class AddVectors(GraphNode):
+    """
+    Add vectors to a FAISS index.
+    faiss, add, vectors
+    """
+
+    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FaissIndex(type="faiss_index", index=None),
+        description="FAISS index",
+    )
+    vectors: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Vectors to add (n, d)",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.AddVectors"
+
+
+class AddWithIds(GraphNode):
+    """
+    Add vectors with explicit integer IDs to a FAISS index.
+    faiss, add, ids, vectors
+    """
+
+    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FaissIndex(type="faiss_index", index=None),
+        description="FAISS index",
+    )
+    vectors: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Vectors to add (n, d)",
+    )
+    ids: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="1-D int64 IDs (n,)",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.AddWithIds"
+
+
+class CreateIndexFlatIP(GraphNode):
+    """
+    Create a FAISS IndexFlatIP (inner product / cosine with normalized vectors).
+    faiss, index, ip, create
+    """
+
+    dim: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=768, description="Embedding dimensionality"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.CreateIndexFlatIP"
+
+
+class CreateIndexFlatL2(GraphNode):
+    """
+    Create a FAISS IndexFlatL2.
+    faiss, index, l2, create
+    """
+
+    dim: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=768, description="Embedding dimensionality"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.CreateIndexFlatL2"
+
+
+import nodetool.nodes.vector.faiss
+
+
+class CreateIndexIVFFlat(GraphNode):
+    """
+    Create a FAISS IndexIVFFlat (inverted file index with flat quantizer).
+    faiss, index, ivf, create
+    """
+
+    Metric: typing.ClassVar[type] = nodetool.nodes.vector.faiss.Metric
+    dim: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=768, description="Embedding dimensionality"
+    )
+    nlist: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1024, description="Number of Voronoi cells"
+    )
+    metric: nodetool.nodes.vector.faiss.Metric = Field(
+        default=nodetool.nodes.vector.faiss.Metric.L2, description="Distance metric"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.CreateIndexIVFFlat"
+
+
+class Search(GraphNode):
+    """
+    Search a FAISS index with query vectors, returning distances and indices.
+    faiss, search, query, knn
+    """
+
+    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FaissIndex(type="faiss_index", index=None),
+        description="FAISS index",
+    )
+    query: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Query vectors (m, d) or (d,)",
+    )
+    k: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=5, description="Number of nearest neighbors"
+    )
+    nprobe: int | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None, description="nprobe for IVF indices"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.Search"
+
+
+class TrainIndex(GraphNode):
+    """
+    Train a FAISS index with training vectors (required for IVF indices).
+    faiss, train, index
+    """
+
+    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.FaissIndex(type="faiss_index", index=None),
+        description="FAISS index",
+    )
+    vectors: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Training vectors (n, d)",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "vector.faiss.TrainIndex"
