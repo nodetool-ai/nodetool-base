@@ -48,8 +48,9 @@ class FloatInput(InputNode):
     min: float = 0
     max: float = 100
 
-    async def process(self, context: ProcessingContext) -> float:
-        return min(max(self.value, self.min), self.max)
+    @classmethod
+    def return_type(cls):
+        return float
 
 
 class BooleanInput(InputNode):
@@ -65,8 +66,9 @@ class BooleanInput(InputNode):
 
     value: bool = False
 
-    async def process(self, context: ProcessingContext) -> bool:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return bool
 
 
 class IntegerInput(InputNode):
@@ -84,8 +86,9 @@ class IntegerInput(InputNode):
     min: int = 0
     max: int = 100
 
-    async def process(self, context: ProcessingContext) -> int:
-        return min(max(self.value, self.min), self.max)
+    @classmethod
+    def return_type(cls):
+        return int
 
 
 class StringInput(InputNode):
@@ -103,8 +106,9 @@ class StringInput(InputNode):
 
     value: str = ""
 
-    async def process(self, context: ProcessingContext) -> str:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return str
 
 
 class StringListInput(InputNode):
@@ -117,8 +121,9 @@ class StringListInput(InputNode):
         default_factory=list, description="The list of strings to use as input."
     )
 
-    async def process(self, context: ProcessingContext) -> list[str]:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return list[str]
 
 
 class FolderPathInput(InputNode):
@@ -127,16 +132,15 @@ class FolderPathInput(InputNode):
     input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
-    value: FolderPath = Field(
-        FolderPath(), description="The folder path to use as input."
+    value: str = Field(
+        "",
+        description="The folder path to use as input.",
+        json_schema_extra={"type": "folder_path"},
     )
 
-    async def process(self, context: ProcessingContext) -> str:
-        if self.value.path == "":
-            raise ValueError("Folder path input is empty, please provide a folder path")
-        if Environment.is_production():
-            raise ValueError("Folder path input is not available in production")
-        return self.value.path
+    @classmethod
+    def return_type(cls):
+        return str
 
 
 class HuggingFaceModelInput(InputNode):
@@ -149,8 +153,9 @@ class HuggingFaceModelInput(InputNode):
         HuggingFaceModel(), description="The Hugging Face model to use as input."
     )
 
-    async def process(self, context: ProcessingContext) -> HuggingFaceModel:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return HuggingFaceModel
 
 
 class InferenceProviderInput(InputNode):
@@ -163,8 +168,9 @@ class InferenceProviderInput(InputNode):
         InferenceProvider.none, description="The inference provider to use as input."
     )
 
-    async def process(self, context: ProcessingContext) -> InferenceProvider:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return InferenceProvider
 
 
 class ChatInput(InputNode):
@@ -190,49 +196,9 @@ class ChatInput(InputNode):
         document: DocumentRef | None
         tools: list[ToolName]
 
-    async def process(self, context: ProcessingContext) -> OutputType:
-        if not self.value:
-            raise ValueError("Chat input is empty, use the workflow chat bottom right")
-
-        history = self.value[:-1]
-
-        last_message = self.value[-1] if self.value else None
-        text = ""
-        image = ImageRef()
-        audio = AudioRef()
-        video = VideoRef()
-        document = DocumentRef()
-
-        if last_message and last_message.content:
-            # Check all content items, taking the first instance of each type
-            for content in last_message.content:
-                if isinstance(content, MessageTextContent):
-                    text = content.text
-                elif isinstance(content, MessageImageContent):
-                    image = content.image
-                elif isinstance(content, MessageAudioContent):
-                    audio = content.audio
-                elif isinstance(content, MessageVideoContent):
-                    video = content.video
-                elif isinstance(content, MessageDocumentContent):
-                    document = content.document
-
-        def tool_name(name: str) -> ToolName:
-            return ToolName(name=name)
-
-        return {
-            "history": history,
-            "text": text,
-            "image": image,
-            "audio": audio,
-            "video": video,
-            "document": document,
-            "tools": (
-                [tool_name(tool) for tool in last_message.tools]
-                if last_message and last_message.tools
-                else []
-            ),
-        }
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
 
 
 class ColorInput(InputNode):
@@ -243,8 +209,9 @@ class ColorInput(InputNode):
 
     value: ColorRef = Field(ColorRef(), description="The color to use as input.")
 
-    async def process(self, context: ProcessingContext) -> ColorRef:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return ColorRef
 
 
 class LanguageModelInput(InputNode):
@@ -257,8 +224,9 @@ class LanguageModelInput(InputNode):
         LanguageModel(), description="The language model to use as input."
     )
 
-    async def process(self, context: ProcessingContext) -> LanguageModel:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return LanguageModel
 
 
 class DocumentInput(InputNode):
@@ -277,10 +245,9 @@ class DocumentInput(InputNode):
         DocumentRef(), description="The document to use as input."
     )
 
-    async def process(self, context: ProcessingContext) -> DocumentRef:
-        if self.value.is_empty():
-            raise ValueError("Document input is empty, please provide a document")
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return DocumentRef
 
 
 class ImageInput(InputNode):
@@ -297,10 +264,9 @@ class ImageInput(InputNode):
 
     value: ImageRef = Field(ImageRef(), description="The image to use as input.")
 
-    async def process(self, context: ProcessingContext) -> ImageRef:
-        if self.value.is_empty():
-            raise ValueError("Image input is empty, please upload an image")
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return ImageRef
 
 
 class VideoInput(InputNode):
@@ -317,10 +283,9 @@ class VideoInput(InputNode):
 
     value: VideoRef = Field(VideoRef(), description="The video to use as input.")
 
-    async def process(self, context: ProcessingContext) -> VideoRef:
-        if self.value.is_empty():
-            raise ValueError("Video input is empty, please upload a video")
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return VideoRef
 
 
 class AudioInput(InputNode):
@@ -337,10 +302,9 @@ class AudioInput(InputNode):
 
     value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
 
-    async def process(self, context: ProcessingContext) -> AudioRef:
-        if self.value.is_empty():
-            raise ValueError("Audio input is empty, please upload an audio file")
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return AudioRef
 
 
 class RealtimeAudioInput(InputNode):
@@ -376,13 +340,14 @@ class AssetFolderInput(InputNode):
 
     value: FolderRef = Field(FolderRef(), description="The folder to use as input.")
 
-    async def process(self, context: ProcessingContext) -> FolderRef:
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return FolderRef
 
 
 class FilePathInput(InputNode):
     """
-    Accepts a local filesystem path (to a file or directory) as input for workflows.  This input provides a 'FilePath' object. Its usage is typically restricted to non-production environments due to security considerations around direct filesystem access.
+    Accepts a local filesystem path (to a file or directory) as input for workflows.
     input, parameter, path, filepath, directory, local_file, filesystem
 
     Use cases:
@@ -392,19 +357,20 @@ class FilePathInput(InputNode):
     - Not available in production: raises an error if used in a production environment.
     """
 
-    value: FilePath = Field(FilePath(), description="The path to use as input.")
+    value: str = Field(
+        "",
+        description="The path to use as input.",
+        json_schema_extra={"type": "file_path"},
+    )
 
-    async def process(self, context: ProcessingContext) -> str:
-        if Environment.is_production():
-            raise ValueError("Path input is not available in production")
-        if self.value.path == "":
-            raise ValueError("Path input is empty, please provide a path")
-        return self.value.path
+    @classmethod
+    def return_type(cls):
+        return str
 
 
 class DocumentFileInput(InputNode):
     """
-    Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.  This node is a utility for loading a document directly from the local filesystem for use in workflows. It outputs both the 'DocumentRef' for the loaded document and the original 'FilePath'.  Note: This input type is generally not available in production environments due to filesystem access restrictions.
+    Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
     input, parameter, document, file, path, local_file, load
 
     Use cases:
@@ -414,21 +380,19 @@ class DocumentFileInput(InputNode):
     - To provide an existing 'DocumentRef', use 'DocumentInput'.
     """
 
-    value: FilePath = Field(FilePath(), description="The path to the document file.")
+    value: str = Field(
+        "",
+        description="The path to the document file.",
+        json_schema_extra={"type": "file_path"},
+    )
 
     class OutputType(TypedDict):
         document: DocumentRef
-        path: FilePath
+        path: str
 
-    async def process(self, context: ProcessingContext) -> OutputType:
-        if Environment.is_production():
-            raise ValueError("Document file input is not available in production")
-        if self.value.path == "":
-            raise ValueError("Document file input is empty, please provide a document")
-        return {
-            "document": DocumentRef(uri=f"file://{self.value.path}"),
-            "path": self.value,
-        }
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
 
 
 class CollectionInput(InputNode):
@@ -447,7 +411,6 @@ class CollectionInput(InputNode):
         Collection(), description="The collection to use as input."
     )
 
-    async def process(self, context: ProcessingContext) -> Collection:
-        if not self.value:
-            raise ValueError("Collection input is empty, please select a collection")
-        return self.value
+    @classmethod
+    def return_type(cls):
+        return Collection

@@ -297,7 +297,7 @@ class SaveTextFile(BaseNode):
     """
 
     text: str = Field(title="Text", default="")
-    folder: str = Field(default="", description="Name of the output folder.")
+    folder: str = Field(default="", description="Path to the output folder.")
     name: str = Field(
         title="Name",
         default="%Y-%m-%d-%H-%M-%S.txt",

@@ -4819,7 +4819,7 @@
     },
     {
       "title": "Document File Input",
-      "description": "Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.  This node is a utility for loading a document directly from the local filesystem for use in workflows. It outputs both the 'DocumentRef' for the loaded document and the original 'FilePath'.  Note: This input type is generally not available in production environments due to filesystem access restrictions.\n    input, parameter, document, file, path, local_file, load\n\n    Use cases:\n    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.\n    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.\n    - Useful for development or workflows that have legitimate access to the local filesystem.\n    - To provide an existing 'DocumentRef', use 'DocumentInput'.",
+      "description": "Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.\n    input, parameter, document, file, path, local_file, load\n\n    Use cases:\n    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.\n    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.\n    - Useful for development or workflows that have legitimate access to the local filesystem.\n    - To provide an existing 'DocumentRef', use 'DocumentInput'.",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.DocumentFileInput",
       "properties": [
@@ -4835,11 +4835,14 @@
         {
           "name": "value",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Value",
-          "description": "The path to the document file."
+          "description": "The path to the document file.",
+          "json_schema_extra": {
+            "type": "file_path"
+          }
         },
         {
           "name": "description",
@@ -4860,7 +4863,7 @@
         },
         {
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
           "name": "path"
         }
@@ -4919,7 +4922,7 @@
     },
     {
       "title": "File Path Input",
-      "description": "Accepts a file path as a parameter for workflows.\n    input, parameter, file, path, filepath, local_file, filesystem",
+      "description": "Accepts a local filesystem path (to a file or directory) as input for workflows.\n    input, parameter, path, filepath, directory, local_file, filesystem\n\n    Use cases:\n    - Provide a local path to a specific file or directory for processing.\n    - Specify an input or output location on the local filesystem for a development task.\n    - Load local datasets or configuration files not managed as assets.\n    - Not available in production: raises an error if used in a production environment.",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.FilePathInput",
       "properties": [
@@ -4935,11 +4938,14 @@
         {
           "name": "value",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Value",
-          "description": "The file path to use as input."
+          "description": "The path to use as input.",
+          "json_schema_extra": {
+            "type": "file_path"
+          }
         },
         {
           "name": "description",
@@ -5044,11 +5050,14 @@
         {
           "name": "value",
           "type": {
-            "type": "file_path"
+            "type": "str"
           },
-          "default": {},
+          "default": "",
           "title": "Value",
-          "description": "The folder path to use as input."
+          "description": "The folder path to use as input.",
+          "json_schema_extra": {
+            "type": "folder_path"
+          }
         },
         {
           "name": "description",
@@ -5354,53 +5363,6 @@
         {
           "type": {
             "type": "language_model"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Path Input",
-      "description": "Accepts a local filesystem path (to a file or directory) as input for workflows.  This input provides a 'FilePath' object. Its usage is typically restricted to non-production environments due to security considerations around direct filesystem access.\n    input, parameter, path, filepath, directory, local_file, filesystem\n\n    Use cases:\n    - Provide a local path to a specific file or directory for processing.\n    - Specify an input or output location on the local filesystem for a development task.\n    - Load local datasets or configuration files not managed as assets.\n    - Not available in production: raises an error if used in a production environment.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.PathInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "file_path"
-          },
-          "default": {},
-          "title": "Value",
-          "description": "The path to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "file_path"
           },
           "name": "output"
         }
