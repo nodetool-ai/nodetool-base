@@ -681,10 +681,10 @@ class Agent(BaseNode):
     def is_cacheable(cls) -> bool:
         return False
 
-    class OutputType(TypedDict, total=False):
-        text: str
-        chunk: Chunk
-        audio: AudioRef
+    class OutputType(TypedDict):
+        text: str | None
+        chunk: Chunk | None
+        audio: AudioRef | None
 
     def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
         tools = []
@@ -709,10 +709,6 @@ class Agent(BaseNode):
 
     @classmethod
     def is_streaming_output(cls) -> bool:
-        return True
-
-    @classmethod
-    def is_streaming_input(cls) -> bool:
         return True
 
     def _prepare_messages(self) -> list[Message]:
@@ -749,20 +745,17 @@ class Agent(BaseNode):
         context: ProcessingContext,
         messages: list[Message],
         tools: list[Tool],
-        outputs: NodeOutputs,
-    ) -> None:
+    ) -> AsyncGenerator[OutputType, None]:
         """Execute one or more model iterations, streaming chunks and handling tools.
 
         Args:
             context (ProcessingContext): Workflow execution context.
             messages (list[Message]): Message history to seed the model.
             tools (list[Tool]): Resolved tools available for tool-calling.
-            outputs (NodeOutputs): Output emitter for streamed chunks and results.
         """
         tools_called = False
         first_time = True
         iteration = 0
-        tool_iterations = 0
 
         while tools_called or first_time:
             iteration += 1
@@ -796,18 +789,12 @@ class Agent(BaseNode):
                 if isinstance(chunk, Chunk):
                     if chunk.content_type in ("text", None):
                         message_text_content.text += chunk.content
-                        await outputs.emit("chunk", chunk)
-                        if chunk.done:
-                            log.debug(
-                                "Agent chunk done (per-item): iteration=%d text_len=%d",
-                                iteration,
-                                len(message_text_content.text),
-                            )
-                            await outputs.emit("text", message_text_content.text)
+                        yield {"chunk": chunk, "text": None, "audio": None}
                     elif chunk.content_type == "audio":
-                        audio_bytes = base64.b64decode(chunk.content or "")
-                        audio_ref = AudioRef(data=audio_bytes)
-                        await outputs.emit("audio", audio_ref)
+                        yield {"chunk": chunk, "text": None, "audio": None}
+                        # audio_bytes = base64.b64decode(chunk.content or "")
+                        # audio_ref = AudioRef(data=audio_bytes)
+                        # yield {"chunk": None, "text": None, "audio": audio_ref}
                     else:
                         log.warning(
                             "Agent received unsupported chunk type %s; ignoring",
@@ -815,7 +802,11 @@ class Agent(BaseNode):
                         )
 
                     if chunk.done:
-                        await outputs.emit("text", message_text_content.text)
+                        yield {
+                            "chunk": None,
+                            "text": message_text_content.text,
+                            "audio": None,
+                        }
 
                 elif isinstance(chunk, ToolCall):
                     tools_called = True
@@ -931,112 +922,27 @@ class Agent(BaseNode):
             iteration,
         )
 
-    async def run(
+    async def gen_process(
         self,
         context: ProcessingContext,
-        inputs: NodeInputs,
-        outputs: NodeOutputs,
-    ) -> None:
+    ) -> AsyncGenerator[OutputType, None]:
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
-        # If this Agent has no inbound edges, execute once using configured properties.
-        # This enables simple graphs (Agent → Preview) to run without an explicit trigger.
-        try:
-            has_inbound = any(e.target == self.id for e in context.graph.edges)
-        except Exception:
-            has_inbound = False
-        if not has_inbound:
-            messages = self._prepare_messages()
-            tools = self._resolve_tools(context)
-            tool_names = [t.name for t in tools if t is not None]
-            log.debug(
-                "Agent setup (fallback no-input): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
-                self.model.id,
-                self.model.provider,
-                self.context_window,
-                self.max_tokens,
-                tool_names,
-            )
-            await self._execute_agent_loop(context, messages, tools, outputs)
-            return
-        # Accumulators for streamed chunk input
-        chunk_text_buf: list[str] = []
-        audio_accum = bytearray()
 
-        # Consume streaming input and run one agent execution when a logical unit completes
-        async for handle, item in inputs.any():
-            # Special handling for streamed chunk input
-            if handle == "chunk" and isinstance(item, Chunk):
-                if item.content_type == "audio":
-                    if item.content:
-                        try:
-                            audio_accum.extend(base64.b64decode(item.content))
-                        except Exception:
-                            pass
-                    if getattr(item, "done", False):
-                        # Set accumulated audio and execute once
-                        if len(audio_accum) > 0:
-                            self.audio = AudioRef(data=bytes(audio_accum))
-                        # reset accumulators
-                        chunk_text_buf = []
-                        audio_accum = bytearray()
-                        messages = self._prepare_messages()
-                        tools = self._resolve_tools(context)
-                        tool_names = [t.name for t in tools if t is not None]
-                        log.debug(
-                            "Agent setup (chunk-audio): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
-                            self.model.id,
-                            self.model.provider,
-                            self.context_window,
-                            self.max_tokens,
-                            tool_names,
-                        )
-                        await self._execute_agent_loop(
-                            context, messages, tools, outputs
-                        )
-                else:
-                    # Treat as text chunk
-                    if item.content:
-                        chunk_text_buf.append(item.content)
-                    if getattr(item, "done", False):
-                        self.prompt = "".join(chunk_text_buf)
-                        # reset accumulators
-                        chunk_text_buf = []
-                        audio_accum = bytearray()
-                        messages = self._prepare_messages()
-                        tools = self._resolve_tools(context)
-                        tool_names = [t.name for t in tools if t is not None]
-                        log.debug(
-                            "Agent setup (chunk-text): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
-                            self.model.id,
-                            self.model.provider,
-                            self.context_window,
-                            self.max_tokens,
-                            tool_names,
-                        )
-                        await self._execute_agent_loop(
-                            context, messages, tools, outputs
-                        )
-                # For intermediate chunks, wait for done signal
-                continue
+        messages = self._prepare_messages()
+        tools = self._resolve_tools(context)
+        tool_names = [t.name for t in tools if t is not None]
 
-            # Default behavior: assign property and execute immediately per item
-            try:
-                self.assign_property(handle, item)
-            except Exception:
-                pass
+        log.debug("Agent messages: %s", messages)
 
-            messages = self._prepare_messages()
-            tools = self._resolve_tools(context)
-            tool_names = [t.name for t in tools if t is not None]
+        log.debug(
+            "Agent setup (per-item): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
+            self.model.id,
+            self.model.provider,
+            self.context_window,
+            self.max_tokens,
+            tool_names,
+        )
 
-            log.debug(
-                "Agent setup (per-item): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
-                self.model.id,
-                self.model.provider,
-                self.context_window,
-                self.max_tokens,
-                tool_names,
-            )
-
-            await self._execute_agent_loop(context, messages, tools, outputs)
+        async for item in self._execute_agent_loop(context, messages, tools):
+            yield item

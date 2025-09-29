@@ -1392,15 +1392,8 @@
         {
           "name": "value",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "float",
+            "optional": true
           },
           "title": "Value"
         }
@@ -1786,15 +1779,8 @@
         {
           "name": "value",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "float"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "float",
+            "optional": true
           },
           "title": "Value",
           "description": "The comparison value (for greater_than, less_than, equal_to)"
@@ -4106,29 +4092,13 @@
       "outputs": [
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str"
           },
           "name": "text"
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "chunk"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "chunk"
           },
           "name": "chunk"
         }
@@ -4257,43 +4227,19 @@
       "outputs": [
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "dict"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "dict"
           },
           "name": "record"
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "dataframe"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "dataframe"
           },
           "name": "dataframe"
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int"
           },
           "name": "index"
         }
@@ -4652,57 +4598,25 @@
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "image"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "image"
           },
           "name": "image"
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "audio"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "audio"
           },
           "name": "audio"
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "video"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "video"
           },
           "name": "video"
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "document"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "document"
           },
           "name": "document"
         },
@@ -5612,15 +5526,8 @@
         {
           "name": "separator",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str",
+            "optional": true
           },
           "title": "Separator"
         }
@@ -6113,45 +6020,24 @@
         {
           "name": "min_length",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Minimum Length"
         },
         {
           "name": "max_length",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Maximum Length"
         },
         {
           "name": "exact_length",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Exact Length"
         }
@@ -6404,15 +6290,8 @@
         {
           "name": "group",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Group",
           "description": "Capture group to extract (0 for full match)"
@@ -6742,45 +6621,24 @@
         {
           "name": "start",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Start Index"
         },
         {
           "name": "stop",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Stop Index"
         },
         {
           "name": "step",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Step"
         }
@@ -7061,15 +6919,8 @@
         {
           "name": "chunk_size",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Chunk Size",
           "description": "Optional maximum chunk size for further splitting"
@@ -7397,15 +7248,8 @@
         {
           "name": "chunk_size",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Chunk Size",
           "description": "Optional maximum chunk size for further splitting"
@@ -9341,15 +9185,8 @@
         {
           "name": "value_field",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str",
+            "optional": true
           },
           "title": "Value Field",
           "description": "Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value."
@@ -14399,15 +14236,8 @@
         {
           "name": "data",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "bytes"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "bytes",
+            "optional": true
           },
           "title": "Data",
           "description": "Data to compress"
@@ -14435,15 +14265,8 @@
         {
           "name": "data",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "bytes"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "bytes",
+            "optional": true
           },
           "title": "Data",
           "description": "Gzip data to decompress"
@@ -15501,15 +15324,8 @@
         {
           "name": "default",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str",
+            "optional": true
           },
           "title": "Default",
           "description": "Default value if not found"
@@ -15518,15 +15334,8 @@
       "outputs": [
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str",
+            "optional": true
           },
           "name": "output"
         }
@@ -17150,15 +16959,8 @@
         {
           "name": "default",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str",
+            "optional": true
           },
           "title": "Default",
           "description": "Default value if not found"
@@ -17167,15 +16969,8 @@
       "outputs": [
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str",
+            "optional": true
           },
           "name": "output"
         }
@@ -17984,15 +17779,7 @@
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "str"
           },
           "name": "error_message"
         }
@@ -19128,15 +18915,8 @@
         {
           "name": "data",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "bytes"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "bytes",
+            "optional": true
           },
           "title": "Data",
           "description": "The bytes to write to file"
@@ -21388,15 +21168,8 @@
         {
           "name": "nprobe",
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "int"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "int",
+            "optional": true
           },
           "title": "Nprobe",
           "description": "nprobe for IVF indices"
@@ -22379,15 +22152,7 @@
         },
         {
           "type": {
-            "type": "union",
-            "type_args": [
-              {
-                "type": "audio"
-              },
-              {
-                "type": "none"
-              }
-            ]
+            "type": "audio"
           },
           "name": "audio"
         },
