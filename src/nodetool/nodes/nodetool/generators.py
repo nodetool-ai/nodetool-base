@@ -1,6 +1,6 @@
 import json
 import re
-from typing import AsyncGenerator, TypedDict
+from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.config.logging_config import get_logger
 from pydantic import Field
 
@@ -10,6 +10,9 @@ from nodetool.chat.dataframes import (
 from nodetool.chat.providers import get_provider
 from nodetool.metadata.types import (
     Message,
+    MessageContent,
+    MessageTextContent,
+    MessageAudioContent,
     DataframeRef,
     RecordType,
     LanguageModel,
@@ -27,6 +30,175 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.chat.dataframes import GenerateDataTool
 
 logger = get_logger(__name__)
+
+
+DEFAULT_STRUCTURED_OUTPUT_SYSTEM_PROMPT = """
+You are a structured data generator focused on JSON outputs.
+
+Goal
+- Produce a high-quality JSON object that matches <JSON_SCHEMA> using the guidance in <INSTRUCTIONS> and any supplemental <CONTEXT>.
+
+Output format (MANDATORY)
+- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:
+
+  ```json
+  { ...single JSON object matching <JSON_SCHEMA>... }
+  ```
+
+- No additional prose before or after the block.
+
+Generation rules
+- Invent plausible, internally consistent values when not explicitly provided.
+- Honor all constraints from <JSON_SCHEMA> (types, enums, ranges, formats).
+- Prefer ISO 8601 for dates/times when applicable.
+- Ensure numbers respect reasonable magnitudes and relationships described in <INSTRUCTIONS>.
+- Avoid referencing external sources; rely solely on the provided guidance.
+
+Validation
+- Ensure the final JSON validates against <JSON_SCHEMA> exactly.
+"""
+
+
+class StructuredOutputGenerator(BaseNode):
+    """
+    Generate structured JSON objects from instructions using LLM providers.
+    data-generation, structured-data, json, synthesis
+
+    Specialized for creating structured information:
+    - Generating JSON that follows dynamic schemas
+    - Fabricating records from requirements and guidance
+    - Simulating sample data for downstream workflows
+    - Producing consistent structured outputs for testing
+    """
+
+    _supports_dynamic_outputs: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Structured Output Generator"
+
+    system_prompt: str = Field(
+        default=DEFAULT_STRUCTURED_OUTPUT_SYSTEM_PROMPT,
+        description="The system prompt guiding JSON generation.",
+    )
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for structured generation.",
+    )
+    instructions: str = Field(
+        default="",
+        description="Detailed instructions for the structured output.",
+    )
+    context: str = Field(
+        default="",
+        description="Optional context to ground the generation.",
+    )
+    max_tokens: int = Field(
+        default=4096,
+        ge=1,
+        le=16384,
+        description="The maximum number of tokens to generate.",
+    )
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
+    )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["instructions", "context", "model"]
+
+    async def process(self, context: ProcessingContext) -> dict[str, Any]:
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
+        provider = get_provider(self.model.provider)
+
+        output_slots = self.get_dynamic_output_slots()
+        if len(output_slots) == 0:
+            raise ValueError("Declare outputs for the fields you want to generate")
+
+        properties: dict[str, Any] = {
+            slot.name: slot.type.get_json_schema() for slot in output_slots
+        }
+        required: list[str] = [slot.name for slot in output_slots]
+
+        schema = {
+            "type": "object",
+            "title": "Structured Output Specification",
+            "additionalProperties": False,
+            "properties": properties,
+            "required": required,
+        }
+
+        instructions_sections: list[str] = []
+        instructions_sections.append(
+            "<JSON_SCHEMA>\n" + json.dumps(schema, indent=2) + "\n</JSON_SCHEMA>"
+        )
+        if self.instructions.strip():
+            instructions_sections.append(
+                "<INSTRUCTIONS>\n" + self.instructions.strip() + "\n</INSTRUCTIONS>"
+            )
+        if self.context.strip():
+            instructions_sections.append(
+                "<CONTEXT>\n" + self.context.strip() + "\n</CONTEXT>"
+            )
+
+        additional_instructions = "\n" + "\n".join(instructions_sections) + "\n"
+
+        user_content: list[MessageContent] = [
+            MessageTextContent(
+                text="Generate a JSON object that satisfies all requirements."
+            )
+        ]
+
+        messages = [
+            Message(
+                role="system",
+                content=self.system_prompt + additional_instructions,
+            ),
+            Message(role="user", content=user_content),
+        ]
+
+        assistant_message = await provider.generate_message(
+            model=self.model.id,
+            messages=messages,
+            max_tokens=self.max_tokens,
+            context_window=self.context_window,
+        )
+
+        raw = str(assistant_message.content or "").strip()
+
+        fenced_match = None
+        try:
+            fenced_match = re.search(r"```json\s*([\s\S]*?)\s*```", raw, re.IGNORECASE)
+        except Exception:
+            fenced_match = None
+
+        result_obj: dict[str, Any] | None
+        if fenced_match:
+            candidate = fenced_match.group(1).strip()
+            try:
+                result_obj = json.loads(candidate)
+            except Exception:
+                result_obj = None
+        else:
+            result_obj = None
+
+        if result_obj is None:
+            try:
+                start = raw.find("{")
+                end = raw.rfind("}")
+                if 0 <= start < end:
+                    snippet = raw[start : end + 1]
+                    result_obj = json.loads(snippet)
+            except Exception:
+                result_obj = None
+
+        if not isinstance(result_obj, dict):
+            raise ValueError("StructuredOutputGenerator did not return a dictionary")
+
+        return result_obj
 
 
 class DataGenerator(BaseNode):
@@ -157,9 +329,8 @@ class ListGenerator(BaseNode):
     )
 
     class OutputType(TypedDict):
-        items: str
+        item: str
         index: int
-        list: list[str]
 
     async def gen_process(
         self, context: ProcessingContext
@@ -219,8 +390,7 @@ class ListGenerator(BaseNode):
                         # If we were processing a previous item, yield it
                         if in_item and current_item:
                             collected_items.append(current_item)
-                            yield "items", current_item
-                            yield "index", current_index
+                            yield {"item": current_item, "index": current_index}
 
                         # Start a new item
                         current_index = int(match.group(1))
@@ -237,21 +407,18 @@ class ListGenerator(BaseNode):
                 # If we were processing a previous item, yield it
                 if in_item and current_item:
                     collected_items.append(current_item)
-                    yield "items", current_item
-                    yield "index", current_index
+                    yield {"item": current_item, "index": current_index}
 
                 # Process the final item
                 current_index = int(match.group(1))
                 current_item = match.group(2)
                 collected_items.append(current_item)
-                yield "items", current_item
-                yield "index", current_index
+                yield {"item": current_item, "index": current_index}
             elif in_item:
                 # Add to the current item and yield it
                 current_item += " " + buffer.strip()
                 collected_items.append(current_item)
-                yield "items", current_item
-                yield "index", current_index
+                yield {"item": current_item, "index": current_index}
 
         # Flush any final item if not yet emitted
         if (
@@ -260,11 +427,7 @@ class ListGenerator(BaseNode):
             and (not collected_items or collected_items[-1] != current_item)
         ):
             collected_items.append(current_item)
-            yield "items", current_item
-            yield "index", current_index
-
-        # After streaming completes, yield the full list once
-        yield "list", collected_items
+            yield {"item": current_item, "index": current_index}
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:

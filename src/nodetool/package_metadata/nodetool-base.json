@@ -19,6 +19,7 @@
             "type": "inference_provider_audio_classification_model"
           },
           "default": {
+            "type": "inference_provider_audio_classification_model",
             "provider": "fal-ai",
             "model_id": "superb/hubert-base-superb-er"
           },
@@ -30,7 +31,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio to classify"
         },
@@ -95,6 +101,7 @@
             "type": "inference_provider_automatic_speech_recognition_model"
           },
           "default": {
+            "type": "inference_provider_automatic_speech_recognition_model",
             "provider": "fal-ai",
             "model_id": "openai/whisper-large-v3"
           },
@@ -105,7 +112,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio to transcribe"
         }
@@ -147,6 +159,7 @@
             "type": "inference_provider_text_generation_model"
           },
           "default": {
+            "type": "inference_provider_text_generation_model",
             "provider": "cerebras",
             "model_id": "Qwen/Qwen3-235B-A22B-Thinking-2507"
           },
@@ -234,6 +247,8 @@
             "type": "inference_provider_image_classification_model"
           },
           "default": {
+            "type": "inference_provider_image_classification_model",
+            "provider": "hf-inference",
             "model_id": "google/vit-base-patch16-224"
           },
           "title": "Model",
@@ -244,7 +259,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to classify"
         },
@@ -309,6 +329,8 @@
             "type": "inference_provider_image_segmentation_model"
           },
           "default": {
+            "type": "inference_provider_image_segmentation_model",
+            "provider": "hf-inference",
             "model_id": "openmmlab/upernet-convnext-small"
           },
           "title": "Model",
@@ -319,7 +341,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to segment"
         },
@@ -401,6 +428,7 @@
             "type": "inference_provider_image_to_image_model"
           },
           "default": {
+            "type": "inference_provider_image_to_image_model",
             "provider": "black-forest-labs",
             "model_id": "black-forest-labs/FLUX.1-Kontext-dev"
           },
@@ -412,7 +440,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The input image to transform"
         },
@@ -503,6 +536,8 @@
             "type": "inference_provider_summarization_model"
           },
           "default": {
+            "type": "inference_provider_summarization_model",
+            "provider": "hf-inference",
             "model_id": "facebook/bart-large-cnn"
           },
           "title": "Model",
@@ -616,6 +651,8 @@
             "type": "inference_provider_text_classification_model"
           },
           "default": {
+            "type": "inference_provider_text_classification_model",
+            "provider": "hf-inference",
             "model_id": "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
           },
           "title": "Model",
@@ -691,6 +728,7 @@
             "type": "inference_provider_text_to_image_model"
           },
           "default": {
+            "type": "inference_provider_text_to_image_model",
             "provider": "",
             "model_id": "black-forest-labs/FLUX.1-dev"
           },
@@ -803,6 +841,8 @@
             "type": "inference_provider_text_to_speech_model"
           },
           "default": {
+            "type": "inference_provider_text_to_speech_model",
+            "provider": "hf-inference",
             "model_id": "microsoft/speecht5_tts"
           },
           "title": "Model",
@@ -920,6 +960,8 @@
             "type": "inference_provider_translation_model"
           },
           "default": {
+            "type": "inference_provider_translation_model",
+            "provider": "hf-inference",
             "model_id": "google-t5/t5-base"
           },
           "title": "Model",
@@ -1054,6 +1096,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Value"
         }
       ],
@@ -1395,6 +1438,7 @@
             "type": "float",
             "optional": true
           },
+          "default": null,
           "title": "Value"
         }
       ],
@@ -1782,6 +1826,7 @@
             "type": "float",
             "optional": true
           },
+          "default": null,
           "title": "Value",
           "description": "The comparison value (for greater_than, less_than, equal_to)"
         }
@@ -2234,6 +2279,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Default"
         }
       ],
@@ -2783,6 +2829,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Input Item",
           "description": "The input item to collect."
         }
@@ -2863,6 +2910,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Value",
           "description": "The value to pass to the next node"
         }
@@ -2897,6 +2945,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Input Value",
           "description": "Value to pass through unchanged"
         }
@@ -3426,6 +3475,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "A",
           "description": "First value to compare"
         },
@@ -3434,6 +3484,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "B",
           "description": "Second value to compare"
         },
@@ -3490,6 +3541,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "If True",
           "description": "The value to return if the condition is true"
         },
@@ -3498,6 +3550,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "If False",
           "description": "The value to return if the condition is false"
         }
@@ -3527,6 +3580,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Value",
           "description": "The value to check for membership"
         },
@@ -3569,6 +3623,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Value",
           "description": "The value to check for None"
         }
@@ -3713,7 +3768,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "Model to use for execution"
         },
@@ -3740,7 +3800,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to analyze"
         },
@@ -3749,7 +3814,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio to analyze"
         },
@@ -3836,7 +3906,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "Model to use for classification"
         },
@@ -3854,7 +3929,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "Optional image to classify in context"
         },
@@ -3863,7 +3943,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "Optional audio to classify in context"
         },
@@ -3939,7 +4024,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "Model to use for data extraction"
         },
@@ -3957,7 +4047,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "Optional image to assist extraction"
         },
@@ -3966,7 +4061,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "Optional audio to assist extraction"
         },
@@ -3990,22 +4090,6 @@
           "title": "Context Window (Ollama)",
           "min": 1.0,
           "max": 65536.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
         }
       ],
       "basic_fields": [
@@ -4036,7 +4120,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "Model to use for summarization"
         },
@@ -4054,7 +4143,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "Optional image to condition the summary"
         },
@@ -4063,7 +4157,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "Optional audio to condition the summary"
         },
@@ -4122,7 +4221,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "The model to use for chart generation."
         },
@@ -4140,7 +4244,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Data",
           "description": "The data to visualize"
         },
@@ -4181,7 +4291,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "The model to use for data generation."
         },
@@ -4219,7 +4334,10 @@
           "type": {
             "type": "record_type"
           },
-          "default": {},
+          "default": {
+            "type": "record_type",
+            "columns": []
+          },
           "title": "Columns",
           "description": "The columns to use in the dataframe."
         }
@@ -4261,7 +4379,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "The model to use for string generation."
         },
@@ -4300,24 +4423,13 @@
           "type": {
             "type": "str"
           },
-          "name": "items"
+          "name": "item"
         },
         {
           "type": {
             "type": "int"
           },
           "name": "index"
-        },
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "list"
         }
       ],
       "basic_fields": [
@@ -4336,7 +4448,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "The language model to use for SVG generation."
         },
@@ -4354,7 +4471,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "Image to use for generation"
         },
@@ -4363,7 +4485,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "Audio to use for generation"
         },
@@ -4400,6 +4527,82 @@
       ]
     },
     {
+      "title": "Structured Output Generator",
+      "description": "Generate structured JSON objects from instructions using LLM providers.\n    data-generation, structured-data, json, synthesis\n\n    Specialized for creating structured information:\n    - Generating JSON that follows dynamic schemas\n    - Fabricating records from requirements and guidance\n    - Simulating sample data for downstream workflows\n    - Producing consistent structured outputs for testing",
+      "namespace": "nodetool.generators",
+      "node_type": "nodetool.generators.StructuredOutputGenerator",
+      "properties": [
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "\nYou are a structured data generator focused on JSON outputs.\n\nGoal\n- Produce a high-quality JSON object that matches <JSON_SCHEMA> using the guidance in <INSTRUCTIONS> and any supplemental <CONTEXT>.\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nGeneration rules\n- Invent plausible, internally consistent values when not explicitly provided.\n- Honor all constraints from <JSON_SCHEMA> (types, enums, ranges, formats).\n- Prefer ISO 8601 for dates/times when applicable.\n- Ensure numbers respect reasonable magnitudes and relationships described in <INSTRUCTIONS>.\n- Avoid referencing external sources; rely solely on the provided guidance.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n",
+          "title": "System Prompt",
+          "description": "The system prompt guiding JSON generation."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
+          "title": "Model",
+          "description": "Model to use for structured generation."
+        },
+        {
+          "name": "instructions",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Instructions",
+          "description": "Detailed instructions for the structured output."
+        },
+        {
+          "name": "context",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Context",
+          "description": "Optional context to ground the generation."
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Max Tokens",
+          "description": "The maximum number of tokens to generate.",
+          "min": 1.0,
+          "max": 16384.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
+        }
+      ],
+      "basic_fields": [
+        "instructions",
+        "context",
+        "model"
+      ],
+      "supports_dynamic_outputs": true
+    },
+    {
       "title": "Asset Folder Input",
       "description": "Accepts an asset folder as a parameter for workflows.\n    input, parameter, folder, path, folderpath, local_folder, filesystem",
       "namespace": "nodetool.input",
@@ -4419,7 +4622,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value",
           "description": "The folder to use as input."
         },
@@ -4466,7 +4674,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value",
           "description": "The audio to use as input."
         },
@@ -4657,7 +4870,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Value",
           "description": "The collection to use as input."
         },
@@ -4704,7 +4920,10 @@
           "type": {
             "type": "color"
           },
-          "default": {},
+          "default": {
+            "type": "color",
+            "value": null
+          },
           "title": "Value",
           "description": "The color to use as input."
         },
@@ -4807,7 +5026,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value",
           "description": "The document to use as input."
         },
@@ -5016,7 +5240,14 @@
           "type": {
             "type": "hf.model"
           },
-          "default": {},
+          "default": {
+            "type": "hf.model",
+            "repo_id": "",
+            "path": null,
+            "variant": null,
+            "allow_patterns": null,
+            "ignore_patterns": null
+          },
           "title": "Value",
           "description": "The Hugging Face model to use as input."
         },
@@ -5063,7 +5294,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value",
           "description": "The image to use as input."
         },
@@ -5259,7 +5495,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Value",
           "description": "The language model to use as input."
         },
@@ -5306,6 +5547,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Value",
           "description": "The value of the input."
         },
@@ -5323,7 +5565,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio to use as input."
         }
@@ -5413,6 +5660,7 @@
               }
             ]
           },
+          "default": null,
           "title": "Value",
           "description": "The list of strings to use as input."
         },
@@ -5464,7 +5712,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Value",
           "description": "The video to use as input."
         },
@@ -5529,6 +5784,7 @@
             "type": "str",
             "optional": true
           },
+          "default": null,
           "title": "Separator"
         }
       ],
@@ -6023,6 +6279,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Minimum Length"
         },
         {
@@ -6031,6 +6288,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Maximum Length"
         },
         {
@@ -6039,6 +6297,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Exact Length"
         }
       ],
@@ -6213,7 +6472,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to load the text files from."
         }
@@ -6293,6 +6557,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Group",
           "description": "Capture group to extract (0 for full match)"
         }
@@ -6529,7 +6794,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "Name of the output folder."
         },
@@ -6624,6 +6894,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Start Index"
         },
         {
@@ -6632,6 +6903,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Stop Index"
         },
         {
@@ -6640,6 +6912,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Step"
         }
       ],
@@ -6860,7 +7133,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document"
         },
         {
@@ -6922,6 +7200,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Chunk Size",
           "description": "Optional maximum chunk size for further splitting"
         },
@@ -6975,7 +7254,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document",
           "description": "The document to save"
         },
@@ -7015,7 +7299,15 @@
           "type": {
             "type": "llama_model"
           },
-          "default": {},
+          "default": {
+            "type": "llama_model",
+            "name": "",
+            "repo_id": "",
+            "modified_at": "",
+            "size": 0,
+            "digest": "",
+            "details": {}
+          },
           "title": "Embed Model",
           "description": "Embedding model to use"
         },
@@ -7024,7 +7316,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document",
           "description": "Document ID to associate with the text content"
         },
@@ -7089,7 +7386,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document",
           "description": "Document ID to associate with the HTML content"
         }
@@ -7129,7 +7431,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document",
           "description": "Document ID to associate with the JSON content"
         },
@@ -7189,7 +7496,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document"
         },
         {
@@ -7251,6 +7563,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Chunk Size",
           "description": "Optional maximum chunk size for further splitting"
         },
@@ -7304,7 +7617,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document"
         },
         {
@@ -7382,7 +7700,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document"
         },
         {
@@ -7441,7 +7764,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Track1",
           "description": "First audio track to mix."
         },
@@ -7450,7 +7778,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Track2",
           "description": "Second audio track to mix."
         },
@@ -7459,7 +7792,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Track3",
           "description": "Third audio track to mix."
         },
@@ -7468,7 +7806,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Track4",
           "description": "Fourth audio track to mix."
         },
@@ -7477,7 +7820,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Track5",
           "description": "Fifth audio track to mix."
         },
@@ -7569,7 +7917,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "A",
           "description": "The first audio file."
         },
@@ -7578,7 +7931,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "B",
           "description": "The second audio file."
         }
@@ -7642,7 +8000,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to convert to a tensor."
         }
@@ -7699,7 +8062,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to apply fade-in to."
         },
@@ -7739,7 +8107,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to apply fade-out to."
         },
@@ -7779,7 +8152,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to load the audio files from."
         }
@@ -7841,7 +8219,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The mono audio file to convert."
         }
@@ -7870,7 +8253,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to normalize."
         }
@@ -7899,7 +8287,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "A",
           "description": "The first audio file."
         },
@@ -7908,7 +8301,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "B",
           "description": "The second audio file."
         }
@@ -7938,7 +8336,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to process."
         },
@@ -8027,7 +8430,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to loop."
         },
@@ -8068,7 +8476,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to reverse."
         }
@@ -8097,7 +8510,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio"
         },
         {
@@ -8105,7 +8523,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to save the audio file to. "
         },
@@ -8145,7 +8568,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio to save"
         },
@@ -8193,7 +8621,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file."
         },
@@ -8244,7 +8677,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The stereo audio file to convert."
         },
@@ -8283,7 +8721,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to trim."
         },
@@ -8334,7 +8777,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value"
         }
       ],
@@ -8396,7 +8844,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "DataFrame"
         }
       ],
@@ -8625,7 +9079,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document"
         }
       ],
@@ -8680,7 +9139,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value"
         }
       ],
@@ -8735,7 +9199,12 @@
           "type": {
             "type": "json"
           },
-          "default": {},
+          "default": {
+            "type": "json",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value"
         }
       ],
@@ -8827,7 +9296,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Value"
         }
       ],
@@ -9035,6 +9511,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Default"
         }
       ],
@@ -9188,6 +9665,7 @@
             "type": "str",
             "optional": true
           },
+          "default": null,
           "title": "Value Field",
           "description": "Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value."
         },
@@ -9455,7 +9933,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to add audio to."
         },
@@ -9464,7 +9949,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to add to the video."
         },
@@ -9515,7 +10005,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to add subtitles to."
         },
@@ -9538,7 +10035,10 @@
           "type": {
             "type": "font"
           },
-          "default": {},
+          "default": {
+            "type": "font",
+            "name": ""
+          },
           "title": "Font",
           "description": "The font to use."
         },
@@ -9574,6 +10074,7 @@
             "type": "color"
           },
           "default": {
+            "type": "color",
             "value": "#FFFFFF"
           },
           "title": "Font Color",
@@ -9608,7 +10109,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to apply blur effect."
         },
@@ -9648,7 +10156,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to apply chroma key effect."
         },
@@ -9658,6 +10173,7 @@
             "type": "color"
           },
           "default": {
+            "type": "color",
             "value": "#00FF00"
           },
           "title": "Key Color",
@@ -9712,7 +10228,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to adjust color balance."
         },
@@ -9776,7 +10299,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video A",
           "description": "The first video to concatenate."
         },
@@ -9785,7 +10315,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video B",
           "description": "The second video to concatenate."
         }
@@ -9814,7 +10351,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to denoise."
         },
@@ -9854,7 +10398,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to separate."
         }
@@ -9882,7 +10433,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to analyze for FPS."
         }
@@ -9910,7 +10468,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to extract frames from."
         },
@@ -9970,7 +10535,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Frame",
           "description": "Collect input frames"
         },
@@ -10000,7 +10570,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to load the video files from."
         }
@@ -10062,7 +10637,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Main Video",
           "description": "The main (background) video."
         },
@@ -10071,7 +10653,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Overlay Video",
           "description": "The video to overlay on top."
         },
@@ -10142,7 +10731,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to resize."
         },
@@ -10190,7 +10786,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to reverse."
         }
@@ -10218,7 +10821,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to rotate."
         },
@@ -10258,7 +10868,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to adjust saturation."
         },
@@ -10298,7 +10915,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The video to save."
         },
@@ -10307,7 +10931,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to save the video in."
         },
@@ -10346,7 +10975,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The video to save"
         },
@@ -10394,7 +11030,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to adjust speed."
         },
@@ -10432,7 +11075,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to sharpen."
         },
@@ -10484,7 +11134,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to stabilize."
         },
@@ -10534,7 +11191,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video A",
           "description": "The first video in the transition."
         },
@@ -10543,7 +11207,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video B",
           "description": "The second video in the transition."
         },
@@ -10655,7 +11326,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
           "description": "The input video to trim."
         },
@@ -10703,7 +11381,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Batch",
           "description": "The batch of images to convert."
         }
@@ -10736,7 +11419,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to crop."
         },
@@ -10812,7 +11500,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to fit."
         },
@@ -10864,7 +11557,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The input image."
         }
@@ -10916,7 +11614,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to load the images from."
         }
@@ -11055,7 +11758,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to paste into."
         },
@@ -11064,7 +11772,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Paste",
           "description": "The image to paste."
         },
@@ -11117,7 +11830,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to resize."
         },
@@ -11169,7 +11887,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to save."
         },
@@ -11178,7 +11901,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to save the image in."
         },
@@ -11217,7 +11945,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to save"
         },
@@ -11275,7 +12008,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to scale."
         },
@@ -11315,7 +12053,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "Dataframe object to add a new column to."
         },
@@ -11369,7 +12113,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The DataFrame to group."
         },
@@ -11418,7 +12168,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe A",
           "description": "First DataFrame to be appended."
         },
@@ -11427,7 +12183,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe B",
           "description": "Second DataFrame to be appended."
         }
@@ -11457,7 +12219,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Df",
           "description": "The input DataFrame."
         }
@@ -11486,7 +12254,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Df",
           "description": "The input DataFrame."
         }
@@ -11515,7 +12289,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The input dataframe."
         },
@@ -11559,7 +12339,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The DataFrame with missing values."
         },
@@ -11618,7 +12404,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Df",
           "description": "The DataFrame to filter."
         },
@@ -11657,7 +12449,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Df",
           "description": "The DataFrame to search."
         },
@@ -11787,7 +12585,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe A",
           "description": "First DataFrame to be merged."
         },
@@ -11796,7 +12600,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe B",
           "description": "Second DataFrame to be merged."
         },
@@ -11836,7 +12646,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to load the dataframes from."
         }
@@ -11929,7 +12744,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe A",
           "description": "First DataFrame to be merged."
         },
@@ -11938,7 +12759,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe B",
           "description": "Second DataFrame to be merged."
         }
@@ -11968,7 +12795,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The DataFrame to pivot."
         },
@@ -12037,7 +12870,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The DataFrame to rename columns."
         },
@@ -12076,7 +12915,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The input dataframe."
         }
@@ -12110,7 +12955,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "DataFrame to write to CSV"
         },
@@ -12150,7 +13001,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Df"
         },
         {
@@ -12158,7 +13015,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "Name of the output folder."
         },
@@ -12198,7 +13060,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "a dataframe from which columns are to be selected"
         },
@@ -12237,7 +13105,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The input dataframe to be sliced."
         },
@@ -12286,7 +13160,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Df"
         },
         {
@@ -12323,7 +13203,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Dataframe",
           "description": "The input dataframe to convert."
         }
@@ -12366,7 +13252,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Value"
         },
         {
@@ -12412,7 +13305,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value"
         },
         {
@@ -12504,7 +13402,13 @@
           "type": {
             "type": "dataframe"
           },
-          "default": {},
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Value"
         },
         {
@@ -12604,7 +13508,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value"
         },
         {
@@ -12650,7 +13559,10 @@
           "type": {
             "type": "file_path"
           },
-          "default": {},
+          "default": {
+            "type": "file_path",
+            "path": ""
+          },
           "title": "Value"
         },
         {
@@ -12742,7 +13654,10 @@
           "type": {
             "type": "folder_path"
           },
-          "default": {},
+          "default": {
+            "type": "folder_path",
+            "path": ""
+          },
           "title": "Value"
         },
         {
@@ -12788,7 +13703,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value"
         },
         {
@@ -12977,7 +13897,14 @@
           "type": {
             "type": "video"
           },
-          "default": {},
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Value"
         },
         {
@@ -13174,7 +14101,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to animate into a video"
         },
@@ -13351,7 +14283,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to use as a base for the generation."
         }
@@ -13836,7 +14773,25 @@
           "type": {
             "type": "email"
           },
-          "default": {},
+          "default": {
+            "type": "email",
+            "id": "",
+            "sender": "",
+            "subject": "",
+            "date": {
+              "type": "datetime",
+              "year": 0,
+              "month": 0,
+              "day": 0,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "microsecond": 0,
+              "tzinfo": "UTC",
+              "utc_offset": 0
+            },
+            "body": ""
+          },
           "title": "Email",
           "description": "Email object to decompose"
         }
@@ -14239,6 +15194,7 @@
             "type": "bytes",
             "optional": true
           },
+          "default": null,
           "title": "Data",
           "description": "Data to compress"
         }
@@ -14268,6 +15224,7 @@
             "type": "bytes",
             "optional": true
           },
+          "default": null,
           "title": "Data",
           "description": "Gzip data to decompress"
         }
@@ -15327,6 +16284,7 @@
             "type": "str",
             "optional": true
           },
+          "default": null,
           "title": "Default",
           "description": "Default value if not found"
         }
@@ -16432,7 +17390,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document",
           "description": "Document to upload"
         }
@@ -16923,7 +17886,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Document",
           "description": "The document to convert to markdown"
         }
@@ -16962,6 +17930,7 @@
             "type": "str",
             "optional": true
           },
+          "default": null,
           "title": "Default",
           "description": "Default value if not found"
         }
@@ -17631,7 +18600,10 @@
           "type": {
             "type": "record_type"
           },
-          "default": {},
+          "default": {
+            "type": "record_type",
+            "columns": []
+          },
           "title": "Columns",
           "description": "The columns of the dataframe."
         },
@@ -18918,6 +19890,7 @@
             "type": "bytes",
             "optional": true
           },
+          "default": null,
           "title": "Data",
           "description": "The bytes to write to file"
         },
@@ -18957,7 +19930,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Input Datetime",
           "description": "Starting datetime"
         },
@@ -19022,7 +20006,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Input Datetime",
           "description": "Input datetime"
         },
@@ -19093,7 +20088,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Start Date",
           "description": "Start datetime"
         },
@@ -19102,7 +20108,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "End Date",
           "description": "End datetime"
         }
@@ -19156,7 +20173,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Start Date",
           "description": "Start date of the range"
         },
@@ -19165,7 +20193,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "End Date",
           "description": "End date of the range"
         },
@@ -19210,7 +20249,12 @@
           "type": {
             "type": "date"
           },
-          "default": {},
+          "default": {
+            "type": "date",
+            "year": 0,
+            "month": 0,
+            "day": 0
+          },
           "title": "Input Date",
           "description": "Date to convert"
         }
@@ -19239,7 +20283,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Input Datetime",
           "description": "Datetime to convert"
         }
@@ -19268,7 +20323,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Input Datetime",
           "description": "Datetime object to format"
         },
@@ -19319,7 +20385,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Input Datetime",
           "description": "Input datetime"
         }
@@ -19360,7 +20437,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Input Datetime",
           "description": "Input datetime"
         },
@@ -19407,7 +20495,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Check Date",
           "description": "Date to check"
         },
@@ -19416,7 +20515,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "Start Date",
           "description": "Start of date range"
         },
@@ -19425,7 +20535,18 @@
           "type": {
             "type": "datetime"
           },
-          "default": {},
+          "default": {
+            "type": "datetime",
+            "year": 0,
+            "month": 0,
+            "day": 0,
+            "hour": 0,
+            "minute": 0,
+            "second": 0,
+            "microsecond": 0,
+            "tzinfo": "UTC",
+            "utc_offset": 0
+          },
           "title": "End Date",
           "description": "End of date range"
         },
@@ -19682,6 +20803,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Value",
           "description": "Value to match"
         }
@@ -19716,6 +20838,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -19763,6 +20886,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -19810,6 +20934,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -19857,6 +20982,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -19904,6 +21030,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -19951,6 +21078,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -20044,7 +21172,12 @@
           "type": {
             "type": "folder"
           },
-          "default": {},
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Folder",
           "description": "The asset folder to load the JSON files from."
         }
@@ -20172,6 +21305,7 @@
           "type": {
             "type": "any"
           },
+          "default": null,
           "title": "Data",
           "description": "JSON data to validate"
         },
@@ -20209,7 +21343,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Pdf",
           "description": "The PDF document to convert to markdown"
         },
@@ -20258,7 +21397,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Pdf",
           "description": "The PDF document to extract tables from"
         },
@@ -20312,7 +21456,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Pdf",
           "description": "The PDF document to extract text from"
         },
@@ -20361,7 +21510,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Pdf",
           "description": "The PDF document to extract text blocks from"
         },
@@ -20415,7 +21569,12 @@
           "type": {
             "type": "document"
           },
-          "default": {},
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Pdf",
           "description": "The PDF document to extract styled text from"
         },
@@ -20477,6 +21636,7 @@
               }
             ]
           },
+          "default": null,
           "title": "Params",
           "description": "Parameters to encode"
         }
@@ -20681,7 +21841,36 @@
           "type": {
             "type": "calendly_event"
           },
-          "default": {},
+          "default": {
+            "type": "calendly_event",
+            "uri": "",
+            "name": "",
+            "start_time": {
+              "type": "datetime",
+              "year": 0,
+              "month": 0,
+              "day": 0,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "microsecond": 0,
+              "tzinfo": "UTC",
+              "utc_offset": 0
+            },
+            "end_time": {
+              "type": "datetime",
+              "year": 0,
+              "month": 0,
+              "day": 0,
+              "hour": 0,
+              "minute": 0,
+              "second": 0,
+              "microsecond": 0,
+              "tzinfo": "UTC",
+              "utc_offset": 0
+            },
+            "location": ""
+          },
           "title": "Event",
           "description": "The Calendly event to extract"
         }
@@ -20943,7 +22132,10 @@
           "type": {
             "type": "faiss_index"
           },
-          "default": {},
+          "default": {
+            "type": "faiss_index",
+            "index": null
+          },
           "title": "Index",
           "description": "FAISS index"
         },
@@ -20952,7 +22144,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Vectors",
           "description": "Vectors to add (n, d)"
         }
@@ -20981,7 +22180,10 @@
           "type": {
             "type": "faiss_index"
           },
-          "default": {},
+          "default": {
+            "type": "faiss_index",
+            "index": null
+          },
           "title": "Index",
           "description": "FAISS index"
         },
@@ -20990,7 +22192,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Vectors",
           "description": "Vectors to add (n, d)"
         },
@@ -20999,7 +22208,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Ids",
           "description": "1-D int64 IDs (n,)"
         }
@@ -21142,7 +22358,10 @@
           "type": {
             "type": "faiss_index"
           },
-          "default": {},
+          "default": {
+            "type": "faiss_index",
+            "index": null
+          },
           "title": "Index",
           "description": "FAISS index"
         },
@@ -21151,7 +22370,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Query",
           "description": "Query vectors (m, d) or (d,)"
         },
@@ -21171,6 +22397,7 @@
             "type": "int",
             "optional": true
           },
+          "default": null,
           "title": "Nprobe",
           "description": "nprobe for IVF indices"
         }
@@ -21207,7 +22434,10 @@
           "type": {
             "type": "faiss_index"
           },
-          "default": {},
+          "default": {
+            "type": "faiss_index",
+            "index": null
+          },
           "title": "Index",
           "description": "FAISS index"
         },
@@ -21216,7 +22446,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Vectors",
           "description": "Training vectors (n, d)"
         }
@@ -21254,7 +22491,15 @@
           "type": {
             "type": "llama_model"
           },
-          "default": {},
+          "default": {
+            "type": "llama_model",
+            "name": "",
+            "repo_id": "",
+            "modified_at": "",
+            "size": 0,
+            "digest": "",
+            "details": {}
+          },
           "title": "Embedding Model",
           "description": "Model to use for embedding, search for nomic-embed-text and download it"
         }
@@ -21283,7 +22528,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to count"
         }
@@ -21311,7 +22559,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to get"
         },
@@ -21379,7 +22630,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to query"
         },
@@ -21496,7 +22750,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to index"
         },
@@ -21597,7 +22854,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to index"
         },
@@ -21606,7 +22866,14 @@
           "type": {
             "type": "np_array"
           },
-          "default": {},
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
           "title": "Embedding",
           "description": "The embedding to index"
         },
@@ -21647,7 +22914,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to index"
         },
@@ -21707,7 +22977,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to index"
         },
@@ -21757,7 +23030,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to index"
         },
@@ -21807,7 +23083,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to peek"
         },
@@ -21850,7 +23129,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to query"
         },
@@ -21859,7 +23141,12 @@
           "type": {
             "type": "image"
           },
-          "default": {},
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
           "description": "The image to query"
         },
@@ -21936,7 +23223,10 @@
           "type": {
             "type": "collection"
           },
-          "default": {},
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
           "title": "Collection",
           "description": "The collection to query"
         },
@@ -22092,7 +23382,14 @@
           "type": {
             "type": "chunk"
           },
-          "default": {},
+          "default": {
+            "type": "chunk",
+            "node_id": null,
+            "content_type": "text",
+            "content": "",
+            "content_metadata": {},
+            "done": false
+          },
           "title": "Chunk",
           "description": "The audio chunk to use as input."
         },
@@ -22182,7 +23479,12 @@
           "type": {
             "type": "language_model"
           },
-          "default": {},
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
           "title": "Model",
           "description": "Model to use"
         },
@@ -22406,7 +23708,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to transcribe (max 25 MB)."
         },
@@ -22562,7 +23869,12 @@
           "type": {
             "type": "audio"
           },
-          "default": {},
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
           "description": "The audio file to translate."
         },
