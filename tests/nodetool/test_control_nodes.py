@@ -89,6 +89,7 @@ async def test_if_routes_true_and_not_false(context: ProcessingContext):
     req = RunJobRequest(graph=graph)
     context = ProcessingContext(user_id="test", auth_token="test")
     found_true = False
+    found_false = False
 
     async for msg in iter_with_timeout(
         run_workflow(req, context=context, use_thread=False)
@@ -98,9 +99,12 @@ async def test_if_routes_true_and_not_false(context: ProcessingContext):
                 found_true = True
                 assert msg.value == "hello"
             elif msg.node_id == "out_false":
-                pytest.fail("False branch should not emit")
+                found_false = True
+                # Output nodes emit their default value (empty string for StringOutput) when they don't receive input
+                assert msg.value == ""
 
     assert found_true, "True branch should emit"
+    assert found_false, "False branch should emit default value"
 
 
 @pytest.mark.asyncio

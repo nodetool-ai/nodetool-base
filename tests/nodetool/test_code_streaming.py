@@ -58,7 +58,7 @@ class TestCodeNodeStreaming:
         # Feed test data to inbox
         test_data = ["hello", "world", "streaming"]
         for data in test_data:
-            inbox.put("stdin", data)
+            await inbox.put("stdin", data)
         inbox.mark_source_done("stdin")
 
         # Mock the runner to capture stdin_stream
@@ -103,7 +103,7 @@ class TestCodeNodeStreaming:
         # Feed test data to inbox
         test_data = ["line1", "line2", "line3"]
         for data in test_data:
-            inbox.put("stdin", data)
+            await inbox.put("stdin", data)
         inbox.mark_source_done("stdin")
 
         # Mock the runner to capture stdin_stream
@@ -171,9 +171,9 @@ class TestCodeNodeStreaming:
         python_node.attach_inbox(inbox)
 
         # Feed test data
-        inbox.put("stdin", "from_input1")
-        inbox.put("stdin", "from_input2")
-        inbox.put("stdin", "more_from_input1")
+        await inbox.put("stdin", "from_input1")
+        await inbox.put("stdin", "from_input2")
+        await inbox.put("stdin", "more_from_input1")
 
         # Mark sources done
         inbox.mark_source_done("stdin")
@@ -222,7 +222,7 @@ class TestCodeNodeStreaming:
         # Add test data
         test_data = ["line1", "line2", "line3"]
         for data in test_data:
-            inbox.put("input", data)
+            await inbox.put("input", data)
         inbox.mark_source_done("input")
 
         # Verify node can detect input
@@ -243,7 +243,7 @@ class TestCodeNodeStreaming:
         node.attach_inbox(inbox)
 
         for data in test_data:
-            inbox.put("input", data)
+            await inbox.put("input", data)
         inbox.mark_source_done("input")
 
         # Create stdin stream like gen_process does
@@ -284,7 +284,7 @@ class TestNodeInboxIntegration:
 
         # Inbox with data
         inbox.add_upstream("input", 1)
-        inbox.put("input", "test_data")
+        await inbox.put("input", "test_data")
         assert python_node.has_input()
 
     @pytest.mark.asyncio
@@ -299,9 +299,9 @@ class TestNodeInboxIntegration:
         python_node.attach_inbox(inbox)
 
         # Add data to different handles
-        inbox.put("handle1", "data1")
-        inbox.put("handle2", "data2")
-        inbox.put("handle1", "data3")
+        await inbox.put("handle1", "data1")
+        await inbox.put("handle2", "data2")
+        await inbox.put("handle1", "data3")
 
         # Mark sources done
         inbox.mark_source_done("handle1")

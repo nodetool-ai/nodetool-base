@@ -1,11 +1,13 @@
 import fnmatch
-from typing import Any, AsyncGenerator, TypedDict
+from typing import Any, AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
-from nodetool.metadata.types import FolderRef
+from nodetool.metadata.types import FolderRef, ImageModel, Provider
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import create_file_uri
+from nodetool.image.providers.registry import get_image_provider
+from nodetool.image.types import TextToImageParams, ImageToImageParams
 import os
 import datetime
 from pydantic import Field
@@ -442,3 +444,214 @@ class Fit(BaseNode):
         image = await context.image_to_pil(self.image)
         res = PIL.ImageOps.fit(image, (self.width, self.height), PIL.Image.LANCZOS)  # type: ignore
         return await context.image_from_pil(res)
+
+
+class TextToImage(BaseNode):
+    """
+    Generate images from text prompts using any supported image provider.
+    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+    image, generation, AI, text-to-image, t2i
+
+    Use cases:
+    - Create images from text descriptions
+    - Switch between providers without changing workflows
+    - Generate images with different AI models
+    - Cost-optimize by choosing different providers
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: ImageModel = Field(
+        default=ImageModel(
+            provider=Provider.HuggingFaceFalAI,
+            id="fal-ai/flux/schnell",
+            name="FLUX.1 Schnell",
+        ),
+        description="The image generation model to use",
+    )
+    prompt: str = Field(
+        default="A cat holding a sign that says hello world",
+        description="Text prompt describing the desired image",
+    )
+    negative_prompt: str = Field(
+        default="",
+        description="Text prompt describing what to avoid in the image",
+    )
+    width: int = Field(
+        default=512,
+        ge=64,
+        le=2048,
+        description="Width of the generated image",
+    )
+    height: int = Field(
+        default=512,
+        ge=64,
+        le=2048,
+        description="Height of the generated image",
+    )
+    guidance_scale: float = Field(
+        default=7.5,
+        ge=0.0,
+        le=30.0,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int = Field(
+        default=30,
+        ge=1,
+        le=100,
+        description="Number of denoising steps",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+    scheduler: str = Field(
+        default="",
+        description="Scheduler to use (provider-specific, leave empty for default)",
+    )
+    safety_check: bool = Field(
+        default=True,
+        description="Enable safety checker to filter inappropriate content",
+    )
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        # Get the image provider for this model
+        provider_instance = get_image_provider(self.model.provider)
+
+        params = TextToImageParams(
+            model=self.model,
+            prompt=self.prompt,
+            negative_prompt=self.negative_prompt if self.negative_prompt else None,
+            width=self.width,
+            height=self.height,
+            guidance_scale=self.guidance_scale,
+            num_inference_steps=self.num_inference_steps,
+            seed=self.seed if self.seed != -1 else None,
+            scheduler=self.scheduler if self.scheduler else None,
+            safety_check=self.safety_check,
+        )
+
+        # Generate image
+        image_bytes = await provider_instance.text_to_image(params, context=context)
+
+        # Convert to ImageRef
+        return await context.image_from_bytes(image_bytes)
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["model", "prompt", "width", "height", "seed"]
+
+
+class ImageToImage(BaseNode):
+    """
+    Transform images using text prompts with any supported image provider.
+    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+    image, transformation, AI, image-to-image, i2i
+
+    Use cases:
+    - Modify existing images with text instructions
+    - Style transfer and artistic modifications
+    - Image enhancement and refinement
+    - Creative image edits guided by prompts
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: ImageModel = Field(
+        default=ImageModel(
+            provider=Provider.HuggingFaceFalAI,
+            id="fal-ai/flux/dev",
+            name="FLUX.1 Dev",
+        ),
+        description="The image generation model to use",
+    )
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Input image to transform",
+    )
+    prompt: str = Field(
+        default="A photorealistic version of the input image",
+        description="Text prompt describing the desired transformation",
+    )
+    negative_prompt: str = Field(
+        default="",
+        description="Text prompt describing what to avoid",
+    )
+    strength: float = Field(
+        default=0.8,
+        ge=0.0,
+        le=1.0,
+        description="How much to transform the input image (0.0 = no change, 1.0 = maximum change)",
+    )
+    guidance_scale: float = Field(
+        default=7.5,
+        ge=0.0,
+        le=30.0,
+        description="Classifier-free guidance scale",
+    )
+    num_inference_steps: int = Field(
+        default=30,
+        ge=1,
+        le=100,
+        description="Number of denoising steps",
+    )
+    target_width: int = Field(
+        default=512,
+        ge=64,
+        le=2048,
+        description="Target width of the output image",
+    )
+    target_height: int = Field(
+        default=512,
+        ge=64,
+        le=2048,
+        description="Target height of the output image",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+    scheduler: str = Field(
+        default="",
+        description="Scheduler to use (provider-specific)",
+    )
+    safety_check: bool = Field(
+        default=True,
+        description="Enable safety checker",
+    )
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        if self.image.is_empty():
+            raise ValueError("Input image is required")
+
+        # Get the image provider for this model
+        provider_instance = get_image_provider(self.model.provider)
+
+        # Get input image bytes
+        input_image_bytes = await context.asset_to_bytes(self.image)
+        params = ImageToImageParams(
+            model=self.model,
+            prompt=self.prompt,
+            negative_prompt=self.negative_prompt if self.negative_prompt else None,
+            guidance_scale=self.guidance_scale,
+            num_inference_steps=self.num_inference_steps,
+            strength=self.strength,
+            target_width=self.target_width,
+            target_height=self.target_height,
+            seed=self.seed if self.seed != -1 else None,
+            scheduler=self.scheduler if self.scheduler else None,
+        )
+
+        # Transform image
+        output_image_bytes = await provider_instance.image_to_image(
+            input_image_bytes, params
+        )
+
+        # Convert to ImageRef
+        return await context.image_from_bytes(output_image_bytes)
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["model", "image", "prompt", "strength", "seed"]

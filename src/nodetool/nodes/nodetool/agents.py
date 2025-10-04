@@ -792,9 +792,11 @@ class Agent(BaseNode):
                         yield {"chunk": chunk, "text": None, "audio": None}
                     elif chunk.content_type == "audio":
                         yield {"chunk": chunk, "text": None, "audio": None}
-                        # audio_bytes = base64.b64decode(chunk.content or "")
-                        # audio_ref = AudioRef(data=audio_bytes)
-                        # yield {"chunk": None, "text": None, "audio": audio_ref}
+                        import base64
+
+                        audio_bytes = base64.b64decode(chunk.content or "")
+                        audio_ref = AudioRef(data=audio_bytes)
+                        yield {"chunk": None, "text": None, "audio": audio_ref}
                     else:
                         log.warning(
                             "Agent received unsupported chunk type %s; ignoring",

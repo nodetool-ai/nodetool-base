@@ -49,7 +49,7 @@
               "softmax",
               "none"
             ],
-            "type_name": "nodetool.nodes.huggingface_hub.OutputTransform"
+            "type_name": "nodetool.nodes.huggingface_hub.AudioClassification.OutputTransform"
           },
           "default": "none",
           "title": "Function To Apply",
@@ -277,7 +277,7 @@
               "softmax",
               "none"
             ],
-            "type_name": "nodetool.nodes.huggingface_hub.OutputTransform"
+            "type_name": "nodetool.nodes.huggingface_hub.ImageClassification.OutputTransform"
           },
           "default": "none",
           "title": "Function To Apply",
@@ -377,7 +377,7 @@
               "panoptic",
               "semantic"
             ],
-            "type_name": "nodetool.nodes.huggingface_hub.Subtask"
+            "type_name": "nodetool.nodes.huggingface_hub.ImageSegmentation.Subtask"
           },
           "default": "semantic",
           "title": "Subtask",
@@ -571,7 +571,7 @@
               "only_first",
               "only_second"
             ],
-            "type_name": "nodetool.nodes.huggingface_hub.Truncation"
+            "type_name": "nodetool.nodes.huggingface_hub.Summarization.Truncation"
           },
           "default": "do_not_truncate",
           "title": "Truncation",
@@ -676,7 +676,7 @@
               "softmax",
               "none"
             ],
-            "type_name": "nodetool.nodes.huggingface_hub.OutputTransform"
+            "type_name": "nodetool.nodes.huggingface_hub.TextClassification.OutputTransform"
           },
           "default": "none",
           "title": "Function To Apply",
@@ -1013,7 +1013,7 @@
               "only_first",
               "only_second"
             ],
-            "type_name": "nodetool.nodes.huggingface_hub.Truncation"
+            "type_name": "nodetool.nodes.huggingface_hub.Translation.Truncation"
           },
           "default": "do_not_truncate",
           "title": "Truncation",
@@ -1427,7 +1427,7 @@
               "positive",
               "negative"
             ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterDictNumberType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType"
           },
           "default": "greater_than",
           "title": "Filter Type"
@@ -1581,7 +1581,7 @@
               "length_less",
               "exact_length"
             ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType"
           },
           "default": "contains",
           "title": "Filter Type",
@@ -1814,7 +1814,7 @@
               "positive",
               "negative"
             ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterNumberType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType"
           },
           "default": "greater_than",
           "title": "Filter Type",
@@ -1938,7 +1938,7 @@
               "length_less",
               "exact_length"
             ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterType"
+            "type_name": "nodetool.nodes.nodetool.list.FilterStrings.FilterType"
           },
           "default": "contains",
           "title": "Filter Type",
@@ -2656,7 +2656,7 @@
               "ascending",
               "descending"
             ],
-            "type_name": "nodetool.nodes.nodetool.list.SortOrder"
+            "type_name": "nodetool.nodes.nodetool.list.Sort.SortOrder"
           },
           "default": "ascending",
           "title": "Order"
@@ -2743,7 +2743,7 @@
               "lowercase",
               "strip"
             ],
-            "type_name": "nodetool.nodes.nodetool.list.TransformType"
+            "type_name": "nodetool.nodes.nodetool.list.Transform.TransformType"
           },
           "default": "to_string",
           "title": "Transform Type"
@@ -2988,7 +2988,7 @@
               "ubuntu:24.04",
               "jupyter/scipy-notebook:latest"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.BashImage"
+            "type_name": "nodetool.nodes.nodetool.code.ExecuteBash.BashImage"
           },
           "default": "ubuntu:22.04",
           "title": "Image",
@@ -3066,7 +3066,7 @@
               "ubuntu:22.04",
               "ubuntu:24.04"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.CommandImage"
+            "type_name": "nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage"
           },
           "default": "bash:5.2",
           "title": "Image",
@@ -3141,7 +3141,7 @@
             "values": [
               "node:22-alpine"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.JavaScriptImage"
+            "type_name": "nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage"
           },
           "default": "node:22-alpine",
           "title": "Image",
@@ -3217,7 +3217,7 @@
               "lua",
               "luajit"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.LuaExecutable"
+            "type_name": "nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable"
           },
           "default": "lua",
           "title": "Executable",
@@ -3303,7 +3303,7 @@
               "python:3.11-slim",
               "jupyter/scipy-notebook:latest"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.PythonImage"
+            "type_name": "nodetool.nodes.nodetool.code.ExecutePython.PythonImage"
           },
           "default": "python:3.11-slim",
           "title": "Image",
@@ -3378,7 +3378,7 @@
             "values": [
               "ruby:3.3-alpine"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.RubyImage"
+            "type_name": "nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage"
           },
           "default": "ruby:3.3-alpine",
           "title": "Image",
@@ -3500,7 +3500,7 @@
               ">=",
               "<="
             ],
-            "type_name": "nodetool.nodes.nodetool.boolean.Comparison"
+            "type_name": "nodetool.nodes.nodetool.boolean.Compare.Comparison"
           },
           "default": "==",
           "title": "Comparison",
@@ -3675,7 +3675,7 @@
               "nand",
               "nor"
             ],
-            "type_name": "nodetool.nodes.nodetool.boolean.BooleanOperation"
+            "type_name": "nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation"
           },
           "default": "and",
           "title": "Operation",
@@ -5327,6 +5327,58 @@
       ]
     },
     {
+      "title": "Image Model Input",
+      "description": "Accepts an image generation model as a parameter for workflows.\n    input, parameter, model, image, generation",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ImageModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "image_model"
+          },
+          "default": {
+            "type": "image_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
+          "title": "Value",
+          "description": "The image generation model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Inference Provider Input",
       "description": "Accepts an inference provider as a parameter for workflows.\n    input, parameter, provider, inference, provider_name",
       "namespace": "nodetool.input",
@@ -5948,7 +6000,7 @@
               "p50k_base",
               "r50k_base"
             ],
-            "type_name": "nodetool.nodes.nodetool.text.TiktokenEncoding"
+            "type_name": "nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding"
           },
           "default": "cl100k_base",
           "title": "Encoding",
@@ -7010,7 +7062,7 @@
     },
     {
       "title": "Template",
-      "description": "Uses Jinja2 templating to format strings with variables and filters.\n    text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter\n\n    Use cases:\n    - Generating personalized messages with dynamic content\n    - Creating parameterized queries or commands\n    - Formatting and filtering text output based on variable inputs\n\n    Examples:\n    - text: \"Hello, {{ name }}!\"\n    - text: \"Title: {{ title|truncate(20) }}\"\n    - text: \"Name: {{ name|upper }}\"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter",
+      "description": "Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.\n    text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter\n\n    Use cases:\n    - Generating personalized messages with dynamic content\n    - Creating parameterized queries or commands\n    - Formatting and filtering text output based on variable inputs\n\n    Examples:\n    - text: \"Hello, {{ name }}!\"\n    - text: \"Title: {{ title|truncate(20) }}\"\n    - text: \"Name: {{ name|upper }}\"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Template",
       "properties": [
@@ -7022,15 +7074,6 @@
           "default": "",
           "title": "String",
           "description": "\n    Examples:\n    - text: \"Hello, {{ name }}!\"\n    - text: \"Title: {{ title|truncate(20) }}\"\n    - text: \"Name: {{ name|upper }}\"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n"
-        },
-        {
-          "name": "values",
-          "type": {
-            "type": "any"
-          },
-          "default": {},
-          "title": "Values",
-          "description": "\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        "
         }
       ],
       "outputs": [
@@ -7042,9 +7085,9 @@
         }
       ],
       "basic_fields": [
-        "string",
-        "values"
-      ]
+        "string"
+      ],
+      "is_dynamic": true
     },
     {
       "title": "List Documents",
@@ -9678,7 +9721,7 @@
               "last",
               "error"
             ],
-            "type_name": "nodetool.nodes.nodetool.dictionary.ConflictResolution"
+            "type_name": "nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution"
           },
           "default": "first",
           "title": "Conflict Resolution",
@@ -10051,7 +10094,7 @@
               "center",
               "bottom"
             ],
-            "type_name": "nodetool.nodes.nodetool.video.SubtitleTextAlignment"
+            "type_name": "nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment"
           },
           "default": "bottom",
           "title": "Align",
@@ -11282,7 +11325,7 @@
               "revealup",
               "revealdown"
             ],
-            "type_name": "nodetool.nodes.nodetool.video.TransitionType"
+            "type_name": "nodetool.nodes.nodetool.video.Transition.TransitionType"
           },
           "default": "fade",
           "title": "Transition Type",
@@ -11602,6 +11645,159 @@
       "basic_fields": [
         "image"
       ]
+    },
+    {
+      "title": "Image To Image",
+      "description": "Transform images using text prompts with any supported image provider.\n    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).\n    image, transformation, AI, image-to-image, i2i\n\n    Use cases:\n    - Modify existing images with text instructions\n    - Style transfer and artistic modifications\n    - Image enhancement and refinement\n    - Creative image edits guided by prompts",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.ImageToImage",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "image_model"
+          },
+          "default": {
+            "type": "image_model",
+            "provider": "huggingface_fal_ai",
+            "id": "fal-ai/flux/dev",
+            "name": "FLUX.1 Dev"
+          },
+          "title": "Model",
+          "description": "The image generation model to use"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Input image to transform"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A photorealistic version of the input image",
+          "title": "Prompt",
+          "description": "Text prompt describing the desired transformation"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Text prompt describing what to avoid"
+        },
+        {
+          "name": "strength",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.8,
+          "title": "Strength",
+          "description": "How much to transform the input image (0.0 = no change, 1.0 = maximum change)",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Classifier-free guidance scale",
+          "min": 0.0,
+          "max": 30.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "Number of denoising steps",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "target_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Target Width",
+          "description": "Target width of the output image",
+          "min": 64.0,
+          "max": 2048.0
+        },
+        {
+          "name": "target_height",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Target Height",
+          "description": "Target height of the output image",
+          "min": 64.0,
+          "max": 2048.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        },
+        {
+          "name": "scheduler",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Scheduler",
+          "description": "Scheduler to use (provider-specific)"
+        },
+        {
+          "name": "safety_check",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Safety Check",
+          "description": "Enable safety checker"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "image",
+        "prompt",
+        "strength",
+        "seed"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Load Image Assets",
@@ -12041,6 +12237,134 @@
         "image",
         "scale"
       ]
+    },
+    {
+      "title": "Text To Image",
+      "description": "Generate images from text prompts using any supported image provider.\n    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).\n    image, generation, AI, text-to-image, t2i\n\n    Use cases:\n    - Create images from text descriptions\n    - Switch between providers without changing workflows\n    - Generate images with different AI models\n    - Cost-optimize by choosing different providers",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.TextToImage",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "image_model"
+          },
+          "default": {
+            "type": "image_model",
+            "provider": "huggingface_fal_ai",
+            "id": "fal-ai/flux/schnell",
+            "name": "FLUX.1 Schnell"
+          },
+          "title": "Model",
+          "description": "The image generation model to use"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cat holding a sign that says hello world",
+          "title": "Prompt",
+          "description": "Text prompt describing the desired image"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Text prompt describing what to avoid in the image"
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Width",
+          "description": "Width of the generated image",
+          "min": 64.0,
+          "max": 2048.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Height",
+          "description": "Height of the generated image",
+          "min": 64.0,
+          "max": 2048.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Classifier-free guidance scale (higher = closer to prompt)",
+          "min": 0.0,
+          "max": 30.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "Number of denoising steps",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        },
+        {
+          "name": "scheduler",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Scheduler",
+          "description": "Scheduler to use (provider-specific, leave empty for default)"
+        },
+        {
+          "name": "safety_check",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Safety Check",
+          "description": "Enable safety checker to filter inappropriate content"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "prompt",
+        "width",
+        "height",
+        "seed"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Add Column",
@@ -14885,7 +15209,7 @@
               "SINCE_ONE_MONTH",
               "SINCE_ONE_YEAR"
             ],
-            "type_name": "nodetool.nodes.lib.mail.DateFilter"
+            "type_name": "nodetool.nodes.lib.mail.GmailSearch.DateFilter"
           },
           "default": "SINCE_ONE_DAY",
           "title": "Date Filter",
@@ -14911,7 +15235,7 @@
               "[Gmail]/Spam",
               "[Gmail]/Trash"
             ],
-            "type_name": "nodetool.nodes.lib.mail.GmailFolder"
+            "type_name": "nodetool.nodes.lib.mail.GmailSearch.GmailFolder"
           },
           "default": "INBOX",
           "title": "Folder",
@@ -17571,7 +17895,7 @@
               "reload",
               "extract"
             ],
-            "type_name": "nodetool.nodes.lib.browser.Action"
+            "type_name": "nodetool.nodes.lib.browser.BrowserNavigation.Action"
           },
           "default": "goto",
           "title": "Action",
@@ -17614,7 +17938,7 @@
               "value",
               "attribute"
             ],
-            "type_name": "nodetool.nodes.lib.browser.ExtractType"
+            "type_name": "nodetool.nodes.lib.browser.BrowserNavigation.ExtractType"
           },
           "default": "text",
           "title": "Extract Type",
@@ -18589,7 +18913,7 @@
               "json",
               "tsv"
             ],
-            "type_name": "nodetool.nodes.lib.http.FileFormat"
+            "type_name": "nodetool.nodes.lib.http.DownloadDataframe.FileFormat"
           },
           "default": "csv",
           "title": "File Format",
@@ -19483,7 +19807,7 @@
               "arctan",
               "log"
             ],
-            "type_name": "nodetool.nodes.lib.math.Operation"
+            "type_name": "nodetool.nodes.lib.math.MathFunction.Operation"
           },
           "default": "negate",
           "title": "Operation",
@@ -21912,216 +22236,6 @@
       ]
     },
     {
-      "title": "Leann Builder",
-      "description": "Create high-performance vector indexes for Retrieval-Augmented Generation (RAG) using LEANN.\n    embedding, collection, RAG, index, text, chunk, batch, vector, search, leann\n\n    Embedding Model Selection: Understanding the Trade-offs\n    Based on extensive testing with LEANN, embedding models fall into three performance tiers:\n\n    \ud83d\ude80 SMALL MODELS (< 100M parameters)\n    - sentence-transformers/all-MiniLM-L6-v2 (22M params)\n    \ud83c\udfaf BEST FOR: Prototyping, simple queries, interactive demos, resource-constrained environments\n\n    \u2696\ufe0f MEDIUM MODELS (100M-500M parameters)\n    - facebook/contriever (110M params)\n    - BAAI/bge-base-en-v1.5 (109M params)\n    \ud83c\udfaf BEST FOR: Production RAG applications, balanced quality-performance needs\n\n    \ud83c\udfc6 LARGE MODELS (500M+ parameters)\n    - Qwen/Qwen3-Embedding-0.6B (600M params)\n    - intfloat/multilingual-e5-large (560M params)\n    \ud83c\udfaf BEST FOR: High-stakes applications, maximum accuracy requirements, production environments\n\n    Index Backend Selection: Optimizing for Scale and Performance\n\n    Choose the right backend based on your dataset size and performance requirements:\n\n    \u26a1 HNSW (Hierarchical Navigable Small World)\n    \ud83c\udfaf BEST FOR: Datasets < 10M vectors, when memory isn't a bottleneck, default recommendation\n\n    \ud83d\ude80 DISKANN (Disk-based Approximate Nearest Neighbor)\n    \ud83c\udfaf BEST FOR: Large datasets (100k+ documents), production environments, when recompute=True",
-      "namespace": "vector.leann",
-      "node_type": "vector.leann.LeannBuilder",
-      "properties": [
-        {
-          "name": "folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Folder",
-          "description": "Output folder where the LEANN index will be stored. Choose a location with sufficient disk space for your dataset."
-        },
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "Unique identifier for this index. Used for organizing and retrieving specific indexes."
-        },
-        {
-          "name": "model",
-          "type": {
-            "type": "enum",
-            "values": [
-              "sentence-transformers/all-MiniLM-L6-v2",
-              "facebook/contriever",
-              "BAAI/bge-base-en-v1.5",
-              "Qwen/Qwen3-Embedding-0.6B",
-              "intfloat/multilingual-e5-large"
-            ],
-            "type_name": "nodetool.nodes.vector.leann.EmbeddingModel"
-          },
-          "default": "sentence-transformers/all-MiniLM-L6-v2",
-          "title": "Model",
-          "description": "Select embedding model based on your quality-speed trade-off. See EmbeddingModel documentation for detailed guidance."
-        },
-        {
-          "name": "backend",
-          "type": {
-            "type": "enum",
-            "values": [
-              "hnsw",
-              "diskann"
-            ],
-            "type_name": "nodetool.nodes.vector.leann.Backend"
-          },
-          "default": "hnsw",
-          "title": "Backend",
-          "description": "Index backend optimized for your scale. HNSW for most use cases, DiskANN for large datasets. See Backend documentation for details."
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The text to index"
-        },
-        {
-          "name": "metadata",
-          "type": {
-            "type": "dict"
-          },
-          "default": {},
-          "title": "Metadata",
-          "description": "The metadata to associate with the text"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "none"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "folder",
-        "name",
-        "model",
-        "backend",
-        "text",
-        "metadata"
-      ]
-    },
-    {
-      "title": "Leann Searcher",
-      "description": "Search high-performance vector indexes for Retrieval-Augmented Generation (RAG) using LEANN.\n    embedding, collection, RAG, index, text, chunk, batch, vector, search, leann",
-      "namespace": "vector.leann",
-      "node_type": "vector.leann.LeannSearcher",
-      "properties": [
-        {
-          "name": "folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Folder",
-          "description": "The folder where the index is stored"
-        },
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The name of the index"
-        },
-        {
-          "name": "query",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Query",
-          "description": "The query to search for"
-        },
-        {
-          "name": "top_k",
-          "type": {
-            "type": "int"
-          },
-          "default": 5,
-          "title": "Top K",
-          "description": "The number of results to return"
-        },
-        {
-          "name": "complexity",
-          "type": {
-            "type": "int"
-          },
-          "default": 64,
-          "title": "Complexity",
-          "description": "The complexity of the search"
-        },
-        {
-          "name": "beam_width",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Beam Width",
-          "description": "The beam width of the search"
-        },
-        {
-          "name": "prune_ratio",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Prune Ratio",
-          "description": "The prune ratio of the search"
-        },
-        {
-          "name": "recompute_embeddings",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Recompute Embeddings",
-          "description": "Whether to recompute the embeddings"
-        },
-        {
-          "name": "pruning_strategy",
-          "type": {
-            "type": "enum",
-            "values": [
-              "global",
-              "local",
-              "proportional"
-            ],
-            "type_name": "nodetool.nodes.vector.leann.PruningStrategy"
-          },
-          "default": "global",
-          "title": "Pruning Strategy",
-          "description": "The pruning strategy of the search"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "leann_search_result"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "folder",
-        "name",
-        "query",
-        "top_k",
-        "complexity",
-        "beam_width",
-        "prune_ratio",
-        "recompute_embeddings",
-        "pruning_strategy"
-      ]
-    },
-    {
       "title": "Add Vectors",
       "description": "Add vectors to a FAISS index.\n    faiss, add, vectors",
       "namespace": "vector.faiss",
@@ -23363,7 +23477,7 @@
               "gpt-4o-realtime-preview",
               "gpt-4o-mini-realtime-preview"
             ],
-            "type_name": "nodetool.nodes.openai.agents.Model"
+            "type_name": "nodetool.nodes.openai.agents.RealtimeAgent.Model"
           },
           "default": "gpt-4o-mini-realtime-preview",
           "title": "Model"
@@ -23411,7 +23525,7 @@
               "sage",
               "verse"
             ],
-            "type_name": "nodetool.nodes.openai.agents.Voice"
+            "type_name": "nodetool.nodes.openai.agents.RealtimeAgent.Voice"
           },
           "default": "alloy",
           "title": "Voice",
@@ -23549,7 +23663,7 @@
               "text-embedding-3-large",
               "text-embedding-3-small"
             ],
-            "type_name": "nodetool.nodes.openai.text.EmbeddingModel"
+            "type_name": "nodetool.nodes.openai.text.Embedding.EmbeddingModel"
           },
           "default": "text-embedding-3-small",
           "title": "Model"
@@ -23621,7 +23735,7 @@
               "tts-1-hd",
               "gpt-4o-mini-tts"
             ],
-            "type_name": "nodetool.nodes.openai.audio.TtsModel"
+            "type_name": "nodetool.nodes.openai.audio.TextToSpeech.TtsModel"
           },
           "default": "tts-1",
           "title": "Model"
@@ -23643,7 +23757,7 @@
               "shimmer",
               "verse"
             ],
-            "type_name": "nodetool.nodes.openai.audio.Voice"
+            "type_name": "nodetool.nodes.openai.audio.TextToSpeech.Voice"
           },
           "default": "alloy",
           "title": "Voice"
@@ -23697,7 +23811,7 @@
               "gpt-4o-transcribe",
               "gpt-4o-mini-transcribe"
             ],
-            "type_name": "nodetool.nodes.openai.audio.TranscriptionModel"
+            "type_name": "nodetool.nodes.openai.audio.Transcribe.TranscriptionModel"
           },
           "default": "whisper-1",
           "title": "Model",
@@ -23785,7 +23899,7 @@
               "punjabi",
               "bengali"
             ],
-            "type_name": "nodetool.nodes.openai.audio.Language"
+            "type_name": "nodetool.nodes.openai.audio.Transcribe.Language"
           },
           "default": "auto_detect",
           "title": "Language",
@@ -23924,7 +24038,7 @@
             "values": [
               "gpt-image-1"
             ],
-            "type_name": "nodetool.nodes.openai.image.Model"
+            "type_name": "nodetool.nodes.openai.image.CreateImage.Model"
           },
           "default": "gpt-image-1",
           "title": "Model",
@@ -23939,7 +24053,7 @@
               "1536x1024",
               "1024x1536"
             ],
-            "type_name": "nodetool.nodes.openai.image.Size"
+            "type_name": "nodetool.nodes.openai.image.CreateImage.Size"
           },
           "default": "1024x1024",
           "title": "Size",
@@ -23954,7 +24068,7 @@
               "opaque",
               "auto"
             ],
-            "type_name": "nodetool.nodes.openai.image.Background"
+            "type_name": "nodetool.nodes.openai.image.CreateImage.Background"
           },
           "default": "auto",
           "title": "Background",
@@ -23969,7 +24083,7 @@
               "medium",
               "low"
             ],
-            "type_name": "nodetool.nodes.openai.image.Quality"
+            "type_name": "nodetool.nodes.openai.image.CreateImage.Quality"
           },
           "default": "high",
           "title": "Quality",
@@ -24085,7 +24199,7 @@
       "tags": []
     },
     {
-      "id": "e25d8a38761211f080f7000017889565",
+      "id": "d22725a09fc211f0b7bb00007bf02e69",
       "name": "Summarize Paper",
       "description": "",
       "tags": [

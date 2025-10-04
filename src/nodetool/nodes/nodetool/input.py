@@ -9,6 +9,7 @@ from nodetool.metadata.types import (
     FolderRef,
     HuggingFaceModel,
     LanguageModel,
+    ImageModel,
     Message,
     MessageAudioContent,
     MessageDocumentContent,
@@ -52,6 +53,9 @@ class FloatInput(InputNode):
     def return_type(cls):
         return float
 
+    async def process(self, context: ProcessingContext) -> float:
+        return self.value
+
 
 class BooleanInput(InputNode):
     """
@@ -69,6 +73,9 @@ class BooleanInput(InputNode):
     @classmethod
     def return_type(cls):
         return bool
+
+    async def process(self, context: ProcessingContext) -> bool:
+        return self.value
 
 
 class IntegerInput(InputNode):
@@ -90,6 +97,9 @@ class IntegerInput(InputNode):
     def return_type(cls):
         return int
 
+    async def process(self, context: ProcessingContext) -> int:
+        return self.value
+
 
 class StringInput(InputNode):
     """
@@ -109,6 +119,9 @@ class StringInput(InputNode):
     @classmethod
     def return_type(cls):
         return str
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.value
 
 
 class StringListInput(InputNode):
@@ -200,6 +213,56 @@ class ChatInput(InputNode):
     def return_type(cls):
         return cls.OutputType
 
+    async def process(self, context: ProcessingContext) -> OutputType:
+        # Extract the latest message (last in the list)
+        if not self.value:
+            return {
+                "history": [],
+                "text": "",
+                "image": None,
+                "audio": None,
+                "video": None,
+                "document": None,
+                "tools": [],
+            }
+
+        last_message = self.value[-1]
+        history = self.value[:-1]
+
+        # Extract content from the last message
+        text = ""
+        image = None
+        audio = None
+        video = None
+        document = None
+        tools = []
+
+        for content_item in last_message.content:
+            if isinstance(content_item, MessageTextContent):
+                text = content_item.text
+            elif isinstance(content_item, MessageImageContent):
+                image = content_item.image
+            elif isinstance(content_item, MessageAudioContent):
+                audio = content_item.audio
+            elif isinstance(content_item, MessageVideoContent):
+                video = content_item.video
+            elif isinstance(content_item, MessageDocumentContent):
+                document = content_item.document
+
+        # Extract tool calls if present
+        if last_message.tool_calls:
+            tools = [ToolName(tool_call.name) for tool_call in last_message.tool_calls]
+
+        return {
+            "history": history,
+            "text": text,
+            "image": image,
+            "audio": audio,
+            "video": video,
+            "document": document,
+            "tools": tools,
+        }
+
 
 class ColorInput(InputNode):
     """
@@ -227,6 +290,21 @@ class LanguageModelInput(InputNode):
     @classmethod
     def return_type(cls):
         return LanguageModel
+
+
+class ImageModelInput(InputNode):
+    """
+    Accepts an image generation model as a parameter for workflows.
+    input, parameter, model, image, generation
+    """
+
+    value: ImageModel = Field(
+        ImageModel(), description="The image generation model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return ImageModel
 
 
 class DocumentInput(InputNode):
@@ -268,6 +346,9 @@ class ImageInput(InputNode):
     def return_type(cls):
         return ImageRef
 
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        return self.value
+
 
 class VideoInput(InputNode):
     """
@@ -287,6 +368,9 @@ class VideoInput(InputNode):
     def return_type(cls):
         return VideoRef
 
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        return self.value
+
 
 class AudioInput(InputNode):
     """
@@ -305,6 +389,9 @@ class AudioInput(InputNode):
     @classmethod
     def return_type(cls):
         return AudioRef
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        return self.value
 
 
 class RealtimeAudioInput(InputNode):

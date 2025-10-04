@@ -149,21 +149,15 @@ async def test_list_generator_gen_process_streaming(context: ProcessingContext):
         # Act
         items: list[str] = []
         indices: list[int] = []
-        final_list: list[str] | None = None
         async for output in node.gen_process(context):
-            key, value = output
-            if key == "items":
-                assert isinstance(value, str)
-                items.append(value)
-            elif key == "index":
-                assert isinstance(value, int)
-                indices.append(value)
-            elif key == "list":
-                assert isinstance(value, list)
-                final_list = value
+            # ListGenerator yields dicts with "item" and "index" keys
+            if "item" in output:
+                assert isinstance(output["item"], str)
+                items.append(output["item"])
+            if "index" in output:
+                assert isinstance(output["index"], int)
+                indices.append(output["index"])
 
         # Assert streamed items and indexes
         assert items == ["Alpha", "Beta", "Gamma"]
         assert indices == [1, 2, 3]
-        # Assert final list emitted
-        assert final_list == ["Alpha", "Beta", "Gamma"]

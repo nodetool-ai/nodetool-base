@@ -177,7 +177,7 @@ class FormatText(BaseNode):
 
 class Template(BaseNode):
     """
-    Uses Jinja2 templating to format strings with variables and filters.
+    Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.
     text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter
 
     Use cases:
@@ -229,8 +229,7 @@ class Template(BaseNode):
 """,
     )
     values: Any = Field(
-        title="Values",
-        default={},
+        default_factory=dict,
         description="""
         The values to replace in the string.
         - If a string, it will be used as the format string.
@@ -239,6 +238,7 @@ class Template(BaseNode):
         - If an object, it will be converted to a dictionary using the object's __dict__ method.
         """,
     )
+    _is_dynamic: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
         from jinja2 import Environment, BaseLoader
@@ -248,20 +248,14 @@ class Template(BaseNode):
             env = Environment(loader=BaseLoader())
             template = env.from_string(self.string)
 
-            # Prepare values
-            if isinstance(self.values, str):
-                values = {"value": self.values}
-            elif isinstance(self.values, list):
-                values = {"values": self.values}
-            elif isinstance(self.values, dict):
-                values = self.values
-            elif isinstance(self.values, object):
-                values = self.values.__dict__
-            else:
-                raise ValueError("Invalid values type")
+            # Merge values from the values field and dynamic properties
+            template_values = {}
+            if isinstance(self.values, dict):
+                template_values.update(self.values)
+            template_values.update(self._dynamic_properties)
 
             # Render template
-            return template.render(**values)
+            return template.render(**template_values)
 
         except Exception as e:
             raise ValueError(f"Template error: {str(e)}")
