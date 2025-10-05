@@ -4,10 +4,11 @@ import json
 import os
 
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
+from nodetool.providers import get_provider
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FolderRef
+from nodetool.metadata.types import ASRModel, AudioChunk, FolderRef, AudioRef, Provider
 from nodetool.workflows.base_node import BaseNode
 import re
 from jsonpath_ng import parse
@@ -16,6 +17,34 @@ from enum import Enum
 import html2text
 from nodetool.io.uri_utils import create_file_uri
 
+
+class AutomaticSpeechRecognition(BaseNode):
+    """
+    Automatic speech recognition node.
+    audio, speech, recognition
+    """
+
+    class OutputType(TypedDict):
+        text: str
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: ASRModel = Field(
+        default=ASRModel(
+            provider=Provider.FalAI, id="openai/whisper-large-v3"
+        )
+    )
+    audio: AudioRef = Field(default=AudioRef(), description="The audio to transcribe")
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        provider = get_provider(self.model.provider)
+        audio_bytes = await context.asset_to_bytes(self.audio)
+        text = await provider.automatic_speech_recognition(
+            audio_bytes, model=self.model.id, 
+        )
+        return {
+            "text": text
+        }
 
 class Concat(BaseNode):
     """

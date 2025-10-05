@@ -5,6 +5,7 @@ import sys
 import asyncio
 from typing import Any, List, Dict, Tuple
 
+from nodetool.metadata.types import InferenceProvider
 from rich.table import Table
 from rich.columns import Columns
 from nodetool.agents.agent_evaluator import (
@@ -149,19 +150,7 @@ def default_provider_factory(provider_key: str) -> Any:
         return AnthropicProvider()
     elif provider_key.startswith("huggingface"):
         inference_provider = provider_key.split(":")[1]
-        assert inference_provider in [
-            "black-forest-labs",
-            "cerebras",
-            "cohere",
-            "fal-ai",
-            "featherless-ai",
-            "fireworks-ai",
-            "google",
-            "mistral",
-            "openai",
-            "qwen",
-            "together",
-        ]
+        assert inference_provider in InferenceProvider.__members__.values()
         return HuggingFaceProvider(inference_provider)  # type: ignore
     else:
         raise ValueError(f"Unknown provider key: {provider_key}")

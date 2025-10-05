@@ -8,9 +8,24 @@ from typing import Any, ClassVar
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DataframeRef, FolderRef
+from nodetool.metadata.types import ColumnDef, DataframeRef, FolderRef, RecordType
 from nodetool.config.environment import Environment
 
+
+class Schema(BaseNode):
+    """
+    Define a schema for a dataframe.
+    schema, dataframe, create
+    """
+    
+    columns: RecordType = Field(
+        default=RecordType(),
+        description="The columns to use in the dataframe.",
+    )
+
+    async def process(self, context: ProcessingContext) -> RecordType:
+        return self.columns
+    
 
 class Filter(BaseNode):
     """

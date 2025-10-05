@@ -2,21 +2,17 @@ from enum import Enum
 from typing import ClassVar, TypedDict
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import (
-    AudioChunk,
     AudioRef,
     ImageRef,
     ImageSegmentationResult,
     InferenceProvider,
-    InferenceProviderAutomaticSpeechRecognitionModel,
     InferenceProviderAudioClassificationModel,
     InferenceProviderImageClassificationModel,
     InferenceProviderTextClassificationModel,
     InferenceProviderSummarizationModel,
     InferenceProviderTextToImageModel,
     InferenceProviderTranslationModel,
-    InferenceProviderTextToTextModel,
     InferenceProviderTextToSpeechModel,
-    InferenceProviderTextToAudioModel,
     InferenceProviderTextGenerationModel,
     InferenceProviderImageToImageModel,
     InferenceProviderImageSegmentationModel,
@@ -48,46 +44,6 @@ class HuggingFaceInferenceNode(BaseNode):
             raise ValueError("HF_TOKEN is not set")
         return AsyncInferenceClient(api_key=api_key, provider=provider.value)
 
-
-class AutomaticSpeechRecognition(HuggingFaceInferenceNode):
-    """
-    Automatic speech recognition node.
-    audio, speech, recognition, huggingface, inference
-    """
-
-    class OutputType(TypedDict):
-        text: str
-        chunks: list[AudioChunk]
-
-    _expose_as_tool: ClassVar[bool] = True
-
-    model: InferenceProviderAutomaticSpeechRecognitionModel = Field(
-        default=InferenceProviderAutomaticSpeechRecognitionModel(
-            provider=InferenceProvider.fal_ai, model_id="openai/whisper-large-v3"
-        )
-    )
-    audio: AudioRef = Field(default=AudioRef(), description="The audio to transcribe")
-
-    async def process(self, context: ProcessingContext) -> OutputType:
-        client = self.get_client(self.model.provider)
-        audio_bytes = await context.asset_to_bytes(self.audio)
-        output = await client.automatic_speech_recognition(
-            audio_bytes, model=self.model.model_id
-        )
-        return {
-            "text": output.text,
-            "chunks": (
-                [
-                    AudioChunk(
-                        text=chunk.text,
-                        timestamp=(chunk.timestamp[0], chunk.timestamp[1]),
-                    )
-                    for chunk in output.chunks
-                ]
-                if output.chunks
-                else []
-            ),
-        }
 
 
 class AudioClassification(HuggingFaceInferenceNode):
@@ -248,131 +204,6 @@ class ImageSegmentation(HuggingFaceInferenceNode):
             )
 
         return result
-
-
-class ImageToImage(HuggingFaceInferenceNode):
-    """
-    Image-to-image node using HuggingFace Inference API. Transforms a source image to match the characteristics of a target image or domain.
-    img2img, img-to-img, huggingface, inference
-    """
-
-    model: InferenceProviderImageToImageModel = Field(
-        default=InferenceProviderImageToImageModel(
-            provider=InferenceProvider.black_forest_labs,
-            model_id="black-forest-labs/FLUX.1-Kontext-dev",
-        ),
-        description="The model to use for image-to-image transformation",
-    )
-    image: ImageRef = Field(
-        default=ImageRef(), description="The input image to transform"
-    )
-    prompt: str = Field(
-        default="", description="The text prompt to guide the image transformation"
-    )
-    guidance_scale: float = Field(
-        default=7.5,
-        description="A higher guidance scale value encourages the model to generate images closely linked to the text prompt at the expense of lower image quality",
-    )
-    negative_prompt: str = Field(
-        default="",
-        description="One prompt to guide what NOT to include in image generation",
-    )
-    num_inference_steps: int = Field(
-        default=30,
-        description="The number of denoising steps. More denoising steps usually lead to a higher quality image at the expense of slower inference",
-    )
-    target_width: int = Field(
-        default=512, description="The target width in pixels of the output image"
-    )
-    target_height: int = Field(
-        default=512, description="The target height in pixels of the output image"
-    )
-
-    _expose_as_tool: ClassVar[bool] = True
-
-    class OutputType(TypedDict):
-        output: ImageRef
-
-    async def process(self, context: ProcessingContext) -> OutputType:
-        client = self.get_client(self.model.provider)
-        image_bytes = await context.asset_to_bytes(self.image)
-
-        output = await client.image_to_image(
-            image_bytes,
-            model=self.model.model_id,
-            prompt=self.prompt,
-            guidance_scale=self.guidance_scale,
-            negative_prompt=self.negative_prompt,
-            num_inference_steps=self.num_inference_steps,
-            target_size={
-                "width": self.target_width,
-                "height": self.target_height,
-            },  # type: ignore
-        )
-
-        return {"output": await context.image_from_pil(output)}
-
-
-class TextToImage(HuggingFaceInferenceNode):
-    """
-    Text-to-image node using HuggingFace Inference API. Generates an image based on a given text prompt.
-    text2img, text-to-img, huggingface, inference
-    """
-
-    model: InferenceProviderTextToImageModel = Field(
-        default=InferenceProviderTextToImageModel(
-            provider=InferenceProvider.none, model_id="black-forest-labs/FLUX.1-dev"
-        ),
-        description="The model to use for text-to-image generation",
-    )
-    prompt: str = Field(
-        default="", description="The input text prompt to generate an image from"
-    )
-    guidance_scale: float = Field(
-        default=7.5,
-        description="A higher guidance scale value encourages the model to generate images closely linked to the text prompt, but values too high may cause saturation and other artifacts",
-    )
-    negative_prompt: str = Field(
-        default="",
-        description="One prompt to guide what NOT to include in image generation",
-    )
-    num_inference_steps: int = Field(
-        default=30,
-        description="The number of denoising steps. More denoising steps usually lead to a higher quality image at the expense of slower inference",
-    )
-    width: int = Field(
-        default=512, description="The width in pixels of the output image"
-    )
-    height: int = Field(
-        default=512, description="The height in pixels of the output image"
-    )
-    seed: int = Field(
-        default=-1,
-        description="Seed for the random number generator. Use -1 for random seed",
-    )
-    scheduler: str = Field(
-        default="",
-        description="Override the scheduler with a compatible one",
-    )
-
-    _expose_as_tool: ClassVar[bool] = True
-
-    async def process(self, context: ProcessingContext) -> ImageRef:
-        client = self.get_client(self.model.provider)
-
-        output = await client.text_to_image(
-            self.prompt,
-            model=self.model.model_id,
-            guidance_scale=self.guidance_scale,
-            num_inference_steps=self.num_inference_steps,
-            width=self.width,
-            height=self.height,
-            negative_prompt=self.negative_prompt if self.negative_prompt else None,
-            seed=self.seed if self.seed != -1 else None,
-            scheduler=self.scheduler if self.scheduler else None,
-        )
-
-        return await context.image_from_pil(output)
 
 
 class Translation(HuggingFaceInferenceNode):
@@ -587,127 +418,3 @@ class Summarization(HuggingFaceInferenceNode):
         )
 
         return output.summary_text
-
-
-class ChatCompletion(HuggingFaceInferenceNode):
-    """
-    Chat completion node using HuggingFace Inference API. Generates text based on a given prompt.
-    chat, completion, huggingface, inference
-    """
-
-    model: InferenceProviderTextGenerationModel = Field(
-        default=InferenceProviderTextGenerationModel(
-            provider=InferenceProvider.cerebras,
-            model_id="Qwen/Qwen3-235B-A22B-Thinking-2507",
-        ),
-        description="The model to use for text generation",
-    )
-    prompt: str = Field(
-        default="", description="The input text prompt to generate from"
-    )
-    max_tokens: int = Field(
-        default=4096,
-        description="Maximum number of tokens to generate",
-        ge=1,
-        le=16384,
-    )
-    temperature: float = Field(
-        default=1.0,
-        description="The value used to module the logits distribution",
-        ge=0.0,
-        le=2.0,
-    )
-    top_p: float = Field(
-        default=1.0,
-        description="Top-p value for nucleus sampling",
-        ge=0.0,
-        le=1.0,
-    )
-    top_k: int = Field(
-        default=50,
-        description="The number of highest probability vocabulary tokens to keep for top-k-filtering",
-    )
-
-    async def process(self, context: ProcessingContext) -> str:
-        client = self.get_client(self.model.provider)
-
-        output = await client.chat_completion(
-            messages=[{"role": "user", "content": self.prompt}],
-            model=self.model.model_id,
-            max_tokens=self.max_tokens,
-            temperature=self.temperature,
-            top_p=self.top_p,
-        )
-        assert output.choices[0].message.content is not None
-
-        return output.choices[0].message.content
-
-
-class TextToSpeech(HuggingFaceInferenceNode):
-    """
-    Text-to-speech node using HuggingFace Inference API. Generates speech audio from input text.
-    text-to-speech, text-to-audio, speech, huggingface, inference
-    """
-
-    model: InferenceProviderTextToSpeechModel = Field(
-        default=InferenceProviderTextToSpeechModel(
-            provider=InferenceProvider.hf_inference, model_id="microsoft/speecht5_tts"
-        ),
-        description="The model to use for text-to-speech synthesis",
-    )
-    text: str = Field(default="", description="The input text to convert to speech")
-    do_sample: bool = Field(
-        default=False,
-        description="Whether to use sampling instead of greedy decoding when generating new tokens",
-    )
-    temperature: float = Field(
-        default=1.0,
-        description="The value used to modulate the next token probabilities",
-        ge=0.1,
-        le=2.0,
-    )
-    top_k: int = Field(
-        default=50,
-        description="The number of highest probability vocabulary tokens to keep for top-k-filtering",
-        ge=1,
-    )
-    top_p: float = Field(
-        default=1.0,
-        description="If set to float < 1, only the smallest set of most probable tokens are kept for generation",
-        ge=0.0,
-        le=1.0,
-    )
-    max_new_tokens: int = Field(
-        default=512,
-        description="The maximum number of tokens to generate",
-        ge=1,
-    )
-    num_beams: int = Field(
-        default=1,
-        description="Number of beams to use for beam search",
-        ge=1,
-    )
-    use_cache: bool = Field(
-        default=True,
-        description="Whether the model should use the past last key/values attentions to speed up decoding",
-    )
-
-    class OutputType(TypedDict):
-        output: AudioRef
-
-    async def process(self, context: ProcessingContext) -> OutputType:
-        client = self.get_client(self.model.provider)
-
-        output = await client.text_to_speech(
-            self.text,
-            model=self.model.model_id,
-            do_sample=self.do_sample if self.do_sample else None,
-            temperature=self.temperature if self.temperature != 1.0 else None,
-            top_k=self.top_k if self.top_k != 50 else None,
-            top_p=self.top_p if self.top_p != 1.0 else None,
-            max_new_tokens=self.max_new_tokens if self.max_new_tokens != 512 else None,
-            num_beams=self.num_beams if self.num_beams != 1 else None,
-            use_cache=self.use_cache if not self.use_cache else None,
-        )
-
-        return {"output": await context.audio_from_bytes(output)}

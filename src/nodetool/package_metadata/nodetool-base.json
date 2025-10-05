@@ -90,152 +90,6 @@
       "expose_as_tool": true
     },
     {
-      "title": "Automatic Speech Recognition",
-      "description": "Automatic speech recognition node.\n    audio, speech, recognition, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.AutomaticSpeechRecognition",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_automatic_speech_recognition_model"
-          },
-          "default": {
-            "type": "inference_provider_automatic_speech_recognition_model",
-            "provider": "fal-ai",
-            "model_id": "openai/whisper-large-v3"
-          },
-          "title": "Model"
-        },
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio to transcribe"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "audio_chunk"
-              }
-            ]
-          },
-          "name": "chunks"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "audio"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Chat Completion",
-      "description": "Chat completion node using HuggingFace Inference API. Generates text based on a given prompt.\n    chat, completion, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.ChatCompletion",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_text_generation_model"
-          },
-          "default": {
-            "type": "inference_provider_text_generation_model",
-            "provider": "cerebras",
-            "model_id": "Qwen/Qwen3-235B-A22B-Thinking-2507"
-          },
-          "title": "Model",
-          "description": "The model to use for text generation"
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "The input text prompt to generate from"
-        },
-        {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Max Tokens",
-          "description": "Maximum number of tokens to generate",
-          "min": 1.0,
-          "max": 16384.0
-        },
-        {
-          "name": "temperature",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Temperature",
-          "description": "The value used to module the logits distribution",
-          "min": 0.0,
-          "max": 2.0
-        },
-        {
-          "name": "top_p",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Top P",
-          "description": "Top-p value for nucleus sampling",
-          "min": 0.0,
-          "max": 1.0
-        },
-        {
-          "name": "top_k",
-          "type": {
-            "type": "int"
-          },
-          "default": 50,
-          "title": "Top K",
-          "description": "The number of highest probability vocabulary tokens to keep for top-k-filtering"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "prompt",
-        "max_tokens",
-        "temperature",
-        "top_p",
-        "top_k"
-      ]
-    },
-    {
       "title": "Image Classification",
       "description": "Image classification node using HuggingFace Inference API. Assigns a label or class to image data.\n    image, classification, huggingface, inference",
       "namespace": "huggingface_hub",
@@ -413,114 +267,6 @@
         "overlap_mask_area_threshold",
         "subtask",
         "threshold"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Image To Image",
-      "description": "Image-to-image node using HuggingFace Inference API. Transforms a source image to match the characteristics of a target image or domain.\n    img2img, img-to-img, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.ImageToImage",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_image_to_image_model"
-          },
-          "default": {
-            "type": "inference_provider_image_to_image_model",
-            "provider": "black-forest-labs",
-            "model_id": "black-forest-labs/FLUX.1-Kontext-dev"
-          },
-          "title": "Model",
-          "description": "The model to use for image-to-image transformation"
-        },
-        {
-          "name": "image",
-          "type": {
-            "type": "image"
-          },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Image",
-          "description": "The input image to transform"
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "The text prompt to guide the image transformation"
-        },
-        {
-          "name": "guidance_scale",
-          "type": {
-            "type": "float"
-          },
-          "default": 7.5,
-          "title": "Guidance Scale",
-          "description": "A higher guidance scale value encourages the model to generate images closely linked to the text prompt at the expense of lower image quality"
-        },
-        {
-          "name": "negative_prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Negative Prompt",
-          "description": "One prompt to guide what NOT to include in image generation"
-        },
-        {
-          "name": "num_inference_steps",
-          "type": {
-            "type": "int"
-          },
-          "default": 30,
-          "title": "Num Inference Steps",
-          "description": "The number of denoising steps. More denoising steps usually lead to a higher quality image at the expense of slower inference"
-        },
-        {
-          "name": "target_width",
-          "type": {
-            "type": "int"
-          },
-          "default": 512,
-          "title": "Target Width",
-          "description": "The target width in pixels of the output image"
-        },
-        {
-          "name": "target_height",
-          "type": {
-            "type": "int"
-          },
-          "default": 512,
-          "title": "Target Height",
-          "description": "The target height in pixels of the output image"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "image",
-        "prompt",
-        "guidance_scale",
-        "negative_prompt",
-        "num_inference_steps",
-        "target_width",
-        "target_height"
       ],
       "expose_as_tool": true
     },
@@ -715,238 +461,6 @@
         "top_k"
       ],
       "expose_as_tool": true
-    },
-    {
-      "title": "Text To Image",
-      "description": "Text-to-image node using HuggingFace Inference API. Generates an image based on a given text prompt.\n    text2img, text-to-img, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.TextToImage",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_text_to_image_model"
-          },
-          "default": {
-            "type": "inference_provider_text_to_image_model",
-            "provider": "",
-            "model_id": "black-forest-labs/FLUX.1-dev"
-          },
-          "title": "Model",
-          "description": "The model to use for text-to-image generation"
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "The input text prompt to generate an image from"
-        },
-        {
-          "name": "guidance_scale",
-          "type": {
-            "type": "float"
-          },
-          "default": 7.5,
-          "title": "Guidance Scale",
-          "description": "A higher guidance scale value encourages the model to generate images closely linked to the text prompt, but values too high may cause saturation and other artifacts"
-        },
-        {
-          "name": "negative_prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Negative Prompt",
-          "description": "One prompt to guide what NOT to include in image generation"
-        },
-        {
-          "name": "num_inference_steps",
-          "type": {
-            "type": "int"
-          },
-          "default": 30,
-          "title": "Num Inference Steps",
-          "description": "The number of denoising steps. More denoising steps usually lead to a higher quality image at the expense of slower inference"
-        },
-        {
-          "name": "width",
-          "type": {
-            "type": "int"
-          },
-          "default": 512,
-          "title": "Width",
-          "description": "The width in pixels of the output image"
-        },
-        {
-          "name": "height",
-          "type": {
-            "type": "int"
-          },
-          "default": 512,
-          "title": "Height",
-          "description": "The height in pixels of the output image"
-        },
-        {
-          "name": "seed",
-          "type": {
-            "type": "int"
-          },
-          "default": -1,
-          "title": "Seed",
-          "description": "Seed for the random number generator. Use -1 for random seed"
-        },
-        {
-          "name": "scheduler",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Scheduler",
-          "description": "Override the scheduler with a compatible one"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "prompt",
-        "guidance_scale",
-        "negative_prompt",
-        "num_inference_steps",
-        "width",
-        "height",
-        "seed",
-        "scheduler"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Text To Speech",
-      "description": "Text-to-speech node using HuggingFace Inference API. Generates speech audio from input text.\n    text-to-speech, text-to-audio, speech, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.TextToSpeech",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_text_to_speech_model"
-          },
-          "default": {
-            "type": "inference_provider_text_to_speech_model",
-            "provider": "hf-inference",
-            "model_id": "microsoft/speecht5_tts"
-          },
-          "title": "Model",
-          "description": "The model to use for text-to-speech synthesis"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The input text to convert to speech"
-        },
-        {
-          "name": "do_sample",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Do Sample",
-          "description": "Whether to use sampling instead of greedy decoding when generating new tokens"
-        },
-        {
-          "name": "temperature",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Temperature",
-          "description": "The value used to modulate the next token probabilities",
-          "min": 0.1,
-          "max": 2.0
-        },
-        {
-          "name": "top_k",
-          "type": {
-            "type": "int"
-          },
-          "default": 50,
-          "title": "Top K",
-          "description": "The number of highest probability vocabulary tokens to keep for top-k-filtering",
-          "min": 1.0
-        },
-        {
-          "name": "top_p",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Top P",
-          "description": "If set to float < 1, only the smallest set of most probable tokens are kept for generation",
-          "min": 0.0,
-          "max": 1.0
-        },
-        {
-          "name": "max_new_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 512,
-          "title": "Max New Tokens",
-          "description": "The maximum number of tokens to generate",
-          "min": 1.0
-        },
-        {
-          "name": "num_beams",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Num Beams",
-          "description": "Number of beams to use for beam search",
-          "min": 1.0
-        },
-        {
-          "name": "use_cache",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Use Cache",
-          "description": "Whether the model should use the past last key/values attentions to speed up decoding"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "text",
-        "do_sample",
-        "temperature",
-        "top_k",
-        "top_p",
-        "max_new_tokens",
-        "num_beams",
-        "use_cache"
-      ]
     },
     {
       "title": "Translation",
@@ -4616,1014 +4130,23 @@
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Asset Folder Input",
-      "description": "Accepts an asset folder as a parameter for workflows.\n    input, parameter, folder, path, folderpath, local_folder, filesystem",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.AssetFolderInput",
+      "title": "Automatic Speech Recognition",
+      "description": "Automatic speech recognition node.\n    audio, speech, recognition",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.AutomaticSpeechRecognition",
       "properties": [
         {
-          "name": "name",
+          "name": "model",
           "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "folder"
+            "type": "asr_model"
           },
           "default": {
-            "type": "folder",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Value",
-          "description": "The folder to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "folder"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Audio Input",
-      "description": "Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.\n    input, parameter, audio, sound, voice, speech, asset\n\n    Use cases:\n    - Load an audio file for speech-to-text transcription.\n    - Analyze sound for specific events or characteristics.\n    - Provide audio input to models for tasks like voice recognition or music generation.\n    - Process audio for enhancement or feature extraction.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.AudioInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Value",
-          "description": "The audio to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Boolean Input",
-      "description": "Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.\n    input, parameter, boolean, bool, toggle, switch, flag\n\n    Use cases:\n    - Toggle features or settings on or off.\n    - Set binary flags to control workflow behavior.\n    - Make conditional choices within a workflow (e.g., proceed if true).",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.BooleanInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Value"
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bool"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Chat Input",
-      "description": "Accepts a list of chat messages as input for workflows, typically representing a conversation history.  The input is structured as a sequence of 'Message' objects. The node processes this list to extract elements like the latest message content (text, image, audio, video, document), the history, and any associated tool calls.\n    input, parameter, chat, message, conversation, prompt, history\n\n    Use cases:\n    - Provide user prompts or queries to a language model.\n    - Supply conversational context (history) for multi-turn interactions.\n    - Capture complex inputs that include text alongside other media types or tool requests.\n    - Initiate or continue a chat-based workflow.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.ChatInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "message"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Value",
-          "description": "The chat message to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "message"
-              }
-            ]
-          },
-          "name": "history"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "image"
-        },
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "audio"
-        },
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "video"
-        },
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "document"
-        },
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tool_name"
-              }
-            ]
-          },
-          "name": "tools"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Collection Input",
-      "description": "Accepts a reference to a specific data collection, typically within a vector database or similar storage system.\n    The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.\n    Keywords: input, parameter, collection, database, vector_store, chroma, index\n\n    Use cases:\n    - Select a target vector database collection for indexing new documents.\n    - Specify a collection to perform a similarity search or query against.\n    - Choose a data source or destination that is represented as a named collection.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.CollectionInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "collection"
-          },
-          "default": {
-            "type": "collection",
+            "type": "asr_model",
+            "provider": "fal_ai",
+            "id": "openai/whisper-large-v3",
             "name": ""
           },
-          "title": "Value",
-          "description": "The collection to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "collection"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Color Input",
-      "description": "Accepts a color value as a parameter for workflows.\n    input, parameter, color, color_picker, color_input",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.ColorInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "color"
-          },
-          "default": {
-            "type": "color",
-            "value": null
-          },
-          "title": "Value",
-          "description": "The color to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "color"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Document File Input",
-      "description": "Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.\n    input, parameter, document, file, path, local_file, load\n\n    Use cases:\n    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.\n    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.\n    - Useful for development or workflows that have legitimate access to the local filesystem.\n    - To provide an existing 'DocumentRef', use 'DocumentInput'.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.DocumentFileInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value",
-          "description": "The path to the document file.",
-          "json_schema_extra": {
-            "type": "file_path"
-          }
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "document"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "path"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Document Input",
-      "description": "Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.\n    input, parameter, document, file, asset, reference\n\n    Use cases:\n    - Load a specific document (e.g., PDF, Word, text file) for content extraction or analysis.\n    - Pass a document to models that are designed to process specific document formats.\n    - Manage documents as distinct assets within a workflow.\n    - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.DocumentInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "document"
-          },
-          "default": {
-            "type": "document",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Value",
-          "description": "The document to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "File Path Input",
-      "description": "Accepts a local filesystem path (to a file or directory) as input for workflows.\n    input, parameter, path, filepath, directory, local_file, filesystem\n\n    Use cases:\n    - Provide a local path to a specific file or directory for processing.\n    - Specify an input or output location on the local filesystem for a development task.\n    - Load local datasets or configuration files not managed as assets.\n    - Not available in production: raises an error if used in a production environment.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.FilePathInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value",
-          "description": "The path to use as input.",
-          "json_schema_extra": {
-            "type": "file_path"
-          }
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Float Input",
-      "description": "Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.\n    input, parameter, float, number, decimal, range\n\n    Use cases:\n    - Specify a numeric value within a defined range (e.g., 0.0 to 1.0).\n    - Set thresholds, confidence scores, or scaling factors.\n    - Configure continuous parameters like opacity, volume, or temperature.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.FloatInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Value"
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        },
-        {
-          "name": "min",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Min"
-        },
-        {
-          "name": "max",
-          "type": {
-            "type": "float"
-          },
-          "default": 100,
-          "title": "Max"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Folder Path Input",
-      "description": "Accepts a folder path as a parameter for workflows.\n    input, parameter, folder, path, folderpath, local_folder, filesystem",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.FolderPathInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value",
-          "description": "The folder path to use as input.",
-          "json_schema_extra": {
-            "type": "folder_path"
-          }
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Hugging Face Model Input",
-      "description": "Accepts a Hugging Face model as a parameter for workflows.\n    input, parameter, model, huggingface, hugging_face, model_name",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.HuggingFaceModelInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "hf.model"
-          },
-          "default": {
-            "type": "hf.model",
-            "repo_id": "",
-            "path": null,
-            "variant": null,
-            "allow_patterns": null,
-            "ignore_patterns": null
-          },
-          "title": "Value",
-          "description": "The Hugging Face model to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "hf.model"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Image Input",
-      "description": "Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.\n    input, parameter, image, picture, graphic, visual, asset\n\n    Use cases:\n    - Load an image for visual processing or analysis.\n    - Provide an image as input to computer vision models (e.g., object detection, image classification).\n    - Select an image for manipulation, enhancement, or inclusion in a document.\n    - Display an image within a workflow interface.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.ImageInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "image"
-          },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Value",
-          "description": "The image to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Image Model Input",
-      "description": "Accepts an image generation model as a parameter for workflows.\n    input, parameter, model, image, generation",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.ImageModelInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "image_model"
-          },
-          "default": {
-            "type": "image_model",
-            "provider": "empty",
-            "id": "",
-            "name": ""
-          },
-          "title": "Value",
-          "description": "The image generation model to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "image_model"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Inference Provider Input",
-      "description": "Accepts an inference provider as a parameter for workflows.\n    input, parameter, provider, inference, provider_name",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.InferenceProviderInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "enum",
-            "values": [
-              "",
-              "black-forest-labs",
-              "cerebras",
-              "cohere",
-              "fal-ai",
-              "featherless-ai",
-              "fireworks-ai",
-              "groq",
-              "hf-inference",
-              "hyperbolic",
-              "nebius",
-              "novita",
-              "nscale",
-              "openai",
-              "replicate",
-              "sambanova",
-              "together"
-            ],
-            "type_name": "nodetool.metadata.types.InferenceProvider"
-          },
-          "default": "",
-          "title": "Value",
-          "description": "The inference provider to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "enum",
-            "values": [
-              "",
-              "black-forest-labs",
-              "cerebras",
-              "cohere",
-              "fal-ai",
-              "featherless-ai",
-              "fireworks-ai",
-              "groq",
-              "hf-inference",
-              "hyperbolic",
-              "nebius",
-              "novita",
-              "nscale",
-              "openai",
-              "replicate",
-              "sambanova",
-              "together"
-            ],
-            "type_name": "nodetool.metadata.types.InferenceProvider"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Integer Input",
-      "description": "Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.\n    input, parameter, integer, number, count, index, whole_number\n\n    Use cases:\n    - Specify counts or quantities (e.g., number of items, iterations).\n    - Set index values for accessing elements in a list or array.\n    - Configure discrete numeric parameters like age, steps, or quantity.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.IntegerInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Value"
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        },
-        {
-          "name": "min",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Min"
-        },
-        {
-          "name": "max",
-          "type": {
-            "type": "int"
-          },
-          "default": 100,
-          "title": "Max"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Language Model Input",
-      "description": "Accepts a language model as a parameter for workflows.\n    input, parameter, model, language, model_name",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.LanguageModelInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "language_model"
-          },
-          "default": {
-            "type": "language_model",
-            "provider": "empty",
-            "id": "",
-            "name": ""
-          },
-          "title": "Value",
-          "description": "The language model to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "language_model"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Realtime Audio Input",
-      "description": "Accepts streaming audio data for workflows.\n    input, parameter, audio, sound, voice, speech, asset",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.RealtimeAudioInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "any"
-          },
-          "default": null,
-          "title": "Value",
-          "description": "The value of the input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
+          "title": "Model"
         },
         {
           "name": "audio",
@@ -5637,180 +4160,22 @@
             "data": null
           },
           "title": "Audio",
-          "description": "The audio to use as input."
+          "description": "The audio to transcribe"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "chunk"
+            "type": "str"
           },
-          "name": "chunk"
+          "name": "text"
         }
       ],
       "basic_fields": [
-        "name",
-        "value",
+        "model",
         "audio"
       ],
-      "is_streaming_output": true
-    },
-    {
-      "title": "String Input",
-      "description": "Accepts a string value as a parameter for workflows.\n    input, parameter, string, text, label, name, value\n\n    Use cases:\n    - Define a name for an entity or process.\n    - Specify a label for a component or output.\n    - Enter a short keyword or search term.\n    - Provide a simple configuration value (e.g., an API key, a model name).\n    - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.StringInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value"
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "String List Input",
-      "description": "Accepts a list of strings as a parameter for workflows.\n    input, parameter, string, text, label, name, value",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.StringListInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": null,
-          "title": "Value",
-          "description": "The list of strings to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Video Input",
-      "description": "Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.\n    input, parameter, video, movie, clip, visual, asset\n\n    Use cases:\n    - Load a video file for processing or content analysis.\n    - Analyze video content for events, objects, or speech.\n    - Extract frames or audio tracks from a video.\n    - Provide video input to models that understand video data.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.VideoInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "video"
-          },
-          "default": {
-            "type": "video",
-            "uri": "",
-            "asset_id": null,
-            "data": null,
-            "duration": null,
-            "format": null
-          },
-          "title": "Value",
-          "description": "The video to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
+      "expose_as_tool": true
     },
     {
       "title": "Split Text into Chunks",
@@ -7830,6 +6195,159 @@
       "is_streaming_output": true
     },
     {
+      "title": "Audio Mixer",
+      "description": "Mix up to 5 audio tracks together with individual volume controls.\n    audio, mix, volume, combine, blend, layer, add, overlay\n\n    Use cases:\n    - Mix multiple audio tracks into a single output\n    - Create layered soundscapes\n    - Combine music, voice, and sound effects\n    - Adjust individual track volumes",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.AudioMixer",
+      "properties": [
+        {
+          "name": "track1",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Track1",
+          "description": "First audio track to mix."
+        },
+        {
+          "name": "track2",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Track2",
+          "description": "Second audio track to mix."
+        },
+        {
+          "name": "track3",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Track3",
+          "description": "Third audio track to mix."
+        },
+        {
+          "name": "track4",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Track4",
+          "description": "Fourth audio track to mix."
+        },
+        {
+          "name": "track5",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Track5",
+          "description": "Fifth audio track to mix."
+        },
+        {
+          "name": "volume1",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume1",
+          "description": "Volume for track 1. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume2",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume2",
+          "description": "Volume for track 2. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume3",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume3",
+          "description": "Volume for track 3. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume4",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume4",
+          "description": "Volume for track 4. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        },
+        {
+          "name": "volume5",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Volume5",
+          "description": "Volume for track 5. 1.0 is original volume.",
+          "min": 0.0,
+          "max": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "track1",
+        "track2",
+        "track3",
+        "track4",
+        "track5",
+        "volume1",
+        "volume2",
+        "volume3",
+        "volume4",
+        "volume5"
+      ]
+    },
+    {
       "title": "Audio To Numpy",
       "description": "Convert audio to numpy array for processing.\n    audio, numpy, convert, array\n\n    Use cases:\n    - Prepare audio for custom processing\n    - Convert audio for machine learning models\n    - Extract raw audio data for analysis",
       "namespace": "nodetool.audio",
@@ -7873,6 +6391,241 @@
       "basic_fields": [
         "audio"
       ]
+    },
+    {
+      "title": "Concat",
+      "description": "Concatenates two audio files together.\n    audio, edit, join, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from shorter segments",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Concat",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "A",
+          "description": "The first audio file."
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "B",
+          "description": "The second audio file."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Concat List",
+      "description": "Concatenates multiple audio files together in sequence.\n    audio, edit, join, multiple, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from multiple segments\n    - Chain multiple audio files in order",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.ConcatList",
+      "properties": [
+        {
+          "name": "audio_files",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "audio"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Audio Files",
+          "description": "List of audio files to concatenate in sequence."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio_files"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Convert To Array",
+      "description": "Converts an audio file to a Array for further processing.\n    audio, conversion, tensor\n\n    Use cases:\n    - Prepare audio data for machine learning models\n    - Enable signal processing operations on audio\n    - Convert audio to a format suitable for spectral analysisr",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.ConvertToArray",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file to convert to a tensor."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio"
+      ]
+    },
+    {
+      "title": "Create Silence",
+      "description": "Creates a silent audio file with a specified duration.\n    audio, silence, empty\n\n    Use cases:\n    - Generate placeholder audio files\n    - Create audio segments for padding or spacing\n    - Add silence to the beginning or end of audio files",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.CreateSilence",
+      "properties": [
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "The duration of the silence in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "duration"
+      ]
+    },
+    {
+      "title": "Fade In",
+      "description": "Applies a fade-in effect to the beginning of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth introductions to audio tracks\n    - Gradually increase volume at the start of a clip",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.FadeIn",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file to apply fade-in to."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "Duration of the fade-in effect in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "duration"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Fade Out",
+      "description": "Applies a fade-out effect to the end of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth endings to audio tracks\n    - Gradually decrease volume at the end of a clip",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.FadeOut",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file to apply fade-out to."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Duration",
+          "description": "Duration of the fade-out effect in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "duration"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Load Audio Assets",
@@ -8010,10 +6763,10 @@
       "is_streaming_output": true
     },
     {
-      "title": "Normalize Audio",
-      "description": "Normalize audio volume levels to a target loudness.\n    audio, normalize, volume, processing\n\n    Use cases:\n    - Standardize volume across multiple audio files\n    - Prepare audio for broadcasting or streaming\n    - Ensure consistent loudness in podcasts or videos",
+      "title": "Mono To Stereo",
+      "description": "Converts a mono audio signal to stereo.\n    audio, convert, channels\n\n    Use cases:\n    - Expand mono recordings for stereo playback systems\n    - Prepare audio for further stereo processing",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.NormalizeAudio",
+      "node_type": "nodetool.audio.MonoToStereo",
       "properties": [
         {
           "name": "audio",
@@ -8027,7 +6780,7 @@
             "data": null
           },
           "title": "Audio",
-          "description": "The audio to normalize."
+          "description": "The mono audio file to convert."
         }
       ],
       "outputs": [
@@ -8040,7 +6793,42 @@
       ],
       "basic_fields": [
         "audio"
-      ]
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Normalize",
+      "description": "Normalizes the volume of an audio file.\n    audio, fix, dynamics, volume\n\n    Use cases:\n    - Ensure consistent volume across multiple audio files\n    - Adjust overall volume level before further processing",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Normalize",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file to normalize."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Numpy To Audio",
@@ -8098,8 +6886,57 @@
       ]
     },
     {
+      "title": "Overlay Audio",
+      "description": "Overlays two audio files together.\n    audio, edit, transform\n\n    Use cases:\n    - Mix background music with voice recording\n    - Layer sound effects over an existing audio track",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.OverlayAudio",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "A",
+          "description": "The first audio file."
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "B",
+          "description": "The second audio file."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Remove Silence",
-      "description": "Remove silent parts from audio.\n    audio, silence, processing\n\n    Use cases:\n    - Clean up recordings with long pauses\n    - Remove dead air from podcasts\n    - Trim silence from the start and end of audio clips",
+      "description": "Removes or shortens silence in an audio file with smooth transitions.\n    audio, edit, clean\n\n    Use cases:\n    - Trim silent parts from beginning/end of recordings\n    - Remove or shorten long pauses between speech segments\n    - Apply crossfade for smooth transitions",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.RemoveSilence",
       "properties": [
@@ -8115,7 +6952,18 @@
             "data": null
           },
           "title": "Audio",
-          "description": "The audio to remove silence from."
+          "description": "The audio file to process."
+        },
+        {
+          "name": "min_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 200,
+          "title": "Min Length",
+          "description": "Minimum length of silence to be processed (in milliseconds).",
+          "min": 0.0,
+          "max": 10000.0
         },
         {
           "name": "threshold",
@@ -8124,16 +6972,42 @@
           },
           "default": -40,
           "title": "Threshold",
-          "description": "Silence threshold in dBFS. Lower values detect quieter sounds as silence."
+          "description": "Silence threshold in dB (relative to full scale). Higher values detect more silence.",
+          "min": -60.0,
+          "max": 0.0
         },
         {
-          "name": "min_silence_len",
+          "name": "reduction_factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Reduction Factor",
+          "description": "Factor to reduce silent parts (0.0 to 1.0). 0.0 keeps silence as is, 1.0 removes it completely.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "crossfade",
           "type": {
             "type": "int"
           },
-          "default": 500,
-          "title": "Min Silence Len",
-          "description": "Minimum length of silence to remove in milliseconds."
+          "default": 10,
+          "title": "Crossfade",
+          "description": "Duration of crossfade in milliseconds to apply between segments for smooth transitions.",
+          "min": 0.0,
+          "max": 50.0
+        },
+        {
+          "name": "min_silence_between_parts",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Min Silence Between Parts",
+          "description": "Minimum silence duration in milliseconds to maintain between non-silent segments",
+          "min": 0.0,
+          "max": 500.0
         }
       ],
       "outputs": [
@@ -8146,34 +7020,20 @@
       ],
       "basic_fields": [
         "audio",
+        "min_length",
         "threshold",
-        "min_silence_len"
-      ]
+        "reduction_factor",
+        "crossfade",
+        "min_silence_between_parts"
+      ],
+      "expose_as_tool": true
     },
     {
-      "title": "Save Audio File",
-      "description": "Save audio to disk.\n    audio, output, save, file\n\n    Use cases:\n    - Export processed audio\n    - Save generated audio to a specific location\n    - Create backups of audio files",
+      "title": "Repeat",
+      "description": "Loops an audio file a specified number of times.\n    audio, edit, repeat\n\n    Use cases:\n    - Create repeating background sounds or music\n    - Extend short audio clips to fill longer durations\n    - Generate rhythmic patterns from short samples",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.SaveAudioFile",
+      "node_type": "nodetool.audio.Repeat",
       "properties": [
-        {
-          "name": "folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Folder",
-          "description": "Folder to save the audio file to"
-        },
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "Name of the audio file"
-        },
         {
           "name": "audio",
           "type": {
@@ -8186,22 +7046,278 @@
             "data": null
           },
           "title": "Audio",
-          "description": "Audio to save"
+          "description": "The audio file to loop."
+        },
+        {
+          "name": "loops",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Loops",
+          "description": "Number of times to loop the audio. Minimum 1 (plays once), maximum 100.",
+          "min": 1.0,
+          "max": 100.0
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "str"
+            "type": "audio"
           },
           "name": "output"
         }
       ],
       "basic_fields": [
-        "folder",
-        "name",
+        "audio",
+        "loops"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Reverse",
+      "description": "Reverses an audio file.\n    audio, edit, transform\n\n    Use cases:\n    - Create reverse audio effects\n    - Generate backwards speech or music",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Reverse",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file to reverse."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
         "audio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Save Audio Asset",
+      "description": "Save an audio file to a specified asset folder.\n    audio, folder, name\n\n    Use cases:\n    - Save generated audio files with timestamps\n    - Organize outputs into specific folders\n    - Create backups of generated audio",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.SaveAudio",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Folder",
+          "description": "The asset folder to save the audio file to. "
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "%Y-%m-%d-%H-%M-%S.opus",
+          "title": "Name",
+          "description": "\n        The name of the audio file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "folder",
+        "name"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Save Audio File",
+      "description": "Write an audio file to disk.\n    audio, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.SaveAudioFile",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Folder",
+          "description": "Folder where the file will be saved"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Filename",
+          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "folder",
+        "filename"
       ]
+    },
+    {
+      "title": "Slice Audio",
+      "description": "Extracts a section of an audio file.\n    audio, edit, trim\n\n    Use cases:\n    - Cut out a specific clip from a longer audio file\n    - Remove unwanted portions from beginning or end",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.SliceAudio",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file."
+        },
+        {
+          "name": "start",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Start",
+          "description": "The start time in seconds.",
+          "min": 0.0
+        },
+        {
+          "name": "end",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "End",
+          "description": "The end time in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "start",
+        "end"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Stereo To Mono",
+      "description": "Converts a stereo audio signal to mono.\n    audio, convert, channels\n\n    Use cases:\n    - Reduce file size for mono-only applications\n    - Simplify audio for certain processing tasks",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.StereoToMono",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The stereo audio file to convert."
+        },
+        {
+          "name": "method",
+          "type": {
+            "type": "str"
+          },
+          "default": "average",
+          "title": "Method",
+          "description": "Method to use for conversion: 'average', 'left', or 'right'."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "method"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Text To Speech",
@@ -8226,8 +7342,7 @@
               "onyx",
               "nova",
               "shimmer"
-            ],
-            "selected_voice": ""
+            ]
           },
           "title": "Model",
           "description": "The text-to-speech model to use"
@@ -8274,6 +7389,62 @@
         "speed"
       ],
       "is_streaming_output": true,
+      "expose_as_tool": true
+    },
+    {
+      "title": "Trim",
+      "description": "Trim an audio file to a specified duration.\n    audio, trim, cut\n\n    Use cases:\n    - Remove silence from the beginning or end of audio files\n    - Extract specific segments from audio files\n    - Prepare audio data for machine learning models",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.Trim",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio file to trim."
+        },
+        {
+          "name": "start",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Start",
+          "description": "The start time of the trimmed audio in seconds.",
+          "min": 0.0
+        },
+        {
+          "name": "end",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "End",
+          "description": "The end time of the trimmed audio in seconds.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "start",
+        "end"
+      ],
       "expose_as_tool": true
     },
     {
@@ -12847,6 +12018,37 @@
       "expose_as_tool": true
     },
     {
+      "title": "Schema",
+      "description": "Define a schema for a dataframe.\n    schema, dataframe, create",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.Schema",
+      "properties": [
+        {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {
+            "type": "record_type",
+            "columns": []
+          },
+          "title": "Columns",
+          "description": "The columns to use in the dataframe."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "record_type"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "columns"
+      ]
+    },
+    {
       "title": "Select Column",
       "description": "Select specific columns from dataframe.\n    dataframe, columns, filter\n\n    Use cases:\n    - Extract relevant features for analysis\n    - Reduce dataframe size by removing unnecessary columns\n    - Prepare data for specific visualizations or models",
       "namespace": "nodetool.data",
@@ -17229,6 +16431,462 @@
         "password",
         "remote_path",
         "document"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Create Table",
+      "description": "Create a new SQLite table with specified columns.\n    sqlite, database, table, create, schema\n\n    Use cases:\n    - Initialize database schema for flashcards\n    - Set up tables for persistent storage\n    - Create memory structures for agents",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.CreateTable",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        },
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "flashcards",
+          "title": "Table Name",
+          "description": "Name of the table to create"
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {
+            "type": "record_type",
+            "columns": []
+          },
+          "title": "Columns",
+          "description": "Column definitions"
+        },
+        {
+          "name": "add_primary_key",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Add Primary Key",
+          "description": "Automatically make first integer column PRIMARY KEY AUTOINCREMENT"
+        },
+        {
+          "name": "if_not_exists",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "If Not Exists",
+          "description": "Only create table if it doesn't exist"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name",
+        "table_name",
+        "columns",
+        "add_primary_key",
+        "if_not_exists"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Delete",
+      "description": "Delete records from a SQLite table.\n    sqlite, database, delete, remove, drop\n\n    Use cases:\n    - Remove flashcards\n    - Delete agent memory\n    - Clean up old data",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.Delete",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        },
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "flashcards",
+          "title": "Table Name",
+          "description": "Name of the table to delete from"
+        },
+        {
+          "name": "where",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Where",
+          "description": "WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'. REQUIRED for safety."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name",
+        "table_name",
+        "where"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Execute SQL",
+      "description": "Execute arbitrary SQL statements for advanced operations.\n    sqlite, database, sql, execute, custom\n\n    Use cases:\n    - Complex queries with joins\n    - Aggregate functions (COUNT, SUM, AVG)\n    - Custom SQL operations",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.ExecuteSQL",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        },
+        {
+          "name": "sql",
+          "type": {
+            "type": "str"
+          },
+          "default": "SELECT * FROM flashcards",
+          "title": "Sql",
+          "description": "SQL statement to execute"
+        },
+        {
+          "name": "parameters",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Parameters",
+          "description": "Parameters for parameterized queries (use ? in SQL)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name",
+        "sql",
+        "parameters"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Get Database Path",
+      "description": "Get the full path to a SQLite database file.\n    sqlite, database, path, location\n\n    Use cases:\n    - Reference database location\n    - Verify database exists\n    - Pass path to external tools",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.GetDatabasePath",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Insert",
+      "description": "Insert a record into a SQLite table.\n    sqlite, database, insert, add, record\n\n    Use cases:\n    - Add new flashcards to database\n    - Store agent observations\n    - Persist workflow results",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.Insert",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        },
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "flashcards",
+          "title": "Table Name",
+          "description": "Name of the table to insert into"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": {
+            "content": "example"
+          },
+          "title": "Data",
+          "description": "Data to insert as dict (column: value)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name",
+        "table_name",
+        "data"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Query",
+      "description": "Query records from a SQLite table.\n    sqlite, database, query, select, search, retrieve\n\n    Use cases:\n    - Retrieve flashcards for review\n    - Search agent memory\n    - Fetch stored data",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.Query",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        },
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "flashcards",
+          "title": "Table Name",
+          "description": "Name of the table to query"
+        },
+        {
+          "name": "where",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Where",
+          "description": "WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "str"
+          },
+          "default": "*",
+          "title": "Columns",
+          "description": "Columns to select (comma-separated or '*' for all)"
+        },
+        {
+          "name": "order_by",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Order By",
+          "description": "ORDER BY clause (without 'ORDER BY' keyword)"
+        },
+        {
+          "name": "limit",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Limit",
+          "description": "Maximum number of rows to return (0 = no limit)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name",
+        "table_name",
+        "where",
+        "columns",
+        "order_by",
+        "limit"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Update",
+      "description": "Update records in a SQLite table.\n    sqlite, database, update, modify, change\n\n    Use cases:\n    - Update flashcard content\n    - Modify stored records\n    - Change agent memory",
+      "namespace": "lib.sqlite",
+      "node_type": "lib.sqlite.Update",
+      "properties": [
+        {
+          "name": "database_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "memory.db",
+          "title": "Database Name",
+          "description": "Name of the SQLite database file"
+        },
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "flashcards",
+          "title": "Table Name",
+          "description": "Name of the table to update"
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": {
+            "content": "updated"
+          },
+          "title": "Data",
+          "description": "Data to update as dict (column: new_value)"
+        },
+        {
+          "name": "where",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Where",
+          "description": "WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "database_name",
+        "table_name",
+        "data",
+        "where"
       ],
       "expose_as_tool": true
     },
