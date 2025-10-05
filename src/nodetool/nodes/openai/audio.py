@@ -10,7 +10,7 @@ from nodetool.workflows.processing_context import ProcessingContext
 from openai.types.audio.transcription_verbose import TranscriptionVerbose
 from openai.types.audio.translation import Translation
 
-from nodetool.chat.providers.openai_prediction import run_openai
+from nodetool.providers.openai_prediction import run_openai
 
 
 class TextToSpeech(BaseNode):

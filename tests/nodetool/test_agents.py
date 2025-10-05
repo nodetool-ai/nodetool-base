@@ -18,7 +18,7 @@ from nodetool.metadata.types import (
     TypeMetadata,
 )
 from typing import ClassVar
-from nodetool.chat.providers import (
+from nodetool.providers import (
     Chunk,
     FakeProvider,
     create_simple_fake_provider,
@@ -97,7 +97,7 @@ class TestSummarizer:
         )
 
         # Mock the provider's generate_messages method
-        from nodetool.chat.providers import FakeProvider
+        from nodetool.providers import FakeProvider
 
         fake_provider = FakeProvider(
             text_response="This is a summary", should_stream=False
@@ -142,7 +142,7 @@ class TestSummarizer:
         )
 
         # Mock streaming chunks
-        from nodetool.chat.providers import FakeProvider
+        from nodetool.providers import FakeProvider
 
         fake_provider = FakeProvider(
             text_response="This is a summary", should_stream=True, chunk_size=4
@@ -336,7 +336,7 @@ class TestAgent:
         )
 
         # Mock generate_messages
-        from nodetool.chat.providers import FakeProvider
+        from nodetool.providers import FakeProvider
 
         fake_provider = FakeProvider(
             text_response="I'm doing well, thank you!", should_stream=False
@@ -549,7 +549,7 @@ class TestAgent:
 
         test_audio_data = base64.b64encode(b"fake_audio_data").decode()
 
-        from nodetool.chat.providers import FakeProvider
+        from nodetool.providers import FakeProvider
         from nodetool.workflows.types import Chunk
         from nodetool.workflows.io import NodeInputs
 

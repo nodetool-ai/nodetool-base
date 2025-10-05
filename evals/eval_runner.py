@@ -135,11 +135,11 @@ async def _execute_agent_once(agent: Any, output_json_path: str | None) -> None:
 
 
 def default_provider_factory(provider_key: str) -> Any:
-    from nodetool.chat.providers.base import ChatProvider
-    from nodetool.chat.providers.openai_provider import OpenAIProvider
-    from nodetool.chat.providers.gemini_provider import GeminiProvider
-    from nodetool.chat.providers.anthropic_provider import AnthropicProvider
-    from nodetool.chat.providers.huggingface_provider import HuggingFaceProvider
+    from nodetool.providers.base import BaseProvider
+    from nodetool.providers.openai_provider import OpenAIProvider
+    from nodetool.providers.gemini_provider import GeminiProvider
+    from nodetool.providers.anthropic_provider import AnthropicProvider
+    from nodetool.providers.huggingface_provider import HuggingFaceProvider
 
     if provider_key == "openai":
         return OpenAIProvider()

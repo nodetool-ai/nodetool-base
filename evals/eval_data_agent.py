@@ -6,7 +6,7 @@ from typing import Any, List, Sequence, Tuple
 import pandas as pd
 from nodetool.agents.simple_agent import SimpleAgent
 from nodetool.agents.tools.node_tool import NodeTool
-from nodetool.chat.providers.base import ChatProvider
+from nodetool.providers.base import BaseProvider
 from nodetool.nodes.nodetool.data import (
     AddColumn,
     Aggregate,
@@ -51,7 +51,7 @@ def build_objective(task_description: str, data: dict[str, str]) -> str:
 
 
 def build_data_agent(
-    provider: ChatProvider,
+    provider: BaseProvider,
     model: str,
     tools: Sequence[Any],
     task_description: str,

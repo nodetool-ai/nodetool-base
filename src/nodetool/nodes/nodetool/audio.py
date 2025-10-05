@@ -1,14 +1,17 @@
 import io
 import os
 import datetime
-from typing import AsyncGenerator, TypedDict
+import base64
+from typing import AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.io.uri_utils import create_file_uri
+from nodetool.providers import get_provider
 from pydantic import Field
-from nodetool.metadata.types import AudioRef
+from nodetool.metadata.types import AudioRef, TTSModel, Provider
 from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.types import Chunk
 from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
@@ -84,6 +87,73 @@ class LoadAudioFile(BaseNode):
         audio = await context.audio_from_bytes(audio_data)
         audio.uri = create_file_uri(expanded_path)
         return audio
+
+
+class LoadAudioFolder(BaseNode):
+    """
+    Load all audio files from a folder, optionally including subfolders.
+    audio, load, folder, files
+
+    Use cases:
+    - Batch import audio for processing
+    - Build datasets from a directory tree
+    - Iterate over audio collections
+    """
+
+    folder: str = Field(default="", description="Folder to scan for audio files")
+    include_subdirectories: bool = Field(
+        default=False, description="Include audio in subfolders"
+    )
+    extensions: list[str] = Field(
+        default=[".mp3", ".wav", ".flac", ".ogg", ".m4a", ".aac"],
+        description="Audio file extensions to include",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Load Audio Folder"
+
+    class OutputType(TypedDict):
+        audio: AudioRef
+        path: str
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder:
+            raise ValueError("folder cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder)
+        if not os.path.isdir(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        allowed_exts = {ext.lower() for ext in self.extensions}
+
+        def iter_files(base_folder: str):
+            if self.include_subdirectories:
+                for root, _, files in os.walk(base_folder):
+                    for f in files:
+                        yield os.path.join(root, f)
+            else:
+                for f in os.listdir(base_folder):
+                    yield os.path.join(base_folder, f)
+
+        for file_path in iter_files(expanded_folder):
+            if not os.path.isfile(file_path):
+                continue
+
+            _, ext = os.path.splitext(file_path)
+            if ext.lower() not in allowed_exts:
+                continue
+
+            with open(file_path, "rb") as f:
+                audio_data = f.read()
+
+            audio = await context.audio_from_bytes(audio_data)
+            audio.uri = create_file_uri(file_path)
+            yield {"path": file_path, "audio": audio}
 
 
 class SaveAudio(BaseNode):
@@ -181,66 +251,6 @@ class SaveAudioFile(BaseNode):
         with open(expanded_path, "wb") as f:
             f.write(audio_data)
         return AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
-
-
-class Concat(BaseNode):
-    """
-    Concatenates two audio files together.
-    audio, edit, join, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from shorter segments
-    """
-
-    _expose_as_tool = True
-
-    a: AudioRef = Field(default=AudioRef(), description="The first audio file.")
-    b: AudioRef = Field(default=AudioRef(), description="The second audio file.")
-
-    async def process(self, context: ProcessingContext) -> AudioRef:
-        audio_a = await context.audio_to_audio_segment(self.a)
-        audio_b = await context.audio_to_audio_segment(self.b)
-        res = audio_a + audio_b
-        return await context.audio_from_segment(res)
-
-
-class ConcatList(BaseNode):
-    """
-    Concatenates multiple audio files together in sequence.
-    audio, edit, join, multiple, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from multiple segments
-    - Chain multiple audio files in order
-    """
-
-    _expose_as_tool = True
-
-    audio_files: list[AudioRef] = Field(
-        default=[], description="List of audio files to concatenate in sequence."
-    )
-
-    async def process(self, context: ProcessingContext) -> AudioRef:
-        if not self.audio_files:
-            return AudioRef()
-
-        if len(self.audio_files) == 0:
-            raise ValueError("No audio files provided")
-
-        if len(self.audio_files) == 1:
-            return self.audio_files[0]
-
-        # Convert first file to base segment
-        result = await context.audio_to_audio_segment(self.audio_files[0])
-
-        # Concatenate remaining files in sequence
-        for audio_ref in self.audio_files[1:]:
-            next_segment = await context.audio_to_audio_segment(audio_ref)
-            result = result + next_segment
-
-        return await context.audio_from_segment(result)
 
 
 class Normalize(BaseNode):
@@ -637,6 +647,71 @@ class AudioMixer(BaseNode):
         return await context.audio_from_segment(mixed_track)
 
 
+class AudioToNumpy(BaseNode):
+    """
+    Convert audio to numpy array for processing.
+    audio, numpy, convert, array
+
+    Use cases:
+    - Prepare audio for custom processing
+    - Convert audio for machine learning models
+    - Extract raw audio data for analysis
+    """
+
+    audio: AudioRef = Field(
+        default=AudioRef(), description="The audio to convert to numpy."
+    )
+
+    class OutputType(TypedDict):
+        array: NPArray
+        sample_rate: int
+        channels: int
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        array, sample_rate, channels = await context.audio_to_numpy(self.audio)
+        return {
+            "array": NPArray(value=array.tolist(), dtype=str(array.dtype)),
+            "sample_rate": sample_rate,
+            "channels": channels,
+        }
+
+
+class NumpyToAudio(BaseNode):
+    """
+    Convert numpy array to audio.
+    audio, numpy, convert
+
+    Use cases:
+    - Convert processed audio data back to audio format
+    - Create audio from machine learning model outputs
+    - Generate audio from synthesized waveforms
+    """
+
+    array: NPArray = Field(
+        default=NPArray(), description="The numpy array to convert to audio."
+    )
+    sample_rate: int = Field(default=44100, description="Sample rate in Hz.")
+    channels: int = Field(default=1, description="Number of audio channels (1 or 2).")
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        samples = np.array(self.array.value, dtype=self.array.dtype or "int16")
+
+        # Create audio segment from numpy array
+        audio_segment = AudioSegment(
+            samples.tobytes(),
+            frame_rate=self.sample_rate,
+            sample_width=samples.dtype.itemsize,
+            channels=self.channels,
+        )
+
+        # Export to bytes
+        buffer = io.BytesIO()
+        audio_segment.export(buffer, format="wav")
+        audio_bytes = buffer.getvalue()
+
+        return await context.audio_from_bytes(audio_bytes)
+
+
 class Trim(BaseNode):
     """
     Trim an audio file to a specified duration.
@@ -705,3 +780,160 @@ class CreateSilence(BaseNode):
     async def process(self, context: ProcessingContext) -> AudioRef:
         audio = AudioSegment.silent(duration=int(self.duration * 1000))
         return await context.audio_from_segment(audio)
+
+
+class Concat(BaseNode):
+    """
+    Concatenates two audio files together.
+    audio, edit, join, +
+
+    Use cases:
+    - Combine multiple audio clips into a single file
+    - Create longer audio tracks from shorter segments
+    """
+
+    _expose_as_tool = True
+
+    a: AudioRef = Field(default=AudioRef(), description="The first audio file.")
+    b: AudioRef = Field(default=AudioRef(), description="The second audio file.")
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        audio_a = await context.audio_to_audio_segment(self.a)
+        audio_b = await context.audio_to_audio_segment(self.b)
+        res = audio_a + audio_b
+        return await context.audio_from_segment(res)
+
+
+class ConcatList(BaseNode):
+    """
+    Concatenates multiple audio files together in sequence.
+    audio, edit, join, multiple, +
+
+    Use cases:
+    - Combine multiple audio clips into a single file
+    - Create longer audio tracks from multiple segments
+    - Chain multiple audio files in order
+    """
+
+    _expose_as_tool = True
+
+    audio_files: list[AudioRef] = Field(
+        default=[], description="List of audio files to concatenate in sequence."
+    )
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        if not self.audio_files:
+            return AudioRef()
+
+        if len(self.audio_files) == 0:
+            raise ValueError("No audio files provided")
+
+        if len(self.audio_files) == 1:
+            return self.audio_files[0]
+
+        # Convert first file to base segment
+        result = await context.audio_to_audio_segment(self.audio_files[0])
+
+        # Concatenate remaining files in sequence
+        for audio_ref in self.audio_files[1:]:
+            next_segment = await context.audio_to_audio_segment(audio_ref)
+            result = result + next_segment
+
+        return await context.audio_from_segment(result)
+
+
+class TextToSpeech(BaseNode):
+    """
+    Generate speech audio from text using any supported TTS provider.
+    Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
+    audio, generation, AI, text-to-speech, tts, voice
+
+    Use cases:
+    - Create voiceovers for videos and presentations
+    - Generate natural-sounding narration for content
+    - Build voice assistants and chatbots
+    - Convert written content to audio format
+    - Create accessible audio versions of text
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: TTSModel = Field(
+        default=TTSModel(
+            provider=Provider.OpenAI,
+            id="tts-1",
+            name="TTS 1",
+            voices=["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
+        ),
+        description="The text-to-speech model to use",
+    )
+    text: str = Field(
+        default="Hello! This is a text-to-speech demonstration.",
+        description="Text to convert to speech",
+    )
+    speed: float = Field(
+        default=1.0,
+        ge=0.25,
+        le=4.0,
+        description="Speech speed multiplier (0.25 to 4.0)",
+    )
+
+    class OutputType(TypedDict):
+        audio: AudioRef | None
+        chunk: Chunk
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
+        # Get the TTS provider for this model
+        provider_instance = get_provider(self.model.provider)
+
+        # Use the first voice from the model if no voice is specified
+        voice_to_use = self.model.selected_voice
+        if not voice_to_use and self.model.voices:
+            voice_to_use = self.model.voices[0]
+
+        # Generate speech - provider now yields int16 numpy arrays at 24kHz
+        audio_chunks: list[np.ndarray] = []
+        async for audio_chunk_array in provider_instance.text_to_speech(
+            text=self.text,
+            model=self.model.id,
+            voice=voice_to_use if voice_to_use else None,
+            speed=self.speed,
+            context=context,
+        ):
+            # Store chunk for final audio
+            audio_chunks.append(audio_chunk_array)
+
+            # Yield audio chunk as base64-encoded int16 data
+            audio_base64 = base64.b64encode(audio_chunk_array.tobytes()).decode(
+                "utf-8"
+            )
+            chunk = Chunk(
+                content=audio_base64,
+                content_type="audio",
+                content_metadata={
+                    "sample_rate": 24000,
+                    "channels": 1,
+                    "dtype": "int16",
+                },
+                done=False,
+            )
+            yield {"chunk": chunk, "audio": None}
+
+        # Combine all chunks and create final AudioRef
+        if not audio_chunks:
+            raise ValueError("No audio data generated")
+
+        # Concatenate all int16 numpy arrays
+        combined_array = np.concatenate(audio_chunks) if len(audio_chunks) > 1 else audio_chunks[0]
+
+        # Yield final audio using audio_from_numpy at 24kHz
+        yield {
+            "audio": await context.audio_from_numpy(combined_array, 24000),
+            "chunk": Chunk(content="", done=True, content_type="audio"),
+        }
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["model", "text", "voice", "speed"]

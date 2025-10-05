@@ -10,6 +10,15 @@ from typing import Any, Dict, ClassVar
 
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
+from nodetool.metadata.types import (
+    ImageResult,
+    JobResult,
+    LocalResult,
+    NewsResult,
+    OrganicResult,
+    ShoppingResult,
+    VisualMatchResult,
+)
 from nodetool.agents.serp_providers.types import (
     GoogleJobsResponse,
     GoogleLensResponse,
@@ -18,13 +27,6 @@ from nodetool.agents.serp_providers.types import (
     GoogleImagesResponse,
     GoogleMapsResponse,
     GoogleShoppingResponse,
-    ImageResult,
-    JobResult,
-    LocalResult,
-    NewsResult,
-    OrganicResult,
-    ShoppingResult,
-    ViualMatchResult,
 )
 
 from nodetool.workflows.processing_context import ProcessingContext

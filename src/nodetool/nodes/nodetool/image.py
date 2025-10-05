@@ -2,12 +2,12 @@ import fnmatch
 from typing import Any, AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.metadata.types import FolderRef, ImageModel, Provider
+from nodetool.providers import get_provider
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import create_file_uri
-from nodetool.image.providers.registry import get_image_provider
-from nodetool.image.types import TextToImageParams, ImageToImageParams
+from nodetool.providers.types import TextToImageParams, ImageToImageParams
 import os
 import datetime
 from pydantic import Field
@@ -517,7 +517,7 @@ class TextToImage(BaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         # Get the image provider for this model
-        provider_instance = get_image_provider(self.model.provider)
+        provider_instance = get_provider(self.model.provider)
 
         params = TextToImageParams(
             model=self.model,
@@ -627,7 +627,7 @@ class ImageToImage(BaseNode):
             raise ValueError("Input image is required")
 
         # Get the image provider for this model
-        provider_instance = get_image_provider(self.model.provider)
+        provider_instance = get_provider(self.model.provider)
 
         # Get input image bytes
         input_image_bytes = await context.asset_to_bytes(self.image)

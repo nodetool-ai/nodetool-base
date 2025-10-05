@@ -14,7 +14,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.types import Chunk
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.generators import DataGenerator, ListGenerator
-from nodetool.chat.providers import FakeProvider, create_tool_calling_fake_provider
+from nodetool.providers import FakeProvider, create_tool_calling_fake_provider
 
 
 @pytest.fixture
@@ -40,7 +40,7 @@ async def test_data_generator_process(context: ProcessingContext):
     )
     # Create tool calls for each data row
     from nodetool.metadata.types import ToolCall
-    from nodetool.chat.providers import FakeProvider
+    from nodetool.providers import FakeProvider
 
     # Create a fake provider that returns tool calls
     class DataGeneratorFakeProvider(FakeProvider):

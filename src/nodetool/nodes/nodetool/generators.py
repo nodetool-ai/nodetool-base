@@ -7,7 +7,7 @@ from pydantic import Field
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
 )
-from nodetool.chat.providers import get_provider
+from nodetool.providers import get_provider
 from nodetool.metadata.types import (
     Message,
     MessageContent,

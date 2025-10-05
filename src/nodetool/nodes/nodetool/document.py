@@ -2,7 +2,7 @@ import datetime
 import os
 import glob
 from typing import TypedDict
-from nodetool.chat.providers.base import AsyncGenerator
+from nodetool.providers.base import AsyncGenerator
 from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode

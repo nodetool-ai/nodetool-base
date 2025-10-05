@@ -47,7 +47,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.io import NodeInputs, NodeOutputs
-from nodetool.chat.providers import Chunk
+from nodetool.providers import Chunk
 from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)

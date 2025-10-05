@@ -2063,7 +2063,8 @@
         "start",
         "stop",
         "step"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Get Element",
@@ -2888,7 +2889,8 @@
       ],
       "basic_fields": [
         "input_list"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "If",
@@ -2932,7 +2934,8 @@
       "basic_fields": [
         "condition",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Reroute",
@@ -2960,7 +2963,8 @@
       ],
       "basic_fields": [
         "input_value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Execute Bash",
@@ -3039,6 +3043,7 @@
         "stdin"
       ],
       "is_dynamic": true,
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3117,6 +3122,7 @@
         "stdin"
       ],
       "is_dynamic": true,
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3278,6 +3284,7 @@
         "stdin"
       ],
       "is_dynamic": true,
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3354,6 +3361,7 @@
         "stdin"
       ],
       "is_dynamic": true,
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3429,6 +3437,7 @@
         "stdin"
       ],
       "is_dynamic": true,
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3884,6 +3893,7 @@
         "image",
         "audio"
       ],
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -4208,7 +4218,8 @@
         "model",
         "image",
         "audio"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Chart Generator",
@@ -4366,7 +4377,8 @@
         "prompt",
         "model",
         "columns"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "List Generator",
@@ -4435,7 +4447,8 @@
       "basic_fields": [
         "prompt",
         "model"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "SVGGenerator",
@@ -5639,7 +5652,8 @@
         "name",
         "value",
         "audio"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "String Input",
@@ -6550,7 +6564,8 @@
       ],
       "basic_fields": [
         "folder"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Parse JSON String",
@@ -7074,6 +7089,15 @@
           "default": "",
           "title": "String",
           "description": "\n    Examples:\n    - text: \"Hello, {{ name }}!\"\n    - text: \"Title: {{ title|truncate(20) }}\"\n    - text: \"Name: {{ name|upper }}\"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n"
+        },
+        {
+          "name": "values",
+          "type": {
+            "type": "any"
+          },
+          "default": null,
+          "title": "Values",
+          "description": "\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        "
         }
       ],
       "outputs": [
@@ -7085,7 +7109,8 @@
         }
       ],
       "basic_fields": [
-        "string"
+        "string",
+        "values"
       ],
       "is_dynamic": true
     },
@@ -7135,7 +7160,8 @@
         "folder",
         "pattern",
         "recursive"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Load Document File",
@@ -7284,7 +7310,8 @@
         "return_each_line",
         "chunk_size",
         "chunk_overlap"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Save Document File",
@@ -7416,7 +7443,8 @@
         "document",
         "buffer_size",
         "threshold"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Split HTML",
@@ -7461,7 +7489,8 @@
       ],
       "basic_fields": [
         "document"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Split JSON",
@@ -7526,7 +7555,8 @@
         "document",
         "include_metadata",
         "include_prev_next_rel"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Split Markdown",
@@ -7647,7 +7677,8 @@
         "return_each_line",
         "chunk_size",
         "chunk_overlap"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Split Recursively",
@@ -7730,7 +7761,8 @@
         "chunk_size",
         "chunk_overlap",
         "separators"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Split into Sentences",
@@ -7794,249 +7826,14 @@
         "document",
         "chunk_size",
         "chunk_overlap"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
-      "title": "Audio Mixer",
-      "description": "Mix up to 5 audio tracks together with individual volume controls.\n    audio, mix, volume, combine, blend, layer, add, overlay\n\n    Use cases:\n    - Mix multiple audio tracks into a single output\n    - Create layered soundscapes\n    - Combine music, voice, and sound effects\n    - Adjust individual track volumes",
+      "title": "Audio To Numpy",
+      "description": "Convert audio to numpy array for processing.\n    audio, numpy, convert, array\n\n    Use cases:\n    - Prepare audio for custom processing\n    - Convert audio for machine learning models\n    - Extract raw audio data for analysis",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.AudioMixer",
-      "properties": [
-        {
-          "name": "track1",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Track1",
-          "description": "First audio track to mix."
-        },
-        {
-          "name": "track2",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Track2",
-          "description": "Second audio track to mix."
-        },
-        {
-          "name": "track3",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Track3",
-          "description": "Third audio track to mix."
-        },
-        {
-          "name": "track4",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Track4",
-          "description": "Fourth audio track to mix."
-        },
-        {
-          "name": "track5",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Track5",
-          "description": "Fifth audio track to mix."
-        },
-        {
-          "name": "volume1",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Volume1",
-          "description": "Volume for track 1. 1.0 is original volume.",
-          "min": 0.0,
-          "max": 2.0
-        },
-        {
-          "name": "volume2",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Volume2",
-          "description": "Volume for track 2. 1.0 is original volume.",
-          "min": 0.0,
-          "max": 2.0
-        },
-        {
-          "name": "volume3",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Volume3",
-          "description": "Volume for track 3. 1.0 is original volume.",
-          "min": 0.0,
-          "max": 2.0
-        },
-        {
-          "name": "volume4",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Volume4",
-          "description": "Volume for track 4. 1.0 is original volume.",
-          "min": 0.0,
-          "max": 2.0
-        },
-        {
-          "name": "volume5",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Volume5",
-          "description": "Volume for track 5. 1.0 is original volume.",
-          "min": 0.0,
-          "max": 2.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "track1",
-        "track2",
-        "track3",
-        "track4",
-        "track5",
-        "volume1",
-        "volume2",
-        "volume3",
-        "volume4",
-        "volume5"
-      ]
-    },
-    {
-      "title": "Concat",
-      "description": "Concatenates two audio files together.\n    audio, edit, join, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from shorter segments",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.Concat",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "A",
-          "description": "The first audio file."
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "B",
-          "description": "The second audio file."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Concat List",
-      "description": "Concatenates multiple audio files together in sequence.\n    audio, edit, join, multiple, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from multiple segments\n    - Chain multiple audio files in order",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.ConcatList",
-      "properties": [
-        {
-          "name": "audio_files",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "audio"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Audio Files",
-          "description": "List of audio files to concatenate in sequence."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio_files"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Convert To Array",
-      "description": "Converts an audio file to a Array for further processing.\n    audio, conversion, tensor\n\n    Use cases:\n    - Prepare audio data for machine learning models\n    - Enable signal processing operations on audio\n    - Convert audio to a format suitable for spectral analysisr",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.ConvertToArray",
+      "node_type": "nodetool.audio.AudioToNumpy",
       "properties": [
         {
           "name": "audio",
@@ -8050,7 +7847,7 @@
             "data": null
           },
           "title": "Audio",
-          "description": "The audio file to convert to a tensor."
+          "description": "The audio to convert to numpy."
         }
       ],
       "outputs": [
@@ -8058,131 +7855,24 @@
           "type": {
             "type": "np_array"
           },
-          "name": "output"
+          "name": "array"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "sample_rate"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "channels"
         }
       ],
       "basic_fields": [
         "audio"
       ]
-    },
-    {
-      "title": "Create Silence",
-      "description": "Creates a silent audio file with a specified duration.\n    audio, silence, empty\n\n    Use cases:\n    - Generate placeholder audio files\n    - Create audio segments for padding or spacing\n    - Add silence to the beginning or end of audio files",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.CreateSilence",
-      "properties": [
-        {
-          "name": "duration",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Duration",
-          "description": "The duration of the silence in seconds.",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "duration"
-      ]
-    },
-    {
-      "title": "Fade In",
-      "description": "Applies a fade-in effect to the beginning of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth introductions to audio tracks\n    - Gradually increase volume at the start of a clip",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.FadeIn",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio file to apply fade-in to."
-        },
-        {
-          "name": "duration",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Duration",
-          "description": "Duration of the fade-in effect in seconds.",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "duration"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Fade Out",
-      "description": "Applies a fade-out effect to the end of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth endings to audio tracks\n    - Gradually decrease volume at the end of a clip",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.FadeOut",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio file to apply fade-out to."
-        },
-        {
-          "name": "duration",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Duration",
-          "description": "Duration of the fade-out effect in seconds.",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "duration"
-      ],
-      "expose_as_tool": true
     },
     {
       "title": "Load Audio Assets",
@@ -8221,7 +7911,8 @@
       ],
       "basic_fields": [
         "folder"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Load Audio File",
@@ -8252,95 +7943,80 @@
       ]
     },
     {
-      "title": "Mono To Stereo",
-      "description": "Converts a mono audio signal to stereo.\n    audio, convert, channels\n\n    Use cases:\n    - Expand mono recordings for stereo playback systems\n    - Prepare audio for further stereo processing",
+      "title": "Load Audio Folder",
+      "description": "Load all audio files from a folder, optionally including subfolders.\n    audio, load, folder, files\n\n    Use cases:\n    - Batch import audio for processing\n    - Build datasets from a directory tree\n    - Iterate over audio collections",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.MonoToStereo",
+      "node_type": "nodetool.audio.LoadAudioFolder",
       "properties": [
         {
-          "name": "audio",
+          "name": "folder",
           "type": {
-            "type": "audio"
+            "type": "str"
           },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The mono audio file to convert."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Normalize",
-      "description": "Normalizes the volume of an audio file.\n    audio, fix, dynamics, volume\n\n    Use cases:\n    - Ensure consistent volume across multiple audio files\n    - Adjust overall volume level before further processing",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.Normalize",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio file to normalize."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Overlay Audio",
-      "description": "Overlays two audio files together.\n    audio, edit, transform\n\n    Use cases:\n    - Mix background music with voice recording\n    - Layer sound effects over an existing audio track",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.OverlayAudio",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "A",
-          "description": "The first audio file."
+          "default": "",
+          "title": "Folder",
+          "description": "Folder to scan for audio files"
         },
         {
-          "name": "b",
+          "name": "include_subdirectories",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Include Subdirectories",
+          "description": "Include audio in subfolders"
+        },
+        {
+          "name": "extensions",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            ".mp3",
+            ".wav",
+            ".flac",
+            ".ogg",
+            ".m4a",
+            ".aac"
+          ],
+          "title": "Extensions",
+          "description": "Audio file extensions to include"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "path"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "include_subdirectories",
+        "extensions"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Normalize Audio",
+      "description": "Normalize audio volume levels to a target loudness.\n    audio, normalize, volume, processing\n\n    Use cases:\n    - Standardize volume across multiple audio files\n    - Prepare audio for broadcasting or streaming\n    - Ensure consistent loudness in podcasts or videos",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.NormalizeAudio",
+      "properties": [
+        {
+          "name": "audio",
           "type": {
             "type": "audio"
           },
@@ -8350,8 +8026,8 @@
             "asset_id": null,
             "data": null
           },
-          "title": "B",
-          "description": "The second audio file."
+          "title": "Audio",
+          "description": "The audio to normalize."
         }
       ],
       "outputs": [
@@ -8363,14 +8039,67 @@
         }
       ],
       "basic_fields": [
-        "a",
-        "b"
+        "audio"
+      ]
+    },
+    {
+      "title": "Numpy To Audio",
+      "description": "Convert numpy array to audio.\n    audio, numpy, convert\n\n    Use cases:\n    - Convert processed audio data back to audio format\n    - Create audio from machine learning model outputs\n    - Generate audio from synthesized waveforms",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.NumpyToAudio",
+      "properties": [
+        {
+          "name": "array",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Array",
+          "description": "The numpy array to convert to audio."
+        },
+        {
+          "name": "sample_rate",
+          "type": {
+            "type": "int"
+          },
+          "default": 44100,
+          "title": "Sample Rate",
+          "description": "Sample rate in Hz."
+        },
+        {
+          "name": "channels",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Channels",
+          "description": "Number of audio channels (1 or 2)."
+        }
       ],
-      "expose_as_tool": true
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "array",
+        "sample_rate",
+        "channels"
+      ]
     },
     {
       "title": "Remove Silence",
-      "description": "Removes or shortens silence in an audio file with smooth transitions.\n    audio, edit, clean\n\n    Use cases:\n    - Trim silent parts from beginning/end of recordings\n    - Remove or shorten long pauses between speech segments\n    - Apply crossfade for smooth transitions",
+      "description": "Remove silent parts from audio.\n    audio, silence, processing\n\n    Use cases:\n    - Clean up recordings with long pauses\n    - Remove dead air from podcasts\n    - Trim silence from the start and end of audio clips",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.RemoveSilence",
       "properties": [
@@ -8386,18 +8115,7 @@
             "data": null
           },
           "title": "Audio",
-          "description": "The audio file to process."
-        },
-        {
-          "name": "min_length",
-          "type": {
-            "type": "int"
-          },
-          "default": 200,
-          "title": "Min Length",
-          "description": "Minimum length of silence to be processed (in milliseconds).",
-          "min": 0.0,
-          "max": 10000.0
+          "description": "The audio to remove silence from."
         },
         {
           "name": "threshold",
@@ -8406,42 +8124,16 @@
           },
           "default": -40,
           "title": "Threshold",
-          "description": "Silence threshold in dB (relative to full scale). Higher values detect more silence.",
-          "min": -60.0,
-          "max": 0.0
+          "description": "Silence threshold in dBFS. Lower values detect quieter sounds as silence."
         },
         {
-          "name": "reduction_factor",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Reduction Factor",
-          "description": "Factor to reduce silent parts (0.0 to 1.0). 0.0 keeps silence as is, 1.0 removes it completely.",
-          "min": 0.0,
-          "max": 1.0
-        },
-        {
-          "name": "crossfade",
+          "name": "min_silence_len",
           "type": {
             "type": "int"
           },
-          "default": 10,
-          "title": "Crossfade",
-          "description": "Duration of crossfade in milliseconds to apply between segments for smooth transitions.",
-          "min": 0.0,
-          "max": 50.0
-        },
-        {
-          "name": "min_silence_between_parts",
-          "type": {
-            "type": "int"
-          },
-          "default": 100,
-          "title": "Min Silence Between Parts",
-          "description": "Minimum silence duration in milliseconds to maintain between non-silent segments",
-          "min": 0.0,
-          "max": 500.0
+          "default": 500,
+          "title": "Min Silence Len",
+          "description": "Minimum length of silence to remove in milliseconds."
         }
       ],
       "outputs": [
@@ -8454,158 +8146,34 @@
       ],
       "basic_fields": [
         "audio",
-        "min_length",
         "threshold",
-        "reduction_factor",
-        "crossfade",
-        "min_silence_between_parts"
-      ],
-      "expose_as_tool": true
+        "min_silence_len"
+      ]
     },
     {
-      "title": "Repeat",
-      "description": "Loops an audio file a specified number of times.\n    audio, edit, repeat\n\n    Use cases:\n    - Create repeating background sounds or music\n    - Extend short audio clips to fill longer durations\n    - Generate rhythmic patterns from short samples",
+      "title": "Save Audio File",
+      "description": "Save audio to disk.\n    audio, output, save, file\n\n    Use cases:\n    - Export processed audio\n    - Save generated audio to a specific location\n    - Create backups of audio files",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.Repeat",
+      "node_type": "nodetool.audio.SaveAudioFile",
       "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio file to loop."
-        },
-        {
-          "name": "loops",
-          "type": {
-            "type": "int"
-          },
-          "default": 2,
-          "title": "Loops",
-          "description": "Number of times to loop the audio. Minimum 1 (plays once), maximum 100.",
-          "min": 1.0,
-          "max": 100.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "loops"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Reverse",
-      "description": "Reverses an audio file.\n    audio, edit, transform\n\n    Use cases:\n    - Create reverse audio effects\n    - Generate backwards speech or music",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.Reverse",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio file to reverse."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Save Audio Asset",
-      "description": "Save an audio file to a specified asset folder.\n    audio, folder, name\n\n    Use cases:\n    - Save generated audio files with timestamps\n    - Organize outputs into specific folders\n    - Create backups of generated audio",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.SaveAudio",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio"
-        },
         {
           "name": "folder",
           "type": {
-            "type": "folder"
+            "type": "str"
           },
-          "default": {
-            "type": "folder",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
+          "default": "",
           "title": "Folder",
-          "description": "The asset folder to save the audio file to. "
+          "description": "Folder to save the audio file to"
         },
         {
           "name": "name",
           "type": {
             "type": "str"
           },
-          "default": "%Y-%m-%d-%H-%M-%S.opus",
+          "default": "",
           "title": "Name",
-          "description": "\n        The name of the audio file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "folder",
-        "name"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Save Audio File",
-      "description": "Write an audio file to disk.\n    audio, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.SaveAudioFile",
-      "properties": [
+          "description": "Name of the audio file"
+        },
         {
           "name": "audio",
           "type": {
@@ -8618,80 +8186,71 @@
             "data": null
           },
           "title": "Audio",
-          "description": "The audio to save"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+          "description": "Audio to save"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "audio"
+            "type": "str"
           },
           "name": "output"
         }
       ],
       "basic_fields": [
-        "audio",
         "folder",
-        "filename"
+        "name",
+        "audio"
       ]
     },
     {
-      "title": "Slice Audio",
-      "description": "Extracts a section of an audio file.\n    audio, edit, trim\n\n    Use cases:\n    - Cut out a specific clip from a longer audio file\n    - Remove unwanted portions from beginning or end",
+      "title": "Text To Speech",
+      "description": "Generate speech audio from text using any supported TTS provider.\n    Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).\n    audio, generation, AI, text-to-speech, tts, voice\n\n    Use cases:\n    - Create voiceovers for videos and presentations\n    - Generate natural-sounding narration for content\n    - Build voice assistants and chatbots\n    - Convert written content to audio format\n    - Create accessible audio versions of text",
       "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.SliceAudio",
+      "node_type": "nodetool.audio.TextToSpeech",
       "properties": [
         {
-          "name": "audio",
+          "name": "model",
           "type": {
-            "type": "audio"
+            "type": "tts_model"
           },
           "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
+            "type": "tts_model",
+            "provider": "openai",
+            "id": "tts-1",
+            "name": "TTS 1",
+            "voices": [
+              "alloy",
+              "echo",
+              "fable",
+              "onyx",
+              "nova",
+              "shimmer"
+            ],
+            "selected_voice": ""
           },
-          "title": "Audio",
-          "description": "The audio file."
+          "title": "Model",
+          "description": "The text-to-speech model to use"
         },
         {
-          "name": "start",
+          "name": "text",
           "type": {
-            "type": "float"
+            "type": "str"
           },
-          "default": 0.0,
-          "title": "Start",
-          "description": "The start time in seconds.",
-          "min": 0.0
+          "default": "Hello! This is a text-to-speech demonstration.",
+          "title": "Text",
+          "description": "Text to convert to speech"
         },
         {
-          "name": "end",
+          "name": "speed",
           "type": {
             "type": "float"
           },
           "default": 1.0,
-          "title": "End",
-          "description": "The end time in seconds.",
-          "min": 0.0
+          "title": "Speed",
+          "description": "Speech speed multiplier (0.25 to 4.0)",
+          "min": 0.25,
+          "max": 4.0
         }
       ],
       "outputs": [
@@ -8699,114 +8258,22 @@
           "type": {
             "type": "audio"
           },
-          "name": "output"
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
         }
       ],
       "basic_fields": [
-        "audio",
-        "start",
-        "end"
+        "model",
+        "text",
+        "voice",
+        "speed"
       ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Stereo To Mono",
-      "description": "Converts a stereo audio signal to mono.\n    audio, convert, channels\n\n    Use cases:\n    - Reduce file size for mono-only applications\n    - Simplify audio for certain processing tasks",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.StereoToMono",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The stereo audio file to convert."
-        },
-        {
-          "name": "method",
-          "type": {
-            "type": "str"
-          },
-          "default": "average",
-          "title": "Method",
-          "description": "Method to use for conversion: 'average', 'left', or 'right'."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "method"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Trim",
-      "description": "Trim an audio file to a specified duration.\n    audio, trim, cut\n\n    Use cases:\n    - Remove silence from the beginning or end of audio files\n    - Extract specific segments from audio files\n    - Prepare audio data for machine learning models",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.Trim",
-      "properties": [
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio file to trim."
-        },
-        {
-          "name": "start",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Start",
-          "description": "The start time of the trimmed audio in seconds.",
-          "min": 0.0
-        },
-        {
-          "name": "end",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "End",
-          "description": "The end time of the trimmed audio in seconds.",
-          "min": 0.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "audio",
-        "start",
-        "end"
-      ],
+      "is_streaming_output": true,
       "expose_as_tool": true
     },
     {
@@ -10565,7 +10032,8 @@
         "video",
         "start",
         "end"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Frame To Video",
@@ -10639,7 +10107,8 @@
       ],
       "basic_fields": [
         "folder"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Load Video File",
@@ -11836,7 +11305,8 @@
       ],
       "basic_fields": [
         "folder"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Load Image File",
@@ -11941,7 +11411,8 @@
         "include_subdirectories",
         "extensions",
         "pattern"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Paste",
@@ -12997,6 +12468,7 @@
       "basic_fields": [
         "folder"
       ],
+      "is_streaming_output": true,
       "expose_as_tool": true
     },
     {
@@ -13266,7 +12738,8 @@
       ],
       "basic_fields": [
         "dataframe"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Save CSVDataframe File",
@@ -13607,7 +13080,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Audio Output",
@@ -13658,7 +13132,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Boolean Output",
@@ -13704,7 +13179,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Dataframe Output",
@@ -13756,7 +13232,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Dictionary Output",
@@ -13810,7 +13287,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Document Output",
@@ -13861,7 +13339,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "File Path Output",
@@ -13910,7 +13389,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Float Output",
@@ -13956,7 +13436,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Folder Path Output",
@@ -14005,7 +13486,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Image Output",
@@ -14056,7 +13538,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Integer Output",
@@ -14102,7 +13585,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "List Output",
@@ -14153,7 +13637,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "String Output",
@@ -14199,7 +13684,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Video Output",
@@ -14252,7 +13738,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Grounded Search",
@@ -15326,6 +14813,7 @@
         "date_filter",
         "max_results"
       ],
+      "is_streaming_output": true,
       "expose_as_tool": true
     },
     {
@@ -15645,6 +15133,7 @@
       "basic_fields": [
         "url"
       ],
+      "is_streaming_output": true,
       "expose_as_tool": true
     },
     {
@@ -16832,7 +16321,8 @@
         "folder",
         "pattern",
         "include_subdirectories"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Modified Time",
@@ -17415,6 +16905,7 @@
         "timeout_seconds",
         "ready_timeout_seconds"
       ],
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -18375,7 +17866,8 @@
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Extract Images",
@@ -18413,7 +17905,8 @@
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Extract Links",
@@ -18463,7 +17956,8 @@
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Extract Metadata",
@@ -18541,7 +18035,8 @@
       "basic_fields": [
         "html",
         "base_url"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Convert HTML to Text",
@@ -21522,7 +21017,8 @@
       ],
       "basic_fields": [
         "folder"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Parse Dict",
@@ -23580,6 +23076,7 @@
         "chunk",
         "speed"
       ],
+      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -23639,7 +23136,8 @@
         "model",
         "system",
         "temperature"
-      ]
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Embedding",

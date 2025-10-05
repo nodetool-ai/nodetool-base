@@ -7,7 +7,7 @@ from nodetool.workflows.base_node import BaseNode
 from pydantic import Field
 from enum import Enum
 
-from nodetool.chat.providers.openai_prediction import run_openai
+from nodetool.providers.openai_prediction import run_openai
 
 
 class CreateImage(BaseNode):

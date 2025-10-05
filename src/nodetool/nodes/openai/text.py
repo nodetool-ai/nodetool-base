@@ -1,4 +1,4 @@
-from nodetool.chat.providers.openai_prediction import run_openai
+from nodetool.providers.openai_prediction import run_openai
 import numpy as np
 from nodetool.metadata.types import (
     NPArray,

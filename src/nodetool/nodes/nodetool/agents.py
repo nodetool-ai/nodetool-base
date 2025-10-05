@@ -9,7 +9,7 @@ from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from pydantic import Field
 
 from nodetool.agents.tools.base import Tool
-from nodetool.chat.providers import get_provider
+from nodetool.providers import get_provider
 
 from nodetool.workflows.types import (
     ToolCallUpdate,
@@ -35,9 +35,9 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import ToolCallUpdate, EdgeUpdate
 from nodetool.workflows.io import NodeInputs, NodeOutputs
-from nodetool.chat.providers import Chunk
+from nodetool.providers import Chunk
 from nodetool.metadata.types import Provider
-from nodetool.chat.providers import get_provider
+from nodetool.providers import get_provider
 from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)
