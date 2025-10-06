@@ -6,7 +6,7 @@
   "name": "Realtime Agent",
   "tool_name": null,
   "description": "",
-  "tags": null,
+  "tags": ["openai", "agent"],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {

@@ -1,9 +1,10 @@
 {
-  "id": "5d2e4a22f33211ef9a370000764c777a",
+  "id": "1302ffe8a2f911f0b74c000014916b9c",
   "access": "public",
-  "created_at": "2025-05-17T22:00:59.069187",
-  "updated_at": "2025-05-17T22:00:59.069213",
+  "created_at": "2025-10-06T23:30:29.580375",
+  "updated_at": "2025-10-06T23:30:29.580392",
   "name": "Categorize Mails",
+  "tool_name": null,
   "description": "Automatically categorize and organize emails using AI",
   "tags": [
     "email",
@@ -138,16 +139,19 @@
           "comment_color": "#fdf6e3"
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 49,
-            "y": -234
+            "x": -633,
+            "y": -3
           },
           "zIndex": 0,
-          "width": 689,
-          "height": 204,
+          "width": 580,
+          "height": 804,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "29a39ff1-2304-4861-a648-d536916c72e2",
@@ -157,6 +161,7 @@
           "string": "subject: {{subject}}\nsender: {{sender}}\ncontent: {{body|truncate(100)}}"
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 275,
             "y": 74
@@ -165,7 +170,9 @@
           "width": 197,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "a6df088f-3515-49c7-9a86-fb158ae223cc",
@@ -187,6 +194,7 @@
           "multi_label": false
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 502,
             "y": 49
@@ -195,7 +203,9 @@
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "6633542c-e07a-4847-845d-49c5d079647e",
@@ -203,6 +213,7 @@
         "type": "lib.mail.AddLabel",
         "data": {},
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 767,
             "y": 291
@@ -211,7 +222,9 @@
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "b776a8c2-1aea-42be-8961-bff617538ad2",
@@ -229,6 +242,7 @@
           "max_results": 10
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 45,
             "y": 63
@@ -237,7 +251,9 @@
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       }
     ],
     "edges": [
@@ -279,5 +295,8 @@
   "output_schema": null,
   "settings": null,
   "package_name": "nodetool-base",
-  "path": "/Users/mg/dev/nodetool-base/src/nodetool/examples/Categorize Mails.json"
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
 }

@@ -4130,6 +4130,1203 @@
       "supports_dynamic_outputs": true
     },
     {
+      "title": "Asset Folder Input",
+      "description": "Accepts an asset folder as a parameter for workflows.\n    input, parameter, folder, path, folderpath, local_folder, filesystem",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.AssetFolderInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "folder"
+          },
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Value",
+          "description": "The folder to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "folder"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Audio Input",
+      "description": "Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.\n    input, parameter, audio, sound, voice, speech, asset\n\n    Use cases:\n    - Load an audio file for speech-to-text transcription.\n    - Analyze sound for specific events or characteristics.\n    - Provide audio input to models for tasks like voice recognition or music generation.\n    - Process audio for enhancement or feature extraction.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.AudioInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Value",
+          "description": "The audio to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Boolean Input",
+      "description": "Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.\n    input, parameter, boolean, bool, toggle, switch, flag\n\n    Use cases:\n    - Toggle features or settings on or off.\n    - Set binary flags to control workflow behavior.\n    - Make conditional choices within a workflow (e.g., proceed if true).",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.BooleanInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Value"
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Chat Input",
+      "description": "Accepts a list of chat messages as input for workflows, typically representing a conversation history.  The input is structured as a sequence of 'Message' objects. The node processes this list to extract elements like the latest message content (text, image, audio, video, document), the history, and any associated tool calls.\n    input, parameter, chat, message, conversation, prompt, history\n\n    Use cases:\n    - Provide user prompts or queries to a language model.\n    - Supply conversational context (history) for multi-turn interactions.\n    - Capture complex inputs that include text alongside other media types or tool requests.\n    - Initiate or continue a chat-based workflow.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ChatInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "message"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Value",
+          "description": "The chat message to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "message"
+              }
+            ]
+          },
+          "name": "history"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "image"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "video"
+        },
+        {
+          "type": {
+            "type": "document"
+          },
+          "name": "document"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "name": "tools"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Collection Input",
+      "description": "Accepts a reference to a specific data collection, typically within a vector database or similar storage system.\n    The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.\n    Keywords: input, parameter, collection, database, vector_store, chroma, index\n\n    Use cases:\n    - Select a target vector database collection for indexing new documents.\n    - Specify a collection to perform a similarity search or query against.\n    - Choose a data source or destination that is represented as a named collection.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.CollectionInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "collection"
+          },
+          "default": {
+            "type": "collection",
+            "name": ""
+          },
+          "title": "Value",
+          "description": "The collection to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "collection"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Color Input",
+      "description": "Accepts a color value as a parameter for workflows.\n    input, parameter, color, color_picker, color_input",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ColorInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": null
+          },
+          "title": "Value",
+          "description": "The color to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "color"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Document File Input",
+      "description": "Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.\n    input, parameter, document, file, path, local_file, load\n\n    Use cases:\n    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.\n    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.\n    - Useful for development or workflows that have legitimate access to the local filesystem.\n    - To provide an existing 'DocumentRef', use 'DocumentInput'.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.DocumentFileInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value",
+          "description": "The path to the document file.",
+          "json_schema_extra": {
+            "type": "file_path"
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "document"
+          },
+          "name": "document"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "path"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Document Input",
+      "description": "Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.\n    input, parameter, document, file, asset, reference\n\n    Use cases:\n    - Load a specific document (e.g., PDF, Word, text file) for content extraction or analysis.\n    - Pass a document to models that are designed to process specific document formats.\n    - Manage documents as distinct assets within a workflow.\n    - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.DocumentInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "document"
+          },
+          "default": {
+            "type": "document",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Value",
+          "description": "The document to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "document"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "File Path Input",
+      "description": "Accepts a local filesystem path (to a file or directory) as input for workflows.\n    input, parameter, path, filepath, directory, local_file, filesystem\n\n    Use cases:\n    - Provide a local path to a specific file or directory for processing.\n    - Specify an input or output location on the local filesystem for a development task.\n    - Load local datasets or configuration files not managed as assets.\n    - Not available in production: raises an error if used in a production environment.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.FilePathInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value",
+          "description": "The path to use as input.",
+          "json_schema_extra": {
+            "type": "file_path"
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Float Input",
+      "description": "Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.\n    input, parameter, float, number, decimal, range\n\n    Use cases:\n    - Specify a numeric value within a defined range (e.g., 0.0 to 1.0).\n    - Set thresholds, confidence scores, or scaling factors.\n    - Configure continuous parameters like opacity, volume, or temperature.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.FloatInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Value"
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        },
+        {
+          "name": "min",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Min"
+        },
+        {
+          "name": "max",
+          "type": {
+            "type": "float"
+          },
+          "default": 100,
+          "title": "Max"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Folder Path Input",
+      "description": "Accepts a folder path as a parameter for workflows.\n    input, parameter, folder, path, folderpath, local_folder, filesystem",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.FolderPathInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value",
+          "description": "The folder path to use as input.",
+          "json_schema_extra": {
+            "type": "folder_path"
+          }
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Hugging Face Model Input",
+      "description": "Accepts a Hugging Face model as a parameter for workflows.\n    input, parameter, model, huggingface, hugging_face, model_name",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.HuggingFaceModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "hf.model"
+          },
+          "default": {
+            "type": "hf.model",
+            "repo_id": "",
+            "path": null,
+            "variant": null,
+            "allow_patterns": null,
+            "ignore_patterns": null
+          },
+          "title": "Value",
+          "description": "The Hugging Face model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "hf.model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Image Input",
+      "description": "Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.\n    input, parameter, image, picture, graphic, visual, asset\n\n    Use cases:\n    - Load an image for visual processing or analysis.\n    - Provide an image as input to computer vision models (e.g., object detection, image classification).\n    - Select an image for manipulation, enhancement, or inclusion in a document.\n    - Display an image within a workflow interface.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ImageInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Value",
+          "description": "The image to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Image Model Input",
+      "description": "Accepts an image generation model as a parameter for workflows.\n    input, parameter, model, image, generation",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ImageModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "image_model"
+          },
+          "default": {
+            "type": "image_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
+          "title": "Value",
+          "description": "The image generation model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Inference Provider Input",
+      "description": "Accepts an inference provider as a parameter for workflows.\n    input, parameter, provider, inference, provider_name",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.InferenceProviderInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "enum",
+            "values": [
+              "cerebras",
+              "cohere",
+              "fal-ai",
+              "featherless-ai",
+              "fireworks-ai",
+              "groq",
+              "hf-inference",
+              "hyperbolic",
+              "nebius",
+              "novita",
+              "nscale",
+              "openai",
+              "replicate",
+              "sambanova",
+              "scaleway",
+              "together",
+              "zai-org"
+            ],
+            "type_name": "nodetool.metadata.types.InferenceProvider"
+          },
+          "default": "hf-inference",
+          "title": "Value",
+          "description": "The inference provider to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "enum",
+            "values": [
+              "cerebras",
+              "cohere",
+              "fal-ai",
+              "featherless-ai",
+              "fireworks-ai",
+              "groq",
+              "hf-inference",
+              "hyperbolic",
+              "nebius",
+              "novita",
+              "nscale",
+              "openai",
+              "replicate",
+              "sambanova",
+              "scaleway",
+              "together",
+              "zai-org"
+            ],
+            "type_name": "nodetool.metadata.types.InferenceProvider"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Integer Input",
+      "description": "Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.\n    input, parameter, integer, number, count, index, whole_number\n\n    Use cases:\n    - Specify counts or quantities (e.g., number of items, iterations).\n    - Set index values for accessing elements in a list or array.\n    - Configure discrete numeric parameters like age, steps, or quantity.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.IntegerInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Value"
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        },
+        {
+          "name": "min",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Min"
+        },
+        {
+          "name": "max",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Max"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Language Model Input",
+      "description": "Accepts a language model as a parameter for workflows.\n    input, parameter, model, language, model_name",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.LanguageModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
+          "title": "Value",
+          "description": "The language model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "language_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Realtime Audio Input",
+      "description": "Accepts streaming audio data for workflows.\n    input, parameter, audio, sound, voice, speech, asset",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.RealtimeAudioInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "any"
+          },
+          "default": null,
+          "title": "Value",
+          "description": "The value of the input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio to use as input."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value",
+        "audio"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "String Input",
+      "description": "Accepts a string value as a parameter for workflows.\n    input, parameter, string, text, label, name, value\n\n    Use cases:\n    - Define a name for an entity or process.\n    - Specify a label for a component or output.\n    - Enter a short keyword or search term.\n    - Provide a simple configuration value (e.g., an API key, a model name).\n    - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.StringInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value"
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "String List Input",
+      "description": "Accepts a list of strings as a parameter for workflows.\n    input, parameter, string, text, label, name, value",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.StringListInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": null,
+          "title": "Value",
+          "description": "The list of strings to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Video Input",
+      "description": "Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.\n    input, parameter, video, movie, clip, visual, asset\n\n    Use cases:\n    - Load a video file for processing or content analysis.\n    - Analyze video content for events, objects, or speech.\n    - Extract frames or audio tracks from a video.\n    - Provide video input to models that understand video data.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.VideoInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Value",
+          "description": "The video to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Automatic Speech Recognition",
       "description": "Automatic speech recognition node.\n    audio, speech, recognition",
       "namespace": "nodetool.text",
@@ -7342,7 +8539,8 @@
               "onyx",
               "nova",
               "shimmer"
-            ]
+            ],
+            "selected_voice": ""
           },
           "title": "Model",
           "description": "The text-to-speech model to use"
@@ -23340,7 +24538,7 @@
       ]
     },
     {
-      "id": "43a125a6124611f0b49100005eb1b543",
+      "id": "830163fea2fc11f0b02700001a475e0e",
       "name": "Image To Audio Story",
       "description": "Generate and narrate creative stories from images using AI",
       "tags": [
@@ -23370,7 +24568,7 @@
       "tags": []
     },
     {
-      "id": "5d2e4a22f33211ef9a370000764c777a",
+      "id": "1302ffe8a2f911f0b74c000014916b9c",
       "name": "Categorize Mails",
       "description": "Automatically categorize and organize emails using AI",
       "tags": [

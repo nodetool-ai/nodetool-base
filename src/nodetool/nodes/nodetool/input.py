@@ -178,7 +178,7 @@ class InferenceProviderInput(InputNode):
     """
 
     value: InferenceProvider = Field(
-        InferenceProvider.none, description="The inference provider to use as input."
+        default=InferenceProvider.hf_inference, description="The inference provider to use as input."
     )
 
     @classmethod
