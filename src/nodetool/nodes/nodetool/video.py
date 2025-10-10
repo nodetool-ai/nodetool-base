@@ -2,7 +2,7 @@ import datetime
 import enum
 import os
 import tempfile
-from typing import AsyncGenerator, TypedDict
+from typing import AsyncGenerator, ClassVar, TypedDict
 import uuid
 import ffmpeg
 import cv2
@@ -14,7 +14,7 @@ import PIL.ImageDraw
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 import numpy as np
 from pydantic import Field
-from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef
+from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef, VideoModel, Provider
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -22,6 +22,8 @@ from nodetool.metadata.types import VideoRef, FontRef
 from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
+from nodetool.providers import get_provider
+from nodetool.providers.types import TextToVideoParams
 
 logger = get_logger(__name__)
 
@@ -31,6 +33,108 @@ def safe_unlink(path: str):
         safe_unlink(path)
     except Exception:
         pass
+
+
+class TextToVideo(BaseNode):
+    """
+    Generate videos from text prompts using any supported video provider.
+    Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
+    video, generation, AI, text-to-video, t2v
+
+    Use cases:
+    - Create videos from text descriptions
+    - Generate video content from prompts
+    - Produce short video clips with AI
+    - Switch between providers without changing workflows
+    """
+
+    class AspectRatio(str, enum.Enum):
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_1_1 = "1:1"
+        RATIO_4_3 = "4:3"
+        RATIO_3_4 = "3:4"
+
+    class Resolution(str, enum.Enum):
+        SD = "480p"
+        HD = "720p"
+        FULL_HD = "1080p"
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: VideoModel = Field(
+        default=VideoModel(
+            provider=Provider.Gemini,
+            id="veo-3.0-fast-generate-001",
+            name="Veo 3.0 Fast",
+        ),
+        description="The video generation model to use",
+    )
+    prompt: str = Field(
+        default="A cat playing with a ball of yarn",
+        description="Text prompt describing the desired video",
+    )
+    negative_prompt: str = Field(
+        default="",
+        description="Text prompt describing what to avoid in the video",
+    )
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_16_9,
+        description="Aspect ratio for the video",
+    )
+    resolution: Resolution = Field(
+        default=Resolution.HD,
+        description="Video resolution",
+    )
+    num_frames: int = Field(
+        default=60,
+        ge=1,
+        le=300,
+        description="Number of frames to generate (provider-specific)",
+    )
+    guidance_scale: float = Field(
+        default=7.5,
+        ge=0.0,
+        le=30.0,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int = Field(
+        default=30,
+        ge=1,
+        le=100,
+        description="Number of denoising steps",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        # Get the video provider for this model
+        provider_instance = get_provider(self.model.provider)
+
+        params = TextToVideoParams(
+            model=self.model,
+            prompt=self.prompt,
+            negative_prompt=self.negative_prompt if self.negative_prompt else None,
+            aspect_ratio=self.aspect_ratio.value if self.aspect_ratio else None,
+            resolution=self.resolution.value if self.resolution else None,
+            num_frames=self.num_frames if self.num_frames > 0 else None,
+            guidance_scale=self.guidance_scale,
+            num_inference_steps=self.num_inference_steps,
+            seed=self.seed if self.seed != -1 else None,
+        )
+
+        # Generate video
+        video_bytes = await provider_instance.text_to_video(params, context=context, node_id=self.id)
+
+        # Convert to VideoRef
+        return await context.video_from_bytes(video_bytes)
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["model", "prompt", "aspect_ratio", "resolution", "seed"]
 
 
 class LoadVideoFile(BaseNode):

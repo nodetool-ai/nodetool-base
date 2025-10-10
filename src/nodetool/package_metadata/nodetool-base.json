@@ -11278,6 +11278,137 @@
       ]
     },
     {
+      "title": "Text To Video",
+      "description": "Generate videos from text prompts using any supported video provider.\n    Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).\n    video, generation, AI, text-to-video, t2v\n\n    Use cases:\n    - Create videos from text descriptions\n    - Generate video content from prompts\n    - Produce short video clips with AI\n    - Switch between providers without changing workflows",
+      "namespace": "nodetool.video",
+      "node_type": "nodetool.video.TextToVideo",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "video_model"
+          },
+          "default": {
+            "type": "video_model",
+            "provider": "gemini",
+            "id": "veo-3.0-fast-generate-001",
+            "name": "Veo 3.0 Fast"
+          },
+          "title": "Model",
+          "description": "The video generation model to use"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cat playing with a ball of yarn",
+          "title": "Prompt",
+          "description": "Text prompt describing the desired video"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Text prompt describing what to avoid in the video"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.nodetool.video.TextToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "Aspect ratio for the video"
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "480p",
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.nodetool.video.TextToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution"
+        },
+        {
+          "name": "num_frames",
+          "type": {
+            "type": "int"
+          },
+          "default": 60,
+          "title": "Num Frames",
+          "description": "Number of frames to generate (provider-specific)",
+          "min": 1.0,
+          "max": 300.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Classifier-free guidance scale (higher = closer to prompt)",
+          "min": 0.0,
+          "max": 30.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "Number of denoising steps",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "seed"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Transition",
       "description": "Create a transition effect between two videos, including audio transition when available.\n    video, transition, effect, merge, audio\n\n    Use cases:\n    1. Create smooth transitions between video clips in a montage\n    2. Add professional-looking effects to video projects\n    3. Blend scenes together for creative storytelling\n    4. Smoothly transition between audio tracks of different video clips",
       "namespace": "nodetool.video",
