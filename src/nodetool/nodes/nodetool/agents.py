@@ -5,6 +5,7 @@ import re
 from typing import Any, AsyncGenerator, cast, ClassVar, TypedDict
 
 from nodetool.agents.tools.workflow_tool import GraphTool
+from nodetool.types.model import UnifiedModel
 from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from pydantic import Field
 
@@ -14,6 +15,8 @@ from nodetool.providers import get_provider
 from nodetool.workflows.types import (
     ToolCallUpdate,
 )
+
+from nodetool.types.model import UnifiedModel
 
 from nodetool.metadata.types import (
     LanguageModel,
@@ -98,6 +101,59 @@ class Summarizer(BaseNode):
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
+
+    @classmethod
+    def unified_recommended_models(cls) -> list[UnifiedModel]:
+        return [
+            UnifiedModel(
+                id="phi3.5:latest",
+                repo_id="phi3.5:latest",
+                name="Phi3.5",
+                description="Lightweight 3.8B model tuned for crisp instruction following and compact summaries on modest hardware.",
+                size_on_disk=2362232012,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="mistral-small:latest",
+                repo_id="mistral-small:latest",
+                name="Mistral Small",
+                description="Efficient mixture-of-experts model that delivers reliable abstractive summaries with low latency.",
+                size_on_disk=7730941132,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="llama3.2:3b",
+                repo_id="llama3.2:3b",
+                name="Llama 3.2 - 3B",
+                description="Compact Llama variant that balances coverage and brevity for everyday summarization workloads.",
+                size_on_disk=2040109465,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="gemma3:4b",
+                repo_id="gemma3:4b",
+                name="Gemma3 - 4B",
+                description="Google's 4B multimodal model performs strong factual summaries while staying resource friendly.",
+                size_on_disk=2791728742,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="granite3.1-moe:3b",
+                repo_id="granite3.1-moe:3b",
+                name="Granite 3.1 MOE - 3B",
+                description="IBM Granite MoE delivers focused meeting notes and bullet summaries with minimal VRAM needs.",
+                size_on_disk=1717986918,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen3:4b",
+                repo_id="qwen3:4b",
+                name="Qwen3 - 4B",
+                description="Qwen3 4B offers multilingual summarization with tight, well-structured outputs.",
+                size_on_disk=2684354560,
+                type="llama_model",
+            ),
+        ]
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -214,6 +270,59 @@ class Extractor(BaseNode):
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
+
+    @classmethod
+    def unified_recommended_models(cls) -> list[UnifiedModel]:
+        return [
+            UnifiedModel(
+                id="phi3.5:latest",
+                repo_id="phi3.5:latest",
+                name="Phi3.5",
+                description="Small Phi variant excels at JSON-style outputs and faithful field extraction on laptops.",
+                size_on_disk=2362232012,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="mistral-small:latest",
+                repo_id="mistral-small:latest",
+                name="Mistral Small",
+                description="MoE architecture keeps structured extraction consistent while staying resource efficient.",
+                size_on_disk=7730941132,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="granite3.1-moe:3b",
+                repo_id="granite3.1-moe:3b",
+                name="Granite 3.1 MOE - 3B",
+                description="Granite MoE models are tuned for business document parsing and schema-following tasks.",
+                size_on_disk=1717986918,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="gemma3:4b",
+                repo_id="gemma3:4b",
+                name="Gemma3 - 4B",
+                description="Gemma 3 4B handles multilingual extraction and adheres to required JSON schemas.",
+                size_on_disk=2791728742,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen2.5-coder:3b",
+                repo_id="qwen2.5-coder:3b",
+                name="Qwen2.5-Coder - 3B",
+                description="Code-focused Qwen variant generates precise structured outputs and respects schema rules.",
+                size_on_disk=1932735283,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="deepseek-r1:7b",
+                repo_id="deepseek-r1:7b",
+                name="Deepseek R1 - 7B",
+                description="Reasoning-oriented DeepSeek shines when extraction needs cross-field validation.",
+                size_on_disk=4617089843,
+                type="llama_model",
+            ),
+        ]
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -386,6 +495,59 @@ class Classifier(BaseNode):
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
+
+    @classmethod
+    def unified_recommended_models(cls) -> list[UnifiedModel]:
+        return [
+            UnifiedModel(
+                id="phi3.5:latest",
+                repo_id="phi3.5:latest",
+                name="Phi3.5",
+                description="Reliable small model for intent and sentiment classification when VRAM is tight.",
+                size_on_disk=2362232012,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="mistral-small:latest",
+                repo_id="mistral-small:latest",
+                name="Mistral Small",
+                description="Fast MoE model that keeps category predictions consistent across batches.",
+                size_on_disk=7730941132,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="granite3.1-moe:1b",
+                repo_id="granite3.1-moe:1b",
+                name="Granite 3.1 MOE - 1B",
+                description="IBM Granite 1B excels at classification and routing tasks on CPUs and edge devices.",
+                size_on_disk=751619276,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen3:1.7b",
+                repo_id="qwen3:1.7b",
+                name="Qwen3 - 1.7B",
+                description="Compact Qwen variant provides multilingual label understanding with low latency.",
+                size_on_disk=1073741824,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="gemma3:1b",
+                repo_id="gemma3:1b",
+                name="Gemma3 - 1B",
+                description="Gemma 3 1B offers deterministic small-footprint classification for mobile scenarios.",
+                size_on_disk=805306368,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="deepseek-r1:1.5b",
+                repo_id="deepseek-r1:1.5b",
+                name="Deepseek R1 - 1.5B",
+                description="Reasoning-focused DeepSeek variant is great for multi-step label decisions.",
+                size_on_disk=912680550,
+                type="llama_model",
+            ),
+        ]
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -669,6 +831,75 @@ class Agent(BaseNode):
     )
 
     _supports_dynamic_outputs: ClassVar[bool] = True
+
+    @classmethod
+    def unified_recommended_models(cls) -> list[UnifiedModel]:
+        return [
+            UnifiedModel(
+                id="gpt-oss:20b",
+                repo_id="gpt-oss:20b",
+                name="GPT - OSS",
+                description="OpenAI's open-weight GPT-4o-derived model excels at multi-tool routing and reasoning.",
+                size_on_disk=34359738368,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="mistral-small:latest",
+                repo_id="mistral-small:latest",
+                name="Mistral Small",
+                description="Mistral's function-calling tuned small MoE handles multi-tool orchestration reliably.",
+                size_on_disk=7730941132,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="llama3.1:8b",
+                repo_id="llama3.1:8b",
+                name="Llama 3.1 - 8B",
+                description="Meta's 8B instruct excels at structured tool calls and JSON responses with long context.",
+                size_on_disk=14710262988,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="llama3.2:3b",
+                repo_id="llama3.2:3b",
+                name="Llama 3.2 - 3B",
+                description="Compact Llama 3.2 variant keeps latency low while following tool schemas accurately.",
+                size_on_disk=2040109465,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen3:8b",
+                repo_id="qwen3:8b",
+                name="Qwen3 - 8B",
+                description="Qwen3 8B ships strong function-calling primitives and dependable multi-turn tool use.",
+                size_on_disk=16106127360,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen2.5-coder:7b",
+                repo_id="qwen2.5-coder:7b",
+                name="Qwen2.5-Coder - 7B",
+                description="Coder-focused Qwen reliably emits structured arguments for complex toolchains.",
+                size_on_disk=15032385536,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="deepseek-r1:7b",
+                repo_id="deepseek-r1:7b",
+                name="Deepseek R1 - 7B",
+                description="DeepSeek R1 7B balances reasoning with precise function calls for iterative agents.",
+                size_on_disk=4617089843,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="deepseek-r1:14b",
+                repo_id="deepseek-r1:14b",
+                name="Deepseek R1 - 14B",
+                description="Higher-capacity DeepSeek R1 produces reliable tool arguments for complex tasks.",
+                size_on_disk=30064771072,
+                type="llama_model",
+            ),
+        ]
 
     def should_route_output(self, output_name: str) -> bool:
         """

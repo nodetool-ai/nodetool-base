@@ -16,6 +16,7 @@ from nodetool.metadata.types import TextRef
 from enum import Enum
 import html2text
 from nodetool.io.uri_utils import create_file_uri
+from nodetool.workflows.types import SaveUpdate
 
 
 class AutomaticSpeechRecognition(BaseNode):
@@ -348,7 +349,17 @@ class SaveTextFile(BaseNode):
         expanded_path = os.path.join(expanded_folder, filename)
         with open(expanded_path, "wb") as f:
             f.write(file.getvalue())
-        return TextRef(uri=create_file_uri(expanded_path), data=file.getvalue())
+        result = TextRef(uri=create_file_uri(expanded_path), data=file.getvalue())
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="text"
+        ))
+
+        return result
 
 
 class SaveText(BaseNode):
@@ -394,7 +405,17 @@ class SaveText(BaseNode):
         parent_id = self.folder.asset_id if self.folder.is_set() else None
         asset = await context.create_asset(filename, "text/plain", file, parent_id)
         asset_uri = await context.get_asset_url(asset.id)
-        return TextRef(uri=asset_uri or "", asset_id=asset.id)
+        result = TextRef(uri=asset_uri or "", asset_id=asset.id)
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="text"
+        ))
+
+        return result
 
 
 class Split(BaseNode):

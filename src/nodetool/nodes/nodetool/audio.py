@@ -11,7 +11,7 @@ from nodetool.metadata.types import AudioRef, TTSModel, Provider
 from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import Chunk
+from nodetool.workflows.types import Chunk, SaveUpdate
 from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
@@ -201,7 +201,17 @@ class SaveAudio(BaseNode):
         file.seek(0)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
         name = datetime.datetime.now().strftime(self.name)
-        return await context.audio_from_segment(audio, name, parent_id=parent_id)
+        result = await context.audio_from_segment(audio, name, parent_id=parent_id)
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=name,
+            value=result,
+            output_type="audio"
+        ))
+
+        return result
 
 
 class SaveAudioFile(BaseNode):
@@ -250,7 +260,17 @@ class SaveAudioFile(BaseNode):
         audio_data = audio_io.read()
         with open(expanded_path, "wb") as f:
             f.write(audio_data)
-        return AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
+        result = AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="audio"
+        ))
+
+        return result
 
 
 class Normalize(BaseNode):

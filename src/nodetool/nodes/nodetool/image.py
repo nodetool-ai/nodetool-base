@@ -8,6 +8,7 @@ from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import create_file_uri
 from nodetool.providers.types import TextToImageParams, ImageToImageParams
+from nodetool.workflows.types import SaveUpdate
 import os
 import datetime
 from pydantic import Field
@@ -173,7 +174,17 @@ class SaveImageFile(BaseNode):
                 expanded_path = os.path.join(expanded_folder, filename)
                 count += 1
         image.save(expanded_path)
-        return ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
+        result = ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="image"
+        ))
+
+        return result
 
 
 class LoadImageAssets(BaseNode):
@@ -260,9 +271,19 @@ class SaveImage(BaseNode):
         filename = datetime.datetime.now().strftime(self.name)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
 
-        return await context.image_from_pil(
+        result = await context.image_from_pil(
             image=image, name=filename, parent_id=parent_id
         )
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="image"
+        ))
+
+        return result
 
     def result_for_client(self, result: dict[str, Any]) -> dict[str, Any]:
         return self.result_for_all_outputs(result)

@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import VideoRef, FontRef
 from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
+from nodetool.workflows.types import SaveUpdate
 
 logger = get_logger(__name__)
 
@@ -107,7 +108,17 @@ class SaveVideoFile(BaseNode):
         with open(expanded_path, "wb") as f:
             f.write(video_data)
 
-        return VideoRef(uri=create_file_uri(expanded_path), data=video_data)
+        result = VideoRef(uri=create_file_uri(expanded_path), data=video_data)
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="video"
+        ))
+
+        return result
 
 
 class LoadVideoAssets(BaseNode):
@@ -197,11 +208,21 @@ class SaveVideo(BaseNode):
     async def process(self, context: ProcessingContext) -> VideoRef:
         video = await context.asset_to_io(self.video)
         filename = datetime.datetime.now().strftime(self.name)
-        return await context.video_from_io(
+        result = await context.video_from_io(
             buffer=video,
             name=filename,
             parent_id=self.folder.asset_id if self.folder.is_set() else None,
         )
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="video"
+        ))
+
+        return result
 
 
 class FrameIterator(BaseNode):

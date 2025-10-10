@@ -10,6 +10,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ColumnDef, DataframeRef, FolderRef, RecordType
 from nodetool.config.environment import Environment
+from nodetool.workflows.types import SaveUpdate
 
 
 class Schema(BaseNode):
@@ -132,7 +133,17 @@ class SaveDataframe(BaseNode):
         df = await context.dataframe_to_pandas(self.df)
         parent_id = self.folder.asset_id if self.folder.is_set() else None
         filename = datetime.now().strftime(self.name)
-        return await context.dataframe_from_pandas(df, filename, parent_id)
+        result = await context.dataframe_from_pandas(df, filename, parent_id)
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="dataframe"
+        ))
+
+        return result
 
 
 class ImportCSV(BaseNode):
@@ -841,7 +852,7 @@ class SaveCSVDataframeFile(BaseNode):
         description="Name of the CSV file to save. Supports strftime format codes.",
     )
 
-    async def process(self, context: ProcessingContext):
+    async def process(self, context: ProcessingContext) -> DataframeRef:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
         if not self.folder:
@@ -857,3 +868,14 @@ class SaveCSVDataframeFile(BaseNode):
         expanded_path = os.path.join(expanded_folder, filename)
         df = await context.dataframe_to_pandas(self.dataframe)
         df.to_csv(expanded_path, index=False)
+        result = self.dataframe
+
+        # Emit SaveUpdate event
+        context.post_message(SaveUpdate(
+            node_id=self.id,
+            name=filename,
+            value=result,
+            output_type="dataframe"
+        ))
+
+        return result
