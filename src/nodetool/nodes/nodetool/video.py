@@ -23,7 +23,7 @@ from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
 from nodetool.providers import get_provider
-from nodetool.providers.types import TextToVideoParams
+from nodetool.providers.types import TextToVideoParams, ImageToVideoParams
 
 logger = get_logger(__name__)
 
@@ -135,6 +135,136 @@ class TextToVideo(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "prompt", "aspect_ratio", "resolution", "seed"]
+
+
+class ImageToVideo(BaseNode):
+    """
+    Generate videos from input images using any supported video provider.
+    Animates static images into dynamic video content with AI-powered motion.
+    video, image-to-video, i2v, animation, AI, generation, sora, veo
+
+    Use cases:
+    - Animate static images into video sequences
+    - Create dynamic content from still photographs
+    - Generate video variations from reference images
+    - Produce animated visual effects from static artwork
+    - Convert product photos into engaging video ads
+    """
+
+    class AspectRatio(str, enum.Enum):
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_1_1 = "1:1"
+        RATIO_4_3 = "4:3"
+        RATIO_3_4 = "3:4"
+
+    class Resolution(str, enum.Enum):
+        SD = "480p"
+        HD = "720p"
+        FULL_HD = "1080p"
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The input image to animate into a video",
+    )
+    model: VideoModel = Field(
+        default=VideoModel(
+            provider=Provider.Gemini,
+            id="veo-3.0-fast-generate-001",
+            name="Veo 3.0 Fast",
+        ),
+        description="The video generation model to use",
+    )
+    prompt: str = Field(
+        default="",
+        description="Optional text prompt to guide the video animation",
+    )
+    negative_prompt: str = Field(
+        default="",
+        description="Text prompt describing what to avoid in the video",
+    )
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_16_9,
+        description="Aspect ratio for the video",
+    )
+    resolution: Resolution = Field(
+        default=Resolution.HD,
+        description="Video resolution",
+    )
+    num_frames: int = Field(
+        default=60,
+        ge=1,
+        le=300,
+        description="Number of frames to generate (provider-specific)",
+    )
+    guidance_scale: float = Field(
+        default=7.5,
+        ge=0.0,
+        le=30.0,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int = Field(
+        default=30,
+        ge=1,
+        le=100,
+        description="Number of denoising steps",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        if self.image.is_empty():
+            raise ValueError("Input image must be connected.")
+
+        # Get the video provider for this model
+        provider_instance = get_provider(self.model.provider)
+
+        # Read the image bytes from the ImageRef
+        image_io = await context.asset_to_io(self.image)
+        image_bytes = image_io.read()
+
+        # Create parameters for image-to-video generation
+        params = ImageToVideoParams(
+            model=self.model,
+            prompt=self.prompt if self.prompt else None,
+            negative_prompt=self.negative_prompt if self.negative_prompt else None,
+            aspect_ratio=self.aspect_ratio.value if self.aspect_ratio else None,
+            resolution=self.resolution.value if self.resolution else None,
+            num_frames=self.num_frames if self.num_frames > 0 else None,
+            guidance_scale=self.guidance_scale,
+            num_inference_steps=self.num_inference_steps,
+            seed=self.seed if self.seed != -1 else None,
+        )
+
+        # Generate video from image
+        context.post_message(
+            {
+                "type": "node_progress",
+                "node_id": self.id,
+                "progress": 0,
+                "total": 100,
+                "message": "Generating video from image...",
+            }
+        )
+
+        video_bytes = await provider_instance.image_to_video(
+            image=image_bytes,
+            params=params,
+            context=context,
+            node_id=self.id
+        )
+
+        # Convert to VideoRef
+        return await context.video_from_bytes(video_bytes)
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["image", "model", "prompt", "aspect_ratio", "resolution", "seed"]
 
 
 class LoadVideoFile(BaseNode):

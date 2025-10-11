@@ -10656,6 +10656,152 @@
       ]
     },
     {
+      "title": "Image To Video",
+      "description": "Generate videos from input images using any supported video provider.\n    Animates static images into dynamic video content with AI-powered motion.\n    video, image-to-video, i2v, animation, AI, generation, sora, veo\n\n    Use cases:\n    - Animate static images into video sequences\n    - Create dynamic content from still photographs\n    - Generate video variations from reference images\n    - Produce animated visual effects from static artwork\n    - Convert product photos into engaging video ads",
+      "namespace": "nodetool.video",
+      "node_type": "nodetool.video.ImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The input image to animate into a video"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "video_model"
+          },
+          "default": {
+            "type": "video_model",
+            "provider": "gemini",
+            "id": "veo-3.0-fast-generate-001",
+            "name": "Veo 3.0 Fast"
+          },
+          "title": "Model",
+          "description": "The video generation model to use"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text prompt to guide the video animation"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Text prompt describing what to avoid in the video"
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "Aspect ratio for the video"
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "480p",
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.nodetool.video.ImageToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution"
+        },
+        {
+          "name": "num_frames",
+          "type": {
+            "type": "int"
+          },
+          "default": 60,
+          "title": "Num Frames",
+          "description": "Number of frames to generate (provider-specific)",
+          "min": 1.0,
+          "max": 300.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Classifier-free guidance scale (higher = closer to prompt)",
+          "min": 0.0,
+          "max": 30.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "Number of denoising steps",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "model",
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "seed"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Load Video Folder",
       "description": "Load video files from an asset folder.\n\n    video, assets, load\n\n    Use cases:\n    - Provide videos for batch processing\n    - Iterate over stored video assets\n    - Prepare clips for editing or analysis",
       "namespace": "nodetool.video",
