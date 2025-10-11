@@ -372,6 +372,58 @@ class OverlayAudio(GraphNode):
         return "nodetool.audio.OverlayAudio"
 
 
+import nodetool.nodes.nodetool.audio
+import nodetool.nodes.nodetool.audio
+
+
+class RealtimeWhisper(GraphNode):
+    """
+    Stream audio input to WhisperLive and emit real-time transcription.
+    realtime, whisper, transcription, streaming, audio-to-text, speech-to-text
+
+    Emits:
+      - `chunk` Chunk(content=..., done=False) for transcript deltas
+      - `chunk` Chunk(content="", done=True) to mark segment end
+      - `text` final aggregated transcript when input ends
+    """
+
+    WhisperModel: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel
+    )
+    Language: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.audio.RealtimeWhisper.Language
+    )
+    model: nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel = Field(
+        default=nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel.TINY,
+        description="Whisper model size - larger models are more accurate but slower",
+    )
+    language: nodetool.nodes.nodetool.audio.RealtimeWhisper.Language = Field(
+        default=nodetool.nodes.nodetool.audio.RealtimeWhisper.Language.ENGLISH,
+        description="Language code for transcription, or 'auto' for automatic detection",
+    )
+    chunk: types.Chunk | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.Chunk(
+            type="chunk",
+            node_id=None,
+            content_type="text",
+            content="",
+            content_metadata={},
+            done=False,
+        ),
+        description="The audio chunk to transcribe",
+    )
+    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.0, description="Sampling temperature for transcription"
+    )
+    initial_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Optional initial prompt to guide transcription style"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.RealtimeWhisper"
+
+
 class RemoveSilence(GraphNode):
     """
     Removes or shortens silence in an audio file with smooth transitions.

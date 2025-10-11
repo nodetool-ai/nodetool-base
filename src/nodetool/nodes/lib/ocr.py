@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import TypedDict
 
 from pydantic import Field
 
@@ -81,13 +82,6 @@ class PaddleOCRNode(BaseNode):
     def required_inputs(self):
         return ["image"]
 
-    @classmethod
-    def return_type(cls):
-        return {
-            "boxes": list[OCRResult],
-            "text": str,
-        }
-
     async def initialize(self, context: ProcessingContext):
         context.post_message(
             NodeUpdate(
@@ -99,7 +93,11 @@ class PaddleOCRNode(BaseNode):
         )
         self._ocr = PaddleOCR(lang=self.language)
 
-    async def process(self, context: ProcessingContext):
+    class OutputType(TypedDict):
+        boxes: list[OCRResult]
+        text: str
+
+    async def process(self, context: ProcessingContext) -> OutputType:
         assert self._ocr is not None
         image = await context.image_to_numpy(self.image)
 

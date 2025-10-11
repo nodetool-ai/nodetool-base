@@ -6873,7 +6873,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Values",
           "description": "\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        "
         }
@@ -8346,6 +8346,151 @@
         "b"
       ],
       "expose_as_tool": true
+    },
+    {
+      "title": "Realtime Whisper",
+      "description": "Stream audio input to WhisperLive and emit real-time transcription.\n    realtime, whisper, transcription, streaming, audio-to-text, speech-to-text\n\n    Emits:\n      - `chunk` Chunk(content=..., done=False) for transcript deltas\n      - `chunk` Chunk(content=\"\", done=True) to mark segment end\n      - `text` final aggregated transcript when input ends",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.RealtimeWhisper",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "tiny",
+              "base",
+              "small",
+              "medium",
+              "large",
+              "large-v2",
+              "large-v3"
+            ],
+            "type_name": "nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel"
+          },
+          "default": "tiny",
+          "title": "Model",
+          "description": "Whisper model size - larger models are more accurate but slower"
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "enum",
+            "values": [
+              "auto",
+              "en",
+              "es",
+              "fr",
+              "de",
+              "it",
+              "pt",
+              "nl",
+              "ru",
+              "zh",
+              "ja",
+              "ko",
+              "ar",
+              "hi",
+              "tr",
+              "pl",
+              "uk",
+              "vi"
+            ],
+            "type_name": "nodetool.nodes.nodetool.audio.RealtimeWhisper.Language"
+          },
+          "default": "en",
+          "title": "Language",
+          "description": "Language code for transcription, or 'auto' for automatic detection"
+        },
+        {
+          "name": "chunk",
+          "type": {
+            "type": "chunk"
+          },
+          "default": {
+            "type": "chunk",
+            "node_id": null,
+            "content_type": "text",
+            "content": "",
+            "content_metadata": {},
+            "done": false
+          },
+          "title": "Chunk",
+          "description": "The audio chunk to transcribe"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Temperature",
+          "description": "Sampling temperature for transcription",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "initial_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Initial Prompt",
+          "description": "Optional initial prompt to guide transcription style"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "start"
+        },
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "end"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "speaker"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "detected_language"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "translation"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "language",
+        "chunk",
+        "temperature",
+        "initial_prompt"
+      ],
+      "is_streaming_output": true
     },
     {
       "title": "Remove Silence",
@@ -15956,6 +16101,110 @@
       "expose_as_tool": true
     },
     {
+      "title": "Combine Image Grid",
+      "description": "Combine a grid of image tiles into a single image.\n    image, grid, combine, tiles\n\n    Use cases:\n    - Reassemble processed image chunks\n    - Create composite images from smaller parts\n    - Merge tiled image data from distributed processing",
+      "namespace": "lib.grid",
+      "node_type": "lib.grid.CombineImageGrid",
+      "properties": [
+        {
+          "name": "tiles",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Tiles",
+          "description": "List of image tiles to combine."
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Columns",
+          "description": "Number of columns in the grid.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "tiles",
+        "columns"
+      ]
+    },
+    {
+      "title": "Slice Image Grid",
+      "description": "Slice an image into a grid of tiles.\n    image, grid, slice, tiles\n\n    Use cases:\n    - Prepare large images for processing in smaller chunks\n    - Create image puzzles or mosaic effects\n    - Distribute image processing tasks across multiple workers",
+      "namespace": "lib.grid",
+      "node_type": "lib.grid.SliceImageGrid",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to slice into a grid."
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Columns",
+          "description": "Number of columns in the grid.",
+          "min": 0.0
+        },
+        {
+          "name": "rows",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Rows",
+          "description": "Number of rows in the grid.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "columns",
+        "rows"
+      ]
+    },
+    {
       "title": "Extract Feed Metadata",
       "description": "Extracts metadata from an RSS feed.\n    rss, metadata, feed\n\n    Use cases:\n    - Get feed information\n    - Validate feed details\n    - Extract feed metadata",
       "namespace": "lib.rss",
@@ -17728,6 +17977,125 @@
       "expose_as_tool": true
     },
     {
+      "title": "Chart Renderer",
+      "description": "Node responsible for rendering chart configurations into image format using seaborn.\n    chart, seaborn, plot, visualization, data",
+      "namespace": "lib.seaborn",
+      "node_type": "lib.seaborn.ChartRenderer",
+      "properties": [
+        {
+          "name": "chart_config",
+          "type": {
+            "type": "chart_config"
+          },
+          "default": {
+            "type": "chart_config",
+            "title": "",
+            "x_label": "",
+            "y_label": "",
+            "legend": true,
+            "data": {
+              "type": "chart_data",
+              "series": [],
+              "row": null,
+              "col": null,
+              "col_wrap": null
+            },
+            "height": null,
+            "aspect": null,
+            "x_lim": null,
+            "y_lim": null,
+            "x_scale": null,
+            "y_scale": null,
+            "legend_position": "auto",
+            "palette": null,
+            "hue_order": null,
+            "hue_norm": null,
+            "sizes": null,
+            "size_order": null,
+            "size_norm": null,
+            "marginal_kws": null,
+            "joint_kws": null,
+            "diag_kind": null,
+            "corner": false,
+            "center": null,
+            "vmin": null,
+            "vmax": null,
+            "cmap": null,
+            "annot": false,
+            "fmt": ".2g",
+            "square": false
+          },
+          "title": "Chart Config",
+          "description": "The chart configuration to render."
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 640,
+          "title": "Width",
+          "description": "The width of the chart in pixels.",
+          "min": 0.0,
+          "max": 10000.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 480,
+          "title": "Height",
+          "description": "The height of the chart in pixels.",
+          "min": 0.0,
+          "max": 10000.0
+        },
+        {
+          "name": "data",
+          "type": {
+            "type": "any"
+          },
+          "default": null,
+          "title": "Data",
+          "description": "The data to visualize as a pandas DataFrame."
+        },
+        {
+          "name": "despine",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Despine",
+          "description": "Whether to remove top and right spines."
+        },
+        {
+          "name": "trim_margins",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Trim Margins",
+          "description": "Whether to use tight layout for margins."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "chart_config",
+        "width",
+        "height",
+        "data",
+        "despine",
+        "trim_margins"
+      ]
+    },
+    {
       "title": "Simple Http Server",
       "description": "Starts a simple HTTP server inside Docker and streams logs.\n    http, server, web\n\n    Emits the reachable endpoint URL on the \"endpoint\" output when ready,\n    then streams stdout/stderr lines on the corresponding outputs.",
       "namespace": "lib.http_server",
@@ -19048,6 +19416,97 @@
       "expose_as_tool": true
     },
     {
+      "title": "Paddle OCR",
+      "description": "Performs Optical Character Recognition (OCR) on images using PaddleOCR.\n    image, text, ocr, document\n\n    Use cases:\n    - Text extraction from images\n    - Document digitization\n    - Receipt/invoice processing\n    - Handwriting recognition",
+      "namespace": "lib.ocr",
+      "node_type": "lib.ocr.PaddleOCR",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Input Image",
+          "description": "The image to perform OCR on"
+        },
+        {
+          "name": "language",
+          "type": {
+            "type": "enum",
+            "values": [
+              "en",
+              "fr",
+              "de",
+              "es",
+              "it",
+              "pt",
+              "nl",
+              "pl",
+              "ro",
+              "hr",
+              "cs",
+              "hu",
+              "sk",
+              "sl",
+              "tr",
+              "vi",
+              "id",
+              "ms",
+              "la",
+              "ru",
+              "bg",
+              "uk",
+              "be",
+              "mn",
+              "ch",
+              "ja",
+              "ko",
+              "ar",
+              "fa",
+              "ur",
+              "hi",
+              "mr",
+              "ne",
+              "sa"
+            ],
+            "type_name": "nodetool.nodes.lib.ocr.OCRLanguage"
+          },
+          "default": "en",
+          "title": "Language",
+          "description": "Language code for OCR"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "ocr_result"
+              }
+            ]
+          },
+          "name": "boxes"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "language"
+      ]
+    },
+    {
       "title": "Convert To Markdown",
       "description": "Converts various document formats to markdown using MarkItDown.\n    markdown, convert, document\n\n    Use cases:\n    - Convert Word documents to markdown\n    - Convert Excel files to markdown tables\n    - Convert PowerPoint to markdown content",
       "namespace": "lib.markitdown",
@@ -19458,6 +19917,1056 @@
       ],
       "basic_fields": [
         "html_content"
+      ]
+    },
+    {
+      "title": "Circle",
+      "description": "Generate SVG circle element.\n    svg, shape, vector, circle",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Circle",
+      "properties": [
+        {
+          "name": "cx",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Cx",
+          "description": "Center X coordinate"
+        },
+        {
+          "name": "cy",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Cy",
+          "description": "Center Y coordinate"
+        },
+        {
+          "name": "radius",
+          "type": {
+            "type": "int"
+          },
+          "default": 50,
+          "title": "Radius",
+          "description": "Radius"
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Fill",
+          "description": "Fill color"
+        },
+        {
+          "name": "stroke",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "none"
+          },
+          "title": "Stroke",
+          "description": "Stroke color"
+        },
+        {
+          "name": "stroke_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Stroke Width",
+          "description": "Stroke width"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "cx",
+        "cy",
+        "radius",
+        "fill",
+        "stroke",
+        "stroke_width"
+      ]
+    },
+    {
+      "title": "Clip Path",
+      "description": "Create clipping paths for SVG elements.\n    svg, clip, mask\n\n    Use cases:\n    - Mask parts of elements\n    - Create complex shapes through clipping\n    - Apply visual effects using masks",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.ClipPath",
+      "properties": [
+        {
+          "name": "clip_content",
+          "type": {
+            "type": "svg_element"
+          },
+          "default": null,
+          "title": "Clip Content",
+          "description": "SVG element to use as clip path"
+        },
+        {
+          "name": "content",
+          "type": {
+            "type": "svg_element"
+          },
+          "default": null,
+          "title": "Content",
+          "description": "SVG element to clip"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "clip_content",
+        "content"
+      ]
+    },
+    {
+      "title": "SVG Document",
+      "description": "Combine SVG elements into a complete SVG document.\n    svg, document, combine\n\n    Use cases:\n    - Combine multiple SVG elements into a single document\n    - Set document-level properties like viewBox and dimensions\n    - Export complete SVG documents",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Document",
+      "properties": [
+        {
+          "name": "content",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "svg_element"
+              },
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "svg_element"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": [],
+          "title": "Content",
+          "description": "SVG content"
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 800,
+          "title": "Width",
+          "description": "Document width",
+          "min": 1.0,
+          "max": 4096.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 600,
+          "title": "Height",
+          "description": "Document height",
+          "min": 1.0,
+          "max": 4096.0
+        },
+        {
+          "name": "viewBox",
+          "type": {
+            "type": "str"
+          },
+          "default": "0 0 800 600",
+          "title": "Viewbox",
+          "description": "SVG viewBox attribute"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "content",
+        "width",
+        "height",
+        "viewBox"
+      ]
+    },
+    {
+      "title": "Drop Shadow",
+      "description": "Apply drop shadow filter to SVG elements.\n    svg, filter, shadow, effects",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.DropShadow",
+      "properties": [
+        {
+          "name": "std_deviation",
+          "type": {
+            "type": "float"
+          },
+          "default": 3.0,
+          "title": "Std Deviation",
+          "description": "Standard deviation for blur"
+        },
+        {
+          "name": "dx",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Dx",
+          "description": "X offset for shadow"
+        },
+        {
+          "name": "dy",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Dy",
+          "description": "Y offset for shadow"
+        },
+        {
+          "name": "color",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Color",
+          "description": "Color for shadow"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "std_deviation",
+        "dx",
+        "dy",
+        "color"
+      ]
+    },
+    {
+      "title": "Ellipse",
+      "description": "Generate SVG ellipse element.\n    svg, shape, vector, ellipse",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Ellipse",
+      "properties": [
+        {
+          "name": "cx",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Cx",
+          "description": "Center X coordinate"
+        },
+        {
+          "name": "cy",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Cy",
+          "description": "Center Y coordinate"
+        },
+        {
+          "name": "rx",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Rx",
+          "description": "X radius"
+        },
+        {
+          "name": "ry",
+          "type": {
+            "type": "int"
+          },
+          "default": 50,
+          "title": "Ry",
+          "description": "Y radius"
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Fill",
+          "description": "Fill color"
+        },
+        {
+          "name": "stroke",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "none"
+          },
+          "title": "Stroke",
+          "description": "Stroke color"
+        },
+        {
+          "name": "stroke_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Stroke Width",
+          "description": "Stroke width"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "cx",
+        "cy",
+        "rx",
+        "ry",
+        "fill",
+        "stroke",
+        "stroke_width"
+      ]
+    },
+    {
+      "title": "Gaussian Blur",
+      "description": "Apply Gaussian blur filter to SVG elements.\n    svg, filter, blur, effects",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.GaussianBlur",
+      "properties": [
+        {
+          "name": "std_deviation",
+          "type": {
+            "type": "float"
+          },
+          "default": 3.0,
+          "title": "Std Deviation",
+          "description": "Standard deviation for blur"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "std_deviation"
+      ]
+    },
+    {
+      "title": "Gradient",
+      "description": "Create linear or radial gradients for SVG elements.\n    svg, gradient, color\n\n    Use cases:\n    - Add smooth color transitions\n    - Create complex color effects\n    - Define reusable gradient definitions",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Gradient",
+      "properties": [
+        {
+          "name": "gradient_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "linearGradient",
+              "radialGradient"
+            ],
+            "type_name": "nodetool.nodes.lib.svg.Gradient.GradientType"
+          },
+          "default": "linearGradient",
+          "title": "Gradient Type",
+          "description": "Type of gradient"
+        },
+        {
+          "name": "x1",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "X1",
+          "description": "Start X position (linear) or center X (radial)"
+        },
+        {
+          "name": "y1",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Y1",
+          "description": "Start Y position (linear) or center Y (radial)"
+        },
+        {
+          "name": "x2",
+          "type": {
+            "type": "float"
+          },
+          "default": 100,
+          "title": "X2",
+          "description": "End X position (linear) or radius X (radial)"
+        },
+        {
+          "name": "y2",
+          "type": {
+            "type": "float"
+          },
+          "default": 100,
+          "title": "Y2",
+          "description": "End Y position (linear) or radius Y (radial)"
+        },
+        {
+          "name": "color1",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Color1",
+          "description": "Start color of gradient"
+        },
+        {
+          "name": "color2",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "title": "Color2",
+          "description": "End color of gradient"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "gradient_type",
+        "x1",
+        "y1",
+        "x2",
+        "y2",
+        "color1",
+        "color2"
+      ]
+    },
+    {
+      "title": "Line",
+      "description": "Generate SVG line element.\n    svg, shape, vector, line",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Line",
+      "properties": [
+        {
+          "name": "x1",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "X1",
+          "description": "Start X coordinate"
+        },
+        {
+          "name": "y1",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Y1",
+          "description": "Start Y coordinate"
+        },
+        {
+          "name": "x2",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "X2",
+          "description": "End X coordinate"
+        },
+        {
+          "name": "y2",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Y2",
+          "description": "End Y coordinate"
+        },
+        {
+          "name": "stroke",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Stroke",
+          "description": "Stroke color"
+        },
+        {
+          "name": "stroke_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Stroke Width",
+          "description": "Stroke width"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "x1",
+        "y1",
+        "x2",
+        "y2",
+        "stroke",
+        "stroke_width"
+      ]
+    },
+    {
+      "title": "Path",
+      "description": "Generate SVG path element.\n    svg, shape, vector, path",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Path",
+      "properties": [
+        {
+          "name": "path_data",
+          "type": {
+            "type": "str"
+          },
+          "default": null,
+          "title": "Path Data",
+          "description": "SVG path data (d attribute)"
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Fill",
+          "description": "Fill color"
+        },
+        {
+          "name": "stroke",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "none"
+          },
+          "title": "Stroke",
+          "description": "Stroke color"
+        },
+        {
+          "name": "stroke_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Stroke Width",
+          "description": "Stroke width"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path_data",
+        "fill",
+        "stroke",
+        "stroke_width"
+      ]
+    },
+    {
+      "title": "Polygon",
+      "description": "Generate SVG polygon element.\n    svg, shape, vector, polygon",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Polygon",
+      "properties": [
+        {
+          "name": "points",
+          "type": {
+            "type": "str"
+          },
+          "default": null,
+          "title": "Points",
+          "description": "Points in format 'x1,y1 x2,y2 x3,y3...'"
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Fill",
+          "description": "Fill color"
+        },
+        {
+          "name": "stroke",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "none"
+          },
+          "title": "Stroke",
+          "description": "Stroke color"
+        },
+        {
+          "name": "stroke_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Stroke Width",
+          "description": "Stroke width"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "points",
+        "fill",
+        "stroke",
+        "stroke_width"
+      ]
+    },
+    {
+      "title": "Rectangle",
+      "description": "Generate SVG rectangle element.\n    svg, shape, vector, rectangle",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Rect",
+      "properties": [
+        {
+          "name": "x",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "X",
+          "description": "X coordinate"
+        },
+        {
+          "name": "y",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Y",
+          "description": "Y coordinate"
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Width",
+          "description": "Width"
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Height",
+          "description": "Height"
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Fill",
+          "description": "Fill color"
+        },
+        {
+          "name": "stroke",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "none"
+          },
+          "title": "Stroke",
+          "description": "Stroke color"
+        },
+        {
+          "name": "stroke_width",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Stroke Width",
+          "description": "Stroke width"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "x",
+        "y",
+        "width",
+        "height",
+        "fill",
+        "stroke",
+        "stroke_width"
+      ]
+    },
+    {
+      "title": "SVG to Image",
+      "description": "Create an SVG document and convert it to a raster image in one step.\n    svg, document, raster, convert\n\n    Use cases:\n    - Create and rasterize SVG documents in a single operation\n    - Generate image files from SVG elements\n    - Convert vector graphics to bitmap format with custom dimensions",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.SVGToImage",
+      "properties": [
+        {
+          "name": "content",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "svg_element"
+              },
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "svg_element"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": [],
+          "title": "Content",
+          "description": "SVG content"
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 800,
+          "title": "Width",
+          "description": "Document width",
+          "min": 1.0,
+          "max": 4096.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 600,
+          "title": "Height",
+          "description": "Document height",
+          "min": 1.0,
+          "max": 4096.0
+        },
+        {
+          "name": "viewBox",
+          "type": {
+            "type": "str"
+          },
+          "default": "0 0 800 600",
+          "title": "Viewbox",
+          "description": "SVG viewBox attribute"
+        },
+        {
+          "name": "scale",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Scale",
+          "description": "Scale factor for rasterization",
+          "min": 1.0,
+          "max": 10.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "content",
+        "width",
+        "height",
+        "viewBox",
+        "scale"
+      ]
+    },
+    {
+      "title": "Text",
+      "description": "Add text elements to SVG.\n    svg, text, typography\n\n    Use cases:\n    - Add labels to vector graphics\n    - Create text-based logos\n    - Generate dynamic text content in SVGs",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Text",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "Text content"
+        },
+        {
+          "name": "x",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "X",
+          "description": "X coordinate"
+        },
+        {
+          "name": "y",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Y",
+          "description": "Y coordinate"
+        },
+        {
+          "name": "font_family",
+          "type": {
+            "type": "str"
+          },
+          "default": "Arial",
+          "title": "Font Family",
+          "description": "Font family"
+        },
+        {
+          "name": "font_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 16,
+          "title": "Font Size",
+          "description": "Font size"
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Fill",
+          "description": "Text color"
+        },
+        {
+          "name": "text_anchor",
+          "type": {
+            "type": "enum",
+            "values": [
+              "start",
+              "middle",
+              "end"
+            ],
+            "type_name": "nodetool.nodes.lib.svg.SVGTextAnchor"
+          },
+          "default": "start",
+          "title": "Text Anchor",
+          "description": "Text anchor position"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "x",
+        "y",
+        "font_family",
+        "font_size",
+        "fill",
+        "text_anchor"
+      ]
+    },
+    {
+      "title": "Transform",
+      "description": "Apply transformations to SVG elements.\n    svg, transform, animation\n\n    Use cases:\n    - Rotate, scale, or translate elements\n    - Create complex transformations\n    - Prepare elements for animation",
+      "namespace": "lib.svg",
+      "node_type": "lib.svg.Transform",
+      "properties": [
+        {
+          "name": "content",
+          "type": {
+            "type": "svg_element"
+          },
+          "default": null,
+          "title": "Content",
+          "description": "SVG element to transform"
+        },
+        {
+          "name": "translate_x",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Translate X",
+          "description": "X translation"
+        },
+        {
+          "name": "translate_y",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Translate Y",
+          "description": "Y translation"
+        },
+        {
+          "name": "rotate",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Rotate",
+          "description": "Rotation angle in degrees"
+        },
+        {
+          "name": "scale_x",
+          "type": {
+            "type": "float"
+          },
+          "default": 1,
+          "title": "Scale X",
+          "description": "X scale factor"
+        },
+        {
+          "name": "scale_y",
+          "type": {
+            "type": "float"
+          },
+          "default": 1,
+          "title": "Scale Y",
+          "description": "Y scale factor"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "svg_element"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "content",
+        "translate_x",
+        "translate_y",
+        "rotate",
+        "scale_x",
+        "scale_y"
       ]
     },
     {
@@ -22953,6 +24462,3427 @@
       ]
     },
     {
+      "title": "Index Array",
+      "description": "Select specific indices from an array along a specified axis.\n    array, index, select, subset\n\n    Use cases:\n    - Extract specific samples from a dataset\n    - Select particular features or dimensions\n    - Implement batch sampling operations",
+      "namespace": "lib.numpy.manipulation",
+      "node_type": "lib.numpy.manipulation.IndexArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to index"
+        },
+        {
+          "name": "indices",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Indices",
+          "description": "The comma separated indices to select"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Axis",
+          "description": "Axis along which to index"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "indices",
+        "axis"
+      ]
+    },
+    {
+      "title": "Mat Mul",
+      "description": "Perform matrix multiplication on two input arrays.\n    array, matrix, multiplication, linear algebra\n\n    Use cases:\n    - Implement linear transformations\n    - Calculate dot products of vectors\n    - Perform matrix operations in neural networks",
+      "namespace": "lib.numpy.manipulation",
+      "node_type": "lib.numpy.manipulation.MatMul",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "A",
+          "description": "First input array"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "B",
+          "description": "Second input array"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Slice Array",
+      "description": "Extract a slice of an array along a specified axis.\n    array, slice, subset, index\n\n    Use cases:\n    - Extract specific time periods from time series data\n    - Select subset of features from datasets\n    - Create sliding windows over sequential data",
+      "namespace": "lib.numpy.manipulation",
+      "node_type": "lib.numpy.manipulation.SliceArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to slice"
+        },
+        {
+          "name": "start",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start",
+          "description": "Starting index (inclusive)"
+        },
+        {
+          "name": "stop",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Stop",
+          "description": "Ending index (exclusive)"
+        },
+        {
+          "name": "step",
+          "type": {
+            "type": "int"
+          },
+          "default": 1,
+          "title": "Step",
+          "description": "Step size between elements"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Axis",
+          "description": "Axis along which to slice"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "start",
+        "stop",
+        "step",
+        "axis"
+      ]
+    },
+    {
+      "title": "Split Array",
+      "description": "Split an array into multiple sub-arrays along a specified axis.\n    array, split, divide, partition\n\n    Use cases:\n    - Divide datasets into training/validation splits\n    - Create batches from large arrays\n    - Separate multi-channel data",
+      "namespace": "lib.numpy.manipulation",
+      "node_type": "lib.numpy.manipulation.SplitArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to split"
+        },
+        {
+          "name": "num_splits",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Splits",
+          "description": "Number of equal splits to create"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Axis",
+          "description": "Axis along which to split"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "num_splits",
+        "axis"
+      ]
+    },
+    {
+      "title": "Stack",
+      "description": "Stack multiple arrays along a specified axis.\n    array, stack, concatenate, join, merge, axis\n\n    Use cases:\n    - Combine multiple 2D arrays into a 3D array\n    - Stack time series data from multiple sources\n    - Merge feature vectors for machine learning models",
+      "namespace": "lib.numpy.manipulation",
+      "node_type": "lib.numpy.manipulation.Stack",
+      "properties": [
+        {
+          "name": "arrays",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Arrays",
+          "description": "Arrays to stack"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Axis",
+          "description": "The axis to stack along.",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "arrays",
+        "axis"
+      ]
+    },
+    {
+      "title": "Transpose Array",
+      "description": "Transpose the dimensions of the input array.\n    array, transpose, reshape, dimensions\n\n    Use cases:\n    - Convert row vectors to column vectors\n    - Rearrange data for compatibility with other operations\n    - Implement certain linear algebra operations",
+      "namespace": "lib.numpy.manipulation",
+      "node_type": "lib.numpy.manipulation.TransposeArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Array to transpose"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Add Array",
+      "description": "Performs addition on two arrays.\n    math, plus, add, addition, sum, +",
+      "namespace": "lib.numpy.arithmetic",
+      "node_type": "lib.numpy.arithmetic.AddArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "A"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Divide Array",
+      "description": "Divides the first array by the second.\n    math, division, arithmetic, quotient, /",
+      "namespace": "lib.numpy.arithmetic",
+      "node_type": "lib.numpy.arithmetic.DivideArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "A"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Modulus Array",
+      "description": "Calculates the element-wise remainder of division.\n    math, modulo, remainder, mod, %\n\n    Use cases:\n    - Implementing cyclic behaviors\n    - Checking for even/odd numbers\n    - Limiting values to a specific range",
+      "namespace": "lib.numpy.arithmetic",
+      "node_type": "lib.numpy.arithmetic.ModulusArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "A"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Multiply Array",
+      "description": "Multiplies two arrays.\n    math, product, times, *",
+      "namespace": "lib.numpy.arithmetic",
+      "node_type": "lib.numpy.arithmetic.MultiplyArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "A"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Subtract Array",
+      "description": "Subtracts the second array from the first.\n    math, minus, difference, -",
+      "namespace": "lib.numpy.arithmetic",
+      "node_type": "lib.numpy.arithmetic.SubtractArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "A"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Reshape 1 D",
+      "description": "Reshape an array to a 1D shape without changing its data.\n    array, reshape, vector, flatten\n\n    Use cases:\n    - Flatten multi-dimensional data for certain algorithms\n    - Convert images to vector form for machine learning\n    - Prepare data for 1D operations",
+      "namespace": "lib.numpy.reshaping",
+      "node_type": "lib.numpy.reshaping.Reshape1D",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to reshape"
+        },
+        {
+          "name": "num_elements",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Elements",
+          "description": "The number of elements"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "num_elements"
+      ]
+    },
+    {
+      "title": "Reshape 2 D",
+      "description": "Reshape an array to a new shape without changing its data.\n    array, reshape, dimensions, structure\n\n    Use cases:\n    - Convert between different dimensional representations\n    - Prepare data for specific model architectures\n    - Flatten or unflatten arrays",
+      "namespace": "lib.numpy.reshaping",
+      "node_type": "lib.numpy.reshaping.Reshape2D",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to reshape"
+        },
+        {
+          "name": "num_rows",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Rows",
+          "description": "The number of rows"
+        },
+        {
+          "name": "num_cols",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Cols",
+          "description": "The number of columns"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "num_rows",
+        "num_cols"
+      ]
+    },
+    {
+      "title": "Reshape 3 D",
+      "description": "Reshape an array to a 3D shape without changing its data.\n    array, reshape, dimensions, volume\n\n    Use cases:\n    - Convert data for 3D visualization\n    - Prepare image data with channels\n    - Structure data for 3D convolutions",
+      "namespace": "lib.numpy.reshaping",
+      "node_type": "lib.numpy.reshaping.Reshape3D",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to reshape"
+        },
+        {
+          "name": "num_rows",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Rows",
+          "description": "The number of rows"
+        },
+        {
+          "name": "num_cols",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Cols",
+          "description": "The number of columns"
+        },
+        {
+          "name": "num_depths",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Depths",
+          "description": "The number of depths"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "num_rows",
+        "num_cols",
+        "num_depths"
+      ]
+    },
+    {
+      "title": "Reshape 4 D",
+      "description": "Reshape an array to a 4D shape without changing its data.\n    array, reshape, dimensions, batch\n\n    Use cases:\n    - Prepare batch data for neural networks\n    - Structure spatiotemporal data\n    - Format data for 3D image processing with channels",
+      "namespace": "lib.numpy.reshaping",
+      "node_type": "lib.numpy.reshaping.Reshape4D",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to reshape"
+        },
+        {
+          "name": "num_rows",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Rows",
+          "description": "The number of rows"
+        },
+        {
+          "name": "num_cols",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Cols",
+          "description": "The number of columns"
+        },
+        {
+          "name": "num_depths",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Depths",
+          "description": "The number of depths"
+        },
+        {
+          "name": "num_channels",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Num Channels",
+          "description": "The number of channels"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "num_rows",
+        "num_cols",
+        "num_depths",
+        "num_channels"
+      ]
+    },
+    {
+      "title": "Save Array",
+      "description": "Save a numpy array to a file in the specified folder.\n    array, save, file, storage\n\n    Use cases:\n    - Store processed arrays for later use\n    - Save analysis results\n    - Create checkpoints in processing pipelines",
+      "namespace": "lib.numpy.io",
+      "node_type": "lib.numpy.io.SaveArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The array to save."
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "folder"
+          },
+          "default": {
+            "type": "folder",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Folder",
+          "description": "The folder to save the array in."
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "%Y-%m-%d_%H-%M-%S.npy",
+          "title": "Name",
+          "description": "\n        The name of the asset to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "folder",
+        "name"
+      ]
+    },
+    {
+      "title": "Array To List",
+      "description": "Convert a array to a nested list structure.\n    array, list, conversion, type\n\n    Use cases:\n    - Prepare array data for JSON serialization\n    - Convert array outputs to Python data structures\n    - Interface array data with non-array operations",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ArrayToList",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Array to convert to list"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Array To Scalar",
+      "description": "Convert a single-element array to a scalar value.\n    array, scalar, conversion, type\n\n    Use cases:\n    - Extract final results from array computations\n    - Prepare values for non-array operations\n    - Simplify output for human-readable results",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ArrayToScalar",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Array to convert to scalar"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Convert To Array",
+      "description": "Convert PIL Image to normalized tensor representation.\n    image, tensor, conversion, normalization\n\n    Use cases:\n    - Prepare images for machine learning models\n    - Convert between image formats for processing\n    - Normalize image data for consistent calculations",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ConvertToArray",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The input image to convert to a tensor. The image should have either 1 (grayscale), 3 (RGB), or 4 (RGBA) channels."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Convert To Audio",
+      "description": "Converts a array object back to an audio file.\n    audio, conversion, array\n\n    Use cases:\n    - Save processed audio data as a playable file\n    - Convert generated or modified audio arrays to audio format\n    - Output results of audio processing pipelinesr",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ConvertToAudio",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The array to convert to an audio file."
+        },
+        {
+          "name": "sample_rate",
+          "type": {
+            "type": "int"
+          },
+          "default": 44100,
+          "title": "Sample Rate",
+          "description": "The sample rate of the audio file.",
+          "min": 0.0,
+          "max": 44100.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "sample_rate"
+      ]
+    },
+    {
+      "title": "Convert To Image",
+      "description": "Convert array data to PIL Image format.\n    array, image, conversion, denormalization\n\n    Use cases:\n    - Visualize array data as images\n    - Save processed array results as images\n    - Convert model outputs back to viewable format",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ConvertToImage",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to convert to an image. Should have either 1, 3, or 4 channels."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "List To Array",
+      "description": "Convert a list of values to a array.\n    list, array, conversion, type\n\n    Use cases:\n    - Prepare list data for array operations\n    - Create arrays from Python data structures\n    - Convert sequence data to array format",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ListToArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Values",
+          "description": "List of values to convert to array"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Scalar To Array",
+      "description": "Convert a scalar value to a single-element array.\n    scalar, array, conversion, type\n\n    Use cases:\n    - Prepare scalar inputs for array operations\n    - Create constant arrays for computations\n    - Initialize array values in workflows",
+      "namespace": "lib.numpy.conversion",
+      "node_type": "lib.numpy.conversion.ScalarToArray",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "default": 0,
+          "title": "Value",
+          "description": "Scalar value to convert to array"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ]
+    },
+    {
+      "title": "Plot Array",
+      "description": "Create a plot visualization of array data.\n    array, plot, visualization, graph\n\n    Use cases:\n    - Visualize trends in array data\n    - Create charts for reports or dashboards\n    - Debug array outputs in workflows",
+      "namespace": "lib.numpy.visualization",
+      "node_type": "lib.numpy.visualization.PlotArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Array to plot"
+        },
+        {
+          "name": "plot_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "line",
+              "bar",
+              "scatter"
+            ],
+            "type_name": "nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType"
+          },
+          "default": "line",
+          "title": "Plot Type",
+          "description": "Type of plot to create"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "plot_type"
+      ]
+    },
+    {
+      "title": "Binary Operation",
+      "description": "",
+      "namespace": "lib.numpy.utils",
+      "node_type": "lib.numpy.utils.BinaryOperation",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "a",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "A"
+        },
+        {
+          "name": "b",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "B"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "a",
+        "b"
+      ]
+    },
+    {
+      "title": "Arg Max Array",
+      "description": "Find indices of maximum values along a specified axis of a array.\n    array, argmax, index, maximum\n\n    Use cases:\n    - Determine winning classes in classification tasks\n    - Find peaks in signal processing\n    - Locate best-performing items in datasets",
+      "namespace": "lib.numpy.statistics",
+      "node_type": "lib.numpy.statistics.ArgMaxArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Axis",
+          "description": "Axis along which to find maximum indices"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "np_array"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "axis"
+      ]
+    },
+    {
+      "title": "Arg Min Array",
+      "description": "Find indices of minimum values along a specified axis of a array.\n    array, argmin, index, minimum\n\n    Use cases:\n    - Locate lowest-performing items in datasets\n    - Find troughs in signal processing\n    - Determine least likely classes in classification tasks",
+      "namespace": "lib.numpy.statistics",
+      "node_type": "lib.numpy.statistics.ArgMinArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Axis",
+          "description": "Axis along which to find minimum indices"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "np_array"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "axis"
+      ]
+    },
+    {
+      "title": "Max Array",
+      "description": "Compute the maximum value along a specified axis of a array.\n    array, maximum, reduction, statistics\n\n    Use cases:\n    - Find peak values in time series data\n    - Implement max pooling in neural networks\n    - Determine highest scores across multiple categories",
+      "namespace": "lib.numpy.statistics",
+      "node_type": "lib.numpy.statistics.MaxArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Axis",
+          "description": "Axis along which to compute maximum"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "np_array"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "axis"
+      ]
+    },
+    {
+      "title": "Mean Array",
+      "description": "Compute the mean value along a specified axis of a array.\n    array, average, reduction, statistics\n\n    Use cases:\n    - Calculate average values in datasets\n    - Implement mean pooling in neural networks\n    - Compute centroids in clustering algorithms",
+      "namespace": "lib.numpy.statistics",
+      "node_type": "lib.numpy.statistics.MeanArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Axis",
+          "description": "Axis along which to compute mean"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "np_array"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "axis"
+      ]
+    },
+    {
+      "title": "Min Array",
+      "description": "Calculate the minimum value along a specified axis of a array.\n    array, minimum, reduction, statistics\n\n    Use cases:\n    - Find lowest values in datasets\n    - Implement min pooling in neural networks\n    - Determine minimum thresholds across categories",
+      "namespace": "lib.numpy.statistics",
+      "node_type": "lib.numpy.statistics.MinArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Axis",
+          "description": "Axis along which to compute minimum"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "np_array"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "axis"
+      ]
+    },
+    {
+      "title": "Sum Array",
+      "description": "Calculate the sum of values along a specified axis of a array.\n    array, summation, reduction, statistics\n\n    Use cases:\n    - Compute total values across categories\n    - Implement sum pooling in neural networks\n    - Calculate cumulative metrics in time series data",
+      "namespace": "lib.numpy.statistics",
+      "node_type": "lib.numpy.statistics.SumArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        },
+        {
+          "name": "axis",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Axis",
+          "description": "Axis along which to compute sum"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "np_array"
+              },
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values",
+        "axis"
+      ]
+    },
+    {
+      "title": "Abs Array",
+      "description": "Compute the absolute value of each element in a array.\n    array, absolute, magnitude\n\n    Use cases:\n    - Calculate magnitudes of complex numbers\n    - Preprocess data for certain algorithms\n    - Implement activation functions in neural networks",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.AbsArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "The input array to compute the absolute values from."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Cosine Array",
+      "description": "Computes the cosine of input angles in radians.\n    math, trigonometry, cosine, cos\n\n    Use cases:\n    - Calculating horizontal components in physics\n    - Creating circular motions\n    - Phase calculations in signal processing",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.CosineArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "angle_rad",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "Angle (Radians)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "angle_rad"
+      ]
+    },
+    {
+      "title": "Exp Array",
+      "description": "Calculate the exponential of each element in a array.\n    array, exponential, math, activation\n\n    Use cases:\n    - Implement exponential activation functions\n    - Calculate growth rates in scientific models\n    - Transform data for certain statistical analyses",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.ExpArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Log Array",
+      "description": "Calculate the natural logarithm of each element in a array.\n    array, logarithm, math, transformation\n\n    Use cases:\n    - Implement log transformations on data\n    - Calculate entropy in information theory\n    - Normalize data with large ranges",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.LogArray",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Power Array",
+      "description": "Raises the base array to the power of the exponent element-wise.\n    math, exponentiation, power, pow, **\n\n    Use cases:\n    - Calculating compound interest\n    - Implementing polynomial functions\n    - Applying non-linear transformations to data",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.PowerArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "base",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 1.0,
+          "title": "Base"
+        },
+        {
+          "name": "exponent",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 2.0,
+          "title": "Exponent"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "base",
+        "exponent"
+      ]
+    },
+    {
+      "title": "Sine Array",
+      "description": "Computes the sine of input angles in radians.\n    math, trigonometry, sine, sin\n\n    Use cases:\n    - Calculating vertical components in physics\n    - Generating smooth periodic functions\n    - Audio signal processing",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.SineArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "angle_rad",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "default": 0.0,
+          "title": "Angle (Radians)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "angle_rad"
+      ]
+    },
+    {
+      "title": "Sqrt Array",
+      "description": "Calculates the square root of the input array element-wise.\n    math, square root, sqrt, \u221a\n\n    Use cases:\n    - Normalizing data\n    - Calculating distances in Euclidean space\n    - Finding intermediate values in binary search",
+      "namespace": "lib.numpy.math",
+      "node_type": "lib.numpy.math.SqrtArray",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "values",
+          "type": {
+            "type": "np_array"
+          },
+          "default": {
+            "type": "np_array",
+            "value": null,
+            "dtype": "<i8",
+            "shape": [
+              1
+            ]
+          },
+          "title": "Values",
+          "description": "Input array"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "np_array"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "values"
+      ]
+    },
+    {
+      "title": "Adaptive Contrast",
+      "description": "Applies localized contrast enhancement using adaptive techniques.\n    image, contrast, enhance\n\n    Use cases:\n    - Improve visibility in images with varying lighting conditions\n    - Prepare images for improved feature detection in computer vision",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.AdaptiveContrast",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the contrast for."
+        },
+        {
+          "name": "clip_limit",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Clip Limit",
+          "description": "Clip limit for adaptive contrast.",
+          "min": 0.0,
+          "max": 100.0
+        },
+        {
+          "name": "grid_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 8,
+          "title": "Grid Size",
+          "description": "Grid size for adaptive contrast.",
+          "min": 1.0,
+          "max": 64.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "clip_limit",
+        "grid_size"
+      ]
+    },
+    {
+      "title": "Auto Contrast",
+      "description": "Automatically adjusts image contrast for enhanced visual quality.\n    image, contrast, balance\n\n    Use cases:\n    - Enhance image clarity for better visual perception\n    - Pre-process images for computer vision tasks\n    - Improve photo aesthetics in editing workflows",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.AutoContrast",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the contrast for."
+        },
+        {
+          "name": "cutoff",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Cutoff",
+          "description": "Represents the percentage of pixels to ignore at both the darkest and lightest ends of the histogram. A cutoff value of 5 means ignoring the darkest 5% and the lightest 5% of pixels, enhancing overall contrast by stretching the remaining pixel values across the full brightness range.",
+          "min": 0.0,
+          "max": 255.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "cutoff"
+      ]
+    },
+    {
+      "title": "Brightness",
+      "description": "Adjusts overall image brightness to lighten or darken.\n    image, brightness, enhance\n\n    Use cases:\n    - Correct underexposed or overexposed photographs\n    - Enhance visibility of dark image regions\n    - Prepare images for consistent display across devices",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Brightness",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the brightness for."
+        },
+        {
+          "name": "factor",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "float"
+              },
+              {
+                "type": "int"
+              }
+            ]
+          },
+          "default": 1.0,
+          "title": "Factor",
+          "description": "Factor to adjust the brightness. 1.0 means no change."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "factor"
+      ]
+    },
+    {
+      "title": "Color",
+      "description": "Adjusts color intensity of an image.\n    image, color, enhance\n\n    Use cases:\n    - Enhance color vibrancy in photographs\n    - Correct color imbalances in digital images\n    - Prepare images for consistent brand color representation",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Color",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the brightness for."
+        },
+        {
+          "name": "factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Factor",
+          "description": "Factor to adjust the contrast. 1.0 means no change."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "factor"
+      ]
+    },
+    {
+      "title": "Contrast",
+      "description": "Adjusts image contrast to modify light-dark differences.\n    image, contrast, enhance\n\n    Use cases:\n    - Enhance visibility of details in low-contrast images\n    - Prepare images for visual analysis or recognition tasks\n    - Create dramatic effects in artistic photography",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Contrast",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the brightness for."
+        },
+        {
+          "name": "factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Factor",
+          "description": "Factor to adjust the contrast. 1.0 means no change."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "factor"
+      ]
+    },
+    {
+      "title": "Detail",
+      "description": "Enhances fine details in images.\n    image, detail, enhance\n\n    Use cases:\n    - Improve clarity of textural elements in photographs\n    - Enhance visibility of small features for analysis\n    - Prepare images for high-resolution display or printing",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Detail",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to detail."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Edge Enhance",
+      "description": "Enhances edge visibility by increasing contrast along boundaries.\n    image, edge, enhance\n\n    Use cases:\n    - Improve object boundary detection for computer vision\n    - Highlight structural elements in technical drawings\n    - Prepare images for feature extraction in image analysis",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.EdgeEnhance",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to edge enhance."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Equalize",
+      "description": "Enhances image contrast by equalizing intensity distribution.\n    image, contrast, histogram\n\n    Use cases:\n    - Improve visibility in poorly lit images\n    - Enhance details for image analysis tasks\n    - Normalize image data for machine learning",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Equalize",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to equalize."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Rank Filter",
+      "description": "Applies rank-based filtering to enhance or smooth image features.\n    image, filter, enhance\n\n    Use cases:\n    - Reduce noise while preserving edges in images\n    - Enhance specific image features based on local intensity\n    - Pre-process images for improved segmentation results",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.RankFilter",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to rank filter."
+        },
+        {
+          "name": "size",
+          "type": {
+            "type": "int"
+          },
+          "default": 3,
+          "title": "Size",
+          "description": "Rank filter size.",
+          "min": 1.0,
+          "max": 512.0
+        },
+        {
+          "name": "rank",
+          "type": {
+            "type": "int"
+          },
+          "default": 3,
+          "title": "Rank",
+          "description": "Rank filter rank.",
+          "min": 1.0,
+          "max": 512.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "size",
+        "rank"
+      ]
+    },
+    {
+      "title": "Sharpen",
+      "description": "Enhances image detail by intensifying local pixel contrast.\n    image, sharpen, clarity\n\n    Use cases:\n    - Improve clarity of photographs for print or display\n    - Refine texture details in product photography\n    - Enhance readability of text in document images",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Sharpen",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to sharpen."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Sharpness",
+      "description": "Adjusts image sharpness to enhance or reduce detail clarity.\n    image, clarity, sharpness\n\n    Use cases:\n    - Enhance photo details for improved visual appeal\n    - Refine images for object detection tasks\n    - Correct slightly blurred images",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.Sharpness",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the brightness for."
+        },
+        {
+          "name": "factor",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Factor",
+          "description": "Factor to adjust the contrast. 1.0 means no change."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "factor"
+      ]
+    },
+    {
+      "title": "Unsharp Mask",
+      "description": "Sharpens images using the unsharp mask technique.\n    image, sharpen, enhance\n\n    Use cases:\n    - Enhance edge definition in photographs\n    - Improve perceived sharpness of digital artwork\n    - Prepare images for high-quality printing or display",
+      "namespace": "lib.pillow.enhance",
+      "node_type": "lib.pillow.enhance.UnsharpMask",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to unsharp mask."
+        },
+        {
+          "name": "radius",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Radius",
+          "description": "Unsharp mask radius.",
+          "min": 0.0,
+          "max": 512.0
+        },
+        {
+          "name": "percent",
+          "type": {
+            "type": "int"
+          },
+          "default": 150,
+          "title": "Percent",
+          "description": "Unsharp mask percent.",
+          "min": 0.0,
+          "max": 1000.0
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": 3,
+          "title": "Threshold",
+          "description": "Unsharp mask threshold.",
+          "min": 0.0,
+          "max": 512.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "radius",
+        "percent",
+        "threshold"
+      ]
+    },
+    {
+      "title": "Blend",
+      "description": "Blend two images with adjustable alpha mixing.\n    blend, mix, fade, transition\n\n    Use cases:\n    - Create smooth transitions between images\n    - Adjust opacity of overlays\n    - Combine multiple exposures or effects",
+      "namespace": "lib.pillow.__init__",
+      "node_type": "lib.pillow.__init__.Blend",
+      "properties": [
+        {
+          "name": "image1",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "The first image to blend."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "The second image to blend."
+        },
+        {
+          "name": "alpha",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Alpha",
+          "description": "The mix ratio.",
+          "min": 0.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image1",
+        "image2",
+        "alpha"
+      ]
+    },
+    {
+      "title": "Composite",
+      "description": "Combine two images using a mask for advanced compositing.\n    composite, mask, blend, layering\n\n    Use cases:\n    - Create complex image compositions\n    - Apply selective blending or effects\n    - Implement advanced photo editing techniques",
+      "namespace": "lib.pillow.__init__",
+      "node_type": "lib.pillow.__init__.Composite",
+      "properties": [
+        {
+          "name": "image1",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "The first image to composite."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "The second image to composite."
+        },
+        {
+          "name": "mask",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Mask",
+          "description": "The mask to composite with."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image1",
+        "image2",
+        "mask"
+      ]
+    },
+    {
+      "title": "Blur",
+      "description": "Apply a Gaussian blur effect to an image.\n    image, filter, blur\n\n    - Soften images or reduce noise and detail\n    - Make focal areas stand out by blurring surroundings\n    - Protect privacy by blurring sensitive information",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Blur",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to blur."
+        },
+        {
+          "name": "radius",
+          "type": {
+            "type": "int"
+          },
+          "default": 2,
+          "title": "Radius",
+          "description": "Blur radius.",
+          "min": 0.0,
+          "max": 128.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "radius"
+      ]
+    },
+    {
+      "title": "Canny",
+      "description": "Apply Canny edge detection to an image.\n    image, filter, edges\n\n    - Highlight areas of rapid intensity change\n    - Outline object boundaries and structure\n    - Enhance inputs for object detection and image segmentation",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Canny",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to canny."
+        },
+        {
+          "name": "low_threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Low Threshold",
+          "description": "Low threshold.",
+          "min": 0.0,
+          "max": 255.0
+        },
+        {
+          "name": "high_threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": 200,
+          "title": "High Threshold",
+          "description": "High threshold.",
+          "min": 0.0,
+          "max": 255.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "low_threshold",
+        "high_threshold"
+      ]
+    },
+    {
+      "title": "Contour",
+      "description": "Apply a contour filter to highlight image edges.\n    image, filter, contour\n\n    - Extract key features from complex images\n    - Aid pattern recognition and object detection\n    - Create stylized contour sketch art effects",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Contour",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to contour."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Convert To Grayscale",
+      "description": "Convert an image to grayscale.\n    image, grayscale\n\n    - Simplify images for feature and edge detection\n    - Prepare images for shape-based machine learning\n    - Create vintage or monochrome aesthetic effects",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.ConvertToGrayscale",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to convert."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Emboss",
+      "description": "Apply an emboss filter for a 3D raised effect.\n    image, filter, emboss\n\n    - Add texture and depth to photos\n    - Create visually interesting graphics\n    - Incorporate unique effects in digital artwork",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Emboss",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to emboss."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Expand",
+      "description": "Add a border around an image to increase its size.\n    image, border, expand\n\n    - Make images stand out by adding a colored border\n    - Create framed photo effects\n    - Separate image content from surroundings",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Expand",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to expand."
+        },
+        {
+          "name": "border",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Border",
+          "description": "Border size.",
+          "min": 0.0,
+          "max": 512.0
+        },
+        {
+          "name": "fill",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Fill",
+          "description": "Fill color.",
+          "min": 0.0,
+          "max": 255.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "border",
+        "fill"
+      ]
+    },
+    {
+      "title": "Find Edges",
+      "description": "Detect and highlight edges in an image.\n    image, filter, edges\n\n    - Analyze structural patterns in images\n    - Aid object detection in computer vision\n    - Detect important features like corners and ridges",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.FindEdges",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to find edges."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Get Channel",
+      "description": "Extract a specific color channel from an image.\n    image, color, channel, isolate, extract\n\n    - Isolate color information for image analysis\n    - Manipulate specific color components in graphic design\n    - Enhance or reduce visibility of certain colors",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.GetChannel",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to get the channel from."
+        },
+        {
+          "name": "channel",
+          "type": {
+            "type": "enum",
+            "values": [
+              "R",
+              "G",
+              "B"
+            ],
+            "type_name": "nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum"
+          },
+          "default": "R",
+          "title": "Channel"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "channel"
+      ]
+    },
+    {
+      "title": "Invert",
+      "description": "Invert the colors of an image.\n    image, filter, invert\n\n    - Create negative versions of images for visual effects\n    - Analyze image data by bringing out hidden details\n    - Preprocess images for operations that work better on inverted colors",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Invert",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust the brightness for."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Posterize",
+      "description": "Reduce the number of colors in an image for a poster-like effect.\n    image, filter, posterize\n\n    - Create graphic art by simplifying image colors\n    - Apply artistic effects to photographs\n    - Generate visually compelling content for advertising",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Posterize",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to posterize."
+        },
+        {
+          "name": "bits",
+          "type": {
+            "type": "int"
+          },
+          "default": 4,
+          "title": "Bits",
+          "description": "Number of bits to posterize to.",
+          "min": 1.0,
+          "max": 8.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "bits"
+      ]
+    },
+    {
+      "title": "Smooth",
+      "description": "Apply smoothing to reduce image noise and detail.\n    image, filter, smooth\n\n    - Enhance visual aesthetics of images\n    - Improve object detection by reducing irrelevant details\n    - Aid facial recognition by simplifying images",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Smooth",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to smooth."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ]
+    },
+    {
+      "title": "Solarize",
+      "description": "Apply a solarize effect to partially invert image tones.\n    image, filter, solarize\n\n    - Create surreal artistic photo effects\n    - Enhance visual data by making certain elements more prominent\n    - Add a unique style to images for graphic design",
+      "namespace": "lib.pillow.filter",
+      "node_type": "lib.pillow.filter.Solarize",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to solarize."
+        },
+        {
+          "name": "threshold",
+          "type": {
+            "type": "int"
+          },
+          "default": 128,
+          "title": "Threshold",
+          "description": "Threshold for solarization.",
+          "min": 0.0,
+          "max": 255.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "threshold"
+      ]
+    },
+    {
+      "title": "Background",
+      "description": "The Background Node creates a blank background.\n    image, background, blank, base, layer\n    This node is mainly used for generating a base layer for image processing tasks. It produces a uniform image, having a user-specified width, height and color. The color is given in a hexadecimal format, defaulting to white if not specified.\n\n    #### Applications\n    - As a base layer for creating composite images.\n    - As a starting point for generating patterns or graphics.\n    - When blank backgrounds of specific colors are required for visualization tasks.",
+      "namespace": "lib.pillow.draw",
+      "node_type": "lib.pillow.draw.Background",
+      "properties": [
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Width",
+          "min": 1.0,
+          "max": 4096.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Height",
+          "min": 1.0,
+          "max": 4096.0
+        },
+        {
+          "name": "color",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#FFFFFF"
+          },
+          "title": "Color"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "width",
+        "height",
+        "color"
+      ]
+    },
+    {
+      "title": "Gaussian Noise",
+      "description": "This node creates and adds Gaussian noise to an image.\n    image, noise, gaussian, distortion, artifact\n\n    The Gaussian Noise Node is designed to simulate realistic distortions that can occur in a photographic image. It generates a noise-filled image using the Gaussian (normal) distribution. The noise level can be adjusted using the mean and standard deviation parameters.\n\n    #### Applications\n    - Simulating sensor noise in synthetic data.\n    - Testing image-processing algorithms' resilience to noise.\n    - Creating artistic effects in images.",
+      "namespace": "lib.pillow.draw",
+      "node_type": "lib.pillow.draw.GaussianNoise",
+      "properties": [
+        {
+          "name": "mean",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Mean"
+        },
+        {
+          "name": "stddev",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Stddev"
+        },
+        {
+          "name": "width",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Width",
+          "min": 1.0,
+          "max": 1024.0
+        },
+        {
+          "name": "height",
+          "type": {
+            "type": "int"
+          },
+          "default": 512,
+          "title": "Height",
+          "min": 1.0,
+          "max": 1024.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "mean",
+        "stddev",
+        "width",
+        "height"
+      ]
+    },
+    {
+      "title": "Render Text",
+      "description": "This node allows you to add text to images.\n    text, font, label, title, watermark, caption, image, overlay\n    This node takes text, font updates, coordinates (where to place the text), and an image to work with. A user can use the Render Text Node to add a label or title to an image, watermark an image, or place a caption directly on an image.\n\n    The Render Text Node offers customizable options, including the ability to choose the text's font, size, color, and alignment (left, center, or right). Text placement can also be defined, providing flexibility to place the text wherever you see fit.\n\n    #### Applications\n    - Labeling images in a image gallery or database.\n    - Watermarking images for copyright protection.\n    - Adding custom captions to photographs.\n    - Creating instructional images to guide the reader's view.",
+      "namespace": "lib.pillow.draw",
+      "node_type": "lib.pillow.draw.RenderText",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to render."
+        },
+        {
+          "name": "font",
+          "type": {
+            "type": "font"
+          },
+          "default": {
+            "type": "font",
+            "name": "DejaVuSans"
+          },
+          "title": "Font",
+          "description": "The font to use."
+        },
+        {
+          "name": "x",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "X",
+          "description": "The x coordinate.",
+          "min": 0.0
+        },
+        {
+          "name": "y",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Y",
+          "description": "The y coordinate.",
+          "min": 0.0
+        },
+        {
+          "name": "size",
+          "type": {
+            "type": "int"
+          },
+          "default": 12,
+          "title": "Size",
+          "description": "The font size.",
+          "min": 1.0,
+          "max": 512.0
+        },
+        {
+          "name": "color",
+          "type": {
+            "type": "color"
+          },
+          "default": {
+            "type": "color",
+            "value": "#000000"
+          },
+          "title": "Color",
+          "description": "The font color."
+        },
+        {
+          "name": "align",
+          "type": {
+            "type": "enum",
+            "values": [
+              "left",
+              "center",
+              "right"
+            ],
+            "type_name": "nodetool.nodes.lib.pillow.draw.RenderText.TextAlignment"
+          },
+          "default": "left",
+          "title": "Align"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to render on."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "font",
+        "x",
+        "y",
+        "size",
+        "color",
+        "align",
+        "image"
+      ]
+    },
+    {
       "title": "List Scheduled Events",
       "description": "Fetch scheduled events for a Calendly user.",
       "namespace": "calendly.events",
@@ -24971,11 +29901,6 @@
     },
     {
       "package_name": "nodetool-base",
-      "name": "Simple Chat.jpg",
-      "path": ""
-    },
-    {
-      "package_name": "nodetool-base",
       "name": "Chat with Docs.jpg",
       "path": ""
     },
@@ -24992,6 +29917,11 @@
     {
       "package_name": "nodetool-base",
       "name": "Summarize Paper.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Movie Posters.jpg",
       "path": ""
     },
     {
@@ -25135,6 +30065,14 @@
       ]
     },
     {
+      "id": "8c588b4cf3c711efb8fd000014c2afa2",
+      "name": "Fetch Papers",
+      "description": "This workflow automatically fetches and downloads research papers from the Awesome Transformers GitHub repository. It extracts paper links from the README.md file, filters for actual papers, and downloads them to a specified folder. Ideal for researchers and AI enthusiasts who want to stay updated with the latest transformer model papers.",
+      "tags": [
+        "automation"
+      ]
+    },
+    {
       "id": "78483f1ce4d611ef849100004ef921c4",
       "name": "Ingest PDF",
       "description": "",
@@ -25157,15 +30095,6 @@
       "tags": [
         "node",
         "advanced"
-      ]
-    },
-    {
-      "id": "f905ed2212f611f0b622000001bffa9d",
-      "name": "Simple Chat",
-      "description": "Basic chat interface with tools",
-      "tags": [
-        "chat",
-        "start"
       ]
     },
     {

@@ -20,6 +20,7 @@ dependencies = [
     "langchain-openai",
     "langchain-ollama",
     "langchain-anthropic",
+    "whisperlivekit>=0.1.0",
 ]
 
 [project.optional-dependencies]
@@ -52,4 +53,5 @@ artifacts = [
     "assets/nodetool-base/Image To Audio Story.jpg",
     "assets/nodetool-base/Data Generator.jpg",
     "assets/nodetool-base/Data Visualization Pipeline.jpg",
+    "assets/nodetool-base/Movie Posters.jpg",
 ]

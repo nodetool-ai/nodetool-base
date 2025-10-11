@@ -2,8 +2,11 @@ import io
 import os
 import datetime
 import base64
+import asyncio
+from enum import Enum
 from typing import AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
+from nodetool.config.logging_config import get_logger
 from nodetool.io.uri_utils import create_file_uri
 from nodetool.providers import get_provider
 from pydantic import Field
@@ -12,11 +15,14 @@ from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk, SaveUpdate
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
 from pydub import AudioSegment
 from nodetool.metadata.types import NPArray
+
+log = get_logger(__name__)
 
 
 class LoadAudioAssets(BaseNode):
@@ -957,3 +963,226 @@ class TextToSpeech(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "text", "voice", "speed"]
+
+
+class RealtimeWhisper(BaseNode):
+    """
+    Stream audio input to WhisperLive and emit real-time transcription.
+    realtime, whisper, transcription, streaming, audio-to-text, speech-to-text
+
+    Emits:
+      - `chunk` Chunk(content=..., done=False) for transcript deltas
+      - `chunk` Chunk(content="", done=True) to mark segment end
+      - `text` final aggregated transcript when input ends
+    """
+
+    class WhisperModel(str, Enum):
+        TINY = "tiny"
+        BASE = "base"
+        SMALL = "small"
+        MEDIUM = "medium"
+        LARGE = "large"
+        LARGE_V2 = "large-v2"
+        LARGE_V3 = "large-v3"
+
+    class Language(str, Enum):
+        AUTO = "auto"
+        ENGLISH = "en"
+        SPANISH = "es"
+        FRENCH = "fr"
+        GERMAN = "de"
+        ITALIAN = "it"
+        PORTUGUESE = "pt"
+        DUTCH = "nl"
+        RUSSIAN = "ru"
+        CHINESE = "zh"
+        JAPANESE = "ja"
+        KOREAN = "ko"
+        ARABIC = "ar"
+        HINDI = "hi"
+        TURKISH = "tr"
+        POLISH = "pl"
+        UKRAINIAN = "uk"
+        VIETNAMESE = "vi"
+
+    model: WhisperModel = Field(
+        default=WhisperModel.TINY,
+        description="Whisper model size - larger models are more accurate but slower",
+    )
+    language: Language = Field(
+        default=Language.ENGLISH,
+        description="Language code for transcription, or 'auto' for automatic detection",
+    )
+    chunk: Chunk = Field(
+        default=Chunk(),
+        description="The audio chunk to transcribe",
+    )
+    temperature: float = Field(
+        default=0.0,
+        ge=0.0,
+        le=1.0,
+        description="Sampling temperature for transcription",
+    )
+    initial_prompt: str = Field(
+        default="",
+        description="Optional initial prompt to guide transcription style",
+    )
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    class OutputType(TypedDict):
+        start: float
+        end: float
+        text: str
+        chunk: Chunk
+        speaker: int
+        detected_language: str
+        translation: str
+
+    async def run(
+        self,
+        context: ProcessingContext,
+        inputs: NodeInputs,
+        outputs: NodeOutputs,
+    ) -> None:
+        """Process streaming audio input and emit real-time transcription.
+
+        Args:
+            context: Processing context for the workflow
+            inputs: Streaming audio chunks
+            outputs: Output emitter for transcription chunks and final text
+        """
+        from whisperlivekit import TranscriptionEngine, AudioProcessor
+
+        log.info(f"Starting RealtimeWhisper with model: {self.model.value}")
+
+        # Initialize transcription engine
+        transcription_engine = TranscriptionEngine(
+            model=self.model.value,
+            language=self.language.value,
+            temperature=self.temperature,
+            initial_prompt=self.initial_prompt if self.initial_prompt else None,
+            min_chunk_size=0.04,
+            pcm_input=True,
+        )
+        log.debug("TranscriptionEngine initialized")
+
+        # Create audio processor
+        audio_processor = AudioProcessor(transcription_engine=transcription_engine)
+        log.debug("AudioProcessor created")
+
+        # Create tasks for results processing
+        results_generator = await audio_processor.create_tasks()
+        log.debug("Results generator created")
+
+        async def producer_loop():
+            """Read audio chunks from input and feed to processor."""
+            log.debug("Producer loop started")
+            try:
+                async for handle, item in inputs.any():
+                    if handle != "chunk":
+                        log.error(f"Unknown handle: {handle}")
+                        raise ValueError(f"Unknown handle: {handle}")
+
+                    assert isinstance(item, Chunk)
+
+                    # Only process audio chunks
+                    if item.content_type == "audio" and item.content:
+                        # Decode base64 audio if needed
+                        if isinstance(item.content, str):
+                            audio_bytes = base64.b64decode(item.content)
+                        else:
+                            audio_bytes = item.content
+
+                        log.debug(f"Processing audio chunk: {len(audio_bytes)} bytes")
+                        await audio_processor.process_audio(audio_bytes)
+
+                log.debug("Producer loop finished - input stream ended")
+            except Exception as e:
+                log.error(f"Error in producer loop: {e}", exc_info=True)
+                raise
+            finally:
+                # Signal end of audio input
+                await audio_processor.cleanup()
+
+        asyncio.create_task(producer_loop())
+
+        """Consume transcription results and emit chunks."""
+        log.debug("Consume transcription results and emit chunks")
+        aggregated_text = ""
+
+        async for response in results_generator:
+            if response.error:
+                raise RuntimeError(f"Transcription error: {response.error}")
+
+            if not response.lines:
+                continue
+
+            # Process each line in the response, but skip the last one (it may still be updating)
+            # Only emit lines that are truly finalized (not the current in-progress line)
+            lines_to_process = response.lines[:-1] if len(response.lines) > 1 else []
+
+            for line in lines_to_process:
+                # Skip dummy lines
+                if getattr(line, 'is_dummy', False):
+                    continue
+
+                # Skip placeholder/empty lines
+                if line.speaker == -2 or not line.text or line.text.strip() == "":
+                    continue
+
+                line_text = line.text
+
+                # Find overlap: check if line_text is already contained in aggregated_text
+                if line_text in aggregated_text:
+                    log.debug(f"Skipping duplicate text: {line_text[:50]}...")
+                    continue
+
+                # Find if there's an overlap at the end of aggregated_text with the start of line_text
+                new_text = line_text
+                max_overlap = min(len(aggregated_text), len(line_text))
+
+                for overlap_len in range(max_overlap, 0, -1):
+                    if aggregated_text.endswith(line_text[:overlap_len]):
+                        # Found overlap, only emit the new part
+                        new_text = line_text[overlap_len:]
+                        break
+
+                if not new_text.strip():
+                    continue
+
+                # Add to aggregated text
+                aggregated_text += new_text
+
+                log.debug(f"Emitting new text: start={line.start}, text={new_text[:50]}...")
+
+                await outputs.emit("chunk", Chunk(content=new_text, done=False))
+                await outputs.emit("start", line.start)
+                await outputs.emit("end", line.end)
+                await outputs.emit("speaker", line.speaker)
+                await outputs.emit("detected_language", line.detected_language or "en")
+                await outputs.emit("translation", line.translation or "")
+
+
+        log.debug("Consumer loop finished - results generator ended")
+
+
+        # Emit final aggregated text
+        final_text = " ".join(aggregated_text).strip()
+        if final_text:
+            log.info(f"Emitting final transcript: {len(final_text)} characters")
+            await outputs.emit("text", final_text)
