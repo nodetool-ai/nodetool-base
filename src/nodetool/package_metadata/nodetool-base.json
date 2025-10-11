@@ -3361,6 +3361,16 @@
           "description": "The messages for the LLM"
         },
         {
+          "name": "thread_id",
+          "type": {
+            "type": "str",
+            "optional": true
+          },
+          "default": null,
+          "title": "Thread ID",
+          "description": "Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread."
+        },
+        {
           "name": "max_tokens",
           "type": {
             "type": "int"
@@ -4488,104 +4498,6 @@
             "type": "bool"
           },
           "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
-      "title": "Chat Input",
-      "description": "Accepts a list of chat messages as input for workflows, typically representing a conversation history.  The input is structured as a sequence of 'Message' objects. The node processes this list to extract elements like the latest message content (text, image, audio, video, document), the history, and any associated tool calls.\n    input, parameter, chat, message, conversation, prompt, history\n\n    Use cases:\n    - Provide user prompts or queries to a language model.\n    - Supply conversational context (history) for multi-turn interactions.\n    - Capture complex inputs that include text alongside other media types or tool requests.\n    - Initiate or continue a chat-based workflow.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.ChatInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "message"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Value",
-          "description": "The chat message to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "message"
-              }
-            ]
-          },
-          "name": "history"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "image"
-          },
-          "name": "image"
-        },
-        {
-          "type": {
-            "type": "audio"
-          },
-          "name": "audio"
-        },
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "video"
-        },
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "document"
-        },
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tool_name"
-              }
-            ]
-          },
-          "name": "tools"
         }
       ],
       "basic_fields": [
@@ -24300,6 +24212,219 @@
         "pdf",
         "start_page",
         "end_page"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Format UUID",
+      "description": "Format a UUID string in different representations.\n    uuid, format, convert, hex, urn, identifier\n\n    Use cases:\n    - Convert UUID to different formats\n    - Generate URN representations\n    - Format UUIDs for specific use cases",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.FormatUUID",
+      "properties": [
+        {
+          "name": "uuid_string",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Uuid String",
+          "description": "UUID string to format"
+        },
+        {
+          "name": "format",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "hex",
+              "urn",
+              "int",
+              "bytes_hex"
+            ],
+            "type_name": "nodetool.nodes.lib.uuid.UUIDFormat"
+          },
+          "default": "standard",
+          "title": "Format",
+          "description": "Output format (standard, hex, urn, int, bytes_hex)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "uuid_string",
+        "format"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Generate UUID 1",
+      "description": "Generate a time-based UUID (version 1).\n    uuid, time, identifier, unique, guid, timestamp\n\n    Use cases:\n    - Create sortable unique identifiers\n    - Generate time-ordered IDs\n    - Track creation timestamps in IDs",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.GenerateUUID1",
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Generate UUID 3",
+      "description": "Generate a name-based UUID using MD5 (version 3).\n    uuid, name, identifier, unique, guid, md5, deterministic\n\n    Use cases:\n    - Create deterministic IDs from names\n    - Generate consistent identifiers for the same input\n    - Map names to unique identifiers",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.GenerateUUID3",
+      "properties": [
+        {
+          "name": "namespace",
+          "type": {
+            "type": "str"
+          },
+          "default": "dns",
+          "title": "Namespace",
+          "description": "Namespace (dns, url, oid, x500, or a UUID string)"
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "Name to generate UUID from"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "namespace",
+        "name"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Generate UUID 4",
+      "description": "Generate a random UUID (version 4).\n    uuid, random, identifier, unique, guid\n\n    Use cases:\n    - Create unique identifiers for records\n    - Generate session IDs\n    - Produce random unique keys",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.GenerateUUID4",
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Generate UUID 5",
+      "description": "Generate a name-based UUID using SHA-1 (version 5).\n    uuid, name, identifier, unique, guid, sha1, deterministic\n\n    Use cases:\n    - Create deterministic IDs from names (preferred over UUID3)\n    - Generate consistent identifiers for the same input\n    - Map names to unique identifiers with better collision resistance",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.GenerateUUID5",
+      "properties": [
+        {
+          "name": "namespace",
+          "type": {
+            "type": "str"
+          },
+          "default": "dns",
+          "title": "Namespace",
+          "description": "Namespace (dns, url, oid, x500, or a UUID string)"
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "Name to generate UUID from"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "namespace",
+        "name"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Is Valid UUID",
+      "description": "Check if a string is a valid UUID.\n    uuid, validate, check, verify, identifier\n\n    Use cases:\n    - Validate user input\n    - Filter valid UUIDs from a dataset\n    - Conditional workflow based on UUID validity",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.IsValidUUID",
+      "properties": [
+        {
+          "name": "uuid_string",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Uuid String",
+          "description": "String to check"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "uuid_string"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Parse UUID",
+      "description": "Parse and validate a UUID string.\n    uuid, parse, validate, check, identifier\n\n    Use cases:\n    - Validate UUID format\n    - Normalize UUID strings\n    - Extract UUID version information",
+      "namespace": "lib.uuid",
+      "node_type": "lib.uuid.ParseUUID",
+      "properties": [
+        {
+          "name": "uuid_string",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Uuid String",
+          "description": "UUID string to parse"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "uuid_string"
       ],
       "expose_as_tool": true
     },

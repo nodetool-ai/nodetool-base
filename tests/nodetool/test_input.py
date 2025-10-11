@@ -13,7 +13,6 @@ from nodetool.nodes.nodetool.input import (
     BooleanInput,
     IntegerInput,
     StringInput,
-    ChatInput,
     ImageInput,
     VideoInput,
     AudioInput,
@@ -66,25 +65,6 @@ def context():
             str,
         ),
         (
-            ChatInput(
-                name="chat_input",
-                value=[
-                    Message(
-                        role="user",
-                        content=[MessageTextContent(text="hello")],
-                    )
-                ],
-                description="test",
-            ),
-            [
-                Message(
-                    role="user",
-                    content=[MessageTextContent(text="hello")],
-                )
-            ],
-            dict,
-        ),
-        (
             ImageInput(
                 name="image_input",
                 value=ImageRef(uri="test.jpg"),
@@ -116,14 +96,6 @@ def context():
 async def test_input_nodes(
     context: ProcessingContext, node, input_value, expected_type
 ):
-    if isinstance(node, ChatInput):
-        result = await node.process(context)
-        assert isinstance(result, dict)
-        assert result["history"] == input_value[:-1]
-        assert "text" in result
-        assert "tools" in result
-        return
-
     try:
         result = await node.process(context)
         assert result == input_value
@@ -141,7 +113,7 @@ async def test_input_nodes(
         BooleanInput,
         IntegerInput,
         StringInput,
-        ChatInput,
+        ,
         ImageInput,
         VideoInput,
         AudioInput,

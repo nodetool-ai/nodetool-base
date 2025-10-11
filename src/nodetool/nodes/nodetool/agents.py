@@ -825,6 +825,11 @@ class Agent(BaseNode):
     history: list[Message] = Field(
         title="Messages", default=[], description="The messages for the LLM"
     )
+    thread_id: str | None = Field(
+        title="Thread ID",
+        default=None,
+        description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
+    )
     max_tokens: int = Field(title="Max Tokens", default=8192, ge=1, le=100000)
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
@@ -942,13 +947,140 @@ class Agent(BaseNode):
     def is_streaming_output(cls) -> bool:
         return True
 
-    def _prepare_messages(self) -> list[Message]:
-        """Build the message history for a single model interaction.
+    async def _ensure_thread(self, context: ProcessingContext) -> str:
+        """
+        Ensures a thread exists for the conversation.
+        Creates a new thread if thread_id is None.
+
+        Args:
+            context: The processing context
 
         Returns:
-            list[Message]: Ordered list of messages including system, prior history,
-                and the current user content (text/image/audio).
+            str: The thread ID (existing or newly created)
         """
+        if self.thread_id:
+            return self.thread_id
+
+        # Import Thread model from nodetool-core
+        from nodetool.models.thread import Thread as ThreadModel
+
+        try:
+            # Create a new thread for this conversation
+            thread = await ThreadModel.create(
+                user_id=context.user_id,
+                title="Agent Conversation",
+            )
+            # Store the thread_id for future use
+            self.thread_id = thread.id
+            log.info(f"Created new thread {self.thread_id} for user {context.user_id}")
+            return self.thread_id
+        except Exception as e:
+            log.error(f"Failed to create thread: {e}")
+            # Return empty string to signal no persistence
+            return ""
+
+    async def _load_thread_messages(
+        self, context: ProcessingContext
+    ) -> list[Message]:
+        """
+        Loads messages from the thread.
+
+        Args:
+            context: The processing context
+
+        Returns:
+            list[Message]: List of messages from the thread history
+        """
+        if not self.thread_id:
+            return []
+
+        try:
+            result = await context.get_messages(
+                thread_id=self.thread_id, limit=1000, reverse=False
+            )
+            messages = result.get("messages", [])
+
+            # Convert database messages to Message objects
+            loaded_messages = []
+            for msg in messages:
+                # Skip system messages as they're handled separately
+                if msg.get("role") == "system":
+                    continue
+
+                # Build message content
+                content = msg.get("content")
+                if isinstance(content, str):
+                    content = [MessageTextContent(text=content)]
+                elif isinstance(content, list):
+                    # Content is already a list of MessageContent objects
+                    pass
+
+                loaded_messages.append(
+                    Message(
+                        role=msg.get("role"),
+                        content=content,
+                        tool_calls=msg.get("tool_calls"),
+                        name=msg.get("name"),
+                        tool_call_id=msg.get("tool_call_id"),
+                    )
+                )
+
+            log.info(
+                f"Loaded {len(loaded_messages)} messages from thread {self.thread_id}"
+            )
+            return loaded_messages
+        except Exception as e:
+            log.error(f"Failed to load messages from thread {self.thread_id}: {e}")
+            return []
+
+    async def _save_message_to_thread(
+        self, context: ProcessingContext, message: Message
+    ) -> None:
+        """
+        Saves a message to the thread.
+
+        Args:
+            context: The processing context
+            message: The message to save
+        """
+        if not self.thread_id:
+            return
+
+        try:
+            from nodetool.types.chat import MessageCreateRequest
+
+            # Create message request
+            req = MessageCreateRequest(
+                thread_id=self.thread_id,
+                role=message.role,
+                content=message.content,
+                tool_calls=message.tool_calls,
+                name=message.name,
+                tool_call_id=message.tool_call_id,
+            )
+
+            await context.create_message(req)
+            log.debug(
+                f"Saved {message.role} message to thread {self.thread_id}"
+            )
+        except Exception as e:
+            log.error(
+                f"Failed to save message to thread {self.thread_id}: {e}"
+            )
+
+    async def _prepare_messages(self, context: ProcessingContext) -> list[Message]:
+        """Build the message history for a single model interaction.
+
+        Args:
+            context: The processing context
+
+        Returns:
+            list[Message]: Ordered list of messages including system, thread history,
+                prior history, and the current user content (text/image/audio).
+        """
+        # Load messages from thread if thread_id is set
+        thread_messages = await self._load_thread_messages(context)
+
         content = []
         content.append(MessageTextContent(text=self.prompt))
         if self.image.is_set():
@@ -959,12 +1091,24 @@ class Agent(BaseNode):
         messages: list[Message] = [
             Message(role="system", content=self.system),
         ]
+
+        # Add thread messages first (chronological order)
+        for message in thread_messages:
+            messages.append(message)
+
+        # Add any additional history from the history field
+        # (these are typically in-memory messages not yet persisted)
         for message in self.history:
             messages.append(message)
+
+        # Add current user message
         messages.append(Message(role="user", content=content))
+
         log.debug(
-            "Agent initial messages prepared: num_messages=%d has_image=%s has_audio=%s prompt_len=%d",
+            "Agent messages prepared: num_messages=%d thread_messages=%d history_messages=%d has_image=%s has_audio=%s prompt_len=%d",
             len(messages),
+            len(thread_messages),
+            len(self.history),
             self.image.is_set(),
             self.audio.is_set(),
             len(self.prompt or ""),
@@ -984,6 +1128,11 @@ class Agent(BaseNode):
             messages (list[Message]): Message history to seed the model.
             tools (list[Tool]): Resolved tools available for tool-calling.
         """
+        # Save the initial user message to thread if thread_id is set
+        # The last message in the list should be the user message
+        if self.thread_id and len(messages) > 0 and messages[-1].role == "user":
+            await self._save_message_to_thread(context, messages[-1])
+
         tools_called = False
         first_time = True
         iteration = 0
@@ -1035,6 +1184,8 @@ class Agent(BaseNode):
                         )
 
                     if chunk.done:
+                        # Save the assistant message to thread
+                        await self._save_message_to_thread(context, assistant_message)
                         yield {
                             "chunk": None,
                             "text": message_text_content.text,
@@ -1133,14 +1284,15 @@ class Agent(BaseNode):
                         context.post_message(
                             EdgeUpdate(edge_id=e.id or "", status="drained")
                         )
-                    messages.append(
-                        Message(
-                            role="tool",
-                            tool_call_id=tool_call_id,
-                            name=tool_name,
-                            content=tool_result_json,
-                        )
+                    tool_message = Message(
+                        role="tool",
+                        tool_call_id=tool_call_id,
+                        name=tool_name,
+                        content=tool_result_json,
                     )
+                    messages.append(tool_message)
+                    # Save tool message to thread
+                    await self._save_message_to_thread(context, tool_message)
             log.debug(
                 "Agent loop end (per-item): iteration=%d will_continue=%s assistant_has_tool_calls=%s assistant_text_len=%d total_messages=%d",
                 iteration,
@@ -1162,7 +1314,7 @@ class Agent(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        messages = self._prepare_messages()
+        messages = await self._prepare_messages(context)
         tools = self._resolve_tools(context)
         tool_names = [t.name for t in tools if t is not None]
 

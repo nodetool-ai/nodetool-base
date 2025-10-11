@@ -709,6 +709,260 @@ class TestAgent:
             assert fake_provider.last_model == mock_model.id
 
 
+    @pytest.mark.asyncio
+    async def test_agent_thread_persistence_basic(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test basic thread creation and message persistence"""
+        from unittest.mock import AsyncMock
+
+        node = Agent(
+            prompt="Hello, how are you?",
+            thread_id="test_thread_123",
+            model=mock_model,
+        )
+
+        fake_provider = FakeProvider(
+            text_response="I'm doing well!", should_stream=False
+        )
+
+        # Mock the context methods for thread operations
+        context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
+        context.create_message = AsyncMock()
+
+        with patch(
+            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        ):
+            runner = WorkflowRunner(job_id="test")
+            runner.context = context
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            async def mock_any():
+                yield "prompt", "Hello, how are you?"
+
+            inbox = MagicMock()
+            inbox.iter_any = mock_any
+
+            await node.run(context, NodeInputs(inbox), outputs)
+
+            # Verify messages were saved to thread
+            # Should have been called at least twice (user + assistant messages)
+            assert context.create_message.call_count >= 2
+
+    @pytest.mark.asyncio
+    async def test_agent_thread_load_history(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test loading conversation history from existing thread"""
+        from unittest.mock import AsyncMock
+
+        # Mock previous conversation in thread
+        previous_messages = [
+            {
+                "role": "user",
+                "content": "What's 2+2?",
+                "tool_calls": None,
+                "name": None,
+                "tool_call_id": None,
+            },
+            {
+                "role": "assistant",
+                "content": "2+2 equals 4.",
+                "tool_calls": None,
+                "name": None,
+                "tool_call_id": None,
+            },
+        ]
+
+        node = Agent(
+            prompt="Now what's 3+3?",
+            thread_id="test_thread_123",
+            model=mock_model,
+        )
+
+        fake_provider = FakeProvider(text_response="3+3 equals 6.", should_stream=False)
+
+        context.get_messages = AsyncMock(
+            return_value={"messages": previous_messages, "next": None}
+        )
+        context.create_message = AsyncMock()
+
+        with patch(
+            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        ):
+            runner = WorkflowRunner(job_id="test")
+            runner.context = context
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            async def mock_any():
+                yield "prompt", "Now what's 3+3?"
+
+            inbox = MagicMock()
+            inbox.iter_any = mock_any
+
+            await node.run(context, NodeInputs(inbox), outputs)
+
+            # Verify get_messages was called to load history
+            context.get_messages.assert_called_once()
+
+            # Verify the response
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "3+3 equals 6."
+
+    @pytest.mark.asyncio
+    async def test_agent_thread_auto_create(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test automatic thread creation when thread_id is provided"""
+        from unittest.mock import AsyncMock
+
+        node = Agent(
+            prompt="Test prompt",
+            thread_id=None,  # No thread ID provided
+            model=mock_model,
+        )
+
+        fake_provider = FakeProvider(
+            text_response="Test response", should_stream=False
+        )
+
+        # Mock thread operations - no thread exists yet
+        context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
+        context.create_message = AsyncMock()
+
+        with patch(
+            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        ):
+            runner = WorkflowRunner(job_id="test")
+            runner.context = context
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            async def mock_any():
+                yield "prompt", "Test prompt"
+
+            inbox = MagicMock()
+            inbox.iter_any = mock_any
+
+            await node.run(context, NodeInputs(inbox), outputs)
+
+            # Without a thread_id, messages should not be persisted
+            # (thread_id would need to be explicitly set)
+            # The agent should still work without persistence
+
+    @pytest.mark.asyncio
+    async def test_agent_thread_with_tool_calls(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test that tool calls are persisted to thread"""
+        from unittest.mock import AsyncMock
+        from nodetool.metadata.types import ToolCall
+
+        node = Agent(
+            prompt="Calculate something",
+            thread_id="test_thread_123",
+            model=mock_model,
+        )
+
+        # Simulate a tool call response
+        fake_tool_call = ToolCall(
+            id="call_123",
+            name="calculator",
+            args={"operation": "add", "a": 2, "b": 3},
+        )
+
+        async def tool_response_fn(messages, model, **kwargs):
+            # Return tool call first
+            yield fake_tool_call
+            # Then return final text
+            from nodetool.providers import Chunk
+
+            yield Chunk(content="The result is 5", done=True)
+
+        class ToolFakeProvider(FakeProvider):
+            async def generate_messages(
+                self,
+                messages,
+                model,
+                tools=(),
+                max_tokens: int = 8192,
+                context_window: int = 4096,
+                response_format=None,
+                **kwargs,
+            ):
+                async for item in tool_response_fn(messages, model, **kwargs):
+                    yield item
+
+        fake_provider = ToolFakeProvider()
+
+        context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
+        context.create_message = AsyncMock()
+
+        with patch(
+            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        ):
+            runner = WorkflowRunner(job_id="test")
+            runner.context = context
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            async def mock_any():
+                yield "prompt", "Calculate something"
+
+            inbox = MagicMock()
+            inbox.iter_any = mock_any
+
+            await node.run(context, NodeInputs(inbox), outputs)
+
+            # Verify messages were saved (user, assistant with tool_calls, tool result)
+            assert context.create_message.call_count >= 2
+
+    @pytest.mark.asyncio
+    async def test_agent_thread_error_handling(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test graceful handling of thread operation errors"""
+        from unittest.mock import AsyncMock
+
+        node = Agent(
+            prompt="Test prompt",
+            thread_id="test_thread_123",
+            model=mock_model,
+        )
+
+        fake_provider = FakeProvider(
+            text_response="Test response", should_stream=False
+        )
+
+        # Mock thread operations that fail
+        context.get_messages = AsyncMock(
+            side_effect=Exception("Database connection failed")
+        )
+        context.create_message = AsyncMock(
+            side_effect=Exception("Database connection failed")
+        )
+
+        with patch(
+            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        ):
+            runner = WorkflowRunner(job_id="test")
+            runner.context = context
+            outputs = NodeOutputs(runner, node, context, capture_only=True)
+
+            async def mock_any():
+                yield "prompt", "Test prompt"
+
+            inbox = MagicMock()
+            inbox.iter_any = mock_any
+
+            # Should not raise exception - errors are handled gracefully
+            await node.run(context, NodeInputs(inbox), outputs)
+
+            # Verify response was still generated despite thread errors
+            collected = outputs.collected()
+            assert "text" in collected
+            assert collected["text"] == "Test response"
+
+
 class TestAgentFields:
     """Test field properties and validation for all agent nodes"""
 
