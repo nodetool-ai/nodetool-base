@@ -162,3 +162,46 @@ class SVGGenerator(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.SVGGenerator"
+
+
+class StructuredOutputGenerator(GraphNode):
+    """
+    Generate structured JSON objects from instructions using LLM providers.
+    data-generation, structured-data, json, synthesis
+
+    Specialized for creating structured information:
+    - Generating JSON that follows dynamic schemas
+    - Fabricating records from requirements and guidance
+    - Simulating sample data for downstream workflows
+    - Producing consistent structured outputs for testing
+    """
+
+    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="\nYou are a structured data generator focused on JSON outputs.\n\nGoal\n- Produce a high-quality JSON object that matches <JSON_SCHEMA> using the guidance in <INSTRUCTIONS> and any supplemental <CONTEXT>.\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nGeneration rules\n- Invent plausible, internally consistent values when not explicitly provided.\n- Honor all constraints from <JSON_SCHEMA> (types, enums, ranges, formats).\n- Prefer ISO 8601 for dates/times when applicable.\n- Ensure numbers respect reasonable magnitudes and relationships described in <INSTRUCTIONS>.\n- Avoid referencing external sources; rely solely on the provided guidance.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n",
+        description="The system prompt guiding JSON generation.",
+    )
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="Model to use for structured generation.",
+    )
+    instructions: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Detailed instructions for the structured output."
+    )
+    context: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Optional context to ground the generation."
+    )
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description="The maximum number of tokens to generate."
+    )
+    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=4096, description=None
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.generators.StructuredOutputGenerator"

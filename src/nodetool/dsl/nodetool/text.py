@@ -13,6 +13,31 @@ import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
 
+class AutomaticSpeechRecognition(GraphNode):
+    """
+    Automatic speech recognition node.
+    audio, speech, recognition
+    """
+
+    model: types.ASRModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ASRModel(
+            type="asr_model",
+            provider=nodetool.metadata.types.Provider.FalAI,
+            id="openai/whisper-large-v3",
+            name="",
+        ),
+        description=None,
+    )
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to transcribe",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.text.AutomaticSpeechRecognition"
+
+
 class Chunk(GraphNode):
     """
     Splits text into chunks of specified word length.
@@ -682,7 +707,7 @@ class StartsWith(GraphNode):
 
 class Template(GraphNode):
     """
-    Uses Jinja2 templating to format strings with variables and filters.
+    Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.
     text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter
 
     Use cases:

@@ -587,6 +587,22 @@ class SaveDataframe(GraphNode):
         return "nodetool.data.SaveDataframe"
 
 
+class Schema(GraphNode):
+    """
+    Define a schema for a dataframe.
+    schema, dataframe, create
+    """
+
+    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.RecordType(type="record_type", columns=[]),
+        description="The columns to use in the dataframe.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.data.Schema"
+
+
 class SelectColumn(GraphNode):
     """
     Select specific columns from dataframe.

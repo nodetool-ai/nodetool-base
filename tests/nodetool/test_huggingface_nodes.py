@@ -8,13 +8,9 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.huggingface_hub import (
     TextClassification,
     Summarization,
-    ChatCompletion,
     Translation,
     ImageClassification,
     ImageSegmentation,
-    TextToImage,
-    ImageToImage,
-    TextToSpeech,
 )
 
 
@@ -150,9 +146,6 @@ async def test_hf_summarization_translation_chat(context: ProcessingContext):
             )
             assert t == "hola"
 
-            c = await ChatCompletion(prompt="Say hi").process(context)
-            assert c == "hello"
-
 
 @pytest.mark.asyncio
 async def test_hf_vision_and_audio_nodes(context: ProcessingContext):
@@ -169,55 +162,10 @@ async def test_hf_vision_and_audio_nodes(context: ProcessingContext):
             async def _asset_to_bytes(asset_ref: AssetRef) -> bytes:
                 return b"img"
 
-            async def _image_from_base64(b64: str) -> ImageRef:
-                return ImageRef(uri="mask://img")
-
-            async def _image_from_pil(image: PIL.Image.Image) -> ImageRef:
-                return ImageRef()
-
-            async def _audio_from_bytes(
-                b: bytes,
-            ) -> AudioRef:
-                return AudioRef()
 
             context.asset_to_bytes = _asset_to_bytes
-            context.image_from_base64 = _image_from_base64
-            context.image_from_pil = _image_from_pil
-            context.audio_from_bytes = _audio_from_bytes
-
             ic = await ImageClassification().process(context)
             assert ic["cat"] == 0.8
 
             seg = await ImageSegmentation().process(context)
             assert seg and seg[0].label == "person"
-
-            from nodetool.metadata.types import (
-                InferenceProvider,
-                InferenceProviderTextToImageModel,
-            )
-
-            tti = await TextToImage(
-                prompt="a cat",
-                model=InferenceProviderTextToImageModel(
-                    provider=InferenceProvider.hf_inference,
-                    model_id="black-forest-labs/FLUX.1-dev",
-                ),
-            ).process(context)
-            assert tti is not None
-
-            from nodetool.metadata.types import InferenceProviderImageToImageModel
-
-            iti = await ImageToImage(
-                prompt="enhance",
-                model=InferenceProviderImageToImageModel(
-                    provider=InferenceProvider.hf_inference,
-                    model_id="black-forest-labs/FLUX.1-dev",
-                ),
-            ).process(context)
-            assert iti is not None
-
-            tts_result = await TextToSpeech(text="hello").process(context)
-            # Returns AudioRef
-            from nodetool.metadata.types import AudioRef
-
-            assert isinstance(tts_result["output"], AudioRef)

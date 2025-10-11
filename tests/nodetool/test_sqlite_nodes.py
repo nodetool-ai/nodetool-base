@@ -1,7 +1,7 @@
 import pytest
 from pathlib import Path
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ColumnDef
+from nodetool.metadata.types import ColumnDef, RecordType
 from nodetool.nodes.lib.sqlite import (
     CreateTable,
     Insert,
@@ -24,11 +24,11 @@ async def test_create_table(context: ProcessingContext):
     node = CreateTable(
         database_name="test.db",
         table_name="flashcards",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="question", data_type="string"),
             ColumnDef(name="answer", data_type="string"),
-        ],
+        ]),
     )
     result = await node.process(context)
     assert "created successfully" in result
@@ -42,11 +42,11 @@ async def test_insert_and_query(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="flashcards",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="question", data_type="string"),
             ColumnDef(name="answer", data_type="string"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -79,11 +79,11 @@ async def test_query_with_where(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="items",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="name", data_type="string"),
             ColumnDef(name="value", data_type="int"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -114,10 +114,10 @@ async def test_query_with_order_and_limit(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="scores",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="score", data_type="int"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -150,10 +150,10 @@ async def test_update(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="users",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="name", data_type="string"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -192,10 +192,10 @@ async def test_delete(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="temp",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="value", data_type="string"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -245,10 +245,10 @@ async def test_json_serialization(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="json_test",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="data", data_type="object"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -276,10 +276,10 @@ async def test_execute_sql_select(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="numbers",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="value", data_type="int"),
-        ],
+        ]),
     )
     await create.process(context)
 
@@ -311,10 +311,10 @@ async def test_execute_sql_insert(context: ProcessingContext):
     create = CreateTable(
         database_name="test.db",
         table_name="test_table",
-        columns=[
+        columns=RecordType(columns=[
             ColumnDef(name="id", data_type="int"),
             ColumnDef(name="name", data_type="string"),
-        ],
+        ]),
     )
     await create.process(context)
 

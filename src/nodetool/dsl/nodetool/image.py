@@ -111,6 +111,70 @@ class GetMetadata(GraphNode):
         return "nodetool.image.GetMetadata"
 
 
+class ImageToImage(GraphNode):
+    """
+    Transform images using text prompts with any supported image provider.
+    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+    image, transformation, AI, image-to-image, i2i
+
+    Use cases:
+    - Modify existing images with text instructions
+    - Style transfer and artistic modifications
+    - Image enhancement and refinement
+    - Creative image edits guided by prompts
+    """
+
+    model: types.ImageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageModel(
+            type="image_model",
+            provider=nodetool.metadata.types.Provider.HuggingFaceFalAI,
+            id="fal-ai/flux/dev",
+            name="FLUX.1 Dev",
+        ),
+        description="The image generation model to use",
+    )
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="Input image to transform",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="A photorealistic version of the input image",
+        description="Text prompt describing the desired transformation",
+    )
+    negative_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text prompt describing what to avoid"
+    )
+    strength: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=0.8,
+        description="How much to transform the input image (0.0 = no change, 1.0 = maximum change)",
+    )
+    guidance_scale: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=7.5, description="Classifier-free guidance scale"
+    )
+    num_inference_steps: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="Number of denoising steps"
+    )
+    target_width: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="Target width of the output image"
+    )
+    target_height: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="Target height of the output image"
+    )
+    seed: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+    scheduler: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Scheduler to use (provider-specific)"
+    )
+    safety_check: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True, description="Enable safety checker"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.image.ImageToImage"
+
+
 class LoadImageAssets(GraphNode):
     """
     Load images from an asset folder.
@@ -316,3 +380,62 @@ class Scale(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.image.Scale"
+
+
+class TextToImage(GraphNode):
+    """
+    Generate images from text prompts using any supported image provider.
+    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+    image, generation, AI, text-to-image, t2i
+
+    Use cases:
+    - Create images from text descriptions
+    - Switch between providers without changing workflows
+    - Generate images with different AI models
+    - Cost-optimize by choosing different providers
+    """
+
+    model: types.ImageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageModel(
+            type="image_model",
+            provider=nodetool.metadata.types.Provider.HuggingFaceFalAI,
+            id="fal-ai/flux/schnell",
+            name="FLUX.1 Schnell",
+        ),
+        description="The image generation model to use",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="A cat holding a sign that says hello world",
+        description="Text prompt describing the desired image",
+    )
+    negative_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text prompt describing what to avoid in the image"
+    )
+    width: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="Width of the generated image"
+    )
+    height: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=512, description="Height of the generated image"
+    )
+    guidance_scale: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=7.5,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="Number of denoising steps"
+    )
+    seed: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+    scheduler: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="",
+        description="Scheduler to use (provider-specific, leave empty for default)",
+    )
+    safety_check: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=True,
+        description="Enable safety checker to filter inappropriate content",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.image.TextToImage"

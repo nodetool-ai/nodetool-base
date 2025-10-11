@@ -36,7 +36,7 @@ class HuggingFaceInferenceNode(BaseNode):
         """
         Get the HuggingFace inference client.
         """
-        if provider == InferenceProvider.none:
+        if provider is None:
             raise ValueError("Please select a provider")
         env = Environment.get_environment()
         api_key = env.get("HF_TOKEN")

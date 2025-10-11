@@ -259,7 +259,7 @@ class Template(BaseNode):
 """,
     )
     values: Any = Field(
-        default_factory=dict,
+        default={},
         description="""
         The values to replace in the string.
         - If a string, it will be used as the format string.

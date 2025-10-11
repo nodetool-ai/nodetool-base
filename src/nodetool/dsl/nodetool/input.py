@@ -356,6 +356,33 @@ class ImageInput(GraphNode):
         return "nodetool.input.ImageInput"
 
 
+class ImageModelInput(GraphNode):
+    """
+    Accepts an image generation model as a parameter for workflows.
+    input, parameter, model, image, generation
+    """
+
+    name: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.ImageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageModel(
+            type="image_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="The image generation model to use as input.",
+    )
+    description: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.input.ImageModelInput"
+
+
 import nodetool.metadata.types
 
 
@@ -370,7 +397,7 @@ class InferenceProviderInput(GraphNode):
         default="", description="The parameter name for the workflow."
     )
     value: nodetool.metadata.types.InferenceProvider = Field(
-        default=nodetool.metadata.types.InferenceProvider.none,
+        default=nodetool.metadata.types.InferenceProvider.hf_inference,
         description="The inference provider to use as input.",
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(

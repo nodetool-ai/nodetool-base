@@ -66,6 +66,27 @@ class AudioMixer(GraphNode):
         return "nodetool.audio.AudioMixer"
 
 
+class AudioToNumpy(GraphNode):
+    """
+    Convert audio to numpy array for processing.
+    audio, numpy, convert, array
+
+    Use cases:
+    - Prepare audio for custom processing
+    - Convert audio for machine learning models
+    - Extract raw audio data for analysis
+    """
+
+    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to convert to numpy.",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.AudioToNumpy"
+
+
 class Concat(GraphNode):
     """
     Concatenates two audio files together.
@@ -233,6 +254,33 @@ class LoadAudioFile(GraphNode):
         return "nodetool.audio.LoadAudioFile"
 
 
+class LoadAudioFolder(GraphNode):
+    """
+    Load all audio files from a folder, optionally including subfolders.
+    audio, load, folder, files
+
+    Use cases:
+    - Batch import audio for processing
+    - Build datasets from a directory tree
+    - Iterate over audio collections
+    """
+
+    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Folder to scan for audio files"
+    )
+    include_subdirectories: bool | GraphNode | tuple[GraphNode, str] = Field(
+        default=False, description="Include audio in subfolders"
+    )
+    extensions: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[".mp3", ".wav", ".flac", ".ogg", ".m4a", ".aac"],
+        description="Audio file extensions to include",
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.LoadAudioFolder"
+
+
 class MonoToStereo(GraphNode):
     """
     Converts a mono audio signal to stereo.
@@ -271,6 +319,33 @@ class Normalize(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.audio.Normalize"
+
+
+class NumpyToAudio(GraphNode):
+    """
+    Convert numpy array to audio.
+    audio, numpy, convert
+
+    Use cases:
+    - Convert processed audio data back to audio format
+    - Create audio from machine learning model outputs
+    - Generate audio from synthesized waveforms
+    """
+
+    array: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="The numpy array to convert to audio.",
+    )
+    sample_rate: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=44100, description="Sample rate in Hz."
+    )
+    channels: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=1, description="Number of audio channels (1 or 2)."
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.NumpyToAudio"
 
 
 class OverlayAudio(GraphNode):
@@ -487,6 +562,44 @@ class StereoToMono(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.audio.StereoToMono"
+
+
+class TextToSpeech(GraphNode):
+    """
+    Generate speech audio from text using any supported TTS provider.
+    Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
+    audio, generation, AI, text-to-speech, tts, voice
+
+    Use cases:
+    - Create voiceovers for videos and presentations
+    - Generate natural-sounding narration for content
+    - Build voice assistants and chatbots
+    - Convert written content to audio format
+    - Create accessible audio versions of text
+    """
+
+    model: types.TTSModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.TTSModel(
+            type="tts_model",
+            provider=nodetool.metadata.types.Provider.OpenAI,
+            id="tts-1",
+            name="TTS 1",
+            voices=["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
+            selected_voice="",
+        ),
+        description="The text-to-speech model to use",
+    )
+    text: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="Hello! This is a text-to-speech demonstration.",
+        description="Text to convert to speech",
+    )
+    speed: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=1.0, description="Speech speed multiplier (0.25 to 4.0)"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.audio.TextToSpeech"
 
 
 class Trim(GraphNode):

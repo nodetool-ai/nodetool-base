@@ -331,6 +331,76 @@ class FrameToVideo(GraphNode):
         return "nodetool.video.FrameToVideo"
 
 
+import nodetool.nodes.nodetool.video
+import nodetool.nodes.nodetool.video
+
+
+class ImageToVideo(GraphNode):
+    """
+    Generate videos from input images using any supported video provider.
+    Animates static images into dynamic video content with AI-powered motion.
+    video, image-to-video, i2v, animation, AI, generation, sora, veo
+
+    Use cases:
+    - Animate static images into video sequences
+    - Create dynamic content from still photographs
+    - Generate video variations from reference images
+    - Produce animated visual effects from static artwork
+    - Convert product photos into engaging video ads
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.ImageToVideo.Resolution
+    )
+    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        description="The input image to animate into a video",
+    )
+    model: types.VideoModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoModel(
+            type="video_model",
+            provider=nodetool.metadata.types.Provider.Gemini,
+            id="veo-3.0-fast-generate-001",
+            name="Veo 3.0 Fast",
+        ),
+        description="The video generation model to use",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Optional text prompt to guide the video animation"
+    )
+    negative_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text prompt describing what to avoid in the video"
+    )
+    aspect_ratio: nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio = Field(
+        default=nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio.RATIO_16_9,
+        description="Aspect ratio for the video",
+    )
+    resolution: nodetool.nodes.nodetool.video.ImageToVideo.Resolution = Field(
+        default=nodetool.nodes.nodetool.video.ImageToVideo.Resolution.HD,
+        description="Video resolution",
+    )
+    num_frames: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=60, description="Number of frames to generate (provider-specific)"
+    )
+    guidance_scale: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=7.5,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="Number of denoising steps"
+    )
+    seed: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.video.ImageToVideo"
+
+
 class LoadVideoAssets(GraphNode):
     """Load video files from an asset folder.
 
@@ -661,6 +731,72 @@ class Stabilize(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Stabilize"
+
+
+import nodetool.nodes.nodetool.video
+import nodetool.nodes.nodetool.video
+
+
+class TextToVideo(GraphNode):
+    """
+    Generate videos from text prompts using any supported video provider.
+    Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
+    video, generation, AI, text-to-video, t2v
+
+    Use cases:
+    - Create videos from text descriptions
+    - Generate video content from prompts
+    - Produce short video clips with AI
+    - Switch between providers without changing workflows
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.TextToVideo.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.TextToVideo.Resolution
+    )
+    model: types.VideoModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.VideoModel(
+            type="video_model",
+            provider=nodetool.metadata.types.Provider.Gemini,
+            id="veo-3.0-fast-generate-001",
+            name="Veo 3.0 Fast",
+        ),
+        description="The video generation model to use",
+    )
+    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="A cat playing with a ball of yarn",
+        description="Text prompt describing the desired video",
+    )
+    negative_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="Text prompt describing what to avoid in the video"
+    )
+    aspect_ratio: nodetool.nodes.nodetool.video.TextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.nodetool.video.TextToVideo.AspectRatio.RATIO_16_9,
+        description="Aspect ratio for the video",
+    )
+    resolution: nodetool.nodes.nodetool.video.TextToVideo.Resolution = Field(
+        default=nodetool.nodes.nodetool.video.TextToVideo.Resolution.HD,
+        description="Video resolution",
+    )
+    num_frames: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=60, description="Number of frames to generate (provider-specific)"
+    )
+    guidance_scale: float | GraphNode | tuple[GraphNode, str] = Field(
+        default=7.5,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=30, description="Number of denoising steps"
+    )
+    seed: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.video.TextToVideo"
 
 
 import nodetool.nodes.nodetool.video
