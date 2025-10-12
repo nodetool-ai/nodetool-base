@@ -1,12 +1,12 @@
 {
-  "id": "93102bfa8c8a11f0bcd000004fc538b3",
+  "id": "bcbefdbea78311f09c5e000014a97b82",
   "access": "public",
-  "created_at": "2025-09-08T10:48:43.526199",
-  "updated_at": "2025-09-08T10:48:43.526211",
+  "created_at": "2025-10-12T17:55:18.861423",
+  "updated_at": "2025-10-12T17:55:18.861432",
   "name": "Summarize RSS",
   "tool_name": null,
   "description": "",
-  "tags": null,
+  "tags": [],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
@@ -19,9 +19,10 @@
           "url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 266,
-            "y": 272
+            "y": 403
           },
           "zIndex": 0,
           "width": 200,
@@ -39,9 +40,10 @@
           "separator": "---"
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 496,
-            "y": 328
+            "y": 460
           },
           "zIndex": 0,
           "width": 200,
@@ -59,17 +61,18 @@
           "system_prompt": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
           "model": {
             "type": "language_model",
-            "id": "gemma3:1b",
-            "provider": "ollama",
-            "name": "gemma3:1b"
+            "id": "openai/gpt-oss-120b",
+            "provider": "huggingface_cerebras",
+            "name": "gpt-oss-120b"
           },
-          "max_tokens": 200,
+          "max_tokens": 1000,
           "context_window": 4096
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 726,
-            "y": 275
+            "y": 329
           },
           "zIndex": 0,
           "width": 200,
@@ -85,34 +88,14 @@
         "type": "nodetool.workflows.base_node.Preview",
         "data": {},
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 986,
-            "y": 102
+            "x": 956,
+            "y": 162
           },
           "zIndex": 0,
-          "width": 701,
-          "height": 553,
-          "selectable": true
-        },
-        "dynamic_properties": {},
-        "dynamic_outputs": {},
-        "sync_mode": "on_any"
-      },
-      {
-        "id": "832bb048-c88c-442b-967a-3b49c552fa6b",
-        "parent_id": null,
-        "type": "nodetool.output.StringOutput",
-        "data": {
-          "name": "summary",
-          "description": ""
-        },
-        "ui_properties": {
-          "position": {
-            "x": 986,
-            "y": 705
-          },
-          "zIndex": 0,
-          "width": 200,
+          "width": 737,
+          "height": 758,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -150,16 +133,6 @@
         "ui_properties": {
           "className": "str"
         }
-      },
-      {
-        "id": "c6bc18bc-0ab3-48e1-a8b0-378a55072e20",
-        "source": "0659612a-1a3b-471b-b397-6ec97e33882f",
-        "sourceHandle": "text",
-        "target": "832bb048-c88c-442b-967a-3b49c552fa6b",
-        "targetHandle": "value",
-        "ui_properties": {
-          "className": "str"
-        }
       }
     ]
   },
@@ -168,5 +141,7 @@
   "settings": null,
   "package_name": "nodetool-base",
   "path": null,
-  "run_mode": null
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
 }

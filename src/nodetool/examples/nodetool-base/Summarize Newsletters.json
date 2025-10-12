@@ -1,9 +1,10 @@
 {
-  "id": "4292f4a879bd11f09d970000262bfb92",
+  "id": "39664b20a78311f0bfc6000069947dd1",
   "access": "public",
-  "created_at": "2025-08-15T14:07:01.342437",
-  "updated_at": "2025-08-15T14:07:01.342458",
+  "created_at": "2025-10-12T17:52:48.735474",
+  "updated_at": "2025-10-12T17:52:48.735488",
   "name": "Summarize Newsletters",
+  "tool_name": null,
   "description": "",
   "tags": [
     "email",
@@ -29,15 +30,18 @@
           "max_results": 1
         },
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 115,
-            "y": 89
+            "y": 119
           },
           "zIndex": 0,
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "a83c2cc7-a355-4bde-a257-002a33a8d285",
@@ -45,60 +49,18 @@
         "type": "lib.mail.EmailFields",
         "data": {},
         "ui_properties": {
+          "selected": false,
           "position": {
             "x": 345,
-            "y": 189
+            "y": 216
           },
           "zIndex": 0,
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "0540a845-9222-4461-bbe0-b0aae3959e85",
-        "parent_id": null,
-        "type": "nodetool.agents.SummarizerStreaming",
-        "data": {
-          "system_prompt": "\n        You are an expert summarizer. Your task is to create clear and concise markdown summary. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n    \n        ",
-          "model": {
-            "type": "language_model",
-            "id": "gemma3:1b",
-            "provider": "ollama",
-            "name": "gemma3:1b"
-          },
-          "max_tokens": 3698,
-          "context_window": 32000
-        },
-        "ui_properties": {
-          "position": {
-            "x": 673,
-            "y": 519
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "a219dd8f-b0a0-470a-8202-0568253fd0a9",
-        "parent_id": null,
-        "type": "nodetool.workflows.base_node.Preview",
-        "data": {
-          "name": "str_text"
-        },
-        "ui_properties": {
-          "position": {
-            "x": 971,
-            "y": 141
-          },
-          "zIndex": 0,
-          "width": 769,
-          "height": 1079,
-          "selectable": true
-        },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "d36e64ab-fd19-4083-9e3c-8415f8dbb67a",
@@ -238,8 +200,9 @@
           }
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 310,
+            "x": 375,
             "y": -286
           },
           "zIndex": 0,
@@ -247,26 +210,70 @@
           "height": 215,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
-        "id": "f2141ce0-420a-4a85-8afa-36179c1804e4",
+        "id": "4e9b5ce8-6f78-4b34-af86-bf320a3ef153",
         "parent_id": null,
-        "type": "nodetool.workflows.base_node.Preview",
+        "type": "nodetool.agents.Summarizer",
         "data": {
-          "name": "str_body"
+          "system_prompt": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
+          "model": {
+            "type": "language_model",
+            "id": "openai/gpt-oss-120b",
+            "provider": "huggingface_cerebras",
+            "name": "gpt-oss-120b"
+          },
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "max_tokens": 1000,
+          "context_window": 4096
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 605,
+            "x": 575,
+            "y": 114
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "a9a8769d-96e6-41d4-b6cd-d4cc682b92da",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {},
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 805,
             "y": 50
           },
           "zIndex": 0,
-          "width": 336,
-          "height": 419,
+          "width": 706,
+          "height": 804,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       }
     ],
     "edges": [
@@ -281,33 +288,23 @@
         }
       },
       {
-        "id": "491286ab-e7f2-425d-ba42-ece434bb9403",
+        "id": "a074ca9f-49ee-4ac6-b36f-cfc590d8951a",
         "source": "a83c2cc7-a355-4bde-a257-002a33a8d285",
         "sourceHandle": "body",
-        "target": "0540a845-9222-4461-bbe0-b0aae3959e85",
+        "target": "4e9b5ce8-6f78-4b34-af86-bf320a3ef153",
         "targetHandle": "text",
         "ui_properties": {
           "className": "str"
         }
       },
       {
-        "id": "668f180b-2bdc-4d86-8290-f7a7c17e291f",
-        "source": "0540a845-9222-4461-bbe0-b0aae3959e85",
-        "sourceHandle": "text",
-        "target": "a219dd8f-b0a0-470a-8202-0568253fd0a9",
+        "id": "12fc41ab-b147-4cbf-b434-f66ae5b53d9c",
+        "source": "4e9b5ce8-6f78-4b34-af86-bf320a3ef153",
+        "sourceHandle": "chunk",
+        "target": "a9a8769d-96e6-41d4-b6cd-d4cc682b92da",
         "targetHandle": "value",
         "ui_properties": {
-          "className": "str"
-        }
-      },
-      {
-        "id": "2c7f67f6-1cd1-40f0-923b-d786de30c4b5",
-        "source": "a83c2cc7-a355-4bde-a257-002a33a8d285",
-        "sourceHandle": "body",
-        "target": "f2141ce0-420a-4a85-8afa-36179c1804e4",
-        "targetHandle": "value",
-        "ui_properties": {
-          "className": "str"
+          "className": "chunk"
         }
       }
     ]
@@ -317,5 +314,7 @@
   "settings": null,
   "package_name": "nodetool-base",
   "path": null,
-  "run_mode": null
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
 }

@@ -1,9 +1,10 @@
 {
-  "id": "64bac2e8340f11f097f000007d22ea5d",
+  "id": "af5a2636a78211f09af400006952c72c",
   "access": "public",
-  "created_at": "2025-05-18T19:46:29.112992",
-  "updated_at": "2025-05-18T19:46:29.113015",
+  "created_at": "2025-10-12T17:50:18.547689",
+  "updated_at": "2025-10-12T17:50:18.547712",
   "name": "Chat with Docs",
+  "tool_name": null,
   "description": "An intelligent document retrieval and question-answering system that leverages vector search and local LLMs to provide accurate, context-aware responses based on your document collection.",
   "tags": [
     "chat",
@@ -14,61 +15,6 @@
   "graph": {
     "nodes": [
       {
-        "id": "5",
-        "parent_id": null,
-        "type": "nodetool.input.ChatInput",
-        "data": {
-          "label": "Question",
-          "name": "question",
-          "value": {
-            "type": "message",
-            "id": null,
-            "auth_token": null,
-            "workflow_id": null,
-            "graph": null,
-            "thread_id": null,
-            "user_id": null,
-            "tool_call_id": null,
-            "role": "",
-            "name": "",
-            "content": null,
-            "tool_calls": null,
-            "created_at": null
-          }
-        },
-        "ui_properties": {
-          "position": {
-            "x": 50,
-            "y": 215
-          },
-          "zIndex": 0,
-          "width": 197,
-          "title": "Capture user query or question for document search",
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "6",
-        "parent_id": null,
-        "type": "nodetool.output.StringOutput",
-        "data": {
-          "label": "Answer",
-          "name": "answer"
-        },
-        "ui_properties": {
-          "position": {
-            "x": 1104,
-            "y": 235
-          },
-          "zIndex": 0,
-          "width": 395,
-          "title": "Return comprehensive answer to user's query",
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
         "id": "9",
         "parent_id": null,
         "type": "nodetool.text.FormatText",
@@ -76,9 +22,10 @@
           "template": "You are an expert assistant answering a user question based on retrieved documents. \nYour response must be accurate, well-structured, and grounded in the provided sources.\n\n### User Question:\n{{ text }}\n\n### Relevant Information from Retrieved Documents\nThese snippets can be incomplete or out of context. Ignore information that is not relevant.\n{% for doc in documents %}\n=====================\n**Document {{ loop.index }}\n** {{ doc }}\n{% endfor %}\n\n### **Instructions for Answering:**\n1. Analyze the user question carefully.\n2. Extract key insights from the retrieved documents.\n3. If multiple documents provide different perspectives, synthesize the most relevant and accurate information.\n4. If the documents lack sufficient information, state what is missing instead of guessing.\n5. Present the answer in a clear, concise, and structured manner."
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 490,
-            "y": 50
+            "x": 523,
+            "y": 312
           },
           "zIndex": 0,
           "width": 336,
@@ -88,313 +35,174 @@
         "dynamic_properties": {
           "documents": "",
           "text": ""
-        }
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
-        "id": "11",
+        "id": "8e9b8157-9d68-408d-9b6f-df8e282a2bce",
         "parent_id": null,
-        "type": "chroma.query.HybridSearch",
+        "type": "vector.chroma.HybridSearch",
         "data": {
           "collection": {
             "type": "collection",
-            "name": "papers"
+            "name": "test"
           },
           "n_results": 5,
           "k_constant": 60,
           "min_keyword_length": 3
         },
         "ui_properties": {
+          "selected": false,
           "position": {
-            "x": 307,
-            "y": 61
-          },
-          "zIndex": 0,
-          "width": 153,
-          "title": "Perform hybrid vector and keyword search for relevant document chunks",
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "12",
-        "parent_id": null,
-        "type": "nodetool.workflows.base_node.Comment",
-        "data": {
-          "comment": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "Retrieval-Augmented Generation (RAG) for Document Q&A",
-                  "bold": "B",
-                  "size": "+"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": ""
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "This workflow implements a RAG (Retrieval-Augmented Generation) system that enables natural language conversations with your document collection. It combines semantic search with  LLM inference to provide accurate, contextually relevant answers."
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "Here\u2019s how it works:"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "\t1.\t"
-                },
-                {
-                  "text": "User Input: ",
-                  "bold": "B"
-                },
-                {
-                  "text": "The user submits a question or text query."
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "\t2.\t"
-                },
-                {
-                  "text": "Hybrid Search:",
-                  "bold": true
-                },
-                {
-                  "text": " Relevant documents are retrieved from a vector database to provide context for the query."
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "\t3.\t"
-                },
-                {
-                  "text": "Text Formatting: ",
-                  "bold": true
-                },
-                {
-                  "text": "The retrieved documents and user question are formatted into a structured prompt for the LLM."
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "\t4.\t"
-                },
-                {
-                  "text": "LLM: ",
-                  "bold": true
-                },
-                {
-                  "text": "A language model processes the prompt, synthesizing information to generate an accurate and well-structured response."
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "\t5.\t"
-                },
-                {
-                  "text": "Output",
-                  "bold": true
-                },
-                {
-                  "text": ": The response is displayed back to the user in a clear format."
-                }
-              ]
-            }
-          ]
-        },
-        "ui_properties": {
-          "position": {
-            "x": 30,
-            "y": -236
-          },
-          "zIndex": 0,
-          "width": 930,
-          "height": 212,
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "15c9f129-9cd7-410e-8098-a825cc6c7f7d",
-        "parent_id": null,
-        "type": "nodetool.workflows.base_node.Comment",
-        "data": {
-          "comment_color": "#fdf6e3",
-          "comment": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "Use the Chat Window in the bottom right Corner!",
-                  "size": "+",
-                  "bold": true
-                }
-              ]
-            }
-          ]
-        },
-        "ui_properties": {
-          "position": {
-            "x": 886,
-            "y": 625
-          },
-          "zIndex": 0,
-          "width": 527,
-          "height": 64,
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "892ccab0-398c-4370-8d23-5a3f36746a91",
-        "parent_id": null,
-        "type": "nodetool.workflows.base_node.Comment",
-        "data": {
-          "comment": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "- Open the collections menu in the sidebar",
-                  "bold": true,
-                  "size": "+"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "bold": true,
-                  "text": "- Create a collection",
-                  "size": "+"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "bold": true,
-                  "text": "- Drop pdfs onto the collection",
-                  "size": "+"
-                }
-              ]
-            }
-          ]
-        },
-        "ui_properties": {
-          "position": {
-            "x": -184,
-            "y": -6
-          },
-          "zIndex": 0,
-          "width": 464,
-          "height": 119,
-          "selectable": true
-        },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "92df5e6c-f50c-48be-bc67-fb339c96146f",
-        "parent_id": null,
-        "type": "nodetool.agents.AgentStreaming",
-        "data": {
-          "model": {
-            "type": "language_model",
-            "id": "gpt-oss:20b",
-            "provider": "ollama"
-          },
-          "system": "You are a friendly assistant.",
-          "image": {},
-          "audio": {},
-          "tools": [],
-          "messages": [],
-          "max_tokens": 4096,
-          "context_window": 4096
-        },
-        "ui_properties": {
-          "position": {
-            "x": 854,
-            "y": 189
+            "x": 263,
+            "y": 409
           },
           "zIndex": 0,
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2cff53ca-8086-4c9b-ba7a-ff7c30384a00",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "Query",
+          "value": "what are transformers?",
+          "description": ""
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 3,
+            "y": 333
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "d83380c7-0d53-4cee-a52e-3189ace2f34c",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "id": "openai/gpt-oss-120b",
+            "provider": "huggingface_cerebras",
+            "name": "gpt-oss-120b"
+          },
+          "system": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 8192,
+          "context_window": 4096
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 889,
+            "y": 225
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "e67772ca-cbb6-4135-8067-ef92a28c65ab",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {},
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 1119,
+            "y": 26
+          },
+          "zIndex": 0,
+          "width": 886,
+          "height": 1003,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       }
     ],
     "edges": [
       {
-        "id": "770948",
-        "source": "5",
-        "sourceHandle": "text",
-        "target": "9",
+        "id": "9a72293d-814a-4c98-8b71-c82bdf13084a",
+        "source": "2cff53ca-8086-4c9b-ba7a-ff7c30384a00",
+        "sourceHandle": "output",
+        "target": "8e9b8157-9d68-408d-9b6f-df8e282a2bce",
         "targetHandle": "text",
-        "ui_properties": null
+        "ui_properties": {
+          "className": "str"
+        }
       },
       {
-        "id": "770953",
-        "source": "5",
-        "sourceHandle": "text",
-        "target": "11",
-        "targetHandle": "text",
-        "ui_properties": null
-      },
-      {
-        "id": "770954",
-        "source": "11",
+        "id": "d7db69b5-6c99-440a-83d5-73b0f544ee2a",
+        "source": "8e9b8157-9d68-408d-9b6f-df8e282a2bce",
         "sourceHandle": "documents",
         "target": "9",
         "targetHandle": "documents",
-        "ui_properties": null
+        "ui_properties": {
+          "className": "list"
+        }
       },
       {
-        "id": "58a01e16-feac-4931-83cd-37d57ca51a10",
+        "id": "06e576c0-6678-415c-9d9a-3c44c56bc7c0",
+        "source": "2cff53ca-8086-4c9b-ba7a-ff7c30384a00",
+        "sourceHandle": "output",
+        "target": "9",
+        "targetHandle": "text",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "1aef9b27-35ca-47a6-98e4-b4df29030407",
         "source": "9",
         "sourceHandle": "output",
-        "target": "92df5e6c-f50c-48be-bc67-fb339c96146f",
+        "target": "d83380c7-0d53-4cee-a52e-3189ace2f34c",
         "targetHandle": "prompt",
-        "ui_properties": null
+        "ui_properties": {
+          "className": "str"
+        }
       },
       {
-        "id": "3a6e393b-4db8-466d-92e4-1afc07571987",
-        "source": "92df5e6c-f50c-48be-bc67-fb339c96146f",
+        "id": "fd2ac76d-9ca5-4e1e-b13c-442bbbdda28d",
+        "source": "d83380c7-0d53-4cee-a52e-3189ace2f34c",
         "sourceHandle": "text",
-        "target": "6",
+        "target": "e67772ca-cbb6-4135-8067-ef92a28c65ab",
         "targetHandle": "value",
-        "ui_properties": null
+        "ui_properties": {
+          "className": "str"
+        }
       }
     ]
   },
@@ -402,5 +210,8 @@
   "output_schema": null,
   "settings": null,
   "package_name": "nodetool-base",
-  "path": null
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
 }
