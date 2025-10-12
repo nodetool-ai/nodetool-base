@@ -1,14 +1,13 @@
 {
-  "id": "flashcard_generator_001",
+  "id": "flashcard_generator",
   "access": "public",
   "created_at": "2025-10-12T14:51:06.701387",
   "updated_at": "2025-10-12T14:51:06.701402",
-  "name": "AI Flashcard Generator with SQLite",
+  "name": "Flashcard Generator",
   "tool_name": null,
-  "description": "Generate study flashcards using AI and store them persistently in a SQLite database. Enter any topic and get instant flashcards that are saved for future review.",
+  "description": "Generate study flashcards using AI and store them persistently in a database. Enter any topic and get instant flashcards that are saved for future review.",
   "tags": [
     "education",
-    "sqlite",
     "database",
     "ai",
     "flashcards",

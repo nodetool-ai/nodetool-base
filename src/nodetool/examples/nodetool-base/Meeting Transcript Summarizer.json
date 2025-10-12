@@ -1,11 +1,15 @@
 {
-  "id": "c16e5fd559704602b082f7d58ee3a90f",
+  "id": "3527dcf2a7a811f09339000078c92dc5",
   "access": "public",
-  "created_at": "2025-05-20T00:00:00",
-  "updated_at": "2025-05-20T00:00:00",
+  "created_at": "2025-10-12T22:16:23.220272",
+  "updated_at": "2025-10-12T22:16:23.220287",
   "name": "Meeting Transcript Summarizer",
+  "tool_name": null,
   "description": "Automatically transcribe a meeting recording and generate concise notes.",
-  "tags": ["audio", "llm"],
+  "tags": [
+    "audio",
+    "llm"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
@@ -21,32 +25,19 @@
           }
         },
         "ui_properties": {
-          "position": {"x": 50, "y": 120},
+          "selected": false,
+          "position": {
+            "x": 50,
+            "y": 120
+          },
           "zIndex": 0,
           "width": 200,
           "title": "Meeting Audio",
           "selectable": true
         },
-        "dynamic_properties": {}
-      },
-      {
-        "id": "2",
-        "parent_id": null,
-        "type": "openai.audio.Transcribe",
-        "data": {
-          "model": "whisper-1",
-          "language": "auto_detect",
-          "timestamps": false,
-          "prompt": "",
-          "temperature": 0
-        },
-        "ui_properties": {
-          "position": {"x": 280, "y": 120},
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "3",
@@ -61,12 +52,18 @@
           "max_words": 150
         },
         "ui_properties": {
-          "position": {"x": 520, "y": 120},
+          "selected": false,
+          "position": {
+            "x": 520,
+            "y": 120
+          },
           "zIndex": 0,
           "width": 200,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "4",
@@ -77,12 +74,18 @@
           "name": "summary"
         },
         "ui_properties": {
-          "position": {"x": 760, "y": 140},
+          "selected": false,
+          "position": {
+            "x": 760,
+            "y": 140
+          },
           "zIndex": 0,
           "width": 240,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       },
       {
         "id": "5",
@@ -90,34 +93,178 @@
         "type": "nodetool.workflows.base_node.Comment",
         "data": {
           "comment": [
-            {"type": "paragraph", "children": [{"text": "\ud83d\udcc4 "}, {"text": "Meeting Transcript Summarizer", "bold": true, "size": "+"}]},
-            {"type": "paragraph", "children": [{"text": ""}]},
-            {"type": "paragraph", "children": [{"text": "This workflow converts a meeting recording into concise notes."}]},
-            {"type": "paragraph", "children": [{"text": "\t1.\t"}, {"text": "Audio Input: ", "bold": true}, {"text": "Load a meeting recording."}]},
-            {"type": "paragraph", "children": [{"text": "\t2.\t"}, {"text": "Transcription: ", "bold": true}, {"text": "Speech is transcribed with OpenAI Whisper."}]},
-            {"type": "paragraph", "children": [{"text": "\t3.\t"}, {"text": "Summarization: ", "bold": true}, {"text": "The transcript is condensed into key points."}]},
-            {"type": "paragraph", "children": [{"text": "\t4.\t"}, {"text": "Output: ", "bold": true}, {"text": "A text node displays the final summary."}]}
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\ud83d\udcc4 "
+                },
+                {
+                  "text": "Meeting Transcript Summarizer",
+                  "bold": true,
+                  "size": "+"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": ""
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "This workflow converts a meeting recording into concise notes."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\t1.\t"
+                },
+                {
+                  "text": "Audio Input: ",
+                  "bold": true
+                },
+                {
+                  "text": "Load a meeting recording."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\t2.\t"
+                },
+                {
+                  "text": "Transcription: ",
+                  "bold": true
+                },
+                {
+                  "text": "Speech is transcribed with OpenAI Whisper."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\t3.\t"
+                },
+                {
+                  "text": "Summarization: ",
+                  "bold": true
+                },
+                {
+                  "text": "The transcript is condensed into key points."
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "\t4.\t"
+                },
+                {
+                  "text": "Output: ",
+                  "bold": true
+                },
+                {
+                  "text": "A text node displays the final summary."
+                }
+              ]
+            }
           ]
         },
         "ui_properties": {
-          "position": {"x": 30, "y": -210},
+          "selected": false,
+          "position": {
+            "x": 30,
+            "y": -210
+          },
           "zIndex": 0,
           "width": 700,
           "height": 180,
           "selectable": true
         },
-        "dynamic_properties": {}
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "a2e09377-c0e4-4f7e-8cf0-dbbc5a8ff94c",
+        "parent_id": null,
+        "type": "nodetool.text.AutomaticSpeechRecognition",
+        "data": {
+          "model": {
+            "type": "asr_model",
+            "provider": "fal_ai",
+            "id": "openai/whisper-large-v3",
+            "name": ""
+          }
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 287,
+            "y": 113
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
       }
     ],
     "edges": [
-      {"id": "e1", "source": "1", "sourceHandle": "output", "target": "2", "targetHandle": "audio", "ui_properties": {"className": "audio"}},
-      {"id": "e2", "source": "2", "sourceHandle": "text", "target": "3", "targetHandle": "text", "ui_properties": {"className": "str"}},
-      {"id": "e3", "source": "3", "sourceHandle": "output", "target": "4", "targetHandle": "value", "ui_properties": {"className": "str"}}
+      {
+        "id": "7923dc6b-36e8-4cb9-add7-6636c42626be",
+        "source": "a2e09377-c0e4-4f7e-8cf0-dbbc5a8ff94c",
+        "sourceHandle": "text",
+        "target": "3",
+        "targetHandle": "text",
+        "ui_properties": {
+          "className": "str"
+        }
+      },
+      {
+        "id": "ceb5e9f1-c7c9-451d-a0ba-74d49425a672",
+        "source": "1",
+        "sourceHandle": "output",
+        "target": "a2e09377-c0e4-4f7e-8cf0-dbbc5a8ff94c",
+        "targetHandle": "audio",
+        "ui_properties": {
+          "className": "audio"
+        }
+      },
+      {
+        "id": "dc4a19e7-d08e-44be-8bc8-4016fceb531f",
+        "source": "3",
+        "sourceHandle": "text",
+        "target": "4",
+        "targetHandle": "value",
+        "ui_properties": {
+          "className": "str"
+        }
+      }
     ]
   },
   "input_schema": null,
   "output_schema": null,
   "settings": null,
   "package_name": "nodetool-base",
-  "path": null
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
 }

@@ -1,8 +1,8 @@
 {
-  "id": "213dae8ea30b11f09b8600007cde5544",
+  "id": "4fd373a0a7a711f08ffb0000744cb0d1",
   "access": "public",
-  "created_at": "2025-10-07T01:22:54.575912",
-  "updated_at": "2025-10-07T01:22:54.575933",
+  "created_at": "2025-10-12T22:10:36.637867",
+  "updated_at": "2025-10-12T22:10:36.637886",
   "name": "Transcribe Audio",
   "tool_name": null,
   "description": "Convert speech to text using Whisper model with word-level timestamps",
@@ -16,6 +16,53 @@
   "graph": {
     "nodes": [
       {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Comment",
+        "data": {
+          "comment": [
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "- Record your voice"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "- Hit the run button"
+                }
+              ]
+            },
+            {
+              "type": "paragraph",
+              "children": [
+                {
+                  "text": "- Read the transcription"
+                }
+              ]
+            }
+          ]
+        },
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": -421,
+            "y": 18
+          },
+          "zIndex": 0,
+          "width": 407,
+          "height": 373,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
         "id": "7",
         "parent_id": null,
         "type": "nodetool.input.AudioInput",
@@ -23,17 +70,13 @@
           "name": "audio",
           "description": "",
           "value": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
           }
         },
         "ui_properties": {
           "selected": false,
           "position": {
             "x": 50,
-            "y": 115
+            "y": 50
           },
           "zIndex": 0,
           "width": 164,
@@ -44,25 +87,21 @@
         "sync_mode": "on_any"
       },
       {
-        "id": "37c58efe-c0f3-4a1d-9b92-bbdc408e2e33",
+        "id": "8",
         "parent_id": null,
-        "type": "nodetool.text.AutomaticSpeechRecognition",
+        "type": "nodetool.output.StringOutput",
         "data": {
-          "model": {
-            "type": "asr_model",
-            "provider": "fal_ai",
-            "id": "openai/whisper-large-v3",
-            "name": ""
-          }
+          "name": "transciption",
+          "description": ""
         },
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 244,
-            "y": 152
+            "x": 474,
+            "y": 96
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 159,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -70,19 +109,25 @@
         "sync_mode": "on_any"
       },
       {
-        "id": "dea068bd-e3d5-44ad-b2fd-c2c1eb7dc1ff",
+        "id": "c5191702-2a3c-440d-b3af-2db20e74a369",
         "parent_id": null,
-        "type": "nodetool.workflows.base_node.Preview",
-        "data": {},
+        "type": "nodetool.text.AutomaticSpeechRecognition",
+        "data": {
+          "model": {
+            "type": "asr_model",
+            "id": "whisper-1",
+            "provider": "openai",
+            "name": "Whisper"
+          }
+        },
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 474,
-            "y": 87
+            "x": 244,
+            "y": 79
           },
           "zIndex": 0,
-          "width": 314,
-          "height": 329,
+          "width": 200,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -92,20 +137,20 @@
     ],
     "edges": [
       {
-        "id": "9dc01a53-5106-4825-83fc-3cbc81f13916",
+        "id": "8f80e8d4-86f2-4324-84bc-d375d11bc89a",
         "source": "7",
         "sourceHandle": "output",
-        "target": "37c58efe-c0f3-4a1d-9b92-bbdc408e2e33",
+        "target": "c5191702-2a3c-440d-b3af-2db20e74a369",
         "targetHandle": "audio",
         "ui_properties": {
           "className": "audio"
         }
       },
       {
-        "id": "d4858a0d-1d6d-4db7-9607-51a69a808d34",
-        "source": "37c58efe-c0f3-4a1d-9b92-bbdc408e2e33",
+        "id": "144d485c-a6f5-45b3-9822-e6206dd36154",
+        "source": "c5191702-2a3c-440d-b3af-2db20e74a369",
         "sourceHandle": "text",
-        "target": "dea068bd-e3d5-44ad-b2fd-c2c1eb7dc1ff",
+        "target": "8",
         "targetHandle": "value",
         "ui_properties": {
           "className": "str"

@@ -240,23 +240,10 @@ class ImageToVideo(BaseNode):
             num_inference_steps=self.num_inference_steps,
             seed=self.seed if self.seed != -1 else None,
         )
-
-        # Generate video from image
-        context.post_message(
-            {
-                "type": "node_progress",
-                "node_id": self.id,
-                "progress": 0,
-                "total": 100,
-                "message": "Generating video from image...",
-            }
-        )
-
         video_bytes = await provider_instance.image_to_video(
             image=image_bytes,
             params=params,
             context=context,
-            node_id=self.id
         )
 
         # Convert to VideoRef

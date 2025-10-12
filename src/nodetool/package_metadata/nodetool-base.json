@@ -2652,7 +2652,7 @@
           },
           "default": "",
           "title": "Code",
-          "description": "JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+          "description": "JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
         },
         {
           "name": "image",
@@ -2814,7 +2814,7 @@
           },
           "default": "",
           "title": "Code",
-          "description": "Python code to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
+          "description": "Python code to execute as-is. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
         },
         {
           "name": "image",
@@ -30834,6 +30834,36 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Image Enhance.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Story to Video Generator.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Fetch Papers.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Meeting Transcript Summarizer.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Summarize RSS.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Flashcard Generator.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Daily Digest.jpg",
       "path": ""
     },
@@ -30844,7 +30874,22 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Transcribe Audio.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Creative Story Ideas.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Movie Posters.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Summarize Newsletters.jpg",
       "path": ""
     },
     {
@@ -30861,11 +30906,16 @@
       "package_name": "nodetool-base",
       "name": "Data Visualization Pipeline.jpg",
       "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Realtime Agent.jpg",
+      "path": ""
     }
   ],
   "examples": [
     {
-      "id": "4292f4a879bd11f09d970000262bfb92",
+      "id": "39664b20a78311f0bfc6000069947dd1",
       "name": "Summarize Newsletters",
       "description": "",
       "tags": [
@@ -30874,7 +30924,7 @@
       ]
     },
     {
-      "id": "64bac2e8340f11f097f000007d22ea5d",
+      "id": "af5a2636a78211f09af400006952c72c",
       "name": "Chat with Docs",
       "description": "An intelligent document retrieval and question-answering system that leverages vector search and local LLMs to provide accurate, context-aware responses based on your document collection.",
       "tags": [
@@ -30919,10 +30969,22 @@
       ]
     },
     {
-      "id": "93102bfa8c8a11f0bcd000004fc538b3",
+      "id": "bcbefdbea78311f09c5e000014a97b82",
       "name": "Summarize RSS",
       "description": "",
       "tags": []
+    },
+    {
+      "id": "flashcard_generator",
+      "name": "Flashcard Generator",
+      "description": "Generate study flashcards using AI and store them persistently in a database. Enter any topic and get instant flashcards that are saved for future review.",
+      "tags": [
+        "education",
+        "database",
+        "ai",
+        "flashcards",
+        "learning"
+      ]
     },
     {
       "id": "1302ffe8a2f911f0b74c000014916b9c",
@@ -30934,20 +30996,18 @@
       ]
     },
     {
-      "id": "flashcard_generator_001",
-      "name": "AI Flashcard Generator with SQLite",
-      "description": "Generate study flashcards using AI and store them persistently in a SQLite database. Enter any topic and get instant flashcards that are saved for future review.",
+      "id": "beginner_template_story_ideas",
+      "name": "Creative Story Ideas",
+      "description": "A beginner-friendly template demonstrating core NodeTool concepts: inputs, templates, LLM agents, streaming, and outputs. Generate creative story ideas based on your preferences.",
       "tags": [
-        "education",
-        "sqlite",
-        "database",
-        "ai",
-        "flashcards",
-        "learning"
+        "start",
+        "beginner",
+        "tutorial",
+        "template"
       ]
     },
     {
-      "id": "c16e5fd559704602b082f7d58ee3a90f",
+      "id": "3527dcf2a7a811f09339000078c92dc5",
       "name": "Meeting Transcript Summarizer",
       "description": "Automatically transcribe a meeting recording and generate concise notes.",
       "tags": [
@@ -30965,14 +31025,6 @@
       ]
     },
     {
-      "id": "remove_silence",
-      "name": "Remove Silence",
-      "description": "Remove silence from audio files.",
-      "tags": [
-        "audio"
-      ]
-    },
-    {
       "id": "3047c2fa760811f0b24700002df0a13c",
       "name": "Index PDFs",
       "description": "Workflow to index PDFs in a folder into a Chroma collection",
@@ -30982,22 +31034,13 @@
       ]
     },
     {
-      "id": "213dae8ea30b11f09b8600007cde5544",
+      "id": "4fd373a0a7a711f08ffb0000744cb0d1",
       "name": "Transcribe Audio",
       "description": "Convert speech to text using Whisper model with word-level timestamps",
       "tags": [
         "start",
         "audio",
         "huggingface"
-      ]
-    },
-    {
-      "id": "",
-      "name": "Execute Python",
-      "description": "",
-      "tags": [
-        "node",
-        "advanced"
       ]
     },
     {
@@ -31009,14 +31052,6 @@
       ]
     },
     {
-      "id": "78483f1ce4d611ef849100004ef921c4",
-      "name": "Ingest PDF",
-      "description": "",
-      "tags": [
-        "rag"
-      ]
-    },
-    {
       "id": "data_visualization_pipeline",
       "name": "Data Visualization Pipeline",
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
@@ -31025,12 +31060,15 @@
       ]
     },
     {
-      "id": "",
-      "name": "Evaluate Expression",
-      "description": "",
+      "id": "story_to_video_generator",
+      "name": "Story to Video Generator",
+      "description": "Transform story ideas into cinematic AI-generated videos. An agent crafts detailed visual prompts optimized for video generation, then creates the video using Gemini Veo.",
       "tags": [
-        "node",
-        "advanced"
+        "video",
+        "generation",
+        "ai",
+        "storytelling",
+        "creative"
       ]
     },
     {

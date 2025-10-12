@@ -48,7 +48,7 @@ class ExecutePython(BaseNode):
     code: str = Field(
         default="",
         description=(
-            "Python code to execute as-is. Dynamic inputs are provided as env vars. "
+            "Python code to execute as-is. Dynamic inputs are provided as local vars. "
             "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
         ),
     )
@@ -173,7 +173,7 @@ class ExecuteJavaScript(BaseNode):
     code: str = Field(
         default="",
         description=(
-            "JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as env vars. "
+            "JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. "
             "Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'."
         ),
     )

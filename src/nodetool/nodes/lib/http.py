@@ -810,7 +810,7 @@ class DownloadFiles(BaseNode):
                         failed.append(url)
 
         return {
-            "successful": successful,
+            "success": successful,
             "failed": failed,
         }
 
