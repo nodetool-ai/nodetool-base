@@ -6,6 +6,11 @@ from typing import Any, AsyncGenerator, cast, ClassVar, TypedDict
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.types.model import UnifiedModel
+from nodetool.workflows.types import (
+    TaskUpdate,
+    PlanningUpdate,
+    Chunk,
+)
 from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from pydantic import Field
 
@@ -1331,3 +1336,265 @@ class Agent(BaseNode):
 
         async for item in self._execute_agent_loop(context, messages, tools):
             yield item
+
+
+DEFAULT_RESEARCH_SYSTEM_PROMPT = """You are a research assistant.
+
+Goal
+- Conduct thorough research on the given objective
+- Use tools to gather information from multiple sources
+- Write intermediate findings to the workspace for reference
+- Synthesize information into the structured output format specified
+
+Tools Available
+- google_search: Search the web for information
+- browser: Navigate to URLs and extract content
+- write_file: Save research findings to files
+- read_file: Read previously saved research files
+- list_directory: List files in the workspace
+
+Workflow
+1. Break down the research objective into specific queries
+2. Use google_search to find relevant sources
+3. Use browser to extract content from promising URLs
+4. Save important findings using write_file
+5. Synthesize all findings into the requested output format
+
+Output Format
+- Return a structured JSON object matching the defined output schema
+- Be thorough and cite sources where appropriate
+- Ensure all required fields are populated with accurate information
+"""
+
+
+class ResearchAgent(BaseNode):
+    """
+    Autonomous research agent that gathers information from the web and synthesizes findings.
+    research, web-search, data-gathering, agent, automation
+
+    Uses dynamic outputs to define the structure of research results.
+    The agent will:
+    - Search the web for relevant information
+    - Browse and extract content from web pages
+    - Organize findings in the workspace
+    - Return structured results matching your output schema
+
+    Perfect for:
+    - Market research and competitive analysis
+    - Literature reviews and fact-finding
+    - Data collection from multiple sources
+    - Automated research workflows
+    """
+
+    _supports_dynamic_outputs: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Research Agent"
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    objective: str = Field(
+        default="",
+        description="The research objective or question to investigate"
+    )
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for research and synthesis"
+    )
+
+    system_prompt: str = Field(
+        default=DEFAULT_RESEARCH_SYSTEM_PROMPT,
+        description="System prompt guiding the agent's research behavior"
+    )
+
+    tools: list[ToolName] = Field(
+        default=[ToolName(name="google_search"), ToolName(name="browser")],
+        description="Additional research tools to enable (workspace tools are always included)"
+    )
+
+    max_tokens: int = Field(
+        default=8192,
+        ge=1,
+        le=100000,
+        description="Maximum tokens for agent responses"
+    )
+
+    context_window: int = Field(
+        default=8192,
+        ge=1,
+        le=131072,
+        description="Context window size"
+    )
+
+    @classmethod
+    def unified_recommended_models(cls) -> list[UnifiedModel]:
+        return [
+            UnifiedModel(
+                id="gpt-oss:20b",
+                repo_id="gpt-oss:20b",
+                name="GPT - OSS",
+                description="Open-weight GPT-4o derivative handles research workflows with tool calling.",
+                size_on_disk=34359738368,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen3:14b",
+                repo_id="qwen3:14b",
+                name="Qwen3 - 14B",
+                description="Qwen3 14B provides strong tool use and synthesis for local research agents.",
+                size_on_disk=30064771072,
+                type="llama_model",
+            ),
+        ]
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["objective", "model", "tools"]
+
+    def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
+        """Instantiate Tool objects from tool names."""
+        from nodetool.agents.tools.serp_tools import (
+            GoogleSearchTool,
+            GoogleFinanceTool,
+            GoogleJobsTool,
+            GoogleNewsTool,
+            GoogleImagesTool,
+            GoogleLensTool,
+            GoogleMapsTool,
+            GoogleShoppingTool,
+        )
+        from nodetool.agents.tools.browser_tools import BrowserTool
+        from nodetool.agents.tools.workspace_tools import (
+            WriteFileTool,
+            ReadFileTool,
+            ListDirectoryTool,
+        )
+
+        # Always include workspace tools
+        tool_instances: list[Tool] = [
+            BrowserTool(),
+            GoogleSearchTool(),
+            GoogleFinanceTool(),
+            GoogleJobsTool(),
+            GoogleNewsTool(),
+            GoogleImagesTool(),
+            GoogleLensTool(),
+            GoogleMapsTool(),
+            GoogleShoppingTool(),
+        ]
+
+        # Add requested research tools
+        tool_map = {
+            tool.name: tool for tool in tool_instances
+        }
+        selected_tools = [
+            WriteFileTool(),
+            ReadFileTool(),
+            ListDirectoryTool(),
+        ]
+
+        for tool_name in self.tools:
+            tool_instance = tool_map.get(tool_name.name)
+            if tool_instance:
+                selected_tools.append(tool_instance)
+            else:
+                log.warning(f"Unknown tool requested: {tool_name.name}")
+
+        return selected_tools
+
+    async def process(
+        self, context: ProcessingContext
+    ) -> dict[str, Any]:
+        """Execute research agent and return structured results."""
+        import json
+        from nodetool.agents.agent import Agent as CoreAgent
+        from nodetool.providers import get_provider
+
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
+        if not self.objective:
+            raise ValueError("Provide a research objective")
+
+        # Build JSON schema from dynamic outputs
+        output_slots = self.get_dynamic_output_slots()
+
+        if len(output_slots) == 0:
+            raise ValueError("Define at least one output field for research results")
+
+        properties: dict[str, Any] = {
+            slot.name: slot.type.get_json_schema() for slot in output_slots
+        }
+        required: list[str] = [slot.name for slot in output_slots]
+
+        output_schema = {
+            "type": "object",
+            "title": "Research Results",
+            "additionalProperties": False,
+            "properties": properties,
+            "required": required,
+        }
+
+        # Instantiate tools
+        tool_instances = self._instantiate_tools(context)
+
+        # Get provider
+        provider = get_provider(self.model.provider)
+
+        # Create core agent
+        agent = CoreAgent(
+            name="Research Agent",
+            objective=self.objective,
+            provider=provider,
+            model=self.model.id,
+            tools=tool_instances,
+            output_schema=output_schema,
+            enable_analysis_phase=False,
+            enable_data_contracts_phase=False,
+            verbose=False,
+        )
+
+        # Stream execution
+        log.info(f"Starting research: {self.objective}")
+        log.debug(f"Tools enabled: {[t.name for t in tool_instances]}")
+        log.debug(f"Output schema: {json.dumps(output_schema, indent=2)}")
+
+        async for item in agent.execute(context):
+            if isinstance(item, TaskUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, PlanningUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, ToolCall):
+                context.post_message(
+                    ToolCallUpdate(
+                        node_id=self.id,
+                        name=item.name,
+                        args=item.args,
+                        message=item.message,
+                    )
+                )
+            elif isinstance(item, Chunk):
+                item.node_id = self.id
+                context.post_message(item)
+
+        # Get final results
+        results = agent.get_results()
+
+        if results is None:
+            log.warning("Agent completed but returned no results")
+            # Return empty dict matching schema
+            results = {key: "" for key in properties.keys()}
+
+        # Validate results match schema
+        if isinstance(results, dict):
+            log.info(f"Research complete. Results: {list(results.keys())}")
+            return results
+        else:
+            first_key = list(self.get_dynamic_output_slots())[0].name
+            return {first_key: results}

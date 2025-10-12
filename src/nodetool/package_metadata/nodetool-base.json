@@ -3801,6 +3801,113 @@
       "supports_dynamic_outputs": true
     },
     {
+      "title": "Research Agent",
+      "description": "Autonomous research agent that gathers information from the web and synthesizes findings.\n    research, web-search, data-gathering, agent, automation\n\n    Uses dynamic outputs to define the structure of research results.\n    The agent will:\n    - Search the web for relevant information\n    - Browse and extract content from web pages\n    - Organize findings in the workspace\n    - Return structured results matching your output schema\n\n    Perfect for:\n    - Market research and competitive analysis\n    - Literature reviews and fact-finding\n    - Data collection from multiple sources\n    - Automated research workflows",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.ResearchAgent",
+      "properties": [
+        {
+          "name": "objective",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Objective",
+          "description": "The research objective or question to investigate"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": ""
+          },
+          "title": "Model",
+          "description": "Model to use for research and synthesis"
+        },
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "You are a research assistant.\n\nGoal\n- Conduct thorough research on the given objective\n- Use tools to gather information from multiple sources\n- Write intermediate findings to the workspace for reference\n- Synthesize information into the structured output format specified\n\nTools Available\n- google_search: Search the web for information\n- browser: Navigate to URLs and extract content\n- write_file: Save research findings to files\n- read_file: Read previously saved research files\n- list_directory: List files in the workspace\n\nWorkflow\n1. Break down the research objective into specific queries\n2. Use google_search to find relevant sources\n3. Use browser to extract content from promising URLs\n4. Save important findings using write_file\n5. Synthesize all findings into the requested output format\n\nOutput Format\n- Return a structured JSON object matching the defined output schema\n- Be thorough and cite sources where appropriate\n- Ensure all required fields are populated with accurate information\n",
+          "title": "System Prompt",
+          "description": "System prompt guiding the agent's research behavior"
+        },
+        {
+          "name": "tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tool_name"
+              }
+            ]
+          },
+          "default": [
+            {
+              "name": "google_search"
+            },
+            {
+              "name": "browser"
+            }
+          ],
+          "title": "Tools",
+          "description": "Additional research tools to enable (workspace tools are always included)"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 8192,
+          "title": "Max Tokens",
+          "description": "Maximum tokens for agent responses",
+          "min": 1.0,
+          "max": 100000.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 8192,
+          "title": "Context Window",
+          "description": "Context window size",
+          "min": 1.0,
+          "max": 131072.0
+        }
+      ],
+      "recommended_models": [
+        {
+          "id": "gpt-oss:20b",
+          "type": "llama_model",
+          "name": "GPT - OSS",
+          "repo_id": "gpt-oss:20b",
+          "description": "Open-weight GPT-4o derivative handles research workflows with tool calling.",
+          "size_on_disk": 34359738368
+        },
+        {
+          "id": "qwen3:14b",
+          "type": "llama_model",
+          "name": "Qwen3 - 14B",
+          "repo_id": "qwen3:14b",
+          "description": "Qwen3 14B provides strong tool use and synthesis for local research agents.",
+          "size_on_disk": 30064771072
+        }
+      ],
+      "basic_fields": [
+        "objective",
+        "model",
+        "tools"
+      ],
+      "supports_dynamic_outputs": true
+    },
+    {
       "title": "Summarizer",
       "description": "Generate concise summaries of text content using LLM providers with streaming output.\n    text, summarization, nlp, content, streaming\n\n    Specialized for creating high-quality summaries with real-time streaming:\n    - Condensing long documents into key points\n    - Creating executive summaries with live output\n    - Extracting main ideas from text as they're generated\n    - Maintaining factual accuracy while reducing length",
       "namespace": "nodetool.agents",
@@ -30824,6 +30931,19 @@
       "tags": [
         "email",
         "start"
+      ]
+    },
+    {
+      "id": "flashcard_generator_001",
+      "name": "AI Flashcard Generator with SQLite",
+      "description": "Generate study flashcards using AI and store them persistently in a SQLite database. Enter any topic and get instant flashcards that are saved for future review.",
+      "tags": [
+        "education",
+        "sqlite",
+        "database",
+        "ai",
+        "flashcards",
+        "learning"
       ]
     },
     {
