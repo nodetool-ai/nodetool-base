@@ -4,13 +4,17 @@ SQLite database nodes for persistent storage and memory mechanisms.
 
 import sqlite3
 import json
-from typing import ClassVar
+from typing import ClassVar, TypedDict, AsyncGenerator
 from pathlib import Path
 from typing import Any
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ColumnDef, RecordType
+from nodetool.metadata.types import RecordType, DataframeRef
+from nodetool.config.logging_config import get_logger
+
+
+log = get_logger(__name__)
 
 
 def column_type_to_sqlite(column_type: str) -> str:
@@ -59,10 +63,24 @@ class CreateTable(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> str:
+    class OutputType(TypedDict):
+        database_name: str
+        table_name: str
+        columns: RecordType
+
+    async def process(self, context: ProcessingContext) -> OutputType:
         db_path = Path(context.workspace_dir) / self.database_name
+        log.info(f"Creating table {self.table_name} in database {self.database_name} at {db_path}")
 
         conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        table_exists = conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{self.table_name}'").fetchone() is not None
+        if table_exists:
+            return {
+                "database_name": self.database_name,
+                "table_name": self.table_name,
+                "columns": self.columns
+            }
         try:
             cursor = conn.cursor()
 
@@ -83,7 +101,11 @@ class CreateTable(BaseNode):
             cursor.execute(sql)
             conn.commit()
 
-            return f"Table '{self.table_name}' created successfully at {db_path}"
+            return {
+                "database_name": self.database_name,
+                "table_name": self.table_name,
+                "columns": self.columns
+            }
         finally:
             conn.close()
 
@@ -118,6 +140,7 @@ class Insert(BaseNode):
         db_path = Path(context.workspace_dir) / self.database_name
 
         conn = sqlite3.connect(db_path)
+        log.info(f"Inserting record into table {self.table_name} in database {self.database_name} at {db_path}")
         try:
             cursor = conn.cursor()
 
@@ -169,9 +192,9 @@ class Query(BaseNode):
         default="",
         description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
     )
-    columns: str = Field(
-        default="*",
-        description="Columns to select (comma-separated or '*' for all)"
+    columns: RecordType = Field(
+        default=RecordType(),
+        description="Columns to select"
     )
     order_by: str = Field(
         default="",
@@ -182,18 +205,26 @@ class Query(BaseNode):
         description="Maximum number of rows to return (0 = no limit)"
     )
 
-    async def process(self, context: ProcessingContext) -> list[dict[str, Any]]:
+    class OutputType(TypedDict):
+        index: int | None
+        row: dict[str, Any] | None
+        dataframe: DataframeRef | None
+
+    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
         db_path = Path(context.workspace_dir) / self.database_name
+        log.info(f"Querying table {self.table_name} in database {self.database_name} at {db_path}")
 
         if not db_path.exists():
-            return []
+            raise FileNotFoundError(f"Database file {db_path} does not exist")
 
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
+        rows = []
         try:
             cursor = conn.cursor()
+            columns = ", ".join([f"{col.name}" for col in self.columns.columns])
 
-            sql = f"SELECT {self.columns} FROM {self.table_name}"
+            sql = f"SELECT {columns} FROM {self.table_name}"
 
             if self.where:
                 sql += f" WHERE {self.where}"
@@ -205,20 +236,21 @@ class Query(BaseNode):
                 sql += f" LIMIT {self.limit}"
 
             cursor.execute(sql)
-            rows = cursor.fetchall()
 
-            results = []
-            for row in rows:
-                row_dict = dict(row)
-                for key, value in row_dict.items():
-                    if isinstance(value, str):
-                        try:
-                            row_dict[key] = json.loads(value)
-                        except (json.JSONDecodeError, TypeError):
-                            pass
-                results.append(row_dict)
+            index = 0
+            while row := cursor.fetchone():
+                row = dict(row)
+                rows.append([row[col.name] for col in self.columns.columns])
+                yield {"row": row, "index": index, "dataframe": None}
+                index += 1
 
-            return results
+            df = DataframeRef(columns=self.columns.columns, data=rows)
+            yield {"dataframe": df, "index": None, "row": None}
+        except Exception as e:
+            import traceback
+            log.error(traceback.print_stack())
+            log.error(f"Error querying table {self.table_name} in database {self.database_name} at {db_path}: {e}")
+            raise e
         finally:
             conn.close()
 
@@ -255,6 +287,7 @@ class Update(BaseNode):
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         db_path = Path(context.workspace_dir) / self.database_name
+        log.info(f"Updating table {self.table_name} in database {self.database_name} at {db_path}")
 
         conn = sqlite3.connect(db_path)
         try:

@@ -9473,6 +9473,674 @@
       "expose_as_tool": true
     },
     {
+      "title": "Copy Workspace File",
+      "description": "Copy a file within the workspace.\n    workspace, file, copy, duplicate\n\n    Use cases:\n    - Create file backups in workspace\n    - Duplicate files for different processing\n    - Copy files to subdirectories",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.CopyWorkspaceFile",
+      "properties": [
+        {
+          "name": "source",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Source",
+          "description": "Relative source path within workspace"
+        },
+        {
+          "name": "destination",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Destination",
+          "description": "Relative destination path within workspace"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "source",
+        "destination"
+      ]
+    },
+    {
+      "title": "Create Workspace Directory",
+      "description": "Create a directory in the workspace.\n    workspace, directory, create, folder\n\n    Use cases:\n    - Organize workspace files into directories\n    - Create output directories for generated files\n    - Set up workspace structure",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.CreateWorkspaceDirectory",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to directory within workspace"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Delete Workspace File",
+      "description": "Delete a file or directory from the workspace.\n    workspace, file, delete, remove\n\n    Use cases:\n    - Clean up temporary files\n    - Remove processed files\n    - Clear workspace data",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.DeleteWorkspaceFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file or directory within workspace"
+        },
+        {
+          "name": "recursive",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Recursive",
+          "description": "Delete directories recursively"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "none"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path",
+        "recursive"
+      ]
+    },
+    {
+      "title": "Get Workspace Dir",
+      "description": "Get the current workspace directory path.\n    workspace, directory, path\n\n    Use cases:\n    - Get the workspace path for reference\n    - Display workspace location\n    - Pass workspace path to other nodes",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.GetWorkspaceDir",
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ]
+    },
+    {
+      "title": "Get Workspace File Info",
+      "description": "Get information about a file in the workspace.\n    workspace, file, info, metadata\n\n    Use cases:\n    - Get file size and timestamps\n    - Check file type (file vs directory)\n    - Inspect file metadata",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.GetWorkspaceFileInfo",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file within workspace"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Get Workspace File Size",
+      "description": "Get file size in bytes for a workspace file.\n    workspace, file, size, bytes\n\n    Use cases:\n    - Check file size before processing\n    - Monitor generated file sizes\n    - Validate file completeness",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.GetWorkspaceFileSize",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file within workspace"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Is Workspace Directory",
+      "description": "Check if a path in the workspace is a directory.\n    workspace, directory, check, type\n\n    Use cases:\n    - Distinguish directories from files\n    - Validate directory paths\n    - Filter paths by type",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.IsWorkspaceDirectory",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path within workspace to check"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Is Workspace File",
+      "description": "Check if a path in the workspace is a file.\n    workspace, file, check, type\n\n    Use cases:\n    - Distinguish files from directories\n    - Validate file types\n    - Filter paths by type",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.IsWorkspaceFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path within workspace to check"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Join Workspace Paths",
+      "description": "Join path components relative to workspace.\n    workspace, path, join, combine\n\n    Use cases:\n    - Build file paths within workspace\n    - Construct nested paths\n    - Create organized file structures",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.JoinWorkspacePaths",
+      "properties": [
+        {
+          "name": "paths",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Paths",
+          "description": "Path components to join (relative to workspace)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "paths"
+      ]
+    },
+    {
+      "title": "List Workspace Files",
+      "description": "List files in the workspace directory matching a pattern.\n    workspace, files, list, directory\n\n    Use cases:\n    - Get files for batch processing within workspace\n    - Filter workspace files by extension or pattern\n    - Discover generated files in workspace",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.ListWorkspaceFiles",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": ".",
+          "title": "Path",
+          "description": "Relative path within workspace (use . for workspace root)"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "*",
+          "title": "Pattern",
+          "description": "File pattern to match (e.g. *.txt, *.json)"
+        },
+        {
+          "name": "recursive",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Recursive",
+          "description": "Search subdirectories recursively"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "file"
+        }
+      ],
+      "basic_fields": [
+        "path",
+        "pattern",
+        "recursive"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Move Workspace File",
+      "description": "Move or rename a file within the workspace.\n    workspace, file, move, rename\n\n    Use cases:\n    - Rename files in workspace\n    - Move files to subdirectories\n    - Reorganize workspace files",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.MoveWorkspaceFile",
+      "properties": [
+        {
+          "name": "source",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Source",
+          "description": "Relative source path within workspace"
+        },
+        {
+          "name": "destination",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Destination",
+          "description": "Relative destination path within workspace"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "source",
+        "destination"
+      ]
+    },
+    {
+      "title": "Read Binary File",
+      "description": "Read a binary file from the workspace as base64-encoded string.\n    workspace, file, read, binary\n\n    Use cases:\n    - Read generated binary data\n    - Load binary files for processing\n    - Access non-text files",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.ReadBinaryFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file within workspace"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Read Text File",
+      "description": "Read a text file from the workspace.\n    workspace, file, read, text\n\n    Use cases:\n    - Read configuration files\n    - Load text data generated by previous nodes\n    - Process text files in workspace",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.ReadTextFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file within workspace"
+        },
+        {
+          "name": "encoding",
+          "type": {
+            "type": "str"
+          },
+          "default": "utf-8",
+          "title": "Encoding",
+          "description": "Text encoding (utf-8, ascii, etc.)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path",
+        "encoding"
+      ]
+    },
+    {
+      "title": "Save Image File",
+      "description": "Save an image to a file in the workspace.\n    workspace, image, save, file, output\n\n    Use cases:\n    - Save processed images to workspace\n    - Export edited photos\n    - Archive image results",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.SaveImageFile",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "str"
+          },
+          "default": ".",
+          "title": "Folder",
+          "description": "Relative folder path within workspace (use . for workspace root)"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "image.png",
+          "title": "Filename",
+          "description": "\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        },
+        {
+          "name": "overwrite",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Overwrite",
+          "description": "Overwrite the file if it already exists, otherwise file will be renamed"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "folder",
+        "filename",
+        "overwrite"
+      ]
+    },
+    {
+      "title": "Save Video File",
+      "description": "Save a video file to the workspace.\n    workspace, video, save, file, output\n\n    Use cases:\n    - Save processed videos to workspace\n    - Export video results\n    - Archive video content\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.SaveVideoFile",
+      "properties": [
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video",
+          "description": "The video to save"
+        },
+        {
+          "name": "folder",
+          "type": {
+            "type": "str"
+          },
+          "default": ".",
+          "title": "Folder",
+          "description": "Relative folder path within workspace (use . for workspace root)"
+        },
+        {
+          "name": "filename",
+          "type": {
+            "type": "str"
+          },
+          "default": "video.mp4",
+          "title": "Filename",
+          "description": "\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        "
+        },
+        {
+          "name": "overwrite",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Overwrite",
+          "description": "Overwrite the file if it already exists, otherwise file will be renamed"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "video",
+        "folder",
+        "filename",
+        "overwrite"
+      ]
+    },
+    {
+      "title": "Workspace File Exists",
+      "description": "Check if a file or directory exists in the workspace.\n    workspace, file, exists, check\n\n    Use cases:\n    - Validate file presence before processing\n    - Implement conditional logic based on file existence\n    - Check for generated files",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.WorkspaceFileExists",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path within workspace to check"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path"
+      ]
+    },
+    {
+      "title": "Write Binary File",
+      "description": "Write binary data (base64-encoded) to a file in the workspace.\n    workspace, file, write, binary, save\n\n    Use cases:\n    - Save binary data to workspace\n    - Write decoded base64 data\n    - Export binary results",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.WriteBinaryFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file within workspace"
+        },
+        {
+          "name": "content",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Content",
+          "description": "Base64-encoded binary content to write"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path",
+        "content"
+      ]
+    },
+    {
+      "title": "Write Text File",
+      "description": "Write text to a file in the workspace.\n    workspace, file, write, text, save\n\n    Use cases:\n    - Save generated text to workspace\n    - Create configuration files\n    - Export processed text data",
+      "namespace": "nodetool.workspace",
+      "node_type": "nodetool.workspace.WriteTextFile",
+      "properties": [
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Path",
+          "description": "Relative path to file within workspace"
+        },
+        {
+          "name": "content",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Content",
+          "description": "Text content to write"
+        },
+        {
+          "name": "encoding",
+          "type": {
+            "type": "str"
+          },
+          "default": "utf-8",
+          "title": "Encoding",
+          "description": "Text encoding (utf-8, ascii, etc.)"
+        },
+        {
+          "name": "append",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Append",
+          "description": "Append to file instead of overwriting"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "path",
+        "content",
+        "encoding",
+        "append"
+      ]
+    },
+    {
       "title": "Arg Max",
       "description": "Returns the label associated with the highest value in a dictionary.\n    dictionary, maximum, label, argmax\n\n    Use cases:\n    - Get the most likely class from classification probabilities\n    - Find the category with highest score\n    - Identify the winner in a voting/ranking system",
       "namespace": "nodetool.dictionary",
@@ -18473,7 +19141,19 @@
           "type": {
             "type": "str"
           },
-          "name": "output"
+          "name": "database_name"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "table_name"
+        },
+        {
+          "type": {
+            "type": "record_type"
+          },
+          "name": "columns"
         }
       ],
       "basic_fields": [
@@ -18736,11 +19416,14 @@
         {
           "name": "columns",
           "type": {
-            "type": "str"
+            "type": "record_type"
           },
-          "default": "*",
+          "default": {
+            "type": "record_type",
+            "columns": []
+          },
           "title": "Columns",
-          "description": "Columns to select (comma-separated or '*' for all)"
+          "description": "Columns to select"
         },
         {
           "name": "order_by",
@@ -18764,22 +19447,29 @@
       "outputs": [
         {
           "type": {
-            "type": "list",
+            "type": "int"
+          },
+          "name": "index"
+        },
+        {
+          "type": {
+            "type": "dict",
             "type_args": [
               {
-                "type": "dict",
-                "type_args": [
-                  {
-                    "type": "str"
-                  },
-                  {
-                    "type": "any"
-                  }
-                ]
+                "type": "str"
+              },
+              {
+                "type": "any"
               }
             ]
           },
-          "name": "output"
+          "name": "row"
+        },
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "dataframe"
         }
       ],
       "basic_fields": [
@@ -18790,6 +19480,7 @@
         "order_by",
         "limit"
       ],
+      "is_streaming_output": true,
       "expose_as_tool": true
     },
     {

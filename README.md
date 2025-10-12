@@ -59,6 +59,38 @@ pytest -q
 
 Most tests run without network access.
 
+## Code Quality & Pre-Commit Hooks
+
+This repository uses pre-commit hooks to ensure code quality and consistency.
+
+**Setup:**
+
+```bash
+# Install pre-commit
+pip install pre-commit
+
+# Install git hooks
+pre-commit install
+```
+
+**What gets checked:**
+- Ruff linting and formatting
+- Trailing whitespace and file endings
+- YAML/JSON validation
+- Markdown formatting
+
+**Running manually:**
+
+```bash
+# Run all hooks on all files
+pre-commit run --all-files
+
+# Run on staged files only
+pre-commit run
+```
+
+Hooks run automatically on `git commit`. If they fail or make changes, stage the changes and commit again.
+
 ## Contributing
 
 Contributions are welcome. Feel free to open issues or pull requests on GitHub.
