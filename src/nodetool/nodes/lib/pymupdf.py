@@ -30,7 +30,7 @@ class ExtractText(BaseNode):
         default=-1, description="Last page to extract (-1 for last page)"
     )
 
-    async def process(self, context: ProcessingContext) -> str:
+    async def process(self, context: ProcessingContext) -> DocumentRef:
         pdf_data = await context.asset_to_bytes(self.pdf)
         doc = pymupdf.open(stream=pdf_data, filetype="pdf")
 
@@ -40,7 +40,7 @@ class ExtractText(BaseNode):
             page = doc[page_num]
             text += page.get_text()  # type: ignore
 
-        return text
+        return DocumentRef(type="document", uri=self.pdf.uri, data=text)
 
 
 class ExtractTextBlocks(BaseNode):

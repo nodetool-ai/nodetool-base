@@ -2,12 +2,13 @@ import datetime
 import os
 import glob
 from typing import TypedDict
+from llama_index.embeddings.huggingface.base import HuggingFaceEmbedding
 from nodetool.providers.base import AsyncGenerator
 from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
-from nodetool.metadata.types import DocumentRef
+from nodetool.metadata.types import DocumentRef, HFTextGeneration
 from llama_index.core.node_parser import (
     SemanticSplitterNodeParser,
     HTMLNodeParser,
@@ -119,8 +120,11 @@ class SplitDocument(BaseNode):
     chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
 
-    embed_model: LlamaModel = Field(
-        default=LlamaModel(),
+    embed_model: HFTextGeneration = Field(
+        default=HFTextGeneration(
+            type="hf.text_generation",
+            repo_id="BAAI/bge-small-en",
+        ),
         description="Embedding model to use",
     )
 
@@ -141,6 +145,23 @@ class SplitDocument(BaseNode):
         le=100,
     )
 
+    @classmethod
+    def recommended_models(cls) -> list[HFTextGeneration]:
+        return [
+            HFTextGeneration(
+                type="hf.text_generation",
+                repo_id="BAAI/bge-small-en",
+            ),
+            HFTextGeneration(
+                type="hf.text_generation",
+                repo_id="BAAI/bge-large-en",
+            ),
+            HFTextGeneration(
+                type="hf.text_generation",
+                repo_id="BAAI/bge-base-en",
+            ),
+        ]
+
     class OutputType(TypedDict):
         text: str
         source_id: str
@@ -154,7 +175,7 @@ class SplitDocument(BaseNode):
         splitter = SemanticSplitterNodeParser(
             buffer_size=self.buffer_size,
             breakpoint_percentile_threshold=self.threshold,
-            embed_model=OllamaEmbedding(model_name=self.embed_model.repo_id),
+            embed_model=HuggingFaceEmbedding(model_name=self.embed_model.repo_id),
         )
 
         documents = [Document(text=self.document.data, doc_id=self.document.uri)]

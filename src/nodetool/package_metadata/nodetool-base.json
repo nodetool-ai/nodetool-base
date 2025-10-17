@@ -7164,16 +7164,15 @@
         {
           "name": "embed_model",
           "type": {
-            "type": "llama_model"
+            "type": "hf.text_generation"
           },
           "default": {
-            "type": "llama_model",
-            "name": "",
-            "repo_id": "",
-            "modified_at": "",
-            "size": 0,
-            "digest": "",
-            "details": {}
+            "type": "hf.text_generation",
+            "repo_id": "BAAI/bge-small-en",
+            "path": null,
+            "variant": null,
+            "allow_patterns": null,
+            "ignore_patterns": null
           },
           "title": "Embed Model",
           "description": "Embedding model to use"
@@ -24883,7 +24882,7 @@
       "outputs": [
         {
           "type": {
-            "type": "str"
+            "type": "document"
           },
           "name": "output"
         }

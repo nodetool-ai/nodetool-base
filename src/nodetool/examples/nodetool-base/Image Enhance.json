@@ -19,64 +19,7 @@
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Comment",
         "data": {
-          "headline": "Image Enhance",
-          "comment": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "The Nodetool.Image.Enhance namespace contains nodes for  basic image enhancement."
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": ""
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "Also check the Replicate.Image.Process and Replicate.Image.Upscale namespaces for more advanced image enhancement nodes."
-                }
-              ]
-            }
-          ],
-          "comment_lexical": {
-            "root": {
-              "children": [
-                {
-                  "children": [
-                    {
-                      "detail": 0,
-                      "format": 0,
-                      "mode": "normal",
-                      "style": "",
-                      "text": "The Nodetool.Image.Enhance namespace contains nodes for  basic image enhancement.\n\nAlso check the Replicate.Image.Process and Replicate.Image.Upscale namespaces for more advanced image enhancement nodes.",
-                      "type": "text",
-                      "version": 1
-                    }
-                  ],
-                  "direction": "ltr",
-                  "format": "",
-                  "indent": 0,
-                  "type": "paragraph",
-                  "version": 1,
-                  "textFormat": 0,
-                  "textStyle": ""
-                }
-              ],
-              "direction": "ltr",
-              "format": "",
-              "indent": 0,
-              "type": "root",
-              "version": 1
-            }
-          }
+          "comment": "# Image Enhance\n\nThe **Nodetool.Image.Enhance** namespace contains nodes for basic image enhancement.\n\n## Workflow:\n\n1. **Image Input** - Load the source image\n2. **Sharpen** - Apply sharpening filter to enhance edges and details\n3. **Auto Contrast** - Automatically adjust contrast for optimal visibility\n4. **Image Output** - Save the enhanced result\n\n## Advanced Options:\nCheck the **Replicate.Image.Process** and **Replicate.Image.Upscale** namespaces for more advanced image enhancement nodes."
         },
         "ui_properties": {
           "selected": false,
