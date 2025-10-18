@@ -19,7 +19,7 @@
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Comment",
         "data": {
-          "comment": "# 📧 Categorize Emails\n\nThis workflow classifies emails into predefined categories (e.g., Newsletter, Work, Family, Friends) using a large language model and applies the matching Gmail labels.\n\n## 🔁 Workflow Steps:\n\n1. **Gmail Search** - Fetches up to 10 recent emails using the specified filters (e.g., date, subject, sender).\n2. **Template** - Formats each email into a structured prompt including subject, sender, and a truncated body snippet.\n3. **Classifier** - Uses an LLM to classify the email into one or more of the categories: newsletter, work, family, friends.\n4. **Add Label** - Applies the determined label(s) to each email message in Gmail."
+          "comment": "# Categorize Emails\n\nThis workflow classifies emails into predefined categories (e.g., Newsletter, Work, Family, Friends) using a large language model and applies the matching Gmail labels.\n\n## Workflow Steps:\n\n2. **Gmail Search** - Fetches up to 10 recent emails using the specified filters (e.g., date, subject, sender).\n2. **Template** - Formats each email into a structured prompt including subject, sender, and a truncated body snippet.\n3. **Classifier** - Uses an LLM to classify the email into one or more of the categories: newsletter, work, family, friends.\n4. **Add Label** - Applies the determined label(s) to each email message in Gmail."
         },
         "ui_properties": {
           "selected": false,
