@@ -20,32 +20,7 @@
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Comment",
         "data": {
-          "comment": [
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "- Record your voice"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "- Hit the run button"
-                }
-              ]
-            },
-            {
-              "type": "paragraph",
-              "children": [
-                {
-                  "text": "- Read the transcription"
-                }
-              ]
-            }
-          ]
+          "comment": "# Transcribe Audio\n\nConvert speech to text using the Whisper model with word-level timestamps.\n\n## Workflow:\n\n1. **Audio Input** - Record your voice or upload an audio file\n2. **Automatic Speech Recognition** - Processes the audio through Whisper model to generate transcription\n3. **String Output** - Displays the transcribed text\n\n## How to Use:\n- Record your voice using the audio input\n- Hit the run button\n- Read the transcription in the output"
         },
         "ui_properties": {
           "selected": false,
