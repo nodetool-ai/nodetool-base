@@ -31,8 +31,9 @@ async def test_create_table(context: ProcessingContext):
         ]),
     )
     result = await node.process(context)
-    assert "created successfully" in result
-    assert "flashcards" in result
+    assert result["database_name"] == "test.db"
+    assert result["table_name"] == "flashcards"
+    assert len(result["columns"].columns) == 3
 
 
 @pytest.mark.asyncio

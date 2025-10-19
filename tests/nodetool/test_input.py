@@ -113,7 +113,6 @@ async def test_input_nodes(
         BooleanInput,
         IntegerInput,
         StringInput,
-        ,
         ImageInput,
         VideoInput,
         AudioInput,

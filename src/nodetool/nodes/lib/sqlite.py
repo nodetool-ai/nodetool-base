@@ -205,24 +205,23 @@ class Query(BaseNode):
         description="Maximum number of rows to return (0 = no limit)"
     )
 
-    class OutputType(TypedDict):
-        index: int | None
-        row: dict[str, Any] | None
-        dataframe: DataframeRef | None
-
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def process(self, context: ProcessingContext) -> list[dict[str, Any]]:
         db_path = Path(context.workspace_dir) / self.database_name
         log.info(f"Querying table {self.table_name} in database {self.database_name} at {db_path}")
 
         if not db_path.exists():
-            raise FileNotFoundError(f"Database file {db_path} does not exist")
+            return []
 
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
-        rows = []
         try:
             cursor = conn.cursor()
-            columns = ", ".join([f"{col.name}" for col in self.columns.columns])
+
+            # Use SELECT * if no columns specified, otherwise use specified columns
+            if not self.columns.columns:
+                columns = "*"
+            else:
+                columns = ", ".join([f"{col.name}" for col in self.columns.columns])
 
             sql = f"SELECT {columns} FROM {self.table_name}"
 
@@ -237,15 +236,19 @@ class Query(BaseNode):
 
             cursor.execute(sql)
 
-            index = 0
-            while row := cursor.fetchone():
-                row = dict(row)
-                rows.append([row[col.name] for col in self.columns.columns])
-                yield {"row": row, "index": index, "dataframe": None}
-                index += 1
+            results = []
+            for row in cursor.fetchall():
+                row_dict = dict(row)
+                # Try to parse JSON values
+                for key, value in row_dict.items():
+                    if isinstance(value, str):
+                        try:
+                            row_dict[key] = json.loads(value)
+                        except (json.JSONDecodeError, TypeError):
+                            pass
+                results.append(row_dict)
 
-            df = DataframeRef(columns=self.columns.columns, data=rows)
-            yield {"dataframe": df, "index": None, "row": None}
+            return results
         except Exception as e:
             import traceback
             log.error(traceback.print_stack())
