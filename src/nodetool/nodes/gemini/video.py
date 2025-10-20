@@ -1,22 +1,15 @@
 import uuid
+from nodetool.providers.gemini_provider import GeminiProvider
 from pydantic import Field
 from typing import ClassVar
 from enum import Enum
-from nodetool.metadata.types import ImageRef, VideoRef
+from nodetool.metadata.types import ImageRef, Provider, VideoRef
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from google.genai.client import AsyncClient
 from google.genai.types import GenerateVideosConfig
 from nodetool.config.environment import Environment
 from google.genai import Client
-
-
-def get_genai_client() -> AsyncClient:
-    env = Environment.get_environment()
-    api_key = env.get("GEMINI_API_KEY")
-    if not api_key:
-        raise ApiKeyMissingError("GEMINI_API_KEY is not set")
-    return Client(api_key=api_key).aio
 
 
 class VeoModel(str, Enum):
@@ -86,7 +79,9 @@ class TextToVideo(BaseNode):
             config_args["negative_prompt"] = self.negative_prompt
 
         config = GenerateVideosConfig(**config_args) if config_args else None
-        client = get_genai_client()
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         res = await client.models.generate_videos(
             model=self.model.value,

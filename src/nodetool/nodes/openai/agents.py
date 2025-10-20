@@ -548,7 +548,7 @@ class RealtimeAgent(BaseNode):
         log.info(f"Starting RealtimeAgent with model: {self.model.value}")
         from openai import AsyncOpenAI  # Official SDK v1
 
-        env = Environment.get_environment()
+        env = context.environment
         api_key = env.get("OPENAI_API_KEY")
         if not api_key:
             log.error("OPENAI_API_KEY is not set in environment/secrets")
@@ -759,7 +759,7 @@ class RealtimeTranscription(BaseNode):
         log.info("Starting RealtimeTranscription")
         from openai import AsyncOpenAI
 
-        env = Environment.get_environment()
+        env = context.environment
         api_key = env.get("OPENAI_API_KEY")
         if not api_key:
             log.error("OPENAI_API_KEY is not set in environment/secrets")

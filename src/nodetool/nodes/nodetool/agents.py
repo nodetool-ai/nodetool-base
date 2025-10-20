@@ -15,7 +15,6 @@ from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from pydantic import Field
 
 from nodetool.agents.tools.base import Tool
-from nodetool.providers import get_provider
 
 from nodetool.workflows.types import (
     ToolCallUpdate,
@@ -45,7 +44,6 @@ from nodetool.workflows.types import ToolCallUpdate, EdgeUpdate
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.providers import Chunk
 from nodetool.metadata.types import Provider
-from nodetool.providers import get_provider
 from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)
@@ -184,7 +182,7 @@ class Summarizer(BaseNode):
 
         text = ""
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
         async for chunk in provider.generate_messages(
             messages=messages,
             model=self.model.id,
@@ -339,7 +337,7 @@ class Extractor(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
 
         # Build JSON schema from instance dynamic outputs (default each to string)
         output_slots = self.get_dynamic_output_slots()
@@ -596,7 +594,7 @@ class Classifier(BaseNode):
             },
         }
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
 
         try:
             assistant_message = await provider.generate_message(
@@ -1160,7 +1158,7 @@ class Agent(BaseNode):
                 tool_calls=[],
             )
 
-            provider = get_provider(self.model.provider)
+            provider = await context.get_provider(self.model.provider)
             pending_tool_tasks: list[asyncio.Task] = []
             async for chunk in provider.generate_messages(
                 messages=messages,
@@ -1512,7 +1510,6 @@ class ResearchAgent(BaseNode):
         """Execute research agent and return structured results."""
         import json
         from nodetool.agents.agent import Agent as CoreAgent
-        from nodetool.providers import get_provider
 
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
@@ -1543,7 +1540,7 @@ class ResearchAgent(BaseNode):
         tool_instances = self._instantiate_tools(context)
 
         # Get provider
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
 
         # Create core agent
         agent = CoreAgent(

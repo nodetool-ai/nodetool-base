@@ -14,14 +14,8 @@ from google.genai.types import (
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.config.environment import Environment
 from nodetool.workflows.processing_context import ProcessingContext
-
-
-def get_genai_client() -> AsyncClient:
-    env = Environment.get_environment()
-    api_key = env.get("GEMINI_API_KEY")
-    if not api_key:
-        raise ApiKeyMissingError("GEMINI_API_KEY is not set")
-    return Client(api_key=api_key).aio
+from nodetool.providers.gemini_provider import GeminiProvider
+from nodetool.metadata.types import Provider
 
 
 class GeminiModel(str, Enum):
@@ -74,7 +68,9 @@ class GroundedSearch(BaseNode):
         google_search_tool = GenAITool(google_search=GoogleSearch())
 
         # Generate content with search grounding
-        client = get_genai_client()
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
         response = await client.models.generate_content(
             model=self.model.value,
             contents=self.query,

@@ -43,7 +43,7 @@ class ListScheduledEvents(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> list[CalendlyEvent]:
-        env = Environment.get_environment()
+        env = context.environment
         token = env.get("CALENDLY_API_TOKEN") or env.get("CALENDLY_TOKEN")
         if not token:
             raise ValueError("CALENDLY_API_TOKEN is not set")

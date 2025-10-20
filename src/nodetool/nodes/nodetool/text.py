@@ -4,7 +4,6 @@ import json
 import os
 
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
-from nodetool.providers import get_provider
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
@@ -38,10 +37,10 @@ class AutomaticSpeechRecognition(BaseNode):
     audio: AudioRef = Field(default=AudioRef(), description="The audio to transcribe")
 
     async def process(self, context: ProcessingContext) -> OutputType:
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
         audio_bytes = await context.asset_to_bytes(self.audio)
         text = await provider.automatic_speech_recognition(
-            audio_bytes, model=self.model.id, 
+            audio_bytes, model=self.model.id,
         )
         return {
             "text": text

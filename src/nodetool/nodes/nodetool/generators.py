@@ -7,7 +7,6 @@ from pydantic import Field
 from nodetool.chat.dataframes import (
     json_schema_for_dataframe,
 )
-from nodetool.providers import get_provider
 from nodetool.metadata.types import (
     Message,
     MessageContent,
@@ -112,7 +111,7 @@ class StructuredOutputGenerator(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
 
         output_slots = self.get_dynamic_output_slots()
         if len(output_slots) == 0:
@@ -264,7 +263,7 @@ class DataGenerator(BaseNode):
 
         collected_rows: list[dict] = []
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
         index = 0
         async for chunk in provider.generate_messages(
             model=self.model.id,
@@ -363,7 +362,7 @@ class ListGenerator(BaseNode):
         in_item = False
         collected_items: list[str] = []
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
         async for chunk in provider.generate_messages(
             model=self.model.id,
             messages=messages,
@@ -725,7 +724,7 @@ Ensure the generated JSON is valid and strictly adheres to the schema provided f
 
         messages = [system_message, user_message]
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
         assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
@@ -834,7 +833,7 @@ Use clear, semantic element IDs and class names if needed.""",
 
         messages = [system_message, user_message]
 
-        provider = get_provider(self.model.provider)
+        provider = await context.get_provider(self.model.provider)
         assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,

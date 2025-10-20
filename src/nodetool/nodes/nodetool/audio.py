@@ -8,7 +8,6 @@ from typing import AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.config.logging_config import get_logger
 from nodetool.io.uri_utils import create_file_uri
-from nodetool.providers import get_provider
 from pydantic import Field
 from nodetool.metadata.types import AudioRef, TTSModel, Provider
 from nodetool.metadata.types import FolderRef
@@ -912,7 +911,7 @@ class TextToSpeech(BaseNode):
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
         # Get the TTS provider for this model
-        provider_instance = get_provider(self.model.provider)
+        provider_instance = await context.get_provider(self.model.provider)
 
         # Use the first voice from the model if no voice is specified
         voice_to_use = self.model.selected_voice

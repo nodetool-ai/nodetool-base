@@ -1,9 +1,10 @@
 from io import BytesIO
 from typing import ClassVar
 from base64 import b64decode
+from nodetool.providers.gemini_provider import GeminiProvider
 from pydantic import Field
 from enum import Enum
-from nodetool.metadata.types import AudioRef
+from nodetool.metadata.types import AudioRef, Provider
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from google.genai.client import AsyncClient
@@ -11,16 +12,6 @@ from google.genai import types
 from nodetool.config.environment import Environment
 from google.genai import Client
 from pydub import AudioSegment
-
-
-def get_genai_client() -> AsyncClient:
-    env = Environment.get_environment()
-    api_key = env.get("GEMINI_API_KEY")
-    if not api_key:
-        raise ApiKeyMissingError(
-            "GEMINI_API_KEY is not configured in the nodetool settings"
-        )
-    return Client(api_key=api_key).aio
 
 
 class TTSModel(str, Enum):
@@ -104,7 +95,9 @@ class TextToSpeech(BaseNode):
         if self.style_prompt:
             content = f"{self.style_prompt}: {self.text}"
 
-        client = get_genai_client()
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         response = await client.models.generate_content(
             model=self.model.value,

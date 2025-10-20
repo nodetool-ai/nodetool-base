@@ -22,7 +22,6 @@ from nodetool.metadata.types import VideoRef, FontRef
 from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
-from nodetool.providers import get_provider
 from nodetool.providers.types import TextToVideoParams, ImageToVideoParams
 
 logger = get_logger(__name__)
@@ -112,7 +111,7 @@ class TextToVideo(BaseNode):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         # Get the video provider for this model
-        provider_instance = get_provider(self.model.provider)
+        provider_instance = await context.get_provider(self.model.provider)
 
         params = TextToVideoParams(
             model=self.model,
@@ -222,7 +221,7 @@ class ImageToVideo(BaseNode):
             raise ValueError("Input image must be connected.")
 
         # Get the video provider for this model
-        provider_instance = get_provider(self.model.provider)
+        provider_instance = await context.get_provider(self.model.provider)
 
         # Read the image bytes from the ImageRef
         image_io = await context.asset_to_io(self.image)
