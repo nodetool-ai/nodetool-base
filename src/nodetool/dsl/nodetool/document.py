@@ -122,15 +122,14 @@ class SplitDocument(GraphNode):
     chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
 
-    embed_model: types.LlamaModel | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.LlamaModel(
-            type="llama_model",
-            name="",
-            repo_id="",
-            modified_at="",
-            size=0,
-            digest="",
-            details={},
+    embed_model: types.HFTextGeneration | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.HFTextGeneration(
+            type="hf.text_generation",
+            repo_id="BAAI/bge-small-en",
+            path=None,
+            variant=None,
+            allow_patterns=None,
+            ignore_patterns=None,
         ),
         description="Embedding model to use",
     )

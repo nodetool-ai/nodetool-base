@@ -46,6 +46,10 @@ class Agent(GraphNode):
     history: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
         default=[], description="The messages for the LLM"
     )
+    thread_id: str | None | GraphNode | tuple[GraphNode, str] = Field(
+        default=None,
+        description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
+    )
     max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
         default=8192, description=None
     )
@@ -156,6 +160,60 @@ class Extractor(GraphNode):
     @classmethod
     def get_node_type(cls):
         return "nodetool.agents.Extractor"
+
+
+class ResearchAgent(GraphNode):
+    """
+    Autonomous research agent that gathers information from the web and synthesizes findings.
+    research, web-search, data-gathering, agent, automation
+
+    Uses dynamic outputs to define the structure of research results.
+    The agent will:
+    - Search the web for relevant information
+    - Browse and extract content from web pages
+    - Organize findings in the workspace
+    - Return structured results matching your output schema
+
+    Perfect for:
+    - Market research and competitive analysis
+    - Literature reviews and fact-finding
+    - Data collection from multiple sources
+    - Automated research workflows
+    """
+
+    objective: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="", description="The research objective or question to investigate"
+    )
+    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+        ),
+        description="Model to use for research and synthesis",
+    )
+    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+        default="You are a research assistant.\n\nGoal\n- Conduct thorough research on the given objective\n- Use tools to gather information from multiple sources\n- Write intermediate findings to the workspace for reference\n- Synthesize information into the structured output format specified\n\nTools Available\n- google_search: Search the web for information\n- browser: Navigate to URLs and extract content\n- write_file: Save research findings to files\n- read_file: Read previously saved research files\n- list_directory: List files in the workspace\n\nWorkflow\n1. Break down the research objective into specific queries\n2. Use google_search to find relevant sources\n3. Use browser to extract content from promising URLs\n4. Save important findings using write_file\n5. Synthesize all findings into the requested output format\n\nOutput Format\n- Return a structured JSON object matching the defined output schema\n- Be thorough and cite sources where appropriate\n- Ensure all required fields are populated with accurate information\n",
+        description="System prompt guiding the agent's research behavior",
+    )
+    tools: list[types.ToolName] | GraphNode | tuple[GraphNode, str] = Field(
+        default=[
+            types.ToolName(type="tool_name", name="google_search"),
+            types.ToolName(type="tool_name", name="browser"),
+        ],
+        description="Additional research tools to enable (workspace tools are always included)",
+    )
+    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=8192, description="Maximum tokens for agent responses"
+    )
+    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        default=8192, description="Context window size"
+    )
+
+    @classmethod
+    def get_node_type(cls):
+        return "nodetool.agents.ResearchAgent"
 
 
 class Summarizer(GraphNode):

@@ -161,7 +161,7 @@
         "data": {
           "model": {
             "type": "language_model",
-            "id": "gpt-oss:20b",
+            "id": "gemma3:4b",
             "provider": "ollama"
           },
           "prompt": "make a line graph of Value over Year",

@@ -167,8 +167,9 @@ class Query(GraphNode):
     where: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
     )
-    columns: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="*", description="Columns to select (comma-separated or '*' for all)"
+    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+        default=types.RecordType(type="record_type", columns=[]),
+        description="Columns to select",
     )
     order_by: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="ORDER BY clause (without 'ORDER BY' keyword)"

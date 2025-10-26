@@ -131,7 +131,7 @@ class StringListInput(InputNode):
     """
 
     value: list[str] = Field(
-        default_factory=list, description="The list of strings to use as input."
+        default=[], description="The list of strings to use as input."
     )
 
     @classmethod

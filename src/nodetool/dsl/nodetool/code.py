@@ -102,7 +102,7 @@ class ExecuteJavaScript(GraphNode):
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
     code: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",
-        description="JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+        description="JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
     image: nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage = Field(
         default=nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage.NODE_22_ALPINE,
@@ -184,7 +184,7 @@ class ExecutePython(GraphNode):
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
     code: str | GraphNode | tuple[GraphNode, str] = Field(
         default="",
-        description="Python code to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
+        description="Python code to execute as-is. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
     image: nodetool.nodes.nodetool.code.ExecutePython.PythonImage = Field(
         default=nodetool.nodes.nodetool.code.ExecutePython.PythonImage.PYTHON_3_11_SLIM,

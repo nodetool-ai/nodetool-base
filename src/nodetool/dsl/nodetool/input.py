@@ -89,33 +89,6 @@ class BooleanInput(GraphNode):
         return "nodetool.input.BooleanInput"
 
 
-class ChatInput(GraphNode):
-    """
-    Accepts a list of chat messages as input for workflows, typically representing a conversation history.  The input is structured as a sequence of 'Message' objects. The node processes this list to extract elements like the latest message content (text, image, audio, video, document), the history, and any associated tool calls.
-    input, parameter, chat, message, conversation, prompt, history
-
-    Use cases:
-    - Provide user prompts or queries to a language model.
-    - Supply conversational context (history) for multi-turn interactions.
-    - Capture complex inputs that include text alongside other media types or tool requests.
-    - Initiate or continue a chat-based workflow.
-    """
-
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: list[types.Message] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="The chat message to use as input."
-    )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="The description of the input for the workflow."
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.input.ChatInput"
-
-
 class CollectionInput(GraphNode):
     """
     Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
@@ -523,7 +496,7 @@ class StringListInput(GraphNode):
         default="", description="The parameter name for the workflow."
     )
     value: list[str] | GraphNode | tuple[GraphNode, str] = Field(
-        default=PydanticUndefined, description="The list of strings to use as input."
+        default=[], description="The list of strings to use as input."
     )
     description: str | GraphNode | tuple[GraphNode, str] = Field(
         default="", description="The description of the input for the workflow."

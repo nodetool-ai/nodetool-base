@@ -38,7 +38,7 @@
         "data": {
           "model": {
             "type": "language_model",
-            "id": "gpt-oss:20b",
+            "id": "gemma3:4b",
             "provider": "ollama"
           },
           "prompt": "Generate a table of veggies",
