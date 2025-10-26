@@ -7,26 +7,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - name: Download packaged Conda environment
-        run: |
-          set -e
-          URL="https://github.com/nodetool-ai/nodetool/releases/download/v0.6.0/conda-env-linux-x64.tar.gz"
-          echo "Downloading Conda env from ${URL}"
-          curl -L -o conda_env.tgz "$URL"
-          mkdir -p conda_env
-          tar -xzf conda_env.tgz -C conda_env
-          chmod +x conda_env/bin/conda-unpack
-          ./conda_env/bin/conda-unpack
-          rm conda_env/bin/git
-          echo "CONDA_ENV_BIN=$(pwd)/conda_env/bin" >> $GITHUB_ENV
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
 
-      - name: Add Conda env to PATH
-        run: echo "$CONDA_ENV_BIN" >> $GITHUB_PATH
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
 
       - name: Install project and dev requirements
         run: |
-          uv pip install -e . --system --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/
-          uv pip install -r requirements-dev.txt --system
+          python -m pip install --upgrade pip
+          python -m pip install "nodetool-core @ git+https://github.com/nodetool-ai/nodetool-core.git@main"
+          python -m pip install -e .
+          python -m pip install -r requirements-dev.txt
 
       - name: Run tests
         run: pytest
