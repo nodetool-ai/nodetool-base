@@ -12,38 +12,54 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
 
-class CircleNode(GraphNode):
+
+class CircleNode(GraphNode[types.SVGElement]):
     """
     Generate SVG circle element.
     svg, shape, vector, circle
     """
 
-    cx: int | GraphNode | tuple[GraphNode, str] = Field(
+    cx: int | OutputHandle[int] = connect_field(
         default=0, description="Center X coordinate"
     )
-    cy: int | GraphNode | tuple[GraphNode, str] = Field(
+    cy: int | OutputHandle[int] = connect_field(
         default=0, description="Center Y coordinate"
     )
-    radius: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=50, description="Radius"
-    )
-    fill: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    radius: int | OutputHandle[int] = connect_field(default=50, description="Radius")
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
     )
-    stroke: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="none"), description="Stroke color"
     )
-    stroke_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    stroke_width: int | OutputHandle[int] = connect_field(
         default=1, description="Stroke width"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Circle"
 
 
-class ClipPath(GraphNode):
+CircleNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class ClipPath(GraphNode[types.SVGElement]):
     """
     Create clipping paths for SVG elements.
     svg, clip, mask
@@ -54,19 +70,32 @@ class ClipPath(GraphNode):
     - Apply visual effects using masks
     """
 
-    clip_content: types.SVGElement | GraphNode | tuple[GraphNode, str] = Field(
+    clip_content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
         default=None, description="SVG element to use as clip path"
     )
-    content: types.SVGElement | GraphNode | tuple[GraphNode, str] = Field(
+    content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
         default=None, description="SVG element to clip"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.ClipPath"
 
 
-class Document(GraphNode):
+ClipPath.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class Document(GraphNode[types.SVGRef]):
     """
     Combine SVG elements into a complete SVG document.
     svg, document, combine
@@ -81,101 +110,150 @@ class Document(GraphNode):
         str
         | nodetool.metadata.types.SVGElement
         | list[nodetool.metadata.types.SVGElement]
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=[], description="SVG content")
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
+        | OutputHandle[
+            str
+            | nodetool.metadata.types.SVGElement
+            | list[nodetool.metadata.types.SVGElement]
+        ]
+    ) = connect_field(default=[], description="SVG content")
+    width: int | OutputHandle[int] = connect_field(
         default=800, description="Document width"
     )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
+    height: int | OutputHandle[int] = connect_field(
         default=600, description="Document height"
     )
-    viewBox: str | GraphNode | tuple[GraphNode, str] = Field(
+    viewBox: str | OutputHandle[str] = connect_field(
         default="0 0 800 600", description="SVG viewBox attribute"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGRef]:
+        return typing.cast(OutputHandle[types.SVGRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Document"
 
 
-class DropShadow(GraphNode):
+Document.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class DropShadow(GraphNode[types.SVGElement]):
     """
     Apply drop shadow filter to SVG elements.
     svg, filter, shadow, effects
     """
 
-    std_deviation: float | GraphNode | tuple[GraphNode, str] = Field(
+    std_deviation: float | OutputHandle[float] = connect_field(
         default=3.0, description="Standard deviation for blur"
     )
-    dx: int | GraphNode | tuple[GraphNode, str] = Field(
+    dx: int | OutputHandle[int] = connect_field(
         default=2, description="X offset for shadow"
     )
-    dy: int | GraphNode | tuple[GraphNode, str] = Field(
+    dy: int | OutputHandle[int] = connect_field(
         default=2, description="Y offset for shadow"
     )
-    color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"),
         description="Color for shadow",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.DropShadow"
 
 
-class EllipseNode(GraphNode):
+DropShadow.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class EllipseNode(GraphNode[types.SVGElement]):
     """
     Generate SVG ellipse element.
     svg, shape, vector, ellipse
     """
 
-    cx: int | GraphNode | tuple[GraphNode, str] = Field(
+    cx: int | OutputHandle[int] = connect_field(
         default=0, description="Center X coordinate"
     )
-    cy: int | GraphNode | tuple[GraphNode, str] = Field(
+    cy: int | OutputHandle[int] = connect_field(
         default=0, description="Center Y coordinate"
     )
-    rx: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=100, description="X radius"
-    )
-    ry: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=50, description="Y radius"
-    )
-    fill: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    rx: int | OutputHandle[int] = connect_field(default=100, description="X radius")
+    ry: int | OutputHandle[int] = connect_field(default=50, description="Y radius")
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
     )
-    stroke: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="none"), description="Stroke color"
     )
-    stroke_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    stroke_width: int | OutputHandle[int] = connect_field(
         default=1, description="Stroke width"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Ellipse"
 
 
-class GaussianBlur(GraphNode):
+EllipseNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class GaussianBlur(GraphNode[types.SVGElement]):
     """
     Apply Gaussian blur filter to SVG elements.
     svg, filter, blur, effects
     """
 
-    std_deviation: float | GraphNode | tuple[GraphNode, str] = Field(
+    std_deviation: float | OutputHandle[float] = connect_field(
         default=3.0, description="Standard deviation for blur"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.GaussianBlur"
 
 
+GaussianBlur.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
 import nodetool.nodes.lib.svg
 
 
-class Gradient(GraphNode):
+class Gradient(GraphNode[types.SVGElement]):
     """
     Create linear or radial gradients for SVG elements.
     svg, gradient, color
@@ -191,145 +269,202 @@ class Gradient(GraphNode):
         default=nodetool.nodes.lib.svg.Gradient.GradientType.LINEAR,
         description="Type of gradient",
     )
-    x1: float | GraphNode | tuple[GraphNode, str] = Field(
+    x1: float | OutputHandle[float] = connect_field(
         default=0, description="Start X position (linear) or center X (radial)"
     )
-    y1: float | GraphNode | tuple[GraphNode, str] = Field(
+    y1: float | OutputHandle[float] = connect_field(
         default=0, description="Start Y position (linear) or center Y (radial)"
     )
-    x2: float | GraphNode | tuple[GraphNode, str] = Field(
+    x2: float | OutputHandle[float] = connect_field(
         default=100, description="End X position (linear) or radius X (radial)"
     )
-    y2: float | GraphNode | tuple[GraphNode, str] = Field(
+    y2: float | OutputHandle[float] = connect_field(
         default=100, description="End Y position (linear) or radius Y (radial)"
     )
-    color1: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    color1: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"),
         description="Start color of gradient",
     )
-    color2: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    color2: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#FFFFFF"),
         description="End color of gradient",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Gradient"
 
 
-class LineNode(GraphNode):
+Gradient.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class LineNode(GraphNode[types.SVGElement]):
     """
     Generate SVG line element.
     svg, shape, vector, line
     """
 
-    x1: int | GraphNode | tuple[GraphNode, str] = Field(
+    x1: int | OutputHandle[int] = connect_field(
         default=0, description="Start X coordinate"
     )
-    y1: int | GraphNode | tuple[GraphNode, str] = Field(
+    y1: int | OutputHandle[int] = connect_field(
         default=0, description="Start Y coordinate"
     )
-    x2: int | GraphNode | tuple[GraphNode, str] = Field(
+    x2: int | OutputHandle[int] = connect_field(
         default=100, description="End X coordinate"
     )
-    y2: int | GraphNode | tuple[GraphNode, str] = Field(
+    y2: int | OutputHandle[int] = connect_field(
         default=100, description="End Y coordinate"
     )
-    stroke: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"),
         description="Stroke color",
     )
-    stroke_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    stroke_width: int | OutputHandle[int] = connect_field(
         default=1, description="Stroke width"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Line"
 
 
-class PathNode(GraphNode):
+LineNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class PathNode(GraphNode[types.SVGElement]):
     """
     Generate SVG path element.
     svg, shape, vector, path
     """
 
-    path_data: str | GraphNode | tuple[GraphNode, str] = Field(
+    path_data: str | OutputHandle[str] = connect_field(
         default=PydanticUndefined, description="SVG path data (d attribute)"
     )
-    fill: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
     )
-    stroke: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="none"), description="Stroke color"
     )
-    stroke_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    stroke_width: int | OutputHandle[int] = connect_field(
         default=1, description="Stroke width"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Path"
 
 
-class PolygonNode(GraphNode):
+PathNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class PolygonNode(GraphNode[types.SVGElement]):
     """
     Generate SVG polygon element.
     svg, shape, vector, polygon
     """
 
-    points: str | GraphNode | tuple[GraphNode, str] = Field(
+    points: str | OutputHandle[str] = connect_field(
         default=PydanticUndefined, description="Points in format 'x1,y1 x2,y2 x3,y3...'"
     )
-    fill: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
     )
-    stroke: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="none"), description="Stroke color"
     )
-    stroke_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    stroke_width: int | OutputHandle[int] = connect_field(
         default=1, description="Stroke width"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Polygon"
 
 
-class RectNode(GraphNode):
+PolygonNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class RectNode(GraphNode[types.SVGElement]):
     """
     Generate SVG rectangle element.
     svg, shape, vector, rectangle
     """
 
-    x: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description="X coordinate"
-    )
-    y: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description="Y coordinate"
-    )
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=100, description="Width"
-    )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=100, description="Height"
-    )
-    fill: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    x: int | OutputHandle[int] = connect_field(default=0, description="X coordinate")
+    y: int | OutputHandle[int] = connect_field(default=0, description="Y coordinate")
+    width: int | OutputHandle[int] = connect_field(default=100, description="Width")
+    height: int | OutputHandle[int] = connect_field(default=100, description="Height")
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
     )
-    stroke: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="none"), description="Stroke color"
     )
-    stroke_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    stroke_width: int | OutputHandle[int] = connect_field(
         default=1, description="Stroke width"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Rect"
 
 
-class SVGToImage(GraphNode):
+RectNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class SVGToImage(GraphNode[types.ImageRef]):
     """
     Create an SVG document and convert it to a raster image in one step.
     svg, document, raster, convert
@@ -344,31 +479,45 @@ class SVGToImage(GraphNode):
         str
         | nodetool.metadata.types.SVGElement
         | list[nodetool.metadata.types.SVGElement]
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=[], description="SVG content")
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
+        | OutputHandle[
+            str
+            | nodetool.metadata.types.SVGElement
+            | list[nodetool.metadata.types.SVGElement]
+        ]
+    ) = connect_field(default=[], description="SVG content")
+    width: int | OutputHandle[int] = connect_field(
         default=800, description="Document width"
     )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
+    height: int | OutputHandle[int] = connect_field(
         default=600, description="Document height"
     )
-    viewBox: str | GraphNode | tuple[GraphNode, str] = Field(
+    viewBox: str | OutputHandle[str] = connect_field(
         default="0 0 800 600", description="SVG viewBox attribute"
     )
-    scale: int | GraphNode | tuple[GraphNode, str] = Field(
+    scale: int | OutputHandle[int] = connect_field(
         default=1, description="Scale factor for rasterization"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.SVGToImage"
 
 
+SVGToImage.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
 import nodetool.nodes.lib.svg
 
 
-class Text(GraphNode):
+class Text(GraphNode[types.SVGElement]):
     """
     Add text elements to SVG.
     svg, text, typography
@@ -380,22 +529,18 @@ class Text(GraphNode):
     """
 
     SVGTextAnchor: typing.ClassVar[type] = nodetool.nodes.lib.svg.SVGTextAnchor
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text content"
     )
-    x: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description="X coordinate"
-    )
-    y: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description="Y coordinate"
-    )
-    font_family: str | GraphNode | tuple[GraphNode, str] = Field(
+    x: int | OutputHandle[int] = connect_field(default=0, description="X coordinate")
+    y: int | OutputHandle[int] = connect_field(default=0, description="Y coordinate")
+    font_family: str | OutputHandle[str] = connect_field(
         default="Arial", description="Font family"
     )
-    font_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    font_size: int | OutputHandle[int] = connect_field(
         default=16, description="Font size"
     )
-    fill: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Text color"
     )
     text_anchor: nodetool.nodes.lib.svg.SVGTextAnchor = Field(
@@ -403,12 +548,25 @@ class Text(GraphNode):
         description="Text anchor position",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Text"
 
 
-class Transform(GraphNode):
+Text.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
+
+
+class Transform(GraphNode[types.SVGElement]):
     """
     Apply transformations to SVG elements.
     svg, transform, animation
@@ -419,25 +577,32 @@ class Transform(GraphNode):
     - Prepare elements for animation
     """
 
-    content: types.SVGElement | GraphNode | tuple[GraphNode, str] = Field(
+    content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
         default=None, description="SVG element to transform"
     )
-    translate_x: float | GraphNode | tuple[GraphNode, str] = Field(
+    translate_x: float | OutputHandle[float] = connect_field(
         default=0, description="X translation"
     )
-    translate_y: float | GraphNode | tuple[GraphNode, str] = Field(
+    translate_y: float | OutputHandle[float] = connect_field(
         default=0, description="Y translation"
     )
-    rotate: float | GraphNode | tuple[GraphNode, str] = Field(
+    rotate: float | OutputHandle[float] = connect_field(
         default=0, description="Rotation angle in degrees"
     )
-    scale_x: float | GraphNode | tuple[GraphNode, str] = Field(
+    scale_x: float | OutputHandle[float] = connect_field(
         default=1, description="X scale factor"
     )
-    scale_y: float | GraphNode | tuple[GraphNode, str] = Field(
+    scale_y: float | OutputHandle[float] = connect_field(
         default=1, description="Y scale factor"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.SVGElement]:
+        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.svg.Transform"
+
+
+Transform.model_rebuild(force=True)

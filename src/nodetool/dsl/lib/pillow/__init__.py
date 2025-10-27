@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow
 
-class Blend(GraphNode):
+
+class Blend(GraphNode[types.ImageRef]):
     """
     Blend two images with adjustable alpha mixing.
     blend, mix, fade, transition
@@ -24,24 +29,37 @@ class Blend(GraphNode):
     - Combine multiple exposures or effects
     """
 
-    image1: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The first image to blend.",
     )
-    image2: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The second image to blend.",
     )
-    alpha: float | GraphNode | tuple[GraphNode, str] = Field(
+    alpha: float | OutputHandle[float] = connect_field(
         default=0.5, description="The mix ratio."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.Blend"
 
 
-class Composite(GraphNode):
+Blend.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow
+
+
+class Composite(GraphNode[types.ImageRef]):
     """
     Combine two images using a mask for advanced compositing.
     composite, mask, blend, layering
@@ -52,19 +70,26 @@ class Composite(GraphNode):
     - Implement advanced photo editing techniques
     """
 
-    image1: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The first image to composite.",
     )
-    image2: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The second image to composite.",
     )
-    mask: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    mask: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The mask to composite with.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.Composite"
+
+
+Composite.model_rebuild(force=True)

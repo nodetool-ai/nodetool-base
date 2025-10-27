@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.manipulation
 
-class IndexArray(GraphNode):
+
+class IndexArray(GraphNode[types.NPArray]):
     """
     Select specific indices from an array along a specified axis.
     array, index, select, subset
@@ -24,23 +29,36 @@ class IndexArray(GraphNode):
     - Implement batch sampling operations
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to index",
     )
-    indices: str | GraphNode | tuple[GraphNode, str] = Field(
+    indices: str | OutputHandle[str] = connect_field(
         default="", description="The comma separated indices to select"
     )
-    axis: int | GraphNode | tuple[GraphNode, str] = Field(
+    axis: int | OutputHandle[int] = connect_field(
         default=0, description="Axis along which to index"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.manipulation.IndexArray"
 
 
-class MatMul(GraphNode):
+IndexArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.manipulation
+
+
+class MatMul(GraphNode[types.NPArray]):
     """
     Perform matrix multiplication on two input arrays.
     array, matrix, multiplication, linear algebra
@@ -51,21 +69,34 @@ class MatMul(GraphNode):
     - Perform matrix operations in neural networks
     """
 
-    a: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    a: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="First input array",
     )
-    b: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    b: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Second input array",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.manipulation.MatMul"
 
 
-class SliceArray(GraphNode):
+MatMul.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.manipulation
+
+
+class SliceArray(GraphNode[types.NPArray]):
     """
     Extract a slice of an array along a specified axis.
     array, slice, subset, index
@@ -76,29 +107,42 @@ class SliceArray(GraphNode):
     - Create sliding windows over sequential data
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to slice",
     )
-    start: int | GraphNode | tuple[GraphNode, str] = Field(
+    start: int | OutputHandle[int] = connect_field(
         default=0, description="Starting index (inclusive)"
     )
-    stop: int | GraphNode | tuple[GraphNode, str] = Field(
+    stop: int | OutputHandle[int] = connect_field(
         default=0, description="Ending index (exclusive)"
     )
-    step: int | GraphNode | tuple[GraphNode, str] = Field(
+    step: int | OutputHandle[int] = connect_field(
         default=1, description="Step size between elements"
     )
-    axis: int | GraphNode | tuple[GraphNode, str] = Field(
+    axis: int | OutputHandle[int] = connect_field(
         default=0, description="Axis along which to slice"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.manipulation.SliceArray"
 
 
-class SplitArray(GraphNode):
+SliceArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.manipulation
+
+
+class SplitArray(GraphNode[list[types.NPArray]]):
     """
     Split an array into multiple sub-arrays along a specified axis.
     array, split, divide, partition
@@ -109,23 +153,38 @@ class SplitArray(GraphNode):
     - Separate multi-channel data
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to split",
     )
-    num_splits: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_splits: int | OutputHandle[int] = connect_field(
         default=0, description="Number of equal splits to create"
     )
-    axis: int | GraphNode | tuple[GraphNode, str] = Field(
+    axis: int | OutputHandle[int] = connect_field(
         default=0, description="Axis along which to split"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.NPArray]]:
+        return typing.cast(
+            OutputHandle[list[types.NPArray]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.manipulation.SplitArray"
 
 
-class Stack(GraphNode):
+SplitArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.manipulation
+
+
+class Stack(GraphNode[types.NPArray]):
     """
     Stack multiple arrays along a specified axis.
     array, stack, concatenate, join, merge, axis
@@ -136,19 +195,32 @@ class Stack(GraphNode):
     - Merge feature vectors for machine learning models
     """
 
-    arrays: list[types.NPArray] | GraphNode | tuple[GraphNode, str] = Field(
+    arrays: list[types.NPArray] | OutputHandle[list[types.NPArray]] = connect_field(
         default=[], description="Arrays to stack"
     )
-    axis: int | GraphNode | tuple[GraphNode, str] = Field(
+    axis: int | OutputHandle[int] = connect_field(
         default=0, description="The axis to stack along."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.manipulation.Stack"
 
 
-class TransposeArray(GraphNode):
+Stack.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.manipulation
+
+
+class TransposeArray(GraphNode[types.NPArray]):
     """
     Transpose the dimensions of the input array.
     array, transpose, reshape, dimensions
@@ -159,11 +231,18 @@ class TransposeArray(GraphNode):
     - Implement certain linear algebra operations
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Array to transpose",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.manipulation.TransposeArray"
+
+
+TransposeArray.model_rebuild(force=True)

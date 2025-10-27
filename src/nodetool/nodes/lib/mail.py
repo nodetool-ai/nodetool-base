@@ -243,7 +243,7 @@ class GmailSearch(BaseNode):
             folder=self.folder.value if self.folder else None,
             text=self.text.strip() if self.text and self.text.strip() else None,
         )
-        gmail_connection = context.get_gmail_connection()
+        gmail_connection = await context.get_gmail_connection()
 
         async def _on_retry(attempt: int, exc: Exception):
             gmail_connection.shutdown()
@@ -307,7 +307,7 @@ class MoveToArchive(BaseNode):
         max_delay = 5.0
         factor = 2.0
         jitter = 0.1
-        gmail_connection = context.get_gmail_connection()
+        gmail_connection = await context.get_gmail_connection()
 
         async def _on_retry(attempt: int, exc: Exception):
             gmail_connection.shutdown()
@@ -370,7 +370,7 @@ class AddLabel(BaseNode):
         factor = 2.0
         jitter = 0.1
 
-        gmail_connection = context.get_gmail_connection()
+        gmail_connection = await context.get_gmail_connection()
 
         async def _on_retry(attempt: int, exc: Exception):
             gmail_connection.shutdown()

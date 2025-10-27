@@ -12,10 +12,14 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.text
 import nodetool.nodes.openai.text
 
 
-class Embedding(GraphNode):
+class Embedding(GraphNode[types.NPArray]):
     """
     Generate vector representations of text for semantic analysis.
     embeddings, similarity, search, clustering, classification
@@ -33,21 +37,32 @@ class Embedding(GraphNode):
     EmbeddingModel: typing.ClassVar[type] = (
         nodetool.nodes.openai.text.Embedding.EmbeddingModel
     )
-    input: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    input: str | OutputHandle[str] = connect_field(default="", description=None)
     model: nodetool.nodes.openai.text.Embedding.EmbeddingModel = Field(
         default=nodetool.nodes.openai.text.Embedding.EmbeddingModel.TEXT_EMBEDDING_3_SMALL,
         description=None,
     )
-    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=4096, description=None
-    )
+    chunk_size: int | OutputHandle[int] = connect_field(default=4096, description=None)
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "openai.text.Embedding"
 
 
-class WebSearch(GraphNode):
+Embedding.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.text
+
+
+class WebSearch(GraphNode[str]):
     """
     🔍 OpenAI Web Search - Searches the web using OpenAI's web search capabilities.
 
@@ -56,10 +71,17 @@ class WebSearch(GraphNode):
     Requires an OpenAI API key.
     """
 
-    query: str | GraphNode | tuple[GraphNode, str] = Field(
+    query: str | OutputHandle[str] = connect_field(
         default="", description="The search query to execute."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "openai.text.WebSearch"
+
+
+WebSearch.model_rebuild(force=True)

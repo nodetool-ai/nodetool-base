@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
 
-class Browser(GraphNode):
+
+class Browser(GraphNode[nodetool.nodes.lib.browser.Browser.OutputType]):
     """
     Fetches content from a web page using a headless browser.
     browser, web, scraping, content, fetch
@@ -25,23 +30,48 @@ class Browser(GraphNode):
     - Save extracted content to files
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="URL to navigate to"
     )
-    timeout: int | GraphNode | tuple[GraphNode, str] = Field(
+    timeout: int | OutputHandle[int] = connect_field(
         default=20000, description="Timeout in milliseconds for page navigation"
     )
+
+    @property
+    def out(self) -> "BrowserOutputs":
+        return BrowserOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.browser.Browser"
 
 
+class BrowserOutputs(OutputsProxy):
+    @property
+    def success(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self["success"])
+
+    @property
+    def content(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["content"])
+
+    @property
+    def metadata(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self["metadata"])
+
+
+Browser.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
 import nodetool.nodes.lib.browser
 import nodetool.nodes.lib.browser
 
 
-class BrowserNavigation(GraphNode):
+class BrowserNavigation(GraphNode[typing.Any]):
     """
     Navigates and interacts with web pages in a browser session.
     browser, navigation, interaction, click, extract
@@ -56,21 +86,21 @@ class BrowserNavigation(GraphNode):
     ExtractType: typing.ClassVar[type] = (
         nodetool.nodes.lib.browser.BrowserNavigation.ExtractType
     )
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="URL to navigate to (required for 'goto' action)"
     )
     action: nodetool.nodes.lib.browser.BrowserNavigation.Action = Field(
         default=nodetool.nodes.lib.browser.BrowserNavigation.Action.GOTO,
         description="Navigation or extraction action to perform",
     )
-    selector: str | GraphNode | tuple[GraphNode, str] = Field(
+    selector: str | OutputHandle[str] = connect_field(
         default="",
         description="CSS selector for the element to interact with or extract from",
     )
-    timeout: int | GraphNode | tuple[GraphNode, str] = Field(
+    timeout: int | OutputHandle[int] = connect_field(
         default=30000, description="Timeout in milliseconds for the action"
     )
-    wait_for: str | GraphNode | tuple[GraphNode, str] = Field(
+    wait_for: str | OutputHandle[str] = connect_field(
         default="",
         description="Optional selector to wait for after performing the action",
     )
@@ -78,20 +108,31 @@ class BrowserNavigation(GraphNode):
         default=nodetool.nodes.lib.browser.BrowserNavigation.ExtractType.TEXT,
         description="Type of content to extract (for 'extract' action)",
     )
-    attribute: str | GraphNode | tuple[GraphNode, str] = Field(
+    attribute: str | OutputHandle[str] = connect_field(
         default="",
         description="Attribute name to extract (when extract_type is 'attribute')",
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.browser.BrowserNavigation"
 
 
+BrowserNavigation.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
 import nodetool.nodes.lib.browser
 
 
-class BrowserUseNode(GraphNode):
+class BrowserUseNode(GraphNode[nodetool.nodes.lib.browser.BrowserUseNode.OutputType]):
     """
     Browser agent tool that uses browser_use under the hood.
 
@@ -111,24 +152,55 @@ class BrowserUseNode(GraphNode):
         default=nodetool.nodes.lib.browser.BrowserUseModel.GPT_4O,
         description="The model to use for the browser agent.",
     )
-    task: str | GraphNode | tuple[GraphNode, str] = Field(
+    task: str | OutputHandle[str] = connect_field(
         default="",
         description="Natural language description of the browser task to perform. Can include complex multi-step instructions like 'Compare prices between websites', 'Fill out forms', or 'Extract specific data'.",
     )
-    timeout: int | GraphNode | tuple[GraphNode, str] = Field(
+    timeout: int | OutputHandle[int] = connect_field(
         default=300,
         description="Maximum time in seconds to allow for task completion. Complex tasks may require longer timeouts.",
     )
-    use_remote_browser: bool | GraphNode | tuple[GraphNode, str] = Field(
+    use_remote_browser: bool | OutputHandle[bool] = connect_field(
         default=True, description="Use a remote browser instead of a local one"
     )
+
+    @property
+    def out(self) -> "BrowserUseNodeOutputs":
+        return BrowserUseNodeOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.browser.BrowserUse"
 
 
-class DownloadFile(GraphNode):
+class BrowserUseNodeOutputs(OutputsProxy):
+    @property
+    def success(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self["success"])
+
+    @property
+    def task(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["task"])
+
+    @property
+    def result(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["result"])
+
+    @property
+    def error(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["error"])
+
+
+BrowserUseNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
+
+
+class DownloadFile(GraphNode[bytes]):
     """
     Downloads a file from a URL and saves it to disk.
     download, file, web, save
@@ -139,16 +211,29 @@ class DownloadFile(GraphNode):
     - Retrieve file assets for analysis
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="URL of the file to download"
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.browser.DownloadFile"
 
 
-class Screenshot(GraphNode):
+DownloadFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
+
+
+class Screenshot(GraphNode[typing.Any]):
     """
     Takes a screenshot of a web page or specific element.
     browser, screenshot, capture, image
@@ -159,26 +244,39 @@ class Screenshot(GraphNode):
     - Create visual records of web content
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="URL to navigate to before taking screenshot"
     )
-    selector: str | GraphNode | tuple[GraphNode, str] = Field(
+    selector: str | OutputHandle[str] = connect_field(
         default="", description="Optional CSS selector for capturing a specific element"
     )
-    output_file: str | GraphNode | tuple[GraphNode, str] = Field(
+    output_file: str | OutputHandle[str] = connect_field(
         default="screenshot.png",
         description="Path to save the screenshot (relative to workspace)",
     )
-    timeout: int | GraphNode | tuple[GraphNode, str] = Field(
+    timeout: int | OutputHandle[int] = connect_field(
         default=30000, description="Timeout in milliseconds for page navigation"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.browser.Screenshot"
 
 
-class WebFetch(GraphNode):
+Screenshot.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
+
+
+class WebFetch(GraphNode[str]):
     """
     Fetches HTML content from a URL and converts it to text.
     web, fetch, html, markdown, http
@@ -189,13 +287,20 @@ class WebFetch(GraphNode):
     - Save web content to files
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="URL to fetch content from"
     )
-    selector: str | GraphNode | tuple[GraphNode, str] = Field(
+    selector: str | OutputHandle[str] = connect_field(
         default="body", description="CSS selector to extract specific elements"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.browser.WebFetch"
+
+
+WebFetch.model_rebuild(force=True)

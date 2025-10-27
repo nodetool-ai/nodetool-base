@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markitdown
 
-class ConvertToMarkdown(GraphNode):
+
+class ConvertToMarkdown(GraphNode[types.DocumentRef]):
     """
     Converts various document formats to markdown using MarkItDown.
     markdown, convert, document
@@ -24,11 +29,20 @@ class ConvertToMarkdown(GraphNode):
     - Convert PowerPoint to markdown content
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to convert to markdown",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "lib.markitdown.ConvertToMarkdown"
+
+
+ConvertToMarkdown.model_rebuild(force=True)

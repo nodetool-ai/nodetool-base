@@ -30,24 +30,16 @@ async def example():
     )
 
     # Extract email body fields
-    email_fields = EmailFields(email=gmail_search)
+    email_fields = EmailFields(email=gmail_search.out.email)
 
     # Summarize the newsletter content
     summarizer = Summarizer(
-        text=(email_fields, "body"),  # Connect the body output
-        system_prompt="""
-        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.
-        Follow these guidelines:
-        1. Identify and include only the most important information.
-        2. Maintain factual accuracy - do not add or modify information.
-        3. Use clear, direct language.
-        4. Aim for approximately 1000 tokens.
-        """,
+        text=email_fields.out.body,  # Connect the body output
         model=LanguageModel(
             type="language_model",
-            id="openai/gpt-oss-120b",
-            provider=Provider.HuggingFaceCerebras,
-            name="gpt-oss-120b",
+            id="gemma3:1b",
+            provider=Provider.Ollama,
+            name="gemma3:1b",
         ),
         max_tokens=1000,
         context_window=4096,
@@ -56,7 +48,7 @@ async def example():
     # Output the result
     output = StringOutput(
         name="summary",
-        value=(summarizer, "chunk"),
+        value=summarizer.out.text,
     )
 
     result = await graph_result(output)
@@ -68,4 +60,4 @@ if __name__ == "__main__":
     import asyncio
 
     result = asyncio.run(example())
-    print(f"Summary: {result}")
+    print(result["summary"])

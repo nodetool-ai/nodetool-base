@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.draw
 
-class Background(GraphNode):
+
+class Background(GraphNode[types.ImageRef]):
     """
     The Background Node creates a blank background.
     image, background, blank, base, layer
@@ -25,22 +30,31 @@ class Background(GraphNode):
     - When blank backgrounds of specific colors are required for visualization tasks.
     """
 
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=512, description=None
-    )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=512, description=None
-    )
-    color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    width: int | OutputHandle[int] = connect_field(default=512, description=None)
+    height: int | OutputHandle[int] = connect_field(default=512, description=None)
+    color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#FFFFFF"), description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.draw.Background"
 
 
-class GaussianNoise(GraphNode):
+Background.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.draw
+
+
+class GaussianNoise(GraphNode[types.ImageRef]):
     """
     This node creates and adds Gaussian noise to an image.
     image, noise, gaussian, distortion, artifact
@@ -53,28 +67,31 @@ class GaussianNoise(GraphNode):
     - Creating artistic effects in images.
     """
 
-    mean: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0.0, description=None
-    )
-    stddev: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=1.0, description=None
-    )
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=512, description=None
-    )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=512, description=None
-    )
+    mean: float | OutputHandle[float] = connect_field(default=0.0, description=None)
+    stddev: float | OutputHandle[float] = connect_field(default=1.0, description=None)
+    width: int | OutputHandle[int] = connect_field(default=512, description=None)
+    height: int | OutputHandle[int] = connect_field(default=512, description=None)
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.draw.GaussianNoise"
 
 
+GaussianNoise.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.draw
 import nodetool.nodes.lib.pillow.draw
 
 
-class RenderText(GraphNode):
+class RenderText(GraphNode[types.ImageRef]):
     """
     This node allows you to add text to images.
     text, font, label, title, watermark, caption, image, overlay
@@ -92,23 +109,23 @@ class RenderText(GraphNode):
     TextAlignment: typing.ClassVar[type] = (
         nodetool.nodes.lib.pillow.draw.RenderText.TextAlignment
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The text to render."
     )
-    font: types.FontRef | GraphNode | tuple[GraphNode, str] = Field(
+    font: types.FontRef | OutputHandle[types.FontRef] = connect_field(
         default=types.FontRef(type="font", name="DejaVuSans"),
         description="The font to use.",
     )
-    x: int | GraphNode | tuple[GraphNode, str] = Field(
+    x: int | OutputHandle[int] = connect_field(
         default=0, description="The x coordinate."
     )
-    y: int | GraphNode | tuple[GraphNode, str] = Field(
+    y: int | OutputHandle[int] = connect_field(
         default=0, description="The y coordinate."
     )
-    size: int | GraphNode | tuple[GraphNode, str] = Field(
+    size: int | OutputHandle[int] = connect_field(
         default=12, description="The font size."
     )
-    color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"),
         description="The font color.",
     )
@@ -116,11 +133,18 @@ class RenderText(GraphNode):
         default=nodetool.nodes.lib.pillow.draw.RenderText.TextAlignment.LEFT,
         description=None,
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to render on.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.draw.RenderText"
+
+
+RenderText.model_rebuild(force=True)

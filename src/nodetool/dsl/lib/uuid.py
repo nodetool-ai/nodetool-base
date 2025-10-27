@@ -12,10 +12,14 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
 import nodetool.nodes.lib.uuid
 
 
-class FormatUUID(GraphNode):
+class FormatUUID(GraphNode[str]):
     """Format a UUID string in different representations.
     uuid, format, convert, hex, urn, identifier
 
@@ -26,7 +30,7 @@ class FormatUUID(GraphNode):
     """
 
     UUIDFormat: typing.ClassVar[type] = nodetool.nodes.lib.uuid.UUIDFormat
-    uuid_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    uuid_string: str | OutputHandle[str] = connect_field(
         default="", description="UUID string to format"
     )
     format: nodetool.nodes.lib.uuid.UUIDFormat = Field(
@@ -34,12 +38,25 @@ class FormatUUID(GraphNode):
         description="Output format (standard, hex, urn, int, bytes_hex)",
     )
 
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.FormatUUID"
 
 
-class GenerateUUID1(GraphNode):
+FormatUUID.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
+
+
+class GenerateUUID1(GraphNode[str]):
     """Generate a time-based UUID (version 1).
     uuid, time, identifier, unique, guid, timestamp
 
@@ -49,12 +66,25 @@ class GenerateUUID1(GraphNode):
     - Track creation timestamps in IDs
     """
 
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.GenerateUUID1"
 
 
-class GenerateUUID3(GraphNode):
+GenerateUUID1.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
+
+
+class GenerateUUID3(GraphNode[str]):
     """Generate a name-based UUID using MD5 (version 3).
     uuid, name, identifier, unique, guid, md5, deterministic
 
@@ -64,19 +94,32 @@ class GenerateUUID3(GraphNode):
     - Map names to unique identifiers
     """
 
-    namespace: str | GraphNode | tuple[GraphNode, str] = Field(
+    namespace: str | OutputHandle[str] = connect_field(
         default="dns", description="Namespace (dns, url, oid, x500, or a UUID string)"
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="Name to generate UUID from"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.GenerateUUID3"
 
 
-class GenerateUUID4(GraphNode):
+GenerateUUID3.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
+
+
+class GenerateUUID4(GraphNode[str]):
     """Generate a random UUID (version 4).
     uuid, random, identifier, unique, guid
 
@@ -86,12 +129,25 @@ class GenerateUUID4(GraphNode):
     - Produce random unique keys
     """
 
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.GenerateUUID4"
 
 
-class GenerateUUID5(GraphNode):
+GenerateUUID4.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
+
+
+class GenerateUUID5(GraphNode[str]):
     """Generate a name-based UUID using SHA-1 (version 5).
     uuid, name, identifier, unique, guid, sha1, deterministic
 
@@ -101,19 +157,32 @@ class GenerateUUID5(GraphNode):
     - Map names to unique identifiers with better collision resistance
     """
 
-    namespace: str | GraphNode | tuple[GraphNode, str] = Field(
+    namespace: str | OutputHandle[str] = connect_field(
         default="dns", description="Namespace (dns, url, oid, x500, or a UUID string)"
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="Name to generate UUID from"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.GenerateUUID5"
 
 
-class IsValidUUID(GraphNode):
+GenerateUUID5.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
+
+
+class IsValidUUID(GraphNode[bool]):
     """Check if a string is a valid UUID.
     uuid, validate, check, verify, identifier
 
@@ -123,16 +192,29 @@ class IsValidUUID(GraphNode):
     - Conditional workflow based on UUID validity
     """
 
-    uuid_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    uuid_string: str | OutputHandle[str] = connect_field(
         default="", description="String to check"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.IsValidUUID"
 
 
-class ParseUUID(GraphNode):
+IsValidUUID.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.uuid
+
+
+class ParseUUID(GraphNode[dict]):
     """Parse and validate a UUID string.
     uuid, parse, validate, check, identifier
 
@@ -142,10 +224,17 @@ class ParseUUID(GraphNode):
     - Extract UUID version information
     """
 
-    uuid_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    uuid_string: str | OutputHandle[str] = connect_field(
         default="", description="UUID string to parse"
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.uuid.ParseUUID"
+
+
+ParseUUID.model_rebuild(force=True)

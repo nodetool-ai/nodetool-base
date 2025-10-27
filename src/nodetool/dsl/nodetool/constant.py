@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 
-class Audio(GraphNode):
+
+class Audio(GraphNode[types.AudioRef]):
     """Represents an audio file constant in the workflow.
     audio, file, mp3, wav
 
@@ -23,17 +28,30 @@ class Audio(GraphNode):
     - Set default audio for testing or demonstration purposes
     """
 
-    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description=None,
     )
+
+    @property
+    def output(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Audio"
 
 
-class Bool(GraphNode):
+Audio.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Bool(GraphNode[bool]):
     """Represents a boolean constant in the workflow.
     boolean, logic, flag
 
@@ -43,16 +61,27 @@ class Bool(GraphNode):
     - Set default boolean values for configuration
     """
 
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
+    value: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Bool"
 
 
-class Constant(GraphNode):
+Bool.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Constant(GraphNode[typing.Any]):
     """Base class for fixed-value nodes.
 
     constant, parameter, default
@@ -63,12 +92,25 @@ class Constant(GraphNode):
     - Simplify testing with deterministic outputs
     """
 
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Constant"
 
 
-class DataFrame(GraphNode):
+Constant.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class DataFrame(GraphNode[types.DataframeRef]):
     """Represents a fixed DataFrame constant in the workflow.
     table, data, dataframe, pandas
 
@@ -78,79 +120,120 @@ class DataFrame(GraphNode):
     - Set sample data for testing or demonstration
     """
 
-    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description=None,
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.DataFrame"
 
 
-class Date(GraphNode):
+DataFrame.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Date(GraphNode[types.Date]):
     """
     Make a date object from year, month, day.
     date, make, create
     """
 
-    year: int | GraphNode | tuple[GraphNode, str] = Field(
+    year: int | OutputHandle[int] = connect_field(
         default=1900, description="Year of the date"
     )
-    month: int | GraphNode | tuple[GraphNode, str] = Field(
+    month: int | OutputHandle[int] = connect_field(
         default=1, description="Month of the date"
     )
-    day: int | GraphNode | tuple[GraphNode, str] = Field(
+    day: int | OutputHandle[int] = connect_field(
         default=1, description="Day of the date"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.Date]:
+        return typing.cast(OutputHandle[types.Date], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Date"
 
 
-class DateTime(GraphNode):
+Date.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class DateTime(GraphNode[types.Datetime]):
     """
     Make a datetime object from year, month, day, hour, minute, second.
     datetime, make, create
     """
 
-    year: int | GraphNode | tuple[GraphNode, str] = Field(
+    year: int | OutputHandle[int] = connect_field(
         default=1900, description="Year of the datetime"
     )
-    month: int | GraphNode | tuple[GraphNode, str] = Field(
+    month: int | OutputHandle[int] = connect_field(
         default=1, description="Month of the datetime"
     )
-    day: int | GraphNode | tuple[GraphNode, str] = Field(
+    day: int | OutputHandle[int] = connect_field(
         default=1, description="Day of the datetime"
     )
-    hour: int | GraphNode | tuple[GraphNode, str] = Field(
+    hour: int | OutputHandle[int] = connect_field(
         default=0, description="Hour of the datetime"
     )
-    minute: int | GraphNode | tuple[GraphNode, str] = Field(
+    minute: int | OutputHandle[int] = connect_field(
         default=0, description="Minute of the datetime"
     )
-    second: int | GraphNode | tuple[GraphNode, str] = Field(
+    second: int | OutputHandle[int] = connect_field(
         default=0, description="Second of the datetime"
     )
-    microsecond: int | GraphNode | tuple[GraphNode, str] = Field(
+    microsecond: int | OutputHandle[int] = connect_field(
         default=0, description="Microsecond of the datetime"
     )
-    tzinfo: str | GraphNode | tuple[GraphNode, str] = Field(
+    tzinfo: str | OutputHandle[str] = connect_field(
         default="UTC", description="Timezone of the datetime"
     )
-    utc_offset: int | GraphNode | tuple[GraphNode, str] = Field(
+    utc_offset: int | OutputHandle[int] = connect_field(
         default=0, description="UTC offset of the datetime"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.DateTime"
 
 
-class Dict(GraphNode):
+DateTime.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Dict(GraphNode[dict[str, Any]]):
     """Represents a dictionary constant in the workflow.
     dictionary, key-value, mapping
 
@@ -160,31 +243,59 @@ class Dict(GraphNode):
     - Define parameter sets for other nodes
     """
 
-    value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    value: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Dict"
 
 
-class Document(GraphNode):
+Dict.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Document(GraphNode[types.DocumentRef]):
     """Represents a document constant in the workflow.
     document, pdf, word, docx
     """
 
-    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description=None,
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Document"
 
 
-class Float(GraphNode):
+Document.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Float(GraphNode[float]):
     """Represents a floating-point number constant in the workflow.
     number, decimal, float
 
@@ -194,16 +305,27 @@ class Float(GraphNode):
     - Provide fixed numerical inputs for processing
     """
 
-    value: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0.0, description=None
-    )
+    value: float | OutputHandle[float] = connect_field(default=0.0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Float"
 
 
-class Image(GraphNode):
+Float.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Image(GraphNode[types.ImageRef]):
     """Represents an image file constant in the workflow.
     picture, photo, image
 
@@ -213,17 +335,30 @@ class Image(GraphNode):
     - Set default image for testing or demonstration purposes
     """
 
-    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description=None,
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Image"
 
 
-class Integer(GraphNode):
+Image.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Integer(GraphNode[int]):
     """Represents an integer constant in the workflow.
     number, integer, whole
 
@@ -233,29 +368,55 @@ class Integer(GraphNode):
     - Provide fixed numerical inputs for processing
     """
 
-    value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    value: int | OutputHandle[int] = connect_field(default=0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Integer"
 
 
-class JSON(GraphNode):
+Integer.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class JSON(GraphNode[types.JSONRef]):
     """Represents a JSON constant in the workflow.
     json, object, dictionary
     """
 
-    value: types.JSONRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.JSONRef | OutputHandle[types.JSONRef] = connect_field(
         default=types.JSONRef(type="json", uri="", asset_id=None, data=None),
         description=None,
     )
+
+    @property
+    def output(self) -> OutputHandle[types.JSONRef]:
+        return typing.cast(OutputHandle[types.JSONRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.JSON"
 
 
-class List(GraphNode):
+JSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class List(GraphNode[list[Any]]):
     """Represents a list constant in the workflow.
     array, sequence, collection
 
@@ -265,16 +426,29 @@ class List(GraphNode):
     - Define sequences for iteration in other nodes
     """
 
-    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    value: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[list[Any]]:
+        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.List"
 
 
-class String(GraphNode):
+List.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class String(GraphNode[str]):
     """Represents a string constant in the workflow.
     text, string, characters
 
@@ -284,14 +458,27 @@ class String(GraphNode):
     - Set default text values for configuration
     """
 
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    value: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.String"
 
 
-class Video(GraphNode):
+String.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+
+
+class Video(GraphNode[types.VideoRef]):
     """Represents a video file constant in the workflow.
     video, movie, mp4, file
 
@@ -301,13 +488,20 @@ class Video(GraphNode):
     - Set default video for testing or demonstration purposes
     """
 
-    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description=None,
     )
 
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.constant.Video"
+
+
+Video.model_rebuild(force=True)

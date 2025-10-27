@@ -46,39 +46,38 @@ async def test_text_to_speech_basic():
         return_value=async_generator([fake_audio_chunk])
     )
 
-    with patch(
-        "nodetool.nodes.nodetool.audio.get_provider",
-        return_value=mock_provider,
-    ):
-        # Process the node - now uses gen_process
-        results = []
-        async for result in node.gen_process(context):
-            results.append(result)
+    # Mock context.get_provider to return our mock provider
+    context.get_provider = AsyncMock(return_value=mock_provider)
 
-        # Should have 2 results: chunk output and final audio
-        assert len(results) == 2
+    # Process the node - now uses gen_process
+    results = []
+    async for result in node.gen_process(context):
+        results.append(result)
 
-        # First result is chunk
-        assert results[0]["chunk"].content_type == "audio"
-        assert results[0]["chunk"].done is False
-        assert results[0]["audio"] is None
+    # Should have 2 results: chunk output and final audio
+    assert len(results) == 2
 
-        # Second result is final audio
-        assert results[1]["chunk"].done is True
-        assert isinstance(results[1]["audio"], AudioRef)
-        assert results[1]["audio"].uri == "test://audio.mp3"
+    # First result is chunk
+    assert results[0]["chunk"].content_type == "audio"
+    assert results[0]["chunk"].done is False
+    assert results[0]["audio"] is None
 
-        # Verify the provider was called correctly
-        mock_provider.text_to_speech.assert_called_once_with(
-            text="Hello, world!",
-            model="tts-1",
-            voice="alloy",
-            speed=1.0,
-            context=context,
-        )
+    # Second result is final audio
+    assert results[1]["chunk"].done is True
+    assert isinstance(results[1]["audio"], AudioRef)
+    assert results[1]["audio"].uri == "test://audio.mp3"
 
-        # Verify audio_from_numpy was called
-        context.audio_from_numpy.assert_called_once()
+    # Verify the provider was called correctly
+    mock_provider.text_to_speech.assert_called_once_with(
+        text="Hello, world!",
+        model="tts-1",
+        voice="alloy",
+        speed=1.0,
+        context=context,
+    )
+
+    # Verify audio_from_numpy was called
+    context.audio_from_numpy.assert_called_once()
 
 
 @pytest.mark.asyncio
@@ -107,22 +106,21 @@ async def test_text_to_speech_default_voice():
         return_value=async_generator([fake_audio_chunk])
     )
 
-    with patch(
-        "nodetool.nodes.nodetool.audio.get_provider",
-        return_value=mock_provider,
-    ):
-        results = []
-        async for result in node.gen_process(context):
-            results.append(result)
+    # Mock context.get_provider to return our mock provider
+    context.get_provider = AsyncMock(return_value=mock_provider)
 
-        # Should use first voice from model
-        mock_provider.text_to_speech.assert_called_once_with(
-            text="Test text",
-            model="tts-1",
-            voice="alloy",  # First voice from the list
-            speed=1.0,
-            context=context,
-        )
+    results = []
+    async for result in node.gen_process(context):
+        results.append(result)
+
+    # Should use first voice from model
+    mock_provider.text_to_speech.assert_called_once_with(
+        text="Test text",
+        model="tts-1",
+        voice="alloy",  # First voice from the list
+        speed=1.0,
+        context=context,
+    )
 
 
 @pytest.mark.asyncio
@@ -150,21 +148,20 @@ async def test_text_to_speech_different_speed():
         return_value=async_generator([fake_audio_chunk])
     )
 
-    with patch(
-        "nodetool.nodes.nodetool.audio.get_provider",
-        return_value=mock_provider,
-    ):
-        results = []
-        async for result in node.gen_process(context):
-            results.append(result)
+    # Mock context.get_provider to return our mock provider
+    context.get_provider = AsyncMock(return_value=mock_provider)
 
-        mock_provider.text_to_speech.assert_called_once_with(
-            text="Fast speech",
-            model="tts-1-hd",
-            voice="nova",
-            speed=2.0,
-            context=context,
-        )
+    results = []
+    async for result in node.gen_process(context):
+        results.append(result)
+
+    mock_provider.text_to_speech.assert_called_once_with(
+        text="Fast speech",
+        model="tts-1-hd",
+        voice="nova",
+        speed=2.0,
+        context=context,
+    )
 
 
 def test_text_to_speech_get_basic_fields():

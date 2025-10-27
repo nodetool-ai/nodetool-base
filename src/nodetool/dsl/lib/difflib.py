@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.difflib
 
-class GetCloseMatches(GraphNode):
+
+class GetCloseMatches(GraphNode[list[str]]):
     """
     Finds close matches for a word within a list of possibilities.
     difflib, fuzzy, match
@@ -24,25 +29,38 @@ class GetCloseMatches(GraphNode):
     - Provide recommendations based on partial text
     """
 
-    word: str | GraphNode | tuple[GraphNode, str] = Field(
+    word: str | OutputHandle[str] = connect_field(
         default="", description="Word to match"
     )
-    possibilities: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    possibilities: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="List of possible words"
     )
-    n: int | GraphNode | tuple[GraphNode, str] = Field(
+    n: int | OutputHandle[int] = connect_field(
         default=3, description="Maximum number of matches to return"
     )
-    cutoff: float | GraphNode | tuple[GraphNode, str] = Field(
+    cutoff: float | OutputHandle[float] = connect_field(
         default=0.6, description="Minimum similarity ratio"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.difflib.GetCloseMatches"
 
 
-class SimilarityRatio(GraphNode):
+GetCloseMatches.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.difflib
+
+
+class SimilarityRatio(GraphNode[float]):
     """
     Calculates the similarity ratio between two strings.
     difflib, similarity, ratio, compare
@@ -53,19 +71,32 @@ class SimilarityRatio(GraphNode):
     - Evaluate similarity of user input
     """
 
-    a: str | GraphNode | tuple[GraphNode, str] = Field(
+    a: str | OutputHandle[str] = connect_field(
         default="", description="First string to compare"
     )
-    b: str | GraphNode | tuple[GraphNode, str] = Field(
+    b: str | OutputHandle[str] = connect_field(
         default="", description="Second string to compare"
     )
+
+    @property
+    def output(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.difflib.SimilarityRatio"
 
 
-class UnifiedDiff(GraphNode):
+SimilarityRatio.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.difflib
+
+
+class UnifiedDiff(GraphNode[str]):
     """
     Generates a unified diff between two texts.
     difflib, diff, compare
@@ -76,22 +107,25 @@ class UnifiedDiff(GraphNode):
     - Compare code snippets
     """
 
-    a: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Original text"
-    )
-    b: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Modified text"
-    )
-    fromfile: str | GraphNode | tuple[GraphNode, str] = Field(
+    a: str | OutputHandle[str] = connect_field(default="", description="Original text")
+    b: str | OutputHandle[str] = connect_field(default="", description="Modified text")
+    fromfile: str | OutputHandle[str] = connect_field(
         default="a", description="Name of the original file"
     )
-    tofile: str | GraphNode | tuple[GraphNode, str] = Field(
+    tofile: str | OutputHandle[str] = connect_field(
         default="b", description="Name of the modified file"
     )
-    lineterm: str | GraphNode | tuple[GraphNode, str] = Field(
+    lineterm: str | OutputHandle[str] = connect_field(
         default="\n", description="Line terminator"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.difflib.UnifiedDiff"
+
+
+UnifiedDiff.model_rebuild(force=True)

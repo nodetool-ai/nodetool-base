@@ -12,30 +12,48 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
 
-class AssetFolderInput(GraphNode):
+
+class AssetFolderInput(GraphNode[types.FolderRef]):
     """
     Accepts an asset folder as a parameter for workflows.
     input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The folder to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.FolderRef]:
+        return typing.cast(OutputHandle[types.FolderRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.AssetFolderInput"
 
 
-class AudioInput(GraphNode):
+AssetFolderInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class AudioInput(GraphNode[types.AudioRef]):
     """
     Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
     input, parameter, audio, sound, voice, speech, asset
@@ -47,23 +65,36 @@ class AudioInput(GraphNode):
     - Process audio for enhancement or feature extraction.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.AudioInput"
 
 
-class BooleanInput(GraphNode):
+AudioInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class BooleanInput(GraphNode[bool]):
     """
     Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.
     input, parameter, boolean, bool, toggle, switch, flag
@@ -74,22 +105,33 @@ class BooleanInput(GraphNode):
     - Make conditional choices within a workflow (e.g., proceed if true).
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.BooleanInput"
 
 
-class CollectionInput(GraphNode):
+BooleanInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class CollectionInput(GraphNode[types.Collection]):
     """
     Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
     The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.
@@ -101,45 +143,73 @@ class CollectionInput(GraphNode):
     - Choose a data source or destination that is represented as a named collection.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.Collection]:
+        return typing.cast(OutputHandle[types.Collection], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.CollectionInput"
 
 
-class ColorInput(GraphNode):
+CollectionInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class ColorInput(GraphNode[types.ColorRef]):
     """
     Accepts a color value as a parameter for workflows.
     input, parameter, color, color_picker, color_input
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value=None),
         description="The color to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ColorRef]:
+        return typing.cast(OutputHandle[types.ColorRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.ColorInput"
 
 
-class DocumentFileInput(GraphNode):
+ColorInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class DocumentFileInput(
+    GraphNode[nodetool.nodes.nodetool.input.DocumentFileInput.OutputType]
+):
     """
     Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
     input, parameter, document, file, path, local_file, load
@@ -151,22 +221,45 @@ class DocumentFileInput(GraphNode):
     - To provide an existing 'DocumentRef', use 'DocumentInput'.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: str | OutputHandle[str] = connect_field(
         default="", description="The path to the document file."
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def out(self) -> "DocumentFileInputOutputs":
+        return DocumentFileInputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.DocumentFileInput"
 
 
-class DocumentInput(GraphNode):
+class DocumentFileInputOutputs(OutputsProxy):
+    @property
+    def document(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(OutputHandle[types.DocumentRef], self["document"])
+
+    @property
+    def path(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["path"])
+
+
+DocumentFileInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class DocumentInput(GraphNode[types.DocumentRef]):
     """
     Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.
     input, parameter, document, file, asset, reference
@@ -178,23 +271,38 @@ class DocumentInput(GraphNode):
     - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.DocumentInput"
 
 
-class FilePathInput(GraphNode):
+DocumentInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class FilePathInput(GraphNode[str]):
     """
     Accepts a local filesystem path (to a file or directory) as input for workflows.
     input, parameter, path, filepath, directory, local_file, filesystem
@@ -206,22 +314,35 @@ class FilePathInput(GraphNode):
     - Not available in production: raises an error if used in a production environment.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: str | OutputHandle[str] = connect_field(
         default="", description="The path to use as input."
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.FilePathInput"
 
 
-class FloatInput(GraphNode):
+FilePathInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class FloatInput(GraphNode[float]):
     """
     Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
     input, parameter, float, number, decimal, range
@@ -232,76 +353,115 @@ class FloatInput(GraphNode):
     - Configure continuous parameters like opacity, volume, or temperature.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0.0, description=None
-    )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: float | OutputHandle[float] = connect_field(default=0.0, description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
-    min: float | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    max: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=100, description=None
-    )
+    min: float | OutputHandle[float] = connect_field(default=0, description=None)
+    max: float | OutputHandle[float] = connect_field(default=100, description=None)
+
+    @property
+    def output(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.FloatInput"
 
 
-class FolderPathInput(GraphNode):
+FloatInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class FolderPathInput(GraphNode[str]):
     """
     Accepts a folder path as a parameter for workflows.
     input, parameter, folder, path, folderpath, local_folder, filesystem
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: str | OutputHandle[str] = connect_field(
         default="", description="The folder path to use as input."
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.FolderPathInput"
 
 
-class HuggingFaceModelInput(GraphNode):
+FolderPathInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class HuggingFaceModelInput(GraphNode[types.HuggingFaceModel]):
     """
     Accepts a Hugging Face model as a parameter for workflows.
     input, parameter, model, huggingface, hugging_face, model_name
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.HuggingFaceModel | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.HuggingFaceModel(
-            type="hf.model",
-            repo_id="",
-            path=None,
-            variant=None,
-            allow_patterns=None,
-            ignore_patterns=None,
-        ),
-        description="The Hugging Face model to use as input.",
+    value: types.HuggingFaceModel | OutputHandle[types.HuggingFaceModel] = (
+        connect_field(
+            default=types.HuggingFaceModel(
+                type="hf.model",
+                repo_id="",
+                path=None,
+                variant=None,
+                allow_patterns=None,
+                ignore_patterns=None,
+            ),
+            description="The Hugging Face model to use as input.",
+        )
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.HuggingFaceModel]:
+        return typing.cast(
+            OutputHandle[types.HuggingFaceModel], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.HuggingFaceModelInput"
 
 
-class ImageInput(GraphNode):
+HuggingFaceModelInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class ImageInput(GraphNode[types.ImageRef]):
     """
     Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.
     input, parameter, image, picture, graphic, visual, asset
@@ -313,32 +473,45 @@ class ImageInput(GraphNode):
     - Display an image within a workflow interface.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.ImageInput"
 
 
-class ImageModelInput(GraphNode):
+ImageInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class ImageModelInput(GraphNode[types.ImageModel]):
     """
     Accepts an image generation model as a parameter for workflows.
     input, parameter, model, image, generation
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.ImageModel | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
         default=types.ImageModel(
             type="image_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -347,42 +520,68 @@ class ImageModelInput(GraphNode):
         ),
         description="The image generation model to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageModel]:
+        return typing.cast(OutputHandle[types.ImageModel], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.ImageModelInput"
 
 
+ImageModelInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
 import nodetool.metadata.types
 
 
-class InferenceProviderInput(GraphNode):
+class InferenceProviderInput(GraphNode[InferenceProvider]):
     """
     Accepts an inference provider as a parameter for workflows.
     input, parameter, provider, inference, provider_name
     """
 
     InferenceProvider: typing.ClassVar[type] = nodetool.metadata.types.InferenceProvider
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
     value: nodetool.metadata.types.InferenceProvider = Field(
         default=nodetool.metadata.types.InferenceProvider.hf_inference,
         description="The inference provider to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[InferenceProvider]:
+        return typing.cast(
+            OutputHandle[InferenceProvider], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.InferenceProviderInput"
 
 
-class IntegerInput(GraphNode):
+InferenceProviderInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class IntegerInput(GraphNode[int]):
     """
     Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
     input, parameter, integer, number, count, index, whole_number
@@ -393,31 +592,44 @@ class IntegerInput(GraphNode):
     - Configure discrete numeric parameters like age, steps, or quantity.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: int | OutputHandle[int] = connect_field(default=0, description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
-    min: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    max: int | GraphNode | tuple[GraphNode, str] = Field(default=100, description=None)
+    min: int | OutputHandle[int] = connect_field(default=0, description=None)
+    max: int | OutputHandle[int] = connect_field(default=100, description=None)
+
+    @property
+    def output(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.IntegerInput"
 
 
-class LanguageModelInput(GraphNode):
+IntegerInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class LanguageModelInput(GraphNode[types.LanguageModel]):
     """
     Accepts a language model as a parameter for workflows.
     input, parameter, model, language, model_name
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
         default=types.LanguageModel(
             type="language_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -426,41 +638,77 @@ class LanguageModelInput(GraphNode):
         ),
         description="The language model to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.LanguageModel]:
+        return typing.cast(
+            OutputHandle[types.LanguageModel], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.LanguageModelInput"
 
 
-class RealtimeAudioInput(GraphNode):
+LanguageModelInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class RealtimeAudioInput(
+    GraphNode[nodetool.nodes.nodetool.input.RealtimeAudioInput.OutputType]
+):
     """
     Accepts streaming audio data for workflows.
     input, parameter, audio, sound, voice, speech, asset
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    value: Any | OutputHandle[Any] = connect_field(
         default=None, description="The value of the input."
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio to use as input.",
     )
+
+    @property
+    def out(self) -> "RealtimeAudioInputOutputs":
+        return RealtimeAudioInputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.RealtimeAudioInput"
 
 
-class StringInput(GraphNode):
+class RealtimeAudioInputOutputs(OutputsProxy):
+    @property
+    def chunk(self) -> OutputHandle[types.Chunk]:
+        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
+
+
+RealtimeAudioInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class StringInput(GraphNode[str]):
     """
     Accepts a string value as a parameter for workflows.
     input, parameter, string, text, label, name, value
@@ -473,41 +721,67 @@ class StringInput(GraphNode):
     - If you need to input multi-line text or the content of a file, use 'DocumentFileInput'.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: str | OutputHandle[str] = connect_field(default="", description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.StringInput"
 
 
-class StringListInput(GraphNode):
+StringInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class StringListInput(GraphNode[list[str]]):
     """
     Accepts a list of strings as a parameter for workflows.
     input, parameter, string, text, label, name, value
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    value: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="The list of strings to use as input."
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.StringListInput"
 
 
-class VideoInput(GraphNode):
+StringListInput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+
+
+class VideoInput(GraphNode[types.VideoRef]):
     """
     Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
     input, parameter, video, movie, clip, visual, asset
@@ -519,19 +793,26 @@ class VideoInput(GraphNode):
     - Provide video input to models that understand video data.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The video to use as input.",
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.input.VideoInput"
+
+
+VideoInput.model_rebuild(force=True)

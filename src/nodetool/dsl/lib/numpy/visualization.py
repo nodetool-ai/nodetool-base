@@ -12,10 +12,14 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.visualization
 import nodetool.nodes.lib.numpy.visualization
 
 
-class PlotArray(GraphNode):
+class PlotArray(GraphNode[types.ImageRef]):
     """
     Create a plot visualization of array data.
     array, plot, visualization, graph
@@ -29,7 +33,7 @@ class PlotArray(GraphNode):
     PlotType: typing.ClassVar[type] = (
         nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType
     )
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Array to plot",
     )
@@ -38,6 +42,13 @@ class PlotArray(GraphNode):
         description="Type of plot to create",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.visualization.PlotArray"
+
+
+PlotArray.model_rebuild(force=True)

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.tar
 
-class CreateTar(GraphNode):
+
+class CreateTar(GraphNode[str]):
     """
     Create a tar archive from a directory.
     files, tar, create
@@ -24,22 +29,35 @@ class CreateTar(GraphNode):
     - Prepare archives for distribution
     """
 
-    source_folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    source_folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder to archive"
     )
-    tar_path: str | GraphNode | tuple[GraphNode, str] = Field(
+    tar_path: str | OutputHandle[str] = connect_field(
         default="", description="Output tar file path"
     )
-    gzip: bool | GraphNode | tuple[GraphNode, str] = Field(
+    gzip: bool | OutputHandle[bool] = connect_field(
         default=False, description="Use gzip compression"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.tar.CreateTar"
 
 
-class ExtractTar(GraphNode):
+CreateTar.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.tar
+
+
+class ExtractTar(GraphNode[str]):
     """
     Extract a tar archive to a folder.
     files, tar, extract
@@ -50,19 +68,32 @@ class ExtractTar(GraphNode):
     - Retrieve files for processing
     """
 
-    tar_path: str | GraphNode | tuple[GraphNode, str] = Field(
+    tar_path: str | OutputHandle[str] = connect_field(
         default="", description="Tar archive to extract"
     )
-    output_folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    output_folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder to extract into"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.tar.ExtractTar"
 
 
-class ListTar(GraphNode):
+ExtractTar.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.tar
+
+
+class ListTar(GraphNode[list[str]]):
     """
     List contents of a tar archive.
     files, tar, list
@@ -73,10 +104,17 @@ class ListTar(GraphNode):
     - Verify archive contents
     """
 
-    tar_path: str | GraphNode | tuple[GraphNode, str] = Field(
+    tar_path: str | OutputHandle[str] = connect_field(
         default="", description="Tar archive to inspect"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.tar.ListTar"
+
+
+ListTar.model_rebuild(force=True)

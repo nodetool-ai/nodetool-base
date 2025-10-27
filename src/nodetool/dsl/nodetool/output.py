@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
 
-class ArrayOutput(GraphNode):
+
+class ArrayOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for generic array data, typically numerical ('NPArray').
     array, numerical, list, tensor, vector, matrix
@@ -24,23 +29,42 @@ class ArrayOutput(GraphNode):
     - Passing arrays of numbers between processing steps.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description=None,
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "ArrayOutputOutputs":
+        return ArrayOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.ArrayOutput"
 
 
-class AudioOutput(GraphNode):
+class ArrayOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+ArrayOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class AudioOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for audio content references ('AudioRef').
     audio, sound, media, voice, speech, asset, reference
@@ -51,23 +75,42 @@ class AudioOutput(GraphNode):
     - Returning results of audio analysis (e.g., transcription reference, audio features).
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description=None,
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "AudioOutputOutputs":
+        return AudioOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.AudioOutput"
 
 
-class BooleanOutput(GraphNode):
+class AudioOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+AudioOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class BooleanOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a single boolean value.
     boolean, true, false, flag, condition, flow-control, branch, else, switch, toggle
@@ -78,22 +121,39 @@ class BooleanOutput(GraphNode):
     - Indicating success/failure of operations
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "BooleanOutputOutputs":
+        return BooleanOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.BooleanOutput"
 
 
-class DataframeOutput(GraphNode):
+class BooleanOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+BooleanOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class DataframeOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for structured data references, typically tabular ('DataframeRef').
     dataframe, table, structured, csv, tabular_data, rows, columns
@@ -104,25 +164,44 @@ class DataframeOutput(GraphNode):
     - Displaying data in a table format or making it available for download.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description=None,
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "DataframeOutputOutputs":
+        return DataframeOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.DataframeOutput"
 
 
-class DictionaryOutput(GraphNode):
+class DataframeOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+DataframeOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class DictionaryOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for key-value pair data (dictionary).
     dictionary, key-value, mapping, object, json_object, struct
@@ -133,22 +212,41 @@ class DictionaryOutput(GraphNode):
     - Organizing heterogeneous output data into a named map.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    value: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "DictionaryOutputOutputs":
+        return DictionaryOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.DictionaryOutput"
 
 
-class DocumentOutput(GraphNode):
+class DictionaryOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+DictionaryOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class DocumentOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for document content references ('DocumentRef').
     document, file, pdf, text_file, asset, reference
@@ -159,44 +257,82 @@ class DocumentOutput(GraphNode):
     - Returning results of document analysis or manipulation.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description=None,
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "DocumentOutputOutputs":
+        return DocumentOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.DocumentOutput"
 
 
-class FilePathOutput(GraphNode):
+class DocumentOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+DocumentOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class FilePathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a file path.
     file, path, file_path
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.FilePath | OutputHandle[types.FilePath] = connect_field(
         default=types.FilePath(type="file_path", path=""), description=None
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "FilePathOutputOutputs":
+        return FilePathOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.FilePathOutput"
 
 
-class FloatOutput(GraphNode):
+class FilePathOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+FilePathOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class FloatOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a single float value.
     float, decimal, number
@@ -207,43 +343,79 @@ class FloatOutput(GraphNode):
     - Displaying numeric metrics with decimal precision
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description=None
-    )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: float | OutputHandle[float] = connect_field(default=0, description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "FloatOutputOutputs":
+        return FloatOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.FloatOutput"
 
 
-class FolderPathOutput(GraphNode):
+class FloatOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+FloatOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class FolderPathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a folder path.
     folder, path, folder_path
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.FolderPath | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.FolderPath | OutputHandle[types.FolderPath] = connect_field(
         default=types.FolderPath(type="folder_path", path=""), description=None
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "FolderPathOutputOutputs":
+        return FolderPathOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.FolderPathOutput"
 
 
-class ImageOutput(GraphNode):
+class FolderPathOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+FolderPathOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class ImageOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a single image reference ('ImageRef').
     image, picture, visual, asset, reference
@@ -254,23 +426,42 @@ class ImageOutput(GraphNode):
     - Returning image analysis results encapsulated in an 'ImageRef'.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description=None,
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "ImageOutputOutputs":
+        return ImageOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.ImageOutput"
 
 
-class IntegerOutput(GraphNode):
+class ImageOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+ImageOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class IntegerOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a single integer value.
     integer, number, count
@@ -281,20 +472,39 @@ class IntegerOutput(GraphNode):
     - Displaying numeric metrics
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: int | OutputHandle[int] = connect_field(default=0, description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "IntegerOutputOutputs":
+        return IntegerOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.IntegerOutput"
 
 
-class ListOutput(GraphNode):
+class IntegerOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+IntegerOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class ListOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a list of arbitrary values.
     list, output, any
@@ -304,22 +514,41 @@ class ListOutput(GraphNode):
     - Aggregating outputs from multiple nodes
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    value: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "ListOutputOutputs":
+        return ListOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.ListOutput"
 
 
-class StringOutput(GraphNode):
+class ListOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+ListOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class StringOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for a string value.
     string, text, output, label, name
@@ -331,20 +560,39 @@ class StringOutput(GraphNode):
     - For multi-line text or structured document content, use appropriate output nodes if available or consider how data is structured.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    value: str | OutputHandle[str] = connect_field(default="", description=None)
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "StringOutputOutputs":
+        return StringOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.StringOutput"
 
 
-class VideoOutput(GraphNode):
+class StringOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+StringOutput.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.output
+
+
+class VideoOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
     Output node for video content references ('VideoRef').
     video, media, clip, asset, reference
@@ -355,19 +603,32 @@ class VideoOutput(GraphNode):
     - Returning results of video analysis encapsulated in a 'VideoRef'.
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description=None,
     )
-    description: str | GraphNode | tuple[GraphNode, str] = Field(
+    description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the output for the workflow."
     )
+
+    @property
+    def out(self) -> "VideoOutputOutputs":
+        return VideoOutputOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.output.VideoOutput"
+
+
+class VideoOutputOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+VideoOutput.model_rebuild(force=True)

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.generators
 
-class ChartGenerator(GraphNode):
+
+class ChartGenerator(GraphNode[types.PlotlyConfig]):
     """
     LLM Agent to create Plotly Express charts based on natural language descriptions.
     llm, data visualization, charts
@@ -24,7 +29,7 @@ class ChartGenerator(GraphNode):
     - Converting data analysis requirements into visual representations
     """
 
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
         default=types.LanguageModel(
             type="language_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -33,25 +38,42 @@ class ChartGenerator(GraphNode):
         ),
         description="The model to use for chart generation.",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="Natural language description of the desired chart"
     )
-    data: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The data to visualize",
     )
-    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_tokens: int | OutputHandle[int] = connect_field(
         default=4096, description="The maximum number of tokens to generate."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.PlotlyConfig]:
+        return typing.cast(
+            OutputHandle[types.PlotlyConfig], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.ChartGenerator"
 
 
-class DataGenerator(GraphNode):
+ChartGenerator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.generators
+
+
+class DataGenerator(
+    GraphNode[nodetool.nodes.nodetool.generators.DataGenerator.OutputType]
+):
     """
     LLM Agent to create a dataframe based on a user prompt.
     llm, dataframe creation, data structuring
@@ -62,7 +84,7 @@ class DataGenerator(GraphNode):
     - Converting unstructured text into tabular format
     """
 
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
         default=types.LanguageModel(
             type="language_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -71,26 +93,57 @@ class DataGenerator(GraphNode):
         ),
         description="The model to use for data generation.",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="The user prompt"
     )
-    input_text: str | GraphNode | tuple[GraphNode, str] = Field(
+    input_text: str | OutputHandle[str] = connect_field(
         default="", description="The input text to be analyzed by the agent."
     )
-    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_tokens: int | OutputHandle[int] = connect_field(
         default=4096, description="The maximum number of tokens to generate."
     )
-    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
         default=types.RecordType(type="record_type", columns=[]),
         description="The columns to use in the dataframe.",
     )
+
+    @property
+    def out(self) -> "DataGeneratorOutputs":
+        return DataGeneratorOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.DataGenerator"
 
 
-class ListGenerator(GraphNode):
+class DataGeneratorOutputs(OutputsProxy):
+    @property
+    def record(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["record"])
+
+    @property
+    def dataframe(self) -> OutputHandle[nodetool.metadata.types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[nodetool.metadata.types.DataframeRef], self["dataframe"]
+        )
+
+    @property
+    def index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["index"])
+
+
+DataGenerator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.generators
+
+
+class ListGenerator(
+    GraphNode[nodetool.nodes.nodetool.generators.ListGenerator.OutputType]
+):
     """
     LLM Agent to create a stream of strings based on a user prompt.
     llm, text streaming
@@ -100,7 +153,7 @@ class ListGenerator(GraphNode):
     - Streaming responses from an LLM
     """
 
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
         default=types.LanguageModel(
             type="language_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -109,22 +162,45 @@ class ListGenerator(GraphNode):
         ),
         description="The model to use for string generation.",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="The user prompt"
     )
-    input_text: str | GraphNode | tuple[GraphNode, str] = Field(
+    input_text: str | OutputHandle[str] = connect_field(
         default="", description="The input text to be analyzed by the agent."
     )
-    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_tokens: int | OutputHandle[int] = connect_field(
         default=4096, description="The maximum number of tokens to generate."
     )
+
+    @property
+    def out(self) -> "ListGeneratorOutputs":
+        return ListGeneratorOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.ListGenerator"
 
 
-class SVGGenerator(GraphNode):
+class ListGeneratorOutputs(OutputsProxy):
+    @property
+    def item(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["item"])
+
+    @property
+    def index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["index"])
+
+
+ListGenerator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.generators
+
+
+class SVGGenerator(GraphNode[list[types.SVGElement]]):
     """
     LLM Agent to create SVG elements based on user prompts.
     svg, generator, vector, graphics
@@ -135,7 +211,7 @@ class SVGGenerator(GraphNode):
     - Creating custom icons and diagrams
     """
 
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
         default=types.LanguageModel(
             type="language_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -144,27 +220,47 @@ class SVGGenerator(GraphNode):
         ),
         description="The language model to use for SVG generation.",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="The user prompt for SVG generation"
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="Image to use for generation",
     )
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="Audio to use for generation",
     )
-    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_tokens: int | OutputHandle[int] = connect_field(
         default=8192, description="The maximum number of tokens to generate."
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.SVGElement]]:
+        return typing.cast(
+            OutputHandle[list[types.SVGElement]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.SVGGenerator"
 
 
-class StructuredOutputGenerator(GraphNode):
+SVGGenerator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.generators
+
+
+class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
     """
     Generate structured JSON objects from instructions using LLM providers.
     data-generation, structured-data, json, synthesis
@@ -176,11 +272,11 @@ class StructuredOutputGenerator(GraphNode):
     - Producing consistent structured outputs for testing
     """
 
-    system_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    system_prompt: str | OutputHandle[str] = connect_field(
         default="\nYou are a structured data generator focused on JSON outputs.\n\nGoal\n- Produce a high-quality JSON object that matches <JSON_SCHEMA> using the guidance in <INSTRUCTIONS> and any supplemental <CONTEXT>.\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nGeneration rules\n- Invent plausible, internally consistent values when not explicitly provided.\n- Honor all constraints from <JSON_SCHEMA> (types, enums, ranges, formats).\n- Prefer ISO 8601 for dates/times when applicable.\n- Ensure numbers respect reasonable magnitudes and relationships described in <INSTRUCTIONS>.\n- Avoid referencing external sources; rely solely on the provided guidance.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n",
         description="The system prompt guiding JSON generation.",
     )
-    model: types.LanguageModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
         default=types.LanguageModel(
             type="language_model",
             provider=nodetool.metadata.types.Provider.Empty,
@@ -189,19 +285,26 @@ class StructuredOutputGenerator(GraphNode):
         ),
         description="Model to use for structured generation.",
     )
-    instructions: str | GraphNode | tuple[GraphNode, str] = Field(
+    instructions: str | OutputHandle[str] = connect_field(
         default="", description="Detailed instructions for the structured output."
     )
-    context: str | GraphNode | tuple[GraphNode, str] = Field(
+    context: str | OutputHandle[str] = connect_field(
         default="", description="Optional context to ground the generation."
     )
-    max_tokens: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_tokens: int | OutputHandle[int] = connect_field(
         default=4096, description="The maximum number of tokens to generate."
     )
-    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+    context_window: int | OutputHandle[int] = connect_field(
         default=4096, description=None
     )
+
+    @property
+    def out(self) -> DynamicOutputsProxy:
+        return typing.cast(DynamicOutputsProxy, self._outputs_proxy())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.generators.StructuredOutputGenerator"
+
+
+StructuredOutputGenerator.model_rebuild(force=True)

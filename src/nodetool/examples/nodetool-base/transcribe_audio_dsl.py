@@ -20,21 +20,25 @@ async def example():
     """
     Transcribe audio using OpenAI's Whisper model.
     """
+    audio_input = AudioInput(
+        name="audio",
+        description="",
+        value={},
+    )
+
+    transcription = AutomaticSpeechRecognition(
+        audio=audio_input.output,
+        model=LanguageModel(
+            type="asr_model",
+            id="whisper-1",
+            provider="openai",
+            name="Whisper",
+        ),
+    )
+
     output = StringOutput(
         name="transcription",
-        value=AutomaticSpeechRecognition(
-            audio=AudioInput(
-                name="audio",
-                description="",
-                value={},
-            ),
-            model=LanguageModel(
-                type="asr_model",
-                id="whisper-1",
-                provider="openai",
-                name="Whisper",
-            ),
-        ),
+        value=transcription.out.text,
     )
 
     result = await graph_result(output)

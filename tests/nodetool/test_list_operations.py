@@ -15,28 +15,33 @@ from nodetool.dsl.nodetool.output import StringOutput, ListOutput
 from nodetool.dsl.nodetool.text import Join
 
 # Basic list operations
+append_list = Append(values=["banana", "apple", "cherry"], value="date")
+sort_list = Sort(
+    values=append_list.output,
+    order=Sort.SortOrder("ascending"),
+)
+join_list = Join(
+    strings=sort_list.output,
+    separator=", ",
+)
 basic_list_ops = StringOutput(
     name="basic_list_ops",
-    value=Join(
-        strings=Sort(
-            values=Append(values=["banana", "apple", "cherry"], value="date"),
-            order=Sort.SortOrder("ascending"),
-        ),
-        separator=", ",
-    ),
+    value=join_list.output,
 )
 
 # List transformations and filtering
+transform_list = Transform(
+    values=["1", "2", "3", "4", "5"],
+    transform_type=Transform.TransformType("to_float"),
+)
+filter_numbers_node = FilterNumbers(
+    values=transform_list.output,
+    filter_type=FilterNumbers.FilterNumberType("greater_than"),
+    value=2.5,
+)
 list_transform = ListOutput(
     name="list_transform",
-    value=FilterNumbers(
-        values=Transform(
-            values=["1", "2", "3", "4", "5"],
-            transform_type=Transform.TransformType("to_float"),
-        ),
-        filter_type=FilterNumbers.FilterNumberType("greater_than"),
-        value=2.5,
-    ),
+    value=filter_numbers_node.output,
 )
 
 # # List aggregation operations
@@ -51,48 +56,51 @@ list_transform = ListOutput(
 # )
 
 # List set operations
+union_lists = Union(list1=[1, 2, 3, 4], list2=[3, 4, 5, 6])
 list_sets = ListOutput(
-    name="list_sets", value=Union(list1=[1, 2, 3, 4], list2=[3, 4, 5, 6])
+    name="list_sets", value=union_lists.output
 )
 
 # Complex list manipulation
+flatten_list = Flatten(values=[[1, None, 2], [3, None], [4, 5]], max_depth=1)
+filter_none_list = FilterNone(values=flatten_list.output)
+chunk_node = Chunk(
+    values=filter_none_list.output,
+    chunk_size=2,
+)
 complex_list = ListOutput(
     name="complex_list",
-    value=Chunk(
-        values=FilterNone(
-            values=Flatten(values=[[1, None, 2], [3, None], [4, 5]], max_depth=1)
-        ),
-        chunk_size=2,
-    ),
+    value=chunk_node.output,
 )
 
 # Dictionary list operations
+filter_dicts = FilterDictsByValue(
+    values=[
+        {"name": "Alice", "age": 25},
+        {"name": "Bob", "age": 30},
+        {"name": "Charlie", "age": 35},
+    ],
+    key="name",
+    filter_type=FilterDictsByValue.FilterType("contains"),
+    criteria="Bob",
+)
 dict_list_ops = ListOutput(
     name="dict_list_ops",
-    value=FilterDictsByValue(
-        values=[
-            {"name": "Alice", "age": 25},
-            {"name": "Bob", "age": 30},
-            {"name": "Charlie", "age": 35},
-        ],
-        key="name",
-        filter_type=FilterDictsByValue.FilterType("contains"),
-        criteria="Bob",
-    ),
+    value=filter_dicts.output,
 )
 
 
 @pytest.mark.asyncio
 async def test_basic_list_ops():
     result = await graph_result(basic_list_ops)
-    assert result == "apple, banana, cherry, date"
+    assert result["basic_list_ops"] == "apple, banana, cherry, date"
 
 
 @pytest.mark.asyncio
 async def test_list_transform():
     result = await graph_result(list_transform)
-    assert isinstance(result, list)
-    assert all(x > 2.5 for x in result)
+    assert isinstance(result["list_transform"], list)
+    assert all(x > 2.5 for x in result["list_transform"])
 
 
 # @pytest.mark.asyncio
@@ -107,12 +115,12 @@ async def test_list_transform():
 @pytest.mark.asyncio
 async def test_list_sets():
     result = await graph_result(list_sets)
-    assert isinstance(result, list)
-    assert set(result) == {1, 2, 3, 4, 5, 6}
+    assert isinstance(result["list_sets"], list)
+    assert set(result["list_sets"]) == {1, 2, 3, 4, 5, 6}
 
 
 @pytest.mark.asyncio
 async def test_complex_list():
     result = await graph_result(complex_list)
-    assert isinstance(result, list)
-    assert result == [[1, 2], [3, 4], [5]]
+    assert isinstance(result["complex_list"], list)
+    assert result["complex_list"] == [[1, 2], [3, 4], [5]]

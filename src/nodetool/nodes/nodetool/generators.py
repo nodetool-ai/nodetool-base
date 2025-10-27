@@ -243,6 +243,71 @@ class DataGenerator(BaseNode):
         dataframe: DataframeRef | None
         index: int | None
 
+    def _parse_markdown_table(self, table_text: str) -> list[dict]:
+        """Parse a markdown table into a list of dictionaries with proper type conversion."""
+        lines = [line.strip() for line in table_text.split("\n") if line.strip()]
+
+        if len(lines) < 3:  # Need at least header, separator, and one data row
+            return []
+
+        # Parse header row
+        header_line = lines[0]
+        # Remove leading/trailing pipes and split by pipe
+        headers = [h.strip() for h in header_line.strip("|").split("|")]
+        headers = [h for h in headers if h]  # Remove empty strings
+
+        # Skip separator line (line 1)
+        collected_rows: list[dict] = []
+
+        # Parse data rows (starting from line 2)
+        for line in lines[2:]:
+            if not line or line.startswith("-"):
+                continue
+
+            values = [v.strip() for v in line.strip("|").split("|")]
+            values = [v for v in values if v or len(values) == len(headers)]
+
+            if len(values) != len(headers):
+                continue
+
+            # Create row dict with type conversion
+            row = {}
+            for header, value in zip(headers, values):
+                row[header] = self._convert_value(header, value)
+
+            collected_rows.append(row)
+
+        return collected_rows
+
+    def _convert_value(self, column_name: str, value: str) -> Any:
+        """Convert string value to appropriate type based on column definition."""
+        if not value or value.lower() in ["none", "null", "n/a", ""]:
+            return None
+
+        # Find the column definition
+        col_def = None
+        for col in self.columns.columns:
+            if col.name == column_name:
+                col_def = col
+                break
+
+        if not col_def:
+            return value
+
+        col_type = str(col_def.data_type).lower()
+
+        try:
+            if "int" in col_type:
+                return int(value)
+            elif "float" in col_type or "number" in col_type:
+                return float(value)
+            elif "bool" in col_type:
+                return value.lower() in ["true", "yes", "1", "on"]
+            else:
+                return value
+        except (ValueError, TypeError):
+            return value
+
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
@@ -250,9 +315,36 @@ class DataGenerator(BaseNode):
         Streaming generation that yields individual records as they are generated
         and a final dataframe once all records are ready.
         """
+        # Build column descriptions for the prompt
+        column_descriptions = "\n".join([
+            f"- {col.name} ({col.data_type})"
+            for col in self.columns.columns
+        ])
+
         system_message = Message(
             role="system",
-            content="You are an assistant with access to tools. Use generate_data to emit each row of the data.",
+            content=f"""You are a data generation assistant. Generate data as a markdown table.
+
+Your task:
+1. Generate data that matches the specified columns and requirements
+2. Output ONLY a markdown table with no additional text before or after
+3. The table must have exactly these columns in order:
+{column_descriptions}
+
+Table format:
+| Column 1 | Column 2 | Column 3 |
+|----------|----------|----------|
+| value1   | value2   | value3   |
+| value4   | value5   | value6   |
+
+Rules:
+- Use | to separate columns
+- First row is headers, second row is separator with dashes
+- Each subsequent row is data
+- Ensure data types match the column specifications
+- For numbers, use numeric values without quotes
+- For text, use plain text without excessive quotes
+- Use "None" or leave empty for null values""",
         )
 
         user_message = Message(
@@ -261,32 +353,31 @@ class DataGenerator(BaseNode):
         )
         messages = [system_message, user_message]
 
-        collected_rows: list[dict] = []
-
         provider = await context.get_provider(self.model.provider)
-        index = 0
+
+        # Collect the full response
+        full_response = ""
         async for chunk in provider.generate_messages(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
-            tools=[
-                GenerateDataTool(
-                    description="Generate a record according to the schema",
-                    columns=self.columns.columns,
-                )
-            ],
         ):
-            if isinstance(chunk, ToolCall):
-                logger.debug("Tool call args: %s", chunk.args)
-                collected_rows.append(chunk.args)
-                # Yield each generated record immediately
-                yield {"record": chunk.args, "index": index, "dataframe": None}
-                index += 1
+            if isinstance(chunk, Chunk):
+                full_response += chunk.content
+
+        # Parse the markdown table
+        collected_rows = self._parse_markdown_table(full_response)
+
+        logger.debug("Parsed %d rows from markdown table", len(collected_rows))
+
+        # Yield each record
+        for index, row in enumerate(collected_rows):
+            yield {"record": row, "index": index, "dataframe": None}
 
         # After streaming completes, yield the full dataframe once
         data = [
             [
-                (row[col.name] if col.name in row else None)
+                (row.get(col.name) if col.name in row else None)
                 for col in self.columns.columns
             ]
             for row in collected_rows

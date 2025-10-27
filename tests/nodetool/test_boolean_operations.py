@@ -9,57 +9,64 @@ from nodetool.dsl.nodetool.boolean import (
 from nodetool.dsl.nodetool.output import BooleanOutput, StringOutput
 
 # Basic comparison
+comparison = Compare(a=5, b=3, comparison=Compare.Comparison(">"))
 basic_comparison = BooleanOutput(
     name="basic_comparison",
-    value=Compare(a=5, b=3, comparison=Compare.Comparison(">")),
+    value=comparison.output,
 )
 
 # Logical operators
+comparison1 = Compare(a=10, b=5, comparison=Compare.Comparison(">"))
+comparison2 = Compare(a=20, b=15, comparison=Compare.Comparison(">"))
+logical_op = LogicalOperator(
+    a=comparison1.output,
+    b=comparison2.output,
+    operation=LogicalOperator.BooleanOperation("and"),
+)
 logical_ops = BooleanOutput(
     name="logical_ops",
-    value=LogicalOperator(
-        a=Compare(a=10, b=5, comparison=Compare.Comparison(">")),
-        b=Compare(a=20, b=15, comparison=Compare.Comparison(">")),
-        operation=LogicalOperator.BooleanOperation("and"),
-    ),
+    value=logical_op.output,
 )
 
 # Conditional switch
+condition_check = Compare(a=42, b=42, comparison=Compare.Comparison("=="))
+conditional_switch = ConditionalSwitch(
+    condition=condition_check.output,
+    if_true="Values are equal",
+    if_false="Values are different",
+)
 conditional = StringOutput(
     name="conditional",
-    value=ConditionalSwitch(
-        condition=Compare(a=42, b=42, comparison=Compare.Comparison("==")),
-        if_true="Values are equal",
-        if_false="Values are different",
-    ),
+    value=conditional_switch.output,
 )
 
 # List membership check
+membership_check = IsIn(value=5, options=[1, 3, 5, 7, 9])
 membership = BooleanOutput(
     name="membership",
-    value=IsIn(value=5, options=[1, 3, 5, 7, 9]),
+    value=membership_check.output,
 )
 
 
 @pytest.mark.asyncio
 async def test_basic_comparison():
     result = await graph_result(basic_comparison)
-    assert result == True  # 5 > 3
+    assert result["basic_comparison"] == True  # 5 > 3
 
 
 @pytest.mark.asyncio
 async def test_logical_ops():
     result = await graph_result(logical_ops)
-    assert result == True  # (10 > 5) and (20 > 15)
+    assert result["logical_ops"] == True  # (10 > 5) and (20 > 15)
 
 
 @pytest.mark.asyncio
 async def test_conditional():
     result = await graph_result(conditional)
-    assert result == "Values are equal"
+    assert result["conditional"] == "Values are equal"
 
 
 @pytest.mark.asyncio
 async def test_membership():
     result = await graph_result(membership)
-    assert result == True  # 5 in [1, 3, 5, 7, 9]
+    assert result["membership"] == True  # 5 in [1, 3, 5, 7, 9]

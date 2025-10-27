@@ -12,171 +12,284 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
 
-class GoogleFinance(GraphNode):
+
+class GoogleFinance(GraphNode[typing.Any]):
     """
     Retrieve financial market data from Google Finance.
     google, finance, stocks, market, serp
     """
 
-    query: str | GraphNode | tuple[GraphNode, str] = Field(
+    query: str | OutputHandle[str] = connect_field(
         default="", description="Stock symbol or company name to search for"
     )
-    window: str | GraphNode | tuple[GraphNode, str] = Field(
+    window: str | OutputHandle[str] = connect_field(
         default="",
         description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')",
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleFinance"
 
 
-class GoogleImages(GraphNode):
+GoogleFinance.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleImages(GraphNode[typing.Any]):
     """
     Search Google Images to retrieve live image results.
     google, images, serp, visual, reverse, search
     """
 
-    keyword: str | GraphNode | tuple[GraphNode, str] = Field(
+    keyword: str | OutputHandle[str] = connect_field(
         default="", description="Search query or keyword for images"
     )
-    image_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    image_url: str | OutputHandle[str] = connect_field(
         default="", description="URL of image for reverse image search"
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=20, description="Maximum number of image results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleImages"
 
 
-class GoogleJobs(GraphNode):
+GoogleImages.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleJobs(GraphNode[list[types.JobResult]]):
     """
     Search Google Jobs for job listings.
     google, jobs, employment, careers, serp
     """
 
-    query: str | GraphNode | tuple[GraphNode, str] = Field(
+    query: str | OutputHandle[str] = connect_field(
         default="", description="Job title, skills, or company name to search for"
     )
-    location: str | GraphNode | tuple[GraphNode, str] = Field(
+    location: str | OutputHandle[str] = connect_field(
         default="", description="Geographic location for job search"
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of job results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.JobResult]]:
+        return typing.cast(
+            OutputHandle[list[types.JobResult]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleJobs"
 
 
-class GoogleLens(GraphNode):
+GoogleJobs.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleLens(GraphNode[typing.Any]):
     """
     Search with an image URL using Google Lens to find visual matches and related content.
     google, lens, visual, image, search, serp
     """
 
-    image_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    image_url: str | OutputHandle[str] = connect_field(
         default="", description="URL of the image to analyze with Google Lens"
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of visual search results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleLens"
 
 
-class GoogleMaps(GraphNode):
+GoogleLens.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleMaps(GraphNode[list[types.LocalResult]]):
     """
     Search Google Maps for places or get details about a specific place.
     google, maps, places, locations, serp
     """
 
-    query: str | GraphNode | tuple[GraphNode, str] = Field(
+    query: str | OutputHandle[str] = connect_field(
         default="", description="Place name, address, or location query"
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of map results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.LocalResult]]:
+        return typing.cast(
+            OutputHandle[list[types.LocalResult]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleMaps"
 
 
-class GoogleNews(GraphNode):
+GoogleMaps.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleNews(GraphNode[list[types.NewsResult]]):
     """
     Search Google News to retrieve live news articles.
     google, news, serp, articles
     """
 
-    keyword: str | GraphNode | tuple[GraphNode, str] = Field(
+    keyword: str | OutputHandle[str] = connect_field(
         default="", description="Search query or keyword for news articles"
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of news results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.NewsResult]]:
+        return typing.cast(
+            OutputHandle[list[types.NewsResult]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleNews"
 
 
-class GoogleSearch(GraphNode):
+GoogleNews.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleSearch(GraphNode[list[types.OrganicResult]]):
     """
     Search Google to retrieve organic search results.
     google, search, serp, web
     """
 
-    keyword: str | GraphNode | tuple[GraphNode, str] = Field(
+    keyword: str | OutputHandle[str] = connect_field(
         default="", description="Search query or keyword to search for"
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.OrganicResult]]:
+        return typing.cast(
+            OutputHandle[list[types.OrganicResult]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleSearch"
 
 
-class GoogleShopping(GraphNode):
+GoogleSearch.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.search.google
+
+
+class GoogleShopping(GraphNode[list[types.ShoppingResult]]):
     """
     Search Google Shopping for products.
     google, shopping, products, ecommerce, serp
     """
 
-    query: str | GraphNode | tuple[GraphNode, str] = Field(
+    query: str | OutputHandle[str] = connect_field(
         default="", description="Product name or description to search for"
     )
-    country: str | GraphNode | tuple[GraphNode, str] = Field(
+    country: str | OutputHandle[str] = connect_field(
         default="us",
         description="Country code for shopping search (e.g., 'us', 'uk', 'ca')",
     )
-    min_price: int | GraphNode | tuple[GraphNode, str] = Field(
+    min_price: int | OutputHandle[int] = connect_field(
         default=0, description="Minimum price filter for products"
     )
-    max_price: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_price: int | OutputHandle[int] = connect_field(
         default=0, description="Maximum price filter for products"
     )
-    condition: str | GraphNode | tuple[GraphNode, str] = Field(
+    condition: str | OutputHandle[str] = connect_field(
         default="",
         description="Product condition filter (e.g., 'new', 'used', 'refurbished')",
     )
-    sort_by: str | GraphNode | tuple[GraphNode, str] = Field(
+    sort_by: str | OutputHandle[str] = connect_field(
         default="",
         description="Sort order for results (e.g., 'price_low_to_high', 'price_high_to_low', 'review_score')",
     )
-    num_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_results: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of shopping results to return"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.ShoppingResult]]:
+        return typing.cast(
+            OutputHandle[list[types.ShoppingResult]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "search.google.GoogleShopping"
+
+
+GoogleShopping.model_rebuild(force=True)

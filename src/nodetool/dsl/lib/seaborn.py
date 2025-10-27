@@ -12,14 +12,19 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.seaborn
 
-class ChartRenderer(GraphNode):
+
+class ChartRenderer(GraphNode[types.ImageRef]):
     """
     Node responsible for rendering chart configurations into image format using seaborn.
     chart, seaborn, plot, visualization, data
     """
 
-    chart_config: types.ChartConfig | GraphNode | tuple[GraphNode, str] = Field(
+    chart_config: types.ChartConfig | OutputHandle[types.ChartConfig] = connect_field(
         default=types.ChartConfig(
             type="chart_config",
             title="",
@@ -56,22 +61,29 @@ class ChartRenderer(GraphNode):
         ),
         description="The chart configuration to render.",
     )
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
+    width: int | OutputHandle[int] = connect_field(
         default=640, description="The width of the chart in pixels."
     )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
+    height: int | OutputHandle[int] = connect_field(
         default=480, description="The height of the chart in pixels."
     )
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="The data to visualize as a pandas DataFrame."
     )
-    despine: bool | GraphNode | tuple[GraphNode, str] = Field(
+    despine: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove top and right spines."
     )
-    trim_margins: bool | GraphNode | tuple[GraphNode, str] = Field(
+    trim_margins: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to use tight layout for margins."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.seaborn.ChartRenderer"
+
+
+ChartRenderer.model_rebuild(force=True)

@@ -12,7 +12,7 @@ Features:
 from nodetool.dsl.graph import graph_result
 from nodetool.dsl.nodetool.generators import DataGenerator
 from nodetool.dsl.nodetool.output import DataframeOutput
-from nodetool.metadata.types import LanguageModel, RecordType, ColumnDef
+from nodetool.metadata.types import LanguageModel, Provider, RecordType, ColumnDef
 
 
 async def example():
@@ -32,7 +32,8 @@ async def example():
         model=LanguageModel(
             type="language_model",
             id="gemma3:4b",
-            provider="ollama",
+            # id="qwen3:8b",
+            provider=Provider.Ollama,
         ),
         prompt="Generate a table of veggies",
         input_text="",
@@ -43,7 +44,7 @@ async def example():
     # Output the generated dataframe
     output = DataframeOutput(
         name="dataframe_output",
-        value=data_gen,
+        value=data_gen.out.dataframe,
     )
 
     result = await graph_result(output)

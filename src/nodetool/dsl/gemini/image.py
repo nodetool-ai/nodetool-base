@@ -12,10 +12,14 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.gemini.image
 import nodetool.nodes.gemini.image
 
 
-class ImageGeneration(GraphNode):
+class ImageGeneration(GraphNode[types.ImageRef]):
     """
     Generate an image using Google's Imagen model via the Gemini API.
     google, image generation, ai, imagen
@@ -29,18 +33,25 @@ class ImageGeneration(GraphNode):
     ImageGenerationModel: typing.ClassVar[type] = (
         nodetool.nodes.gemini.image.ImageGenerationModel
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing the image to generate."
     )
     model: nodetool.nodes.gemini.image.ImageGenerationModel = Field(
         default=nodetool.nodes.gemini.image.ImageGenerationModel.IMAGEN_3_0_GENERATE_002,
         description="The image generation model to use",
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to use as a base for the generation.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "gemini.image.ImageGeneration"
+
+
+ImageGeneration.model_rebuild(force=True)

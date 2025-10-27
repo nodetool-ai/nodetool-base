@@ -34,7 +34,7 @@ async def example():
 
     # Hybrid search in vector database
     search = HybridSearch(
-        text=query_input,
+        text=query_input.output,
         collection=Collection(
             type="collection",
             name="test",
@@ -67,13 +67,13 @@ These snippets can be incomplete or out of context. Ignore information that is n
 4. If the documents lack sufficient information, state what is missing instead of guessing.
 5. Present the answer in a clear, concise, and structured manner.""",
         # Dynamic properties for the template variables
-        text=query_input,
-        documents=(search, "documents"),  # Connect specific output slot
+        text=query_input.output,
+        documents=search.out.documents,
     )
 
     # AI agent to generate answer
     agent = Agent(
-        prompt=prompt,
+        prompt=prompt.output,
         model=LanguageModel(
             type="language_model",
             id="openai/gpt-oss-120b",
@@ -88,7 +88,7 @@ These snippets can be incomplete or out of context. Ignore information that is n
     # Output the answer
     output = StringOutput(
         name="answer",
-        value=agent,
+        value=agent.out.text,
     )
 
     result = await graph_result(output)
@@ -106,7 +106,7 @@ async def example_streaming():
     )
 
     search = HybridSearch(
-        text=query_input,
+        text=query_input.output,
         collection=Collection(type="collection", name="test"),
         n_results=5,
         k_constant=60,
@@ -125,12 +125,12 @@ Document {{ loop.index }}: {{ doc }}
 {% endfor %}
 
 Answer based only on the provided documents.""",
-        text=query_input,
-        documents=(search, "documents"),
+        text=query_input.output,
+        documents=search.out.documents,
     )
 
     agent = Agent(
-        prompt=prompt,
+        prompt=prompt.output,
         model=LanguageModel(
             type="language_model",
             id="openai/gpt-oss-120b",
@@ -144,7 +144,7 @@ Answer based only on the provided documents.""",
 
     output = StringOutput(
         name="answer",
-        value=agent,
+        value=agent.out.text,
     )
     g = graph(output)
     result = await run_graph(g)

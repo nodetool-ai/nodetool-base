@@ -12,17 +12,22 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
 
-class CollectionNode(GraphNode):
+
+class CollectionNode(GraphNode[types.Collection]):
     """
     Get or create a collection.
     vector, embedding, collection, RAG, get, create, chroma
     """
 
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="", description="The name of the collection to create"
     )
-    embedding_model: types.LlamaModel | GraphNode | tuple[GraphNode, str] = Field(
+    embedding_model: types.LlamaModel | OutputHandle[types.LlamaModel] = connect_field(
         default=types.LlamaModel(
             type="llama_model",
             name="",
@@ -35,84 +40,156 @@ class CollectionNode(GraphNode):
         description="Model to use for embedding, search for nomic-embed-text and download it",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.Collection]:
+        return typing.cast(OutputHandle[types.Collection], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.Collection"
 
 
-class Count(GraphNode):
+CollectionNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class Count(GraphNode[int]):
     """
     Count the number of documents in a collection.
     vector, embedding, collection, RAG, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to count",
     )
+
+    @property
+    def output(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.Count"
 
 
-class GetDocuments(GraphNode):
+Count.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class GetDocuments(GraphNode[list[str]]):
     """
     Get documents from a chroma collection.
     vector, embedding, collection, RAG, retrieve, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to get",
     )
-    ids: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    ids: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="The ids of the documents to get"
     )
-    limit: int | GraphNode | tuple[GraphNode, str] = Field(
+    limit: int | OutputHandle[int] = connect_field(
         default=100, description="The limit of the documents to get"
     )
-    offset: int | GraphNode | tuple[GraphNode, str] = Field(
+    offset: int | OutputHandle[int] = connect_field(
         default=0, description="The offset of the documents to get"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.GetDocuments"
 
 
-class HybridSearch(GraphNode):
+GetDocuments.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class HybridSearch(GraphNode[nodetool.nodes.vector.chroma.HybridSearch.OutputType]):
     """
     Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.
     vector, RAG, query, semantic, text, similarity, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to query",
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The text to query"
     )
-    n_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    n_results: int | OutputHandle[int] = connect_field(
         default=5, description="The number of final results to return"
     )
-    k_constant: float | GraphNode | tuple[GraphNode, str] = Field(
+    k_constant: float | OutputHandle[float] = connect_field(
         default=60.0, description="Constant for reciprocal rank fusion (default: 60.0)"
     )
-    min_keyword_length: int | GraphNode | tuple[GraphNode, str] = Field(
+    min_keyword_length: int | OutputHandle[int] = connect_field(
         default=3, description="Minimum length for keyword tokens"
     )
+
+    @property
+    def out(self) -> "HybridSearchOutputs":
+        return HybridSearchOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.HybridSearch"
 
 
+class HybridSearchOutputs(OutputsProxy):
+    @property
+    def ids(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["ids"])
+
+    @property
+    def documents(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["documents"])
+
+    @property
+    def metadatas(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self["metadatas"])
+
+    @property
+    def distances(self) -> OutputHandle[list[float]]:
+        return typing.cast(OutputHandle[list[float]], self["distances"])
+
+    @property
+    def scores(self) -> OutputHandle[list[float]]:
+        return typing.cast(OutputHandle[list[float]], self["scores"])
+
+
+HybridSearch.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
 import nodetool.nodes.vector.chroma
 
 
-class IndexAggregatedText(GraphNode):
+class IndexAggregatedText(GraphNode[typing.Any]):
     """
     Index multiple text chunks at once with aggregated embeddings from Ollama.
     vector, embedding, collection, RAG, index, text, chunk, batch, ollama, chroma
@@ -121,25 +198,24 @@ class IndexAggregatedText(GraphNode):
     EmbeddingAggregation: typing.ClassVar[type] = (
         nodetool.nodes.vector.chroma.EmbeddingAggregation
     )
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to index",
     )
-    document: str | GraphNode | tuple[GraphNode, str] = Field(
+    document: str | OutputHandle[str] = connect_field(
         default="", description="The document to index"
     )
-    document_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    document_id: str | OutputHandle[str] = connect_field(
         default="", description="The document ID to associate with the text"
     )
-    metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
+    metadata: dict | OutputHandle[dict] = connect_field(
         default={}, description="The metadata to associate with the text"
     )
     text_chunks: (
         list[nodetool.metadata.types.TextChunk | str]
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=[], description="List of text chunks to index")
-    context_window: int | GraphNode | tuple[GraphNode, str] = Field(
+        | OutputHandle[list[nodetool.metadata.types.TextChunk | str]]
+    ) = connect_field(default=[], description="List of text chunks to index")
+    context_window: int | OutputHandle[int] = connect_field(
         default=4096, description="The context window size to use for the model"
     )
     aggregation: nodetool.nodes.vector.chroma.EmbeddingAggregation = Field(
@@ -147,67 +223,106 @@ class IndexAggregatedText(GraphNode):
         description="The aggregation method to use for the embeddings.",
     )
 
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.IndexAggregatedText"
 
 
-class IndexEmbedding(GraphNode):
+IndexAggregatedText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class IndexEmbedding(GraphNode[typing.Any]):
     """
     Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
     vector, index, embedding, chroma, storage, RAG
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to index",
     )
-    embedding: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    embedding: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The embedding to index",
     )
-    index_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    index_id: str | OutputHandle[str] = connect_field(
         default="", description="The ID to associate with the embedding"
     )
-    metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
+    metadata: dict | OutputHandle[dict] = connect_field(
         default={}, description="The metadata to associate with the embedding"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.IndexEmbedding"
 
 
-class IndexImage(GraphNode):
+IndexEmbedding.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class IndexImage(GraphNode[typing.Any]):
     """
     Index a list of image assets or files.
     vector, embedding, collection, RAG, index, image, batch, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to index",
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=[], description="List of image assets to index"
     )
-    index_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    index_id: str | OutputHandle[str] = connect_field(
         default="",
         description="The ID to associate with the image, defaults to the URI of the image",
     )
-    metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
+    metadata: dict | OutputHandle[dict] = connect_field(
         default={}, description="The metadata to associate with the image"
     )
-    upsert: bool | GraphNode | tuple[GraphNode, str] = Field(
+    upsert: bool | OutputHandle[bool] = connect_field(
         default=False, description="Whether to upsert the images"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.IndexImage"
 
 
-class IndexString(GraphNode):
+IndexImage.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class IndexString(GraphNode[typing.Any]):
     """
     Index a string with a Document ID to a collection.
     vector, embedding, collection, RAG, index, text, string, chroma
@@ -216,128 +331,242 @@ class IndexString(GraphNode):
     - Index documents for a vector search
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to index",
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text content to index"
     )
-    document_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    document_id: str | OutputHandle[str] = connect_field(
         default="", description="Document ID to associate with the text content"
     )
-    metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
+    metadata: dict | OutputHandle[dict] = connect_field(
         default={}, description="The metadata to associate with the text"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.IndexString"
 
 
-class IndexTextChunk(GraphNode):
+IndexString.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class IndexTextChunk(GraphNode[typing.Any]):
     """
     Index a single text chunk.
     vector, embedding, collection, RAG, index, text, chunk, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to index",
     )
-    document_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    document_id: str | OutputHandle[str] = connect_field(
         default="", description="The document ID to associate with the text chunk"
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The text to index"
     )
-    metadata: dict | GraphNode | tuple[GraphNode, str] = Field(
+    metadata: dict | OutputHandle[dict] = connect_field(
         default={}, description="The metadata to associate with the text chunk"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.IndexTextChunk"
 
 
-class Peek(GraphNode):
+IndexTextChunk.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class Peek(GraphNode[list[str]]):
     """
     Peek at the documents in a collection.
     vector, embedding, collection, RAG, preview, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to peek",
     )
-    limit: int | GraphNode | tuple[GraphNode, str] = Field(
+    limit: int | OutputHandle[int] = connect_field(
         default=100, description="The limit of the documents to peek"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.Peek"
 
 
-class QueryImage(GraphNode):
+Peek.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
     """
     Query the index for similar images.
     vector, RAG, query, image, search, similarity, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to query",
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to query",
     )
-    n_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    n_results: int | OutputHandle[int] = connect_field(
         default=1, description="The number of results to return"
     )
+
+    @property
+    def out(self) -> "QueryImageOutputs":
+        return QueryImageOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.QueryImage"
 
 
-class QueryText(GraphNode):
+class QueryImageOutputs(OutputsProxy):
+    @property
+    def ids(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["ids"])
+
+    @property
+    def documents(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["documents"])
+
+    @property
+    def metadatas(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self["metadatas"])
+
+    @property
+    def distances(self) -> OutputHandle[list[float]]:
+        return typing.cast(OutputHandle[list[float]], self["distances"])
+
+
+QueryImage.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class QueryText(GraphNode[nodetool.nodes.vector.chroma.QueryText.OutputType]):
     """
     Query the index for similar text.
     vector, RAG, query, text, search, similarity, chroma
     """
 
-    collection: types.Collection | GraphNode | tuple[GraphNode, str] = Field(
+    collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to query",
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The text to query"
     )
-    n_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    n_results: int | OutputHandle[int] = connect_field(
         default=1, description="The number of results to return"
     )
+
+    @property
+    def out(self) -> "QueryTextOutputs":
+        return QueryTextOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.QueryText"
 
 
-class RemoveOverlap(GraphNode):
+class QueryTextOutputs(OutputsProxy):
+    @property
+    def ids(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["ids"])
+
+    @property
+    def documents(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["documents"])
+
+    @property
+    def metadatas(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self["metadatas"])
+
+    @property
+    def distances(self) -> OutputHandle[list[float]]:
+        return typing.cast(OutputHandle[list[float]], self["distances"])
+
+
+QueryText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
+
+
+class RemoveOverlap(GraphNode[nodetool.nodes.vector.chroma.RemoveOverlap.OutputType]):
     """
     Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.
     vector, RAG, query, text, processing, overlap, deduplication
     """
 
-    documents: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    documents: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="List of strings to process for overlap removal"
     )
-    min_overlap_words: int | GraphNode | tuple[GraphNode, str] = Field(
+    min_overlap_words: int | OutputHandle[int] = connect_field(
         default=2,
         description="Minimum number of words that must overlap to be considered",
     )
 
+    @property
+    def out(self) -> "RemoveOverlapOutputs":
+        return RemoveOverlapOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "vector.chroma.RemoveOverlap"
+
+
+class RemoveOverlapOutputs(OutputsProxy):
+    @property
+    def documents(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["documents"])
+
+
+RemoveOverlap.model_rebuild(force=True)

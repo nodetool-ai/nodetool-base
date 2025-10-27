@@ -12,76 +12,138 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.textwrap
 
-class Dedent(GraphNode):
+
+class Dedent(GraphNode[str]):
     """
     Removes any common leading whitespace from every line in text.
     textwrap, dedent, whitespace
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.textwrap.Dedent"
 
 
-class Fill(GraphNode):
+Dedent.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.textwrap
+
+
+class Fill(GraphNode[str]):
     """
     Wraps text to a specified width, returning a formatted string.
     textwrap, fill, wrap
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    width: int | GraphNode | tuple[GraphNode, str] = Field(default=70, description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    width: int | OutputHandle[int] = connect_field(default=70, description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.textwrap.Fill"
 
 
-class Indent(GraphNode):
+Fill.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.textwrap
+
+
+class Indent(GraphNode[str]):
     """
     Adds a prefix to the beginning of each line in the text.
     textwrap, indent, prefix
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    prefix: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="    ", description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    prefix: str | OutputHandle[str] = connect_field(default="    ", description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.textwrap.Indent"
 
 
-class Shorten(GraphNode):
+Indent.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.textwrap
+
+
+class Shorten(GraphNode[str]):
     """
     Shortens text to fit within a width, using a placeholder if truncated.
     textwrap, shorten, truncate
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    width: int | GraphNode | tuple[GraphNode, str] = Field(default=70, description=None)
-    placeholder: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    width: int | OutputHandle[int] = connect_field(default=70, description=None)
+    placeholder: str | OutputHandle[str] = connect_field(
         default="...", description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.textwrap.Shorten"
 
 
-class Wrap(GraphNode):
+Shorten.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.textwrap
+
+
+class Wrap(GraphNode[list[str]]):
     """
     Wraps text to a specified width, returning a list of lines.
     textwrap, wrap, lines
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    width: int | GraphNode | tuple[GraphNode, str] = Field(default=70, description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    width: int | OutputHandle[int] = connect_field(default=70, description=None)
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.textwrap.Wrap"
+
+
+Wrap.model_rebuild(force=True)

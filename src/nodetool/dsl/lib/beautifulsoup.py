@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
 
-class BaseUrl(GraphNode):
+
+class BaseUrl(GraphNode[str]):
     """
     Extract the base URL from a given URL.
     url parsing, domain extraction, web utilities
@@ -25,16 +30,29 @@ class BaseUrl(GraphNode):
     - Standardize URL formats
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to extract the base from"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.BaseUrl"
 
 
-class ExtractAudio(GraphNode):
+BaseUrl.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class ExtractAudio(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractAudio.OutputType]):
     """
     Extract audio elements from HTML content.
     extract, audio, src
@@ -45,20 +63,41 @@ class ExtractAudio(GraphNode):
     - Create audio playlists
     """
 
-    html: str | GraphNode | tuple[GraphNode, str] = Field(
+    html: str | OutputHandle[str] = connect_field(
         default="", description="The HTML content to extract audio from."
     )
-    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base_url: str | OutputHandle[str] = connect_field(
         default="",
         description="The base URL of the page, used to resolve relative audio URLs.",
     )
+
+    @property
+    def out(self) -> "ExtractAudioOutputs":
+        return ExtractAudioOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.ExtractAudio"
 
 
-class ExtractImages(GraphNode):
+class ExtractAudioOutputs(OutputsProxy):
+    @property
+    def audio(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self["audio"])
+
+
+ExtractAudio.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class ExtractImages(
+    GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractImages.OutputType]
+):
     """
     Extract images from HTML content.
     extract, images, src
@@ -69,20 +108,39 @@ class ExtractImages(GraphNode):
     - Create image galleries
     """
 
-    html: str | GraphNode | tuple[GraphNode, str] = Field(
+    html: str | OutputHandle[str] = connect_field(
         default="", description="The HTML content to extract images from."
     )
-    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base_url: str | OutputHandle[str] = connect_field(
         default="",
         description="The base URL of the page, used to resolve relative image URLs.",
     )
+
+    @property
+    def out(self) -> "ExtractImagesOutputs":
+        return ExtractImagesOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.ExtractImages"
 
 
-class ExtractLinks(GraphNode):
+class ExtractImagesOutputs(OutputsProxy):
+    @property
+    def image(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self["image"])
+
+
+ExtractImages.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.OutputType]):
     """
     Extract links from HTML content.
     extract, links, urls
@@ -93,20 +151,49 @@ class ExtractLinks(GraphNode):
     - Build sitemaps
     """
 
-    html: str | GraphNode | tuple[GraphNode, str] = Field(
+    html: str | OutputHandle[str] = connect_field(
         default="", description="The HTML content to extract links from."
     )
-    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base_url: str | OutputHandle[str] = connect_field(
         default="",
         description="The base URL of the page, used to determine internal/external links.",
     )
+
+    @property
+    def out(self) -> "ExtractLinksOutputs":
+        return ExtractLinksOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.ExtractLinks"
 
 
-class ExtractMetadata(GraphNode):
+class ExtractLinksOutputs(OutputsProxy):
+    @property
+    def href(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["href"])
+
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def type(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["type"])
+
+
+ExtractLinks.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class ExtractMetadata(
+    GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractMetadata.OutputType]
+):
     """
     Extract metadata from HTML content.
     extract, metadata, seo
@@ -117,16 +204,45 @@ class ExtractMetadata(GraphNode):
     - Extract structured data
     """
 
-    html: str | GraphNode | tuple[GraphNode, str] = Field(
+    html: str | OutputHandle[str] = connect_field(
         default="", description="The HTML content to extract metadata from."
     )
+
+    @property
+    def out(self) -> "ExtractMetadataOutputs":
+        return ExtractMetadataOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.ExtractMetadata"
 
 
-class ExtractVideos(GraphNode):
+class ExtractMetadataOutputs(OutputsProxy):
+    @property
+    def title(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["title"])
+
+    @property
+    def description(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["description"])
+
+    @property
+    def keywords(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["keywords"])
+
+
+ExtractMetadata.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class ExtractVideos(
+    GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractVideos.OutputType]
+):
     """
     Extract videos from HTML content.
     extract, videos, src
@@ -137,20 +253,39 @@ class ExtractVideos(GraphNode):
     - Create video playlists
     """
 
-    html: str | GraphNode | tuple[GraphNode, str] = Field(
+    html: str | OutputHandle[str] = connect_field(
         default="", description="The HTML content to extract videos from."
     )
-    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base_url: str | OutputHandle[str] = connect_field(
         default="",
         description="The base URL of the page, used to resolve relative video URLs.",
     )
+
+    @property
+    def out(self) -> "ExtractVideosOutputs":
+        return ExtractVideosOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.ExtractVideos"
 
 
-class HTMLToText(GraphNode):
+class ExtractVideosOutputs(OutputsProxy):
+    @property
+    def video(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self["video"])
+
+
+ExtractVideos.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class HTMLToText(GraphNode[str]):
     """
     Converts HTML to plain text by removing tags and decoding entities using BeautifulSoup.
     html, text, convert
@@ -161,17 +296,30 @@ class HTMLToText(GraphNode):
     - Preparing HTML data for natural language processing
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    preserve_linebreaks: bool | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    preserve_linebreaks: bool | OutputHandle[bool] = connect_field(
         default=True, description="Convert block-level elements to newlines"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.HTMLToText"
 
 
-class WebsiteContentExtractor(GraphNode):
+HTMLToText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
+
+
+class WebsiteContentExtractor(GraphNode[str]):
     """
     Extract main content from a website, removing navigation, ads, and other non-essential elements.
     scrape, web scraping, content extraction, text analysis
@@ -182,10 +330,17 @@ class WebsiteContentExtractor(GraphNode):
     - Prepare web content for summarization
     """
 
-    html_content: str | GraphNode | tuple[GraphNode, str] = Field(
+    html_content: str | OutputHandle[str] = connect_field(
         default="", description="The raw HTML content of the website."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.beautifulsoup.WebsiteContentExtractor"
+
+
+WebsiteContentExtractor.model_rebuild(force=True)

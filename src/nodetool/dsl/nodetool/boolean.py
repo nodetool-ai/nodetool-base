@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
 
-class All(GraphNode):
+
+class All(GraphNode[bool]):
     """
     Checks if all boolean values in a list are True.
     boolean, all, check, logic, condition, flow-control, branch
@@ -25,19 +30,30 @@ class All(GraphNode):
     - Validate multiple criteria simultaneously
     """
 
-    values: list[bool] | GraphNode | tuple[GraphNode, str] = Field(
+    values: list[bool] | OutputHandle[list[bool]] = connect_field(
         default=[], description="List of boolean values to check"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.All"
 
 
+All.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
 import nodetool.nodes.nodetool.boolean
 
 
-class Compare(GraphNode):
+class Compare(GraphNode[bool]):
     """
     Compares two values using a specified comparison operator.
     compare, condition, logic
@@ -51,10 +67,10 @@ class Compare(GraphNode):
     Comparison: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.boolean.Compare.Comparison
     )
-    a: Any | GraphNode | tuple[GraphNode, str] = Field(
+    a: Any | OutputHandle[Any] = connect_field(
         default=None, description="First value to compare"
     )
-    b: Any | GraphNode | tuple[GraphNode, str] = Field(
+    b: Any | OutputHandle[Any] = connect_field(
         default=None, description="Second value to compare"
     )
     comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(
@@ -62,12 +78,25 @@ class Compare(GraphNode):
         description="Comparison operator to use",
     )
 
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.Compare"
 
 
-class ConditionalSwitch(GraphNode):
+Compare.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
+
+
+class ConditionalSwitch(GraphNode[Any]):
     """
     Performs a conditional check on a boolean input and returns a value based on the result.
     if, condition, flow-control, branch, true, false, switch, toggle
@@ -78,22 +107,35 @@ class ConditionalSwitch(GraphNode):
     - Implement decision points in workflows
     """
 
-    condition: bool | GraphNode | tuple[GraphNode, str] = Field(
+    condition: bool | OutputHandle[bool] = connect_field(
         default=False, description="The condition to check"
     )
-    if_true: Any | GraphNode | tuple[GraphNode, str] = Field(
+    if_true: Any | OutputHandle[Any] = connect_field(
         default=None, description="The value to return if the condition is true"
     )
-    if_false: Any | GraphNode | tuple[GraphNode, str] = Field(
+    if_false: Any | OutputHandle[Any] = connect_field(
         default=None, description="The value to return if the condition is false"
     )
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.ConditionalSwitch"
 
 
-class IsIn(GraphNode):
+ConditionalSwitch.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
+
+
+class IsIn(GraphNode[bool]):
     """
     Checks if a value is present in a list of options.
     membership, contains, check
@@ -104,19 +146,32 @@ class IsIn(GraphNode):
     - Filter data based on inclusion criteria
     """
 
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    value: Any | OutputHandle[Any] = connect_field(
         default=None, description="The value to check for membership"
     )
-    options: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    options: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description="The list of options to check against"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.IsIn"
 
 
-class IsNone(GraphNode):
+IsIn.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
+
+
+class IsNone(GraphNode[bool]):
     """
     Checks if a value is None.
     null, none, check
@@ -127,19 +182,30 @@ class IsNone(GraphNode):
     - Implement null checks in data processing
     """
 
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    value: Any | OutputHandle[Any] = connect_field(
         default=None, description="The value to check for None"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.IsNone"
 
 
+IsNone.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
 import nodetool.nodes.nodetool.boolean
 
 
-class LogicalOperator(GraphNode):
+class LogicalOperator(GraphNode[bool]):
     """
     Performs logical operations on two boolean inputs.
     boolean, logic, operator, condition, flow-control, branch, else, true, false, switch, toggle
@@ -153,10 +219,10 @@ class LogicalOperator(GraphNode):
     BooleanOperation: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
     )
-    a: bool | GraphNode | tuple[GraphNode, str] = Field(
+    a: bool | OutputHandle[bool] = connect_field(
         default=False, description="First boolean input"
     )
-    b: bool | GraphNode | tuple[GraphNode, str] = Field(
+    b: bool | OutputHandle[bool] = connect_field(
         default=False, description="Second boolean input"
     )
     operation: nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation = Field(
@@ -164,12 +230,25 @@ class LogicalOperator(GraphNode):
         description="Logical operation to perform",
     )
 
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.LogicalOperator"
 
 
-class Not(GraphNode):
+LogicalOperator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
+
+
+class Not(GraphNode[bool]):
     """
     Performs logical NOT operation on a boolean input.
     boolean, logic, not, invert, !, negation, condition, else, true, false, switch, toggle, flow-control, branch
@@ -180,16 +259,29 @@ class Not(GraphNode):
     - Create opposite logic branches
     """
 
-    value: bool | GraphNode | tuple[GraphNode, str] = Field(
+    value: bool | OutputHandle[bool] = connect_field(
         default=False, description="Boolean input to negate"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.Not"
 
 
-class Some(GraphNode):
+Not.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
+
+
+class Some(GraphNode[bool]):
     """
     Checks if any boolean value in a list is True.
     boolean, any, check, logic, condition, flow-control, branch
@@ -200,10 +292,17 @@ class Some(GraphNode):
     - Create flexible validation rules
     """
 
-    values: list[bool] | GraphNode | tuple[GraphNode, str] = Field(
+    values: list[bool] | OutputHandle[list[bool]] = connect_field(
         default=[], description="List of boolean values to check"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.boolean.Some"
+
+
+Some.model_rebuild(force=True)

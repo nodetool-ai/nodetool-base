@@ -12,26 +12,44 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.mail
 
-class AddLabel(GraphNode):
+
+class AddLabel(GraphNode[bool]):
     """
     Adds a label to a Gmail message.
     email, gmail, label
     """
 
-    message_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    message_id: str | OutputHandle[str] = connect_field(
         default="", description="Message ID to label"
     )
-    label: str | GraphNode | tuple[GraphNode, str] = Field(
+    label: str | OutputHandle[str] = connect_field(
         default="", description="Label to add to the message"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.mail.AddLabel"
 
 
-class EmailFields(GraphNode):
+AddLabel.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.mail
+
+
+class EmailFields(GraphNode[nodetool.nodes.lib.mail.EmailFields.OutputType]):
     """
     Decomposes an email into its individual components.
     email, decompose, extract
@@ -44,7 +62,7 @@ class EmailFields(GraphNode):
     - body: Email body content
     """
 
-    email: types.Email | GraphNode | tuple[GraphNode, str] = Field(
+    email: types.Email | OutputHandle[types.Email] = connect_field(
         default=types.Email(
             type="email",
             id="",
@@ -67,16 +85,49 @@ class EmailFields(GraphNode):
         description="Email object to decompose",
     )
 
+    @property
+    def out(self) -> "EmailFieldsOutputs":
+        return EmailFieldsOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "lib.mail.EmailFields"
 
 
+class EmailFieldsOutputs(OutputsProxy):
+    @property
+    def id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["id"])
+
+    @property
+    def subject(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["subject"])
+
+    @property
+    def sender(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["sender"])
+
+    @property
+    def date(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self["date"])
+
+    @property
+    def body(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["body"])
+
+
+EmailFields.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.mail
 import nodetool.nodes.lib.mail
 import nodetool.nodes.lib.mail
 
 
-class GmailSearch(GraphNode):
+class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
     """
     Searches Gmail using Gmail-specific search operators and yields matching emails.
     email, gmail, search
@@ -89,72 +140,108 @@ class GmailSearch(GraphNode):
 
     DateFilter: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.DateFilter
     GmailFolder: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.GmailFolder
-    from_address: str | GraphNode | tuple[GraphNode, str] = Field(
+    from_address: str | OutputHandle[str] = connect_field(
         default="", description="Sender's email address to search for"
     )
-    to_address: str | GraphNode | tuple[GraphNode, str] = Field(
+    to_address: str | OutputHandle[str] = connect_field(
         default="", description="Recipient's email address to search for"
     )
-    subject: str | GraphNode | tuple[GraphNode, str] = Field(
+    subject: str | OutputHandle[str] = connect_field(
         default="", description="Text to search for in email subject"
     )
-    body: str | GraphNode | tuple[GraphNode, str] = Field(
+    body: str | OutputHandle[str] = connect_field(
         default="", description="Text to search for in email body"
     )
     date_filter: nodetool.nodes.lib.mail.GmailSearch.DateFilter = Field(
         default=nodetool.nodes.lib.mail.GmailSearch.DateFilter.SINCE_ONE_DAY,
         description="Date filter to search for",
     )
-    keywords: str | GraphNode | tuple[GraphNode, str] = Field(
+    keywords: str | OutputHandle[str] = connect_field(
         default="", description="Custom keywords or labels to search for"
     )
     folder: nodetool.nodes.lib.mail.GmailSearch.GmailFolder = Field(
         default=nodetool.nodes.lib.mail.GmailSearch.GmailFolder.INBOX,
         description="Email folder to search in",
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="General text to search for anywhere in the email"
     )
-    max_results: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_results: int | OutputHandle[int] = connect_field(
         default=50, description="Maximum number of emails to return"
     )
-    retry_attempts: int | GraphNode | tuple[GraphNode, str] = Field(
+    retry_attempts: int | OutputHandle[int] = connect_field(
         default=3, description="Maximum retry attempts for Gmail operations"
     )
-    retry_base_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_base_delay: float | OutputHandle[float] = connect_field(
         default=0.5, description="Base delay (seconds) for exponential backoff"
     )
-    retry_max_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_max_delay: float | OutputHandle[float] = connect_field(
         default=5.0, description="Maximum delay (seconds) for exponential backoff"
     )
-    retry_factor: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_factor: float | OutputHandle[float] = connect_field(
         default=2.0, description="Exponential growth factor for backoff"
     )
-    retry_jitter: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_jitter: float | OutputHandle[float] = connect_field(
         default=0.1, description="Random jitter (seconds) added to each backoff"
     )
+
+    @property
+    def out(self) -> "GmailSearchOutputs":
+        return GmailSearchOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.mail.GmailSearch"
 
 
-class MoveToArchive(GraphNode):
+class GmailSearchOutputs(OutputsProxy):
+    @property
+    def email(self) -> OutputHandle[types.Email]:
+        return typing.cast(OutputHandle[types.Email], self["email"])
+
+    @property
+    def message_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["message_id"])
+
+
+GmailSearch.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.mail
+
+
+class MoveToArchive(GraphNode[bool]):
     """
     Moves specified emails to Gmail archive.
     email, gmail, archive
     """
 
-    message_id: str | GraphNode | tuple[GraphNode, str] = Field(
+    message_id: str | OutputHandle[str] = connect_field(
         default="", description="Message ID to archive"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.mail.MoveToArchive"
 
 
-class SendEmail(GraphNode):
+MoveToArchive.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.mail
+
+
+class SendEmail(GraphNode[bool]):
     """Send a plain text email via SMTP.
     email, smtp, send
 
@@ -163,46 +250,51 @@ class SendEmail(GraphNode):
     - Automate email reports
     """
 
-    smtp_server: str | GraphNode | tuple[GraphNode, str] = Field(
+    smtp_server: str | OutputHandle[str] = connect_field(
         default="smtp.gmail.com", description="SMTP server hostname"
     )
-    smtp_port: int | GraphNode | tuple[GraphNode, str] = Field(
+    smtp_port: int | OutputHandle[int] = connect_field(
         default=587, description="SMTP server port"
     )
-    username: str | GraphNode | tuple[GraphNode, str] = Field(
+    username: str | OutputHandle[str] = connect_field(
         default="", description="SMTP username"
     )
-    password: str | GraphNode | tuple[GraphNode, str] = Field(
+    password: str | OutputHandle[str] = connect_field(
         default="", description="SMTP password"
     )
-    from_address: str | GraphNode | tuple[GraphNode, str] = Field(
+    from_address: str | OutputHandle[str] = connect_field(
         default="", description="Sender email address"
     )
-    to_address: str | GraphNode | tuple[GraphNode, str] = Field(
+    to_address: str | OutputHandle[str] = connect_field(
         default="", description="Recipient email address"
     )
-    subject: str | GraphNode | tuple[GraphNode, str] = Field(
+    subject: str | OutputHandle[str] = connect_field(
         default="", description="Email subject"
     )
-    body: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Email body"
-    )
-    retry_attempts: int | GraphNode | tuple[GraphNode, str] = Field(
+    body: str | OutputHandle[str] = connect_field(default="", description="Email body")
+    retry_attempts: int | OutputHandle[int] = connect_field(
         default=3, description="Maximum retry attempts for SMTP send"
     )
-    retry_base_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_base_delay: float | OutputHandle[float] = connect_field(
         default=0.5, description="Base delay (seconds) for exponential backoff"
     )
-    retry_max_delay: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_max_delay: float | OutputHandle[float] = connect_field(
         default=5.0, description="Maximum delay (seconds) for exponential backoff"
     )
-    retry_factor: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_factor: float | OutputHandle[float] = connect_field(
         default=2.0, description="Exponential growth factor for backoff"
     )
-    retry_jitter: float | GraphNode | tuple[GraphNode, str] = Field(
+    retry_jitter: float | OutputHandle[float] = connect_field(
         default=0.1, description="Random jitter (seconds) added to each backoff"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.mail.SendEmail"
+
+
+SendEmail.model_rebuild(force=True)

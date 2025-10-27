@@ -12,147 +12,245 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
 
-class AddVectors(GraphNode):
+
+class AddVectors(GraphNode[types.FaissIndex]):
     """
     Add vectors to a FAISS index.
     faiss, add, vectors
     """
 
-    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
         default=types.FaissIndex(type="faiss_index", index=None),
         description="FAISS index",
     )
-    vectors: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Vectors to add (n, d)",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.FaissIndex]:
+        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.AddVectors"
 
 
-class AddWithIds(GraphNode):
+AddVectors.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
+
+
+class AddWithIds(GraphNode[types.FaissIndex]):
     """
     Add vectors with explicit integer IDs to a FAISS index.
     faiss, add, ids, vectors
     """
 
-    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
         default=types.FaissIndex(type="faiss_index", index=None),
         description="FAISS index",
     )
-    vectors: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Vectors to add (n, d)",
     )
-    ids: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    ids: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="1-D int64 IDs (n,)",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.FaissIndex]:
+        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.AddWithIds"
 
 
-class CreateIndexFlatIP(GraphNode):
+AddWithIds.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
+
+
+class CreateIndexFlatIP(GraphNode[types.FaissIndex]):
     """
     Create a FAISS IndexFlatIP (inner product / cosine with normalized vectors).
     faiss, index, ip, create
     """
 
-    dim: int | GraphNode | tuple[GraphNode, str] = Field(
+    dim: int | OutputHandle[int] = connect_field(
         default=768, description="Embedding dimensionality"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.FaissIndex]:
+        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.CreateIndexFlatIP"
 
 
-class CreateIndexFlatL2(GraphNode):
+CreateIndexFlatIP.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
+
+
+class CreateIndexFlatL2(GraphNode[types.FaissIndex]):
     """
     Create a FAISS IndexFlatL2.
     faiss, index, l2, create
     """
 
-    dim: int | GraphNode | tuple[GraphNode, str] = Field(
+    dim: int | OutputHandle[int] = connect_field(
         default=768, description="Embedding dimensionality"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.FaissIndex]:
+        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.CreateIndexFlatL2"
 
 
+CreateIndexFlatL2.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
 import nodetool.nodes.vector.faiss
 
 
-class CreateIndexIVFFlat(GraphNode):
+class CreateIndexIVFFlat(GraphNode[types.FaissIndex]):
     """
     Create a FAISS IndexIVFFlat (inverted file index with flat quantizer).
     faiss, index, ivf, create
     """
 
     Metric: typing.ClassVar[type] = nodetool.nodes.vector.faiss.Metric
-    dim: int | GraphNode | tuple[GraphNode, str] = Field(
+    dim: int | OutputHandle[int] = connect_field(
         default=768, description="Embedding dimensionality"
     )
-    nlist: int | GraphNode | tuple[GraphNode, str] = Field(
+    nlist: int | OutputHandle[int] = connect_field(
         default=1024, description="Number of Voronoi cells"
     )
     metric: nodetool.nodes.vector.faiss.Metric = Field(
         default=nodetool.nodes.vector.faiss.Metric.L2, description="Distance metric"
     )
 
+    @property
+    def output(self) -> OutputHandle[types.FaissIndex]:
+        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.CreateIndexIVFFlat"
 
 
-class Search(GraphNode):
+CreateIndexIVFFlat.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
+
+
+class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
     """
     Search a FAISS index with query vectors, returning distances and indices.
     faiss, search, query, knn
     """
 
-    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
         default=types.FaissIndex(type="faiss_index", index=None),
         description="FAISS index",
     )
-    query: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    query: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Query vectors (m, d) or (d,)",
     )
-    k: int | GraphNode | tuple[GraphNode, str] = Field(
+    k: int | OutputHandle[int] = connect_field(
         default=5, description="Number of nearest neighbors"
     )
-    nprobe: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    nprobe: int | OutputHandle[int] | None = connect_field(
         default=None, description="nprobe for IVF indices"
     )
+
+    @property
+    def out(self) -> "SearchOutputs":
+        return SearchOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.Search"
 
 
-class TrainIndex(GraphNode):
+class SearchOutputs(OutputsProxy):
+    @property
+    def distances(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self["distances"])
+
+    @property
+    def indices(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self["indices"])
+
+
+Search.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.faiss
+
+
+class TrainIndex(GraphNode[types.FaissIndex]):
     """
     Train a FAISS index with training vectors (required for IVF indices).
     faiss, train, index
     """
 
-    index: types.FaissIndex | GraphNode | tuple[GraphNode, str] = Field(
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
         default=types.FaissIndex(type="faiss_index", index=None),
         description="FAISS index",
     )
-    vectors: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Training vectors (n, d)",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.FaissIndex]:
+        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "vector.faiss.TrainIndex"
+
+
+TrainIndex.model_rebuild(force=True)

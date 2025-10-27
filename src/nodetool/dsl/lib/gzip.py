@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.gzip
 
-class GzipCompress(GraphNode):
+
+class GzipCompress(GraphNode[bytes]):
     """
     Compress bytes using gzip.
     gzip, compress, bytes
@@ -24,16 +29,29 @@ class GzipCompress(GraphNode):
     - Prepare data for network transfer
     """
 
-    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
+    data: bytes | OutputHandle[bytes] | None = connect_field(
         default=None, description="Data to compress"
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.gzip.GzipCompress"
 
 
-class GzipDecompress(GraphNode):
+GzipCompress.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.gzip
+
+
+class GzipDecompress(GraphNode[bytes]):
     """
     Decompress gzip data.
     gzip, decompress, bytes
@@ -44,10 +62,17 @@ class GzipDecompress(GraphNode):
     - Process network payloads
     """
 
-    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
+    data: bytes | OutputHandle[bytes] | None = connect_field(
         default=None, description="Gzip data to decompress"
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.gzip.GzipDecompress"
+
+
+GzipDecompress.model_rebuild(force=True)

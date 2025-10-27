@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.urllib
 
-class EncodeQueryParams(GraphNode):
+
+class EncodeQueryParams(GraphNode[str]):
     """
     Encode a dictionary of parameters into a query string using
     ``urllib.parse.urlencode``.
@@ -25,16 +30,29 @@ class EncodeQueryParams(GraphNode):
     - Convert parameters to query strings
     """
 
-    params: dict[str, str] | GraphNode | tuple[GraphNode, str] = Field(
+    params: dict[str, str] | OutputHandle[dict[str, str]] = connect_field(
         default=PydanticUndefined, description="Parameters to encode"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.urllib.EncodeQueryParams"
 
 
-class JoinURL(GraphNode):
+EncodeQueryParams.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.urllib
+
+
+class JoinURL(GraphNode[str]):
     """
     Join a base URL with a relative URL using ``urllib.parse.urljoin``.
     urllib, join, url
@@ -45,19 +63,30 @@ class JoinURL(GraphNode):
     - Resolve resources from a base URL
     """
 
-    base: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="Base URL"
-    )
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base: str | OutputHandle[str] = connect_field(default="", description="Base URL")
+    url: str | OutputHandle[str] = connect_field(
         default="", description="Relative or absolute URL"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.urllib.JoinURL"
 
 
-class ParseURL(GraphNode):
+JoinURL.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.urllib
+
+
+class ParseURL(GraphNode[dict]):
     """
     Parse a URL into its components using ``urllib.parse.urlparse``.
     urllib, parse, url
@@ -68,16 +97,27 @@ class ParseURL(GraphNode):
     - Analyze query parameters
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description="URL to parse"
-    )
+    url: str | OutputHandle[str] = connect_field(default="", description="URL to parse")
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.urllib.ParseURL"
 
 
-class QuoteURL(GraphNode):
+ParseURL.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.urllib
+
+
+class QuoteURL(GraphNode[str]):
     """
     Percent-encode a string for safe use in URLs using ``urllib.parse.quote``.
     urllib, quote, encode
@@ -88,16 +128,29 @@ class QuoteURL(GraphNode):
     - Encode file names in URLs
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text to quote"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.urllib.QuoteURL"
 
 
-class UnquoteURL(GraphNode):
+QuoteURL.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.urllib
+
+
+class UnquoteURL(GraphNode[str]):
     """
     Decode a percent-encoded URL string using ``urllib.parse.unquote``.
     urllib, unquote, decode
@@ -108,10 +161,17 @@ class UnquoteURL(GraphNode):
     - Display unescaped paths
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Encoded text"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.urllib.UnquoteURL"
+
+
+UnquoteURL.model_rebuild(force=True)

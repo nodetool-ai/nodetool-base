@@ -424,9 +424,6 @@ class SplitMarkdown(BaseNode):
             }
 
 
-# Backwards-compatible alias used in tests
-MarkdownSplitter = SplitMarkdown
-
 
 class SplitSentences(BaseNode):
     """

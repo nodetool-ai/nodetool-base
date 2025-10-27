@@ -12,11 +12,20 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
 
-class ExecuteBash(GraphNode):
+class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]):
     """
     Executes Bash script with safety restrictions.
     bash, shell, code, execute
@@ -26,7 +35,7 @@ class ExecuteBash(GraphNode):
         nodetool.nodes.nodetool.code.ExecuteBash.BashImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
-    code: str | GraphNode | tuple[GraphNode, str] = Field(
+    code: str | OutputHandle[str] = connect_field(
         default="",
         description="Bash script to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
@@ -38,21 +47,47 @@ class ExecuteBash(GraphNode):
         default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
     )
-    stdin: str | GraphNode | tuple[GraphNode, str] = Field(
+    stdin: str | OutputHandle[str] = connect_field(
         default="",
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
+
+    @property
+    def out(self) -> "ExecuteBashOutputs":
+        return ExecuteBashOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.code.ExecuteBash"
 
 
+class ExecuteBashOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+ExecuteBash.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
 
-class ExecuteCommand(GraphNode):
+class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.OutputType]):
     """
     Executes a single shell command inside a Docker container.
     command, execute, shell, bash, sh
@@ -64,7 +99,7 @@ class ExecuteCommand(GraphNode):
         nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
-    command: str | GraphNode | tuple[GraphNode, str] = Field(
+    command: str | OutputHandle[str] = connect_field(
         default="",
         description="Single command to run via the selected shell. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
@@ -76,21 +111,49 @@ class ExecuteCommand(GraphNode):
         default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
     )
-    stdin: str | GraphNode | tuple[GraphNode, str] = Field(
+    stdin: str | OutputHandle[str] = connect_field(
         default="",
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
+
+    @property
+    def out(self) -> "ExecuteCommandOutputs":
+        return ExecuteCommandOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.code.ExecuteCommand"
 
 
+class ExecuteCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+ExecuteCommand.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
 
-class ExecuteJavaScript(GraphNode):
+class ExecuteJavaScript(
+    GraphNode[nodetool.nodes.nodetool.code.ExecuteJavaScript.OutputType]
+):
     """
     Executes JavaScript (Node.js) code with safety restrictions.
     javascript, nodejs, code, execute
@@ -100,7 +163,7 @@ class ExecuteJavaScript(GraphNode):
         nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
-    code: str | GraphNode | tuple[GraphNode, str] = Field(
+    code: str | OutputHandle[str] = connect_field(
         default="",
         description="JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
@@ -112,21 +175,47 @@ class ExecuteJavaScript(GraphNode):
         default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
     )
-    stdin: str | GraphNode | tuple[GraphNode, str] = Field(
+    stdin: str | OutputHandle[str] = connect_field(
         default="",
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
+
+    @property
+    def out(self) -> "ExecuteJavaScriptOutputs":
+        return ExecuteJavaScriptOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.code.ExecuteJavaScript"
 
 
+class ExecuteJavaScriptOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+ExecuteJavaScript.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
 
-class ExecuteLua(GraphNode):
+class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
     """
     Executes Lua code with a local sandbox (no Docker).
     lua, code, execute, sandbox
@@ -136,7 +225,7 @@ class ExecuteLua(GraphNode):
         nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
-    code: str | GraphNode | tuple[GraphNode, str] = Field(
+    code: str | OutputHandle[str] = connect_field(
         default="",
         description="Lua code to execute as-is in a restricted environment. Dynamic inputs are provided as variables. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
@@ -148,24 +237,50 @@ class ExecuteLua(GraphNode):
         default=nodetool.nodes.nodetool.code.ExecutionMode.SUBPROCESS,
         description="Execution mode: 'docker' or 'subprocess'",
     )
-    timeout_seconds: int | GraphNode | tuple[GraphNode, str] = Field(
+    timeout_seconds: int | OutputHandle[int] = connect_field(
         default=10, description="Max seconds to allow execution before forced stop"
     )
-    stdin: str | GraphNode | tuple[GraphNode, str] = Field(
+    stdin: str | OutputHandle[str] = connect_field(
         default="",
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
+
+    @property
+    def out(self) -> "ExecuteLuaOutputs":
+        return ExecuteLuaOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.code.ExecuteLua"
 
 
+class ExecuteLuaOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+ExecuteLua.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
 
-class ExecutePython(GraphNode):
+class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputType]):
     """
     Executes Python code with safety restrictions.
     python, code, execute
@@ -182,7 +297,7 @@ class ExecutePython(GraphNode):
         nodetool.nodes.nodetool.code.ExecutePython.PythonImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
-    code: str | GraphNode | tuple[GraphNode, str] = Field(
+    code: str | OutputHandle[str] = connect_field(
         default="",
         description="Python code to execute as-is. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
@@ -194,21 +309,47 @@ class ExecutePython(GraphNode):
         default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
     )
-    stdin: str | GraphNode | tuple[GraphNode, str] = Field(
+    stdin: str | OutputHandle[str] = connect_field(
         default="",
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
+
+    @property
+    def out(self) -> "ExecutePythonOutputs":
+        return ExecutePythonOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.code.ExecutePython"
 
 
+class ExecutePythonOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+ExecutePython.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
 
-class ExecuteRuby(GraphNode):
+class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]):
     """
     Executes Ruby code with safety restrictions.
     ruby, code, execute
@@ -218,7 +359,7 @@ class ExecuteRuby(GraphNode):
         nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
-    code: str | GraphNode | tuple[GraphNode, str] = Field(
+    code: str | OutputHandle[str] = connect_field(
         default="",
         description="Ruby code to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
     )
@@ -230,11 +371,28 @@ class ExecuteRuby(GraphNode):
         default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
     )
-    stdin: str | GraphNode | tuple[GraphNode, str] = Field(
+    stdin: str | OutputHandle[str] = connect_field(
         default="",
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    @property
+    def out(self) -> "ExecuteRubyOutputs":
+        return ExecuteRubyOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.code.ExecuteRuby"
+
+
+class ExecuteRubyOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+ExecuteRuby.model_rebuild(force=True)

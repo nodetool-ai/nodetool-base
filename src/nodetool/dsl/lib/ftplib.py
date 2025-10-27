@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.ftplib
 
-class FTPDownloadFile(GraphNode):
+
+class FTPDownloadFile(GraphNode[types.DocumentRef]):
     """Download a file from an FTP server.
     ftp, download, file
 
@@ -23,25 +28,40 @@ class FTPDownloadFile(GraphNode):
     - Integrate legacy FTP systems
     """
 
-    host: str | GraphNode | tuple[GraphNode, str] = Field(
+    host: str | OutputHandle[str] = connect_field(
         default="", description="FTP server host"
     )
-    username: str | GraphNode | tuple[GraphNode, str] = Field(
+    username: str | OutputHandle[str] = connect_field(
         default="", description="Username for authentication"
     )
-    password: str | GraphNode | tuple[GraphNode, str] = Field(
+    password: str | OutputHandle[str] = connect_field(
         default="", description="Password for authentication"
     )
-    remote_path: str | GraphNode | tuple[GraphNode, str] = Field(
+    remote_path: str | OutputHandle[str] = connect_field(
         default="", description="Remote file path to download"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.ftplib.FTPDownloadFile"
 
 
-class FTPListDirectory(GraphNode):
+FTPDownloadFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.ftplib
+
+
+class FTPListDirectory(GraphNode[list[str]]):
     """List files in a directory on an FTP server.
     ftp, list, directory
 
@@ -51,25 +71,38 @@ class FTPListDirectory(GraphNode):
     - Monitor FTP server contents
     """
 
-    host: str | GraphNode | tuple[GraphNode, str] = Field(
+    host: str | OutputHandle[str] = connect_field(
         default="", description="FTP server host"
     )
-    username: str | GraphNode | tuple[GraphNode, str] = Field(
+    username: str | OutputHandle[str] = connect_field(
         default="", description="Username for authentication"
     )
-    password: str | GraphNode | tuple[GraphNode, str] = Field(
+    password: str | OutputHandle[str] = connect_field(
         default="", description="Password for authentication"
     )
-    directory: str | GraphNode | tuple[GraphNode, str] = Field(
+    directory: str | OutputHandle[str] = connect_field(
         default="", description="Remote directory to list"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.ftplib.FTPListDirectory"
 
 
-class FTPUploadFile(GraphNode):
+FTPListDirectory.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.ftplib
+
+
+class FTPUploadFile(GraphNode[NoneType]):
     """Upload a file to an FTP server.
     ftp, upload, file
 
@@ -79,23 +112,30 @@ class FTPUploadFile(GraphNode):
     - Integrate with legacy FTP workflows
     """
 
-    host: str | GraphNode | tuple[GraphNode, str] = Field(
+    host: str | OutputHandle[str] = connect_field(
         default="", description="FTP server host"
     )
-    username: str | GraphNode | tuple[GraphNode, str] = Field(
+    username: str | OutputHandle[str] = connect_field(
         default="", description="Username for authentication"
     )
-    password: str | GraphNode | tuple[GraphNode, str] = Field(
+    password: str | OutputHandle[str] = connect_field(
         default="", description="Password for authentication"
     )
-    remote_path: str | GraphNode | tuple[GraphNode, str] = Field(
+    remote_path: str | OutputHandle[str] = connect_field(
         default="", description="Remote file path to upload to"
     )
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="Document to upload",
     )
 
+    @property
+    def output(self) -> OutputHandle[NoneType]:
+        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.ftplib.FTPUploadFile"
+
+
+FTPUploadFile.model_rebuild(force=True)

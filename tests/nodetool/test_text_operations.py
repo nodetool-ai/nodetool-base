@@ -11,71 +11,77 @@ from nodetool.dsl.nodetool.text import (
 from nodetool.dsl.nodetool.output import StringOutput, BooleanOutput
 
 # Example 1: Basic text concatenation
-text_concat = StringOutput(name="text_concat", value=Concat(a="Hello, ", b="World!"))
+concat_node = Concat(a="Hello, ", b="World!")
+text_concat = StringOutput(name="text_concat", value=concat_node.output)
 
 # Example 2: Template with variable substitution
+template_node = Template(
+    string="Hello, {{ name }}! Today is {{ day }}.",
+    values={"name": "Alice", "day": "Monday"},
+)
 template_text = StringOutput(
     name="template_text",
-    value=Template(
-        string="Hello, {{ name }}! Today is {{ day }}.",
-        values={"name": "Alice", "day": "Monday"},
-    ),
+    value=template_node.output,
 )
 
 # Example 3: Regex replacement
+regex_node = RegexReplace(
+    text="The color is grey and gray",
+    pattern="gr[ae]y",
+    replacement="blue",
+    count=1,
+)
 regex_replace = StringOutput(
     name="regex_replace",
-    value=RegexReplace(
-        text="The color is grey and gray",
-        pattern="gr[ae]y",
-        replacement="blue",
-        count=1,
-    ),
+    value=regex_node.output,
 )
 
 # Example 4: Split and join operation
+split_node = Split(text="apple,banana,orange", delimiter=",")
+join_node = Join(
+    strings=split_node.output,
+    separator=" | ",
+)
 split_join = StringOutput(
     name="split_join",
-    value=Join(
-        strings=Split(text="apple,banana,orange", delimiter=","),
-        separator=" | ",
-    ),
+    value=join_node.output,
 )
 
 # Example 5: Text contains check
+contains_node = Contains(
+    text="Python programming is fun", substring="programming", case_sensitive=True
+)
 contains_check = BooleanOutput(
     name="contains_check",
-    value=Contains(
-        text="Python programming is fun", substring="programming", case_sensitive=True
-    ),
+    value=contains_node.output,
 )
 
 
 @pytest.mark.asyncio
 async def test_text_concat():
     result = await graph_result(text_concat)
-    assert result == "Hello, World!"
+    assert result["text_concat"] == "Hello, World!"
 
 
 @pytest.mark.asyncio
 async def test_template_text():
     result = await graph_result(template_text)
-    assert result == "Hello, Alice! Today is Monday."
+    assert result["template_text"] == "Hello, Alice! Today is Monday."
 
 
 @pytest.mark.asyncio
 async def test_regex_replace():
     result = await graph_result(regex_replace)
-    assert result == "The color is blue and gray"
+    assert result["regex_replace"] == "The color is blue and gray"
 
 
 @pytest.mark.asyncio
 async def test_split_join():
     result = await graph_result(split_join)
-    assert result == "apple | banana | orange"
+    assert result["split_join"] == "apple | banana | orange"
 
 
 @pytest.mark.asyncio
 async def test_contains_check():
     result = await graph_result(contains_check)
-    assert result == True
+    assert result["contains_check"] == True

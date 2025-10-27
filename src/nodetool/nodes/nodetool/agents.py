@@ -42,7 +42,6 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import ToolCallUpdate, EdgeUpdate
 from nodetool.workflows.io import NodeInputs, NodeOutputs
-from nodetool.providers import Chunk
 from nodetool.metadata.types import Provider
 from nodetool.config.logging_config import get_logger
 
@@ -1021,7 +1020,7 @@ class Agent(BaseNode):
                 loaded_messages.append(
                     Message(
                         role=msg.get("role"),
-                        content=content,
+                        content=content,  # pyright: ignore[reportArgumentType]
                         tool_calls=msg.get("tool_calls"),
                         name=msg.get("name"),
                         tool_call_id=msg.get("tool_call_id"),

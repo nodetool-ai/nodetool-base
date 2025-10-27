@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 
-class FilterJSON(GraphNode):
+
+class FilterJSON(GraphNode[list[dict]]):
     """
     Filter JSON array based on a key-value condition.
     json, filter, array
@@ -23,148 +28,239 @@ class FilterJSON(GraphNode):
     - Search JSON data
     """
 
-    array: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+    array: list[dict] | OutputHandle[list[dict]] = connect_field(
         default=[], description="Array of JSON objects to filter"
     )
-    key: str | GraphNode | tuple[GraphNode, str] = Field(
+    key: str | OutputHandle[str] = connect_field(
         default="", description="Key to filter on"
     )
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    value: Any | OutputHandle[Any] = connect_field(
         default=None, description="Value to match"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.FilterJSON"
 
 
-class GetJSONPathBool(GraphNode):
+FilterJSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class GetJSONPathBool(GraphNode[bool]):
     """
     Extract a boolean value from a JSON path
     json, path, extract, boolean
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON object to extract from"
     )
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
     )
-    default: bool | GraphNode | tuple[GraphNode, str] = Field(
+    default: bool | OutputHandle[bool] = connect_field(
         default=False, description="Default value to return if path is not found"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.GetJSONPathBool"
 
 
-class GetJSONPathDict(GraphNode):
+GetJSONPathBool.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class GetJSONPathDict(GraphNode[dict]):
     """
     Extract a dictionary value from a JSON path
     json, path, extract, object
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON object to extract from"
     )
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
     )
-    default: dict | GraphNode | tuple[GraphNode, str] = Field(
+    default: dict | OutputHandle[dict] = connect_field(
         default={}, description="Default value to return if path is not found"
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.GetJSONPathDict"
 
 
-class GetJSONPathFloat(GraphNode):
+GetJSONPathDict.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class GetJSONPathFloat(GraphNode[float]):
     """
     Extract a float value from a JSON path
     json, path, extract, number
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON object to extract from"
     )
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
     )
-    default: float | GraphNode | tuple[GraphNode, str] = Field(
+    default: float | OutputHandle[float] = connect_field(
         default=0.0, description="Default value to return if path is not found"
     )
+
+    @property
+    def output(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.GetJSONPathFloat"
 
 
-class GetJSONPathInt(GraphNode):
+GetJSONPathFloat.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class GetJSONPathInt(GraphNode[int]):
     """
     Extract an integer value from a JSON path
     json, path, extract, number
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON object to extract from"
     )
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
     )
-    default: int | GraphNode | tuple[GraphNode, str] = Field(
+    default: int | OutputHandle[int] = connect_field(
         default=0, description="Default value to return if path is not found"
     )
+
+    @property
+    def output(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.GetJSONPathInt"
 
 
-class GetJSONPathList(GraphNode):
+GetJSONPathInt.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class GetJSONPathList(GraphNode[list]):
     """
     Extract a list value from a JSON path
     json, path, extract, array
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON object to extract from"
     )
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
     )
-    default: list | GraphNode | tuple[GraphNode, str] = Field(
+    default: list | OutputHandle[list] = connect_field(
         default=[], description="Default value to return if path is not found"
     )
+
+    @property
+    def output(self) -> OutputHandle[list]:
+        return typing.cast(OutputHandle[list], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.GetJSONPathList"
 
 
-class GetJSONPathStr(GraphNode):
+GetJSONPathList.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class GetJSONPathStr(GraphNode[str]):
     """
     Extract a string value from a JSON path
     json, path, extract, string
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON object to extract from"
     )
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
     )
-    default: str | GraphNode | tuple[GraphNode, str] = Field(
+    default: str | OutputHandle[str] = connect_field(
         default="", description="Default value to return if path is not found"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.GetJSONPathStr"
 
 
-class JSONTemplate(GraphNode):
+GetJSONPathStr.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class JSONTemplate(GraphNode[dict]):
     """
     Template JSON strings with variable substitution.
     json, template, substitute, variables
@@ -180,35 +276,71 @@ class JSONTemplate(GraphNode):
     - Build API request templates
     """
 
-    template: str | GraphNode | tuple[GraphNode, str] = Field(
+    template: str | OutputHandle[str] = connect_field(
         default="", description="JSON template string with $variable placeholders"
     )
-    values: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description="Dictionary of values to substitute into the template"
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.JSONTemplate"
 
 
-class LoadJSONAssets(GraphNode):
+JSONTemplate.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType]):
     """
     Load JSON files from an asset folder.
     load, json, file, import
     """
 
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The asset folder to load the JSON files from.",
     )
+
+    @property
+    def out(self) -> "LoadJSONAssetsOutputs":
+        return LoadJSONAssetsOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.LoadJSONAssets"
 
 
-class ParseDict(GraphNode):
+class LoadJSONAssetsOutputs(OutputsProxy):
+    @property
+    def json(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["json"])
+
+    @property
+    def name(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["name"])
+
+
+LoadJSONAssets.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class ParseDict(GraphNode[dict]):
     """
     Parse a JSON string into a Python dictionary.
     json, parse, decode, dictionary
@@ -219,16 +351,29 @@ class ParseDict(GraphNode):
     - Parse object-like JSON data
     """
 
-    json_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    json_string: str | OutputHandle[str] = connect_field(
         default="", description="JSON string to parse into a dictionary"
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.ParseDict"
 
 
-class ParseList(GraphNode):
+ParseDict.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class ParseList(GraphNode[list]):
     """
     Parse a JSON string into a Python list.
     json, parse, decode, array, list
@@ -239,16 +384,29 @@ class ParseList(GraphNode):
     - Parse array-like JSON data
     """
 
-    json_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    json_string: str | OutputHandle[str] = connect_field(
         default="", description="JSON string to parse into a list"
     )
+
+    @property
+    def output(self) -> OutputHandle[list]:
+        return typing.cast(OutputHandle[list], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.ParseList"
 
 
-class StringifyJSON(GraphNode):
+ParseList.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class StringifyJSON(GraphNode[str]):
     """
     Convert a Python object to a JSON string.
     json, stringify, encode
@@ -258,19 +416,32 @@ class StringifyJSON(GraphNode):
     - Save data in JSON format
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default={}, description="Data to convert to JSON"
     )
-    indent: int | GraphNode | tuple[GraphNode, str] = Field(
+    indent: int | OutputHandle[int] = connect_field(
         default=2, description="Number of spaces for indentation"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.StringifyJSON"
 
 
-class ValidateJSON(GraphNode):
+StringifyJSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
+
+
+class ValidateJSON(GraphNode[bool]):
     """
     Validate JSON data against a schema.
     json, validate, schema
@@ -280,13 +451,20 @@ class ValidateJSON(GraphNode):
     - Validate configuration files
     """
 
-    data: Any | GraphNode | tuple[GraphNode, str] = Field(
+    data: Any | OutputHandle[Any] = connect_field(
         default=None, description="JSON data to validate"
     )
-    json_schema: dict | GraphNode | tuple[GraphNode, str] = Field(
+    json_schema: dict | OutputHandle[dict] = connect_field(
         default={}, description="JSON schema for validation"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.json.ValidateJSON"
+
+
+ValidateJSON.model_rebuild(force=True)

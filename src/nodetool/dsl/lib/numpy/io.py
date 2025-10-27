@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.io
 
-class SaveArray(GraphNode):
+
+class SaveArray(GraphNode[types.NPArray]):
     """
     Save a numpy array to a file in the specified folder.
     array, save, file, storage
@@ -24,19 +29,26 @@ class SaveArray(GraphNode):
     - Create checkpoints in processing pipelines
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The array to save.",
     )
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The folder to save the array in.",
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="%Y-%m-%d_%H-%M-%S.npy",
         description="\n        The name of the asset to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.io.SaveArray"
+
+
+SaveArray.model_rebuild(force=True)

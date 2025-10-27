@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.reshaping
 
-class Reshape1D(GraphNode):
+
+class Reshape1D(GraphNode[types.NPArray]):
     """
     Reshape an array to a 1D shape without changing its data.
     array, reshape, vector, flatten
@@ -24,20 +29,33 @@ class Reshape1D(GraphNode):
     - Prepare data for 1D operations
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to reshape",
     )
-    num_elements: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_elements: int | OutputHandle[int] = connect_field(
         default=0, description="The number of elements"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.reshaping.Reshape1D"
 
 
-class Reshape2D(GraphNode):
+Reshape1D.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.reshaping
+
+
+class Reshape2D(GraphNode[types.NPArray]):
     """
     Reshape an array to a new shape without changing its data.
     array, reshape, dimensions, structure
@@ -48,23 +66,36 @@ class Reshape2D(GraphNode):
     - Flatten or unflatten arrays
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to reshape",
     )
-    num_rows: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_rows: int | OutputHandle[int] = connect_field(
         default=0, description="The number of rows"
     )
-    num_cols: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_cols: int | OutputHandle[int] = connect_field(
         default=0, description="The number of columns"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.reshaping.Reshape2D"
 
 
-class Reshape3D(GraphNode):
+Reshape2D.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.reshaping
+
+
+class Reshape3D(GraphNode[types.NPArray]):
     """
     Reshape an array to a 3D shape without changing its data.
     array, reshape, dimensions, volume
@@ -75,26 +106,39 @@ class Reshape3D(GraphNode):
     - Structure data for 3D convolutions
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to reshape",
     )
-    num_rows: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_rows: int | OutputHandle[int] = connect_field(
         default=0, description="The number of rows"
     )
-    num_cols: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_cols: int | OutputHandle[int] = connect_field(
         default=0, description="The number of columns"
     )
-    num_depths: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_depths: int | OutputHandle[int] = connect_field(
         default=0, description="The number of depths"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.reshaping.Reshape3D"
 
 
-class Reshape4D(GraphNode):
+Reshape3D.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.reshaping
+
+
+class Reshape4D(GraphNode[types.NPArray]):
     """
     Reshape an array to a 4D shape without changing its data.
     array, reshape, dimensions, batch
@@ -105,23 +149,30 @@ class Reshape4D(GraphNode):
     - Format data for 3D image processing with channels
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to reshape",
     )
-    num_rows: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_rows: int | OutputHandle[int] = connect_field(
         default=0, description="The number of rows"
     )
-    num_cols: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_cols: int | OutputHandle[int] = connect_field(
         default=0, description="The number of columns"
     )
-    num_depths: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_depths: int | OutputHandle[int] = connect_field(
         default=0, description="The number of depths"
     )
-    num_channels: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_channels: int | OutputHandle[int] = connect_field(
         default=0, description="The number of channels"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.reshaping.Reshape4D"
+
+
+Reshape4D.model_rebuild(force=True)

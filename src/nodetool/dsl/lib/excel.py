@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
 
-class AutoFitColumns(GraphNode):
+
+class AutoFitColumns(GraphNode[Any]):
     """
     Automatically adjusts column widths to fit content.
     excel, format, columns
@@ -23,20 +28,33 @@ class AutoFitColumns(GraphNode):
     - Professional presentation
     """
 
-    workbook: types.ExcelRef | GraphNode | tuple[GraphNode, str] = Field(
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
         default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
         description="The Excel workbook to format",
     )
-    sheet_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    sheet_name: str | OutputHandle[str] = connect_field(
         default="Sheet1", description="Target worksheet name"
     )
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.excel.AutoFitColumns"
 
 
-class CreateWorkbook(GraphNode):
+AutoFitColumns.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
+
+
+class CreateWorkbook(GraphNode[types.ExcelRef]):
     """
     Creates a new Excel workbook.
     excel, workbook, create
@@ -46,16 +64,29 @@ class CreateWorkbook(GraphNode):
     - Start spreadsheet creation workflows
     """
 
-    sheet_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    sheet_name: str | OutputHandle[str] = connect_field(
         default="Sheet1", description="Name for the first worksheet"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ExcelRef]:
+        return typing.cast(OutputHandle[types.ExcelRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.excel.CreateWorkbook"
 
 
-class DataFrameToExcel(GraphNode):
+CreateWorkbook.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
+
+
+class DataFrameToExcel(GraphNode[Any]):
     """
     Writes a DataFrame to an Excel worksheet.
     excel, dataframe, export
@@ -65,32 +96,45 @@ class DataFrameToExcel(GraphNode):
     - Create reports from data
     """
 
-    workbook: types.ExcelRef | GraphNode | tuple[GraphNode, str] = Field(
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
         default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
         description="The Excel workbook to write to",
     )
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="DataFrame to write",
     )
-    sheet_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    sheet_name: str | OutputHandle[str] = connect_field(
         default="Sheet1", description="Target worksheet name"
     )
-    start_cell: str | GraphNode | tuple[GraphNode, str] = Field(
+    start_cell: str | OutputHandle[str] = connect_field(
         default="A1", description="Starting cell for data"
     )
-    include_header: bool | GraphNode | tuple[GraphNode, str] = Field(
+    include_header: bool | OutputHandle[bool] = connect_field(
         default=True, description="Include column headers"
     )
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.excel.DataFrameToExcel"
 
 
-class ExcelToDataFrame(GraphNode):
+DataFrameToExcel.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
+
+
+class ExcelToDataFrame(GraphNode[types.DataframeRef]):
     """
     Reads an Excel worksheet into a pandas DataFrame.
     excel, dataframe, import
@@ -100,23 +144,38 @@ class ExcelToDataFrame(GraphNode):
     - Process spreadsheet contents
     """
 
-    workbook: types.ExcelRef | GraphNode | tuple[GraphNode, str] = Field(
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
         default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
         description="The Excel workbook to read from",
     )
-    sheet_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    sheet_name: str | OutputHandle[str] = connect_field(
         default="Sheet1", description="Source worksheet name"
     )
-    has_header: bool | GraphNode | tuple[GraphNode, str] = Field(
+    has_header: bool | OutputHandle[bool] = connect_field(
         default=True, description="First row contains headers"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.excel.ExcelToDataFrame"
 
 
-class FormatCells(GraphNode):
+ExcelToDataFrame.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
+
+
+class FormatCells(GraphNode[Any]):
     """
     Applies formatting to a range of cells.
     excel, format, style
@@ -126,33 +185,46 @@ class FormatCells(GraphNode):
     - Create professional looking reports
     """
 
-    workbook: types.ExcelRef | GraphNode | tuple[GraphNode, str] = Field(
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
         default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
         description="The Excel workbook to format",
     )
-    sheet_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    sheet_name: str | OutputHandle[str] = connect_field(
         default="Sheet1", description="Target worksheet name"
     )
-    cell_range: str | GraphNode | tuple[GraphNode, str] = Field(
+    cell_range: str | OutputHandle[str] = connect_field(
         default="A1:B10", description="Cell range to format (e.g. 'A1:B10')"
     )
-    bold: bool | GraphNode | tuple[GraphNode, str] = Field(
+    bold: bool | OutputHandle[bool] = connect_field(
         default=False, description="Make text bold"
     )
-    background_color: str | GraphNode | tuple[GraphNode, str] = Field(
+    background_color: str | OutputHandle[str] = connect_field(
         default="FFFF00",
         description="Background color in hex format (e.g. 'FFFF00' for yellow)",
     )
-    text_color: str | GraphNode | tuple[GraphNode, str] = Field(
+    text_color: str | OutputHandle[str] = connect_field(
         default="000000", description="Text color in hex format"
     )
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.excel.FormatCells"
 
 
-class SaveWorkbook(GraphNode):
+FormatCells.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
+
+
+class SaveWorkbook(GraphNode[typing.Any]):
     """
     Saves an Excel workbook to disk.
     excel, save, export
@@ -162,19 +234,26 @@ class SaveWorkbook(GraphNode):
     - Save work in progress
     """
 
-    workbook: types.ExcelRef | GraphNode | tuple[GraphNode, str] = Field(
+    workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
         default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
         description="The Excel workbook to save",
     )
-    folder: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FilePath | OutputHandle[types.FilePath] = connect_field(
         default=types.FilePath(type="file_path", path=""),
         description="The folder to save the file to.",
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="\n        The filename to save the file to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.excel.SaveWorkbook"
+
+
+SaveWorkbook.model_rebuild(force=True)

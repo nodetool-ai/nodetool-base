@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.base64
 
-class Decode(GraphNode):
+
+class Decode(GraphNode[str]):
     """Decodes Base64 text to plain string.
     base64, decode, string
 
@@ -22,16 +27,29 @@ class Decode(GraphNode):
     - Extract original text from Base64
     """
 
-    data: str | GraphNode | tuple[GraphNode, str] = Field(
+    data: str | OutputHandle[str] = connect_field(
         default="", description="Base64 encoded text"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.base64.Decode"
 
 
-class Encode(GraphNode):
+Decode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.base64
+
+
+class Encode(GraphNode[str]):
     """Encodes text to Base64 format.
     base64, encode, string
 
@@ -40,10 +58,17 @@ class Encode(GraphNode):
     - Embed data in JSON or HTML
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text to encode"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.base64.Encode"
+
+
+Encode.model_rebuild(force=True)

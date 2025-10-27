@@ -32,7 +32,7 @@ async def example():
 
     # Transcribe audio using Whisper
     transcription = AutomaticSpeechRecognition(
-        audio=audio_input,
+        audio=audio_input.output,
         model=ASRModel(
             type="asr_model",
             provider=Provider.HuggingFaceFalAI,
@@ -42,7 +42,7 @@ async def example():
 
     # Summarize the transcript
     summary = Summarizer(
-        text=transcription,
+        text=transcription.out.text,
         model=LanguageModel(
             type="language_model",
             id="openai/gpt-oss-120b",
@@ -53,7 +53,7 @@ async def example():
     # Output the summary
     output = StringOutput(
         name="summary",
-        value=summary,
+        value=summary.out.text,
     )
 
     result = await graph_result(output, asset_output_mode=AssetOutputMode.WORKSPACE)

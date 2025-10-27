@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 
-class AddAudio(GraphNode):
+
+class AddAudio(GraphNode[types.VideoRef]):
     """
     Add an audio track to a video, replacing or mixing with existing audio.
     video, audio, soundtrack, merge
@@ -24,34 +29,45 @@ class AddAudio(GraphNode):
     3. Mix new audio with existing video sound
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to add audio to.",
     )
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio file to add to the video.",
     )
-    volume: float | GraphNode | tuple[GraphNode, str] = Field(
+    volume: float | OutputHandle[float] = connect_field(
         default=1.0,
         description="Volume adjustment for the added audio. 1.0 is original volume.",
     )
-    mix: bool | GraphNode | tuple[GraphNode, str] = Field(
+    mix: bool | OutputHandle[bool] = connect_field(
         default=False,
         description="If True, mix new audio with existing. If False, replace existing audio.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.AddAudio"
 
 
+AddAudio.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
 
 
-class AddSubtitles(GraphNode):
+class AddSubtitles(GraphNode[types.VideoRef]):
     """
     Add subtitles to a video.
     video, subtitles, text, caption
@@ -65,36 +81,49 @@ class AddSubtitles(GraphNode):
     SubtitleTextAlignment: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
     )
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to add subtitles to.",
     )
-    chunks: list[types.AudioChunk] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="Audio chunks to add as subtitles."
+    chunks: list[types.AudioChunk] | OutputHandle[list[types.AudioChunk]] = (
+        connect_field(default=[], description="Audio chunks to add as subtitles.")
     )
-    font: types.FontRef | GraphNode | tuple[GraphNode, str] = Field(
+    font: types.FontRef | OutputHandle[types.FontRef] = connect_field(
         default=types.FontRef(type="font", name=""), description="The font to use."
     )
     align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(
         default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM,
         description="Vertical alignment of subtitles.",
     )
-    font_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    font_size: int | OutputHandle[int] = connect_field(
         default=24, description="The font size."
     )
-    font_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    font_color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#FFFFFF"),
         description="The font color.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.AddSubtitles"
 
 
-class Blur(GraphNode):
+AddSubtitles.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Blur(GraphNode[types.VideoRef]):
     """
     Apply a blur effect to a video.
     video, blur, smooth, soften
@@ -105,23 +134,36 @@ class Blur(GraphNode):
     3. Reduce noise or grain in low-quality footage
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to apply blur effect.",
     )
-    strength: float | GraphNode | tuple[GraphNode, str] = Field(
+    strength: float | OutputHandle[float] = connect_field(
         default=5.0,
         description="The strength of the blur effect. Higher values create a stronger blur.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Blur"
 
 
-class ChromaKey(GraphNode):
+Blur.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class ChromaKey(GraphNode[types.VideoRef]):
     """
     Apply chroma key (green screen) effect to a video.
     video, chroma key, green screen, compositing
@@ -132,29 +174,42 @@ class ChromaKey(GraphNode):
     3. Produce professional-looking videos for presentations or marketing
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to apply chroma key effect.",
     )
-    key_color: types.ColorRef | GraphNode | tuple[GraphNode, str] = Field(
+    key_color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#00FF00"),
         description="The color to key out (e.g., '#00FF00' for green).",
     )
-    similarity: float | GraphNode | tuple[GraphNode, str] = Field(
+    similarity: float | OutputHandle[float] = connect_field(
         default=0.3, description="Similarity threshold for the key color."
     )
-    blend: float | GraphNode | tuple[GraphNode, str] = Field(
+    blend: float | OutputHandle[float] = connect_field(
         default=0.1, description="Blending of the keyed area edges."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.ChromaKey"
 
 
-class ColorBalance(GraphNode):
+ChromaKey.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class ColorBalance(GraphNode[types.VideoRef]):
     """
     Adjust the color balance of a video.
     video, color, balance, adjustment
@@ -165,52 +220,78 @@ class ColorBalance(GraphNode):
     3. Normalize color balance across multiple video clips
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to adjust color balance.",
     )
-    red_adjust: float | GraphNode | tuple[GraphNode, str] = Field(
+    red_adjust: float | OutputHandle[float] = connect_field(
         default=1.0, description="Red channel adjustment factor."
     )
-    green_adjust: float | GraphNode | tuple[GraphNode, str] = Field(
+    green_adjust: float | OutputHandle[float] = connect_field(
         default=1.0, description="Green channel adjustment factor."
     )
-    blue_adjust: float | GraphNode | tuple[GraphNode, str] = Field(
+    blue_adjust: float | OutputHandle[float] = connect_field(
         default=1.0, description="Blue channel adjustment factor."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.ColorBalance"
 
 
-class Concat(GraphNode):
+ColorBalance.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Concat(GraphNode[types.VideoRef]):
     """
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
     """
 
-    video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The first video to concatenate.",
     )
-    video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The second video to concatenate.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Concat"
 
 
-class Denoise(GraphNode):
+Concat.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Denoise(GraphNode[types.VideoRef]):
     """
     Apply noise reduction to a video.
     video, denoise, clean, enhance
@@ -221,41 +302,67 @@ class Denoise(GraphNode):
     3. Prepare video for further processing or compression
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to denoise.",
     )
-    strength: float | GraphNode | tuple[GraphNode, str] = Field(
+    strength: float | OutputHandle[float] = connect_field(
         default=5.0,
         description="Strength of the denoising effect. Higher values mean more denoising.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Denoise"
 
 
-class ExtractAudio(GraphNode):
+Denoise.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class ExtractAudio(GraphNode[types.AudioRef]):
     """
     Separate audio from a video file.
     video, audio, extract, separate
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to separate.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.ExtractAudio"
 
 
-class Fps(GraphNode):
+ExtractAudio.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Fps(GraphNode[float]):
     """
     Get the frames per second (FPS) of a video file.
     video, analysis, frames, fps
@@ -266,19 +373,32 @@ class Fps(GraphNode):
     3. Ensure compatibility with target display systems
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to analyze for FPS.",
     )
 
+    @property
+    def output(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Fps"
 
 
-class FrameIterator(GraphNode):
+Fps.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class FrameIterator(GraphNode[nodetool.nodes.nodetool.video.FrameIterator.OutputType]):
     """
     Extract frames from a video file using OpenCV.
     video, frames, extract, sequence
@@ -289,25 +409,52 @@ class FrameIterator(GraphNode):
     3. Create thumbnails or previews from video content
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to extract frames from.",
     )
-    start: int | GraphNode | tuple[GraphNode, str] = Field(
+    start: int | OutputHandle[int] = connect_field(
         default=0, description="The frame to start extracting from."
     )
-    end: int | GraphNode | tuple[GraphNode, str] = Field(
+    end: int | OutputHandle[int] = connect_field(
         default=-1, description="The frame to stop extracting from."
     )
+
+    @property
+    def out(self) -> "FrameIteratorOutputs":
+        return FrameIteratorOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.FrameIterator"
 
 
-class FrameToVideo(GraphNode):
+class FrameIteratorOutputs(OutputsProxy):
+    @property
+    def frame(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self["frame"])
+
+    @property
+    def index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["index"])
+
+    @property
+    def fps(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self["fps"])
+
+
+FrameIterator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class FrameToVideo(GraphNode[typing.Any]):
     """
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
@@ -318,24 +465,35 @@ class FrameToVideo(GraphNode):
     3. Generate animations from individual images
     """
 
-    frame: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    frame: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="Collect input frames",
     )
-    fps: float | GraphNode | tuple[GraphNode, str] = Field(
+    fps: float | OutputHandle[float] = connect_field(
         default=30, description="The FPS of the output video."
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.FrameToVideo"
 
 
+FrameToVideo.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
 
 
-class ImageToVideo(GraphNode):
+class ImageToVideo(GraphNode[types.VideoRef]):
     """
     Generate videos from input images using any supported video provider.
     Animates static images into dynamic video content with AI-powered motion.
@@ -355,11 +513,11 @@ class ImageToVideo(GraphNode):
     Resolution: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.ImageToVideo.Resolution
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The input image to animate into a video",
     )
-    model: types.VideoModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
         default=types.VideoModel(
             type="video_model",
             provider=nodetool.metadata.types.Provider.Gemini,
@@ -368,10 +526,10 @@ class ImageToVideo(GraphNode):
         ),
         description="The video generation model to use",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="Optional text prompt to guide the video animation"
     )
-    negative_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    negative_prompt: str | OutputHandle[str] = connect_field(
         default="", description="Text prompt describing what to avoid in the video"
     )
     aspect_ratio: nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio = Field(
@@ -382,26 +540,41 @@ class ImageToVideo(GraphNode):
         default=nodetool.nodes.nodetool.video.ImageToVideo.Resolution.HD,
         description="Video resolution",
     )
-    num_frames: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_frames: int | OutputHandle[int] = connect_field(
         default=60, description="Number of frames to generate (provider-specific)"
     )
-    guidance_scale: float | GraphNode | tuple[GraphNode, str] = Field(
+    guidance_scale: float | OutputHandle[float] = connect_field(
         default=7.5,
         description="Classifier-free guidance scale (higher = closer to prompt)",
     )
-    num_inference_steps: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_inference_steps: int | OutputHandle[int] = connect_field(
         default=30, description="Number of denoising steps"
     )
-    seed: int | GraphNode | tuple[GraphNode, str] = Field(
+    seed: int | OutputHandle[int] = connect_field(
         default=-1, description="Random seed for reproducibility (-1 for random)"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.ImageToVideo"
 
 
-class LoadVideoAssets(GraphNode):
+ImageToVideo.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class LoadVideoAssets(
+    GraphNode[nodetool.nodes.nodetool.video.LoadVideoAssets.OutputType]
+):
     """Load video files from an asset folder.
 
     video, assets, load
@@ -412,17 +585,40 @@ class LoadVideoAssets(GraphNode):
     - Prepare clips for editing or analysis
     """
 
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The asset folder to load the video files from.",
     )
+
+    @property
+    def out(self) -> "LoadVideoAssetsOutputs":
+        return LoadVideoAssetsOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.LoadVideoAssets"
 
 
-class LoadVideoFile(GraphNode):
+class LoadVideoAssetsOutputs(OutputsProxy):
+    @property
+    def video(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self["video"])
+
+    @property
+    def name(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["name"])
+
+
+LoadVideoAssets.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class LoadVideoFile(GraphNode[types.VideoRef]):
     """
     Read a video file from disk.
     video, input, load, file
@@ -433,53 +629,79 @@ class LoadVideoFile(GraphNode):
     - Read video assets for a workflow
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the video file to read"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.LoadVideoFile"
 
 
-class Overlay(GraphNode):
+LoadVideoFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Overlay(GraphNode[types.VideoRef]):
     """
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
     """
 
-    main_video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    main_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The main (background) video.",
     )
-    overlay_video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    overlay_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The video to overlay on top.",
     )
-    x: int | GraphNode | tuple[GraphNode, str] = Field(
+    x: int | OutputHandle[int] = connect_field(
         default=0, description="X-coordinate for overlay placement."
     )
-    y: int | GraphNode | tuple[GraphNode, str] = Field(
+    y: int | OutputHandle[int] = connect_field(
         default=0, description="Y-coordinate for overlay placement."
     )
-    scale: float | GraphNode | tuple[GraphNode, str] = Field(
+    scale: float | OutputHandle[float] = connect_field(
         default=1.0, description="Scale factor for the overlay video."
     )
-    overlay_audio_volume: float | GraphNode | tuple[GraphNode, str] = Field(
+    overlay_audio_volume: float | OutputHandle[float] = connect_field(
         default=0.5,
         description="Volume of the overlay audio relative to the main audio.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Overlay"
 
 
-class ResizeNode(GraphNode):
+Overlay.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class ResizeNode(GraphNode[types.VideoRef]):
     """
     Resize a video to a specific width and height.
     video, resize, scale, dimensions
@@ -490,25 +712,38 @@ class ResizeNode(GraphNode):
     3. Prepare videos for specific platforms with size constraints
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to resize.",
     )
-    width: int | GraphNode | tuple[GraphNode, str] = Field(
+    width: int | OutputHandle[int] = connect_field(
         default=-1, description="The target width. Use -1 to maintain aspect ratio."
     )
-    height: int | GraphNode | tuple[GraphNode, str] = Field(
+    height: int | OutputHandle[int] = connect_field(
         default=-1, description="The target height. Use -1 to maintain aspect ratio."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Resize"
 
 
-class Reverse(GraphNode):
+ResizeNode.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Reverse(GraphNode[types.VideoRef]):
     """
     Reverse the playback of a video.
     video, reverse, backwards, effect
@@ -519,19 +754,32 @@ class Reverse(GraphNode):
     3. Generate unique transitions or intros for video projects
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to reverse.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Reverse"
 
 
-class Rotate(GraphNode):
+Reverse.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Rotate(GraphNode[types.VideoRef]):
     """
     Rotate a video by a specified angle.
     video, rotate, orientation, transform
@@ -542,22 +790,35 @@ class Rotate(GraphNode):
     3. Adjust video for different display orientations
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to rotate.",
     )
-    angle: float | GraphNode | tuple[GraphNode, str] = Field(
+    angle: float | OutputHandle[float] = connect_field(
         default=0.0, description="The angle of rotation in degrees."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Rotate"
 
 
-class Saturation(GraphNode):
+Rotate.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Saturation(GraphNode[types.VideoRef]):
     """
     Adjust the color saturation of a video.
     video, saturation, color, enhance
@@ -568,23 +829,36 @@ class Saturation(GraphNode):
     3. Correct oversaturated footage from certain cameras
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to adjust saturation.",
     )
-    saturation: float | GraphNode | tuple[GraphNode, str] = Field(
+    saturation: float | OutputHandle[float] = connect_field(
         default=1.0,
         description="Saturation level. 1.0 is original, <1 decreases saturation, >1 increases saturation.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Saturation"
 
 
-class SaveVideo(GraphNode):
+Saturation.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class SaveVideo(GraphNode[types.VideoRef]):
     """
     Save a video to an asset folder.
     video, save, file, output
@@ -595,27 +869,40 @@ class SaveVideo(GraphNode):
     3. Create a copy of a video in a different location
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The video to save.",
     )
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The asset folder to save the video in.",
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="%Y-%m-%d-%H-%M-%S.mp4",
         description="\n        Name of the output video.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.SaveVideo"
 
 
-class SaveVideoFile(GraphNode):
+SaveVideo.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class SaveVideoFile(GraphNode[types.VideoRef]):
     """
     Write a video file to disk.
     video, output, save, file
@@ -625,26 +912,39 @@ class SaveVideoFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The video to save",
     )
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder where the file will be saved"
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.SaveVideoFile"
 
 
-class SetSpeed(GraphNode):
+SaveVideoFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class SetSpeed(GraphNode[types.VideoRef]):
     """
     Adjust the playback speed of a video.
     video, speed, tempo, time
@@ -655,23 +955,36 @@ class SetSpeed(GraphNode):
     3. Synchronize video duration with audio or other timing requirements
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to adjust speed.",
     )
-    speed_factor: float | GraphNode | tuple[GraphNode, str] = Field(
+    speed_factor: float | OutputHandle[float] = connect_field(
         default=1.0,
         description="The speed adjustment factor. Values > 1 speed up, < 1 slow down.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.SetSpeed"
 
 
-class Sharpness(GraphNode):
+SetSpeed.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Sharpness(GraphNode[types.VideoRef]):
     """
     Adjust the sharpness of a video.
     video, sharpen, enhance, detail
@@ -682,27 +995,40 @@ class Sharpness(GraphNode):
     3. Create stylistic effects by over-sharpening
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to sharpen.",
     )
-    luma_amount: float | GraphNode | tuple[GraphNode, str] = Field(
+    luma_amount: float | OutputHandle[float] = connect_field(
         default=1.0,
         description="Amount of sharpening to apply to luma (brightness) channel.",
     )
-    chroma_amount: float | GraphNode | tuple[GraphNode, str] = Field(
+    chroma_amount: float | OutputHandle[float] = connect_field(
         default=0.5,
         description="Amount of sharpening to apply to chroma (color) channels.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Sharpness"
 
 
-class Stabilize(GraphNode):
+Sharpness.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Stabilize(GraphNode[types.VideoRef]):
     """
     Apply video stabilization to reduce camera shake and jitter.
     video, stabilize, smooth, shake-reduction
@@ -713,31 +1039,42 @@ class Stabilize(GraphNode):
     3. Enhance viewer experience by reducing motion sickness
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to stabilize.",
     )
-    smoothing: float | GraphNode | tuple[GraphNode, str] = Field(
+    smoothing: float | OutputHandle[float] = connect_field(
         default=10.0,
         description="Smoothing strength. Higher values result in smoother but potentially more cropped video.",
     )
-    crop_black: bool | GraphNode | tuple[GraphNode, str] = Field(
+    crop_black: bool | OutputHandle[bool] = connect_field(
         default=True,
         description="Whether to crop black borders that may appear after stabilization.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Stabilize"
 
 
+Stabilize.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
 
 
-class TextToVideo(GraphNode):
+class TextToVideo(GraphNode[types.VideoRef]):
     """
     Generate videos from text prompts using any supported video provider.
     Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
@@ -756,7 +1093,7 @@ class TextToVideo(GraphNode):
     Resolution: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.TextToVideo.Resolution
     )
-    model: types.VideoModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
         default=types.VideoModel(
             type="video_model",
             provider=nodetool.metadata.types.Provider.Gemini,
@@ -765,11 +1102,11 @@ class TextToVideo(GraphNode):
         ),
         description="The video generation model to use",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="A cat playing with a ball of yarn",
         description="Text prompt describing the desired video",
     )
-    negative_prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    negative_prompt: str | OutputHandle[str] = connect_field(
         default="", description="Text prompt describing what to avoid in the video"
     )
     aspect_ratio: nodetool.nodes.nodetool.video.TextToVideo.AspectRatio = Field(
@@ -780,29 +1117,40 @@ class TextToVideo(GraphNode):
         default=nodetool.nodes.nodetool.video.TextToVideo.Resolution.HD,
         description="Video resolution",
     )
-    num_frames: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_frames: int | OutputHandle[int] = connect_field(
         default=60, description="Number of frames to generate (provider-specific)"
     )
-    guidance_scale: float | GraphNode | tuple[GraphNode, str] = Field(
+    guidance_scale: float | OutputHandle[float] = connect_field(
         default=7.5,
         description="Classifier-free guidance scale (higher = closer to prompt)",
     )
-    num_inference_steps: int | GraphNode | tuple[GraphNode, str] = Field(
+    num_inference_steps: int | OutputHandle[int] = connect_field(
         default=30, description="Number of denoising steps"
     )
-    seed: int | GraphNode | tuple[GraphNode, str] = Field(
+    seed: int | OutputHandle[int] = connect_field(
         default=-1, description="Random seed for reproducibility (-1 for random)"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.TextToVideo"
 
 
+TextToVideo.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 import nodetool.nodes.nodetool.video
 
 
-class Transition(GraphNode):
+class Transition(GraphNode[types.VideoRef]):
     """
     Create a transition effect between two videos, including audio transition when available.
     video, transition, effect, merge, audio
@@ -817,13 +1165,13 @@ class Transition(GraphNode):
     TransitionType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.Transition.TransitionType
     )
-    video_a: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The first video in the transition.",
     )
-    video_b: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
@@ -833,16 +1181,29 @@ class Transition(GraphNode):
         default=nodetool.nodes.nodetool.video.Transition.TransitionType.fade,
         description="Type of transition effect",
     )
-    duration: float | GraphNode | tuple[GraphNode, str] = Field(
+    duration: float | OutputHandle[float] = connect_field(
         default=1.0, description="Duration of the transition effect in seconds."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Transition"
 
 
-class Trim(GraphNode):
+Transition.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+
+
+class Trim(GraphNode[types.VideoRef]):
     """
     Trim a video to a specific start and end time.
     video, trim, cut, segment
@@ -853,20 +1214,27 @@ class Trim(GraphNode):
     3. Create shorter clips from a full-length video
     """
 
-    video: types.VideoRef | GraphNode | tuple[GraphNode, str] = Field(
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
         ),
         description="The input video to trim.",
     )
-    start_time: float | GraphNode | tuple[GraphNode, str] = Field(
+    start_time: float | OutputHandle[float] = connect_field(
         default=0.0, description="The start time in seconds for the trimmed video."
     )
-    end_time: float | GraphNode | tuple[GraphNode, str] = Field(
+    end_time: float | OutputHandle[float] = connect_field(
         default=-1.0,
         description="The end time in seconds for the trimmed video. Use -1 for the end of the video.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.VideoRef]:
+        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.video.Trim"
+
+
+Trim.model_rebuild(force=True)

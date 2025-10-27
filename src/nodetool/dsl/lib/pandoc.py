@@ -12,11 +12,15 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pandoc
 import nodetool.nodes.lib.pandoc
 import nodetool.nodes.lib.pandoc
 
 
-class ConvertFile(GraphNode):
+class ConvertFile(GraphNode[str]):
     """
     Converts between different document formats using pandoc.
     convert, document, format, pandoc
@@ -29,7 +33,7 @@ class ConvertFile(GraphNode):
 
     InputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.InputFormat
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
-    input_path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+    input_path: types.FilePath | OutputHandle[types.FilePath] = connect_field(
         default=types.FilePath(type="file_path", path=""),
         description="Path to the input file",
     )
@@ -40,20 +44,31 @@ class ConvertFile(GraphNode):
     output_format: nodetool.nodes.lib.pandoc.OutputFormat = Field(
         default=nodetool.nodes.lib.pandoc.OutputFormat.PDF, description="Output format"
     )
-    extra_args: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    extra_args: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="Additional pandoc arguments"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pandoc.ConvertFile"
 
 
+ConvertFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pandoc
 import nodetool.nodes.lib.pandoc
 import nodetool.nodes.lib.pandoc
 
 
-class ConvertText(GraphNode):
+class ConvertText(GraphNode[str]):
     """
     Converts text content between different document formats using pandoc.
     convert, text, format, pandoc
@@ -66,7 +81,7 @@ class ConvertText(GraphNode):
 
     InputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.InputFormat
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
-    content: str | GraphNode | tuple[GraphNode, str] = Field(
+    content: str | OutputHandle[str] = connect_field(
         default=PydanticUndefined, description="Text content to convert"
     )
     input_format: nodetool.nodes.lib.pandoc.InputFormat = Field(
@@ -77,10 +92,17 @@ class ConvertText(GraphNode):
         default=nodetool.nodes.lib.pandoc.OutputFormat(PydanticUndefined),
         description="Output format",
     )
-    extra_args: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    extra_args: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="Additional pandoc arguments"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pandoc.ConvertText"
+
+
+ConvertText.model_rebuild(force=True)

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 
-class AddTimeDelta(GraphNode):
+
+class AddTimeDelta(GraphNode[types.Datetime]):
     """
     Add or subtract time from a datetime.
     datetime, add, subtract
@@ -23,7 +28,7 @@ class AddTimeDelta(GraphNode):
     - Generate date ranges
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -38,26 +43,37 @@ class AddTimeDelta(GraphNode):
         ),
         description="Starting datetime",
     )
-    days: int | GraphNode | tuple[GraphNode, str] = Field(
+    days: int | OutputHandle[int] = connect_field(
         default=0, description="Number of days to add (negative to subtract)"
     )
-    hours: int | GraphNode | tuple[GraphNode, str] = Field(
+    hours: int | OutputHandle[int] = connect_field(
         default=0, description="Number of hours to add (negative to subtract)"
     )
-    minutes: int | GraphNode | tuple[GraphNode, str] = Field(
+    minutes: int | OutputHandle[int] = connect_field(
         default=0, description="Number of minutes to add (negative to subtract)"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.AddTimeDelta"
 
 
+AddTimeDelta.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 
 
-class BoundaryTime(GraphNode):
+class BoundaryTime(GraphNode[types.Datetime]):
     """
     Get the start or end of a time period (day, week, month, year).
     datetime, start, end, boundary, day, week, month, year
@@ -69,7 +85,7 @@ class BoundaryTime(GraphNode):
 
     PeriodType: typing.ClassVar[type] = nodetool.nodes.lib.date.PeriodType
     BoundaryType: typing.ClassVar[type] = nodetool.nodes.lib.date.BoundaryType
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -91,17 +107,30 @@ class BoundaryTime(GraphNode):
         default=nodetool.nodes.lib.date.BoundaryType.START,
         description="Start or end of period",
     )
-    start_monday: bool | GraphNode | tuple[GraphNode, str] = Field(
+    start_monday: bool | OutputHandle[bool] = connect_field(
         default=True,
         description="For week period: Consider Monday as start of week (False for Sunday)",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.BoundaryTime"
 
 
-class DateDifference(GraphNode):
+BoundaryTime.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class DateDifference(GraphNode[nodetool.nodes.lib.date.DateDifference.OutputType]):
     """
     Calculate the difference between two dates.
     datetime, difference, duration
@@ -111,7 +140,7 @@ class DateDifference(GraphNode):
     - Measure durations
     """
 
-    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    start_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -126,7 +155,7 @@ class DateDifference(GraphNode):
         ),
         description="Start datetime",
     )
-    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    end_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -142,12 +171,47 @@ class DateDifference(GraphNode):
         description="End datetime",
     )
 
+    @property
+    def out(self) -> "DateDifferenceOutputs":
+        return DateDifferenceOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.DateDifference"
 
 
-class DateRange(GraphNode):
+class DateDifferenceOutputs(OutputsProxy):
+    @property
+    def total_seconds(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["total_seconds"])
+
+    @property
+    def days(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["days"])
+
+    @property
+    def hours(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["hours"])
+
+    @property
+    def minutes(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["minutes"])
+
+    @property
+    def seconds(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["seconds"])
+
+
+DateDifference.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class DateRange(GraphNode[list[types.Datetime]]):
     """
     Generate a list of dates between start and end dates.
     datetime, range, list
@@ -157,7 +221,7 @@ class DateRange(GraphNode):
     - Create date-based iterations
     """
 
-    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    start_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -172,7 +236,7 @@ class DateRange(GraphNode):
         ),
         description="Start date of the range",
     )
-    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    end_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -187,38 +251,66 @@ class DateRange(GraphNode):
         ),
         description="End date of the range",
     )
-    step_days: int | GraphNode | tuple[GraphNode, str] = Field(
+    step_days: int | OutputHandle[int] = connect_field(
         default=1, description="Number of days between each date"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.Datetime]]:
+        return typing.cast(
+            OutputHandle[list[types.Datetime]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.DateRange"
 
 
-class DateToDatetime(GraphNode):
+DateRange.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class DateToDatetime(GraphNode[types.Datetime]):
     """
     Convert a Date object to a Datetime object.
     date, datetime, convert
     """
 
-    input_date: types.Date | GraphNode | tuple[GraphNode, str] = Field(
+    input_date: types.Date | OutputHandle[types.Date] = connect_field(
         default=types.Date(type="date", year=0, month=0, day=0),
         description="Date to convert",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.DateToDatetime"
 
 
-class DatetimeToDate(GraphNode):
+DateToDatetime.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class DatetimeToDate(GraphNode[types.Date]):
     """
     Convert a Datetime object to a Date object.
     date, datetime, convert
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -234,15 +326,26 @@ class DatetimeToDate(GraphNode):
         description="Datetime to convert",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.Date]:
+        return typing.cast(OutputHandle[types.Date], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.DatetimeToDate"
 
 
+DatetimeToDate.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 
 
-class FormatDateTime(GraphNode):
+class FormatDateTime(GraphNode[str]):
     """
     Convert a datetime object to a formatted string.
     datetime, format, convert
@@ -253,7 +356,7 @@ class FormatDateTime(GraphNode):
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -273,12 +376,25 @@ class FormatDateTime(GraphNode):
         description="Desired output format",
     )
 
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.FormatDateTime"
 
 
-class GetQuarter(GraphNode):
+FormatDateTime.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class GetQuarter(GraphNode[nodetool.nodes.lib.date.GetQuarter.OutputType]):
     """
     Get the quarter number and start/end dates for a given datetime.
     datetime, quarter, period
@@ -288,7 +404,7 @@ class GetQuarter(GraphNode):
     - Quarterly analytics
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -304,12 +420,39 @@ class GetQuarter(GraphNode):
         description="Input datetime",
     )
 
+    @property
+    def out(self) -> "GetQuarterOutputs":
+        return GetQuarterOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.GetQuarter"
 
 
-class GetWeekday(GraphNode):
+class GetQuarterOutputs(OutputsProxy):
+    @property
+    def quarter(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["quarter"])
+
+    @property
+    def quarter_start(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self["quarter_start"])
+
+    @property
+    def quarter_end(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self["quarter_end"])
+
+
+GetQuarter.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class GetWeekday(GraphNode[str | int]):
     """
     Get the weekday name or number from a datetime.
     datetime, weekday, name
@@ -319,7 +462,7 @@ class GetWeekday(GraphNode):
     - Filter events by weekday
     """
 
-    input_datetime: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -334,16 +477,29 @@ class GetWeekday(GraphNode):
         ),
         description="Input datetime",
     )
-    as_name: bool | GraphNode | tuple[GraphNode, str] = Field(
+    as_name: bool | OutputHandle[bool] = connect_field(
         default=True, description="Return weekday name instead of number (0-6)"
     )
+
+    @property
+    def output(self) -> OutputHandle[str | int]:
+        return typing.cast(OutputHandle[str | int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.GetWeekday"
 
 
-class IsDateInRange(GraphNode):
+GetWeekday.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class IsDateInRange(GraphNode[bool]):
     """
     Check if a date falls within a specified range.
     datetime, range, check
@@ -353,7 +509,7 @@ class IsDateInRange(GraphNode):
     - Filter date-based data
     """
 
-    check_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    check_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -368,7 +524,7 @@ class IsDateInRange(GraphNode):
         ),
         description="Date to check",
     )
-    start_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    start_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -383,7 +539,7 @@ class IsDateInRange(GraphNode):
         ),
         description="Start of date range",
     )
-    end_date: types.Datetime | GraphNode | tuple[GraphNode, str] = Field(
+    end_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
             year=0,
@@ -398,37 +554,61 @@ class IsDateInRange(GraphNode):
         ),
         description="End of date range",
     )
-    inclusive: bool | GraphNode | tuple[GraphNode, str] = Field(
+    inclusive: bool | OutputHandle[bool] = connect_field(
         default=True, description="Include start and end dates in range"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.IsDateInRange"
 
 
-class Now(GraphNode):
+IsDateInRange.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class Now(GraphNode[types.Datetime]):
     """
     Get the current date and time.
     datetime, current, now
     """
+
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.date.Now"
 
 
+Now.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 
 
-class ParseDate(GraphNode):
+class ParseDate(GraphNode[types.Date]):
     """
     Parse a date string into components.
     date, parse, format
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
-    date_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    date_string: str | OutputHandle[str] = connect_field(
         default="", description="The date string to parse"
     )
     input_format: nodetool.nodes.lib.date.DateFormat = Field(
@@ -436,15 +616,26 @@ class ParseDate(GraphNode):
         description="Format of the input date string",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.Date]:
+        return typing.cast(OutputHandle[types.Date], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.ParseDate"
 
 
+ParseDate.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 
 
-class ParseDateTime(GraphNode):
+class ParseDateTime(GraphNode[types.Datetime]):
     """
     Parse a date/time string into components.
     datetime, parse, format
@@ -455,7 +646,7 @@ class ParseDateTime(GraphNode):
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
-    datetime_string: str | GraphNode | tuple[GraphNode, str] = Field(
+    datetime_string: str | OutputHandle[str] = connect_field(
         default="", description="The datetime string to parse"
     )
     input_format: nodetool.nodes.lib.date.DateFormat = Field(
@@ -463,16 +654,27 @@ class ParseDateTime(GraphNode):
         description="Format of the input datetime string",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.ParseDateTime"
 
 
+ParseDateTime.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 import nodetool.nodes.lib.date
 
 
-class RelativeTime(GraphNode):
+class RelativeTime(GraphNode[types.Datetime]):
     """
     Get datetime relative to current time (past or future).
     datetime, past, future, relative, hours, days, months
@@ -484,7 +686,7 @@ class RelativeTime(GraphNode):
 
     TimeUnitType: typing.ClassVar[type] = nodetool.nodes.lib.date.TimeUnitType
     TimeDirection: typing.ClassVar[type] = nodetool.nodes.lib.date.TimeDirection
-    amount: int | GraphNode | tuple[GraphNode, str] = Field(
+    amount: int | OutputHandle[int] = connect_field(
         default=1, description="Amount of time units"
     )
     unit: nodetool.nodes.lib.date.TimeUnitType = Field(
@@ -495,17 +697,37 @@ class RelativeTime(GraphNode):
         description="Past or future",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.Datetime]:
+        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.RelativeTime"
 
 
-class Today(GraphNode):
+RelativeTime.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
+
+
+class Today(GraphNode[types.Date]):
     """
     Get the current date.
     date, today, now
     """
 
+    @property
+    def output(self) -> OutputHandle[types.Date]:
+        return typing.cast(OutputHandle[types.Date], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.date.Today"
+
+
+Today.model_rebuild(force=True)

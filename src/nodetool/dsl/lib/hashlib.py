@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.hashlib
 
-class HashFile(GraphNode):
+
+class HashFile(GraphNode[str]):
     """Compute the cryptographic hash of a file.
     hash, hashlib, digest, file
 
@@ -23,22 +28,35 @@ class HashFile(GraphNode):
     - Identify duplicates
     """
 
-    file: str | GraphNode | tuple[GraphNode, str] = Field(
+    file: str | OutputHandle[str] = connect_field(
         default="", description="The file to hash"
     )
-    algorithm: str | GraphNode | tuple[GraphNode, str] = Field(
+    algorithm: str | OutputHandle[str] = connect_field(
         default="md5", description="Hash algorithm name (e.g. md5, sha1, sha256)"
     )
-    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_size: int | OutputHandle[int] = connect_field(
         default=8192, description="Read size for hashing in bytes"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.hashlib.HashFile"
 
 
-class HashString(GraphNode):
+HashFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.hashlib
+
+
+class HashString(GraphNode[str]):
     """Compute the cryptographic hash of a string using hashlib.
     hash, hashlib, digest, string
 
@@ -48,13 +66,20 @@ class HashString(GraphNode):
     - Create fingerprints for caching
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The text to hash"
     )
-    algorithm: str | GraphNode | tuple[GraphNode, str] = Field(
+    algorithm: str | OutputHandle[str] = connect_field(
         default="md5", description="Hash algorithm name (e.g. md5, sha1, sha256)"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.hashlib.HashString"
+
+
+HashString.model_rebuild(force=True)

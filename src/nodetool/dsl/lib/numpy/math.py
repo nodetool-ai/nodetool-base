@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
 
-class AbsArray(GraphNode):
+
+class AbsArray(GraphNode[types.NPArray]):
     """
     Compute the absolute value of each element in a array.
     array, absolute, magnitude
@@ -24,17 +29,30 @@ class AbsArray(GraphNode):
     - Implement activation functions in neural networks
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to compute the absolute values from.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.AbsArray"
 
 
-class CosineArray(GraphNode):
+AbsArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
+
+
+class CosineArray(GraphNode[float | nodetool.metadata.types.NPArray]):
     """
     Computes the cosine of input angles in radians.
     math, trigonometry, cosine, cos
@@ -49,16 +67,31 @@ class CosineArray(GraphNode):
         float
         | int
         | nodetool.metadata.types.NPArray
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=0.0, description=None)
+        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
+    ) = connect_field(default=0.0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[float | nodetool.metadata.types.NPArray]:
+        return typing.cast(
+            OutputHandle[float | nodetool.metadata.types.NPArray],
+            self._single_output_handle(),
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.CosineArray"
 
 
-class ExpArray(GraphNode):
+CosineArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
+
+
+class ExpArray(GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
     Calculate the exponential of each element in a array.
     array, exponential, math, activation
@@ -69,17 +102,33 @@ class ExpArray(GraphNode):
     - Transform data for certain statistical analyses
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
+
+    @property
+    def output(self) -> OutputHandle[float | int | nodetool.metadata.types.NPArray]:
+        return typing.cast(
+            OutputHandle[float | int | nodetool.metadata.types.NPArray],
+            self._single_output_handle(),
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.ExpArray"
 
 
-class LogArray(GraphNode):
+ExpArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
+
+
+class LogArray(GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
     Calculate the natural logarithm of each element in a array.
     array, logarithm, math, transformation
@@ -90,17 +139,33 @@ class LogArray(GraphNode):
     - Normalize data with large ranges
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
+
+    @property
+    def output(self) -> OutputHandle[float | int | nodetool.metadata.types.NPArray]:
+        return typing.cast(
+            OutputHandle[float | int | nodetool.metadata.types.NPArray],
+            self._single_output_handle(),
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.LogArray"
 
 
-class PowerArray(GraphNode):
+LogArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
+
+
+class PowerArray(GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
     Raises the base array to the power of the exponent element-wise.
     math, exponentiation, power, pow, **
@@ -115,23 +180,37 @@ class PowerArray(GraphNode):
         float
         | int
         | nodetool.metadata.types.NPArray
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=1.0, description=None)
+        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
+    ) = connect_field(default=1.0, description=None)
     exponent: (
         float
         | int
         | nodetool.metadata.types.NPArray
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=2.0, description=None)
+        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
+    ) = connect_field(default=2.0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[float | int | nodetool.metadata.types.NPArray]:
+        return typing.cast(
+            OutputHandle[float | int | nodetool.metadata.types.NPArray],
+            self._single_output_handle(),
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.PowerArray"
 
 
-class SineArray(GraphNode):
+PowerArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
+
+
+class SineArray(GraphNode[float | nodetool.metadata.types.NPArray]):
     """
     Computes the sine of input angles in radians.
     math, trigonometry, sine, sin
@@ -146,16 +225,31 @@ class SineArray(GraphNode):
         float
         | int
         | nodetool.metadata.types.NPArray
-        | GraphNode
-        | tuple[GraphNode, str]
-    ) = Field(default=0.0, description=None)
+        | OutputHandle[float | int | nodetool.metadata.types.NPArray]
+    ) = connect_field(default=0.0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[float | nodetool.metadata.types.NPArray]:
+        return typing.cast(
+            OutputHandle[float | nodetool.metadata.types.NPArray],
+            self._single_output_handle(),
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.SineArray"
 
 
-class SqrtArray(GraphNode):
+SineArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.math
+
+
+class SqrtArray(GraphNode[float | int | nodetool.metadata.types.NPArray]):
     """
     Calculates the square root of the input array element-wise.
     math, square root, sqrt, √
@@ -166,11 +260,21 @@ class SqrtArray(GraphNode):
     - Finding intermediate values in binary search
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
 
+    @property
+    def output(self) -> OutputHandle[float | int | nodetool.metadata.types.NPArray]:
+        return typing.cast(
+            OutputHandle[float | int | nodetool.metadata.types.NPArray],
+            self._single_output_handle(),
+        )
+
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.math.SqrtArray"
+
+
+SqrtArray.model_rebuild(force=True)

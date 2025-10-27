@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markdown
 
-class ExtractBulletLists(GraphNode):
+
+class ExtractBulletLists(GraphNode[typing.Any]):
     """
     Extracts bulleted lists from markdown.
     markdown, lists, bullets, extraction
@@ -24,16 +29,29 @@ class ExtractBulletLists(GraphNode):
     - Convert bullet lists to structured data
     """
 
-    markdown: str | GraphNode | tuple[GraphNode, str] = Field(
+    markdown: str | OutputHandle[str] = connect_field(
         default="", description="The markdown text to analyze"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.markdown.ExtractBulletLists"
 
 
-class ExtractCodeBlocks(GraphNode):
+ExtractBulletLists.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markdown
+
+
+class ExtractCodeBlocks(GraphNode[typing.Any]):
     """
     Extracts code blocks and their languages from markdown.
     markdown, code, extraction
@@ -44,16 +62,29 @@ class ExtractCodeBlocks(GraphNode):
     - Analyze code snippets in documentation
     """
 
-    markdown: str | GraphNode | tuple[GraphNode, str] = Field(
+    markdown: str | OutputHandle[str] = connect_field(
         default="", description="The markdown text to analyze"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.markdown.ExtractCodeBlocks"
 
 
-class ExtractHeaders(GraphNode):
+ExtractCodeBlocks.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markdown
+
+
+class ExtractHeaders(GraphNode[typing.Any]):
     """
     Extracts headers and creates a document structure/outline.
     markdown, headers, structure
@@ -64,19 +95,32 @@ class ExtractHeaders(GraphNode):
     - Extract main topics from documents
     """
 
-    markdown: str | GraphNode | tuple[GraphNode, str] = Field(
+    markdown: str | OutputHandle[str] = connect_field(
         default="", description="The markdown text to analyze"
     )
-    max_level: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_level: int | OutputHandle[int] = connect_field(
         default=6, description="Maximum header level to extract (1-6)"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.markdown.ExtractHeaders"
 
 
-class ExtractLinks(GraphNode):
+ExtractHeaders.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markdown
+
+
+class ExtractLinks(GraphNode[typing.Any]):
     """
     Extracts all links from markdown text.
     markdown, links, extraction
@@ -87,19 +131,32 @@ class ExtractLinks(GraphNode):
     - Analyze external resources referenced in markdown files
     """
 
-    markdown: str | GraphNode | tuple[GraphNode, str] = Field(
+    markdown: str | OutputHandle[str] = connect_field(
         default="", description="The markdown text to analyze"
     )
-    include_titles: bool | GraphNode | tuple[GraphNode, str] = Field(
+    include_titles: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to include link titles in output"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.markdown.ExtractLinks"
 
 
-class ExtractNumberedLists(GraphNode):
+ExtractLinks.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markdown
+
+
+class ExtractNumberedLists(GraphNode[typing.Any]):
     """
     Extracts numbered lists from markdown.
     markdown, lists, numbered, extraction
@@ -110,16 +167,29 @@ class ExtractNumberedLists(GraphNode):
     - Convert numbered lists to structured data
     """
 
-    markdown: str | GraphNode | tuple[GraphNode, str] = Field(
+    markdown: str | OutputHandle[str] = connect_field(
         default="", description="The markdown text to analyze"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.markdown.ExtractNumberedLists"
 
 
-class ExtractTables(GraphNode):
+ExtractNumberedLists.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.markdown
+
+
+class ExtractTables(GraphNode[types.DataframeRef]):
     """
     Extracts tables from markdown and converts them to structured data.
     markdown, tables, data
@@ -130,10 +200,19 @@ class ExtractTables(GraphNode):
     - Analyze tabulated information
     """
 
-    markdown: str | GraphNode | tuple[GraphNode, str] = Field(
+    markdown: str | OutputHandle[str] = connect_field(
         default="", description="The markdown text to analyze"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.markdown.ExtractTables"
+
+
+ExtractTables.model_rebuild(force=True)

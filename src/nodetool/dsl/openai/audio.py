@@ -12,11 +12,15 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.audio
 import nodetool.nodes.openai.audio
 import nodetool.nodes.openai.audio
 
 
-class TextToSpeech(GraphNode):
+class TextToSpeech(GraphNode[types.AudioRef]):
     """
     Converts text to speech using OpenAI TTS models.
     audio, tts, text-to-speech, voice, synthesis
@@ -37,21 +41,30 @@ class TextToSpeech(GraphNode):
     voice: nodetool.nodes.openai.audio.TextToSpeech.Voice = Field(
         default=nodetool.nodes.openai.audio.TextToSpeech.Voice.ALLOY, description=None
     )
-    input: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    speed: float | GraphNode | tuple[GraphNode, str] = Field(
-        default=1.0, description=None
-    )
+    input: str | OutputHandle[str] = connect_field(default="", description=None)
+    speed: float | OutputHandle[float] = connect_field(default=1.0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "openai.audio.TextToSpeech"
 
 
+TextToSpeech.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.audio
 import nodetool.nodes.openai.audio
 import nodetool.nodes.openai.audio
 
 
-class Transcribe(GraphNode):
+class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
     """
     Converts speech to text using OpenAI's speech-to-text API.
     audio, transcription, speech-to-text, stt, whisper
@@ -71,7 +84,7 @@ class Transcribe(GraphNode):
         default=nodetool.nodes.openai.audio.Transcribe.TranscriptionModel.WHISPER_1,
         description="The model to use for transcription.",
     )
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio file to transcribe (max 25 MB).",
     )
@@ -79,25 +92,52 @@ class Transcribe(GraphNode):
         default=nodetool.nodes.openai.audio.Transcribe.Language.NONE,
         description="The language of the input audio",
     )
-    timestamps: bool | GraphNode | tuple[GraphNode, str] = Field(
+    timestamps: bool | OutputHandle[bool] = connect_field(
         default=False,
         description="Whether to return timestamps for the generated text.",
     )
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="",
         description="Optional text to guide the model's style or continue a previous audio segment.",
     )
-    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
+    temperature: float | OutputHandle[float] = connect_field(
         default=0,
         description="The sampling temperature between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
     )
+
+    @property
+    def out(self) -> "TranscribeOutputs":
+        return TranscribeOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "openai.audio.Transcribe"
 
 
-class Translate(GraphNode):
+class TranscribeOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def words(self) -> OutputHandle[list[types.AudioChunk]]:
+        return typing.cast(OutputHandle[list[types.AudioChunk]], self["words"])
+
+    @property
+    def segments(self) -> OutputHandle[list[types.AudioChunk]]:
+        return typing.cast(OutputHandle[list[types.AudioChunk]], self["segments"])
+
+
+Transcribe.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.audio
+
+
+class Translate(GraphNode[str]):
     """
     Translates speech in audio to English text.
     audio, translation, speech-to-text, localization
@@ -109,14 +149,21 @@ class Translate(GraphNode):
     - Enable cross-language communication in audio formats
     """
 
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio file to translate.",
     )
-    temperature: float | GraphNode | tuple[GraphNode, str] = Field(
+    temperature: float | OutputHandle[float] = connect_field(
         default=0.0, description="The temperature to use for the translation."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "openai.audio.Translate"
+
+
+Translate.model_rebuild(force=True)

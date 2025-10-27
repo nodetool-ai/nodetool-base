@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
 
-class AddColumn(GraphNode):
+
+class AddColumn(GraphNode[types.DataframeRef]):
     """
     Add list of values as new column to dataframe.
     dataframe, column, list
@@ -24,27 +29,42 @@ class AddColumn(GraphNode):
     - Augment dataframe with additional features
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="Dataframe object to add a new column to.",
     )
-    column_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    column_name: str | OutputHandle[str] = connect_field(
         default="",
         description="The name of the new column to be added to the dataframe.",
     )
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[],
         description="A list of any type of elements which will be the new column's values.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.AddColumn"
 
 
-class Aggregate(GraphNode):
+AddColumn.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Aggregate(GraphNode[types.DataframeRef]):
     """
     Aggregate dataframe by one or more columns.
     aggregate, groupby, group, sum, mean, count, min, max, std, var, median, first, last
@@ -55,26 +75,41 @@ class Aggregate(GraphNode):
     - Create summary statistics by groups
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The DataFrame to group.",
     )
-    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+    columns: str | OutputHandle[str] = connect_field(
         default="", description="Comma-separated column names to group by."
     )
-    aggregation: str | GraphNode | tuple[GraphNode, str] = Field(
+    aggregation: str | OutputHandle[str] = connect_field(
         default="sum",
         description="Aggregation function: sum, mean, count, min, max, std, var, median, first, last",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Aggregate"
 
 
-class Append(GraphNode):
+Aggregate.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Append(GraphNode[types.DataframeRef]):
     """
     Append two dataframes along rows.
     append, concat, rows
@@ -85,25 +120,40 @@ class Append(GraphNode):
     - Aggregate data from different sources
     """
 
-    dataframe_a: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe_a: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="First DataFrame to be appended.",
     )
-    dataframe_b: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe_b: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="Second DataFrame to be appended.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Append"
 
 
-class DropDuplicates(GraphNode):
+Append.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class DropDuplicates(GraphNode[types.DataframeRef]):
     """
     Remove duplicate rows from dataframe.
     duplicates, unique, clean
@@ -114,19 +164,34 @@ class DropDuplicates(GraphNode):
     - Prepare data for unique value operations
     """
 
-    df: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    df: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The input DataFrame.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.DropDuplicates"
 
 
-class DropNA(GraphNode):
+DropDuplicates.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class DropNA(GraphNode[types.DataframeRef]):
     """
     Remove rows with NA values from dataframe.
     na, missing, clean
@@ -137,19 +202,34 @@ class DropNA(GraphNode):
     - Improve data quality for modeling
     """
 
-    df: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    df: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The input DataFrame.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.DropNA"
 
 
-class ExtractColumn(GraphNode):
+DropNA.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class ExtractColumn(GraphNode[list[Any]]):
     """
     Convert dataframe column to list.
     dataframe, column, list
@@ -160,22 +240,35 @@ class ExtractColumn(GraphNode):
     - Convert categorical data to list for encoding
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The input dataframe.",
     )
-    column_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    column_name: str | OutputHandle[str] = connect_field(
         default="", description="The name of the column to be converted to a list."
     )
+
+    @property
+    def output(self) -> OutputHandle[list[Any]]:
+        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.ExtractColumn"
 
 
-class FillNA(GraphNode):
+ExtractColumn.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class FillNA(GraphNode[types.DataframeRef]):
     """
     Fill missing values in dataframe.
     fillna, missing, impute
@@ -186,30 +279,45 @@ class FillNA(GraphNode):
     - Improve data quality
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The DataFrame with missing values.",
     )
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    value: Any | OutputHandle[Any] = connect_field(
         default=0, description="Value to use for filling missing values."
     )
-    method: str | GraphNode | tuple[GraphNode, str] = Field(
+    method: str | OutputHandle[str] = connect_field(
         default="value",
         description="Method for filling: value, forward, backward, mean, median",
     )
-    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+    columns: str | OutputHandle[str] = connect_field(
         default="",
         description="Comma-separated column names to fill. Leave empty for all columns.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.FillNA"
 
 
-class Filter(GraphNode):
+FillNA.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Filter(GraphNode[types.DataframeRef]):
     """
     Filter dataframe based on condition.
     filter, query, condition
@@ -228,23 +336,38 @@ class Filter(GraphNode):
     - Focus analysis on relevant data segments
     """
 
-    df: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    df: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The DataFrame to filter.",
     )
-    condition: str | GraphNode | tuple[GraphNode, str] = Field(
+    condition: str | OutputHandle[str] = connect_field(
         default="",
         description="The filtering condition to be applied to the DataFrame, e.g. column_name > 5.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Filter"
 
 
-class FindRow(GraphNode):
+Filter.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class FindRow(GraphNode[types.DataframeRef]):
     """
     Find the first row in a dataframe that matches a given condition.
     filter, query, condition, single row
@@ -263,23 +386,38 @@ class FindRow(GraphNode):
     - Extract single data point for further analysis
     """
 
-    df: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    df: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The DataFrame to search.",
     )
-    condition: str | GraphNode | tuple[GraphNode, str] = Field(
+    condition: str | OutputHandle[str] = connect_field(
         default="",
         description="The condition to filter the DataFrame, e.g. 'column_name == value'.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.FindRow"
 
 
-class FromList(GraphNode):
+FindRow.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class FromList(GraphNode[types.DataframeRef]):
     """
     Convert list of dicts to dataframe.
     list, dataframe, convert
@@ -290,17 +428,32 @@ class FromList(GraphNode):
     - Convert API responses to dataframe format
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[],
         description="List of values to be converted, each value will be a row.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.FromList"
 
 
-class ImportCSV(GraphNode):
+FromList.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class ImportCSV(GraphNode[types.DataframeRef]):
     """
     Convert CSV string to dataframe.
     csv, dataframe, import
@@ -310,16 +463,31 @@ class ImportCSV(GraphNode):
     - Convert CSV responses from APIs to dataframe
     """
 
-    csv_data: str | GraphNode | tuple[GraphNode, str] = Field(
+    csv_data: str | OutputHandle[str] = connect_field(
         default="", description="String input of CSV formatted text."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.ImportCSV"
 
 
-class JSONToDataframe(GraphNode):
+ImportCSV.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class JSONToDataframe(GraphNode[types.DataframeRef]):
     """
     Transforms a JSON string into a pandas DataFrame.
     json, dataframe, conversion
@@ -330,14 +498,29 @@ class JSONToDataframe(GraphNode):
     - Structuring unstructured JSON data for further processing
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.JSONToDataframe"
 
 
-class Join(GraphNode):
+JSONToDataframe.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Join(GraphNode[types.DataframeRef]):
     """
     Join two dataframes on specified column.
     join, merge, column
@@ -348,28 +531,43 @@ class Join(GraphNode):
     - Link data based on common identifiers
     """
 
-    dataframe_a: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe_a: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="First DataFrame to be merged.",
     )
-    dataframe_b: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe_b: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="Second DataFrame to be merged.",
     )
-    join_on: str | GraphNode | tuple[GraphNode, str] = Field(
+    join_on: str | OutputHandle[str] = connect_field(
         default="", description="The column name on which to join the two dataframes."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Join"
 
 
-class LoadCSVAssets(GraphNode):
+Join.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class LoadCSVAssets(GraphNode[nodetool.nodes.nodetool.data.LoadCSVAssets.OutputType]):
     """
     Load dataframes from an asset folder.
     load, dataframe, file, import
@@ -380,47 +578,100 @@ class LoadCSVAssets(GraphNode):
     - Batch import of data files
     """
 
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The asset folder to load the dataframes from.",
     )
+
+    @property
+    def out(self) -> "LoadCSVAssetsOutputs":
+        return LoadCSVAssetsOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.LoadCSVAssets"
 
 
-class LoadCSVFile(GraphNode):
+class LoadCSVAssetsOutputs(OutputsProxy):
+    @property
+    def dataframe(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(OutputHandle[types.DataframeRef], self["dataframe"])
+
+    @property
+    def name(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["name"])
+
+
+LoadCSVAssets.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class LoadCSVFile(GraphNode[types.DataframeRef]):
     """
     Load CSV file from file path.
     csv, dataframe, import
     """
 
-    file_path: str | GraphNode | tuple[GraphNode, str] = Field(
+    file_path: str | OutputHandle[str] = connect_field(
         default="", description="The path to the CSV file to load."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.LoadCSVFile"
 
 
-class LoadCSVURL(GraphNode):
+LoadCSVFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class LoadCSVURL(GraphNode[types.DataframeRef]):
     """
     Load CSV file from URL.
     csv, dataframe, import
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL of the CSV file to load."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.LoadCSVURL"
 
 
-class Merge(GraphNode):
+LoadCSVURL.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Merge(GraphNode[types.DataframeRef]):
     """
     Merge two dataframes along columns.
     merge, concat, columns
@@ -431,25 +682,40 @@ class Merge(GraphNode):
     - Merge time series data from different periods
     """
 
-    dataframe_a: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe_a: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="First DataFrame to be merged.",
     )
-    dataframe_b: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe_b: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="Second DataFrame to be merged.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Merge"
 
 
-class Pivot(GraphNode):
+Merge.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Pivot(GraphNode[types.DataframeRef]):
     """
     Pivot dataframe to reshape data.
     pivot, reshape, transform
@@ -460,32 +726,47 @@ class Pivot(GraphNode):
     - Reorganize data for visualization
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The DataFrame to pivot.",
     )
-    index: str | GraphNode | tuple[GraphNode, str] = Field(
+    index: str | OutputHandle[str] = connect_field(
         default="", description="Column name to use as index (rows)."
     )
-    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+    columns: str | OutputHandle[str] = connect_field(
         default="", description="Column name to use as columns."
     )
-    values: str | GraphNode | tuple[GraphNode, str] = Field(
+    values: str | OutputHandle[str] = connect_field(
         default="", description="Column name to use as values."
     )
-    aggfunc: str | GraphNode | tuple[GraphNode, str] = Field(
+    aggfunc: str | OutputHandle[str] = connect_field(
         default="sum",
         description="Aggregation function: sum, mean, count, min, max, first, last",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Pivot"
 
 
-class Rename(GraphNode):
+Pivot.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Rename(GraphNode[types.DataframeRef]):
     """
     Rename columns in dataframe.
     rename, columns, names
@@ -496,39 +777,77 @@ class Rename(GraphNode):
     - Prepare data for specific requirements
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The DataFrame to rename columns.",
     )
-    rename_map: str | GraphNode | tuple[GraphNode, str] = Field(
+    rename_map: str | OutputHandle[str] = connect_field(
         default="", description="Column rename mapping in format: old1:new1,old2:new2"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Rename"
 
 
-class RowIterator(GraphNode):
+Rename.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class RowIterator(GraphNode[nodetool.nodes.nodetool.data.RowIterator.OutputType]):
     """
     Iterate over rows of a dataframe.
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The input dataframe.",
     )
 
+    @property
+    def out(self) -> "RowIteratorOutputs":
+        return RowIteratorOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.RowIterator"
 
 
-class SaveCSVDataframeFile(GraphNode):
+class RowIteratorOutputs(OutputsProxy):
+    @property
+    def dict(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["dict"])
+
+    @property
+    def index(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["index"])
+
+
+RowIterator.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class SaveCSVDataframeFile(GraphNode[types.DataframeRef]):
     """
     Write a pandas DataFrame to a CSV file.
     files, csv, write, output, save, file
@@ -538,26 +857,41 @@ class SaveCSVDataframeFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="DataFrame to write to CSV",
     )
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder where the file will be saved"
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="Name of the CSV file to save. Supports strftime format codes.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.SaveCSVDataframeFile"
 
 
-class SaveDataframe(GraphNode):
+SaveCSVDataframeFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class SaveDataframe(GraphNode[types.DataframeRef]):
     """
     Save dataframe in specified folder.
     csv, folder, save
@@ -567,43 +901,71 @@ class SaveDataframe(GraphNode):
     - Create backups of dataframes
     """
 
-    df: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    df: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description=None,
     )
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="Name of the output folder.",
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="output.csv",
         description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.SaveDataframe"
 
 
-class Schema(GraphNode):
+SaveDataframe.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Schema(GraphNode[types.RecordType]):
     """
     Define a schema for a dataframe.
     schema, dataframe, create
     """
 
-    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
         default=types.RecordType(type="record_type", columns=[]),
         description="The columns to use in the dataframe.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.RecordType]:
+        return typing.cast(OutputHandle[types.RecordType], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Schema"
 
 
-class SelectColumn(GraphNode):
+Schema.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class SelectColumn(GraphNode[types.DataframeRef]):
     """
     Select specific columns from dataframe.
     dataframe, columns, filter
@@ -614,22 +976,37 @@ class SelectColumn(GraphNode):
     - Prepare data for specific visualizations or models
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="a dataframe from which columns are to be selected",
     )
-    columns: str | GraphNode | tuple[GraphNode, str] = Field(
+    columns: str | OutputHandle[str] = connect_field(
         default="", description="comma separated list of column names"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.SelectColumn"
 
 
-class Slice(GraphNode):
+SelectColumn.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class Slice(GraphNode[types.DataframeRef]):
     """
     Slice a dataframe by rows using start and end indices.
     slice, subset, rows
@@ -640,26 +1017,41 @@ class Slice(GraphNode):
     - Analyze data in smaller chunks
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The input dataframe to be sliced.",
     )
-    start_index: int | GraphNode | tuple[GraphNode, str] = Field(
+    start_index: int | OutputHandle[int] = connect_field(
         default=0, description="The starting index of the slice (inclusive)."
     )
-    end_index: int | GraphNode | tuple[GraphNode, str] = Field(
+    end_index: int | OutputHandle[int] = connect_field(
         default=-1,
         description="The ending index of the slice (exclusive). Use -1 for the last row.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.Slice"
 
 
-class SortByColumn(GraphNode):
+Slice.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class SortByColumn(GraphNode[types.DataframeRef]):
     """
     Sort dataframe by specified column.
     sort, order, column
@@ -670,22 +1062,37 @@ class SortByColumn(GraphNode):
     - Prepare data for rank-based analysis
     """
 
-    df: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    df: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description=None,
     )
-    column: str | GraphNode | tuple[GraphNode, str] = Field(
+    column: str | OutputHandle[str] = connect_field(
         default="", description="The column to sort the DataFrame by."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.SortByColumn"
 
 
-class ToList(GraphNode):
+SortByColumn.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+
+
+class ToList(GraphNode[list[dict]]):
     """
     Convert dataframe to list of dictionaries.
     dataframe, list, convert
@@ -696,13 +1103,20 @@ class ToList(GraphNode):
     - Prepare data for document-based storage
     """
 
-    dataframe: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The input dataframe to convert.",
     )
 
+    @property
+    def output(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.data.ToList"
+
+
+ToList.model_rebuild(force=True)

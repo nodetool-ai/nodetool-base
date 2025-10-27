@@ -29,11 +29,6 @@ from nodetool.nodes.nodetool.data import (
 )
 
 
-# IRIS-based evaluator for the Data Agent.
-# Note: Some data tools exist but are not included here because they require local files or asset folders:
-# - LoadCSVFile, LoadCSVAssets, SaveDataframe, ImportCSV, FromList, JSONToDataframe, RowIterator.
-# This IRIS-focused eval covers the tools listed in `nodes` below.
-
 
 IRIS_FILE = os.path.join(os.path.dirname(__file__), "iris.csv")
 

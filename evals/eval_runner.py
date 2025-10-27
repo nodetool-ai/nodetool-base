@@ -3,9 +3,10 @@ import json
 import os
 import sys
 import asyncio
-from typing import Any, List, Dict, Tuple
-
-from nodetool.metadata.types import InferenceProvider
+import threading
+from typing import Any, Awaitable, Callable, Dict, List, Tuple, TypeVar
+from nodetool.providers import get_provider
+from nodetool.providers.base import BaseProvider
 from rich.table import Table
 from rich.columns import Columns
 from nodetool.agents.agent_evaluator import (
@@ -14,6 +15,7 @@ from nodetool.agents.agent_evaluator import (
     EvaluationResult,
 )
 from nodetool.workflows.processing_context import ProcessingContext
+
 
 # Ensure local eval modules are importable as plain module names
 THIS_DIR = os.path.dirname(__file__)
@@ -28,14 +30,16 @@ import eval_search_agent as search_eval  # type: ignore
 
 MODELS: List[Tuple[str, str]] = [
     # ("openai", "gpt-5"),
-    ("openai", "gpt-5-mini"),
-    ("gemini", "gemini-2.5-flash"),
+    # ("openai", "gpt-5-mini"),
+    # ("gemini", "gemini-2.5-flash"),
     # ("gemini", "gemini-2.5-flash-lite"),
     # ("anthropic", "claude-sonnet-4-20250514"),
-    ("anthropic", "claude-3-5-haiku-20241022"),
-    ("huggingface:cerebras", "openai/gpt-oss-120b"),
-    # ("huggingface:cerebras", "Qwen/Qwen3-Coder-480B-A35B-Instruct"),
+    # ("anthropic", "claude-3-5-haiku-20241022"),
+    # ("huggingface_cerebras", "openai/gpt-oss-120b"),
+    ("ollama", "qwen3:4b"),
 ]
+
+T = TypeVar("T")
 
 
 def make_table(stats: Dict[str, ModelStats], models: List[Tuple[str, str]]) -> Table:
@@ -135,28 +139,7 @@ async def _execute_agent_once(agent: Any, output_json_path: str | None) -> None:
             json.dump(payload, f)
 
 
-def default_provider_factory(provider_key: str) -> Any:
-    from nodetool.providers.base import BaseProvider
-    from nodetool.providers.openai_provider import OpenAIProvider
-    from nodetool.providers.gemini_provider import GeminiProvider
-    from nodetool.providers.anthropic_provider import AnthropicProvider
-    from nodetool.providers.huggingface_provider import HuggingFaceProvider
-
-    if provider_key == "openai":
-        return OpenAIProvider()
-    elif provider_key == "gemini":
-        return GeminiProvider()
-    elif provider_key == "anthropic":
-        return AnthropicProvider()
-    elif provider_key.startswith("huggingface"):
-        inference_provider = provider_key.split(":")[1]
-        assert inference_provider in InferenceProvider.__members__.values()
-        return HuggingFaceProvider(inference_provider)  # type: ignore
-    else:
-        raise ValueError(f"Unknown provider key: {provider_key}")
-
-
-def _build_math_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
+def _build_math_agent(provider: BaseProvider, model: str, problem_payload: Any) -> Any:
     from nodetool.agents.tools.node_tool import NodeTool
     from nodetool.nodes.lib.math import (
         Add,
@@ -167,7 +150,6 @@ def _build_math_agent(provider_key: str, model: str, problem_payload: Any) -> An
         MathFunction,
     )
 
-    provider = default_provider_factory(provider_key)
     tools = [
         NodeTool(Add),
         NodeTool(Subtract),
@@ -179,16 +161,14 @@ def _build_math_agent(provider_key: str, model: str, problem_payload: Any) -> An
     return math_eval.build_math_agent(provider, model, tools, problem_payload)
 
 
-def _build_data_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
-    provider = default_provider_factory(provider_key)
+def _build_data_agent(provider: BaseProvider, model: str, problem_payload: Any) -> Any:
     # Reuse exported tools and builder from data eval
     return data_eval.build_data_agent(provider, model, data_eval.tools, problem_payload)
 
 
-def _build_browser_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
+def _build_browser_agent(provider: BaseProvider, model: str, problem_payload: Any) -> Any:
     from nodetool.agents.tools.browser_tools import BrowserTool
 
-    provider = default_provider_factory(provider_key)
     # Expect problem_payload as (description, url)
     if isinstance(problem_payload, (list, tuple)) and len(problem_payload) >= 2:
         task_description, url = problem_payload[0], problem_payload[1]
@@ -204,7 +184,7 @@ def _build_browser_agent(provider_key: str, model: str, problem_payload: Any) ->
     )
 
 
-def _build_search_agent(provider_key: str, model: str, problem_payload: Any) -> Any:
+def _build_search_agent(provider: BaseProvider, model: str, problem_payload: Any) -> Any:
     from nodetool.agents.tools.node_tool import NodeTool
     from nodetool.nodes.search.google import (
         GoogleSearch,
@@ -217,7 +197,6 @@ def _build_search_agent(provider_key: str, model: str, problem_payload: Any) -> 
         GoogleShopping,
     )
 
-    provider = default_provider_factory(provider_key)
     # Expect problem_payload as (description, query)
     if isinstance(problem_payload, (list, tuple)) and len(problem_payload) >= 2:
         task_description, query = problem_payload[0], problem_payload[1]
@@ -242,7 +221,7 @@ def _build_search_agent(provider_key: str, model: str, problem_payload: Any) -> 
     )
 
 
-def main() -> None:
+async def main() -> None:
     parser = argparse.ArgumentParser(
         description="Unified eval runner: single-run (tool-invoked) and full evaluations"
     )
@@ -300,9 +279,7 @@ def main() -> None:
                 console=console,
             ) as live:
                 evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS))  # type: ignore
-                data_result: EvaluationResult = (
-                    asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
-                )
+                data_result: EvaluationResult = await evaluator.evaluate()
                 live.update(make_view(data_result.stats, data_result.logs, MODELS))
             return
 
@@ -328,9 +305,7 @@ def main() -> None:
                 console=console,
             ) as live:
                 evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS))  # type: ignore
-                math_result: EvaluationResult = (
-                    asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
-                )
+                math_result: EvaluationResult =  await evaluator.evaluate()
                 live.update(make_view(math_result.stats, math_result.logs, MODELS))
             return
 
@@ -361,9 +336,7 @@ def main() -> None:
                 console=console,
             ) as live:
                 evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS, max_log_lines, "Task", True))  # type: ignore
-                browser_result: EvaluationResult = (
-                    asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
-                )
+                browser_result: EvaluationResult = await evaluator.evaluate()
                 live.update(
                     make_view(
                         browser_result.stats,
@@ -403,9 +376,7 @@ def main() -> None:
                 console=console,
             ) as live:
                 evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS, max_log_lines, "Task", True))  # type: ignore
-                search_result: EvaluationResult = (
-                    asyncio.get_event_loop().run_until_complete(evaluator.evaluate())
-                )
+                search_result: EvaluationResult = await evaluator.evaluate()
                 live.update(
                     make_view(
                         search_result.stats,
@@ -432,18 +403,19 @@ def main() -> None:
         )
 
     problem_payload = json.loads(args.problem_json)
+    provider = await get_provider(args.provider)
     if args.agent == "math":
-        agent = _build_math_agent(args.provider, args.model, problem_payload)
+        agent = _build_math_agent(provider, args.model, problem_payload)
     elif args.agent == "data":
-        agent = _build_data_agent(args.provider, args.model, problem_payload)
+        agent = _build_data_agent(provider, args.model, problem_payload)
     elif args.agent == "browser":
-        agent = _build_browser_agent(args.provider, args.model, problem_payload)
+        agent = _build_browser_agent(provider, args.model, problem_payload)
     elif args.agent == "search":
-        agent = _build_search_agent(args.provider, args.model, problem_payload)
+        agent = _build_search_agent(provider, args.model, problem_payload)
     else:
         raise SystemExit("Unknown agent type")
-    asyncio.run(_execute_agent_once(agent, args.output_json))
+    await _execute_agent_once(agent, args.output_json)
 
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
 
-class ArrayToList(GraphNode):
+
+class ArrayToList(GraphNode[list[Any]]):
     """
     Convert a array to a nested list structure.
     array, list, conversion, type
@@ -24,17 +29,30 @@ class ArrayToList(GraphNode):
     - Interface array data with non-array operations
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Array to convert to list",
     )
+
+    @property
+    def output(self) -> OutputHandle[list[Any]]:
+        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ArrayToList"
 
 
-class ArrayToScalar(GraphNode):
+ArrayToList.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
+
+
+class ArrayToScalar(GraphNode[float | int]):
     """
     Convert a single-element array to a scalar value.
     array, scalar, conversion, type
@@ -45,17 +63,30 @@ class ArrayToScalar(GraphNode):
     - Simplify output for human-readable results
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Array to convert to scalar",
     )
+
+    @property
+    def output(self) -> OutputHandle[float | int]:
+        return typing.cast(OutputHandle[float | int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ArrayToScalar"
 
 
-class ConvertToArray(GraphNode):
+ArrayToScalar.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
+
+
+class ConvertToArray(GraphNode[types.NPArray]):
     """
     Convert PIL Image to normalized tensor representation.
     image, tensor, conversion, normalization
@@ -66,17 +97,30 @@ class ConvertToArray(GraphNode):
     - Normalize image data for consistent calculations
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The input image to convert to a tensor. The image should have either 1 (grayscale), 3 (RGB), or 4 (RGBA) channels.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ConvertToArray"
 
 
-class ConvertToAudio(GraphNode):
+ConvertToArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
+
+
+class ConvertToAudio(GraphNode[types.AudioRef]):
     """
     Converts a array object back to an audio file.
     audio, conversion, array
@@ -87,20 +131,33 @@ class ConvertToAudio(GraphNode):
     - Output results of audio processing pipelinesr
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The array to convert to an audio file.",
     )
-    sample_rate: int | GraphNode | tuple[GraphNode, str] = Field(
+    sample_rate: int | OutputHandle[int] = connect_field(
         default=44100, description="The sample rate of the audio file."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ConvertToAudio"
 
 
-class ConvertToImage(GraphNode):
+ConvertToAudio.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
+
+
+class ConvertToImage(GraphNode[types.ImageRef]):
     """
     Convert array data to PIL Image format.
     array, image, conversion, denormalization
@@ -111,17 +168,30 @@ class ConvertToImage(GraphNode):
     - Convert model outputs back to viewable format
     """
 
-    values: types.NPArray | GraphNode | tuple[GraphNode, str] = Field(
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="The input array to convert to an image. Should have either 1, 3, or 4 channels.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ConvertToImage"
 
 
-class ListToArray(GraphNode):
+ConvertToImage.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
+
+
+class ListToArray(GraphNode[types.NPArray]):
     """
     Convert a list of values to a array.
     list, array, conversion, type
@@ -132,16 +202,29 @@ class ListToArray(GraphNode):
     - Convert sequence data to array format
     """
 
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description="List of values to convert to array"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ListToArray"
 
 
-class ScalarToArray(GraphNode):
+ListToArray.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.numpy.conversion
+
+
+class ScalarToArray(GraphNode[types.NPArray]):
     """
     Convert a scalar value to a single-element array.
     scalar, array, conversion, type
@@ -152,10 +235,17 @@ class ScalarToArray(GraphNode):
     - Initialize array values in workflows
     """
 
-    value: float | int | GraphNode | tuple[GraphNode, str] = Field(
+    value: float | int | OutputHandle[float | int] = connect_field(
         default=0, description="Scalar value to convert to array"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.NPArray]:
+        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.numpy.conversion.ScalarToArray"
+
+
+ScalarToArray.model_rebuild(force=True)

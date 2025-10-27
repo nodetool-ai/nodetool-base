@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.grid
 
-class CombineImageGrid(GraphNode):
+
+class CombineImageGrid(GraphNode[types.ImageRef]):
     """
     Combine a grid of image tiles into a single image.
     image, grid, combine, tiles
@@ -24,19 +29,32 @@ class CombineImageGrid(GraphNode):
     - Merge tiled image data from distributed processing
     """
 
-    tiles: list[types.ImageRef] | GraphNode | tuple[GraphNode, str] = Field(
+    tiles: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
         default=[], description="List of image tiles to combine."
     )
-    columns: int | GraphNode | tuple[GraphNode, str] = Field(
+    columns: int | OutputHandle[int] = connect_field(
         default=0, description="Number of columns in the grid."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.grid.CombineImageGrid"
 
 
-class SliceImageGrid(GraphNode):
+CombineImageGrid.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.grid
+
+
+class SliceImageGrid(GraphNode[list[types.ImageRef]]):
     """
     Slice an image into a grid of tiles.
     image, grid, slice, tiles
@@ -47,17 +65,26 @@ class SliceImageGrid(GraphNode):
     - Distribute image processing tasks across multiple workers
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to slice into a grid.",
     )
-    columns: int | GraphNode | tuple[GraphNode, str] = Field(
+    columns: int | OutputHandle[int] = connect_field(
         default=0, description="Number of columns in the grid."
     )
-    rows: int | GraphNode | tuple[GraphNode, str] = Field(
+    rows: int | OutputHandle[int] = connect_field(
         default=0, description="Number of rows in the grid."
     )
+
+    @property
+    def output(self) -> OutputHandle[list[types.ImageRef]]:
+        return typing.cast(
+            OutputHandle[list[types.ImageRef]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.grid.SliceImageGrid"
+
+
+SliceImageGrid.model_rebuild(force=True)

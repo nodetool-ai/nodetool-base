@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
 
-class DeleteRequest(GraphNode):
+
+class DeleteRequest(GraphNode[str]):
     """
     Remove a resource from a server using an HTTP DELETE request.
     http, delete, request, url
@@ -25,19 +30,30 @@ class DeleteRequest(GraphNode):
     - Clear cache entries
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.DeleteRequest"
 
 
+DeleteRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
 import nodetool.nodes.lib.http
 
 
-class DownloadDataframe(GraphNode):
+class DownloadDataframe(GraphNode[types.DataframeRef]):
     """
     Download data from a URL and return as a dataframe.
     http, get, request, url, dataframe, csv, json, data
@@ -52,30 +68,45 @@ class DownloadDataframe(GraphNode):
     FileFormat: typing.ClassVar[type] = (
         nodetool.nodes.lib.http.DownloadDataframe.FileFormat
     )
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
     file_format: nodetool.nodes.lib.http.DownloadDataframe.FileFormat = Field(
         default=nodetool.nodes.lib.http.DownloadDataframe.FileFormat.CSV,
         description="The format of the data file (csv, json, tsv).",
     )
-    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
         default=types.RecordType(type="record_type", columns=[]),
         description="The columns of the dataframe.",
     )
-    encoding: str | GraphNode | tuple[GraphNode, str] = Field(
+    encoding: str | OutputHandle[str] = connect_field(
         default="utf-8", description="The encoding of the text file."
     )
-    delimiter: str | GraphNode | tuple[GraphNode, str] = Field(
+    delimiter: str | OutputHandle[str] = connect_field(
         default=",", description="The delimiter for CSV/TSV files."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DataframeRef]:
+        return typing.cast(
+            OutputHandle[types.DataframeRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.DownloadDataframe"
 
 
-class DownloadFiles(GraphNode):
+DownloadDataframe.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class DownloadFiles(GraphNode[nodetool.nodes.lib.http.DownloadFiles.OutputType]):
     """
     Download files from a list of URLs into a local folder.
     download, files, urls, batch
@@ -87,22 +118,45 @@ class DownloadFiles(GraphNode):
     - Download datasets
     """
 
-    urls: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    urls: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="List of URLs to download."
     )
-    output_folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    output_folder: str | OutputHandle[str] = connect_field(
         default="downloads", description="Local folder path where files will be saved."
     )
-    max_concurrent_downloads: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_concurrent_downloads: int | OutputHandle[int] = connect_field(
         default=5, description="Maximum number of concurrent downloads."
     )
+
+    @property
+    def out(self) -> "DownloadFilesOutputs":
+        return DownloadFilesOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.DownloadFiles"
 
 
-class FetchPage(GraphNode):
+class DownloadFilesOutputs(OutputsProxy):
+    @property
+    def success(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["success"])
+
+    @property
+    def failed(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["failed"])
+
+
+DownloadFiles.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class FetchPage(GraphNode[nodetool.nodes.lib.http.FetchPage.OutputType]):
     """
     Fetch a web page using Selenium and return its content.
     selenium, fetch, webpage, http
@@ -113,19 +167,46 @@ class FetchPage(GraphNode):
     - Interact with web applications
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to fetch the page from."
     )
-    wait_time: int | GraphNode | tuple[GraphNode, str] = Field(
+    wait_time: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum time to wait for page load (in seconds)."
     )
+
+    @property
+    def out(self) -> "FetchPageOutputs":
+        return FetchPageOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.FetchPage"
 
 
-class FilterValidURLs(GraphNode):
+class FetchPageOutputs(OutputsProxy):
+    @property
+    def html(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["html"])
+
+    @property
+    def success(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self["success"])
+
+    @property
+    def error_message(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["error_message"])
+
+
+FetchPage.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class FilterValidURLs(GraphNode[list[str]]):
     """
     Filter a list of URLs by checking their validity using HEAD requests.
     url validation, http, head request
@@ -136,22 +217,35 @@ class FilterValidURLs(GraphNode):
     - Validate website URLs before processing
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    urls: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    urls: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="List of URLs to validate."
     )
-    max_concurrent_requests: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_concurrent_requests: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of concurrent HEAD requests."
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.FilterValidURLs"
 
 
-class GetRequest(GraphNode):
+FilterValidURLs.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class GetRequest(GraphNode[str]):
     """
     Perform an HTTP GET request to retrieve data from a specified URL.
     http, get, request, url
@@ -163,16 +257,29 @@ class GetRequest(GraphNode):
     - Check website availability
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.GetRequest"
 
 
-class GetRequestBinary(GraphNode):
+GetRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class GetRequestBinary(GraphNode[bytes]):
     """
     Perform an HTTP GET request and return raw binary data.
     http, get, request, url, binary, download
@@ -184,16 +291,29 @@ class GetRequestBinary(GraphNode):
     - Download any non-text content
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.GetRequestBinary"
 
 
-class GetRequestDocument(GraphNode):
+GetRequestBinary.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class GetRequestDocument(GraphNode[types.DocumentRef]):
     """
     Perform an HTTP GET request and return a document
     http, get, request, url, document
@@ -205,16 +325,31 @@ class GetRequestDocument(GraphNode):
     - Download any document format
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.GetRequestDocument"
 
 
-class HeadRequest(GraphNode):
+GetRequestDocument.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class HeadRequest(GraphNode[dict[str, str]]):
     """
     Retrieve headers from a resource using an HTTP HEAD request.
     http, head, request, url
@@ -225,16 +360,29 @@ class HeadRequest(GraphNode):
     - Verify authentication or permissions
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, str]]:
+        return typing.cast(OutputHandle[dict[str, str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.HeadRequest"
 
 
-class ImageDownloader(GraphNode):
+HeadRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class ImageDownloader(GraphNode[nodetool.nodes.lib.http.ImageDownloader.OutputType]):
     """
     Download images from list of URLs and return a list of ImageRefs.
     image download, web scraping, data processing
@@ -245,22 +393,45 @@ class ImageDownloader(GraphNode):
     - Process and analyze images extracted from websites
     """
 
-    images: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    images: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="List of image URLs to download."
     )
-    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base_url: str | OutputHandle[str] = connect_field(
         default="", description="Base URL to prepend to relative image URLs."
     )
-    max_concurrent_downloads: int | GraphNode | tuple[GraphNode, str] = Field(
+    max_concurrent_downloads: int | OutputHandle[int] = connect_field(
         default=10, description="Maximum number of concurrent image downloads."
     )
+
+    @property
+    def out(self) -> "ImageDownloaderOutputs":
+        return ImageDownloaderOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.ImageDownloader"
 
 
-class JSONGetRequest(GraphNode):
+class ImageDownloaderOutputs(OutputsProxy):
+    @property
+    def images(self) -> OutputHandle[list[types.ImageRef]]:
+        return typing.cast(OutputHandle[list[types.ImageRef]], self["images"])
+
+    @property
+    def failed_urls(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["failed_urls"])
+
+
+ImageDownloader.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class JSONGetRequest(GraphNode[dict]):
     """
     Perform an HTTP GET request and parse the response as JSON.
     http, get, request, url, json, api
@@ -271,16 +442,29 @@ class JSONGetRequest(GraphNode):
     - Interface with JSON web services
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.JSONGetRequest"
 
 
-class JSONPatchRequest(GraphNode):
+JSONGetRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class JSONPatchRequest(GraphNode[dict]):
     """
     Partially update resources with JSON data using an HTTP PATCH request.
     http, patch, request, url, json, api
@@ -291,19 +475,32 @@ class JSONPatchRequest(GraphNode):
     - Efficient updates for large objects
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    data: dict | GraphNode | tuple[GraphNode, str] = Field(
+    data: dict | OutputHandle[dict] = connect_field(
         default={}, description="The JSON data to send in the PATCH request."
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.JSONPatchRequest"
 
 
-class JSONPostRequest(GraphNode):
+JSONPatchRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class JSONPostRequest(GraphNode[dict]):
     """
     Send JSON data to a server using an HTTP POST request.
     http, post, request, url, json, api
@@ -314,19 +511,32 @@ class JSONPostRequest(GraphNode):
     - Interface with modern web services
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    data: dict | GraphNode | tuple[GraphNode, str] = Field(
+    data: dict | OutputHandle[dict] = connect_field(
         default={}, description="The JSON data to send in the POST request."
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.JSONPostRequest"
 
 
-class JSONPutRequest(GraphNode):
+JSONPostRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class JSONPutRequest(GraphNode[dict]):
     """
     Update resources with JSON data using an HTTP PUT request.
     http, put, request, url, json, api
@@ -337,19 +547,32 @@ class JSONPutRequest(GraphNode):
     - Set configuration with JSON data
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    data: dict | GraphNode | tuple[GraphNode, str] = Field(
+    data: dict | OutputHandle[dict] = connect_field(
         default={}, description="The JSON data to send in the PUT request."
     )
+
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.JSONPutRequest"
 
 
-class PostRequest(GraphNode):
+JSONPutRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class PostRequest(GraphNode[str]):
     """
     Send data to a server using an HTTP POST request.
     http, post, request, url, data
@@ -361,19 +584,32 @@ class PostRequest(GraphNode):
     - Authenticate users
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    data: str | GraphNode | tuple[GraphNode, str] = Field(
+    data: str | OutputHandle[str] = connect_field(
         default="", description="The data to send in the POST request."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.PostRequest"
 
 
-class PostRequestBinary(GraphNode):
+PostRequest.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class PostRequestBinary(GraphNode[bytes]):
     """
     Send data using an HTTP POST request and return raw binary data.
     http, post, request, url, data, binary
@@ -385,20 +621,33 @@ class PostRequestBinary(GraphNode):
     - Handle binary file transformations
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    data: str | bytes | GraphNode | tuple[GraphNode, str] = Field(
+    data: str | bytes | OutputHandle[str | bytes] = connect_field(
         default="",
         description="The data to send in the POST request. Can be string or binary.",
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.PostRequestBinary"
 
 
-class PutRequest(GraphNode):
+PostRequestBinary.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.http
+
+
+class PutRequest(GraphNode[str]):
     """
     Update existing resources on a server using an HTTP PUT request.
     http, put, request, url, data
@@ -410,13 +659,20 @@ class PutRequest(GraphNode):
     - Set configuration values
     """
 
-    url: str | GraphNode | tuple[GraphNode, str] = Field(
+    url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
-    data: str | GraphNode | tuple[GraphNode, str] = Field(
+    data: str | OutputHandle[str] = connect_field(
         default="", description="The data to send in the PUT request."
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.http.PutRequest"
+
+
+PutRequest.model_rebuild(force=True)

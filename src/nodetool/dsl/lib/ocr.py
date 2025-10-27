@@ -12,10 +12,14 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.ocr
 import nodetool.nodes.lib.ocr
 
 
-class PaddleOCRNode(GraphNode):
+class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
     """
     Performs Optical Character Recognition (OCR) on images using PaddleOCR.
     image, text, ocr, document
@@ -28,7 +32,7 @@ class PaddleOCRNode(GraphNode):
     """
 
     OCRLanguage: typing.ClassVar[type] = nodetool.nodes.lib.ocr.OCRLanguage
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to perform OCR on",
     )
@@ -37,6 +41,23 @@ class PaddleOCRNode(GraphNode):
         description="Language code for OCR",
     )
 
+    @property
+    def out(self) -> "PaddleOCRNodeOutputs":
+        return PaddleOCRNodeOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "lib.ocr.PaddleOCR"
+
+
+class PaddleOCRNodeOutputs(OutputsProxy):
+    @property
+    def boxes(self) -> OutputHandle[list[types.OCRResult]]:
+        return typing.cast(OutputHandle[list[types.OCRResult]], self["boxes"])
+
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+
+PaddleOCRNode.model_rebuild(force=True)

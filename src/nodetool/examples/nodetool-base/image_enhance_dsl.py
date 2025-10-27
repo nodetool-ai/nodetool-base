@@ -33,8 +33,9 @@ async def example():
     )
 
     # Apply enhancements in sequence: Sharpen → AutoContrast
+    sharpened = Sharpen(image=image_input.output)
     enhanced = AutoContrast(
-        image=Sharpen(image=image_input),
+        image=sharpened.output,
         cutoff=108,
     )
 
@@ -42,7 +43,7 @@ async def example():
     output = ImageOutput(
         name="enhanced",
         description="",
-        value=enhanced,
+        value=enhanced.output,
     )
 
     result = await graph_result(output, asset_output_mode=AssetOutputMode.WORKSPACE)

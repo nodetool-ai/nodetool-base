@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
 
-class ArgMax(GraphNode):
+
+class ArgMax(GraphNode[str]):
     """
     Returns the label associated with the highest value in a dictionary.
     dictionary, maximum, label, argmax
@@ -24,17 +29,30 @@ class ArgMax(GraphNode):
     - Identify the winner in a voting/ranking system
     """
 
-    scores: dict[str, float] | GraphNode | tuple[GraphNode, str] = Field(
+    scores: dict[str, float] | OutputHandle[dict[str, float]] = connect_field(
         default={},
         description="Dictionary mapping labels to their corresponding scores/values",
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.ArgMax"
 
 
-class Combine(GraphNode):
+ArgMax.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class Combine(GraphNode[dict[str, Any]]):
     """
     Merges two dictionaries, with second dictionary values taking precedence.
     dictionary, merge, update, +, add, concatenate
@@ -45,19 +63,32 @@ class Combine(GraphNode):
     - Create aggregate data structures
     """
 
-    dict_a: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    dict_a: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
-    dict_b: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    dict_b: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.Combine"
 
 
-class Filter(GraphNode):
+Combine.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class Filter(GraphNode[dict[str, Any]]):
     """
     Creates a new dictionary with only specified keys from the input.
     dictionary, filter, select
@@ -68,19 +99,32 @@ class Filter(GraphNode):
     - Prepare specific data subsets for processing
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
-    keys: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    keys: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.Filter"
 
 
-class GetValue(GraphNode):
+Filter.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class GetValue(GraphNode[Any]):
     """
     Retrieves a value from a dictionary using a specified key.
     dictionary, get, value, key
@@ -91,35 +135,59 @@ class GetValue(GraphNode):
     - Extract a particular field from a data structure
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    default: Any | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description=None
-    )
+    key: str | OutputHandle[str] = connect_field(default="", description=None)
+    default: Any | OutputHandle[Any] = connect_field(default=None, description=None)
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.GetValue"
 
 
-class LoadCSVFile(GraphNode):
+GetValue.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class LoadCSVFile(GraphNode[list[dict]]):
     """
     Read a CSV file from disk.
     files, csv, read, input, load, file
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the CSV file to read"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[dict]]:
+        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.LoadCSVFile"
 
 
-class MakeDictionary(GraphNode):
+LoadCSVFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class MakeDictionary(GraphNode[dict[str, Any]]):
     """
     Creates a simple dictionary with up to three key-value pairs.
     dictionary, create, simple
@@ -130,12 +198,25 @@ class MakeDictionary(GraphNode):
     - Build basic key-value mappings
     """
 
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.MakeDictionary"
 
 
-class ParseJSON(GraphNode):
+MakeDictionary.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class ParseJSON(GraphNode[dict[str, Any]]):
     """
     Parses a JSON string into a Python dictionary.
     json, parse, dictionary
@@ -146,19 +227,28 @@ class ParseJSON(GraphNode):
     - Deserialize stored data
     """
 
-    json_string: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
+    json_string: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.ParseJSON"
 
 
+ParseJSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
 import nodetool.nodes.nodetool.dictionary
 
 
-class ReduceDictionaries(GraphNode):
+class ReduceDictionaries(GraphNode[dict[Any, Any]]):
     """
     Reduces a list of dictionaries into one dictionary based on a specified key field.
     dictionary, reduce, aggregate
@@ -172,14 +262,14 @@ class ReduceDictionaries(GraphNode):
     ConflictResolution: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
     )
-    dictionaries: list[dict[str, Any]] | GraphNode | tuple[GraphNode, str] = Field(
-        default=[], description="List of dictionaries to be reduced"
+    dictionaries: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = (
+        connect_field(default=[], description="List of dictionaries to be reduced")
     )
-    key_field: str | GraphNode | tuple[GraphNode, str] = Field(
+    key_field: str | OutputHandle[str] = connect_field(
         default="",
         description="The field to use as the key in the resulting dictionary",
     )
-    value_field: str | None | GraphNode | tuple[GraphNode, str] = Field(
+    value_field: str | OutputHandle[str] | None = connect_field(
         default=None,
         description="Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value.",
     )
@@ -190,12 +280,25 @@ class ReduceDictionaries(GraphNode):
         description="How to handle conflicts when the same key appears multiple times",
     )
 
+    @property
+    def output(self) -> OutputHandle[dict[Any, Any]]:
+        return typing.cast(OutputHandle[dict[Any, Any]], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.ReduceDictionaries"
 
 
-class Remove(GraphNode):
+ReduceDictionaries.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class Remove(GraphNode[dict[str, Any]]):
     """
     Removes a key-value pair from a dictionary.
     dictionary, remove, delete
@@ -206,17 +309,30 @@ class Remove(GraphNode):
     - Clean up temporary entries in a data structure
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
-    key: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    key: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.Remove"
 
 
-class SaveCSVFile(GraphNode):
+Remove.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class SaveCSVFile(GraphNode[typing.Any]):
     """
     Write a list of dictionaries to a CSV file.
     files, csv, write, output, save, file
@@ -226,23 +342,36 @@ class SaveCSVFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    data: list[dict] | GraphNode | tuple[GraphNode, str] = Field(
+    data: list[dict] | OutputHandle[list[dict]] = connect_field(
         default=[], description="list of dictionaries to write to CSV"
     )
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder where the file will be saved"
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="Name of the CSV file to save. Supports strftime format codes.",
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.SaveCSVFile"
 
 
-class Update(GraphNode):
+SaveCSVFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class Update(GraphNode[dict[str, Any]]):
     """
     Updates a dictionary with new key-value pairs.
     dictionary, add, update
@@ -253,19 +382,32 @@ class Update(GraphNode):
     - Merge user input with existing data
     """
 
-    dictionary: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
-    new_pairs: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    new_pairs: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={}, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.Update"
 
 
-class Zip(GraphNode):
+Update.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+
+
+class Zip(GraphNode[dict[Any, Any]]):
     """
     Creates a dictionary from parallel lists of keys and values.
     dictionary, create, zip
@@ -276,13 +418,20 @@ class Zip(GraphNode):
     - Transform list data into associative arrays
     """
 
-    keys: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    keys: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
-    values: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[Any, Any]]:
+        return typing.cast(OutputHandle[dict[Any, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.dictionary.Zip"
+
+
+Zip.model_rebuild(force=True)

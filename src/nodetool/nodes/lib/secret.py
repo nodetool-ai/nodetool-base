@@ -17,28 +17,5 @@ class GetSecret(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> str | None:
-        if Environment.is_production():
-            raise ValueError("This node is not available in production")
-        return Environment.get(self.name, self.default)
+        return await context.get_secret(self.name) or self.default
 
-
-class SetSecret(BaseNode):
-    """
-    Set a secret value and persist it.
-    secrets, credentials, configuration
-    """
-
-    name: str = Field(default="", description="Secret key name")
-    value: str = Field(default="", description="Secret value")
-
-    async def process(self, context: ProcessingContext) -> None:
-        from nodetool.config.settings import save_settings
-
-        if Environment.is_production():
-            raise ValueError("This node is not available in production")
-
-        settings = Environment.get_settings()
-        secrets = Environment.get_secrets()
-        secrets[self.name] = self.value
-        save_settings(settings, secrets)
-        return None

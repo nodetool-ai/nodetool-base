@@ -9,12 +9,11 @@ from nodetool.metadata.types import (
     LanguageModel,
     Provider,
     RecordType,
-    ToolCall,
 )
 from nodetool.workflows.types import Chunk
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.generators import DataGenerator, ListGenerator
-from nodetool.providers import FakeProvider, create_tool_calling_fake_provider
+from nodetool.providers import FakeProvider
 
 
 @pytest.fixture
@@ -38,21 +37,19 @@ async def test_data_generator_process(context: ProcessingContext):
         columns=columns,
         max_tokens=256,
     )
-    # Create tool calls for each data row
-    from nodetool.metadata.types import ToolCall
-    from nodetool.providers import FakeProvider
 
-    # Create a fake provider that returns tool calls
-    class DataGeneratorFakeProvider(FakeProvider):
-        async def generate_messages(self, **kwargs):
-            # Yield tool calls for each row
-            yield ToolCall(name="generate_data", args={"name": "Alice", "age": 30})
-            yield ToolCall(name="generate_data", args={"name": "Bob", "age": 25})
+    # Create a markdown table response
+    markdown_table = """| name | age |
+|------|-----|
+| Alice | 30 |
+| Bob | 25 |"""
 
-    fake_provider = DataGeneratorFakeProvider()
+    # Create a fake provider that streams markdown table
+    fake_provider = FakeProvider(text_response=markdown_table, should_stream=True)
 
     with patch(
-        "nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider
+        "nodetool.workflows.processing_context.ProcessingContext.get_provider",
+        return_value=fake_provider,
     ):
         # Act - Use gen_process to collect all outputs
         result_dataframe = None
@@ -91,17 +88,18 @@ async def test_data_generator_gen_process_streaming(context: ProcessingContext):
         max_tokens=256,
     )
 
-    # Simulate two tool calls (rows)
-    tool_calls = [
-        ToolCall(id="1", name="generate_data", args={"name": "Alice", "age": 30}),
-        ToolCall(id="2", name="generate_data", args={"name": "Bob", "age": 25}),
-    ]
+    # Create a markdown table response
+    markdown_table = """| name | age |
+|------|-----|
+| Alice | 30 |
+| Bob | 25 |"""
 
-    # Create a FakeProvider that yields tool calls
-    fake_provider = create_tool_calling_fake_provider(tool_calls)
+    # Create a FakeProvider that streams markdown table chunks
+    fake_provider = FakeProvider(text_response=markdown_table, should_stream=True, chunk_size=10)
 
     with patch(
-        "nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider
+        "nodetool.workflows.processing_context.ProcessingContext.get_provider",
+        return_value=fake_provider,
     ):
         # Act: collect stream
         streamed_records = []
@@ -144,7 +142,8 @@ async def test_list_generator_gen_process_streaming(context: ProcessingContext):
     fake_provider = FakeProvider(text_response=text, should_stream=True, chunk_size=10)
 
     with patch(
-        "nodetool.nodes.nodetool.generators.get_provider", return_value=fake_provider
+        "nodetool.workflows.processing_context.ProcessingContext.get_provider",
+        return_value=fake_provider,
     ):
         # Act
         items: list[str] = []

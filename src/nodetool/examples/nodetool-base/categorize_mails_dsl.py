@@ -10,12 +10,12 @@ Workflow:
 4. **Add Label** - Applies the determined label to each email in Gmail
 """
 
-from nodetool.dsl.graph import graph_result, run_graph, graph
+from nodetool.dsl.graph import run_graph, graph
 from nodetool.dsl.lib.mail import GmailSearch, AddLabel
 from nodetool.dsl.nodetool.text import Template
 from nodetool.dsl.nodetool.agents import Classifier
 from nodetool.dsl.nodetool.output import StringOutput
-from nodetool.metadata.types import LanguageModel
+from nodetool.metadata.types import LanguageModel, Provider
 
 
 async def example():
@@ -24,101 +24,45 @@ async def example():
     """
     # Search Gmail for recent emails
     gmail_search = GmailSearch(
-        from_address="",
-        to_address="",
-        subject="",
-        body="",
-        date_filter="SINCE_ONE_DAY",
-        keywords="",
-        folder="INBOX",
-        text="",
+        date_filter=GmailSearch.DateFilter.SINCE_ONE_DAY,
+        folder=GmailSearch.GmailFolder.INBOX,
         max_results=10,
     )
 
     # Format email data for classification
     email_template = Template(
         string="subject: {{subject}}\nsender: {{sender}}\ncontent: {{body|truncate(100)}}",
-        values=gmail_search,  # Pass email data from Gmail search
+        values=gmail_search.out.email,  # Use the email payload from the search node
     )
 
     # Classify emails into categories
     classifier = Classifier(
-        text=email_template,
+        text=email_template.output,
         system_prompt="""
         You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.
         """,
         model=LanguageModel(
             type="language_model",
             id="qwen3:4b",
-            provider="ollama",
+            provider=Provider.Ollama,
         ),
         categories=["newsletter", "work", "family", "friends"],
-        multi_label=False,
     )
 
     # Add the classified label to the email
     add_label = AddLabel(
-        message_id=(gmail_search, "message_id"),  # Connect specific output
-        label=classifier,  # Use the classification result
+        message_id=gmail_search.out.message_id,  # Connect specific output
+        label=classifier.output,
     )
 
     # Output the result
     output = StringOutput(
         name="result",
-        value=add_label,
+        value=classifier.output,
     )
 
     # Run the workflow
-    g = graph(output)
-    result = await run_graph(g)
-    return result
-
-
-async def example_streaming():
-    """
-    Process emails with streaming results (shows more dynamic approach).
-    """
-    # Search and classify emails
-    gmail_search = GmailSearch(
-        from_address="",
-        to_address="",
-        subject="",
-        body="",
-        date_filter="SINCE_ONE_DAY",
-        keywords="",
-        folder="INBOX",
-        text="",
-        max_results=10,
-    )
-
-    email_template = Template(
-        string="subject: {{subject}}\nsender: {{sender}}\ncontent: {{body|truncate(100)}}",
-        values=gmail_search,
-    )
-
-    classifier = Classifier(
-        text=email_template,
-        system_prompt="You are a precise text classifier. Analyze and classify emails.",
-        model=LanguageModel(
-            type="language_model",
-            id="qwen3:4b",
-            provider="ollama",
-        ),
-        categories=["newsletter", "work", "family", "friends"],
-        multi_label=False,
-    )
-
-    add_label = AddLabel(
-        message_id=(gmail_search, "message_id"),
-        label=classifier,
-    )
-
-    output = StringOutput(
-        name="result",
-        value=add_label,
-    )
-
-    g = graph(output)
+    g = graph(output, add_label)
     result = await run_graph(g)
     return result
 

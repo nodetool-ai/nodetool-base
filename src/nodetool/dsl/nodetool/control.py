@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.control
 
-class Collect(GraphNode):
+
+class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
     """
     Collect items until the end of the stream and return them as a list.
     collector, aggregate, list, stream
@@ -24,16 +29,35 @@ class Collect(GraphNode):
     - Aggregate outputs from parallel operations
     """
 
-    input_item: Any | GraphNode | tuple[GraphNode, str] = Field(
+    input_item: Any | OutputHandle[Any] = connect_field(
         default=None, description="The input item to collect."
     )
+
+    @property
+    def out(self) -> "CollectOutputs":
+        return CollectOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.control.Collect"
 
 
-class ForEach(GraphNode):
+class CollectOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[list[Any]]:
+        return typing.cast(OutputHandle[list[Any]], self["output"])
+
+
+Collect.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.control
+
+
+class ForEach(GraphNode[nodetool.nodes.nodetool.control.ForEach.OutputType]):
     """
     Iterate over a list and emit each item sequentially.
     iterator, loop, list, sequence
@@ -43,16 +67,39 @@ class ForEach(GraphNode):
     - Drive downstream nodes with individual elements
     """
 
-    input_list: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    input_list: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description="The list of items to iterate over."
     )
+
+    @property
+    def out(self) -> "ForEachOutputs":
+        return ForEachOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.control.ForEach"
 
 
-class If(GraphNode):
+class ForEachOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+    @property
+    def index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["index"])
+
+
+ForEach.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.control
+
+
+class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
     """
     Conditionally executes one of two branches based on a condition.
     control, flow, condition, logic, else, true, false, switch, toggle, flow-control
@@ -63,19 +110,42 @@ class If(GraphNode):
     - Implement decision logic
     """
 
-    condition: bool | GraphNode | tuple[GraphNode, str] = Field(
+    condition: bool | OutputHandle[bool] = connect_field(
         default=False, description="The condition to evaluate"
     )
-    value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    value: Any | OutputHandle[Any] = connect_field(
         default=None, description="The value to pass to the next node"
     )
+
+    @property
+    def out(self) -> "IfOutputs":
+        return IfOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.control.If"
 
 
-class Reroute(GraphNode):
+class IfOutputs(OutputsProxy):
+    @property
+    def if_true(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["if_true"])
+
+    @property
+    def if_false(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["if_false"])
+
+
+If.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.control
+
+
+class Reroute(GraphNode[Any]):
     """
     Pass data through unchanged for tidier workflow layouts.
     reroute, passthrough, organize, tidy, flow, connection, redirect
@@ -86,10 +156,17 @@ class Reroute(GraphNode):
     - Redirect data flow without modification
     """
 
-    input_value: Any | GraphNode | tuple[GraphNode, str] = Field(
+    input_value: Any | OutputHandle[Any] = connect_field(
         default=None, description="Value to pass through unchanged"
     )
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.control.Reroute"
+
+
+Reroute.model_rebuild(force=True)

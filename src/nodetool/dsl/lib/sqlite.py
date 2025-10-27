@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
 
-class CreateTable(GraphNode):
+
+class CreateTable(GraphNode[nodetool.nodes.lib.sqlite.CreateTable.OutputType]):
     """
     Create a new SQLite table with specified columns.
     sqlite, database, table, create, schema
@@ -24,30 +29,57 @@ class CreateTable(GraphNode):
     - Create memory structures for agents
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
-    table_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    table_name: str | OutputHandle[str] = connect_field(
         default="flashcards", description="Name of the table to create"
     )
-    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
         default=types.RecordType(type="record_type", columns=[]),
         description="Column definitions",
     )
-    add_primary_key: bool | GraphNode | tuple[GraphNode, str] = Field(
+    add_primary_key: bool | OutputHandle[bool] = connect_field(
         default=True,
         description="Automatically make first integer column PRIMARY KEY AUTOINCREMENT",
     )
-    if_not_exists: bool | GraphNode | tuple[GraphNode, str] = Field(
+    if_not_exists: bool | OutputHandle[bool] = connect_field(
         default=True, description="Only create table if it doesn't exist"
     )
+
+    @property
+    def out(self) -> "CreateTableOutputs":
+        return CreateTableOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.CreateTable"
 
 
-class Delete(GraphNode):
+class CreateTableOutputs(OutputsProxy):
+    @property
+    def database_name(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["database_name"])
+
+    @property
+    def table_name(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["table_name"])
+
+    @property
+    def columns(self) -> OutputHandle[types.RecordType]:
+        return typing.cast(OutputHandle[types.RecordType], self["columns"])
+
+
+CreateTable.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
+
+
+class Delete(GraphNode[dict[str, Any]]):
     """
     Delete records from a SQLite table.
     sqlite, database, delete, remove, drop
@@ -58,23 +90,36 @@ class Delete(GraphNode):
     - Clean up old data
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
-    table_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    table_name: str | OutputHandle[str] = connect_field(
         default="flashcards", description="Name of the table to delete from"
     )
-    where: str | GraphNode | tuple[GraphNode, str] = Field(
+    where: str | OutputHandle[str] = connect_field(
         default="",
         description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'. REQUIRED for safety.",
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.Delete"
 
 
-class ExecuteSQL(GraphNode):
+Delete.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
+
+
+class ExecuteSQL(GraphNode[dict[str, Any]]):
     """
     Execute arbitrary SQL statements for advanced operations.
     sqlite, database, sql, execute, custom
@@ -85,22 +130,35 @@ class ExecuteSQL(GraphNode):
     - Custom SQL operations
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
-    sql: str | GraphNode | tuple[GraphNode, str] = Field(
+    sql: str | OutputHandle[str] = connect_field(
         default="SELECT * FROM flashcards", description="SQL statement to execute"
     )
-    parameters: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    parameters: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description="Parameters for parameterized queries (use ? in SQL)"
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.ExecuteSQL"
 
 
-class GetDatabasePath(GraphNode):
+ExecuteSQL.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
+
+
+class GetDatabasePath(GraphNode[str]):
     """
     Get the full path to a SQLite database file.
     sqlite, database, path, location
@@ -111,16 +169,29 @@ class GetDatabasePath(GraphNode):
     - Pass path to external tools
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.GetDatabasePath"
 
 
-class Insert(GraphNode):
+GetDatabasePath.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
+
+
+class Insert(GraphNode[dict[str, Any]]):
     """
     Insert a record into a SQLite table.
     sqlite, database, insert, add, record
@@ -131,23 +202,36 @@ class Insert(GraphNode):
     - Persist workflow results
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
-    table_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    table_name: str | OutputHandle[str] = connect_field(
         default="flashcards", description="Name of the table to insert into"
     )
-    data: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    data: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={"content": "example"},
         description="Data to insert as dict (column: value)",
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.Insert"
 
 
-class Query(GraphNode):
+Insert.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
+
+
+class Query(GraphNode[list[dict[str, Any]]]):
     """
     Query records from a SQLite table.
     sqlite, database, query, select, search, retrieve
@@ -158,32 +242,47 @@ class Query(GraphNode):
     - Fetch stored data
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
-    table_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    table_name: str | OutputHandle[str] = connect_field(
         default="flashcards", description="Name of the table to query"
     )
-    where: str | GraphNode | tuple[GraphNode, str] = Field(
+    where: str | OutputHandle[str] = connect_field(
         default="", description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
     )
-    columns: types.RecordType | GraphNode | tuple[GraphNode, str] = Field(
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
         default=types.RecordType(type="record_type", columns=[]),
         description="Columns to select",
     )
-    order_by: str | GraphNode | tuple[GraphNode, str] = Field(
+    order_by: str | OutputHandle[str] = connect_field(
         default="", description="ORDER BY clause (without 'ORDER BY' keyword)"
     )
-    limit: int | GraphNode | tuple[GraphNode, str] = Field(
+    limit: int | OutputHandle[int] = connect_field(
         default=0, description="Maximum number of rows to return (0 = no limit)"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[dict[str, Any]]]:
+        return typing.cast(
+            OutputHandle[list[dict[str, Any]]], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.Query"
 
 
-class Update(GraphNode):
+Query.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.sqlite
+
+
+class Update(GraphNode[dict[str, Any]]):
     """
     Update records in a SQLite table.
     sqlite, database, update, modify, change
@@ -194,20 +293,27 @@ class Update(GraphNode):
     - Change agent memory
     """
 
-    database_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    database_name: str | OutputHandle[str] = connect_field(
         default="memory.db", description="Name of the SQLite database file"
     )
-    table_name: str | GraphNode | tuple[GraphNode, str] = Field(
+    table_name: str | OutputHandle[str] = connect_field(
         default="flashcards", description="Name of the table to update"
     )
-    data: dict[str, Any] | GraphNode | tuple[GraphNode, str] = Field(
+    data: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
         default={"content": "updated"},
         description="Data to update as dict (column: new_value)",
     )
-    where: str | GraphNode | tuple[GraphNode, str] = Field(
+    where: str | OutputHandle[str] = connect_field(
         default="", description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
     )
+
+    @property
+    def output(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.sqlite.Update"
+
+
+Update.model_rebuild(force=True)

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.random
 
-class RandomBool(GraphNode):
+
+class RandomBool(GraphNode[bool]):
     """
     Return a random boolean value.
     random, boolean, coinflip, bool
@@ -24,12 +29,25 @@ class RandomBool(GraphNode):
     - Introduce randomness in control flow
     """
 
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.random.RandomBool"
 
 
-class RandomChoice(GraphNode):
+RandomBool.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.random
+
+
+class RandomChoice(GraphNode[Any]):
     """
     Select a random element from a list.
     random, choice, select, pick
@@ -40,16 +58,29 @@ class RandomChoice(GraphNode):
     - Pick a random item from user input
     """
 
-    options: list[Any] | GraphNode | tuple[GraphNode, str] = Field(
+    options: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description="List of options"
     )
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.random.RandomChoice"
 
 
-class RandomFloat(GraphNode):
+RandomChoice.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.random
+
+
+class RandomFloat(GraphNode[float]):
     """
     Generate a random floating point number within a range.
     random, float, number, rand, uniform
@@ -60,19 +91,32 @@ class RandomFloat(GraphNode):
     - Produce random values for simulations
     """
 
-    minimum: float | GraphNode | tuple[GraphNode, str] = Field(
+    minimum: float | OutputHandle[float] = connect_field(
         default=0.0, description="Minimum value"
     )
-    maximum: float | GraphNode | tuple[GraphNode, str] = Field(
+    maximum: float | OutputHandle[float] = connect_field(
         default=1.0, description="Maximum value"
     )
+
+    @property
+    def output(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.random.RandomFloat"
 
 
-class RandomInt(GraphNode):
+RandomFloat.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.random
+
+
+class RandomInt(GraphNode[int]):
     """
     Generate a random integer within a range.
     random, integer, number, rand, randint
@@ -83,13 +127,20 @@ class RandomInt(GraphNode):
     - Sample integers for testing
     """
 
-    minimum: int | GraphNode | tuple[GraphNode, str] = Field(
+    minimum: int | OutputHandle[int] = connect_field(
         default=0, description="Minimum value (inclusive)"
     )
-    maximum: int | GraphNode | tuple[GraphNode, str] = Field(
+    maximum: int | OutputHandle[int] = connect_field(
         default=100, description="Maximum value (inclusive)"
     )
+
+    @property
+    def output(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.random.RandomInt"
+
+
+RandomInt.model_rebuild(force=True)

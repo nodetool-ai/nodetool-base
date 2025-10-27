@@ -30,25 +30,17 @@ async def example():
     # Collect all titles into one text block
     collected = Collect(
         # Connect the title output from rss_feed
-        input_item=rss_feed,  # This will use the default output
+        input_item=rss_feed.out.title,
         separator="---",
     )
 
     # Summarize the collected text
     summary = Summarizer(
-        text=collected,
-        system_prompt="""
-        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.
-        Follow these guidelines:
-        1. Identify and include only the most important information.
-        2. Maintain factual accuracy - do not add or modify information.
-        3. Use clear, direct language.
-        4. Aim for approximately 1000 tokens.
-        """,
+        text=collected.out.output,
         model=LanguageModel(
             type="language_model",
-            id="openai/gpt-oss-120b",
-            provider=Provider.HuggingFaceCerebras,
+            id="gemma3:1b",
+            provider=Provider.Ollama,
         ),
         max_tokens=1000,
         context_window=4096,
@@ -57,7 +49,7 @@ async def example():
     # Output the summary
     output = StringOutput(
         name="summary",
-        value=summary,
+        value=summary.out.text,
     )
 
     result = await graph_result(output)
@@ -68,4 +60,4 @@ if __name__ == "__main__":
     import asyncio
 
     result = asyncio.run(example())
-    print(f"Summary: {result}")
+    print(result["summary"])

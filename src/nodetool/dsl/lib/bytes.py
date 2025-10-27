@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.bytes
 
-class LoadBytesFile(GraphNode):
+
+class LoadBytesFile(GraphNode[bytes]):
     """
     Read raw bytes from a file on disk.
     files, bytes, read, input, load, file
@@ -23,16 +28,29 @@ class LoadBytesFile(GraphNode):
     - Read binary files for a workflow
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the file to read"
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.bytes.LoadBytesFile"
 
 
-class SaveBytesFile(GraphNode):
+LoadBytesFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.bytes
+
+
+class SaveBytesFile(GraphNode[typing.Any]):
     """
     Write raw bytes to a file on disk.
     files, bytes, save, output
@@ -42,17 +60,24 @@ class SaveBytesFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    data: bytes | None | GraphNode | tuple[GraphNode, str] = Field(
+    data: bytes | OutputHandle[bytes] | None = connect_field(
         default=None, description="The bytes to write to file"
     )
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder where the file will be saved"
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="Name of the file to save. Supports strftime format codes.",
     )
 
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.bytes.SaveBytesFile"
+
+
+SaveBytesFile.model_rebuild(force=True)

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.zlib
 
-class Compress(GraphNode):
+
+class Compress(GraphNode[bytes]):
     """
     Compress binary data using the zlib algorithm.
     zlib, compress, deflate, binary
@@ -24,19 +29,32 @@ class Compress(GraphNode):
     - Store data in compressed form
     """
 
-    data: bytes | GraphNode | tuple[GraphNode, str] = Field(
+    data: bytes | OutputHandle[bytes] = connect_field(
         default=b"", description="Data to compress"
     )
-    level: int | GraphNode | tuple[GraphNode, str] = Field(
+    level: int | OutputHandle[int] = connect_field(
         default=9, description="Compression level"
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.zlib.Compress"
 
 
-class Decompress(GraphNode):
+Compress.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.zlib
+
+
+class Decompress(GraphNode[bytes]):
     """
     Decompress zlib-compressed binary data.
     zlib, decompress, inflate, binary
@@ -47,10 +65,17 @@ class Decompress(GraphNode):
     - Handle zlib streams from external services
     """
 
-    data: bytes | GraphNode | tuple[GraphNode, str] = Field(
+    data: bytes | OutputHandle[bytes] = connect_field(
         default=b"", description="Data to decompress"
     )
+
+    @property
+    def output(self) -> OutputHandle[bytes]:
+        return typing.cast(OutputHandle[bytes], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.zlib.Decompress"
+
+
+Decompress.model_rebuild(force=True)

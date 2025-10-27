@@ -12,84 +12,85 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
 
-class ListDocuments(GraphNode):
+
+class ListDocuments(
+    GraphNode[nodetool.nodes.nodetool.document.ListDocuments.OutputType]
+):
     """
     List documents in a directory.
     files, list, directory
     """
 
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    folder: str | OutputHandle[str] = connect_field(
         default="~", description="Directory to scan"
     )
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+    pattern: str | OutputHandle[str] = connect_field(
         default="*", description="File pattern to match (e.g. *.txt)"
     )
-    recursive: bool | GraphNode | tuple[GraphNode, str] = Field(
+    recursive: bool | OutputHandle[bool] = connect_field(
         default=False, description="Search subdirectories"
     )
+
+    @property
+    def out(self) -> "ListDocumentsOutputs":
+        return ListDocumentsOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.ListDocuments"
 
 
-class LoadDocumentFile(GraphNode):
+class ListDocumentsOutputs(OutputsProxy):
+    @property
+    def document(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(OutputHandle[types.DocumentRef], self["document"])
+
+
+ListDocuments.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class LoadDocumentFile(GraphNode[types.DocumentRef]):
     """
     Read a document from disk.
     files, document, read, input, load, file
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the document to read"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.LoadDocumentFile"
 
 
-class SplitMarkdown(GraphNode):
-    """
-    Splits markdown text by headers while preserving header hierarchy in metadata.
-    markdown, split, headers
-
-    Use cases:
-    - Splitting markdown documentation while preserving structure
-    - Processing markdown files for semantic search
-    - Creating context-aware chunks from markdown content
-    """
-
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
-        description=None,
-    )
-    headers_to_split_on: list[tuple[str, str]] | GraphNode | tuple[GraphNode, str] = (
-        Field(
-            default=[("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")],
-            description="List of tuples containing (header_symbol, header_name)",
-        )
-    )
-    strip_headers: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=True, description="Whether to remove headers from the output content"
-    )
-    return_each_line: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False,
-        description="Whether to split into individual lines instead of header sections",
-    )
-    chunk_size: int | None | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description="Optional maximum chunk size for further splitting"
-    )
-    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=30, description="Overlap size when using chunk_size"
-    )
-
-    @classmethod
-    def get_node_type(cls):
-        return "nodetool.document.SplitMarkdown"
+LoadDocumentFile.model_rebuild(force=True)
 
 
-class SaveDocumentFile(GraphNode):
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SaveDocumentFile(GraphNode[typing.Any]):
     """
     Write a document to disk.
     files, document, write, output, save, file
@@ -99,95 +100,195 @@ class SaveDocumentFile(GraphNode):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to save",
     )
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder where the file will be saved"
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="Name of the file to save. Supports strftime format codes.",
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SaveDocumentFile"
 
 
-class SplitDocument(GraphNode):
+SaveDocumentFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SplitDocument(
+    GraphNode[nodetool.nodes.nodetool.document.SplitDocument.OutputType]
+):
     """
     Split text semantically.
     chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
 
-    embed_model: types.HFTextGeneration | GraphNode | tuple[GraphNode, str] = Field(
-        default=types.HFTextGeneration(
-            type="hf.text_generation",
-            repo_id="BAAI/bge-small-en",
-            path=None,
-            variant=None,
-            allow_patterns=None,
-            ignore_patterns=None,
-        ),
-        description="Embedding model to use",
+    embed_model: types.HFTextGeneration | OutputHandle[types.HFTextGeneration] = (
+        connect_field(
+            default=types.HFTextGeneration(
+                type="hf.text_generation",
+                repo_id="BAAI/bge-small-en",
+                path=None,
+                variant=None,
+                allow_patterns=None,
+                ignore_patterns=None,
+            ),
+            description="Embedding model to use",
+        )
     )
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="Document ID to associate with the text content",
     )
-    buffer_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    buffer_size: int | OutputHandle[int] = connect_field(
         default=1, description="Buffer size for semantic splitting"
     )
-    threshold: int | GraphNode | tuple[GraphNode, str] = Field(
+    threshold: int | OutputHandle[int] = connect_field(
         default=95, description="Breakpoint percentile threshold for semantic splitting"
     )
+
+    @property
+    def out(self) -> "SplitDocumentOutputs":
+        return SplitDocumentOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SplitDocument"
 
 
-class SplitHTML(GraphNode):
+class SplitDocumentOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def source_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["source_id"])
+
+    @property
+    def start_index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["start_index"])
+
+
+SplitDocument.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SplitHTML(GraphNode[nodetool.nodes.nodetool.document.SplitHTML.OutputType]):
     """
     Split HTML content into semantic chunks based on HTML tags.
     html, text, semantic, tags, parsing
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="Document ID to associate with the HTML content",
     )
+
+    @property
+    def out(self) -> "SplitHTMLOutputs":
+        return SplitHTMLOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SplitHTML"
 
 
-class SplitJSON(GraphNode):
+class SplitHTMLOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def source_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["source_id"])
+
+    @property
+    def start_index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["start_index"])
+
+
+SplitHTML.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SplitJSON(GraphNode[nodetool.nodes.nodetool.document.SplitJSON.OutputType]):
     """
     Split JSON content into semantic chunks.
     json, parsing, semantic, structured
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="Document ID to associate with the JSON content",
     )
-    include_metadata: bool | GraphNode | tuple[GraphNode, str] = Field(
+    include_metadata: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to include metadata in nodes"
     )
-    include_prev_next_rel: bool | GraphNode | tuple[GraphNode, str] = Field(
+    include_prev_next_rel: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to include prev/next relationships"
     )
+
+    @property
+    def out(self) -> "SplitJSONOutputs":
+        return SplitJSONOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SplitJSON"
 
 
-class SplitMarkdown(GraphNode):
+class SplitJSONOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def source_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["source_id"])
+
+    @property
+    def start_index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["start_index"])
+
+
+SplitJSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SplitMarkdown(
+    GraphNode[nodetool.nodes.nodetool.document.SplitMarkdown.OutputType]
+):
     """
     Splits markdown text by headers while preserving header hierarchy in metadata.
     markdown, split, headers
@@ -198,36 +299,65 @@ class SplitMarkdown(GraphNode):
     - Creating context-aware chunks from markdown content
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description=None,
     )
-    headers_to_split_on: list[tuple[str, str]] | GraphNode | tuple[GraphNode, str] = (
-        Field(
+    headers_to_split_on: list[tuple[str, str]] | OutputHandle[list[tuple[str, str]]] = (
+        connect_field(
             default=[("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")],
             description="List of tuples containing (header_symbol, header_name)",
         )
     )
-    strip_headers: bool | GraphNode | tuple[GraphNode, str] = Field(
+    strip_headers: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove headers from the output content"
     )
-    return_each_line: bool | GraphNode | tuple[GraphNode, str] = Field(
+    return_each_line: bool | OutputHandle[bool] = connect_field(
         default=False,
         description="Whether to split into individual lines instead of header sections",
     )
-    chunk_size: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_size: int | OutputHandle[int] | None = connect_field(
         default=None, description="Optional maximum chunk size for further splitting"
     )
-    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_overlap: int | OutputHandle[int] = connect_field(
         default=30, description="Overlap size when using chunk_size"
     )
+
+    @property
+    def out(self) -> "SplitMarkdownOutputs":
+        return SplitMarkdownOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SplitMarkdown"
 
 
-class SplitRecursively(GraphNode):
+class SplitMarkdownOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def source_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["source_id"])
+
+    @property
+    def start_index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["start_index"])
+
+
+SplitMarkdown.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SplitRecursively(
+    GraphNode[nodetool.nodes.nodetool.document.SplitRecursively.OutputType]
+):
     """
     Splits text recursively using LangChain's RecursiveCharacterTextSplitter.
     text, split, chunks
@@ -238,27 +368,56 @@ class SplitRecursively(GraphNode):
     - Handling text in languages with/without word boundaries
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description=None,
     )
-    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_size: int | OutputHandle[int] = connect_field(
         default=1000, description="Maximum size of each chunk in characters"
     )
-    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_overlap: int | OutputHandle[int] = connect_field(
         default=200, description="Number of characters to overlap between chunks"
     )
-    separators: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    separators: list[str] | OutputHandle[list[str]] = connect_field(
         default=["\n\n", "\n", "."],
         description="List of separators to use for splitting, in order of preference",
     )
+
+    @property
+    def out(self) -> "SplitRecursivelyOutputs":
+        return SplitRecursivelyOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SplitRecursively"
 
 
-class SplitSentences(GraphNode):
+class SplitRecursivelyOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def source_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["source_id"])
+
+    @property
+    def start_index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["start_index"])
+
+
+SplitRecursively.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.document
+
+
+class SplitSentences(
+    GraphNode[nodetool.nodes.nodetool.document.SplitSentences.OutputType]
+):
     """
     Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.
     sentences, split, nlp
@@ -269,17 +428,38 @@ class SplitSentences(GraphNode):
     - Processing text for sentence-level analysis
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description=None,
     )
-    chunk_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_size: int | OutputHandle[int] = connect_field(
         default=40, description="Maximum number of tokens per chunk"
     )
-    chunk_overlap: int | GraphNode | tuple[GraphNode, str] = Field(
+    chunk_overlap: int | OutputHandle[int] = connect_field(
         default=5, description="Number of tokens to overlap between chunks"
     )
+
+    @property
+    def out(self) -> "SplitSentencesOutputs":
+        return SplitSentencesOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.document.SplitSentences"
+
+
+class SplitSentencesOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def source_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["source_id"])
+
+    @property
+    def start_index(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["start_index"])
+
+
+SplitSentences.model_rebuild(force=True)

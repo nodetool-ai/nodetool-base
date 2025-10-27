@@ -12,8 +12,20 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.lib.http_server
 
-class SimpleHttpServer(GraphNode):
+
+class SimpleHttpServer(
+    GraphNode[nodetool.nodes.lib.http_server.SimpleHttpServer.OutputType]
+):
     """
     Starts a simple HTTP server inside Docker and streams logs.
     http, server, web
@@ -22,23 +34,44 @@ class SimpleHttpServer(GraphNode):
     then streams stdout/stderr lines on the corresponding outputs.
     """
 
-    image: str | GraphNode | tuple[GraphNode, str] = Field(
+    image: str | OutputHandle[str] = connect_field(
         default="python:3.11-slim", description="Docker image to run the server in"
     )
-    container_port: int | GraphNode | tuple[GraphNode, str] = Field(
+    container_port: int | OutputHandle[int] = connect_field(
         default=8000, description="Port the server listens on inside the container"
     )
-    command: str | GraphNode | tuple[GraphNode, str] = Field(
+    command: str | OutputHandle[str] = connect_field(
         default="",
         description="Startup command. If empty, uses 'python -m http.server <container_port> --bind 0.0.0.0'",
     )
-    timeout_seconds: int | GraphNode | tuple[GraphNode, str] = Field(
+    timeout_seconds: int | OutputHandle[int] = connect_field(
         default=600, description="Max lifetime of the server container (seconds)"
     )
-    ready_timeout_seconds: int | GraphNode | tuple[GraphNode, str] = Field(
+    ready_timeout_seconds: int | OutputHandle[int] = connect_field(
         default=15, description="Seconds to wait for server readiness"
     )
+
+    @property
+    def out(self) -> "SimpleHttpServerOutputs":
+        return SimpleHttpServerOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "lib.http_server.SimpleHttpServer"
+
+
+class SimpleHttpServerOutputs(DynamicOutputsProxy):
+    @property
+    def endpoint(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["endpoint"])
+
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+SimpleHttpServer.model_rebuild(force=True)

@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 
-class Blur(GraphNode):
+
+class Blur(GraphNode[types.ImageRef]):
     """
     Apply a Gaussian blur effect to an image.
     image, filter, blur
@@ -23,20 +28,33 @@ class Blur(GraphNode):
     - Protect privacy by blurring sensitive information
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to blur.",
     )
-    radius: int | GraphNode | tuple[GraphNode, str] = Field(
+    radius: int | OutputHandle[int] = connect_field(
         default=2, description="Blur radius."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Blur"
 
 
-class Canny(GraphNode):
+Blur.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Canny(GraphNode[types.ImageRef]):
     """
     Apply Canny edge detection to an image.
     image, filter, edges
@@ -46,23 +64,36 @@ class Canny(GraphNode):
     - Enhance inputs for object detection and image segmentation
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to canny.",
     )
-    low_threshold: int | GraphNode | tuple[GraphNode, str] = Field(
+    low_threshold: int | OutputHandle[int] = connect_field(
         default=100, description="Low threshold."
     )
-    high_threshold: int | GraphNode | tuple[GraphNode, str] = Field(
+    high_threshold: int | OutputHandle[int] = connect_field(
         default=200, description="High threshold."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Canny"
 
 
-class Contour(GraphNode):
+Canny.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Contour(GraphNode[types.ImageRef]):
     """
     Apply a contour filter to highlight image edges.
     image, filter, contour
@@ -72,17 +103,30 @@ class Contour(GraphNode):
     - Create stylized contour sketch art effects
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to contour.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Contour"
 
 
-class ConvertToGrayscale(GraphNode):
+Contour.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class ConvertToGrayscale(GraphNode[types.ImageRef]):
     """
     Convert an image to grayscale.
     image, grayscale
@@ -92,17 +136,30 @@ class ConvertToGrayscale(GraphNode):
     - Create vintage or monochrome aesthetic effects
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to convert.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.ConvertToGrayscale"
 
 
-class Emboss(GraphNode):
+ConvertToGrayscale.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Emboss(GraphNode[types.ImageRef]):
     """
     Apply an emboss filter for a 3D raised effect.
     image, filter, emboss
@@ -112,17 +169,30 @@ class Emboss(GraphNode):
     - Incorporate unique effects in digital artwork
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to emboss.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Emboss"
 
 
-class Expand(GraphNode):
+Emboss.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Expand(GraphNode[types.ImageRef]):
     """
     Add a border around an image to increase its size.
     image, border, expand
@@ -132,23 +202,34 @@ class Expand(GraphNode):
     - Separate image content from surroundings
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to expand.",
     )
-    border: int | GraphNode | tuple[GraphNode, str] = Field(
+    border: int | OutputHandle[int] = connect_field(
         default=0, description="Border size."
     )
-    fill: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description="Fill color."
-    )
+    fill: int | OutputHandle[int] = connect_field(default=0, description="Fill color.")
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Expand"
 
 
-class FindEdges(GraphNode):
+Expand.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class FindEdges(GraphNode[types.ImageRef]):
     """
     Detect and highlight edges in an image.
     image, filter, edges
@@ -158,20 +239,31 @@ class FindEdges(GraphNode):
     - Detect important features like corners and ridges
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to find edges.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.FindEdges"
 
 
+FindEdges.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 import nodetool.nodes.lib.pillow.filter
 
 
-class GetChannel(GraphNode):
+class GetChannel(GraphNode[types.ImageRef]):
     """
     Extract a specific color channel from an image.
     image, color, channel, isolate, extract
@@ -184,7 +276,7 @@ class GetChannel(GraphNode):
     ChannelEnum: typing.ClassVar[type] = (
         nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to get the channel from.",
     )
@@ -193,12 +285,25 @@ class GetChannel(GraphNode):
         description=None,
     )
 
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.GetChannel"
 
 
-class Invert(GraphNode):
+GetChannel.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Invert(GraphNode[types.ImageRef]):
     """
     Invert the colors of an image.
     image, filter, invert
@@ -208,17 +313,30 @@ class Invert(GraphNode):
     - Preprocess images for operations that work better on inverted colors
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to adjust the brightness for.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Invert"
 
 
-class Posterize(GraphNode):
+Invert.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Posterize(GraphNode[types.ImageRef]):
     """
     Reduce the number of colors in an image for a poster-like effect.
     image, filter, posterize
@@ -228,20 +346,33 @@ class Posterize(GraphNode):
     - Generate visually compelling content for advertising
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to posterize.",
     )
-    bits: int | GraphNode | tuple[GraphNode, str] = Field(
+    bits: int | OutputHandle[int] = connect_field(
         default=4, description="Number of bits to posterize to."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Posterize"
 
 
-class Smooth(GraphNode):
+Posterize.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Smooth(GraphNode[types.ImageRef]):
     """
     Apply smoothing to reduce image noise and detail.
     image, filter, smooth
@@ -251,17 +382,30 @@ class Smooth(GraphNode):
     - Aid facial recognition by simplifying images
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to smooth.",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Smooth"
 
 
-class Solarize(GraphNode):
+Smooth.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
+
+
+class Solarize(GraphNode[types.ImageRef]):
     """
     Apply a solarize effect to partially invert image tones.
     image, filter, solarize
@@ -271,14 +415,21 @@ class Solarize(GraphNode):
     - Add a unique style to images for graphic design
     """
 
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to solarize.",
     )
-    threshold: int | GraphNode | tuple[GraphNode, str] = Field(
+    threshold: int | OutputHandle[int] = connect_field(
         default=128, description="Threshold for solarization."
     )
+
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pillow.filter.Solarize"
+
+
+Solarize.model_rebuild(force=True)

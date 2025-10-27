@@ -12,13 +12,17 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 
 
-class CreateImage(GraphNode):
+class CreateImage(GraphNode[types.ImageRef]):
     """
     Generates images from textual descriptions.
     image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration
@@ -37,7 +41,7 @@ class CreateImage(GraphNode):
         nodetool.nodes.openai.image.CreateImage.Background
     )
     Quality: typing.ClassVar[type] = nodetool.nodes.openai.image.CreateImage.Quality
-    prompt: str | GraphNode | tuple[GraphNode, str] = Field(
+    prompt: str | OutputHandle[str] = connect_field(
         default="", description="The prompt to use."
     )
     model: nodetool.nodes.openai.image.CreateImage.Model = Field(
@@ -57,6 +61,13 @@ class CreateImage(GraphNode):
         description="The quality of the image to generate.",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.ImageRef]:
+        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "openai.image.CreateImage"
+
+
+CreateImage.model_rebuild(force=True)

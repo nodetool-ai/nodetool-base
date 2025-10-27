@@ -12,10 +12,14 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.gemini.text
 import nodetool.nodes.gemini.text
 
 
-class GroundedSearch(GraphNode):
+class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputType]):
     """
     Search the web using Google's Gemini API with grounding capabilities.
     google, search, grounded, web, gemini, ai
@@ -31,7 +35,7 @@ class GroundedSearch(GraphNode):
     """
 
     GeminiModel: typing.ClassVar[type] = nodetool.nodes.gemini.text.GeminiModel
-    query: str | GraphNode | tuple[GraphNode, str] = Field(
+    query: str | OutputHandle[str] = connect_field(
         default="", description="The search query to execute"
     )
     model: nodetool.nodes.gemini.text.GeminiModel = Field(
@@ -39,6 +43,23 @@ class GroundedSearch(GraphNode):
         description="The Gemini model to use for search",
     )
 
+    @property
+    def out(self) -> "GroundedSearchOutputs":
+        return GroundedSearchOutputs(self)
+
     @classmethod
     def get_node_type(cls):
         return "gemini.text.GroundedSearch"
+
+
+class GroundedSearchOutputs(OutputsProxy):
+    @property
+    def results(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["results"])
+
+    @property
+    def sources(self) -> OutputHandle[list[types.Source]]:
+        return typing.cast(OutputHandle[list[types.Source]], self["sources"])
+
+
+GroundedSearch.model_rebuild(force=True)

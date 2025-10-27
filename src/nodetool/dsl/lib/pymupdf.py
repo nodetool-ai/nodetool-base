@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pymupdf
 
-class ExtractMarkdown(GraphNode):
+
+class ExtractMarkdown(GraphNode[str]):
     """
     Convert PDF to Markdown format using pymupdf4llm.
     pdf, markdown, convert
@@ -24,23 +29,36 @@ class ExtractMarkdown(GraphNode):
     - Create editable markdown from PDFs
     """
 
-    pdf: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The PDF document to convert to markdown",
     )
-    start_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    start_page: int | OutputHandle[int] = connect_field(
         default=0, description="First page to extract (0-based index)"
     )
-    end_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    end_page: int | OutputHandle[int] = connect_field(
         default=-1, description="Last page to extract (-1 for last page)"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pymupdf.ExtractMarkdown"
 
 
-class ExtractTables(GraphNode):
+ExtractMarkdown.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pymupdf
+
+
+class ExtractTables(GraphNode[typing.Any]):
     """
     Extract tables from a PDF document using PyMuPDF.
     pdf, tables, extract, structured
@@ -51,23 +69,36 @@ class ExtractTables(GraphNode):
     - Analyze table layouts and content
     """
 
-    pdf: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The PDF document to extract tables from",
     )
-    start_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    start_page: int | OutputHandle[int] = connect_field(
         default=0, description="First page to extract (0-based index)"
     )
-    end_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    end_page: int | OutputHandle[int] = connect_field(
         default=-1, description="Last page to extract (-1 for last page)"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pymupdf.ExtractTables"
 
 
-class ExtractText(GraphNode):
+ExtractTables.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pymupdf
+
+
+class ExtractText(GraphNode[types.DocumentRef]):
     """
     Extract plain text from a PDF document using PyMuPDF.
     pdf, text, extract
@@ -78,23 +109,38 @@ class ExtractText(GraphNode):
     - Prepare text for further processing
     """
 
-    pdf: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The PDF document to extract text from",
     )
-    start_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    start_page: int | OutputHandle[int] = connect_field(
         default=0, description="First page to extract (0-based index)"
     )
-    end_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    end_page: int | OutputHandle[int] = connect_field(
         default=-1, description="Last page to extract (-1 for last page)"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.pymupdf.ExtractText"
 
 
-class ExtractTextBlocks(GraphNode):
+ExtractText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pymupdf
+
+
+class ExtractTextBlocks(GraphNode[typing.Any]):
     """
     Extract text blocks with their bounding boxes from a PDF.
     pdf, text, blocks, layout
@@ -105,23 +151,36 @@ class ExtractTextBlocks(GraphNode):
     - Get text position information
     """
 
-    pdf: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The PDF document to extract text blocks from",
     )
-    start_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    start_page: int | OutputHandle[int] = connect_field(
         default=0, description="First page to extract (0-based index)"
     )
-    end_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    end_page: int | OutputHandle[int] = connect_field(
         default=-1, description="Last page to extract (-1 for last page)"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pymupdf.ExtractTextBlocks"
 
 
-class ExtractTextWithStyle(GraphNode):
+ExtractTextBlocks.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pymupdf
+
+
+class ExtractTextWithStyle(GraphNode[typing.Any]):
     """
     Extract text with style information (font, size, color) from a PDF.
     pdf, text, style, formatting
@@ -132,17 +191,24 @@ class ExtractTextWithStyle(GraphNode):
     - Extract text with font information
     """
 
-    pdf: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The PDF document to extract styled text from",
     )
-    start_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    start_page: int | OutputHandle[int] = connect_field(
         default=0, description="First page to extract (0-based index)"
     )
-    end_page: int | GraphNode | tuple[GraphNode, str] = Field(
+    end_page: int | OutputHandle[int] = connect_field(
         default=-1, description="Last page to extract (-1 for last page)"
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.pymupdf.ExtractTextWithStyle"
+
+
+ExtractTextWithStyle.model_rebuild(force=True)

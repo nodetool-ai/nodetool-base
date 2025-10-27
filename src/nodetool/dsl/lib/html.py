@@ -12,8 +12,13 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.html
 
-class Escape(GraphNode):
+
+class Escape(GraphNode[str]):
     """
     Escape special characters in text into HTML-safe sequences.
     html, escape, entities, convert
@@ -24,16 +29,29 @@ class Escape(GraphNode):
     - Encode strings for web output
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The text to escape"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.html.Escape"
 
 
-class Unescape(GraphNode):
+Escape.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.html
+
+
+class Unescape(GraphNode[str]):
     """
     Convert HTML entities back to normal text.
     html, unescape, entities, decode
@@ -44,10 +62,17 @@ class Unescape(GraphNode):
     - Convert form submissions to plain text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The HTML text to unescape"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.html.Unescape"
+
+
+Unescape.model_rebuild(force=True)

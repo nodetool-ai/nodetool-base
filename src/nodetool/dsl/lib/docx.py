@@ -12,75 +12,123 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
 
-class AddHeading(GraphNode):
+
+class AddHeading(GraphNode[types.DocumentRef]):
     """
     Adds a heading to the document
     document, docx, heading, format
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to add the heading to",
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The heading text"
     )
-    level: int | GraphNode | tuple[GraphNode, str] = Field(
+    level: int | OutputHandle[int] = connect_field(
         default=1, description="Heading level (1-9)"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.AddHeading"
 
 
-class AddImage(GraphNode):
+AddHeading.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class AddImage(GraphNode[types.DocumentRef]):
     """
     Adds an image to the document
     document, docx, image, format
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to add the image to",
     )
-    image: types.ImageRef | GraphNode | tuple[GraphNode, str] = Field(
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to add",
     )
-    width: float | GraphNode | tuple[GraphNode, str] = Field(
+    width: float | OutputHandle[float] = connect_field(
         default=0, description="Image width in inches"
     )
-    height: float | GraphNode | tuple[GraphNode, str] = Field(
+    height: float | OutputHandle[float] = connect_field(
         default=0, description="Image height in inches"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.AddImage"
 
 
-class AddPageBreak(GraphNode):
+AddImage.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class AddPageBreak(GraphNode[types.DocumentRef]):
     """
     Adds a page break to the document
     document, docx, format, layout
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to add the page break to",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.AddPageBreak"
 
 
+AddPageBreak.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
 import nodetool.nodes.lib.docx
 
 
-class AddParagraph(GraphNode):
+class AddParagraph(GraphNode[types.DocumentRef]):
     """
     Adds a paragraph of text to the document
     document, docx, text, format
@@ -89,127 +137,209 @@ class AddParagraph(GraphNode):
     ParagraphAlignment: typing.ClassVar[type] = (
         nodetool.nodes.lib.docx.ParagraphAlignment
     )
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to add the paragraph to",
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="The paragraph text"
     )
     alignment: nodetool.nodes.lib.docx.ParagraphAlignment = Field(
         default=nodetool.nodes.lib.docx.ParagraphAlignment.LEFT,
         description="Text alignment",
     )
-    bold: bool | GraphNode | tuple[GraphNode, str] = Field(
+    bold: bool | OutputHandle[bool] = connect_field(
         default=False, description="Make text bold"
     )
-    italic: bool | GraphNode | tuple[GraphNode, str] = Field(
+    italic: bool | OutputHandle[bool] = connect_field(
         default=False, description="Make text italic"
     )
-    font_size: int | GraphNode | tuple[GraphNode, str] = Field(
+    font_size: int | OutputHandle[int] = connect_field(
         default=12, description="Font size in points"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.AddParagraph"
 
 
-class AddTable(GraphNode):
+AddParagraph.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class AddTable(GraphNode[types.DocumentRef]):
     """
     Adds a table to the document
     document, docx, table, format
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to add the table to",
     )
-    data: types.DataframeRef | GraphNode | tuple[GraphNode, str] = Field(
+    data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
             type="dataframe", uri="", asset_id=None, data=None, columns=None
         ),
         description="The data to add to the table",
     )
 
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
+
     @classmethod
     def get_node_type(cls):
         return "lib.docx.AddTable"
 
 
-class CreateDocument(GraphNode):
+AddTable.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class CreateDocument(GraphNode[types.DocumentRef]):
     """
     Creates a new Word document
     document, docx, file, create
     """
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.CreateDocument"
 
 
-class LoadWordDocument(GraphNode):
+CreateDocument.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class LoadWordDocument(GraphNode[types.DocumentRef]):
     """
     Loads a Word document from disk
     document, docx, file, load, input
     """
 
-    path: str | GraphNode | tuple[GraphNode, str] = Field(
+    path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the document to load"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.LoadWordDocument"
 
 
-class SaveDocument(GraphNode):
+LoadWordDocument.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class SaveDocument(GraphNode[typing.Any]):
     """
     Writes the document to a file
     document, docx, file, save, output
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to write",
     )
-    path: types.FilePath | GraphNode | tuple[GraphNode, str] = Field(
+    path: types.FilePath | OutputHandle[types.FilePath] = connect_field(
         default=types.FilePath(type="file_path", path=""),
         description="The folder to write the document to.",
     )
-    filename: str | GraphNode | tuple[GraphNode, str] = Field(
+    filename: str | OutputHandle[str] = connect_field(
         default="",
         description="\n        The filename to write the document to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
+
+    @property
+    def output(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.SaveDocument"
 
 
-class SetDocumentProperties(GraphNode):
+SaveDocument.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
+
+
+class SetDocumentProperties(GraphNode[types.DocumentRef]):
     """
     Sets document metadata properties
     document, docx, metadata, properties
     """
 
-    document: types.DocumentRef | GraphNode | tuple[GraphNode, str] = Field(
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to modify",
     )
-    title: str | GraphNode | tuple[GraphNode, str] = Field(
+    title: str | OutputHandle[str] = connect_field(
         default="", description="Document title"
     )
-    author: str | GraphNode | tuple[GraphNode, str] = Field(
+    author: str | OutputHandle[str] = connect_field(
         default="", description="Document author"
     )
-    subject: str | GraphNode | tuple[GraphNode, str] = Field(
+    subject: str | OutputHandle[str] = connect_field(
         default="", description="Document subject"
     )
-    keywords: str | GraphNode | tuple[GraphNode, str] = Field(
+    keywords: str | OutputHandle[str] = connect_field(
         default="", description="Document keywords"
     )
+
+    @property
+    def output(self) -> OutputHandle[types.DocumentRef]:
+        return typing.cast(
+            OutputHandle[types.DocumentRef], self._single_output_handle()
+        )
 
     @classmethod
     def get_node_type(cls):
         return "lib.docx.SetDocumentProperties"
+
+
+SetDocumentProperties.model_rebuild(force=True)

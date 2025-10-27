@@ -90,6 +90,8 @@ class TestSummarizer:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test basic summarization functionality"""
+        from unittest.mock import AsyncMock
+
         node = Summarizer(
             text="This is a very long text that needs to be summarized into something shorter and more concise.",
             max_tokens=100,
@@ -103,8 +105,8 @@ class TestSummarizer:
             text_response="This is a summary", should_stream=False
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             result_text = None
             result_chunks = []
@@ -136,6 +138,8 @@ class TestSummarizer:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test streaming chunks before final text"""
+        from unittest.mock import AsyncMock
+
         node = Summarizer(
             text="Long text to summarize",
             model=mock_model,
@@ -148,8 +152,8 @@ class TestSummarizer:
             text_response="This is a summary", should_stream=True, chunk_size=4
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             chunks = []
             final_text = None
@@ -172,6 +176,8 @@ class TestExtractor:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test basic data extraction"""
+        from unittest.mock import AsyncMock
+
         node = Extractor(
             text="John Doe is 30 years old and lives in New York",
             model=mock_model,
@@ -194,8 +200,10 @@ class TestExtractor:
         mock_slot.type.get_json_schema.return_value = {"type": "string"}
 
         with (
-            patch(
-                "nodetool.nodes.nodetool.agents.get_provider",
+            patch.object(
+                context,
+                "get_provider",
+                new_callable=AsyncMock,
                 return_value=fake_provider,
             ),
             patch.object(Extractor, "outputs_for_instance", return_value=[mock_slot]),
@@ -221,6 +229,8 @@ class TestExtractor:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test handling of invalid JSON response"""
+        from unittest.mock import AsyncMock
+
         node = Extractor(
             text="Some text",
             model=mock_model,
@@ -229,8 +239,10 @@ class TestExtractor:
         fake_provider = JsonResponseFakeProvider("not valid json")
 
         with (
-            patch(
-                "nodetool.nodes.nodetool.agents.get_provider",
+            patch.object(
+                context,
+                "get_provider",
+                new_callable=AsyncMock,
                 return_value=fake_provider,
             ),
             patch.object(Extractor, "outputs_for_instance", return_value=[]),
@@ -243,6 +255,8 @@ class TestExtractor:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test handling when LLM returns non-dictionary"""
+        from unittest.mock import AsyncMock
+
         node = Extractor(
             text="Some text",
             model=mock_model,
@@ -250,8 +264,10 @@ class TestExtractor:
 
         fake_provider = JsonResponseFakeProvider('"just a string"')
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider",
+        with patch.object(
+            context,
+            "get_provider",
+            new_callable=AsyncMock,
             return_value=fake_provider,
         ):
             node._dynamic_outputs = {"field": TypeMetadata(type="str")}
@@ -267,6 +283,8 @@ class TestClassifier:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test basic text classification"""
+        from unittest.mock import AsyncMock
+
         node = Classifier(
             text="I love this product! It's amazing!",
             categories=["positive", "negative", "neutral"],
@@ -275,8 +293,11 @@ class TestClassifier:
 
         fake_provider = JsonResponseFakeProvider('{"category": "positive"}')
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context,
+            "get_provider",
+            new_callable=AsyncMock,
+            return_value=fake_provider,
         ):
             result = await node.process(context)
 
@@ -330,6 +351,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test basic agent text generation without tools"""
+        from unittest.mock import AsyncMock
+
         node = Agent(
             prompt="Hello, how are you?",
             model=mock_model,
@@ -342,8 +365,8 @@ class TestAgent:
             text_response="I'm doing well, thank you!", should_stream=False
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -366,6 +389,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test agent with image input"""
+        from unittest.mock import AsyncMock
+
         test_image = ImageRef(
             uri="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
         )
@@ -380,8 +405,8 @@ class TestAgent:
             text_response="This is a small test image", should_stream=False
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -404,6 +429,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test agent with audio input"""
+        from unittest.mock import AsyncMock
+
         test_audio = AudioRef(
             uri="data:audio/wav;base64,UklGRnoAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoAAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+TyvmwhCUpAULnfr2QdBSJ+yLvd80EB"
         )
@@ -418,8 +445,8 @@ class TestAgent:
             text_response="This is transcribed text", should_stream=False
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -465,6 +492,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test agent with previous conversation messages"""
+        from unittest.mock import AsyncMock
+
         messages = [
             Message(role="user", content=[MessageTextContent(text="What's 2+2?")]),
             Message(
@@ -480,8 +509,8 @@ class TestAgent:
 
         fake_provider = FakeProvider(text_response="3+3 equals 6.", should_stream=False)
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -506,6 +535,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test agent streaming text output"""
+        from unittest.mock import AsyncMock
+
         node = Agent(
             prompt="Count to three",
             model=mock_model,
@@ -515,8 +546,8 @@ class TestAgent:
             text_response="One, two, three", should_stream=True, chunk_size=5
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -540,6 +571,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test agent generating audio output"""
+        from unittest.mock import AsyncMock
+
         node = Agent(
             prompt="Generate some speech",
             model=mock_model,
@@ -573,8 +606,8 @@ class TestAgent:
 
         fake_provider = AudioFakeProvider()
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -640,6 +673,8 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test agent with custom response logic based on input."""
+        from unittest.mock import AsyncMock
+
         node = Agent(
             prompt="Tell me about cats",
             model=mock_model,
@@ -657,8 +692,8 @@ class TestAgent:
             custom_response_fn=smart_response, should_stream=False
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -682,10 +717,12 @@ class TestAgent:
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test that fake provider can handle multiple calls."""
+        from unittest.mock import AsyncMock
+
         fake_provider = create_simple_fake_provider("Response")
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             # Create multiple agents
             agent1 = Agent(prompt="Question 1", model=mock_model)
@@ -730,8 +767,8 @@ class TestAgent:
         context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
         context.create_message = AsyncMock()
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -787,8 +824,8 @@ class TestAgent:
         )
         context.create_message = AsyncMock()
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -831,8 +868,8 @@ class TestAgent:
         context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
         context.create_message = AsyncMock()
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -871,8 +908,8 @@ class TestAgent:
         context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
         context.create_message = AsyncMock()
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context
@@ -914,8 +951,8 @@ class TestAgent:
             side_effect=Exception("Database connection failed")
         )
 
-        with patch(
-            "nodetool.nodes.nodetool.agents.get_provider", return_value=fake_provider
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
         ):
             runner = WorkflowRunner(job_id="test")
             runner.context = context

@@ -12,14 +12,21 @@ import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
 
-class AutomaticSpeechRecognition(GraphNode):
+
+class AutomaticSpeechRecognition(
+    GraphNode[nodetool.nodes.nodetool.text.AutomaticSpeechRecognition.OutputType]
+):
     """
     Automatic speech recognition node.
     audio, speech, recognition
     """
 
-    model: types.ASRModel | GraphNode | tuple[GraphNode, str] = Field(
+    model: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
         default=types.ASRModel(
             type="asr_model",
             provider=nodetool.metadata.types.Provider.FalAI,
@@ -28,17 +35,36 @@ class AutomaticSpeechRecognition(GraphNode):
         ),
         description=None,
     )
-    audio: types.AudioRef | GraphNode | tuple[GraphNode, str] = Field(
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="The audio to transcribe",
     )
+
+    @property
+    def out(self) -> "AutomaticSpeechRecognitionOutputs":
+        return AutomaticSpeechRecognitionOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.AutomaticSpeechRecognition"
 
 
-class Chunk(GraphNode):
+class AutomaticSpeechRecognitionOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+
+AutomaticSpeechRecognition.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Chunk(GraphNode[list[str]]):
     """
     Splits text into chunks of specified word length.
     text, chunk, split
@@ -49,41 +75,65 @@ class Chunk(GraphNode):
     - Generating summaries of text sections
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    length: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=100, description=None
-    )
-    overlap: int | GraphNode | tuple[GraphNode, str] = Field(
-        default=0, description=None
-    )
-    separator: str | None | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    length: int | OutputHandle[int] = connect_field(default=100, description=None)
+    overlap: int | OutputHandle[int] = connect_field(default=0, description=None)
+    separator: str | OutputHandle[str] | None = connect_field(
         default=None, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Chunk"
 
 
-class Collect(GraphNode):
+Chunk.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Collect(GraphNode[nodetool.nodes.nodetool.text.Collect.OutputType]):
     """
     Collects a stream of text inputs into a single string.
     text, collect, list, stream
     """
 
-    input_item: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
-    separator: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
+    input_item: str | OutputHandle[str] = connect_field(default="", description=None)
+    separator: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def out(self) -> "CollectOutputs":
+        return CollectOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Collect"
 
 
-class Concat(GraphNode):
+class CollectOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["output"])
+
+
+Collect.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Concat(GraphNode[str]):
     """
     Concatenates two text inputs into a single output.
     text, concatenation, combine, +
@@ -94,15 +144,28 @@ class Concat(GraphNode):
     - Merging text data from different sources
     """
 
-    a: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    b: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    a: str | OutputHandle[str] = connect_field(default="", description=None)
+    b: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Concat"
 
 
-class Contains(GraphNode):
+Concat.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Contains(GraphNode[bool]):
     """
     Checks if text contains a specified substring.
     text, check, contains, compare, validate, substring, string
@@ -113,23 +176,32 @@ class Contains(GraphNode):
     - Validating text content
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    substring: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
-    case_sensitive: bool | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    substring: str | OutputHandle[str] = connect_field(default="", description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(
         default=True, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Contains"
 
 
+Contains.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
 import nodetool.nodes.nodetool.text
 
 
-class CountTokens(GraphNode):
+class CountTokens(GraphNode[int]):
     """
     Counts the number of tokens in text using tiktoken.
     text, tokens, count, encoding
@@ -143,18 +215,31 @@ class CountTokens(GraphNode):
     TiktokenEncoding: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding
     )
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
     encoding: nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding = Field(
         default=nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding.CL100K_BASE,
         description="The tiktoken encoding to use for token counting",
     )
+
+    @property
+    def output(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.CountTokens"
 
 
-class EndsWith(GraphNode):
+CountTokens.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class EndsWith(GraphNode[bool]):
     """
     Checks if text ends with a specified suffix.
     text, check, suffix, compare, validate, substring, string
@@ -165,17 +250,28 @@ class EndsWith(GraphNode):
     - Filtering text based on ending content
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    suffix: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    suffix: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.EndsWith"
 
 
-class Extract(GraphNode):
+EndsWith.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Extract(GraphNode[str]):
     """
     Extracts a substring from input text.
     text, extract, substring
@@ -186,16 +282,29 @@ class Extract(GraphNode):
     - Focusing on relevant sections of longer documents
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    start: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
-    end: int | GraphNode | tuple[GraphNode, str] = Field(default=0, description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    start: int | OutputHandle[int] = connect_field(default=0, description=None)
+    end: int | OutputHandle[int] = connect_field(default=0, description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Extract"
 
 
-class ExtractJSON(GraphNode):
+Extract.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class ExtractJSON(GraphNode[Any]):
     """
     Extracts data from JSON using JSONPath expressions.
     json, extract, jsonpath
@@ -206,20 +315,29 @@ class ExtractJSON(GraphNode):
     - Extracting nested data from API responses or configurations
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    json_path: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="$.*", description=None
-    )
-    find_all: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    json_path: str | OutputHandle[str] = connect_field(default="$.*", description=None)
+    find_all: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.ExtractJSON"
 
 
-class ExtractRegex(GraphNode):
+ExtractJSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class ExtractRegex(GraphNode[list[str]]):
     """
     Extracts substrings matching regex groups from text.
     text, regex, extract
@@ -230,24 +348,35 @@ class ExtractRegex(GraphNode):
     - Isolating relevant information from complex text formats
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    regex: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    dotall: bool | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    regex: str | OutputHandle[str] = connect_field(default="", description=None)
+    dotall: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+    ignorecase: bool | OutputHandle[bool] = connect_field(
         default=False, description=None
     )
-    ignorecase: bool | GraphNode | tuple[GraphNode, str] = Field(
+    multiline: bool | OutputHandle[bool] = connect_field(
         default=False, description=None
     )
-    multiline: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.ExtractRegex"
 
 
-class FindAllRegex(GraphNode):
+ExtractRegex.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class FindAllRegex(GraphNode[list[str]]):
     """
     Finds all regex matches in text as separate substrings.
     text, regex, find
@@ -258,24 +387,35 @@ class FindAllRegex(GraphNode):
     - Analyzing frequency and distribution of specific text patterns
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    regex: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    dotall: bool | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    regex: str | OutputHandle[str] = connect_field(default="", description=None)
+    dotall: bool | OutputHandle[bool] = connect_field(default=False, description=None)
+    ignorecase: bool | OutputHandle[bool] = connect_field(
         default=False, description=None
     )
-    ignorecase: bool | GraphNode | tuple[GraphNode, str] = Field(
+    multiline: bool | OutputHandle[bool] = connect_field(
         default=False, description=None
     )
-    multiline: bool | GraphNode | tuple[GraphNode, str] = Field(
-        default=False, description=None
-    )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.FindAllRegex"
 
 
-class FormatText(GraphNode):
+FindAllRegex.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class FormatText(GraphNode[str]):
     """
     Replaces placeholders in a string with dynamic inputs using Jinja2 templating.
     text, template, formatting
@@ -307,17 +447,30 @@ class FormatText(GraphNode):
     - join(delimiter): Joins list with delimiter
     """
 
-    template: str | GraphNode | tuple[GraphNode, str] = Field(
+    template: str | OutputHandle[str] = connect_field(
         default="",
         description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}" \n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n',
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.FormatText"
 
 
-class HasLength(GraphNode):
+FormatText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class HasLength(GraphNode[bool]):
     """
     Checks if text length meets specified conditions.
     text, check, length, compare, validate, whitespace, string
@@ -328,23 +481,36 @@ class HasLength(GraphNode):
     - Checking content size constraints
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    min_length: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    min_length: int | OutputHandle[int] | None = connect_field(
         default=None, description=None
     )
-    max_length: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    max_length: int | OutputHandle[int] | None = connect_field(
         default=None, description=None
     )
-    exact_length: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    exact_length: int | OutputHandle[int] | None = connect_field(
         default=None, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.HasLength"
 
 
-class HtmlToText(GraphNode):
+HasLength.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class HtmlToText(GraphNode[str]):
     """
     Converts HTML content to plain text using html2text.
     html, convert, text, parse, extract
@@ -356,28 +522,41 @@ class HtmlToText(GraphNode):
     - Processing HTML emails or documents
     """
 
-    html: str | GraphNode | tuple[GraphNode, str] = Field(
+    html: str | OutputHandle[str] = connect_field(
         default="", description="HTML content to convert"
     )
-    base_url: str | GraphNode | tuple[GraphNode, str] = Field(
+    base_url: str | OutputHandle[str] = connect_field(
         default="", description="Base URL for resolving relative links"
     )
-    body_width: int | GraphNode | tuple[GraphNode, str] = Field(
+    body_width: int | OutputHandle[int] = connect_field(
         default=1000, description="Width for text wrapping"
     )
-    ignore_images: bool | GraphNode | tuple[GraphNode, str] = Field(
+    ignore_images: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to ignore image tags"
     )
-    ignore_mailto_links: bool | GraphNode | tuple[GraphNode, str] = Field(
+    ignore_mailto_links: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to ignore mailto links"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.HtmlToText"
 
 
-class IsEmpty(GraphNode):
+HtmlToText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class IsEmpty(GraphNode[bool]):
     """
     Checks if text is empty or contains only whitespace.
     text, check, empty, compare, validate, whitespace, string
@@ -388,17 +567,30 @@ class IsEmpty(GraphNode):
     - Checking for meaningful input
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    trim_whitespace: bool | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(
         default=True, description=None
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.IsEmpty"
 
 
-class Join(GraphNode):
+IsEmpty.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Join(GraphNode[str]):
     """
     Joins a list of strings into a single string using a specified separator.
     text, join, combine, +, add, concatenate
@@ -409,19 +601,30 @@ class Join(GraphNode):
     - Assembling formatted text from array elements
     """
 
-    strings: list[str] | GraphNode | tuple[GraphNode, str] = Field(
+    strings: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description=None
     )
-    separator: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
+    separator: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Join"
 
 
-class LoadTextAssets(GraphNode):
+Join.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class LoadTextAssets(GraphNode[nodetool.nodes.nodetool.text.LoadTextAssets.OutputType]):
     """
     Load text files from an asset folder.
     load, text, file, import
@@ -432,17 +635,40 @@ class LoadTextAssets(GraphNode):
     - Processing collections of text documents
     """
 
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="The asset folder to load the text files from.",
     )
+
+    @property
+    def out(self) -> "LoadTextAssetsOutputs":
+        return LoadTextAssetsOutputs(self)
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.LoadTextAssets"
 
 
-class ParseJSON(GraphNode):
+class LoadTextAssetsOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[types.TextRef]:
+        return typing.cast(OutputHandle[types.TextRef], self["text"])
+
+    @property
+    def name(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["name"])
+
+
+LoadTextAssets.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class ParseJSON(GraphNode[Any]):
     """
     Parses a JSON string into a Python object.
     json, parse, convert
@@ -453,14 +679,27 @@ class ParseJSON(GraphNode):
     - Extracting configuration or settings from JSON files
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.ParseJSON"
 
 
-class RegexMatch(GraphNode):
+ParseJSON.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class RegexMatch(GraphNode[list[str]]):
     """
     Find all matches of a regex pattern in text.
     regex, search, pattern, match
@@ -471,22 +710,35 @@ class RegexMatch(GraphNode):
     - Find all occurrences of a pattern
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text to search in"
     )
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+    pattern: str | OutputHandle[str] = connect_field(
         default="", description="Regular expression pattern"
     )
-    group: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    group: int | OutputHandle[int] | None = connect_field(
         default=None, description="Capture group to extract (0 for full match)"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.RegexMatch"
 
 
-class RegexReplace(GraphNode):
+RegexMatch.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class RegexReplace(GraphNode[str]):
     """
     Replace text matching a regex pattern.
     regex, replace, substitute
@@ -497,25 +749,38 @@ class RegexReplace(GraphNode):
     - Transform text formats
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text to perform replacements on"
     )
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+    pattern: str | OutputHandle[str] = connect_field(
         default="", description="Regular expression pattern"
     )
-    replacement: str | GraphNode | tuple[GraphNode, str] = Field(
+    replacement: str | OutputHandle[str] = connect_field(
         default="", description="Replacement text"
     )
-    count: int | GraphNode | tuple[GraphNode, str] = Field(
+    count: int | OutputHandle[int] = connect_field(
         default=0, description="Maximum replacements (0 for unlimited)"
     )
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.RegexReplace"
 
 
-class RegexSplit(GraphNode):
+RegexReplace.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class RegexSplit(GraphNode[list[str]]):
     """
     Split text using a regex pattern as delimiter.
     regex, split, tokenize
@@ -526,22 +791,35 @@ class RegexSplit(GraphNode):
     - Tokenize text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text to split"
     )
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+    pattern: str | OutputHandle[str] = connect_field(
         default="", description="Regular expression pattern to split on"
     )
-    maxsplit: int | GraphNode | tuple[GraphNode, str] = Field(
+    maxsplit: int | OutputHandle[int] = connect_field(
         default=0, description="Maximum number of splits (0 for unlimited)"
     )
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.RegexSplit"
 
 
-class RegexValidate(GraphNode):
+RegexSplit.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class RegexValidate(GraphNode[bool]):
     """
     Check if text matches a regex pattern.
     regex, validate, check
@@ -552,19 +830,32 @@ class RegexValidate(GraphNode):
     - Filter text based on patterns
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(
         default="", description="Text to validate"
     )
-    pattern: str | GraphNode | tuple[GraphNode, str] = Field(
+    pattern: str | OutputHandle[str] = connect_field(
         default="", description="Regular expression pattern"
     )
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.RegexValidate"
 
 
-class Replace(GraphNode):
+RegexValidate.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Replace(GraphNode[str]):
     """
     Replaces a substring in a text with another substring.
     text, replace, substitute
@@ -575,16 +866,29 @@ class Replace(GraphNode):
     - Implementing simple text transformations
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    old: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    new: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    old: str | OutputHandle[str] = connect_field(default="", description=None)
+    new: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Replace"
 
 
-class SaveText(GraphNode):
+Replace.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class SaveText(GraphNode[types.TextRef]):
     """
     Saves input text to a file in the assets folder.
     text, save, file
@@ -595,42 +899,68 @@ class SaveText(GraphNode):
     - Archiving text data within the workflow
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    folder: types.FolderRef | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
         default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
         description="Name of the output folder.",
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="%Y-%m-%d-%H-%M-%S.txt",
         description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.TextRef]:
+        return typing.cast(OutputHandle[types.TextRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.SaveText"
 
 
-class SaveTextFile(GraphNode):
+SaveText.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class SaveTextFile(GraphNode[types.TextRef]):
     """
     Saves input text to a file in the assets folder.
     text, save, file
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    folder: str | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    folder: str | OutputHandle[str] = connect_field(
         default="", description="Path to the output folder."
     )
-    name: str | GraphNode | tuple[GraphNode, str] = Field(
+    name: str | OutputHandle[str] = connect_field(
         default="%Y-%m-%d-%H-%M-%S.txt",
         description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
+
+    @property
+    def output(self) -> OutputHandle[types.TextRef]:
+        return typing.cast(OutputHandle[types.TextRef], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.SaveTextFile"
 
 
-class Slice(GraphNode):
+SaveTextFile.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Slice(GraphNode[str]):
     """
     Slices text using Python's slice notation (start:stop:step).
     text, slice, substring
@@ -647,23 +977,32 @@ class Slice(GraphNode):
     - step=-1: reverse the text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    start: int | None | GraphNode | tuple[GraphNode, str] = Field(
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    start: int | OutputHandle[int] | None = connect_field(
         default=None, description=None
     )
-    stop: int | None | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description=None
-    )
-    step: int | None | GraphNode | tuple[GraphNode, str] = Field(
-        default=None, description=None
-    )
+    stop: int | OutputHandle[int] | None = connect_field(default=None, description=None)
+    step: int | OutputHandle[int] | None = connect_field(default=None, description=None)
+
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Slice"
 
 
-class Split(GraphNode):
+Slice.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Split(GraphNode[list[str]]):
     """
     Separates text into a list of strings based on a specified delimiter.
     text, split, tokenize
@@ -674,17 +1013,28 @@ class Split(GraphNode):
     - Extracting specific elements from structured text
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    delimiter: str | GraphNode | tuple[GraphNode, str] = Field(
-        default=",", description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    delimiter: str | OutputHandle[str] = connect_field(default=",", description=None)
+
+    @property
+    def output(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Split"
 
 
-class StartsWith(GraphNode):
+Split.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class StartsWith(GraphNode[bool]):
     """
     Checks if text starts with a specified prefix.
     text, check, prefix, compare, validate, substring, string
@@ -695,17 +1045,28 @@ class StartsWith(GraphNode):
     - Checking file name patterns
     """
 
-    text: str | GraphNode | tuple[GraphNode, str] = Field(default="", description=None)
-    prefix: str | GraphNode | tuple[GraphNode, str] = Field(
-        default="", description=None
-    )
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    prefix: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @property
+    def output(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self._single_output_handle())
 
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.StartsWith"
 
 
-class Template(GraphNode):
+StartsWith.model_rebuild(force=True)
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+
+
+class Template(GraphNode[str]):
     """
     Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.
     text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter
@@ -735,15 +1096,22 @@ class Template(GraphNode):
     - join(delimiter): Joins list with delimiter
     """
 
-    string: str | GraphNode | tuple[GraphNode, str] = Field(
+    string: str | OutputHandle[str] = connect_field(
         default="",
         description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n',
     )
-    values: Any | GraphNode | tuple[GraphNode, str] = Field(
+    values: Any | OutputHandle[Any] = connect_field(
         default={},
         description="\n        The values to replace in the string.\n        - If a string, it will be used as the format string.\n        - If a list, it will be used as the format arguments.\n        - If a dictionary, it will be used as the template variables.\n        - If an object, it will be converted to a dictionary using the object's __dict__ method.\n        ",
     )
 
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self._single_output_handle())
+
     @classmethod
     def get_node_type(cls):
         return "nodetool.text.Template"
+
+
+Template.model_rebuild(force=True)
