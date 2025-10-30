@@ -4,11 +4,12 @@ import glob
 from typing import TypedDict
 from llama_index.embeddings.huggingface.base import HuggingFaceEmbedding
 from nodetool.providers.base import AsyncGenerator
+from nodetool.types.model import UnifiedModel
 from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
-from nodetool.metadata.types import DocumentRef, HFTextGeneration
+from nodetool.metadata.types import DocumentRef, HFTextGeneration, LanguageModel, Provider
 from llama_index.core.node_parser import (
     SemanticSplitterNodeParser,
     HTMLNodeParser,
@@ -120,10 +121,11 @@ class SplitDocument(BaseNode):
     chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
 
-    embed_model: HFTextGeneration = Field(
-        default=HFTextGeneration(
-            type="hf.text_generation",
-            repo_id="BAAI/bge-small-en",
+    embed_model: LanguageModel = Field(
+        default=LanguageModel(
+            type="language_model",
+            provider=Provider.Ollama,
+            id="embeddinggemma",
         ),
         description="Embedding model to use",
     )
@@ -146,19 +148,42 @@ class SplitDocument(BaseNode):
     )
 
     @classmethod
-    def recommended_models(cls) -> list[HFTextGeneration]:
+    def unified_recommended_models(cls) -> list[UnifiedModel]:
         return [
-            HFTextGeneration(
-                type="hf.text_generation",
-                repo_id="BAAI/bge-small-en",
+            UnifiedModel(
+                id="embeddinggemma",
+                repo_id="embeddinggemma",
+                name="Embedding Gemma",
+                description="Embedding model for semantic splitting",
+                type="embedding_model",
             ),
-            HFTextGeneration(
-                type="hf.text_generation",
-                repo_id="BAAI/bge-large-en",
+            UnifiedModel(
+                id="nomic-embed-text",
+                repo_id="nomic-embed-text",
+                name="Nomic Embed Text",
+                description="Embedding model for semantic splitting",
+                type="embedding_model",
             ),
-            HFTextGeneration(
-                type="hf.text_generation",
-                repo_id="BAAI/bge-base-en",
+            UnifiedModel(
+                id="mxbai-embed-large",
+                repo_id="mxbai-embed-large",
+                name="MXBai Embed Large",
+                description="Embedding model for semantic splitting",
+                type="embedding_model",
+            ),
+            UnifiedModel(
+                id="bge-m3",
+                repo_id="bge-m3",
+                name="BGE M3",
+                description="Embedding model for semantic splitting",
+                type="embedding_model",
+            ),
+            UnifiedModel(
+                id="all-minilm",
+                repo_id="all-minilm",
+                name="All Minilm",
+                description="Embedding model for semantic splitting",
+                type="embedding_model",
             ),
         ]
 
@@ -170,12 +195,12 @@ class SplitDocument(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
-        assert self.embed_model.repo_id, "embed_model is required"
+        assert self.embed_model.id, "embed_model is required"
 
         splitter = SemanticSplitterNodeParser(
             buffer_size=self.buffer_size,
             breakpoint_percentile_threshold=self.threshold,
-            embed_model=HuggingFaceEmbedding(model_name=self.embed_model.repo_id),
+            embed_model=OllamaEmbedding(model_name=self.embed_model.id),
         )
 
         documents = [Document(text=self.document.data, doc_id=self.document.uri)]

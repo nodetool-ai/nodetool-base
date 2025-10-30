@@ -137,15 +137,13 @@ class SplitDocument(
     chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
 
-    embed_model: types.HFTextGeneration | OutputHandle[types.HFTextGeneration] = (
+    embed_model: types.LanguageModel | OutputHandle[types.LanguageModel] = (
         connect_field(
-            default=types.HFTextGeneration(
-                type="hf.text_generation",
-                repo_id="BAAI/bge-small-en",
-                path=None,
-                variant=None,
-                allow_patterns=None,
-                ignore_patterns=None,
+            default=types.LanguageModel(
+                type="language_model",
+                provider=nodetool.metadata.types.Provider.Ollama,
+                id="embeddinggemma",
+                name="",
             ),
             description="Embedding model to use",
         )
