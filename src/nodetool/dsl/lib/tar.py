@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.tar
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreateTar(GraphNode[str]):
+class CreateTar(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Create a tar archive from a directory.
     files, tar, create
@@ -39,25 +40,23 @@ class CreateTar(GraphNode[str]):
         default=False, description="Use gzip compression"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.tar.CreateTar
 
     @classmethod
     def get_node_type(cls):
-        return "lib.tar.CreateTar"
-
-
-CreateTar.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.tar
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractTar(GraphNode[str]):
+class ExtractTar(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Extract a tar archive to a folder.
     files, tar, extract
@@ -75,25 +74,23 @@ class ExtractTar(GraphNode[str]):
         default="", description="Folder to extract into"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.tar.ExtractTar
 
     @classmethod
     def get_node_type(cls):
-        return "lib.tar.ExtractTar"
-
-
-ExtractTar.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.tar
+from nodetool.workflows.base_node import BaseNode
 
 
-class ListTar(GraphNode[list[str]]):
+class ListTar(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     List contents of a tar archive.
     files, tar, list
@@ -108,13 +105,10 @@ class ListTar(GraphNode[list[str]]):
         default="", description="Tar archive to inspect"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.tar.ListTar
 
     @classmethod
     def get_node_type(cls):
-        return "lib.tar.ListTar"
-
-
-ListTar.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

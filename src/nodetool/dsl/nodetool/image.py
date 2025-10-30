@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class BatchToList(GraphNode[list[types.ImageRef]]):
+class BatchToList(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
     """
     Convert an image batch to a list of image references.
     batch, list, images, processing
@@ -32,27 +35,23 @@ class BatchToList(GraphNode[list[types.ImageRef]]):
         description="The batch of images to convert.",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[types.ImageRef]]:
-        return typing.cast(
-            OutputHandle[list[types.ImageRef]], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.BatchToList
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.BatchToList"
-
-
-BatchToList.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class Crop(GraphNode[types.ImageRef]):
+class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Crop an image to specified coordinates.
     image, crop
@@ -79,25 +78,23 @@ class Crop(GraphNode[types.ImageRef]):
         default=512, description="The bottom coordinate."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.Crop
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.Crop"
-
-
-Crop.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class Fit(GraphNode[types.ImageRef]):
+class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Resize an image to fit within specified dimensions while preserving aspect ratio.
     image, resize, fit
@@ -118,22 +115,20 @@ class Fit(GraphNode[types.ImageRef]):
         default=512, description="Height to fit to."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.Fit
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.Fit"
-
-
-Fit.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
 class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType]):
@@ -157,8 +152,12 @@ class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType
         return GetMetadataOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.GetMetadata
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.image.GetMetadata"
+        return cls.get_node_class().get_node_type()
 
 
 class GetMetadataOutputs(OutputsProxy):
@@ -183,16 +182,14 @@ class GetMetadataOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["channels"])
 
 
-GetMetadata.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class ImageToImage(GraphNode[types.ImageRef]):
+class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Transform images using text prompts with any supported image provider.
     Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
@@ -251,22 +248,20 @@ class ImageToImage(GraphNode[types.ImageRef]):
         default=True, description="Enable safety checker"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.ImageToImage
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.ImageToImage"
-
-
-ImageToImage.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
 class LoadImageAssets(
@@ -287,8 +282,12 @@ class LoadImageAssets(
         return LoadImageAssetsOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.LoadImageAssets
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.image.LoadImageAssets"
+        return cls.get_node_class().get_node_type()
 
 
 class LoadImageAssetsOutputs(OutputsProxy):
@@ -301,16 +300,14 @@ class LoadImageAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
-LoadImageAssets.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class LoadImageFile(GraphNode[types.ImageRef]):
+class LoadImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Read an image file from disk.
     image, input, load, file
@@ -325,22 +322,20 @@ class LoadImageFile(GraphNode[types.ImageRef]):
         default="", description="Path to the image file to read"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.LoadImageFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.LoadImageFile"
-
-
-LoadImageFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
 class LoadImageFolder(
@@ -375,8 +370,12 @@ class LoadImageFolder(
         return LoadImageFolderOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.LoadImageFolder
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.image.LoadImageFolder"
+        return cls.get_node_class().get_node_type()
 
 
 class LoadImageFolderOutputs(OutputsProxy):
@@ -389,16 +388,14 @@ class LoadImageFolderOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["path"])
 
 
-LoadImageFolder.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class Paste(GraphNode[types.ImageRef]):
+class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Paste one image onto another at specified coordinates.
     paste, composite, positioning, overlay
@@ -424,25 +421,23 @@ class Paste(GraphNode[types.ImageRef]):
         default=0, description="The top coordinate."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.Paste
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.Paste"
-
-
-Paste.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class Resize(GraphNode[types.ImageRef]):
+class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Change image dimensions to specified width and height.
     image, resize
@@ -463,25 +458,23 @@ class Resize(GraphNode[types.ImageRef]):
         default=512, description="The target height."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.Resize
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.Resize"
-
-
-Resize.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveImage(GraphNode[types.ImageRef]):
+class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
@@ -505,25 +498,23 @@ class SaveImage(GraphNode[types.ImageRef]):
         description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.SaveImage
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.SaveImage"
-
-
-SaveImage.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveImageFile(GraphNode[types.ImageRef]):
+class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Write an image to disk.
     image, output, save, file
@@ -550,25 +541,23 @@ class SaveImageFile(GraphNode[types.ImageRef]):
         description="Overwrite the file if it already exists, otherwise file will be renamed",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.SaveImageFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.SaveImageFile"
-
-
-SaveImageFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class Scale(GraphNode[types.ImageRef]):
+class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Enlarge or shrink an image by a scale factor.
     image, resize, scale
@@ -586,25 +575,23 @@ class Scale(GraphNode[types.ImageRef]):
         default=1.0, description="The scale factor."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.Scale
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.Scale"
-
-
-Scale.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
 
 
-class TextToImage(GraphNode[types.ImageRef]):
+class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images from text prompts using any supported image provider.
     Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
@@ -658,13 +645,10 @@ class TextToImage(GraphNode[types.ImageRef]):
         description="Enable safety checker to filter inappropriate content",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.TextToImage
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.image.TextToImage"
-
-
-TextToImage.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

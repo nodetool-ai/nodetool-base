@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
+from nodetool.workflows.base_node import BaseNode
 
 
 class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
@@ -38,8 +39,12 @@ class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
         return CollectOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.control.Collect
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.control.Collect"
+        return cls.get_node_class().get_node_type()
 
 
 class CollectOutputs(OutputsProxy):
@@ -48,13 +53,11 @@ class CollectOutputs(OutputsProxy):
         return typing.cast(OutputHandle[list[Any]], self["output"])
 
 
-Collect.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
+from nodetool.workflows.base_node import BaseNode
 
 
 class ForEach(GraphNode[nodetool.nodes.nodetool.control.ForEach.OutputType]):
@@ -76,8 +79,12 @@ class ForEach(GraphNode[nodetool.nodes.nodetool.control.ForEach.OutputType]):
         return ForEachOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.control.ForEach
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.control.ForEach"
+        return cls.get_node_class().get_node_type()
 
 
 class ForEachOutputs(OutputsProxy):
@@ -90,13 +97,11 @@ class ForEachOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["index"])
 
 
-ForEach.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
+from nodetool.workflows.base_node import BaseNode
 
 
 class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
@@ -122,8 +127,12 @@ class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
         return IfOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.control.If
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.control.If"
+        return cls.get_node_class().get_node_type()
 
 
 class IfOutputs(OutputsProxy):
@@ -136,16 +145,14 @@ class IfOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["if_false"])
 
 
-If.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
+from nodetool.workflows.base_node import BaseNode
 
 
-class Reroute(GraphNode[Any]):
+class Reroute(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
     Pass data through unchanged for tidier workflow layouts.
     reroute, passthrough, organize, tidy, flow, connection, redirect
@@ -160,13 +167,10 @@ class Reroute(GraphNode[Any]):
         default=None, description="Value to pass through unchanged"
     )
 
-    @property
-    def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.control.Reroute
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.control.Reroute"
-
-
-Reroute.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

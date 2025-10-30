@@ -10,7 +10,7 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
@@ -21,6 +21,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.openai.agents
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.openai.agents
 import nodetool.nodes.openai.agents
 
@@ -73,8 +74,12 @@ class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputT
         return RealtimeAgentOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.agents.RealtimeAgent
+
+    @classmethod
     def get_node_type(cls):
-        return "openai.agents.RealtimeAgent"
+        return cls.get_node_class().get_node_type()
 
 
 class RealtimeAgentOutputs(DynamicOutputsProxy):
@@ -93,13 +98,11 @@ class RealtimeAgentOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["text"])
 
 
-RealtimeAgent.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.agents
+from nodetool.workflows.base_node import BaseNode
 
 
 class RealtimeTranscription(
@@ -135,8 +138,12 @@ class RealtimeTranscription(
         return RealtimeTranscriptionOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.agents.RealtimeTranscription
+
+    @classmethod
     def get_node_type(cls):
-        return "openai.agents.RealtimeTranscription"
+        return cls.get_node_class().get_node_type()
 
 
 class RealtimeTranscriptionOutputs(OutputsProxy):
@@ -147,6 +154,3 @@ class RealtimeTranscriptionOutputs(OutputsProxy):
     @property
     def chunk(self) -> OutputHandle[types.Chunk]:
         return typing.cast(OutputHandle[types.Chunk], self["chunk"])
-
-
-RealtimeTranscription.model_rebuild(force=True)

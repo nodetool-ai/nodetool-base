@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 
 
-class AddVectors(GraphNode[types.FaissIndex]):
+class AddVectors(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
     Add vectors to a FAISS index.
     faiss, add, vectors
@@ -33,25 +34,23 @@ class AddVectors(GraphNode[types.FaissIndex]):
         description="Vectors to add (n, d)",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.FaissIndex]:
-        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.AddVectors
 
     @classmethod
     def get_node_type(cls):
-        return "vector.faiss.AddVectors"
-
-
-AddVectors.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 
 
-class AddWithIds(GraphNode[types.FaissIndex]):
+class AddWithIds(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
     Add vectors with explicit integer IDs to a FAISS index.
     faiss, add, ids, vectors
@@ -70,25 +69,25 @@ class AddWithIds(GraphNode[types.FaissIndex]):
         description="1-D int64 IDs (n,)",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.FaissIndex]:
-        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.AddWithIds
 
     @classmethod
     def get_node_type(cls):
-        return "vector.faiss.AddWithIds"
-
-
-AddWithIds.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreateIndexFlatIP(GraphNode[types.FaissIndex]):
+class CreateIndexFlatIP(
+    SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
+):
     """
     Create a FAISS IndexFlatIP (inner product / cosine with normalized vectors).
     faiss, index, ip, create
@@ -98,25 +97,25 @@ class CreateIndexFlatIP(GraphNode[types.FaissIndex]):
         default=768, description="Embedding dimensionality"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.FaissIndex]:
-        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.CreateIndexFlatIP
 
     @classmethod
     def get_node_type(cls):
-        return "vector.faiss.CreateIndexFlatIP"
-
-
-CreateIndexFlatIP.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreateIndexFlatL2(GraphNode[types.FaissIndex]):
+class CreateIndexFlatL2(
+    SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
+):
     """
     Create a FAISS IndexFlatL2.
     faiss, index, l2, create
@@ -126,26 +125,26 @@ class CreateIndexFlatL2(GraphNode[types.FaissIndex]):
         default=768, description="Embedding dimensionality"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.FaissIndex]:
-        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.CreateIndexFlatL2
 
     @classmethod
     def get_node_type(cls):
-        return "vector.faiss.CreateIndexFlatL2"
-
-
-CreateIndexFlatL2.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.vector.faiss
 
 
-class CreateIndexIVFFlat(GraphNode[types.FaissIndex]):
+class CreateIndexIVFFlat(
+    SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
+):
     """
     Create a FAISS IndexIVFFlat (inverted file index with flat quantizer).
     faiss, index, ivf, create
@@ -162,22 +161,20 @@ class CreateIndexIVFFlat(GraphNode[types.FaissIndex]):
         default=nodetool.nodes.vector.faiss.Metric.L2, description="Distance metric"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.FaissIndex]:
-        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.CreateIndexIVFFlat
 
     @classmethod
     def get_node_type(cls):
-        return "vector.faiss.CreateIndexIVFFlat"
-
-
-CreateIndexIVFFlat.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 
 
 class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
@@ -206,8 +203,12 @@ class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
         return SearchOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.Search
+
+    @classmethod
     def get_node_type(cls):
-        return "vector.faiss.Search"
+        return cls.get_node_class().get_node_type()
 
 
 class SearchOutputs(OutputsProxy):
@@ -220,16 +221,14 @@ class SearchOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.NPArray], self["indices"])
 
 
-Search.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
+from nodetool.workflows.base_node import BaseNode
 
 
-class TrainIndex(GraphNode[types.FaissIndex]):
+class TrainIndex(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
     Train a FAISS index with training vectors (required for IVF indices).
     faiss, train, index
@@ -244,13 +243,10 @@ class TrainIndex(GraphNode[types.FaissIndex]):
         description="Training vectors (n, d)",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.FaissIndex]:
-        return typing.cast(OutputHandle[types.FaissIndex], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.faiss.TrainIndex
 
     @classmethod
     def get_node_type(cls):
-        return "vector.faiss.TrainIndex"
-
-
-TrainIndex.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

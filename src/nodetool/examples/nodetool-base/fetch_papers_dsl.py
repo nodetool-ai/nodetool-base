@@ -14,62 +14,51 @@ Workflow:
 """
 
 import os
-from nodetool.dsl.graph import graph_result, run_graph, graph
+from nodetool.dsl.graph import run_graph, create_graph
 from nodetool.dsl.lib.http import GetRequest, DownloadFiles
 from nodetool.dsl.lib.markdown import ExtractLinks
 from nodetool.dsl.nodetool.data import FromList, Filter, ExtractColumn
 from nodetool.dsl.nodetool.output import ListOutput
 
 
-async def example():
-    """
-    Full workflow including downloading papers.
-    """
-    # Fetch README
-    fetch_readme = GetRequest(
-        url="https://raw.githubusercontent.com/abacaj/awesome-transformers/refs/heads/main/README.md",
-    )
+# Fetch README
+fetch_readme = GetRequest(
+    url="https://raw.githubusercontent.com/abacaj/awesome-transformers/refs/heads/main/README.md",
+)
 
-    # Extract links
-    extract_links = ExtractLinks(
-        markdown=fetch_readme.output,
-        include_titles=True,
-    )
+# Extract links
+extract_links = ExtractLinks(
+    markdown=fetch_readme.output,
+    include_titles=True,
+)
 
-    # Convert to DataFrame
-    links_df = FromList(values=extract_links.output)
+# Convert to DataFrame
+links_df = FromList(values=extract_links.output)
 
-    # Filter papers
-    filtered_df = Filter(
-        df=links_df.output,
-        condition="title == 'Paper'",
-    )
+# Filter papers
+filtered_df = Filter(
+    df=links_df.output,
+    condition="title == 'Paper'",
+)
 
-    # Extract URLs
-    urls = ExtractColumn(
-        dataframe=filtered_df.output,
-        column_name="url",
-    )
+# Extract URLs
+urls = ExtractColumn(
+    dataframe=filtered_df.output,
+    column_name="url",
+)
 
-    # Download papers
-    downloader = DownloadFiles(
-        urls=urls.output,
-        output_folder="papers",
-        max_concurrent_downloads=5,
-    )
+# Download papers
+downloader = DownloadFiles(
+    urls=urls.output,
+    output_folder="papers",
+    max_concurrent_downloads=5,
+)
 
-    # Create and run the graph
-    g = graph(downloader)
-    result = await run_graph(g)
-    return result
+# Create the graph
+graph = create_graph(downloader)
 
 
 if __name__ == "__main__":
-    import asyncio
-
-    # Just show the preview
-    urls = asyncio.run(example())
-
-    for file in os.listdir("papers"):
-        print(f"Downloaded paper: {file}")
-
+    # Run the graph and get results
+    result = run_graph(graph)
+    print(f"Downloaded papers: {result['downloader']}")

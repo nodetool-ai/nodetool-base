@@ -10,7 +10,7 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
@@ -21,6 +21,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.lib.http_server
+from nodetool.workflows.base_node import BaseNode
 
 
 class SimpleHttpServer(
@@ -56,8 +57,12 @@ class SimpleHttpServer(
         return SimpleHttpServerOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.http_server.SimpleHttpServer
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.http_server.SimpleHttpServer"
+        return cls.get_node_class().get_node_type()
 
 
 class SimpleHttpServerOutputs(DynamicOutputsProxy):
@@ -72,6 +77,3 @@ class SimpleHttpServerOutputs(DynamicOutputsProxy):
     @property
     def stderr(self) -> OutputHandle[str]:
         return typing.cast(OutputHandle[str], self["stderr"])
-
-
-SimpleHttpServer.model_rebuild(force=True)

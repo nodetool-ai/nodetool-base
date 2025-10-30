@@ -10,15 +10,19 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
+from nodetool.workflows.base_node import BaseNode
 
 
-class ArgMaxArray(GraphNode[nodetool.metadata.types.NPArray | int]):
+class ArgMaxArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | int],
+    GraphNode[nodetool.metadata.types.NPArray | int],
+):
     """
     Find indices of maximum values along a specified axis of a array.
     array, argmax, index, maximum
@@ -37,28 +41,26 @@ class ArgMaxArray(GraphNode[nodetool.metadata.types.NPArray | int]):
         default=None, description="Axis along which to find maximum indices"
     )
 
-    @property
-    def output(self) -> OutputHandle[nodetool.metadata.types.NPArray | int]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.NPArray | int],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.statistics.ArgMaxArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.statistics.ArgMaxArray"
-
-
-ArgMaxArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
+from nodetool.workflows.base_node import BaseNode
 
 
-class ArgMinArray(GraphNode[nodetool.metadata.types.NPArray | int]):
+class ArgMinArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | int],
+    GraphNode[nodetool.metadata.types.NPArray | int],
+):
     """
     Find indices of minimum values along a specified axis of a array.
     array, argmin, index, minimum
@@ -77,28 +79,26 @@ class ArgMinArray(GraphNode[nodetool.metadata.types.NPArray | int]):
         default=None, description="Axis along which to find minimum indices"
     )
 
-    @property
-    def output(self) -> OutputHandle[nodetool.metadata.types.NPArray | int]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.NPArray | int],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.statistics.ArgMinArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.statistics.ArgMinArray"
-
-
-ArgMinArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
+from nodetool.workflows.base_node import BaseNode
 
 
-class MaxArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
+class MaxArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
     Compute the maximum value along a specified axis of a array.
     array, maximum, reduction, statistics
@@ -117,28 +117,26 @@ class MaxArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
         default=None, description="Axis along which to compute maximum"
     )
 
-    @property
-    def output(self) -> OutputHandle[nodetool.metadata.types.NPArray | float | int]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.NPArray | float | int],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.statistics.MaxArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.statistics.MaxArray"
-
-
-MaxArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
+from nodetool.workflows.base_node import BaseNode
 
 
-class MeanArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
+class MeanArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
     Compute the mean value along a specified axis of a array.
     array, average, reduction, statistics
@@ -157,28 +155,26 @@ class MeanArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
         default=None, description="Axis along which to compute mean"
     )
 
-    @property
-    def output(self) -> OutputHandle[nodetool.metadata.types.NPArray | float | int]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.NPArray | float | int],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.statistics.MeanArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.statistics.MeanArray"
-
-
-MeanArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
+from nodetool.workflows.base_node import BaseNode
 
 
-class MinArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
+class MinArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
     Calculate the minimum value along a specified axis of a array.
     array, minimum, reduction, statistics
@@ -197,28 +193,26 @@ class MinArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
         default=None, description="Axis along which to compute minimum"
     )
 
-    @property
-    def output(self) -> OutputHandle[nodetool.metadata.types.NPArray | float | int]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.NPArray | float | int],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.statistics.MinArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.statistics.MinArray"
-
-
-MinArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
+from nodetool.workflows.base_node import BaseNode
 
 
-class SumArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
+class SumArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
     Calculate the sum of values along a specified axis of a array.
     array, summation, reduction, statistics
@@ -237,16 +231,10 @@ class SumArray(GraphNode[nodetool.metadata.types.NPArray | float | int]):
         default=None, description="Axis along which to compute sum"
     )
 
-    @property
-    def output(self) -> OutputHandle[nodetool.metadata.types.NPArray | float | int]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.NPArray | float | int],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.statistics.SumArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.statistics.SumArray"
-
-
-SumArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

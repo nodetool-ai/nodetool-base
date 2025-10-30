@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.draw
+from nodetool.workflows.base_node import BaseNode
 
 
-class Background(GraphNode[types.ImageRef]):
+class Background(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     The Background Node creates a blank background.
     image, background, blank, base, layer
@@ -36,25 +37,23 @@ class Background(GraphNode[types.ImageRef]):
         default=types.ColorRef(type="color", value="#FFFFFF"), description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.draw.Background
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.draw.Background"
-
-
-Background.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.draw
+from nodetool.workflows.base_node import BaseNode
 
 
-class GaussianNoise(GraphNode[types.ImageRef]):
+class GaussianNoise(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     This node creates and adds Gaussian noise to an image.
     image, noise, gaussian, distortion, artifact
@@ -72,26 +71,24 @@ class GaussianNoise(GraphNode[types.ImageRef]):
     width: int | OutputHandle[int] = connect_field(default=512, description=None)
     height: int | OutputHandle[int] = connect_field(default=512, description=None)
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.draw.GaussianNoise
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.draw.GaussianNoise"
-
-
-GaussianNoise.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.draw
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.pillow.draw
 
 
-class RenderText(GraphNode[types.ImageRef]):
+class RenderText(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     This node allows you to add text to images.
     text, font, label, title, watermark, caption, image, overlay
@@ -138,13 +135,10 @@ class RenderText(GraphNode[types.ImageRef]):
         description="The image to render on.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.draw.RenderText
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.draw.RenderText"
-
-
-RenderText.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

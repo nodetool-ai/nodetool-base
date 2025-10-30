@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class ArrayOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -45,8 +46,12 @@ class ArrayOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType])
         return ArrayOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.ArrayOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.ArrayOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class ArrayOutputOutputs(OutputsProxy):
@@ -55,13 +60,11 @@ class ArrayOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-ArrayOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class AudioOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -91,8 +94,12 @@ class AudioOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType])
         return AudioOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.AudioOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.AudioOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class AudioOutputOutputs(OutputsProxy):
@@ -101,13 +108,11 @@ class AudioOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-AudioOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class BooleanOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -134,8 +139,12 @@ class BooleanOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType
         return BooleanOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.BooleanOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.BooleanOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class BooleanOutputOutputs(OutputsProxy):
@@ -144,13 +153,11 @@ class BooleanOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-BooleanOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class DataframeOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -182,8 +189,12 @@ class DataframeOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputTy
         return DataframeOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.DataframeOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.DataframeOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class DataframeOutputOutputs(OutputsProxy):
@@ -192,13 +203,11 @@ class DataframeOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-DataframeOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class DictionaryOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -227,8 +236,12 @@ class DictionaryOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputT
         return DictionaryOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.DictionaryOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.DictionaryOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class DictionaryOutputOutputs(OutputsProxy):
@@ -237,13 +250,11 @@ class DictionaryOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-DictionaryOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class DocumentOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -273,8 +284,12 @@ class DocumentOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputTyp
         return DocumentOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.DocumentOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.DocumentOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class DocumentOutputOutputs(OutputsProxy):
@@ -283,13 +298,11 @@ class DocumentOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-DocumentOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class FilePathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -313,8 +326,12 @@ class FilePathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputTyp
         return FilePathOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.FilePathOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.FilePathOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class FilePathOutputOutputs(OutputsProxy):
@@ -323,13 +340,11 @@ class FilePathOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-FilePathOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class FloatOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -356,8 +371,12 @@ class FloatOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType])
         return FloatOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.FloatOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.FloatOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class FloatOutputOutputs(OutputsProxy):
@@ -366,13 +385,11 @@ class FloatOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-FloatOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class FolderPathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -396,8 +413,12 @@ class FolderPathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputT
         return FolderPathOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.FolderPathOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.FolderPathOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class FolderPathOutputOutputs(OutputsProxy):
@@ -406,13 +427,11 @@ class FolderPathOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-FolderPathOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class ImageOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -442,8 +461,12 @@ class ImageOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType])
         return ImageOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.ImageOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.ImageOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class ImageOutputOutputs(OutputsProxy):
@@ -452,13 +475,11 @@ class ImageOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-ImageOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class IntegerOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -485,8 +506,12 @@ class IntegerOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType
         return IntegerOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.IntegerOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.IntegerOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class IntegerOutputOutputs(OutputsProxy):
@@ -495,13 +520,11 @@ class IntegerOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-IntegerOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class ListOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -529,8 +552,12 @@ class ListOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
         return ListOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.ListOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.ListOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class ListOutputOutputs(OutputsProxy):
@@ -539,13 +566,11 @@ class ListOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-ListOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class StringOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -573,8 +598,12 @@ class StringOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]
         return StringOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.StringOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.StringOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class StringOutputOutputs(OutputsProxy):
@@ -583,13 +612,11 @@ class StringOutputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-StringOutput.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.output
+from nodetool.workflows.base_node import BaseNode
 
 
 class VideoOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
@@ -621,14 +648,15 @@ class VideoOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType])
         return VideoOutputOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.output.VideoOutput
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.output.VideoOutput"
+        return cls.get_node_class().get_node_type()
 
 
 class VideoOutputOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[Any]:
         return typing.cast(OutputHandle[Any], self["output"])
-
-
-VideoOutput.model_rebuild(force=True)

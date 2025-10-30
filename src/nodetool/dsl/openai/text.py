@@ -10,16 +10,17 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.text
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.openai.text
 
 
-class Embedding(GraphNode[types.NPArray]):
+class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
     Generate vector representations of text for semantic analysis.
     embeddings, similarity, search, clustering, classification
@@ -44,25 +45,23 @@ class Embedding(GraphNode[types.NPArray]):
     )
     chunk_size: int | OutputHandle[int] = connect_field(default=4096, description=None)
 
-    @property
-    def output(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.text.Embedding
 
     @classmethod
     def get_node_type(cls):
-        return "openai.text.Embedding"
-
-
-Embedding.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.text
+from nodetool.workflows.base_node import BaseNode
 
 
-class WebSearch(GraphNode[str]):
+class WebSearch(SingleOutputGraphNode[str], GraphNode[str]):
     """
     🔍 OpenAI Web Search - Searches the web using OpenAI's web search capabilities.
 
@@ -75,13 +74,10 @@ class WebSearch(GraphNode[str]):
         default="", description="The search query to execute."
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.text.WebSearch
 
     @classmethod
     def get_node_type(cls):
-        return "openai.text.WebSearch"
-
-
-WebSearch.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

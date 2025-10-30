@@ -10,19 +10,20 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.image
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 import nodetool.nodes.openai.image
 
 
-class CreateImage(GraphNode[types.ImageRef]):
+class CreateImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generates images from textual descriptions.
     image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration
@@ -61,13 +62,10 @@ class CreateImage(GraphNode[types.ImageRef]):
         description="The quality of the image to generate.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.image.CreateImage
 
     @classmethod
     def get_node_type(cls):
-        return "openai.image.CreateImage"
-
-
-CreateImage.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

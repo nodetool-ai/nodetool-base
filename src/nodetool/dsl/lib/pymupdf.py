@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractMarkdown(GraphNode[str]):
+class ExtractMarkdown(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Convert PDF to Markdown format using pymupdf4llm.
     pdf, markdown, convert
@@ -40,25 +41,23 @@ class ExtractMarkdown(GraphNode[str]):
         default=-1, description="Last page to extract (-1 for last page)"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pymupdf.ExtractMarkdown
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pymupdf.ExtractMarkdown"
-
-
-ExtractMarkdown.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractTables(GraphNode[typing.Any]):
+class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Extract tables from a PDF document using PyMuPDF.
     pdf, tables, extract, structured
@@ -80,25 +79,25 @@ class ExtractTables(GraphNode[typing.Any]):
         default=-1, description="Last page to extract (-1 for last page)"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pymupdf.ExtractTables
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pymupdf.ExtractTables"
-
-
-ExtractTables.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractText(GraphNode[types.DocumentRef]):
+class ExtractText(
+    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
+):
     """
     Extract plain text from a PDF document using PyMuPDF.
     pdf, text, extract
@@ -120,27 +119,23 @@ class ExtractText(GraphNode[types.DocumentRef]):
         default=-1, description="Last page to extract (-1 for last page)"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DocumentRef]:
-        return typing.cast(
-            OutputHandle[types.DocumentRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pymupdf.ExtractText
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pymupdf.ExtractText"
-
-
-ExtractText.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractTextBlocks(GraphNode[typing.Any]):
+class ExtractTextBlocks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Extract text blocks with their bounding boxes from a PDF.
     pdf, text, blocks, layout
@@ -162,25 +157,23 @@ class ExtractTextBlocks(GraphNode[typing.Any]):
         default=-1, description="Last page to extract (-1 for last page)"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pymupdf.ExtractTextBlocks
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pymupdf.ExtractTextBlocks"
-
-
-ExtractTextBlocks.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractTextWithStyle(GraphNode[typing.Any]):
+class ExtractTextWithStyle(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Extract text with style information (font, size, color) from a PDF.
     pdf, text, style, formatting
@@ -202,13 +195,10 @@ class ExtractTextWithStyle(GraphNode[typing.Any]):
         default=-1, description="Last page to extract (-1 for last page)"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pymupdf.ExtractTextWithStyle
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pymupdf.ExtractTextWithStyle"
-
-
-ExtractTextWithStyle.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

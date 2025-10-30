@@ -10,15 +10,19 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
+from nodetool.workflows.base_node import BaseNode
 
 
-class AddArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class AddArray(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     """
     Performs addition on two arrays.
     math, plus, add, addition, sum, +
@@ -37,28 +41,26 @@ class AddArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.arithmetic.AddArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.arithmetic.AddArray"
-
-
-AddArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.utils
+from nodetool.workflows.base_node import BaseNode
 
 
-class BinaryOperation(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class BinaryOperation(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     a: (
         int
         | float
@@ -72,28 +74,26 @@ class BinaryOperation(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.utils.BinaryOperation
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.utils.BinaryOperation"
-
-
-BinaryOperation.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
+from nodetool.workflows.base_node import BaseNode
 
 
-class DivideArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class DivideArray(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     """
     Divides the first array by the second.
     math, division, arithmetic, quotient, /
@@ -112,28 +112,26 @@ class DivideArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.arithmetic.DivideArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.arithmetic.DivideArray"
-
-
-DivideArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
+from nodetool.workflows.base_node import BaseNode
 
 
-class ModulusArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class ModulusArray(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     """
     Calculates the element-wise remainder of division.
     math, modulo, remainder, mod, %
@@ -157,28 +155,26 @@ class ModulusArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.arithmetic.ModulusArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.arithmetic.ModulusArray"
-
-
-ModulusArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
+from nodetool.workflows.base_node import BaseNode
 
 
-class MultiplyArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class MultiplyArray(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     """
     Multiplies two arrays.
     math, product, times, *
@@ -197,28 +193,26 @@ class MultiplyArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.arithmetic.MultiplyArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.arithmetic.MultiplyArray"
-
-
-MultiplyArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
+from nodetool.workflows.base_node import BaseNode
 
 
-class SubtractArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class SubtractArray(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     """
     Subtracts the second array from the first.
     math, minus, difference, -
@@ -237,16 +231,10 @@ class SubtractArray(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.arithmetic.SubtractArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.arithmetic.SubtractArray"
-
-
-SubtractArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

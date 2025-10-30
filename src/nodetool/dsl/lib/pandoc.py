@@ -10,17 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pandoc
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.pandoc
 import nodetool.nodes.lib.pandoc
 
 
-class ConvertFile(GraphNode[str]):
+class ConvertFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Converts between different document formats using pandoc.
     convert, document, format, pandoc
@@ -48,27 +49,25 @@ class ConvertFile(GraphNode[str]):
         default=[], description="Additional pandoc arguments"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pandoc.ConvertFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pandoc.ConvertFile"
-
-
-ConvertFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pandoc
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.pandoc
 import nodetool.nodes.lib.pandoc
 
 
-class ConvertText(GraphNode[str]):
+class ConvertText(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Converts text content between different document formats using pandoc.
     convert, text, format, pandoc
@@ -96,13 +95,10 @@ class ConvertText(GraphNode[str]):
         default=[], description="Additional pandoc arguments"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pandoc.ConvertText
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pandoc.ConvertText"
-
-
-ConvertText.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

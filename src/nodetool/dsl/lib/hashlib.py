@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.hashlib
+from nodetool.workflows.base_node import BaseNode
 
 
-class HashFile(GraphNode[str]):
+class HashFile(SingleOutputGraphNode[str], GraphNode[str]):
     """Compute the cryptographic hash of a file.
     hash, hashlib, digest, file
 
@@ -38,25 +39,23 @@ class HashFile(GraphNode[str]):
         default=8192, description="Read size for hashing in bytes"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.hashlib.HashFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.hashlib.HashFile"
-
-
-HashFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.hashlib
+from nodetool.workflows.base_node import BaseNode
 
 
-class HashString(GraphNode[str]):
+class HashString(SingleOutputGraphNode[str], GraphNode[str]):
     """Compute the cryptographic hash of a string using hashlib.
     hash, hashlib, digest, string
 
@@ -73,13 +72,10 @@ class HashString(GraphNode[str]):
         default="md5", description="Hash algorithm name (e.g. md5, sha1, sha256)"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.hashlib.HashString
 
     @classmethod
     def get_node_type(cls):
-        return "lib.hashlib.HashString"
-
-
-HashString.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

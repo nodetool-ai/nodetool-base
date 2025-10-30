@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterJSON(GraphNode[list[dict]]):
+class FilterJSON(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Filter JSON array based on a key-value condition.
     json, filter, array
@@ -38,25 +39,23 @@ class FilterJSON(GraphNode[list[dict]]):
         default=None, description="Value to match"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.FilterJSON
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.FilterJSON"
-
-
-FilterJSON.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetJSONPathBool(GraphNode[bool]):
+class GetJSONPathBool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Extract a boolean value from a JSON path
     json, path, extract, boolean
@@ -72,25 +71,23 @@ class GetJSONPathBool(GraphNode[bool]):
         default=False, description="Default value to return if path is not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.GetJSONPathBool
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.GetJSONPathBool"
-
-
-GetJSONPathBool.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetJSONPathDict(GraphNode[dict]):
+class GetJSONPathDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Extract a dictionary value from a JSON path
     json, path, extract, object
@@ -106,25 +103,23 @@ class GetJSONPathDict(GraphNode[dict]):
         default={}, description="Default value to return if path is not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.GetJSONPathDict
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.GetJSONPathDict"
-
-
-GetJSONPathDict.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetJSONPathFloat(GraphNode[float]):
+class GetJSONPathFloat(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Extract a float value from a JSON path
     json, path, extract, number
@@ -140,25 +135,23 @@ class GetJSONPathFloat(GraphNode[float]):
         default=0.0, description="Default value to return if path is not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.GetJSONPathFloat
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.GetJSONPathFloat"
-
-
-GetJSONPathFloat.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetJSONPathInt(GraphNode[int]):
+class GetJSONPathInt(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Extract an integer value from a JSON path
     json, path, extract, number
@@ -174,25 +167,23 @@ class GetJSONPathInt(GraphNode[int]):
         default=0, description="Default value to return if path is not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.GetJSONPathInt
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.GetJSONPathInt"
-
-
-GetJSONPathInt.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetJSONPathList(GraphNode[list]):
+class GetJSONPathList(SingleOutputGraphNode[list], GraphNode[list]):
     """
     Extract a list value from a JSON path
     json, path, extract, array
@@ -208,25 +199,23 @@ class GetJSONPathList(GraphNode[list]):
         default=[], description="Default value to return if path is not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[list]:
-        return typing.cast(OutputHandle[list], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.GetJSONPathList
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.GetJSONPathList"
-
-
-GetJSONPathList.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetJSONPathStr(GraphNode[str]):
+class GetJSONPathStr(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Extract a string value from a JSON path
     json, path, extract, string
@@ -242,25 +231,23 @@ class GetJSONPathStr(GraphNode[str]):
         default="", description="Default value to return if path is not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.GetJSONPathStr
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.GetJSONPathStr"
-
-
-GetJSONPathStr.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class JSONTemplate(GraphNode[dict]):
+class JSONTemplate(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Template JSON strings with variable substitution.
     json, template, substitute, variables
@@ -283,22 +270,20 @@ class JSONTemplate(GraphNode[dict]):
         default={}, description="Dictionary of values to substitute into the template"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.JSONTemplate
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.JSONTemplate"
-
-
-JSONTemplate.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
 class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType]):
@@ -317,8 +302,12 @@ class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType
         return LoadJSONAssetsOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.LoadJSONAssets
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.json.LoadJSONAssets"
+        return cls.get_node_class().get_node_type()
 
 
 class LoadJSONAssetsOutputs(OutputsProxy):
@@ -331,16 +320,14 @@ class LoadJSONAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
-LoadJSONAssets.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class ParseDict(GraphNode[dict]):
+class ParseDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Parse a JSON string into a Python dictionary.
     json, parse, decode, dictionary
@@ -355,25 +342,23 @@ class ParseDict(GraphNode[dict]):
         default="", description="JSON string to parse into a dictionary"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.ParseDict
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.ParseDict"
-
-
-ParseDict.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class ParseList(GraphNode[list]):
+class ParseList(SingleOutputGraphNode[list], GraphNode[list]):
     """
     Parse a JSON string into a Python list.
     json, parse, decode, array, list
@@ -388,25 +373,23 @@ class ParseList(GraphNode[list]):
         default="", description="JSON string to parse into a list"
     )
 
-    @property
-    def output(self) -> OutputHandle[list]:
-        return typing.cast(OutputHandle[list], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.ParseList
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.ParseList"
-
-
-ParseList.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class StringifyJSON(GraphNode[str]):
+class StringifyJSON(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Convert a Python object to a JSON string.
     json, stringify, encode
@@ -423,25 +406,23 @@ class StringifyJSON(GraphNode[str]):
         default=2, description="Number of spaces for indentation"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.StringifyJSON
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.StringifyJSON"
-
-
-StringifyJSON.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
+from nodetool.workflows.base_node import BaseNode
 
 
-class ValidateJSON(GraphNode[bool]):
+class ValidateJSON(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Validate JSON data against a schema.
     json, validate, schema
@@ -458,13 +439,10 @@ class ValidateJSON(GraphNode[bool]):
         default={}, description="JSON schema for validation"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.json.ValidateJSON
 
     @classmethod
     def get_node_type(cls):
-        return "lib.json.ValidateJSON"
-
-
-ValidateJSON.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

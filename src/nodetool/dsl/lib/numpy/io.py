@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.io
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveArray(GraphNode[types.NPArray]):
+class SaveArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
     Save a numpy array to a file in the specified folder.
     array, save, file, storage
@@ -42,13 +43,10 @@ class SaveArray(GraphNode[types.NPArray]):
         description="\n        The name of the asset to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.io.SaveArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.io.SaveArray"
-
-
-SaveArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

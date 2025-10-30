@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.rss
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractFeedMetadata(GraphNode[dict]):
+class ExtractFeedMetadata(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Extracts metadata from an RSS feed.
     rss, metadata, feed
@@ -33,22 +34,20 @@ class ExtractFeedMetadata(GraphNode[dict]):
         default="", description="URL of the RSS feed"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.rss.ExtractFeedMetadata
 
     @classmethod
     def get_node_type(cls):
-        return "lib.rss.ExtractFeedMetadata"
-
-
-ExtractFeedMetadata.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.rss
+from nodetool.workflows.base_node import BaseNode
 
 
 class FetchRSSFeed(GraphNode[nodetool.nodes.lib.rss.FetchRSSFeed.OutputType]):
@@ -71,8 +70,12 @@ class FetchRSSFeed(GraphNode[nodetool.nodes.lib.rss.FetchRSSFeed.OutputType]):
         return FetchRSSFeedOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.rss.FetchRSSFeed
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.rss.FetchRSSFeed"
+        return cls.get_node_class().get_node_type()
 
 
 class FetchRSSFeedOutputs(OutputsProxy):
@@ -95,6 +98,3 @@ class FetchRSSFeedOutputs(OutputsProxy):
     @property
     def author(self) -> OutputHandle[str]:
         return typing.cast(OutputHandle[str], self["author"])
-
-
-FetchRSSFeed.model_rebuild(force=True)

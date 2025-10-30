@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
+from nodetool.workflows.base_node import BaseNode
 
 
-class AutoFitColumns(GraphNode[Any]):
+class AutoFitColumns(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
     Automatically adjusts column widths to fit content.
     excel, format, columns
@@ -36,25 +37,23 @@ class AutoFitColumns(GraphNode[Any]):
         default="Sheet1", description="Target worksheet name"
     )
 
-    @property
-    def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.excel.AutoFitColumns
 
     @classmethod
     def get_node_type(cls):
-        return "lib.excel.AutoFitColumns"
-
-
-AutoFitColumns.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreateWorkbook(GraphNode[types.ExcelRef]):
+class CreateWorkbook(SingleOutputGraphNode[types.ExcelRef], GraphNode[types.ExcelRef]):
     """
     Creates a new Excel workbook.
     excel, workbook, create
@@ -68,25 +67,23 @@ class CreateWorkbook(GraphNode[types.ExcelRef]):
         default="Sheet1", description="Name for the first worksheet"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ExcelRef]:
-        return typing.cast(OutputHandle[types.ExcelRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.excel.CreateWorkbook
 
     @classmethod
     def get_node_type(cls):
-        return "lib.excel.CreateWorkbook"
-
-
-CreateWorkbook.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
+from nodetool.workflows.base_node import BaseNode
 
 
-class DataFrameToExcel(GraphNode[Any]):
+class DataFrameToExcel(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
     Writes a DataFrame to an Excel worksheet.
     excel, dataframe, export
@@ -116,25 +113,25 @@ class DataFrameToExcel(GraphNode[Any]):
         default=True, description="Include column headers"
     )
 
-    @property
-    def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.excel.DataFrameToExcel
 
     @classmethod
     def get_node_type(cls):
-        return "lib.excel.DataFrameToExcel"
-
-
-DataFrameToExcel.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExcelToDataFrame(GraphNode[types.DataframeRef]):
+class ExcelToDataFrame(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Reads an Excel worksheet into a pandas DataFrame.
     excel, dataframe, import
@@ -155,27 +152,23 @@ class ExcelToDataFrame(GraphNode[types.DataframeRef]):
         default=True, description="First row contains headers"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.excel.ExcelToDataFrame
 
     @classmethod
     def get_node_type(cls):
-        return "lib.excel.ExcelToDataFrame"
-
-
-ExcelToDataFrame.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
+from nodetool.workflows.base_node import BaseNode
 
 
-class FormatCells(GraphNode[Any]):
+class FormatCells(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
     Applies formatting to a range of cells.
     excel, format, style
@@ -206,25 +199,23 @@ class FormatCells(GraphNode[Any]):
         default="000000", description="Text color in hex format"
     )
 
-    @property
-    def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.excel.FormatCells
 
     @classmethod
     def get_node_type(cls):
-        return "lib.excel.FormatCells"
-
-
-FormatCells.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveWorkbook(GraphNode[typing.Any]):
+class SaveWorkbook(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Saves an Excel workbook to disk.
     excel, save, export
@@ -247,13 +238,10 @@ class SaveWorkbook(GraphNode[typing.Any]):
         description="\n        The filename to save the file to.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.excel.SaveWorkbook
 
     @classmethod
     def get_node_type(cls):
-        return "lib.excel.SaveWorkbook"
-
-
-SaveWorkbook.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.html
+from nodetool.workflows.base_node import BaseNode
 
 
-class Escape(GraphNode[str]):
+class Escape(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Escape special characters in text into HTML-safe sequences.
     html, escape, entities, convert
@@ -33,25 +34,23 @@ class Escape(GraphNode[str]):
         default="", description="The text to escape"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.html.Escape
 
     @classmethod
     def get_node_type(cls):
-        return "lib.html.Escape"
-
-
-Escape.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.html
+from nodetool.workflows.base_node import BaseNode
 
 
-class Unescape(GraphNode[str]):
+class Unescape(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Convert HTML entities back to normal text.
     html, unescape, entities, decode
@@ -66,13 +65,10 @@ class Unescape(GraphNode[str]):
         default="", description="The HTML text to unescape"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.html.Unescape
 
     @classmethod
     def get_node_type(cls):
-        return "lib.html.Unescape"
-
-
-Unescape.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

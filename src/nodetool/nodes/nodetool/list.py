@@ -1058,33 +1058,21 @@ class Product(BaseNode):
 
 class MapField(BaseNode):
     """
-    Extracts a specific field from a list of dictionaries or objects.
+    Extracts a specific field from a list of dictionaries.
     list, map, field, extract, pluck
 
     Use cases:
-    - Extract specific fields from a list of objects
+    - Extract specific fields from a list of dictionaries
     - Transform complex data structures into simple lists
     - Collect values for a particular key across multiple dictionaries
     """
 
-    values: list[dict | object] = Field(default=[])
+    values: list[dict[str, Any]] = Field(default=[])
     field: str = Field(default="")
-    default: Any = Field(default=None)
+    default: Any | None = Field(default=None)
 
     async def process(self, context: ProcessingContext) -> list[Any]:
-        if not isinstance(self.values, list) or not all(
-            isinstance(item, (dict, object)) for item in self.values
-        ):
-            raise ValueError("Input must be a list of dictionaries or objects")
-
-        def get_value(item: dict | object) -> Any:
-            if isinstance(item, dict):
-                return item.get(self.field, self.default)
-            elif isinstance(item, object):
-                return getattr(item, self.field, self.default)
-            return self.default
-
-        return [get_value(item) for item in self.values]
+        return [item.get(self.field, self.default) for item in self.values]
 
 
 class Flatten(BaseNode):

@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.seaborn
+from nodetool.workflows.base_node import BaseNode
 
 
-class ChartRenderer(GraphNode[types.ImageRef]):
+class ChartRenderer(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Node responsible for rendering chart configurations into image format using seaborn.
     chart, seaborn, plot, visualization, data
@@ -77,13 +78,10 @@ class ChartRenderer(GraphNode[types.ImageRef]):
         default=True, description="Whether to use tight layout for margins."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.seaborn.ChartRenderer
 
     @classmethod
     def get_node_type(cls):
-        return "lib.seaborn.ChartRenderer"
-
-
-ChartRenderer.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

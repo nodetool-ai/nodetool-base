@@ -10,15 +10,19 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.utils
+from nodetool.workflows.base_node import BaseNode
 
 
-class BinaryOperation(GraphNode[int | float | nodetool.metadata.types.NPArray]):
+class BinaryOperation(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
     a: (
         int
         | float
@@ -32,16 +36,10 @@ class BinaryOperation(GraphNode[int | float | nodetool.metadata.types.NPArray]):
         | OutputHandle[int | float | nodetool.metadata.types.NPArray]
     ) = connect_field(default=0.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[int | float | nodetool.metadata.types.NPArray]:
-        return typing.cast(
-            OutputHandle[int | float | nodetool.metadata.types.NPArray],
-            self._single_output_handle(),
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.utils.BinaryOperation
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.utils.BinaryOperation"
-
-
-BinaryOperation.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

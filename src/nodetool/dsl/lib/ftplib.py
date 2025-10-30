@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ftplib
+from nodetool.workflows.base_node import BaseNode
 
 
-class FTPDownloadFile(GraphNode[types.DocumentRef]):
+class FTPDownloadFile(
+    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
+):
     """Download a file from an FTP server.
     ftp, download, file
 
@@ -41,27 +44,23 @@ class FTPDownloadFile(GraphNode[types.DocumentRef]):
         default="", description="Remote file path to download"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DocumentRef]:
-        return typing.cast(
-            OutputHandle[types.DocumentRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.ftplib.FTPDownloadFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.ftplib.FTPDownloadFile"
-
-
-FTPDownloadFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ftplib
+from nodetool.workflows.base_node import BaseNode
 
 
-class FTPListDirectory(GraphNode[list[str]]):
+class FTPListDirectory(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """List files in a directory on an FTP server.
     ftp, list, directory
 
@@ -84,25 +83,23 @@ class FTPListDirectory(GraphNode[list[str]]):
         default="", description="Remote directory to list"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.ftplib.FTPListDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "lib.ftplib.FTPListDirectory"
-
-
-FTPListDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ftplib
+from nodetool.workflows.base_node import BaseNode
 
 
-class FTPUploadFile(GraphNode[NoneType]):
+class FTPUploadFile(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """Upload a file to an FTP server.
     ftp, upload, file
 
@@ -129,13 +126,10 @@ class FTPUploadFile(GraphNode[NoneType]):
         description="Document to upload",
     )
 
-    @property
-    def output(self) -> OutputHandle[NoneType]:
-        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.ftplib.FTPUploadFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.ftplib.FTPUploadFile"
-
-
-FTPUploadFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

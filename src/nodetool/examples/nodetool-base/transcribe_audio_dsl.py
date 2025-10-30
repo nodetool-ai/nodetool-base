@@ -9,44 +9,41 @@ Workflow:
 3. **String Output** - Displays the transcribed text
 """
 
-from nodetool.dsl.graph import graph_result
+import os
+from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import AudioInput
 from nodetool.dsl.nodetool.text import AutomaticSpeechRecognition
 from nodetool.dsl.nodetool.output import StringOutput
-from nodetool.metadata.types import LanguageModel
+from nodetool.metadata.types import ASRModel, AudioRef, LanguageModel, Provider
 
+sample_audio_file = os.path.join(os.path.dirname(__file__), "harvard.mp3")
 
-async def example():
-    """
-    Transcribe audio using OpenAI's Whisper model.
-    """
-    audio_input = AudioInput(
-        name="audio",
-        description="",
-        value={},
-    )
+audio_input = AudioInput(
+    name="audio",
+    value=AudioRef(
+        uri=f"file://{sample_audio_file}",
+        type="audio",
+    ),
+)
 
-    transcription = AutomaticSpeechRecognition(
-        audio=audio_input.output,
-        model=LanguageModel(
-            type="asr_model",
-            id="whisper-1",
-            provider="openai",
-            name="Whisper",
-        ),
-    )
+transcription = AutomaticSpeechRecognition(
+    audio=audio_input.output,
+    model=ASRModel(
+        id="gpt-4o-mini-transcribe",
+        provider=Provider.OpenAI,
+        type="asr_model",
+    ),
+)
 
-    output = StringOutput(
-        name="transcription",
-        value=transcription.out.text,
-    )
+output = StringOutput(
+    name="transcription",
+    value=transcription.out.text,
+)
 
-    result = await graph_result(output)
-    return result
+# Create the graph
+graph = create_graph(output)
 
 
 if __name__ == "__main__":
-    import asyncio
-
-    result = asyncio.run(example())
-    print(f"Transcription: {result}")
+    result = run_graph(graph)
+    print(f"Transcription: {result['transcription']}")

@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.difflib
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetCloseMatches(GraphNode[list[str]]):
+class GetCloseMatches(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Finds close matches for a word within a list of possibilities.
     difflib, fuzzy, match
@@ -42,25 +43,23 @@ class GetCloseMatches(GraphNode[list[str]]):
         default=0.6, description="Minimum similarity ratio"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.difflib.GetCloseMatches
 
     @classmethod
     def get_node_type(cls):
-        return "lib.difflib.GetCloseMatches"
-
-
-GetCloseMatches.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.difflib
+from nodetool.workflows.base_node import BaseNode
 
 
-class SimilarityRatio(GraphNode[float]):
+class SimilarityRatio(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Calculates the similarity ratio between two strings.
     difflib, similarity, ratio, compare
@@ -78,25 +77,23 @@ class SimilarityRatio(GraphNode[float]):
         default="", description="Second string to compare"
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.difflib.SimilarityRatio
 
     @classmethod
     def get_node_type(cls):
-        return "lib.difflib.SimilarityRatio"
-
-
-SimilarityRatio.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.difflib
+from nodetool.workflows.base_node import BaseNode
 
 
-class UnifiedDiff(GraphNode[str]):
+class UnifiedDiff(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Generates a unified diff between two texts.
     difflib, diff, compare
@@ -119,13 +116,10 @@ class UnifiedDiff(GraphNode[str]):
         default="\n", description="Line terminator"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.difflib.UnifiedDiff
 
     @classmethod
     def get_node_type(cls):
-        return "lib.difflib.UnifiedDiff"
-
-
-UnifiedDiff.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

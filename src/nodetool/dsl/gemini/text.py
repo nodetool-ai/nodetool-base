@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.text
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.gemini.text
 
 
@@ -48,8 +49,12 @@ class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputT
         return GroundedSearchOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.gemini.text.GroundedSearch
+
+    @classmethod
     def get_node_type(cls):
-        return "gemini.text.GroundedSearch"
+        return cls.get_node_class().get_node_type()
 
 
 class GroundedSearchOutputs(OutputsProxy):
@@ -60,6 +65,3 @@ class GroundedSearchOutputs(OutputsProxy):
     @property
     def sources(self) -> OutputHandle[list[types.Source]]:
         return typing.cast(OutputHandle[list[types.Source]], self["sources"])
-
-
-GroundedSearch.model_rebuild(force=True)

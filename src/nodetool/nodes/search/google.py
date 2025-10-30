@@ -56,7 +56,7 @@ class GoogleSearch(BaseNode):
         if not self.keyword:
             raise ValueError("Keyword is required")
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             raise ValueError(
                 error_response.get("error", "Failed to configure SERP provider")
@@ -93,7 +93,7 @@ class GoogleNews(BaseNode):
         if not self.keyword:
             raise ValueError("Keyword is required")
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             raise ValueError(
                 error_response.get("error", "Failed to configure SERP provider")
@@ -131,7 +131,7 @@ class GoogleImages(BaseNode):
         if not self.keyword and not self.image_url:
             return {"error": "One of 'keyword' or 'image_url' is required."}
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             return error_response
         if not provider_instance:
@@ -180,7 +180,7 @@ class GoogleFinance(BaseNode):
         if not self.query:
             return {"error": "Query is required for Google Finance search."}
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             return error_response
         if not provider_instance:
@@ -217,7 +217,7 @@ class GoogleJobs(BaseNode):
         if not self.query:
             raise ValueError("Query is required for Google Jobs search.")
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             raise ValueError(
                 error_response.get("error", "Failed to configure SERP provider")
@@ -259,7 +259,7 @@ class GoogleLens(BaseNode):
         if not self.image_url:
             raise ValueError("Image URL is required for Google Lens search.")
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             raise ValueError(
                 error_response.get("error", "Failed to configure SERP provider")
@@ -309,7 +309,7 @@ class GoogleMaps(BaseNode):
         if not self.query:
             raise ValueError("Query is required for map search.")
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             raise ValueError(
                 error_response.get("error", "Failed to configure SERP provider")
@@ -368,7 +368,7 @@ class GoogleShopping(BaseNode):
         if not self.query:
             raise ValueError("Query is required for Google Shopping search.")
 
-        provider_instance, error_response = _get_configured_serp_provider()
+        provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
             raise ValueError(
                 error_response.get("error", "Failed to configure SERP provider")

@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Append(GraphNode[list[Any]]):
+class Append(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Adds a value to the end of a list.
     list, add, insert, extend
@@ -34,25 +35,23 @@ class Append(GraphNode[list[Any]]):
     )
     value: Any | OutputHandle[Any] = connect_field(default=None, description=None)
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Append
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Append"
-
-
-Append.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Average(GraphNode[float]):
+class Average(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Calculates the arithmetic mean of a list of numbers.
     list, average, mean, aggregate, math
@@ -66,25 +65,23 @@ class Average(GraphNode[float]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Average
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Average"
-
-
-Average.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Chunk(GraphNode[list[list[Any]]]):
+class Chunk(SingleOutputGraphNode[list[list[Any]]], GraphNode[list[list[Any]]]):
     """
     Splits a list into smaller chunks of specified size.
     list, chunk, split, group
@@ -100,25 +97,23 @@ class Chunk(GraphNode[list[list[Any]]]):
     )
     chunk_size: int | OutputHandle[int] = connect_field(default=1, description=None)
 
-    @property
-    def output(self) -> OutputHandle[list[list[Any]]]:
-        return typing.cast(OutputHandle[list[list[Any]]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Chunk
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Chunk"
-
-
-Chunk.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Dedupe(GraphNode[list[Any]]):
+class Dedupe(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Removes duplicate elements from a list, ensuring uniqueness.
     list, unique, distinct, deduplicate
@@ -133,25 +128,23 @@ class Dedupe(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Dedupe
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Dedupe"
-
-
-Dedupe.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Difference(GraphNode[list[Any]]):
+class Difference(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Finds elements that exist in first list but not in second list.
     list, set, difference, subtract
@@ -169,25 +162,23 @@ class Difference(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Difference
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Difference"
-
-
-Difference.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Extend(GraphNode[list[Any]]):
+class Extend(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Merges one list into another, extending the original list.
     list, merge, concatenate, combine
@@ -204,25 +195,23 @@ class Extend(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Extend
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Extend"
-
-
-Extend.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterDicts(GraphNode[list[dict]]):
+class FilterDicts(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Filter a list of dictionaries based on a condition.
     list, filter, query, condition
@@ -285,26 +274,24 @@ class FilterDicts(GraphNode[list[dict]]):
         description="\n        The filtering condition using pandas query syntax.\n\n        Basic Operators:\n        - Comparison: >, <, >=, <=, ==, !=\n        - Logical: and, or, not\n        - Membership: in, not in\n        \n        Example Conditions:\n        # Basic comparisons\n        age > 30\n        price <= 100\n        status == 'active'\n        \n        See node documentation for more examples.\n        ",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterDicts
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterDicts"
-
-
-FilterDicts.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.list
 
 
-class FilterDictsByNumber(GraphNode[list[dict]]):
+class FilterDictsByNumber(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Filters a list of dictionaries based on numeric values for a specified key.
     list, filter, dictionary, numbers, numeric
@@ -332,25 +319,23 @@ class FilterDictsByNumber(GraphNode[list[dict]]):
         default=None, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterDictsByNumber
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterDictsByNumber"
-
-
-FilterDictsByNumber.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterDictsByRange(GraphNode[list[dict]]):
+class FilterDictsByRange(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Filters a list of dictionaries based on a numeric range for a specified key.
     list, filter, dictionary, range, between
@@ -378,26 +363,24 @@ class FilterDictsByRange(GraphNode[list[dict]]):
         description="If True, includes the min and max values in the results",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterDictsByRange
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterDictsByRange"
-
-
-FilterDictsByRange.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.list
 
 
-class FilterDictsByValue(GraphNode[list[dict]]):
+class FilterDictsByValue(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Filters a list of dictionaries based on their values using various criteria.
     list, filter, dictionary, values
@@ -426,25 +409,23 @@ class FilterDictsByValue(GraphNode[list[dict]]):
         description="The filtering criteria (text to match, type name, or length as string)",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterDictsByValue
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterDictsByValue"
-
-
-FilterDictsByValue.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterDictsRegex(GraphNode[list[dict]]):
+class FilterDictsRegex(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Filters a list of dictionaries using regular expressions on specified keys.
     list, filter, regex, dictionary, pattern
@@ -464,25 +445,23 @@ class FilterDictsRegex(GraphNode[list[dict]]):
         default=False, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterDictsRegex
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterDictsRegex"
-
-
-FilterDictsRegex.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterNone(GraphNode[list[Any]]):
+class FilterNone(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Filters out None values from a list.
     list, filter, none, null
@@ -497,25 +476,23 @@ class FilterNone(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterNone
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterNone"
-
-
-FilterNone.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterNumberRange(GraphNode[list[float]]):
+class FilterNumberRange(SingleOutputGraphNode[list[float]], GraphNode[list[float]]):
     """
     Filters a list of numbers to find values within a specified range.
     list, filter, numbers, range, between
@@ -533,26 +510,24 @@ class FilterNumberRange(GraphNode[list[float]]):
     max_value: float | OutputHandle[float] = connect_field(default=0, description=None)
     inclusive: bool | OutputHandle[bool] = connect_field(default=True, description=None)
 
-    @property
-    def output(self) -> OutputHandle[list[float]]:
-        return typing.cast(OutputHandle[list[float]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterNumberRange
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterNumberRange"
-
-
-FilterNumberRange.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.list
 
 
-class FilterNumbers(GraphNode[list[float]]):
+class FilterNumbers(SingleOutputGraphNode[list[float]], GraphNode[list[float]]):
     """
     Filters a list of numbers based on various numerical conditions.
     list, filter, numbers, numeric
@@ -578,25 +553,23 @@ class FilterNumbers(GraphNode[list[float]]):
         description="The comparison value (for greater_than, less_than, equal_to)",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[float]]:
-        return typing.cast(OutputHandle[list[float]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterNumbers
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterNumbers"
-
-
-FilterNumbers.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterRegex(GraphNode[list[str]]):
+class FilterRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Filters a list of strings using regular expressions.
     list, filter, regex, pattern, text
@@ -618,26 +591,24 @@ class FilterRegex(GraphNode[list[str]]):
         description="Whether to match the entire string or find pattern anywhere in string",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterRegex
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterRegex"
-
-
-FilterRegex.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.list
 
 
-class FilterStrings(GraphNode[list[str]]):
+class FilterStrings(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Filters a list of strings based on various criteria.
     list, filter, strings, text
@@ -664,25 +635,23 @@ class FilterStrings(GraphNode[list[str]]):
         description="The filtering criteria (text to match or length as string)",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.FilterStrings
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.FilterStrings"
-
-
-FilterStrings.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Flatten(GraphNode[list[Any]]):
+class Flatten(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Flattens a nested list structure into a single flat list.
     list, flatten, nested, structure
@@ -702,22 +671,20 @@ class Flatten(GraphNode[list[Any]]):
     )
     max_depth: int | OutputHandle[int] = connect_field(default=-1, description=None)
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Flatten
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Flatten"
-
-
-Flatten.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
 class GenerateSequence(
@@ -737,8 +704,12 @@ class GenerateSequence(
         return GenerateSequenceOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.GenerateSequence
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.list.GenerateSequence"
+        return cls.get_node_class().get_node_type()
 
 
 class GenerateSequenceOutputs(OutputsProxy):
@@ -747,16 +718,14 @@ class GenerateSequenceOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["output"])
 
 
-GenerateSequence.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetElement(GraphNode[Any]):
+class GetElement(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
     Retrieves a single value from a list at a specific index.
     list, get, extract, value
@@ -772,25 +741,23 @@ class GetElement(GraphNode[Any]):
     )
     index: int | OutputHandle[int] = connect_field(default=0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.GetElement
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.GetElement"
-
-
-GetElement.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Intersection(GraphNode[list[Any]]):
+class Intersection(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Finds common elements between two lists.
     list, set, intersection, common
@@ -808,25 +775,23 @@ class Intersection(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Intersection
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Intersection"
-
-
-Intersection.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Length(GraphNode[int]):
+class Length(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Calculates the length of a list.
     list, count, size
@@ -841,25 +806,23 @@ class Length(GraphNode[int]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Length
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Length"
-
-
-Length.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class ListRange(GraphNode[list[int]]):
+class ListRange(SingleOutputGraphNode[list[int]], GraphNode[list[int]]):
     """
     Generates a list of integers within a specified range.
     list, range, sequence, numbers
@@ -874,60 +837,58 @@ class ListRange(GraphNode[list[int]]):
     stop: int | OutputHandle[int] = connect_field(default=0, description=None)
     step: int | OutputHandle[int] = connect_field(default=1, description=None)
 
-    @property
-    def output(self) -> OutputHandle[list[int]]:
-        return typing.cast(OutputHandle[list[int]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.ListRange
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.ListRange"
-
-
-ListRange.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class MapField(GraphNode[list[Any]]):
+class MapField(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
-    Extracts a specific field from a list of dictionaries or objects.
+    Extracts a specific field from a list of dictionaries.
     list, map, field, extract, pluck
 
     Use cases:
-    - Extract specific fields from a list of objects
+    - Extract specific fields from a list of dictionaries
     - Transform complex data structures into simple lists
     - Collect values for a particular key across multiple dictionaries
     """
 
-    values: list[dict | object] | OutputHandle[list[dict | object]] = connect_field(
+    values: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = connect_field(
         default=[], description=None
     )
     field: str | OutputHandle[str] = connect_field(default="", description=None)
-    default: Any | OutputHandle[Any] = connect_field(default=None, description=None)
+    default: typing.Any | OutputHandle[typing.Any] | None = connect_field(
+        default=None, description=None
+    )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.MapField
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.MapField"
-
-
-MapField.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Maximum(GraphNode[float]):
+class Maximum(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Finds the largest value in a list of numbers.
     list, max, maximum, aggregate, math
@@ -941,25 +902,23 @@ class Maximum(GraphNode[float]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Maximum
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Maximum"
-
-
-Maximum.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Minimum(GraphNode[float]):
+class Minimum(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Finds the smallest value in a list of numbers.
     list, min, minimum, aggregate, math
@@ -973,25 +932,23 @@ class Minimum(GraphNode[float]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Minimum
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Minimum"
-
-
-Minimum.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Product(GraphNode[float]):
+class Product(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Calculates the product of all numbers in a list.
     list, product, multiply, aggregate, math
@@ -1005,25 +962,23 @@ class Product(GraphNode[float]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Product
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Product"
-
-
-Product.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Randomize(GraphNode[list[Any]]):
+class Randomize(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Randomly shuffles the elements of a list.
     list, shuffle, random, order
@@ -1038,25 +993,23 @@ class Randomize(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Randomize
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Randomize"
-
-
-Randomize.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Reverse(GraphNode[list[Any]]):
+class Reverse(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Inverts the order of elements in a list.
     list, reverse, invert, flip
@@ -1069,25 +1022,23 @@ class Reverse(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Reverse
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Reverse"
-
-
-Reverse.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveList(GraphNode[types.TextRef]):
+class SaveList(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
     Saves a list to a text file, placing each element on a new line.
     list, save, file, serialize
@@ -1106,25 +1057,23 @@ class SaveList(GraphNode[types.TextRef]):
         description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.TextRef]:
-        return typing.cast(OutputHandle[types.TextRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.SaveList
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.SaveList"
-
-
-SaveList.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class SelectElements(GraphNode[list[Any]]):
+class SelectElements(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Selects specific values from a list using index positions.
     list, select, index, extract
@@ -1142,25 +1091,23 @@ class SelectElements(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.SelectElements
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.SelectElements"
-
-
-SelectElements.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Slice(GraphNode[list[Any]]):
+class Slice(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Extracts a subset from a list using start, stop, and step indices.
     list, slice, subset, extract
@@ -1178,26 +1125,24 @@ class Slice(GraphNode[list[Any]]):
     stop: int | OutputHandle[int] = connect_field(default=0, description=None)
     step: int | OutputHandle[int] = connect_field(default=1, description=None)
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Slice
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Slice"
-
-
-Slice.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.list
 
 
-class Sort(GraphNode[list[Any]]):
+class Sort(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Sorts the elements of a list in ascending or descending order.
     list, sort, order, arrange
@@ -1216,25 +1161,23 @@ class Sort(GraphNode[list[Any]]):
         default=nodetool.nodes.nodetool.list.Sort.SortOrder.ASCENDING, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Sort
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Sort"
-
-
-Sort.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Sum(GraphNode[float]):
+class Sum(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Calculates the sum of a list of numbers.
     list, sum, aggregate, math
@@ -1248,26 +1191,24 @@ class Sum(GraphNode[float]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Sum
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Sum"
-
-
-Sum.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.list
 
 
-class Transform(GraphNode[list[Any]]):
+class Transform(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Applies a transformation to each element in a list.
     list, transform, map, convert
@@ -1289,25 +1230,23 @@ class Transform(GraphNode[list[Any]]):
         description=None,
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Transform
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Transform"
-
-
-Transform.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
+from nodetool.workflows.base_node import BaseNode
 
 
-class Union(GraphNode[list[Any]]):
+class Union(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Combines unique elements from two lists.
     list, set, union, combine
@@ -1325,13 +1264,10 @@ class Union(GraphNode[list[Any]]):
         default=[], description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.list.Union
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.list.Union"
-
-
-Union.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

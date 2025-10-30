@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.secret
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetSecret(GraphNode[str | None]):
+class GetSecret(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     """
     Get a secret value from configuration.
     secrets, credentials, configuration
@@ -31,44 +32,10 @@ class GetSecret(GraphNode[str | None]):
         default=None, description="Default value if not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[str | None]:
-        return typing.cast(OutputHandle[str | None], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.secret.GetSecret
 
     @classmethod
     def get_node_type(cls):
-        return "lib.secret.GetSecret"
-
-
-GetSecret.model_rebuild(force=True)
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.secret
-
-
-class SetSecret(GraphNode[NoneType]):
-    """
-    Set a secret value and persist it.
-    secrets, credentials, configuration
-    """
-
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="Secret key name"
-    )
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="Secret value"
-    )
-
-    @property
-    def output(self) -> OutputHandle[NoneType]:
-        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
-
-    @classmethod
-    def get_node_type(cls):
-        return "lib.secret.SetSecret"
-
-
-SetSecret.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

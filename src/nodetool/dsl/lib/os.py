@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class AbsolutePath(GraphNode[str]):
+class AbsolutePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Return the absolute path of a file or directory.
     files, path, absolute
@@ -33,25 +34,23 @@ class AbsolutePath(GraphNode[str]):
         default="", description="Path to convert to absolute"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.AbsolutePath
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.AbsolutePath"
-
-
-AbsolutePath.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class AccessedTime(GraphNode[types.Datetime]):
+class AccessedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
     Get file last accessed timestamp.
     files, metadata, accessed, time
@@ -61,25 +60,23 @@ class AccessedTime(GraphNode[types.Datetime]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.Datetime]:
-        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.AccessedTime
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.AccessedTime"
-
-
-AccessedTime.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class Basename(GraphNode[str]):
+class Basename(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get the base name component of a file path.
     files, path, basename
@@ -97,25 +94,23 @@ class Basename(GraphNode[str]):
         default=False, description="Remove file extension from basename"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.Basename
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.Basename"
-
-
-Basename.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class CopyFile(GraphNode[typing.Any]):
+class CopyFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Copy a file from source to destination path.
     files, copy, manage
@@ -133,25 +128,23 @@ class CopyFile(GraphNode[typing.Any]):
         default="", description="Destination file path"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.CopyFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.CopyFile"
-
-
-CopyFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreateDirectory(GraphNode[typing.Any]):
+class CreateDirectory(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Create a new directory at specified path.
     files, directory, create
@@ -168,25 +161,23 @@ class CreateDirectory(GraphNode[typing.Any]):
         default=True, description="Don't error if directory already exists"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.CreateDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.CreateDirectory"
-
-
-CreateDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreatedTime(GraphNode[types.Datetime]):
+class CreatedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
     Get file creation timestamp.
     files, metadata, created, time
@@ -196,25 +187,23 @@ class CreatedTime(GraphNode[types.Datetime]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.Datetime]:
-        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.CreatedTime
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.CreatedTime"
-
-
-CreatedTime.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class Dirname(GraphNode[str]):
+class Dirname(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get the directory name component of a file path.
     files, path, dirname
@@ -229,25 +218,23 @@ class Dirname(GraphNode[str]):
         default="", description="File path to get dirname from"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.Dirname
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.Dirname"
-
-
-Dirname.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class FileExists(GraphNode[bool]):
+class FileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if a file or directory exists at the specified path.
     files, check, exists
@@ -261,25 +248,23 @@ class FileExists(GraphNode[bool]):
         default="", description="Path to check for existence"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.FileExists
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.FileExists"
-
-
-FileExists.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class FileExtension(GraphNode[str]):
+class FileExtension(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get file extension.
     files, metadata, extension
@@ -289,25 +274,23 @@ class FileExtension(GraphNode[str]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.FileExtension
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.FileExtension"
-
-
-FileExtension.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class FileName(GraphNode[str]):
+class FileName(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get file name without path.
     files, metadata, name
@@ -317,25 +300,23 @@ class FileName(GraphNode[str]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.FileName
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.FileName"
-
-
-FileName.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class FileNameMatch(GraphNode[bool]):
+class FileNameMatch(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Match a filename against a pattern using Unix shell-style wildcards.
     files, pattern, match, filter
@@ -357,25 +338,23 @@ class FileNameMatch(GraphNode[bool]):
         description="Whether the pattern matching should be case-sensitive",
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.FileNameMatch
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.FileNameMatch"
-
-
-FileNameMatch.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class FilterFileNames(GraphNode[list[str]]):
+class FilterFileNames(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Filter a list of filenames using Unix shell-style wildcards.
     files, pattern, filter, list
@@ -397,25 +376,23 @@ class FilterFileNames(GraphNode[list[str]]):
         description="Whether the pattern matching should be case-sensitive",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.FilterFileNames
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.FilterFileNames"
-
-
-FilterFileNames.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetDirectory(GraphNode[str]):
+class GetDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get directory containing the file.
     files, metadata, directory
@@ -425,25 +402,23 @@ class GetDirectory(GraphNode[str]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.GetDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.GetDirectory"
-
-
-GetDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetEnvironmentVariable(GraphNode[str | None]):
+class GetEnvironmentVariable(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     """
     Gets an environment variable value.
     environment, variable, system
@@ -460,25 +435,23 @@ class GetEnvironmentVariable(GraphNode[str | None]):
         default=None, description="Default value if not found"
     )
 
-    @property
-    def output(self) -> OutputHandle[str | None]:
-        return typing.cast(OutputHandle[str | None], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.GetEnvironmentVariable
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.GetEnvironmentVariable"
-
-
-GetEnvironmentVariable.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetFileSize(GraphNode[int]):
+class GetFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Get file size in bytes.
     files, metadata, size
@@ -488,25 +461,23 @@ class GetFileSize(GraphNode[int]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.GetFileSize
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.GetFileSize"
-
-
-GetFileSize.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetPathInfo(GraphNode[dict]):
+class GetPathInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Gets information about a path.
     path, info, metadata
@@ -520,25 +491,23 @@ class GetPathInfo(GraphNode[dict]):
         default="", description="Path to analyze"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.GetPathInfo
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.GetPathInfo"
-
-
-GetPathInfo.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetSystemInfo(GraphNode[dict]):
+class GetSystemInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Gets system information.
     system, info, platform
@@ -548,25 +517,23 @@ class GetSystemInfo(GraphNode[dict]):
     - Platform-specific logic
     """
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.GetSystemInfo
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.GetSystemInfo"
-
-
-GetSystemInfo.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class IsDirectory(GraphNode[bool]):
+class IsDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if path is a directory.
     files, metadata, type
@@ -576,25 +543,23 @@ class IsDirectory(GraphNode[bool]):
         default="", description="Path to check"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.IsDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.IsDirectory"
-
-
-IsDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class IsFile(GraphNode[bool]):
+class IsFile(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if path is a file.
     files, metadata, type
@@ -604,25 +569,23 @@ class IsFile(GraphNode[bool]):
         default="", description="Path to check"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.IsFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.IsFile"
-
-
-IsFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class JoinPaths(GraphNode[str]):
+class JoinPaths(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Joins path components.
     path, join, combine
@@ -636,22 +599,20 @@ class JoinPaths(GraphNode[str]):
         default=[], description="Path components to join"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.JoinPaths
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.JoinPaths"
-
-
-JoinPaths.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
 class ListFiles(GraphNode[nodetool.nodes.lib.os.ListFiles.OutputType]):
@@ -679,8 +640,12 @@ class ListFiles(GraphNode[nodetool.nodes.lib.os.ListFiles.OutputType]):
         return ListFilesOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.ListFiles
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.os.ListFiles"
+        return cls.get_node_class().get_node_type()
 
 
 class ListFilesOutputs(OutputsProxy):
@@ -689,16 +654,14 @@ class ListFilesOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["file"])
 
 
-ListFiles.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class ModifiedTime(GraphNode[types.Datetime]):
+class ModifiedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
     Get file last modified timestamp.
     files, metadata, modified, time
@@ -708,25 +671,23 @@ class ModifiedTime(GraphNode[types.Datetime]):
         default="", description="Path to file"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.Datetime]:
-        return typing.cast(OutputHandle[types.Datetime], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.ModifiedTime
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.ModifiedTime"
-
-
-ModifiedTime.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class MoveFile(GraphNode[typing.Any]):
+class MoveFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Move a file from source to destination path.
     files, move, manage
@@ -744,25 +705,23 @@ class MoveFile(GraphNode[typing.Any]):
         default="", description="Destination file path"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.MoveFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.MoveFile"
-
-
-MoveFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class NormalizePath(GraphNode[str]):
+class NormalizePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Normalizes a path.
     path, normalize, clean
@@ -776,49 +735,45 @@ class NormalizePath(GraphNode[str]):
         default="", description="Path to normalize"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.NormalizePath
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.NormalizePath"
-
-
-NormalizePath.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class OpenWorkspaceDirectory(GraphNode[NoneType]):
+class OpenWorkspaceDirectory(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
     Open the workspace directory.
     files, workspace, directory
     """
 
-    @property
-    def output(self) -> OutputHandle[NoneType]:
-        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.OpenWorkspaceDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.OpenWorkspaceDirectory"
-
-
-OpenWorkspaceDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class PathToString(GraphNode[str]):
+class PathToString(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Convert a FilePath object to a string.
     files, path, string, convert
@@ -833,25 +788,23 @@ class PathToString(GraphNode[str]):
         default="", description="File path to convert to string"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.PathToString
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.PathToString"
-
-
-PathToString.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class RelativePath(GraphNode[str]):
+class RelativePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Return a relative path to a target from a start directory.
     files, path, relative
@@ -869,25 +822,23 @@ class RelativePath(GraphNode[str]):
         default=".", description="Start path for relative conversion"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.RelativePath
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.RelativePath"
-
-
-RelativePath.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class SetEnvironmentVariable(GraphNode[NoneType]):
+class SetEnvironmentVariable(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
     Sets an environment variable.
     environment, variable, system
@@ -904,25 +855,23 @@ class SetEnvironmentVariable(GraphNode[NoneType]):
         default="", description="Environment variable value"
     )
 
-    @property
-    def output(self) -> OutputHandle[NoneType]:
-        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.SetEnvironmentVariable
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.SetEnvironmentVariable"
-
-
-SetEnvironmentVariable.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class ShowNotification(GraphNode[NoneType]):
+class ShowNotification(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
     Shows a system notification.
     notification, system, alert
@@ -944,25 +893,23 @@ class ShowNotification(GraphNode[NoneType]):
         description="How long the notification should stay visible (in seconds)",
     )
 
-    @property
-    def output(self) -> OutputHandle[NoneType]:
-        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.ShowNotification
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.ShowNotification"
-
-
-ShowNotification.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class SplitExtension(GraphNode[dict]):
+class SplitExtension(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Split a path into root and extension components.
     files, path, extension, split
@@ -977,25 +924,23 @@ class SplitExtension(GraphNode[dict]):
         default="", description="Path to split"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.SplitExtension
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.SplitExtension"
-
-
-SplitExtension.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class SplitPath(GraphNode[dict]):
+class SplitPath(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Split a path into directory and file components.
     files, path, split
@@ -1010,37 +955,32 @@ class SplitPath(GraphNode[dict]):
         default="", description="Path to split"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.SplitPath
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.SplitPath"
-
-
-SplitPath.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
+from nodetool.workflows.base_node import BaseNode
 
 
-class WorkspaceDirectory(GraphNode[str]):
+class WorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get the workspace directory.
     files, workspace, directory
     """
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.os.WorkspaceDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "lib.os.WorkspaceDirectory"
-
-
-WorkspaceDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

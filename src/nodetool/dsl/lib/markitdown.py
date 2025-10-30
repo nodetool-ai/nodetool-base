@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markitdown
+from nodetool.workflows.base_node import BaseNode
 
 
-class ConvertToMarkdown(GraphNode[types.DocumentRef]):
+class ConvertToMarkdown(
+    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
+):
     """
     Converts various document formats to markdown using MarkItDown.
     markdown, convert, document
@@ -34,15 +37,10 @@ class ConvertToMarkdown(GraphNode[types.DocumentRef]):
         description="The document to convert to markdown",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DocumentRef]:
-        return typing.cast(
-            OutputHandle[types.DocumentRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.markitdown.ConvertToMarkdown
 
     @classmethod
     def get_node_type(cls):
-        return "lib.markitdown.ConvertToMarkdown"
-
-
-ConvertToMarkdown.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

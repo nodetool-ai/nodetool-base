@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow
+from nodetool.workflows.base_node import BaseNode
 
 
-class Blend(GraphNode[types.ImageRef]):
+class Blend(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Blend two images with adjustable alpha mixing.
     blend, mix, fade, transition
@@ -41,25 +42,23 @@ class Blend(GraphNode[types.ImageRef]):
         default=0.5, description="The mix ratio."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.Blend
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.Blend"
-
-
-Blend.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow
+from nodetool.workflows.base_node import BaseNode
 
 
-class Composite(GraphNode[types.ImageRef]):
+class Composite(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Combine two images using a mask for advanced compositing.
     composite, mask, blend, layering
@@ -83,13 +82,10 @@ class Composite(GraphNode[types.ImageRef]):
         description="The mask to composite with.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.Composite
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.Composite"
-
-
-Composite.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

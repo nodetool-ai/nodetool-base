@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.urllib
+from nodetool.workflows.base_node import BaseNode
 
 
-class EncodeQueryParams(GraphNode[str]):
+class EncodeQueryParams(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Encode a dictionary of parameters into a query string using
     ``urllib.parse.urlencode``.
@@ -34,25 +35,23 @@ class EncodeQueryParams(GraphNode[str]):
         default=PydanticUndefined, description="Parameters to encode"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.urllib.EncodeQueryParams
 
     @classmethod
     def get_node_type(cls):
-        return "lib.urllib.EncodeQueryParams"
-
-
-EncodeQueryParams.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.urllib
+from nodetool.workflows.base_node import BaseNode
 
 
-class JoinURL(GraphNode[str]):
+class JoinURL(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Join a base URL with a relative URL using ``urllib.parse.urljoin``.
     urllib, join, url
@@ -68,25 +67,23 @@ class JoinURL(GraphNode[str]):
         default="", description="Relative or absolute URL"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.urllib.JoinURL
 
     @classmethod
     def get_node_type(cls):
-        return "lib.urllib.JoinURL"
-
-
-JoinURL.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.urllib
+from nodetool.workflows.base_node import BaseNode
 
 
-class ParseURL(GraphNode[dict]):
+class ParseURL(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Parse a URL into its components using ``urllib.parse.urlparse``.
     urllib, parse, url
@@ -99,25 +96,23 @@ class ParseURL(GraphNode[dict]):
 
     url: str | OutputHandle[str] = connect_field(default="", description="URL to parse")
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.urllib.ParseURL
 
     @classmethod
     def get_node_type(cls):
-        return "lib.urllib.ParseURL"
-
-
-ParseURL.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.urllib
+from nodetool.workflows.base_node import BaseNode
 
 
-class QuoteURL(GraphNode[str]):
+class QuoteURL(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Percent-encode a string for safe use in URLs using ``urllib.parse.quote``.
     urllib, quote, encode
@@ -132,25 +127,23 @@ class QuoteURL(GraphNode[str]):
         default="", description="Text to quote"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.urllib.QuoteURL
 
     @classmethod
     def get_node_type(cls):
-        return "lib.urllib.QuoteURL"
-
-
-QuoteURL.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.urllib
+from nodetool.workflows.base_node import BaseNode
 
 
-class UnquoteURL(GraphNode[str]):
+class UnquoteURL(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Decode a percent-encoded URL string using ``urllib.parse.unquote``.
     urllib, unquote, decode
@@ -165,13 +158,10 @@ class UnquoteURL(GraphNode[str]):
         default="", description="Encoded text"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.urllib.UnquoteURL
 
     @classmethod
     def get_node_type(cls):
-        return "lib.urllib.UnquoteURL"
-
-
-UnquoteURL.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

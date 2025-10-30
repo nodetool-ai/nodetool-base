@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
+from nodetool.workflows.base_node import BaseNode
 
 
-class ChartGenerator(GraphNode[types.PlotlyConfig]):
+class ChartGenerator(
+    SingleOutputGraphNode[types.PlotlyConfig], GraphNode[types.PlotlyConfig]
+):
     """
     LLM Agent to create Plotly Express charts based on natural language descriptions.
     llm, data visualization, charts
@@ -51,24 +54,20 @@ class ChartGenerator(GraphNode[types.PlotlyConfig]):
         default=4096, description="The maximum number of tokens to generate."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.PlotlyConfig]:
-        return typing.cast(
-            OutputHandle[types.PlotlyConfig], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.generators.ChartGenerator
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.generators.ChartGenerator"
-
-
-ChartGenerator.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
+from nodetool.workflows.base_node import BaseNode
 
 
 class DataGenerator(
@@ -112,8 +111,12 @@ class DataGenerator(
         return DataGeneratorOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.generators.DataGenerator
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.generators.DataGenerator"
+        return cls.get_node_class().get_node_type()
 
 
 class DataGeneratorOutputs(OutputsProxy):
@@ -132,13 +135,11 @@ class DataGeneratorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["index"])
 
 
-DataGenerator.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
+from nodetool.workflows.base_node import BaseNode
 
 
 class ListGenerator(
@@ -177,8 +178,12 @@ class ListGenerator(
         return ListGeneratorOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.generators.ListGenerator
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.generators.ListGenerator"
+        return cls.get_node_class().get_node_type()
 
 
 class ListGeneratorOutputs(OutputsProxy):
@@ -191,16 +196,16 @@ class ListGeneratorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["index"])
 
 
-ListGenerator.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
+from nodetool.workflows.base_node import BaseNode
 
 
-class SVGGenerator(GraphNode[list[types.SVGElement]]):
+class SVGGenerator(
+    SingleOutputGraphNode[list[types.SVGElement]], GraphNode[list[types.SVGElement]]
+):
     """
     LLM Agent to create SVG elements based on user prompts.
     svg, generator, vector, graphics
@@ -235,18 +240,13 @@ class SVGGenerator(GraphNode[list[types.SVGElement]]):
         default=8192, description="The maximum number of tokens to generate."
     )
 
-    @property
-    def output(self) -> OutputHandle[list[types.SVGElement]]:
-        return typing.cast(
-            OutputHandle[list[types.SVGElement]], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.generators.SVGGenerator
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.generators.SVGGenerator"
-
-
-SVGGenerator.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
@@ -258,6 +258,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.generators
+from nodetool.workflows.base_node import BaseNode
 
 
 class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
@@ -303,8 +304,9 @@ class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
         return typing.cast(DynamicOutputsProxy, self._outputs_proxy())
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.generators.StructuredOutputGenerator
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.generators.StructuredOutputGenerator"
-
-
-StructuredOutputGenerator.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

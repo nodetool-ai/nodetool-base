@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class ListDocuments(
@@ -41,8 +42,12 @@ class ListDocuments(
         return ListDocumentsOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.ListDocuments
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.ListDocuments"
+        return cls.get_node_class().get_node_type()
 
 
 class ListDocumentsOutputs(OutputsProxy):
@@ -51,16 +56,16 @@ class ListDocumentsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.DocumentRef], self["document"])
 
 
-ListDocuments.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
-class LoadDocumentFile(GraphNode[types.DocumentRef]):
+class LoadDocumentFile(
+    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
+):
     """
     Read a document from disk.
     files, document, read, input, load, file
@@ -70,27 +75,23 @@ class LoadDocumentFile(GraphNode[types.DocumentRef]):
         default="", description="Path to the document to read"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DocumentRef]:
-        return typing.cast(
-            OutputHandle[types.DocumentRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.LoadDocumentFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.document.LoadDocumentFile"
-
-
-LoadDocumentFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveDocumentFile(GraphNode[typing.Any]):
+class SaveDocumentFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Write a document to disk.
     files, document, write, output, save, file
@@ -112,22 +113,20 @@ class SaveDocumentFile(GraphNode[typing.Any]):
         description="Name of the file to save. Supports strftime format codes.",
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SaveDocumentFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SaveDocumentFile"
-
-
-SaveDocumentFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class SplitDocument(
@@ -167,8 +166,12 @@ class SplitDocument(
         return SplitDocumentOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SplitDocument
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SplitDocument"
+        return cls.get_node_class().get_node_type()
 
 
 class SplitDocumentOutputs(OutputsProxy):
@@ -185,13 +188,11 @@ class SplitDocumentOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["start_index"])
 
 
-SplitDocument.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class SplitHTML(GraphNode[nodetool.nodes.nodetool.document.SplitHTML.OutputType]):
@@ -210,8 +211,12 @@ class SplitHTML(GraphNode[nodetool.nodes.nodetool.document.SplitHTML.OutputType]
         return SplitHTMLOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SplitHTML
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SplitHTML"
+        return cls.get_node_class().get_node_type()
 
 
 class SplitHTMLOutputs(OutputsProxy):
@@ -228,13 +233,11 @@ class SplitHTMLOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["start_index"])
 
 
-SplitHTML.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class SplitJSON(GraphNode[nodetool.nodes.nodetool.document.SplitJSON.OutputType]):
@@ -259,8 +262,12 @@ class SplitJSON(GraphNode[nodetool.nodes.nodetool.document.SplitJSON.OutputType]
         return SplitJSONOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SplitJSON
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SplitJSON"
+        return cls.get_node_class().get_node_type()
 
 
 class SplitJSONOutputs(OutputsProxy):
@@ -277,13 +284,11 @@ class SplitJSONOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["start_index"])
 
 
-SplitJSON.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class SplitMarkdown(
@@ -328,8 +333,12 @@ class SplitMarkdown(
         return SplitMarkdownOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SplitMarkdown
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SplitMarkdown"
+        return cls.get_node_class().get_node_type()
 
 
 class SplitMarkdownOutputs(OutputsProxy):
@@ -346,13 +355,11 @@ class SplitMarkdownOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["start_index"])
 
 
-SplitMarkdown.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class SplitRecursively(
@@ -388,8 +395,12 @@ class SplitRecursively(
         return SplitRecursivelyOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SplitRecursively
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SplitRecursively"
+        return cls.get_node_class().get_node_type()
 
 
 class SplitRecursivelyOutputs(OutputsProxy):
@@ -406,13 +417,11 @@ class SplitRecursivelyOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["start_index"])
 
 
-SplitRecursively.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
+from nodetool.workflows.base_node import BaseNode
 
 
 class SplitSentences(
@@ -444,8 +453,12 @@ class SplitSentences(
         return SplitSentencesOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.document.SplitSentences
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.document.SplitSentences"
+        return cls.get_node_class().get_node_type()
 
 
 class SplitSentencesOutputs(OutputsProxy):
@@ -460,6 +473,3 @@ class SplitSentencesOutputs(OutputsProxy):
     @property
     def start_index(self) -> OutputHandle[int]:
         return typing.cast(OutputHandle[int], self["start_index"])
-
-
-SplitSentences.model_rebuild(force=True)

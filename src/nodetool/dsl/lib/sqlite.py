@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
 class CreateTable(GraphNode[nodetool.nodes.lib.sqlite.CreateTable.OutputType]):
@@ -52,8 +53,12 @@ class CreateTable(GraphNode[nodetool.nodes.lib.sqlite.CreateTable.OutputType]):
         return CreateTableOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.CreateTable
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.CreateTable"
+        return cls.get_node_class().get_node_type()
 
 
 class CreateTableOutputs(OutputsProxy):
@@ -70,16 +75,14 @@ class CreateTableOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.RecordType], self["columns"])
 
 
-CreateTable.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
-class Delete(GraphNode[dict[str, Any]]):
+class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
     Delete records from a SQLite table.
     sqlite, database, delete, remove, drop
@@ -101,25 +104,23 @@ class Delete(GraphNode[dict[str, Any]]):
         description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'. REQUIRED for safety.",
     )
 
-    @property
-    def output(self) -> OutputHandle[dict[str, Any]]:
-        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.Delete
 
     @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.Delete"
-
-
-Delete.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExecuteSQL(GraphNode[dict[str, Any]]):
+class ExecuteSQL(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
     Execute arbitrary SQL statements for advanced operations.
     sqlite, database, sql, execute, custom
@@ -140,25 +141,23 @@ class ExecuteSQL(GraphNode[dict[str, Any]]):
         default=[], description="Parameters for parameterized queries (use ? in SQL)"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict[str, Any]]:
-        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.ExecuteSQL
 
     @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.ExecuteSQL"
-
-
-ExecuteSQL.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetDatabasePath(GraphNode[str]):
+class GetDatabasePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get the full path to a SQLite database file.
     sqlite, database, path, location
@@ -173,25 +172,23 @@ class GetDatabasePath(GraphNode[str]):
         default="memory.db", description="Name of the SQLite database file"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.GetDatabasePath
 
     @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.GetDatabasePath"
-
-
-GetDatabasePath.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
-class Insert(GraphNode[dict[str, Any]]):
+class Insert(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
     Insert a record into a SQLite table.
     sqlite, database, insert, add, record
@@ -213,25 +210,25 @@ class Insert(GraphNode[dict[str, Any]]):
         description="Data to insert as dict (column: value)",
     )
 
-    @property
-    def output(self) -> OutputHandle[dict[str, Any]]:
-        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.Insert
 
     @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.Insert"
-
-
-Insert.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
-class Query(GraphNode[list[dict[str, Any]]]):
+class Query(
+    SingleOutputGraphNode[list[dict[str, Any]]], GraphNode[list[dict[str, Any]]]
+):
     """
     Query records from a SQLite table.
     sqlite, database, query, select, search, retrieve
@@ -262,27 +259,23 @@ class Query(GraphNode[list[dict[str, Any]]]):
         default=0, description="Maximum number of rows to return (0 = no limit)"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict[str, Any]]]:
-        return typing.cast(
-            OutputHandle[list[dict[str, Any]]], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.Query
 
     @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.Query"
-
-
-Query.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
+from nodetool.workflows.base_node import BaseNode
 
 
-class Update(GraphNode[dict[str, Any]]):
+class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
     Update records in a SQLite table.
     sqlite, database, update, modify, change
@@ -307,13 +300,10 @@ class Update(GraphNode[dict[str, Any]]):
         default="", description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict[str, Any]]:
-        return typing.cast(OutputHandle[dict[str, Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.sqlite.Update
 
     @classmethod
     def get_node_type(cls):
-        return "lib.sqlite.Update"
-
-
-Update.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

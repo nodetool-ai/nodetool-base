@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
-class BaseUrl(GraphNode[str]):
+class BaseUrl(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Extract the base URL from a given URL.
     url parsing, domain extraction, web utilities
@@ -34,22 +35,20 @@ class BaseUrl(GraphNode[str]):
         default="", description="The URL to extract the base from"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.BaseUrl
 
     @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.BaseUrl"
-
-
-BaseUrl.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
 class ExtractAudio(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractAudio.OutputType]):
@@ -76,8 +75,12 @@ class ExtractAudio(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractAudio.Outpu
         return ExtractAudioOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.ExtractAudio
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.ExtractAudio"
+        return cls.get_node_class().get_node_type()
 
 
 class ExtractAudioOutputs(OutputsProxy):
@@ -86,13 +89,11 @@ class ExtractAudioOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.AudioRef], self["audio"])
 
 
-ExtractAudio.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
 class ExtractImages(
@@ -121,8 +122,12 @@ class ExtractImages(
         return ExtractImagesOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.ExtractImages
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.ExtractImages"
+        return cls.get_node_class().get_node_type()
 
 
 class ExtractImagesOutputs(OutputsProxy):
@@ -131,13 +136,11 @@ class ExtractImagesOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.ImageRef], self["image"])
 
 
-ExtractImages.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
 class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.OutputType]):
@@ -164,8 +167,12 @@ class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.Outpu
         return ExtractLinksOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.ExtractLinks
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.ExtractLinks"
+        return cls.get_node_class().get_node_type()
 
 
 class ExtractLinksOutputs(OutputsProxy):
@@ -182,13 +189,11 @@ class ExtractLinksOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["type"])
 
 
-ExtractLinks.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
 class ExtractMetadata(
@@ -213,8 +218,12 @@ class ExtractMetadata(
         return ExtractMetadataOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.ExtractMetadata
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.ExtractMetadata"
+        return cls.get_node_class().get_node_type()
 
 
 class ExtractMetadataOutputs(OutputsProxy):
@@ -231,13 +240,11 @@ class ExtractMetadataOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["keywords"])
 
 
-ExtractMetadata.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
 class ExtractVideos(
@@ -266,8 +273,12 @@ class ExtractVideos(
         return ExtractVideosOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.ExtractVideos
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.ExtractVideos"
+        return cls.get_node_class().get_node_type()
 
 
 class ExtractVideosOutputs(OutputsProxy):
@@ -276,16 +287,14 @@ class ExtractVideosOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.VideoRef], self["video"])
 
 
-ExtractVideos.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
-class HTMLToText(GraphNode[str]):
+class HTMLToText(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Converts HTML to plain text by removing tags and decoding entities using BeautifulSoup.
     html, text, convert
@@ -301,25 +310,23 @@ class HTMLToText(GraphNode[str]):
         default=True, description="Convert block-level elements to newlines"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.HTMLToText
 
     @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.HTMLToText"
-
-
-HTMLToText.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
+from nodetool.workflows.base_node import BaseNode
 
 
-class WebsiteContentExtractor(GraphNode[str]):
+class WebsiteContentExtractor(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Extract main content from a website, removing navigation, ads, and other non-essential elements.
     scrape, web scraping, content extraction, text analysis
@@ -334,13 +341,10 @@ class WebsiteContentExtractor(GraphNode[str]):
         default="", description="The raw HTML content of the website."
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.beautifulsoup.WebsiteContentExtractor
 
     @classmethod
     def get_node_type(cls):
-        return "lib.beautifulsoup.WebsiteContentExtractor"
-
-
-WebsiteContentExtractor.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

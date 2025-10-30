@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class CopyWorkspaceFile(GraphNode[str]):
+class CopyWorkspaceFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Copy a file within the workspace.
     workspace, file, copy, duplicate
@@ -36,25 +37,23 @@ class CopyWorkspaceFile(GraphNode[str]):
         default="", description="Relative destination path within workspace"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.CopyWorkspaceFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.CopyWorkspaceFile"
-
-
-CopyWorkspaceFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class CreateWorkspaceDirectory(GraphNode[str]):
+class CreateWorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Create a directory in the workspace.
     workspace, directory, create, folder
@@ -69,25 +68,23 @@ class CreateWorkspaceDirectory(GraphNode[str]):
         default="", description="Relative path to directory within workspace"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.CreateWorkspaceDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.CreateWorkspaceDirectory"
-
-
-CreateWorkspaceDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class DeleteWorkspaceFile(GraphNode[NoneType]):
+class DeleteWorkspaceFile(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
     Delete a file or directory from the workspace.
     workspace, file, delete, remove
@@ -105,25 +102,23 @@ class DeleteWorkspaceFile(GraphNode[NoneType]):
         default=False, description="Delete directories recursively"
     )
 
-    @property
-    def output(self) -> OutputHandle[NoneType]:
-        return typing.cast(OutputHandle[NoneType], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.DeleteWorkspaceFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.DeleteWorkspaceFile"
-
-
-DeleteWorkspaceFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetWorkspaceDir(GraphNode[str]):
+class GetWorkspaceDir(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Get the current workspace directory path.
     workspace, directory, path
@@ -134,25 +129,23 @@ class GetWorkspaceDir(GraphNode[str]):
     - Pass workspace path to other nodes
     """
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.GetWorkspaceDir
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.GetWorkspaceDir"
-
-
-GetWorkspaceDir.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetWorkspaceFileInfo(GraphNode[dict]):
+class GetWorkspaceFileInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Get information about a file in the workspace.
     workspace, file, info, metadata
@@ -167,25 +160,23 @@ class GetWorkspaceFileInfo(GraphNode[dict]):
         default="", description="Relative path to file within workspace"
     )
 
-    @property
-    def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.GetWorkspaceFileInfo
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.GetWorkspaceFileInfo"
-
-
-GetWorkspaceFileInfo.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetWorkspaceFileSize(GraphNode[int]):
+class GetWorkspaceFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Get file size in bytes for a workspace file.
     workspace, file, size, bytes
@@ -200,25 +191,23 @@ class GetWorkspaceFileSize(GraphNode[int]):
         default="", description="Relative path to file within workspace"
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.GetWorkspaceFileSize
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.GetWorkspaceFileSize"
-
-
-GetWorkspaceFileSize.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class IsWorkspaceDirectory(GraphNode[bool]):
+class IsWorkspaceDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if a path in the workspace is a directory.
     workspace, directory, check, type
@@ -233,25 +222,23 @@ class IsWorkspaceDirectory(GraphNode[bool]):
         default="", description="Relative path within workspace to check"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.IsWorkspaceDirectory
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.IsWorkspaceDirectory"
-
-
-IsWorkspaceDirectory.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class IsWorkspaceFile(GraphNode[bool]):
+class IsWorkspaceFile(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if a path in the workspace is a file.
     workspace, file, check, type
@@ -266,25 +253,23 @@ class IsWorkspaceFile(GraphNode[bool]):
         default="", description="Relative path within workspace to check"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.IsWorkspaceFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.IsWorkspaceFile"
-
-
-IsWorkspaceFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class JoinWorkspacePaths(GraphNode[str]):
+class JoinWorkspacePaths(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Join path components relative to workspace.
     workspace, path, join, combine
@@ -299,22 +284,20 @@ class JoinWorkspacePaths(GraphNode[str]):
         default=[], description="Path components to join (relative to workspace)"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.JoinWorkspacePaths
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.JoinWorkspacePaths"
-
-
-JoinWorkspacePaths.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
 class ListWorkspaceFiles(
@@ -346,8 +329,12 @@ class ListWorkspaceFiles(
         return ListWorkspaceFilesOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.ListWorkspaceFiles
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.ListWorkspaceFiles"
+        return cls.get_node_class().get_node_type()
 
 
 class ListWorkspaceFilesOutputs(OutputsProxy):
@@ -356,16 +343,14 @@ class ListWorkspaceFilesOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["file"])
 
 
-ListWorkspaceFiles.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class MoveWorkspaceFile(GraphNode[str]):
+class MoveWorkspaceFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Move or rename a file within the workspace.
     workspace, file, move, rename
@@ -383,25 +368,23 @@ class MoveWorkspaceFile(GraphNode[str]):
         default="", description="Relative destination path within workspace"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.MoveWorkspaceFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.MoveWorkspaceFile"
-
-
-MoveWorkspaceFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class ReadBinaryFile(GraphNode[str]):
+class ReadBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Read a binary file from the workspace as base64-encoded string.
     workspace, file, read, binary
@@ -416,25 +399,23 @@ class ReadBinaryFile(GraphNode[str]):
         default="", description="Relative path to file within workspace"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.ReadBinaryFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.ReadBinaryFile"
-
-
-ReadBinaryFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class ReadTextFile(GraphNode[str]):
+class ReadTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Read a text file from the workspace.
     workspace, file, read, text
@@ -452,25 +433,23 @@ class ReadTextFile(GraphNode[str]):
         default="utf-8", description="Text encoding (utf-8, ascii, etc.)"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.ReadTextFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.ReadTextFile"
-
-
-ReadTextFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveImageFile(GraphNode[types.ImageRef]):
+class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Save an image to a file in the workspace.
     workspace, image, save, file, output
@@ -498,25 +477,23 @@ class SaveImageFile(GraphNode[types.ImageRef]):
         description="Overwrite the file if it already exists, otherwise file will be renamed",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.SaveImageFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.SaveImageFile"
-
-
-SaveImageFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveVideoFile(GraphNode[types.VideoRef]):
+class SaveVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Save a video file to the workspace.
     workspace, video, save, file, output
@@ -550,25 +527,23 @@ class SaveVideoFile(GraphNode[types.VideoRef]):
         description="Overwrite the file if it already exists, otherwise file will be renamed",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.VideoRef]:
-        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.SaveVideoFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.SaveVideoFile"
-
-
-SaveVideoFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class WorkspaceFileExists(GraphNode[bool]):
+class WorkspaceFileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if a file or directory exists in the workspace.
     workspace, file, exists, check
@@ -583,25 +558,23 @@ class WorkspaceFileExists(GraphNode[bool]):
         default="", description="Relative path within workspace to check"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.WorkspaceFileExists
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.WorkspaceFileExists"
-
-
-WorkspaceFileExists.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class WriteBinaryFile(GraphNode[str]):
+class WriteBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Write binary data (base64-encoded) to a file in the workspace.
     workspace, file, write, binary, save
@@ -619,25 +592,23 @@ class WriteBinaryFile(GraphNode[str]):
         default="", description="Base64-encoded binary content to write"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.WriteBinaryFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.WriteBinaryFile"
-
-
-WriteBinaryFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
+from nodetool.workflows.base_node import BaseNode
 
 
-class WriteTextFile(GraphNode[str]):
+class WriteTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Write text to a file in the workspace.
     workspace, file, write, text, save
@@ -661,13 +632,10 @@ class WriteTextFile(GraphNode[str]):
         default=False, description="Append to file instead of overwriting"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.workspace.WriteTextFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.workspace.WriteTextFile"
-
-
-WriteTextFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

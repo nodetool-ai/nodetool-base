@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.grid
+from nodetool.workflows.base_node import BaseNode
 
 
-class CombineImageGrid(GraphNode[types.ImageRef]):
+class CombineImageGrid(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Combine a grid of image tiles into a single image.
     image, grid, combine, tiles
@@ -36,25 +39,25 @@ class CombineImageGrid(GraphNode[types.ImageRef]):
         default=0, description="Number of columns in the grid."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.grid.CombineImageGrid
 
     @classmethod
     def get_node_type(cls):
-        return "lib.grid.CombineImageGrid"
-
-
-CombineImageGrid.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.grid
+from nodetool.workflows.base_node import BaseNode
 
 
-class SliceImageGrid(GraphNode[list[types.ImageRef]]):
+class SliceImageGrid(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
     """
     Slice an image into a grid of tiles.
     image, grid, slice, tiles
@@ -76,15 +79,10 @@ class SliceImageGrid(GraphNode[list[types.ImageRef]]):
         default=0, description="Number of rows in the grid."
     )
 
-    @property
-    def output(self) -> OutputHandle[list[types.ImageRef]]:
-        return typing.cast(
-            OutputHandle[list[types.ImageRef]], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.grid.SliceImageGrid
 
     @classmethod
     def get_node_type(cls):
-        return "lib.grid.SliceImageGrid"
-
-
-SliceImageGrid.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

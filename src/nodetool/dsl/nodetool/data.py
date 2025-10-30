@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class AddColumn(GraphNode[types.DataframeRef]):
+class AddColumn(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Add list of values as new column to dataframe.
     dataframe, column, list
@@ -44,27 +47,25 @@ class AddColumn(GraphNode[types.DataframeRef]):
         description="A list of any type of elements which will be the new column's values.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.AddColumn
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.AddColumn"
-
-
-AddColumn.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Aggregate(GraphNode[types.DataframeRef]):
+class Aggregate(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Aggregate dataframe by one or more columns.
     aggregate, groupby, group, sum, mean, count, min, max, std, var, median, first, last
@@ -89,27 +90,23 @@ class Aggregate(GraphNode[types.DataframeRef]):
         description="Aggregation function: sum, mean, count, min, max, std, var, median, first, last",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Aggregate
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Aggregate"
-
-
-Aggregate.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Append(GraphNode[types.DataframeRef]):
+class Append(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Append two dataframes along rows.
     append, concat, rows
@@ -133,27 +130,25 @@ class Append(GraphNode[types.DataframeRef]):
         description="Second DataFrame to be appended.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Append
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Append"
-
-
-Append.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class DropDuplicates(GraphNode[types.DataframeRef]):
+class DropDuplicates(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Remove duplicate rows from dataframe.
     duplicates, unique, clean
@@ -171,27 +166,23 @@ class DropDuplicates(GraphNode[types.DataframeRef]):
         description="The input DataFrame.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.DropDuplicates
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.DropDuplicates"
-
-
-DropDuplicates.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class DropNA(GraphNode[types.DataframeRef]):
+class DropNA(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Remove rows with NA values from dataframe.
     na, missing, clean
@@ -209,27 +200,23 @@ class DropNA(GraphNode[types.DataframeRef]):
         description="The input DataFrame.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.DropNA
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.DropNA"
-
-
-DropNA.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractColumn(GraphNode[list[Any]]):
+class ExtractColumn(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
     Convert dataframe column to list.
     dataframe, column, list
@@ -250,25 +237,23 @@ class ExtractColumn(GraphNode[list[Any]]):
         default="", description="The name of the column to be converted to a list."
     )
 
-    @property
-    def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.ExtractColumn
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.ExtractColumn"
-
-
-ExtractColumn.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class FillNA(GraphNode[types.DataframeRef]):
+class FillNA(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Fill missing values in dataframe.
     fillna, missing, impute
@@ -297,27 +282,23 @@ class FillNA(GraphNode[types.DataframeRef]):
         description="Comma-separated column names to fill. Leave empty for all columns.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.FillNA
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.FillNA"
-
-
-FillNA.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Filter(GraphNode[types.DataframeRef]):
+class Filter(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Filter dataframe based on condition.
     filter, query, condition
@@ -347,27 +328,23 @@ class Filter(GraphNode[types.DataframeRef]):
         description="The filtering condition to be applied to the DataFrame, e.g. column_name > 5.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Filter
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Filter"
-
-
-Filter.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class FindRow(GraphNode[types.DataframeRef]):
+class FindRow(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Find the first row in a dataframe that matches a given condition.
     filter, query, condition, single row
@@ -397,27 +374,25 @@ class FindRow(GraphNode[types.DataframeRef]):
         description="The condition to filter the DataFrame, e.g. 'column_name == value'.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.FindRow
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.FindRow"
-
-
-FindRow.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class FromList(GraphNode[types.DataframeRef]):
+class FromList(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Convert list of dicts to dataframe.
     list, dataframe, convert
@@ -433,27 +408,25 @@ class FromList(GraphNode[types.DataframeRef]):
         description="List of values to be converted, each value will be a row.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.FromList
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.FromList"
-
-
-FromList.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class ImportCSV(GraphNode[types.DataframeRef]):
+class ImportCSV(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Convert CSV string to dataframe.
     csv, dataframe, import
@@ -467,27 +440,25 @@ class ImportCSV(GraphNode[types.DataframeRef]):
         default="", description="String input of CSV formatted text."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.ImportCSV
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.ImportCSV"
-
-
-ImportCSV.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class JSONToDataframe(GraphNode[types.DataframeRef]):
+class JSONToDataframe(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Transforms a JSON string into a pandas DataFrame.
     json, dataframe, conversion
@@ -500,27 +471,23 @@ class JSONToDataframe(GraphNode[types.DataframeRef]):
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.JSONToDataframe
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.JSONToDataframe"
-
-
-JSONToDataframe.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Join(GraphNode[types.DataframeRef]):
+class Join(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Join two dataframes on specified column.
     join, merge, column
@@ -547,24 +514,20 @@ class Join(GraphNode[types.DataframeRef]):
         default="", description="The column name on which to join the two dataframes."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Join
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Join"
-
-
-Join.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
 class LoadCSVAssets(GraphNode[nodetool.nodes.nodetool.data.LoadCSVAssets.OutputType]):
@@ -588,8 +551,12 @@ class LoadCSVAssets(GraphNode[nodetool.nodes.nodetool.data.LoadCSVAssets.OutputT
         return LoadCSVAssetsOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.LoadCSVAssets
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.data.LoadCSVAssets"
+        return cls.get_node_class().get_node_type()
 
 
 class LoadCSVAssetsOutputs(OutputsProxy):
@@ -602,16 +569,16 @@ class LoadCSVAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
-LoadCSVAssets.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class LoadCSVFile(GraphNode[types.DataframeRef]):
+class LoadCSVFile(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Load CSV file from file path.
     csv, dataframe, import
@@ -621,27 +588,25 @@ class LoadCSVFile(GraphNode[types.DataframeRef]):
         default="", description="The path to the CSV file to load."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.LoadCSVFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.LoadCSVFile"
-
-
-LoadCSVFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class LoadCSVURL(GraphNode[types.DataframeRef]):
+class LoadCSVURL(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Load CSV file from URL.
     csv, dataframe, import
@@ -651,27 +616,23 @@ class LoadCSVURL(GraphNode[types.DataframeRef]):
         default="", description="The URL of the CSV file to load."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.LoadCSVURL
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.LoadCSVURL"
-
-
-LoadCSVURL.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Merge(GraphNode[types.DataframeRef]):
+class Merge(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Merge two dataframes along columns.
     merge, concat, columns
@@ -695,27 +656,23 @@ class Merge(GraphNode[types.DataframeRef]):
         description="Second DataFrame to be merged.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Merge
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Merge"
-
-
-Merge.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Pivot(GraphNode[types.DataframeRef]):
+class Pivot(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Pivot dataframe to reshape data.
     pivot, reshape, transform
@@ -746,27 +703,23 @@ class Pivot(GraphNode[types.DataframeRef]):
         description="Aggregation function: sum, mean, count, min, max, first, last",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Pivot
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Pivot"
-
-
-Pivot.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Rename(GraphNode[types.DataframeRef]):
+class Rename(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Rename columns in dataframe.
     rename, columns, names
@@ -787,24 +740,20 @@ class Rename(GraphNode[types.DataframeRef]):
         default="", description="Column rename mapping in format: old1:new1,old2:new2"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Rename
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Rename"
-
-
-Rename.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
 class RowIterator(GraphNode[nodetool.nodes.nodetool.data.RowIterator.OutputType]):
@@ -824,8 +773,12 @@ class RowIterator(GraphNode[nodetool.nodes.nodetool.data.RowIterator.OutputType]
         return RowIteratorOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.RowIterator
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.data.RowIterator"
+        return cls.get_node_class().get_node_type()
 
 
 class RowIteratorOutputs(OutputsProxy):
@@ -838,16 +791,16 @@ class RowIteratorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["index"])
 
 
-RowIterator.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveCSVDataframeFile(GraphNode[types.DataframeRef]):
+class SaveCSVDataframeFile(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Write a pandas DataFrame to a CSV file.
     files, csv, write, output, save, file
@@ -871,27 +824,25 @@ class SaveCSVDataframeFile(GraphNode[types.DataframeRef]):
         description="Name of the CSV file to save. Supports strftime format codes.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.SaveCSVDataframeFile
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.SaveCSVDataframeFile"
-
-
-SaveCSVDataframeFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class SaveDataframe(GraphNode[types.DataframeRef]):
+class SaveDataframe(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Save dataframe in specified folder.
     csv, folder, save
@@ -916,27 +867,23 @@ class SaveDataframe(GraphNode[types.DataframeRef]):
         description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.SaveDataframe
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.SaveDataframe"
-
-
-SaveDataframe.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Schema(GraphNode[types.RecordType]):
+class Schema(SingleOutputGraphNode[types.RecordType], GraphNode[types.RecordType]):
     """
     Define a schema for a dataframe.
     schema, dataframe, create
@@ -947,25 +894,25 @@ class Schema(GraphNode[types.RecordType]):
         description="The columns to use in the dataframe.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.RecordType]:
-        return typing.cast(OutputHandle[types.RecordType], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Schema
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Schema"
-
-
-Schema.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class SelectColumn(GraphNode[types.DataframeRef]):
+class SelectColumn(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Select specific columns from dataframe.
     dataframe, columns, filter
@@ -986,27 +933,23 @@ class SelectColumn(GraphNode[types.DataframeRef]):
         default="", description="comma separated list of column names"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.SelectColumn
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.SelectColumn"
-
-
-SelectColumn.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class Slice(GraphNode[types.DataframeRef]):
+class Slice(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
     Slice a dataframe by rows using start and end indices.
     slice, subset, rows
@@ -1031,27 +974,25 @@ class Slice(GraphNode[types.DataframeRef]):
         description="The ending index of the slice (exclusive). Use -1 for the last row.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.Slice
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.Slice"
-
-
-Slice.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class SortByColumn(GraphNode[types.DataframeRef]):
+class SortByColumn(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
     """
     Sort dataframe by specified column.
     sort, order, column
@@ -1072,27 +1013,23 @@ class SortByColumn(GraphNode[types.DataframeRef]):
         default="", description="The column to sort the DataFrame by."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.DataframeRef]:
-        return typing.cast(
-            OutputHandle[types.DataframeRef], self._single_output_handle()
-        )
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.SortByColumn
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.SortByColumn"
-
-
-SortByColumn.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
 
 
-class ToList(GraphNode[list[dict]]):
+class ToList(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
     Convert dataframe to list of dictionaries.
     dataframe, list, convert
@@ -1110,13 +1047,10 @@ class ToList(GraphNode[list[dict]]):
         description="The input dataframe to convert.",
     )
 
-    @property
-    def output(self) -> OutputHandle[list[dict]]:
-        return typing.cast(OutputHandle[list[dict]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.ToList
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.data.ToList"
-
-
-ToList.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

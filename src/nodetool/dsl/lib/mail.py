@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
+from nodetool.workflows.base_node import BaseNode
 
 
-class AddLabel(GraphNode[bool]):
+class AddLabel(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Adds a label to a Gmail message.
     email, gmail, label
@@ -31,22 +32,20 @@ class AddLabel(GraphNode[bool]):
         default="", description="Label to add to the message"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.mail.AddLabel
 
     @classmethod
     def get_node_type(cls):
-        return "lib.mail.AddLabel"
-
-
-AddLabel.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
+from nodetool.workflows.base_node import BaseNode
 
 
 class EmailFields(GraphNode[nodetool.nodes.lib.mail.EmailFields.OutputType]):
@@ -90,8 +89,12 @@ class EmailFields(GraphNode[nodetool.nodes.lib.mail.EmailFields.OutputType]):
         return EmailFieldsOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.mail.EmailFields
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.mail.EmailFields"
+        return cls.get_node_class().get_node_type()
 
 
 class EmailFieldsOutputs(OutputsProxy):
@@ -116,13 +119,11 @@ class EmailFieldsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["body"])
 
 
-EmailFields.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.mail
 import nodetool.nodes.lib.mail
 
@@ -190,8 +191,12 @@ class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
         return GmailSearchOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.mail.GmailSearch
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.mail.GmailSearch"
+        return cls.get_node_class().get_node_type()
 
 
 class GmailSearchOutputs(OutputsProxy):
@@ -204,16 +209,14 @@ class GmailSearchOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["message_id"])
 
 
-GmailSearch.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
+from nodetool.workflows.base_node import BaseNode
 
 
-class MoveToArchive(GraphNode[bool]):
+class MoveToArchive(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Moves specified emails to Gmail archive.
     email, gmail, archive
@@ -223,25 +226,23 @@ class MoveToArchive(GraphNode[bool]):
         default="", description="Message ID to archive"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.mail.MoveToArchive
 
     @classmethod
     def get_node_type(cls):
-        return "lib.mail.MoveToArchive"
-
-
-MoveToArchive.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
+from nodetool.workflows.base_node import BaseNode
 
 
-class SendEmail(GraphNode[bool]):
+class SendEmail(SingleOutputGraphNode[bool], GraphNode[bool]):
     """Send a plain text email via SMTP.
     email, smtp, send
 
@@ -288,13 +289,10 @@ class SendEmail(GraphNode[bool]):
         default=0.1, description="Random jitter (seconds) added to each backoff"
     )
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.mail.SendEmail
 
     @classmethod
     def get_node_type(cls):
-        return "lib.mail.SendEmail"
-
-
-SendEmail.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

@@ -10,17 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.openai.audio
 import nodetool.nodes.openai.audio
 
 
-class TextToSpeech(GraphNode[types.AudioRef]):
+class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Converts text to speech using OpenAI TTS models.
     audio, tts, text-to-speech, voice, synthesis
@@ -44,22 +45,20 @@ class TextToSpeech(GraphNode[types.AudioRef]):
     input: str | OutputHandle[str] = connect_field(default="", description=None)
     speed: float | OutputHandle[float] = connect_field(default=1.0, description=None)
 
-    @property
-    def output(self) -> OutputHandle[types.AudioRef]:
-        return typing.cast(OutputHandle[types.AudioRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.audio.TextToSpeech
 
     @classmethod
     def get_node_type(cls):
-        return "openai.audio.TextToSpeech"
-
-
-TextToSpeech.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.openai.audio
 import nodetool.nodes.openai.audio
 
@@ -110,8 +109,12 @@ class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
         return TranscribeOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.audio.Transcribe
+
+    @classmethod
     def get_node_type(cls):
-        return "openai.audio.Transcribe"
+        return cls.get_node_class().get_node_type()
 
 
 class TranscribeOutputs(OutputsProxy):
@@ -128,16 +131,14 @@ class TranscribeOutputs(OutputsProxy):
         return typing.cast(OutputHandle[list[types.AudioChunk]], self["segments"])
 
 
-Transcribe.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
+from nodetool.workflows.base_node import BaseNode
 
 
-class Translate(GraphNode[str]):
+class Translate(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Translates speech in audio to English text.
     audio, translation, speech-to-text, localization
@@ -157,13 +158,10 @@ class Translate(GraphNode[str]):
         default=0.0, description="The temperature to use for the translation."
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.audio.Translate
 
     @classmethod
     def get_node_type(cls):
-        return "openai.audio.Translate"
-
-
-Translate.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

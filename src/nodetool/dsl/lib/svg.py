@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class CircleNode(GraphNode[types.SVGElement]):
+class CircleNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Generate SVG circle element.
     svg, shape, vector, circle
@@ -41,25 +42,23 @@ class CircleNode(GraphNode[types.SVGElement]):
         default=1, description="Stroke width"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.CircleNode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Circle"
-
-
-CircleNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class ClipPath(GraphNode[types.SVGElement]):
+class ClipPath(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Create clipping paths for SVG elements.
     svg, clip, mask
@@ -77,25 +76,23 @@ class ClipPath(GraphNode[types.SVGElement]):
         default=None, description="SVG element to clip"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.ClipPath
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.ClipPath"
-
-
-ClipPath.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class Document(GraphNode[types.SVGRef]):
+class Document(SingleOutputGraphNode[types.SVGRef], GraphNode[types.SVGRef]):
     """
     Combine SVG elements into a complete SVG document.
     svg, document, combine
@@ -126,25 +123,23 @@ class Document(GraphNode[types.SVGRef]):
         default="0 0 800 600", description="SVG viewBox attribute"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGRef]:
-        return typing.cast(OutputHandle[types.SVGRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.Document
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Document"
-
-
-Document.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class DropShadow(GraphNode[types.SVGElement]):
+class DropShadow(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Apply drop shadow filter to SVG elements.
     svg, filter, shadow, effects
@@ -164,25 +159,23 @@ class DropShadow(GraphNode[types.SVGElement]):
         description="Color for shadow",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.DropShadow
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.DropShadow"
-
-
-DropShadow.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class EllipseNode(GraphNode[types.SVGElement]):
+class EllipseNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Generate SVG ellipse element.
     svg, shape, vector, ellipse
@@ -206,25 +199,25 @@ class EllipseNode(GraphNode[types.SVGElement]):
         default=1, description="Stroke width"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.EllipseNode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Ellipse"
-
-
-EllipseNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class GaussianBlur(GraphNode[types.SVGElement]):
+class GaussianBlur(
+    SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]
+):
     """
     Apply Gaussian blur filter to SVG elements.
     svg, filter, blur, effects
@@ -234,26 +227,24 @@ class GaussianBlur(GraphNode[types.SVGElement]):
         default=3.0, description="Standard deviation for blur"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.GaussianBlur
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.GaussianBlur"
-
-
-GaussianBlur.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.svg
 
 
-class Gradient(GraphNode[types.SVGElement]):
+class Gradient(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Create linear or radial gradients for SVG elements.
     svg, gradient, color
@@ -290,25 +281,23 @@ class Gradient(GraphNode[types.SVGElement]):
         description="End color of gradient",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.Gradient
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Gradient"
-
-
-Gradient.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class LineNode(GraphNode[types.SVGElement]):
+class LineNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Generate SVG line element.
     svg, shape, vector, line
@@ -334,25 +323,23 @@ class LineNode(GraphNode[types.SVGElement]):
         default=1, description="Stroke width"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.LineNode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Line"
-
-
-LineNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class PathNode(GraphNode[types.SVGElement]):
+class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Generate SVG path element.
     svg, shape, vector, path
@@ -371,25 +358,23 @@ class PathNode(GraphNode[types.SVGElement]):
         default=1, description="Stroke width"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.PathNode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Path"
-
-
-PathNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class PolygonNode(GraphNode[types.SVGElement]):
+class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Generate SVG polygon element.
     svg, shape, vector, polygon
@@ -408,25 +393,23 @@ class PolygonNode(GraphNode[types.SVGElement]):
         default=1, description="Stroke width"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.PolygonNode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Polygon"
-
-
-PolygonNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class RectNode(GraphNode[types.SVGElement]):
+class RectNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Generate SVG rectangle element.
     svg, shape, vector, rectangle
@@ -446,25 +429,23 @@ class RectNode(GraphNode[types.SVGElement]):
         default=1, description="Stroke width"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.RectNode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Rect"
-
-
-RectNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class SVGToImage(GraphNode[types.ImageRef]):
+class SVGToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Create an SVG document and convert it to a raster image in one step.
     svg, document, raster, convert
@@ -498,26 +479,24 @@ class SVGToImage(GraphNode[types.ImageRef]):
         default=1, description="Scale factor for rasterization"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.SVGToImage
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.SVGToImage"
-
-
-SVGToImage.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.svg
 
 
-class Text(GraphNode[types.SVGElement]):
+class Text(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Add text elements to SVG.
     svg, text, typography
@@ -548,25 +527,23 @@ class Text(GraphNode[types.SVGElement]):
         description="Text anchor position",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.Text
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Text"
-
-
-Text.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
+from nodetool.workflows.base_node import BaseNode
 
 
-class Transform(GraphNode[types.SVGElement]):
+class Transform(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
     Apply transformations to SVG elements.
     svg, transform, animation
@@ -596,13 +573,10 @@ class Transform(GraphNode[types.SVGElement]):
         default=1, description="Y scale factor"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.SVGElement]:
-        return typing.cast(OutputHandle[types.SVGElement], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.svg.Transform
 
     @classmethod
     def get_node_type(cls):
-        return "lib.svg.Transform"
-
-
-Transform.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

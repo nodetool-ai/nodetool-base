@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Add(GraphNode[int | float]):
+class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Adds two numbers.
     math, add, plus
@@ -31,25 +32,23 @@ class Add(GraphNode[int | float]):
         default=0.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Add
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Add"
-
-
-Add.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Cosine(GraphNode[int | float]):
+class Cosine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Computes cosine of the given angle in radians.
     math, cosine, trig
@@ -59,25 +58,23 @@ class Cosine(GraphNode[int | float]):
         default=0.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Cosine
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Cosine"
-
-
-Cosine.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Divide(GraphNode[int | float]):
+class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Divides A by B.
     math, divide, division, quotient
@@ -90,26 +87,24 @@ class Divide(GraphNode[int | float]):
         default=1.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Divide
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Divide"
-
-
-Divide.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.math
 
 
-class MathFunction(GraphNode[int | float]):
+class MathFunction(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Performs a selected unary math operation on an input.
     math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
@@ -124,25 +119,23 @@ class MathFunction(GraphNode[int | float]):
         description="Unary operation to perform",
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.MathFunction
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.MathFunction"
-
-
-MathFunction.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Modulus(GraphNode[int | float]):
+class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Computes A modulo B.
     math, modulus, modulo, remainder
@@ -155,25 +148,23 @@ class Modulus(GraphNode[int | float]):
         default=1.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Modulus
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Modulus"
-
-
-Modulus.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Multiply(GraphNode[int | float]):
+class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Multiplies two numbers.
     math, multiply, product
@@ -186,25 +177,23 @@ class Multiply(GraphNode[int | float]):
         default=0.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Multiply
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Multiply"
-
-
-Multiply.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Power(GraphNode[int | float]):
+class Power(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Raises base to the given exponent.
     math, power, exponent
@@ -217,25 +206,23 @@ class Power(GraphNode[int | float]):
         default=1.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Power
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Power"
-
-
-Power.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Sine(GraphNode[int | float]):
+class Sine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Computes sine of the given angle in radians.
     math, sine, trig
@@ -245,25 +232,23 @@ class Sine(GraphNode[int | float]):
         default=0.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Sine
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Sine"
-
-
-Sine.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Sqrt(GraphNode[int | float]):
+class Sqrt(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Computes square root of x.
     math, sqrt, square_root
@@ -273,25 +258,23 @@ class Sqrt(GraphNode[int | float]):
         default=0.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Sqrt
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Sqrt"
-
-
-Sqrt.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
+from nodetool.workflows.base_node import BaseNode
 
 
-class Subtract(GraphNode[int | float]):
+class Subtract(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
     Subtracts B from A.
     math, subtract, minus
@@ -304,13 +287,10 @@ class Subtract(GraphNode[int | float]):
         default=0.0, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[int | float]:
-        return typing.cast(OutputHandle[int | float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.math.Subtract
 
     @classmethod
     def get_node_type(cls):
-        return "lib.math.Subtract"
-
-
-Subtract.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

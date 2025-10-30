@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class CollectionNode(GraphNode[types.Collection]):
+class CollectionNode(
+    SingleOutputGraphNode[types.Collection], GraphNode[types.Collection]
+):
     """
     Get or create a collection.
     vector, embedding, collection, RAG, get, create, chroma
@@ -40,25 +43,23 @@ class CollectionNode(GraphNode[types.Collection]):
         description="Model to use for embedding, search for nomic-embed-text and download it",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.Collection]:
-        return typing.cast(OutputHandle[types.Collection], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.CollectionNode
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.Collection"
-
-
-CollectionNode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class Count(GraphNode[int]):
+class Count(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Count the number of documents in a collection.
     vector, embedding, collection, RAG, chroma
@@ -69,25 +70,23 @@ class Count(GraphNode[int]):
         description="The collection to count",
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.Count
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.Count"
-
-
-Count.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetDocuments(GraphNode[list[str]]):
+class GetDocuments(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Get documents from a chroma collection.
     vector, embedding, collection, RAG, retrieve, chroma
@@ -107,22 +106,20 @@ class GetDocuments(GraphNode[list[str]]):
         default=0, description="The offset of the documents to get"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.GetDocuments
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.GetDocuments"
-
-
-GetDocuments.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
 class HybridSearch(GraphNode[nodetool.nodes.vector.chroma.HybridSearch.OutputType]):
@@ -153,8 +150,12 @@ class HybridSearch(GraphNode[nodetool.nodes.vector.chroma.HybridSearch.OutputTyp
         return HybridSearchOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.HybridSearch
+
+    @classmethod
     def get_node_type(cls):
-        return "vector.chroma.HybridSearch"
+        return cls.get_node_class().get_node_type()
 
 
 class HybridSearchOutputs(OutputsProxy):
@@ -179,17 +180,15 @@ class HybridSearchOutputs(OutputsProxy):
         return typing.cast(OutputHandle[list[float]], self["scores"])
 
 
-HybridSearch.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.vector.chroma
 
 
-class IndexAggregatedText(GraphNode[typing.Any]):
+class IndexAggregatedText(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Index multiple text chunks at once with aggregated embeddings from Ollama.
     vector, embedding, collection, RAG, index, text, chunk, batch, ollama, chroma
@@ -223,25 +222,23 @@ class IndexAggregatedText(GraphNode[typing.Any]):
         description="The aggregation method to use for the embeddings.",
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.IndexAggregatedText
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.IndexAggregatedText"
-
-
-IndexAggregatedText.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class IndexEmbedding(GraphNode[typing.Any]):
+class IndexEmbedding(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
     vector, index, embedding, chroma, storage, RAG
@@ -262,25 +259,23 @@ class IndexEmbedding(GraphNode[typing.Any]):
         default={}, description="The metadata to associate with the embedding"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.IndexEmbedding
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.IndexEmbedding"
-
-
-IndexEmbedding.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class IndexImage(GraphNode[typing.Any]):
+class IndexImage(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Index a list of image assets or files.
     vector, embedding, collection, RAG, index, image, batch, chroma
@@ -304,25 +299,23 @@ class IndexImage(GraphNode[typing.Any]):
         default=False, description="Whether to upsert the images"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.IndexImage
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.IndexImage"
-
-
-IndexImage.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class IndexString(GraphNode[typing.Any]):
+class IndexString(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Index a string with a Document ID to a collection.
     vector, embedding, collection, RAG, index, text, string, chroma
@@ -345,25 +338,23 @@ class IndexString(GraphNode[typing.Any]):
         default={}, description="The metadata to associate with the text"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.IndexString
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.IndexString"
-
-
-IndexString.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class IndexTextChunk(GraphNode[typing.Any]):
+class IndexTextChunk(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Index a single text chunk.
     vector, embedding, collection, RAG, index, text, chunk, chroma
@@ -383,25 +374,23 @@ class IndexTextChunk(GraphNode[typing.Any]):
         default={}, description="The metadata to associate with the text chunk"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.IndexTextChunk
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.IndexTextChunk"
-
-
-IndexTextChunk.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
-class Peek(GraphNode[list[str]]):
+class Peek(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
     Peek at the documents in a collection.
     vector, embedding, collection, RAG, preview, chroma
@@ -415,22 +404,20 @@ class Peek(GraphNode[list[str]]):
         default=100, description="The limit of the documents to peek"
     )
 
-    @property
-    def output(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.Peek
 
     @classmethod
     def get_node_type(cls):
-        return "vector.chroma.Peek"
-
-
-Peek.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
 class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
@@ -456,8 +443,12 @@ class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
         return QueryImageOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.QueryImage
+
+    @classmethod
     def get_node_type(cls):
-        return "vector.chroma.QueryImage"
+        return cls.get_node_class().get_node_type()
 
 
 class QueryImageOutputs(OutputsProxy):
@@ -478,13 +469,11 @@ class QueryImageOutputs(OutputsProxy):
         return typing.cast(OutputHandle[list[float]], self["distances"])
 
 
-QueryImage.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
 class QueryText(GraphNode[nodetool.nodes.vector.chroma.QueryText.OutputType]):
@@ -509,8 +498,12 @@ class QueryText(GraphNode[nodetool.nodes.vector.chroma.QueryText.OutputType]):
         return QueryTextOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.QueryText
+
+    @classmethod
     def get_node_type(cls):
-        return "vector.chroma.QueryText"
+        return cls.get_node_class().get_node_type()
 
 
 class QueryTextOutputs(OutputsProxy):
@@ -531,13 +524,11 @@ class QueryTextOutputs(OutputsProxy):
         return typing.cast(OutputHandle[list[float]], self["distances"])
 
 
-QueryText.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
+from nodetool.workflows.base_node import BaseNode
 
 
 class RemoveOverlap(GraphNode[nodetool.nodes.vector.chroma.RemoveOverlap.OutputType]):
@@ -559,14 +550,15 @@ class RemoveOverlap(GraphNode[nodetool.nodes.vector.chroma.RemoveOverlap.OutputT
         return RemoveOverlapOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.vector.chroma.RemoveOverlap
+
+    @classmethod
     def get_node_type(cls):
-        return "vector.chroma.RemoveOverlap"
+        return cls.get_node_class().get_node_type()
 
 
 class RemoveOverlapOutputs(OutputsProxy):
     @property
     def documents(self) -> OutputHandle[list[str]]:
         return typing.cast(OutputHandle[list[str]], self["documents"])
-
-
-RemoveOverlap.model_rebuild(force=True)

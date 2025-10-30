@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
+from nodetool.workflows.base_node import BaseNode
 
 
-class Reshape1D(GraphNode[types.NPArray]):
+class Reshape1D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
     Reshape an array to a 1D shape without changing its data.
     array, reshape, vector, flatten
@@ -37,25 +38,23 @@ class Reshape1D(GraphNode[types.NPArray]):
         default=0, description="The number of elements"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.reshaping.Reshape1D
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.reshaping.Reshape1D"
-
-
-Reshape1D.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
+from nodetool.workflows.base_node import BaseNode
 
 
-class Reshape2D(GraphNode[types.NPArray]):
+class Reshape2D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
     Reshape an array to a new shape without changing its data.
     array, reshape, dimensions, structure
@@ -77,25 +76,23 @@ class Reshape2D(GraphNode[types.NPArray]):
         default=0, description="The number of columns"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.reshaping.Reshape2D
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.reshaping.Reshape2D"
-
-
-Reshape2D.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
+from nodetool.workflows.base_node import BaseNode
 
 
-class Reshape3D(GraphNode[types.NPArray]):
+class Reshape3D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
     Reshape an array to a 3D shape without changing its data.
     array, reshape, dimensions, volume
@@ -120,25 +117,23 @@ class Reshape3D(GraphNode[types.NPArray]):
         default=0, description="The number of depths"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.reshaping.Reshape3D
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.reshaping.Reshape3D"
-
-
-Reshape3D.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.reshaping
+from nodetool.workflows.base_node import BaseNode
 
 
-class Reshape4D(GraphNode[types.NPArray]):
+class Reshape4D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
     Reshape an array to a 4D shape without changing its data.
     array, reshape, dimensions, batch
@@ -166,13 +161,10 @@ class Reshape4D(GraphNode[types.NPArray]):
         default=0, description="The number of channels"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.reshaping.Reshape4D
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.reshaping.Reshape4D"
-
-
-Reshape4D.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

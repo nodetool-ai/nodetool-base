@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
 
 
 class Browser(GraphNode[nodetool.nodes.lib.browser.Browser.OutputType]):
@@ -42,8 +43,12 @@ class Browser(GraphNode[nodetool.nodes.lib.browser.Browser.OutputType]):
         return BrowserOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.Browser
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.browser.Browser"
+        return cls.get_node_class().get_node_type()
 
 
 class BrowserOutputs(OutputsProxy):
@@ -60,18 +65,16 @@ class BrowserOutputs(OutputsProxy):
         return typing.cast(OutputHandle[typing.Any], self["metadata"])
 
 
-Browser.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.browser
 import nodetool.nodes.lib.browser
 
 
-class BrowserNavigation(GraphNode[typing.Any]):
+class BrowserNavigation(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Navigates and interacts with web pages in a browser session.
     browser, navigation, interaction, click, extract
@@ -113,22 +116,20 @@ class BrowserNavigation(GraphNode[typing.Any]):
         description="Attribute name to extract (when extract_type is 'attribute')",
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.BrowserNavigation
 
     @classmethod
     def get_node_type(cls):
-        return "lib.browser.BrowserNavigation"
-
-
-BrowserNavigation.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.browser
 
 
@@ -169,8 +170,12 @@ class BrowserUseNode(GraphNode[nodetool.nodes.lib.browser.BrowserUseNode.OutputT
         return BrowserUseNodeOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.BrowserUseNode
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.browser.BrowserUse"
+        return cls.get_node_class().get_node_type()
 
 
 class BrowserUseNodeOutputs(OutputsProxy):
@@ -191,16 +196,14 @@ class BrowserUseNodeOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["error"])
 
 
-BrowserUseNode.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
 
 
-class DownloadFile(GraphNode[bytes]):
+class DownloadFile(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
     Downloads a file from a URL and saves it to disk.
     download, file, web, save
@@ -215,25 +218,23 @@ class DownloadFile(GraphNode[bytes]):
         default="", description="URL of the file to download"
     )
 
-    @property
-    def output(self) -> OutputHandle[bytes]:
-        return typing.cast(OutputHandle[bytes], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.DownloadFile
 
     @classmethod
     def get_node_type(cls):
-        return "lib.browser.DownloadFile"
-
-
-DownloadFile.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
 
 
-class Screenshot(GraphNode[typing.Any]):
+class Screenshot(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Takes a screenshot of a web page or specific element.
     browser, screenshot, capture, image
@@ -258,25 +259,23 @@ class Screenshot(GraphNode[typing.Any]):
         default=30000, description="Timeout in milliseconds for page navigation"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.Screenshot
 
     @classmethod
     def get_node_type(cls):
-        return "lib.browser.Screenshot"
-
-
-Screenshot.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
 
 
-class WebFetch(GraphNode[str]):
+class WebFetch(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Fetches HTML content from a URL and converts it to text.
     web, fetch, html, markdown, http
@@ -294,13 +293,10 @@ class WebFetch(GraphNode[str]):
         default="body", description="CSS selector to extract specific elements"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.WebFetch
 
     @classmethod
     def get_node_type(cls):
-        return "lib.browser.WebFetch"
-
-
-WebFetch.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

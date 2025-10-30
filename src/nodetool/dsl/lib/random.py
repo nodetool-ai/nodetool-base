@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.random
+from nodetool.workflows.base_node import BaseNode
 
 
-class RandomBool(GraphNode[bool]):
+class RandomBool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Return a random boolean value.
     random, boolean, coinflip, bool
@@ -29,25 +30,23 @@ class RandomBool(GraphNode[bool]):
     - Introduce randomness in control flow
     """
 
-    @property
-    def output(self) -> OutputHandle[bool]:
-        return typing.cast(OutputHandle[bool], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.random.RandomBool
 
     @classmethod
     def get_node_type(cls):
-        return "lib.random.RandomBool"
-
-
-RandomBool.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.random
+from nodetool.workflows.base_node import BaseNode
 
 
-class RandomChoice(GraphNode[Any]):
+class RandomChoice(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
     Select a random element from a list.
     random, choice, select, pick
@@ -62,25 +61,23 @@ class RandomChoice(GraphNode[Any]):
         default=[], description="List of options"
     )
 
-    @property
-    def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.random.RandomChoice
 
     @classmethod
     def get_node_type(cls):
-        return "lib.random.RandomChoice"
-
-
-RandomChoice.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.random
+from nodetool.workflows.base_node import BaseNode
 
 
-class RandomFloat(GraphNode[float]):
+class RandomFloat(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Generate a random floating point number within a range.
     random, float, number, rand, uniform
@@ -98,25 +95,23 @@ class RandomFloat(GraphNode[float]):
         default=1.0, description="Maximum value"
     )
 
-    @property
-    def output(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.random.RandomFloat
 
     @classmethod
     def get_node_type(cls):
-        return "lib.random.RandomFloat"
-
-
-RandomFloat.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.random
+from nodetool.workflows.base_node import BaseNode
 
 
-class RandomInt(GraphNode[int]):
+class RandomInt(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Generate a random integer within a range.
     random, integer, number, rand, randint
@@ -134,13 +129,10 @@ class RandomInt(GraphNode[int]):
         default=100, description="Maximum value (inclusive)"
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.random.RandomInt
 
     @classmethod
     def get_node_type(cls):
-        return "lib.random.RandomInt"
-
-
-RandomInt.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

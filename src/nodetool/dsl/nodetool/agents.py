@@ -10,7 +10,7 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
@@ -21,6 +21,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
 
 
 class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
@@ -70,8 +71,12 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
         return AgentOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.Agent
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.agents.Agent"
+        return cls.get_node_class().get_node_type()
 
 
 class AgentOutputs(DynamicOutputsProxy):
@@ -80,8 +85,8 @@ class AgentOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["text"])
 
     @property
-    def chunk(self) -> OutputHandle[nodetool.workflows.types.Chunk]:
-        return typing.cast(OutputHandle[nodetool.workflows.types.Chunk], self["chunk"])
+    def chunk(self) -> OutputHandle[nodetool.metadata.types.Chunk]:
+        return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self["chunk"])
 
     @property
     def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
@@ -90,16 +95,14 @@ class AgentOutputs(DynamicOutputsProxy):
         )
 
 
-Agent.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
 
 
-class Classifier(GraphNode[str]):
+class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Classify text into predefined or dynamic categories using LLM.
     classification, nlp, categorization
@@ -146,16 +149,13 @@ class Classifier(GraphNode[str]):
         default=4096, description=None
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.Classifier
 
     @classmethod
     def get_node_type(cls):
-        return "nodetool.agents.Classifier"
-
-
-Classifier.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
@@ -167,6 +167,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
 
 
 class Extractor(GraphNode[dict[str, Any]]):
@@ -217,11 +218,12 @@ class Extractor(GraphNode[dict[str, Any]]):
         return typing.cast(DynamicOutputsProxy, self._outputs_proxy())
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.Extractor
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.agents.Extractor"
-
-
-Extractor.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
@@ -233,6 +235,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
 
 
 class ResearchAgent(GraphNode[dict[str, Any]]):
@@ -289,17 +292,19 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
         return typing.cast(DynamicOutputsProxy, self._outputs_proxy())
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.ResearchAgent
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.agents.ResearchAgent"
-
-
-ResearchAgent.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
 
 
 class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]):
@@ -350,8 +355,12 @@ class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]
         return SummarizerOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.Summarizer
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.agents.Summarizer"
+        return cls.get_node_class().get_node_type()
 
 
 class SummarizerOutputs(OutputsProxy):
@@ -360,8 +369,5 @@ class SummarizerOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["text"])
 
     @property
-    def chunk(self) -> OutputHandle[nodetool.workflows.types.Chunk]:
-        return typing.cast(OutputHandle[nodetool.workflows.types.Chunk], self["chunk"])
-
-
-Summarizer.model_rebuild(force=True)
+    def chunk(self) -> OutputHandle[nodetool.metadata.types.Chunk]:
+        return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self["chunk"])

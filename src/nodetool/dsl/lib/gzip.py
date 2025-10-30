@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.gzip
+from nodetool.workflows.base_node import BaseNode
 
 
-class GzipCompress(GraphNode[bytes]):
+class GzipCompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
     Compress bytes using gzip.
     gzip, compress, bytes
@@ -33,25 +34,23 @@ class GzipCompress(GraphNode[bytes]):
         default=None, description="Data to compress"
     )
 
-    @property
-    def output(self) -> OutputHandle[bytes]:
-        return typing.cast(OutputHandle[bytes], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.gzip.GzipCompress
 
     @classmethod
     def get_node_type(cls):
-        return "lib.gzip.GzipCompress"
-
-
-GzipCompress.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.gzip
+from nodetool.workflows.base_node import BaseNode
 
 
-class GzipDecompress(GraphNode[bytes]):
+class GzipDecompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
     Decompress gzip data.
     gzip, decompress, bytes
@@ -66,13 +65,10 @@ class GzipDecompress(GraphNode[bytes]):
         default=None, description="Gzip data to decompress"
     )
 
-    @property
-    def output(self) -> OutputHandle[bytes]:
-        return typing.cast(OutputHandle[bytes], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.gzip.GzipDecompress
 
     @classmethod
     def get_node_type(cls):
-        return "lib.gzip.GzipDecompress"
-
-
-GzipDecompress.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

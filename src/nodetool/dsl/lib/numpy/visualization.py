@@ -10,16 +10,17 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.visualization
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.numpy.visualization
 
 
-class PlotArray(GraphNode[types.ImageRef]):
+class PlotArray(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Create a plot visualization of array data.
     array, plot, visualization, graph
@@ -42,13 +43,10 @@ class PlotArray(GraphNode[types.ImageRef]):
         description="Type of plot to create",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.numpy.visualization.PlotArray
 
     @classmethod
     def get_node_type(cls):
-        return "lib.numpy.visualization.PlotArray"
-
-
-PlotArray.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.zlib
+from nodetool.workflows.base_node import BaseNode
 
 
-class Compress(GraphNode[bytes]):
+class Compress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
     Compress binary data using the zlib algorithm.
     zlib, compress, deflate, binary
@@ -36,25 +37,23 @@ class Compress(GraphNode[bytes]):
         default=9, description="Compression level"
     )
 
-    @property
-    def output(self) -> OutputHandle[bytes]:
-        return typing.cast(OutputHandle[bytes], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.zlib.Compress
 
     @classmethod
     def get_node_type(cls):
-        return "lib.zlib.Compress"
-
-
-Compress.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.zlib
+from nodetool.workflows.base_node import BaseNode
 
 
-class Decompress(GraphNode[bytes]):
+class Decompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
     Decompress zlib-compressed binary data.
     zlib, decompress, inflate, binary
@@ -69,13 +68,10 @@ class Decompress(GraphNode[bytes]):
         default=b"", description="Data to decompress"
     )
 
-    @property
-    def output(self) -> OutputHandle[bytes]:
-        return typing.cast(OutputHandle[bytes], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.zlib.Decompress
 
     @classmethod
     def get_node_type(cls):
-        return "lib.zlib.Decompress"
-
-
-Decompress.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

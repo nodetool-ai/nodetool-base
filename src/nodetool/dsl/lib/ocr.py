@@ -10,12 +10,13 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ocr
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.lib.ocr
 
 
@@ -46,8 +47,12 @@ class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
         return PaddleOCRNodeOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.ocr.PaddleOCRNode
+
+    @classmethod
     def get_node_type(cls):
-        return "lib.ocr.PaddleOCR"
+        return cls.get_node_class().get_node_type()
 
 
 class PaddleOCRNodeOutputs(OutputsProxy):
@@ -58,6 +63,3 @@ class PaddleOCRNodeOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
         return typing.cast(OutputHandle[str], self["text"])
-
-
-PaddleOCRNode.model_rebuild(force=True)

@@ -10,15 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class AdaptiveContrast(GraphNode[types.ImageRef]):
+class AdaptiveContrast(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Applies localized contrast enhancement using adaptive techniques.
     image, contrast, enhance
@@ -39,25 +42,23 @@ class AdaptiveContrast(GraphNode[types.ImageRef]):
         default=8, description="Grid size for adaptive contrast."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.AdaptiveContrast
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.AdaptiveContrast"
-
-
-AdaptiveContrast.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class AutoContrast(GraphNode[types.ImageRef]):
+class AutoContrast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Automatically adjusts image contrast for enhanced visual quality.
     image, contrast, balance
@@ -77,25 +78,23 @@ class AutoContrast(GraphNode[types.ImageRef]):
         description="Represents the percentage of pixels to ignore at both the darkest and lightest ends of the histogram. A cutoff value of 5 means ignoring the darkest 5% and the lightest 5% of pixels, enhancing overall contrast by stretching the remaining pixel values across the full brightness range.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.AutoContrast
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.AutoContrast"
-
-
-AutoContrast.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Brightness(GraphNode[types.ImageRef]):
+class Brightness(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Adjusts overall image brightness to lighten or darken.
     image, brightness, enhance
@@ -114,25 +113,23 @@ class Brightness(GraphNode[types.ImageRef]):
         default=1.0, description="Factor to adjust the brightness. 1.0 means no change."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Brightness
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Brightness"
-
-
-Brightness.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Color(GraphNode[types.ImageRef]):
+class Color(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Adjusts color intensity of an image.
     image, color, enhance
@@ -151,25 +148,23 @@ class Color(GraphNode[types.ImageRef]):
         default=1.0, description="Factor to adjust the contrast. 1.0 means no change."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Color
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Color"
-
-
-Color.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Contrast(GraphNode[types.ImageRef]):
+class Contrast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Adjusts image contrast to modify light-dark differences.
     image, contrast, enhance
@@ -188,25 +183,23 @@ class Contrast(GraphNode[types.ImageRef]):
         default=1.0, description="Factor to adjust the contrast. 1.0 means no change."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Contrast
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Contrast"
-
-
-Contrast.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Detail(GraphNode[types.ImageRef]):
+class Detail(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Enhances fine details in images.
     image, detail, enhance
@@ -222,25 +215,23 @@ class Detail(GraphNode[types.ImageRef]):
         description="The image to detail.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Detail
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Detail"
-
-
-Detail.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class EdgeEnhance(GraphNode[types.ImageRef]):
+class EdgeEnhance(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Enhances edge visibility by increasing contrast along boundaries.
     image, edge, enhance
@@ -256,25 +247,23 @@ class EdgeEnhance(GraphNode[types.ImageRef]):
         description="The image to edge enhance.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.EdgeEnhance
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.EdgeEnhance"
-
-
-EdgeEnhance.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Equalize(GraphNode[types.ImageRef]):
+class Equalize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Enhances image contrast by equalizing intensity distribution.
     image, contrast, histogram
@@ -290,25 +279,23 @@ class Equalize(GraphNode[types.ImageRef]):
         description="The image to equalize.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Equalize
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Equalize"
-
-
-Equalize.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class RankFilter(GraphNode[types.ImageRef]):
+class RankFilter(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Applies rank-based filtering to enhance or smooth image features.
     image, filter, enhance
@@ -330,25 +317,23 @@ class RankFilter(GraphNode[types.ImageRef]):
         default=3, description="Rank filter rank."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.RankFilter
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.RankFilter"
-
-
-RankFilter.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Sharpen(GraphNode[types.ImageRef]):
+class Sharpen(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Enhances image detail by intensifying local pixel contrast.
     image, sharpen, clarity
@@ -364,25 +349,23 @@ class Sharpen(GraphNode[types.ImageRef]):
         description="The image to sharpen.",
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Sharpen
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Sharpen"
-
-
-Sharpen.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class Sharpness(GraphNode[types.ImageRef]):
+class Sharpness(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Adjusts image sharpness to enhance or reduce detail clarity.
     image, clarity, sharpness
@@ -401,25 +384,23 @@ class Sharpness(GraphNode[types.ImageRef]):
         default=1.0, description="Factor to adjust the contrast. 1.0 means no change."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.Sharpness
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.Sharpness"
-
-
-Sharpness.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.enhance
+from nodetool.workflows.base_node import BaseNode
 
 
-class UnsharpMask(GraphNode[types.ImageRef]):
+class UnsharpMask(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Sharpens images using the unsharp mask technique.
     image, sharpen, enhance
@@ -444,13 +425,10 @@ class UnsharpMask(GraphNode[types.ImageRef]):
         default=3, description="Unsharp mask threshold."
     )
 
-    @property
-    def output(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pillow.enhance.UnsharpMask
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pillow.enhance.UnsharpMask"
-
-
-UnsharpMask.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

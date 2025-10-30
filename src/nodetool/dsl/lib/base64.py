@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.base64
+from nodetool.workflows.base_node import BaseNode
 
 
-class Decode(GraphNode[str]):
+class Decode(SingleOutputGraphNode[str], GraphNode[str]):
     """Decodes Base64 text to plain string.
     base64, decode, string
 
@@ -31,25 +32,23 @@ class Decode(GraphNode[str]):
         default="", description="Base64 encoded text"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.base64.Decode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.base64.Decode"
-
-
-Decode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.base64
+from nodetool.workflows.base_node import BaseNode
 
 
-class Encode(GraphNode[str]):
+class Encode(SingleOutputGraphNode[str], GraphNode[str]):
     """Encodes text to Base64 format.
     base64, encode, string
 
@@ -62,13 +61,10 @@ class Encode(GraphNode[str]):
         default="", description="Text to encode"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.base64.Encode
 
     @classmethod
     def get_node_type(cls):
-        return "lib.base64.Encode"
-
-
-Encode.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

@@ -1157,8 +1157,17 @@ class Agent(BaseNode):
                 tool_calls=[],
             )
 
-            provider = await context.get_provider(self.model.provider)
+            try:
+                provider = await context.get_provider(self.model.provider)
+            except Exception as e:
+                raise
+
             pending_tool_tasks: list[asyncio.Task] = []
+            chunk_count = 0
+            done_seen = False
+            log.debug(
+                f"_execute_agent_loop starting provider.generate_messages: iteration={iteration}"
+            )
             async for chunk in provider.generate_messages(
                 messages=messages,
                 model=self.model.id,
@@ -1166,11 +1175,23 @@ class Agent(BaseNode):
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
             ):
+                chunk_count += 1
+
                 if messages[-1] != assistant_message:
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
+                    log.debug(
+                        f"_execute_agent_loop chunk received: iteration={iteration}, "
+                        f"chunk_count={chunk_count}, content_type={chunk.content_type}, "
+                        f"done={chunk.done}, content_len={len(chunk.content or '')}, "
+                        f"current_text_len={len(message_text_content.text)}"
+                    )
                     if chunk.content_type in ("text", None):
                         message_text_content.text += chunk.content
+                        log.debug(
+                            f"_execute_agent_loop accumulated text: iteration={iteration}, "
+                            f"chunk_count={chunk_count}, total_text_len={len(message_text_content.text)}"
+                        )
                         yield {"chunk": chunk, "text": None, "audio": None}
                     elif chunk.content_type == "audio":
                         yield {"chunk": chunk, "text": None, "audio": None}
@@ -1186,13 +1207,34 @@ class Agent(BaseNode):
                         )
 
                     if chunk.done:
+                        done_seen = True
+                        log.debug(
+                            f"_execute_agent_loop chunk.done=True: iteration={iteration}, "
+                            f"chunk_count={chunk_count}, final_text_len={len(message_text_content.text)}, "
+                            f"final_text={repr(message_text_content.text[:100])}"
+                        )
                         # Save the assistant message to thread
                         await self._save_message_to_thread(context, assistant_message)
+                        final_text = message_text_content.text
+                        log.debug(
+                            f"_execute_agent_loop about to yield final text: iteration={iteration}, "
+                            f"text_is_none={final_text is None}, text_is_empty={final_text == ''}, "
+                            f"text_len={len(final_text) if final_text else 0}"
+                        )
                         yield {
                             "chunk": None,
-                            "text": message_text_content.text,
+                            "text": final_text,
                             "audio": None,
                         }
+                        log.debug(
+                            f"_execute_agent_loop yielded final text: iteration={iteration}, "
+                            f"chunk_count={chunk_count}"
+                        )
+                    else:
+                        log.debug(
+                            f"_execute_agent_loop chunk.done=False: iteration={iteration}, "
+                            f"chunk_count={chunk_count}"
+                        )
 
                 elif isinstance(chunk, ToolCall):
                     tools_called = True
@@ -1271,6 +1313,29 @@ class Agent(BaseNode):
                                 asyncio.create_task(_run_tool(tool_instance, chunk))
                             )
                             break
+
+            log.debug(
+                f"_execute_agent_loop async for exited: iteration={iteration}, "
+                f"chunk_count={chunk_count}, done_seen={done_seen}, "
+                f"pending_tasks={len(pending_tool_tasks)}"
+            )
+
+            # If provider didn't signal done with chunk.done=True, yield final text as fallback
+            if not done_seen and message_text_content.text:
+                log.debug(
+                    f"_execute_agent_loop fallback: provider didn't send chunk.done=True, "
+                    f"yielding accumulated text: iteration={iteration}, text_len={len(message_text_content.text)}"
+                )
+                await self._save_message_to_thread(context, assistant_message)
+                yield {
+                    "chunk": None,
+                    "text": message_text_content.text,
+                    "audio": None,
+                }
+                log.debug(
+                    f"_execute_agent_loop fallback: yielded final text: iteration={iteration}"
+                )
+
             if pending_tool_tasks:
                 log.debug(
                     "Agent executing %d tool call(s) in parallel for iteration=%d (per-item)",
@@ -1305,8 +1370,10 @@ class Agent(BaseNode):
                 len(messages),
             )
         log.debug(
-            "Agent loop complete (per-item): iteration=%d",
+            "Agent loop complete (per-item): iteration=%d, final_text_len=%d, final_text=%s",
             iteration,
+            len(message_text_content.text),
+            repr(message_text_content.text[:100]) if message_text_content.text else "EMPTY"
         )
 
     async def gen_process(
@@ -1316,7 +1383,10 @@ class Agent(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
+        log.debug(f"gen_process starting: node_id={self.id}, node_title={self.get_title()}")
+
         messages = await self._prepare_messages(context)
+
         tools = self._resolve_tools(context)
         tool_names = [t.name for t in tools if t is not None]
 
@@ -1331,8 +1401,18 @@ class Agent(BaseNode):
             tool_names,
         )
 
+        item_count = 0
         async for item in self._execute_agent_loop(context, messages, tools):
+            item_count += 1
+            log.debug(
+                f"gen_process yielding item {item_count}: keys={list(item.keys())}, "
+                f"text_len={len(item.get('text', '') or '')}, "
+                f"has_chunk={item.get('chunk') is not None}, "
+                f"has_audio={item.get('audio') is not None}"
+            )
             yield item
+
+        log.debug(f"gen_process completed: node_id={self.id}, total_items_yielded={item_count}")
 
 
 DEFAULT_RESEARCH_SYSTEM_PROMPT = """You are a research assistant.

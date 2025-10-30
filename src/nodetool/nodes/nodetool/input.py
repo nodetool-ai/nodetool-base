@@ -171,21 +171,6 @@ class HuggingFaceModelInput(InputNode):
         return HuggingFaceModel
 
 
-class InferenceProviderInput(InputNode):
-    """
-    Accepts an inference provider as a parameter for workflows.
-    input, parameter, provider, inference, provider_name
-    """
-
-    value: InferenceProvider = Field(
-        default=InferenceProvider.hf_inference, description="The inference provider to use as input."
-    )
-
-    @classmethod
-    def return_type(cls):
-        return InferenceProvider
-
-
 class ColorInput(InputNode):
     """
     Accepts a color value as a parameter for workflows.

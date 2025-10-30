@@ -10,7 +10,7 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
@@ -21,6 +21,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
@@ -29,6 +30,14 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
     """
     Executes Bash script with safety restrictions.
     bash, shell, code, execute
+
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ExecuteBash(prop1=value1, prop2=value2)
     """
 
     BashImage: typing.ClassVar[type] = (
@@ -52,13 +61,33 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ExecuteBash node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+        # Separate known fields from dynamic properties
+        from pydantic import ConfigDict
+
+        super().__init__(**kwargs)
+
     @property
     def out(self) -> "ExecuteBashOutputs":
         return ExecuteBashOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.ExecuteBash
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.code.ExecuteBash"
+        return cls.get_node_class().get_node_type()
 
 
 class ExecuteBashOutputs(DynamicOutputsProxy):
@@ -71,9 +100,6 @@ class ExecuteBashOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["stderr"])
 
 
-ExecuteBash.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import (
@@ -83,6 +109,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
@@ -93,6 +120,14 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
     command, execute, shell, bash, sh
 
     IMPORTANT: Only enabled in non-production environments
+
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ExecuteCommand(prop1=value1, prop2=value2)
     """
 
     CommandImage: typing.ClassVar[type] = (
@@ -116,13 +151,33 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ExecuteCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+        # Separate known fields from dynamic properties
+        from pydantic import ConfigDict
+
+        super().__init__(**kwargs)
+
     @property
     def out(self) -> "ExecuteCommandOutputs":
         return ExecuteCommandOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.ExecuteCommand
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.code.ExecuteCommand"
+        return cls.get_node_class().get_node_type()
 
 
 class ExecuteCommandOutputs(DynamicOutputsProxy):
@@ -135,9 +190,6 @@ class ExecuteCommandOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["stderr"])
 
 
-ExecuteCommand.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import (
@@ -147,6 +199,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
@@ -157,6 +210,14 @@ class ExecuteJavaScript(
     """
     Executes JavaScript (Node.js) code with safety restrictions.
     javascript, nodejs, code, execute
+
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ExecuteJavaScript(prop1=value1, prop2=value2)
     """
 
     JavaScriptImage: typing.ClassVar[type] = (
@@ -180,13 +241,33 @@ class ExecuteJavaScript(
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ExecuteJavaScript node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+        # Separate known fields from dynamic properties
+        from pydantic import ConfigDict
+
+        super().__init__(**kwargs)
+
     @property
     def out(self) -> "ExecuteJavaScriptOutputs":
         return ExecuteJavaScriptOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.ExecuteJavaScript
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.code.ExecuteJavaScript"
+        return cls.get_node_class().get_node_type()
 
 
 class ExecuteJavaScriptOutputs(DynamicOutputsProxy):
@@ -199,9 +280,6 @@ class ExecuteJavaScriptOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["stderr"])
 
 
-ExecuteJavaScript.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import (
@@ -211,6 +289,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
@@ -219,6 +298,14 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
     """
     Executes Lua code with a local sandbox (no Docker).
     lua, code, execute, sandbox
+
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ExecuteLua(prop1=value1, prop2=value2)
     """
 
     LuaExecutable: typing.ClassVar[type] = (
@@ -245,13 +332,33 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ExecuteLua node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+        # Separate known fields from dynamic properties
+        from pydantic import ConfigDict
+
+        super().__init__(**kwargs)
+
     @property
     def out(self) -> "ExecuteLuaOutputs":
         return ExecuteLuaOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.ExecuteLua
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.code.ExecuteLua"
+        return cls.get_node_class().get_node_type()
 
 
 class ExecuteLuaOutputs(DynamicOutputsProxy):
@@ -264,9 +371,6 @@ class ExecuteLuaOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["stderr"])
 
 
-ExecuteLua.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import (
@@ -276,6 +380,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
@@ -291,6 +396,14 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
     - Debug and testing workflows
 
     IMPORTANT: Only enabled in non-production environments
+
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ExecutePython(prop1=value1, prop2=value2)
     """
 
     PythonImage: typing.ClassVar[type] = (
@@ -314,13 +427,33 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ExecutePython node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+        # Separate known fields from dynamic properties
+        from pydantic import ConfigDict
+
+        super().__init__(**kwargs)
+
     @property
     def out(self) -> "ExecutePythonOutputs":
         return ExecutePythonOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.ExecutePython
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.code.ExecutePython"
+        return cls.get_node_class().get_node_type()
 
 
 class ExecutePythonOutputs(DynamicOutputsProxy):
@@ -333,9 +466,6 @@ class ExecutePythonOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[str], self["stderr"])
 
 
-ExecutePython.model_rebuild(force=True)
-
-
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import (
@@ -345,6 +475,7 @@ from nodetool.dsl.handles import (
     connect_field,
 )
 import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.nodetool.code
 import nodetool.nodes.nodetool.code
 
@@ -353,6 +484,14 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
     """
     Executes Ruby code with safety restrictions.
     ruby, code, execute
+
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ExecuteRuby(prop1=value1, prop2=value2)
     """
 
     RubyImage: typing.ClassVar[type] = (
@@ -376,13 +515,33 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ExecuteRuby node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+        # Separate known fields from dynamic properties
+        from pydantic import ConfigDict
+
+        super().__init__(**kwargs)
+
     @property
     def out(self) -> "ExecuteRubyOutputs":
         return ExecuteRubyOutputs(self)
 
     @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.ExecuteRuby
+
+    @classmethod
     def get_node_type(cls):
-        return "nodetool.code.ExecuteRuby"
+        return cls.get_node_class().get_node_type()
 
 
 class ExecuteRubyOutputs(DynamicOutputsProxy):
@@ -393,6 +552,3 @@ class ExecuteRubyOutputs(DynamicOutputsProxy):
     @property
     def stderr(self) -> OutputHandle[str]:
         return typing.cast(OutputHandle[str], self["stderr"])
-
-
-ExecuteRuby.model_rebuild(force=True)

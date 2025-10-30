@@ -10,15 +10,16 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pdfplumber
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractImages(GraphNode[typing.Any]):
+class ExtractImages(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Extract images from a PDF file.
     pdf, image, extract
@@ -39,25 +40,23 @@ class ExtractImages(GraphNode[typing.Any]):
         default=4, description="The end page to extract"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pdfplumber.ExtractImages
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pdfplumber.ExtractImages"
-
-
-ExtractImages.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pdfplumber
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractPageMetadata(GraphNode[typing.Any]):
+class ExtractPageMetadata(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Extract metadata from PDF pages like dimensions, rotation, etc.
     pdf, metadata, pages
@@ -78,25 +77,23 @@ class ExtractPageMetadata(GraphNode[typing.Any]):
         default=4, description="The end page to extract. -1 for all pages"
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pdfplumber.ExtractPageMetadata
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pdfplumber.ExtractPageMetadata"
-
-
-ExtractPageMetadata.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pdfplumber
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractTables(GraphNode[typing.Any]):
+class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
     Extract tables from a PDF file into dataframes.
     pdf, tables, dataframe, extract
@@ -137,25 +134,23 @@ class ExtractTables(GraphNode[typing.Any]):
         description="Settings for table extraction algorithm",
     )
 
-    @property
-    def output(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pdfplumber.ExtractTables
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pdfplumber.ExtractTables"
-
-
-ExtractTables.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pdfplumber
+from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractText(GraphNode[str]):
+class ExtractText(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Extract text content from a PDF file.
     pdf, text, extract
@@ -177,25 +172,23 @@ class ExtractText(GraphNode[str]):
         default=4, description="The end page to extract. -1 for all pages"
     )
 
-    @property
-    def output(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pdfplumber.ExtractText
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pdfplumber.ExtractText"
-
-
-ExtractText.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pdfplumber
+from nodetool.workflows.base_node import BaseNode
 
 
-class GetPageCount(GraphNode[int]):
+class GetPageCount(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Get the total number of pages in a PDF file.
     pdf, pages, count
@@ -209,13 +202,10 @@ class GetPageCount(GraphNode[int]):
         default=PydanticUndefined, description="The PDF file to analyze"
     )
 
-    @property
-    def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.pdfplumber.GetPageCount
 
     @classmethod
     def get_node_type(cls):
-        return "lib.pdfplumber.GetPageCount"
-
-
-GetPageCount.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()

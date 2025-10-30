@@ -364,6 +364,7 @@ Rules:
         ):
             if isinstance(chunk, Chunk):
                 full_response += chunk.content
+                print(chunk.content, end="", flush=True)
 
         # Parse the markdown table
         collected_rows = self._parse_markdown_table(full_response)

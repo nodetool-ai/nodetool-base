@@ -10,17 +10,18 @@ import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.gemini.video
 import nodetool.nodes.gemini.video
 
 
-class ImageToVideo(GraphNode[types.VideoRef]):
+class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using Google's Veo models.
     google, video, generation, image-to-video, veo, ai, animation
@@ -57,27 +58,25 @@ class ImageToVideo(GraphNode[types.VideoRef]):
         default="", description="Negative prompt to guide what to avoid in the video"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.VideoRef]:
-        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.gemini.video.ImageToVideo
 
     @classmethod
     def get_node_type(cls):
-        return "gemini.video.ImageToVideo"
-
-
-ImageToVideo.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
 
 
 import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
+from nodetool.workflows.base_node import BaseNode
 import nodetool.nodes.gemini.video
 import nodetool.nodes.gemini.video
 
 
-class TextToVideo(GraphNode[types.VideoRef]):
+class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text prompts using Google's Veo models.
     google, video, generation, text-to-video, veo, ai
@@ -110,13 +109,10 @@ class TextToVideo(GraphNode[types.VideoRef]):
         default="", description="Negative prompt to guide what to avoid in the video"
     )
 
-    @property
-    def output(self) -> OutputHandle[types.VideoRef]:
-        return typing.cast(OutputHandle[types.VideoRef], self._single_output_handle())
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.gemini.video.TextToVideo
 
     @classmethod
     def get_node_type(cls):
-        return "gemini.video.TextToVideo"
-
-
-TextToVideo.model_rebuild(force=True)
+        return cls.get_node_class().get_node_type()
