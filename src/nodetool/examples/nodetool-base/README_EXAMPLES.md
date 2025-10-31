@@ -20,7 +20,7 @@ This directory contains 23 comprehensive examples demonstrating the capabilities
 9. **categorize_mails_dsl.py** - Automatically classify emails with AI and apply labels
 10. **data_generator_dsl.py** - Generate synthetic datasets using AI models
 
-## New Examples (12)
+## New Examples (13)
 
 ### AI Content Generation
 11. **social_media_sentiment_dsl.py** - Analyze sentiment and emotions in social media posts
@@ -38,6 +38,9 @@ This directory contains 23 comprehensive examples demonstrating the capabilities
 21. **competitive_analysis_dsl.py** - Analyze competitor offerings and market positioning
 22. **data_validation_pipeline_dsl.py** - Validate and clean data for quality assurance
 23. **research_agent_market_analysis_dsl.py** - Run an autonomous ResearchAgent to gather market intelligence with dynamic outputs
+
+### Media Generation
+23. **text_to_video_campaign_dsl.py** - Generate realistic marketing videos from campaign briefs using text-to-video
 
 ## How to Run Examples
 
