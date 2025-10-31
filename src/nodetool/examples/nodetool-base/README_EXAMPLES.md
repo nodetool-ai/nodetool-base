@@ -1,6 +1,6 @@
 # NodeTool Base DSL Examples
 
-This directory contains 22 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
+This directory contains 23 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
 
 ## Original Examples (10)
 
@@ -15,6 +15,7 @@ This directory contains 22 comprehensive examples demonstrating the capabilities
 6. **image_enhance_dsl.py** - Apply image enhancements like sharpening and contrast adjustment
 7. **video_frame_text_overlay_dsl.py** - Extract video frames and add text overlays with AI captions
 8. **transcribe_audio_dsl.py** - Convert speech to text using Whisper model
+9. **image_to_video_dsl.py** - Animate a still image into a cinematic clip with AI motion
 
 ### Data & Automation
 9. **categorize_mails_dsl.py** - Automatically classify emails with AI and apply labels
