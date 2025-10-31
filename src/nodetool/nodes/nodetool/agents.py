@@ -1637,7 +1637,7 @@ class ResearchAgent(BaseNode):
         # Stream execution
         log.info(f"Starting research: {self.objective}")
         log.debug(f"Tools enabled: {[t.name for t in tool_instances]}")
-        log.debug(f"Output schema: {json.dumps(output_schema, indent=2)}")
+        log.info(f"Output schema: {json.dumps(output_schema, indent=2)}")
 
         async for item in agent.execute(context):
             if isinstance(item, TaskUpdate):
@@ -1661,6 +1661,9 @@ class ResearchAgent(BaseNode):
 
         # Get final results
         results = agent.get_results()
+
+        print("RESULTS")
+        print(results)
 
         if results is None:
             log.warning("Agent completed but returned no results")

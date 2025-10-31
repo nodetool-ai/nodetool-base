@@ -26,6 +26,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
     """
+
     Generate natural language responses using LLM providers and streams output.
     llm, text-generation, chatbot, question-answering, streaming
     """
@@ -66,6 +67,27 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
         default=4096, description=None
     )
 
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a Agent node.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values for the node.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
     @property
     def out(self) -> "AgentOutputs":
         return AgentOutputs(self)
@@ -104,6 +126,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Classify text into predefined or dynamic categories using LLM.
     classification, nlp, categorization
 
@@ -172,6 +195,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Extractor(GraphNode[dict[str, Any]]):
     """
+
     Extract structured data from text content using LLM providers.
     data-extraction, structured-data, nlp, parsing
 
@@ -213,6 +237,27 @@ class Extractor(GraphNode[dict[str, Any]]):
         default=4096, description=None
     )
 
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a Extractor node.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values for the node.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
     @property
     def out(self) -> DynamicOutputsProxy:
         return typing.cast(DynamicOutputsProxy, self._outputs_proxy())
@@ -240,6 +285,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ResearchAgent(GraphNode[dict[str, Any]]):
     """
+
     Autonomous research agent that gathers information from the web and synthesizes findings.
     research, web-search, data-gathering, agent, automation
 
@@ -287,6 +333,27 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
         default=8192, description="Context window size"
     )
 
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a ResearchAgent node.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values for the node.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
     @property
     def out(self) -> DynamicOutputsProxy:
         return typing.cast(DynamicOutputsProxy, self._outputs_proxy())
@@ -309,6 +376,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]):
     """
+
     Generate concise summaries of text content using LLM providers with streaming output.
     text, summarization, nlp, content, streaming
 

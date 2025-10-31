@@ -22,12 +22,11 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.openai.agents
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.openai.agents
-import nodetool.nodes.openai.agents
 
 
 class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputType]):
     """
+
     Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
     realtime, streaming, openai, audio-input, text-output
 
@@ -39,6 +38,7 @@ class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputT
 
     Model: typing.ClassVar[type] = nodetool.nodes.openai.agents.RealtimeAgent.Model
     Voice: typing.ClassVar[type] = nodetool.nodes.openai.agents.RealtimeAgent.Voice
+
     model: nodetool.nodes.openai.agents.RealtimeAgent.Model = Field(
         default=nodetool.nodes.openai.agents.RealtimeAgent.Model.GPT_4O_MINI_REaltime,
         description=None,
@@ -68,6 +68,27 @@ class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputT
     temperature: float | OutputHandle[float] = connect_field(
         default=0.8, description="The temperature for the response"
     )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RealtimeAgent node.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values for the node.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "RealtimeAgentOutputs":
@@ -109,6 +130,7 @@ class RealtimeTranscription(
     GraphNode[nodetool.nodes.openai.agents.RealtimeTranscription.OutputType]
 ):
     """
+
     Stream microphone or audio input to OpenAI Realtime and emit transcription.
 
     Emits:

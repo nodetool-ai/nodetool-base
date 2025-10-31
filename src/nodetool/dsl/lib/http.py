@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DeleteRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Remove a resource from a server using an HTTP DELETE request.
     http, delete, request, url
 
@@ -49,13 +50,13 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.http
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.http
 
 
 class DownloadDataframe(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Download data from a URL and return as a dataframe.
     http, get, request, url, dataframe, csv, json, data
 
@@ -69,6 +70,7 @@ class DownloadDataframe(
     FileFormat: typing.ClassVar[type] = (
         nodetool.nodes.lib.http.DownloadDataframe.FileFormat
     )
+
     url: str | OutputHandle[str] = connect_field(
         default="", description="The URL to make the request to."
     )
@@ -105,6 +107,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DownloadFiles(GraphNode[nodetool.nodes.lib.http.DownloadFiles.OutputType]):
     """
+
     Download files from a list of URLs into a local folder.
     download, files, urls, batch
 
@@ -157,6 +160,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FetchPage(GraphNode[nodetool.nodes.lib.http.FetchPage.OutputType]):
     """
+
     Fetch a web page using Selenium and return its content.
     selenium, fetch, webpage, http
 
@@ -209,6 +213,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterValidURLs(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Filter a list of URLs by checking their validity using HEAD requests.
     url validation, http, head request
 
@@ -246,6 +251,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Perform an HTTP GET request to retrieve data from a specified URL.
     http, get, request, url
 
@@ -278,6 +284,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetRequestBinary(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Perform an HTTP GET request and return raw binary data.
     http, get, request, url, binary, download
 
@@ -312,6 +319,7 @@ class GetRequestDocument(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Perform an HTTP GET request and return a document
     http, get, request, url, document
 
@@ -344,6 +352,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class HeadRequest(SingleOutputGraphNode[dict[str, str]], GraphNode[dict[str, str]]):
     """
+
     Retrieve headers from a resource using an HTTP HEAD request.
     http, head, request, url
 
@@ -375,6 +384,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ImageDownloader(GraphNode[nodetool.nodes.lib.http.ImageDownloader.OutputType]):
     """
+
     Download images from list of URLs and return a list of ImageRefs.
     image download, web scraping, data processing
 
@@ -426,6 +436,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JSONGetRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Perform an HTTP GET request and parse the response as JSON.
     http, get, request, url, json, api
 
@@ -457,6 +468,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JSONPatchRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Partially update resources with JSON data using an HTTP PATCH request.
     http, patch, request, url, json, api
 
@@ -491,6 +503,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JSONPostRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Send JSON data to a server using an HTTP POST request.
     http, post, request, url, json, api
 
@@ -525,6 +538,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JSONPutRequest(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Update resources with JSON data using an HTTP PUT request.
     http, put, request, url, json, api
 
@@ -559,6 +573,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class PostRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Send data to a server using an HTTP POST request.
     http, post, request, url, data
 
@@ -594,6 +609,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class PostRequestBinary(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Send data using an HTTP POST request and return raw binary data.
     http, post, request, url, data, binary
 
@@ -630,6 +646,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class PutRequest(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Update existing resources on a server using an HTTP PUT request.
     http, put, request, url, data
 

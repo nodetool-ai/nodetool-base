@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadBytesFile(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Read raw bytes from a file on disk.
     files, bytes, read, input, load, file
 
@@ -51,6 +52,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveBytesFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Write raw bytes to a file on disk.
     files, bytes, save, output
 

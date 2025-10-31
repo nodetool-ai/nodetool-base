@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractImages(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extract images from a PDF file.
     pdf, image, extract
 
@@ -58,6 +59,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractPageMetadata(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extract metadata from PDF pages like dimensions, rotation, etc.
     pdf, metadata, pages
 
@@ -95,6 +97,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extract tables from a PDF file into dataframes.
     pdf, tables, dataframe, extract
 
@@ -152,6 +155,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractText(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Extract text content from a PDF file.
     pdf, text, extract
 
@@ -190,6 +194,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetPageCount(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Get the total number of pages in a PDF file.
     pdf, pages, count
 

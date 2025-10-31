@@ -20,13 +20,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class HashFile(SingleOutputGraphNode[str], GraphNode[str]):
-    """Compute the cryptographic hash of a file.
-    hash, hashlib, digest, file
+    """
+    Compute the cryptographic hash of a file.
+        hash, hashlib, digest, file
 
-    Use cases:
-    - Verify downloaded files
-    - Detect file changes
-    - Identify duplicates
+        Use cases:
+        - Verify downloaded files
+        - Detect file changes
+        - Identify duplicates
     """
 
     file: str | OutputHandle[str] = connect_field(
@@ -56,13 +57,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class HashString(SingleOutputGraphNode[str], GraphNode[str]):
-    """Compute the cryptographic hash of a string using hashlib.
-    hash, hashlib, digest, string
+    """
+    Compute the cryptographic hash of a string using hashlib.
+        hash, hashlib, digest, string
 
-    Use cases:
-    - Generate deterministic identifiers
-    - Verify data integrity
-    - Create fingerprints for caching
+        Use cases:
+        - Generate deterministic identifiers
+        - Verify data integrity
+        - Create fingerprints for caching
     """
 
     text: str | OutputHandle[str] = connect_field(

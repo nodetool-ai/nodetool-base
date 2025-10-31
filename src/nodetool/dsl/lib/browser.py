@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Browser(GraphNode[nodetool.nodes.lib.browser.Browser.OutputType]):
     """
+
     Fetches content from a web page using a headless browser.
     browser, web, scraping, content, fetch
 
@@ -70,12 +71,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.browser
-import nodetool.nodes.lib.browser
 
 
 class BrowserNavigation(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Navigates and interacts with web pages in a browser session.
     browser, navigation, interaction, click, extract
 
@@ -89,6 +89,7 @@ class BrowserNavigation(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]
     ExtractType: typing.ClassVar[type] = (
         nodetool.nodes.lib.browser.BrowserNavigation.ExtractType
     )
+
     url: str | OutputHandle[str] = connect_field(
         default="", description="URL to navigate to (required for 'goto' action)"
     )
@@ -130,11 +131,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.browser
 
 
 class BrowserUseNode(GraphNode[nodetool.nodes.lib.browser.BrowserUseNode.OutputType]):
     """
+
     Browser agent tool that uses browser_use under the hood.
 
     This module provides a tool for running browser-based agents using the browser_use library.
@@ -149,6 +150,7 @@ class BrowserUseNode(GraphNode[nodetool.nodes.lib.browser.BrowserUseNode.OutputT
     """
 
     BrowserUseModel: typing.ClassVar[type] = nodetool.nodes.lib.browser.BrowserUseModel
+
     model: nodetool.nodes.lib.browser.BrowserUseModel = Field(
         default=nodetool.nodes.lib.browser.BrowserUseModel.GPT_4O,
         description="The model to use for the browser agent.",
@@ -205,6 +207,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DownloadFile(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Downloads a file from a URL and saves it to disk.
     download, file, web, save
 
@@ -236,6 +239,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Screenshot(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Takes a screenshot of a web page or specific element.
     browser, screenshot, capture, image
 
@@ -277,6 +281,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WebFetch(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Fetches HTML content from a URL and converts it to text.
     web, fetch, html, markdown, http
 

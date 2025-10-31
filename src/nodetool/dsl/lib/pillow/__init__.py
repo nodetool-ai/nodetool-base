@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Blend(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Blend two images with adjustable alpha mixing.
     blend, mix, fade, transition
 
@@ -60,6 +61,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Composite(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Combine two images using a mask for advanced compositing.
     composite, mask, blend, layering
 

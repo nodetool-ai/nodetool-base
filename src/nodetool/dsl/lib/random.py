@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RandomBool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Return a random boolean value.
     random, boolean, coinflip, bool
 
@@ -48,6 +49,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RandomChoice(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Select a random element from a list.
     random, choice, select, pick
 
@@ -79,6 +81,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RandomFloat(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Generate a random floating point number within a range.
     random, float, number, rand, uniform
 
@@ -113,6 +116,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RandomInt(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Generate a random integer within a range.
     random, integer, number, rand, randint
 

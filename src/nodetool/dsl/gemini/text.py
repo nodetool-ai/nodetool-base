@@ -17,11 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.text
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.gemini.text
 
 
 class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputType]):
     """
+
     Search the web using Google's Gemini API with grounding capabilities.
     google, search, grounded, web, gemini, ai
 
@@ -36,6 +36,7 @@ class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputT
     """
 
     GeminiModel: typing.ClassVar[type] = nodetool.nodes.gemini.text.GeminiModel
+
     query: str | OutputHandle[str] = connect_field(
         default="", description="The search query to execute"
     )

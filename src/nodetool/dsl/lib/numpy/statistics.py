@@ -24,6 +24,7 @@ class ArgMaxArray(
     GraphNode[nodetool.metadata.types.NPArray | int],
 ):
     """
+
     Find indices of maximum values along a specified axis of a array.
     array, argmax, index, maximum
 
@@ -62,6 +63,7 @@ class ArgMinArray(
     GraphNode[nodetool.metadata.types.NPArray | int],
 ):
     """
+
     Find indices of minimum values along a specified axis of a array.
     array, argmin, index, minimum
 
@@ -100,6 +102,7 @@ class MaxArray(
     GraphNode[nodetool.metadata.types.NPArray | float | int],
 ):
     """
+
     Compute the maximum value along a specified axis of a array.
     array, maximum, reduction, statistics
 
@@ -138,6 +141,7 @@ class MeanArray(
     GraphNode[nodetool.metadata.types.NPArray | float | int],
 ):
     """
+
     Compute the mean value along a specified axis of a array.
     array, average, reduction, statistics
 
@@ -176,6 +180,7 @@ class MinArray(
     GraphNode[nodetool.metadata.types.NPArray | float | int],
 ):
     """
+
     Calculate the minimum value along a specified axis of a array.
     array, minimum, reduction, statistics
 
@@ -214,6 +219,7 @@ class SumArray(
     GraphNode[nodetool.metadata.types.NPArray | float | int],
 ):
     """
+
     Calculate the sum of values along a specified axis of a array.
     array, summation, reduction, statistics
 

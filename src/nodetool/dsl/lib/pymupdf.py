@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractMarkdown(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Convert PDF to Markdown format using pymupdf4llm.
     pdf, markdown, convert
 
@@ -59,6 +60,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extract tables from a PDF document using PyMuPDF.
     pdf, tables, extract, structured
 
@@ -99,6 +101,7 @@ class ExtractText(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Extract plain text from a PDF document using PyMuPDF.
     pdf, text, extract
 
@@ -137,6 +140,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractTextBlocks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extract text blocks with their bounding boxes from a PDF.
     pdf, text, blocks, layout
 
@@ -175,6 +179,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractTextWithStyle(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extract text with style information (font, size, color) from a PDF.
     pdf, text, style, formatting
 

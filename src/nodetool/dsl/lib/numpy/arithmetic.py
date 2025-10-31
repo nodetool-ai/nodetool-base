@@ -24,6 +24,7 @@ class AddArray(
     GraphNode[int | float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Performs addition on two arrays.
     math, plus, add, addition, sum, +
     """
@@ -95,6 +96,7 @@ class DivideArray(
     GraphNode[int | float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Divides the first array by the second.
     math, division, arithmetic, quotient, /
     """
@@ -133,6 +135,7 @@ class ModulusArray(
     GraphNode[int | float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Calculates the element-wise remainder of division.
     math, modulo, remainder, mod, %
 
@@ -176,6 +179,7 @@ class MultiplyArray(
     GraphNode[int | float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Multiplies two arrays.
     math, product, times, *
     """
@@ -214,6 +218,7 @@ class SubtractArray(
     GraphNode[int | float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Subtracts the second array from the first.
     math, minus, difference, -
     """

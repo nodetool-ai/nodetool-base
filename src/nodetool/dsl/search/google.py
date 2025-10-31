@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GoogleFinance(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Retrieve financial market data from Google Finance.
     google, finance, stocks, market, serp
     """
@@ -51,6 +52,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GoogleImages(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Search Google Images to retrieve live image results.
     google, images, serp, visual, reverse, search
     """
@@ -85,6 +87,7 @@ class GoogleJobs(
     SingleOutputGraphNode[list[types.JobResult]], GraphNode[list[types.JobResult]]
 ):
     """
+
     Search Google Jobs for job listings.
     google, jobs, employment, careers, serp
     """
@@ -117,6 +120,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GoogleLens(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Search with an image URL using Google Lens to find visual matches and related content.
     google, lens, visual, image, search, serp
     """
@@ -148,6 +152,7 @@ class GoogleMaps(
     SingleOutputGraphNode[list[types.LocalResult]], GraphNode[list[types.LocalResult]]
 ):
     """
+
     Search Google Maps for places or get details about a specific place.
     google, maps, places, locations, serp
     """
@@ -179,6 +184,7 @@ class GoogleNews(
     SingleOutputGraphNode[list[types.NewsResult]], GraphNode[list[types.NewsResult]]
 ):
     """
+
     Search Google News to retrieve live news articles.
     google, news, serp, articles
     """
@@ -211,6 +217,7 @@ class GoogleSearch(
     GraphNode[list[types.OrganicResult]],
 ):
     """
+
     Search Google to retrieve organic search results.
     google, search, serp, web
     """
@@ -243,6 +250,7 @@ class GoogleShopping(
     GraphNode[list[types.ShoppingResult]],
 ):
     """
+
     Search Google Shopping for products.
     google, shopping, products, ecommerce, serp
     """

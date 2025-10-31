@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class EncodeQueryParams(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Encode a dictionary of parameters into a query string using
     ``urllib.parse.urlencode``.
     urllib, query, encode, params
@@ -53,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JoinURL(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Join a base URL with a relative URL using ``urllib.parse.urljoin``.
     urllib, join, url
 
@@ -85,6 +87,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ParseURL(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Parse a URL into its components using ``urllib.parse.urlparse``.
     urllib, parse, url
 
@@ -114,6 +117,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class QuoteURL(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Percent-encode a string for safe use in URLs using ``urllib.parse.quote``.
     urllib, quote, encode
 
@@ -145,6 +149,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class UnquoteURL(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Decode a percent-encoded URL string using ``urllib.parse.unquote``.
     urllib, unquote, decode
 

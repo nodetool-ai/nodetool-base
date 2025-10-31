@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Append(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Adds a value to the end of a list.
     list, add, insert, extend
 
@@ -53,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Average(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Calculates the arithmetic mean of a list of numbers.
     list, average, mean, aggregate, math
 
@@ -83,6 +85,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Chunk(SingleOutputGraphNode[list[list[Any]]], GraphNode[list[list[Any]]]):
     """
+
     Splits a list into smaller chunks of specified size.
     list, chunk, split, group
 
@@ -115,6 +118,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Dedupe(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Removes duplicate elements from a list, ensuring uniqueness.
     list, unique, distinct, deduplicate
 
@@ -146,6 +150,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Difference(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Finds elements that exist in first list but not in second list.
     list, set, difference, subtract
 
@@ -180,6 +185,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Extend(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Merges one list into another, extending the original list.
     list, merge, concatenate, combine
 
@@ -213,6 +219,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterDicts(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Filter a list of dictionaries based on a condition.
     list, filter, query, condition
 
@@ -288,11 +295,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.list
 
 
 class FilterDictsByNumber(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Filters a list of dictionaries based on numeric values for a specified key.
     list, filter, dictionary, numbers, numeric
 
@@ -305,6 +312,7 @@ class FilterDictsByNumber(SingleOutputGraphNode[list[dict]], GraphNode[list[dict
     FilterDictNumberType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType
     )
+
     values: list[dict] | OutputHandle[list[dict]] = connect_field(
         default=[], description=None
     )
@@ -337,6 +345,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterDictsByRange(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Filters a list of dictionaries based on a numeric range for a specified key.
     list, filter, dictionary, range, between
 
@@ -377,11 +386,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.list
 
 
 class FilterDictsByValue(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Filters a list of dictionaries based on their values using various criteria.
     list, filter, dictionary, values
 
@@ -394,6 +403,7 @@ class FilterDictsByValue(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]
     FilterType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType
     )
+
     values: list[dict] | OutputHandle[list[dict]] = connect_field(
         default=[], description=None
     )
@@ -427,6 +437,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterDictsRegex(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Filters a list of dictionaries using regular expressions on specified keys.
     list, filter, regex, dictionary, pattern
 
@@ -463,6 +474,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterNone(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Filters out None values from a list.
     list, filter, none, null
 
@@ -494,6 +506,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterNumberRange(SingleOutputGraphNode[list[float]], GraphNode[list[float]]):
     """
+
     Filters a list of numbers to find values within a specified range.
     list, filter, numbers, range, between
 
@@ -524,11 +537,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.list
 
 
 class FilterNumbers(SingleOutputGraphNode[list[float]], GraphNode[list[float]]):
     """
+
     Filters a list of numbers based on various numerical conditions.
     list, filter, numbers, numeric
 
@@ -541,6 +554,7 @@ class FilterNumbers(SingleOutputGraphNode[list[float]], GraphNode[list[float]]):
     FilterNumberType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType
     )
+
     values: list[float] | OutputHandle[list[float]] = connect_field(
         default=[], description=None
     )
@@ -571,6 +585,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Filters a list of strings using regular expressions.
     list, filter, regex, pattern, text
 
@@ -605,11 +620,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.list
 
 
 class FilterStrings(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Filters a list of strings based on various criteria.
     list, filter, strings, text
 
@@ -623,6 +638,7 @@ class FilterStrings(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     FilterType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.list.FilterStrings.FilterType
     )
+
     values: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description=None
     )
@@ -653,6 +669,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Flatten(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Flattens a nested list structure into a single flat list.
     list, flatten, nested, structure
 
@@ -691,6 +708,7 @@ class GenerateSequence(
     GraphNode[nodetool.nodes.nodetool.list.GenerateSequence.OutputType]
 ):
     """
+
     Iterates over a sequence of numbers.
     list, range, sequence, numbers
     """
@@ -727,6 +745,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetElement(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Retrieves a single value from a list at a specific index.
     list, get, extract, value
 
@@ -759,6 +778,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Intersection(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Finds common elements between two lists.
     list, set, intersection, common
 
@@ -793,6 +813,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Length(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Calculates the length of a list.
     list, count, size
 
@@ -824,6 +845,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ListRange(SingleOutputGraphNode[list[int]], GraphNode[list[int]]):
     """
+
     Generates a list of integers within a specified range.
     list, range, sequence, numbers
 
@@ -855,6 +877,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class MapField(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Extracts a specific field from a list of dictionaries.
     list, map, field, extract, pluck
 
@@ -890,6 +913,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Maximum(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Finds the largest value in a list of numbers.
     list, max, maximum, aggregate, math
 
@@ -920,6 +944,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Minimum(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Finds the smallest value in a list of numbers.
     list, min, minimum, aggregate, math
 
@@ -950,6 +975,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Product(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Calculates the product of all numbers in a list.
     list, product, multiply, aggregate, math
 
@@ -980,6 +1006,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Randomize(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Randomly shuffles the elements of a list.
     list, shuffle, random, order
 
@@ -1011,6 +1038,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reverse(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Inverts the order of elements in a list.
     list, reverse, invert, flip
 
@@ -1040,6 +1068,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveList(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
+
     Saves a list to a text file, placing each element on a new line.
     list, save, file, serialize
 
@@ -1075,6 +1104,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SelectElements(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Selects specific values from a list using index positions.
     list, select, index, extract
 
@@ -1109,6 +1139,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Slice(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Extracts a subset from a list using start, stop, and step indices.
     list, slice, subset, extract
 
@@ -1139,11 +1170,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.list
 
 
 class Sort(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Sorts the elements of a list in ascending or descending order.
     list, sort, order, arrange
 
@@ -1154,6 +1185,7 @@ class Sort(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
     SortOrder: typing.ClassVar[type] = nodetool.nodes.nodetool.list.Sort.SortOrder
+
     values: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
@@ -1179,6 +1211,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Sum(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Calculates the sum of a list of numbers.
     list, sum, aggregate, math
 
@@ -1205,11 +1238,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.list
 
 
 class Transform(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Applies a transformation to each element in a list.
     list, transform, map, convert
 
@@ -1222,6 +1255,7 @@ class Transform(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     TransformType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.list.Transform.TransformType
     )
+
     values: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
@@ -1248,6 +1282,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Union(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Combines unique elements from two lists.
     list, set, union, combine
 

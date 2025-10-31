@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AbsArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Compute the absolute value of each element in a array.
     array, absolute, magnitude
 
@@ -56,6 +57,7 @@ class CosineArray(
     GraphNode[float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Computes the cosine of input angles in radians.
     math, trigonometry, cosine, cos
 
@@ -93,6 +95,7 @@ class ExpArray(
     GraphNode[float | int | nodetool.metadata.types.NPArray],
 ):
     """
+
     Calculate the exponential of each element in a array.
     array, exponential, math, activation
 
@@ -128,6 +131,7 @@ class LogArray(
     GraphNode[float | int | nodetool.metadata.types.NPArray],
 ):
     """
+
     Calculate the natural logarithm of each element in a array.
     array, logarithm, math, transformation
 
@@ -163,6 +167,7 @@ class PowerArray(
     GraphNode[float | int | nodetool.metadata.types.NPArray],
 ):
     """
+
     Raises the base array to the power of the exponent element-wise.
     math, exponentiation, power, pow, **
 
@@ -206,6 +211,7 @@ class SineArray(
     GraphNode[float | nodetool.metadata.types.NPArray],
 ):
     """
+
     Computes the sine of input angles in radians.
     math, trigonometry, sine, sin
 
@@ -243,6 +249,7 @@ class SqrtArray(
     GraphNode[float | int | nodetool.metadata.types.NPArray],
 ):
     """
+
     Calculates the square root of the input array element-wise.
     math, square root, sqrt, √
 

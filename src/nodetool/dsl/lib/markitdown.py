@@ -23,6 +23,7 @@ class ConvertToMarkdown(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Converts various document formats to markdown using MarkItDown.
     markdown, convert, document
 

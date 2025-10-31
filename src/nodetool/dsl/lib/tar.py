@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreateTar(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Create a tar archive from a directory.
     files, tar, create
 
@@ -58,6 +59,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractTar(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Extract a tar archive to a folder.
     files, tar, extract
 
@@ -92,6 +94,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ListTar(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     List contents of a tar archive.
     files, tar, list
 

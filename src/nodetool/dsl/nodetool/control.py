@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
     """
+
     Collect items until the end of the stream and return them as a list.
     collector, aggregate, list, stream
 
@@ -62,6 +63,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ForEach(GraphNode[nodetool.nodes.nodetool.control.ForEach.OutputType]):
     """
+
     Iterate over a list and emit each item sequentially.
     iterator, loop, list, sequence
 
@@ -106,6 +108,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
     """
+
     Conditionally executes one of two branches based on a condition.
     control, flow, condition, logic, else, true, false, switch, toggle, flow-control
 
@@ -154,6 +157,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reroute(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Pass data through unchanged for tidier workflow layouts.
     reroute, passthrough, organize, tidy, flow, connection, redirect
 

@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddTimeDelta(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Add or subtract time from a datetime.
     datetime, add, subtract
 
@@ -68,12 +69,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.date
-import nodetool.nodes.lib.date
 
 
 class BoundaryTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Get the start or end of a time period (day, week, month, year).
     datetime, start, end, boundary, day, week, month, year
 
@@ -84,6 +84,7 @@ class BoundaryTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Dateti
 
     PeriodType: typing.ClassVar[type] = nodetool.nodes.lib.date.PeriodType
     BoundaryType: typing.ClassVar[type] = nodetool.nodes.lib.date.BoundaryType
+
     input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
@@ -129,6 +130,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DateDifference(GraphNode[nodetool.nodes.lib.date.DateDifference.OutputType]):
     """
+
     Calculate the difference between two dates.
     datetime, difference, duration
 
@@ -214,6 +216,7 @@ class DateRange(
     SingleOutputGraphNode[list[types.Datetime]], GraphNode[list[types.Datetime]]
 ):
     """
+
     Generate a list of dates between start and end dates.
     datetime, range, list
 
@@ -274,6 +277,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DateToDatetime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Convert a Date object to a Datetime object.
     date, datetime, convert
     """
@@ -301,6 +305,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DatetimeToDate(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
+
     Convert a Datetime object to a Date object.
     date, datetime, convert
     """
@@ -335,11 +340,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.date
 
 
 class FormatDateTime(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Convert a datetime object to a formatted string.
     datetime, format, convert
 
@@ -349,6 +354,7 @@ class FormatDateTime(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
+
     input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
         default=types.Datetime(
             type="datetime",
@@ -387,6 +393,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetQuarter(GraphNode[nodetool.nodes.lib.date.GetQuarter.OutputType]):
     """
+
     Get the quarter number and start/end dates for a given datetime.
     datetime, quarter, period
 
@@ -447,6 +454,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetWeekday(SingleOutputGraphNode[str | int], GraphNode[str | int]):
     """
+
     Get the weekday name or number from a datetime.
     datetime, weekday, name
 
@@ -492,6 +500,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsDateInRange(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if a date falls within a specified range.
     datetime, range, check
 
@@ -567,6 +576,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Now(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Get the current date and time.
     datetime, current, now
     """
@@ -585,16 +595,17 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.date
 
 
 class ParseDate(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
+
     Parse a date string into components.
     date, parse, format
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
+
     date_string: str | OutputHandle[str] = connect_field(
         default="", description="The date string to parse"
     )
@@ -617,11 +628,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.date
 
 
 class ParseDateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Parse a date/time string into components.
     datetime, parse, format
 
@@ -631,6 +642,7 @@ class ParseDateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datet
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
+
     datetime_string: str | OutputHandle[str] = connect_field(
         default="", description="The datetime string to parse"
     )
@@ -653,12 +665,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.date
-import nodetool.nodes.lib.date
 
 
 class RelativeTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Get datetime relative to current time (past or future).
     datetime, past, future, relative, hours, days, months
 
@@ -669,6 +680,7 @@ class RelativeTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Dateti
 
     TimeUnitType: typing.ClassVar[type] = nodetool.nodes.lib.date.TimeUnitType
     TimeDirection: typing.ClassVar[type] = nodetool.nodes.lib.date.TimeDirection
+
     amount: int | OutputHandle[int] = connect_field(
         default=1, description="Amount of time units"
     )
@@ -698,6 +710,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Today(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
+
     Get the current date.
     date, today, now
     """

@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Add an audio track to a video, replacing or mixing with existing audio.
     video, audio, soundtrack, merge
 
@@ -63,11 +64,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.video
 
 
 class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Add subtitles to a video.
     video, subtitles, text, caption
 
@@ -80,6 +81,7 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     SubtitleTextAlignment: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
     )
+
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
@@ -122,6 +124,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Apply a blur effect to a video.
     video, blur, smooth, soften
 
@@ -160,6 +163,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Apply chroma key (green screen) effect to a video.
     video, chroma key, green screen, compositing
 
@@ -204,6 +208,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Adjust the color balance of a video.
     video, color, balance, adjustment
 
@@ -247,6 +252,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
     """
@@ -282,6 +288,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Apply noise reduction to a video.
     video, denoise, clean, enhance
 
@@ -320,6 +327,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Separate audio from a video file.
     video, audio, extract, separate
     """
@@ -349,6 +357,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Fps(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Get the frames per second (FPS) of a video file.
     video, analysis, frames, fps
 
@@ -383,6 +392,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FrameIterator(GraphNode[nodetool.nodes.nodetool.video.FrameIterator.OutputType]):
     """
+
     Extract frames from a video file using OpenCV.
     video, frames, extract, sequence
 
@@ -441,6 +451,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FrameToVideo(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
 
@@ -472,12 +483,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.video
-import nodetool.nodes.nodetool.video
 
 
 class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Generate videos from input images using any supported video provider.
     Animates static images into dynamic video content with AI-powered motion.
     video, image-to-video, i2v, animation, AI, generation, sora, veo
@@ -496,6 +506,7 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     Resolution: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.ImageToVideo.Resolution
     )
+
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The input image to animate into a video",
@@ -556,14 +567,15 @@ from nodetool.workflows.base_node import BaseNode
 class LoadVideoAssets(
     GraphNode[nodetool.nodes.nodetool.video.LoadVideoAssets.OutputType]
 ):
-    """Load video files from an asset folder.
+    """
+    Load video files from an asset folder.
 
-    video, assets, load
+        video, assets, load
 
-    Use cases:
-    - Provide videos for batch processing
-    - Iterate over stored video assets
-    - Prepare clips for editing or analysis
+        Use cases:
+        - Provide videos for batch processing
+        - Iterate over stored video assets
+        - Prepare clips for editing or analysis
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
@@ -603,6 +615,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Read a video file from disk.
     video, input, load, file
 
@@ -634,6 +647,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Overlay(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
     """
@@ -682,6 +696,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ResizeNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Resize a video to a specific width and height.
     video, resize, scale, dimensions
 
@@ -722,6 +737,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reverse(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Reverse the playback of a video.
     video, reverse, backwards, effect
 
@@ -756,6 +772,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Rotate(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Rotate a video by a specified angle.
     video, rotate, orientation, transform
 
@@ -793,6 +810,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Saturation(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Adjust the color saturation of a video.
     video, saturation, color, enhance
 
@@ -831,6 +849,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Save a video to an asset folder.
     video, save, file, output
 
@@ -873,6 +892,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Write a video file to disk.
     video, output, save, file
 
@@ -913,6 +933,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SetSpeed(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Adjust the playback speed of a video.
     video, speed, tempo, time
 
@@ -951,6 +972,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Sharpness(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Adjust the sharpness of a video.
     video, sharpen, enhance, detail
 
@@ -993,6 +1015,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Stabilize(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Apply video stabilization to reduce camera shake and jitter.
     video, stabilize, smooth, shake-reduction
 
@@ -1031,12 +1054,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.video
-import nodetool.nodes.nodetool.video
 
 
 class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Generate videos from text prompts using any supported video provider.
     Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
     video, generation, AI, text-to-video, t2v
@@ -1054,6 +1076,7 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
     Resolution: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.TextToVideo.Resolution
     )
+
     model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
         default=types.VideoModel(
             type="video_model",
@@ -1106,11 +1129,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.video
 
 
 class Transition(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Create a transition effect between two videos, including audio transition when available.
     video, transition, effect, merge, audio
 
@@ -1124,6 +1147,7 @@ class Transition(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
     TransitionType: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.video.Transition.TransitionType
     )
+
     video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video", uri="", asset_id=None, data=None, duration=None, format=None
@@ -1162,6 +1186,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Trim(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Trim a video to a specific start and end time.
     video, trim, cut, segment
 

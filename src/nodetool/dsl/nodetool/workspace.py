@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CopyWorkspaceFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Copy a file within the workspace.
     workspace, file, copy, duplicate
 
@@ -55,6 +56,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreateWorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Create a directory in the workspace.
     workspace, directory, create, folder
 
@@ -86,6 +88,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DeleteWorkspaceFile(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
+
     Delete a file or directory from the workspace.
     workspace, file, delete, remove
 
@@ -120,6 +123,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetWorkspaceDir(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get the current workspace directory path.
     workspace, directory, path
 
@@ -147,6 +151,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetWorkspaceFileInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Get information about a file in the workspace.
     workspace, file, info, metadata
 
@@ -178,6 +183,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetWorkspaceFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Get file size in bytes for a workspace file.
     workspace, file, size, bytes
 
@@ -209,6 +215,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsWorkspaceDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if a path in the workspace is a directory.
     workspace, directory, check, type
 
@@ -240,6 +247,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsWorkspaceFile(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if a path in the workspace is a file.
     workspace, file, check, type
 
@@ -271,6 +279,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JoinWorkspacePaths(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Join path components relative to workspace.
     workspace, path, join, combine
 
@@ -304,6 +313,7 @@ class ListWorkspaceFiles(
     GraphNode[nodetool.nodes.nodetool.workspace.ListWorkspaceFiles.OutputType]
 ):
     """
+
     List files in the workspace directory matching a pattern.
     workspace, files, list, directory
 
@@ -352,6 +362,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class MoveWorkspaceFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Move or rename a file within the workspace.
     workspace, file, move, rename
 
@@ -386,6 +397,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ReadBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Read a binary file from the workspace as base64-encoded string.
     workspace, file, read, binary
 
@@ -417,6 +429,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ReadTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Read a text file from the workspace.
     workspace, file, read, text
 
@@ -451,6 +464,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Save an image to a file in the workspace.
     workspace, image, save, file, output
 
@@ -495,6 +509,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Save a video file to the workspace.
     workspace, video, save, file, output
 
@@ -545,6 +560,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WorkspaceFileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if a file or directory exists in the workspace.
     workspace, file, exists, check
 
@@ -576,6 +592,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WriteBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Write binary data (base64-encoded) to a file in the workspace.
     workspace, file, write, binary, save
 
@@ -610,6 +627,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WriteTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Write text to a file in the workspace.
     workspace, file, write, text, save
 

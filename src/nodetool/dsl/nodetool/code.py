@@ -22,15 +22,13 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.code
-import nodetool.nodes.nodetool.code
 
 
 class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]):
     """
-    Executes Bash script with safety restrictions.
-    bash, shell, code, execute
 
+        Executes Bash script with safety restrictions.
+        bash, shell, code, execute
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -44,6 +42,7 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
         nodetool.nodes.nodetool.code.ExecuteBash.BashImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
     code: str | OutputHandle[str] = connect_field(
         default="",
         description="Bash script to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
@@ -61,7 +60,12 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
-    def __init__(self, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteBash node.
 
@@ -69,13 +73,17 @@ class ExecuteBash(GraphNode[nodetool.nodes.nodetool.code.ExecuteBash.OutputType]
         dynamic properties and automatically passed to the underlying BaseNode
         as dynamic_properties.
 
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
         Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
-        super().__init__(**kwargs)
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "ExecuteBashOutputs":
@@ -110,17 +118,15 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.code
-import nodetool.nodes.nodetool.code
 
 
 class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.OutputType]):
     """
-    Executes a single shell command inside a Docker container.
-    command, execute, shell, bash, sh
 
-    IMPORTANT: Only enabled in non-production environments
+        Executes a single shell command inside a Docker container.
+        command, execute, shell, bash, sh
 
+        IMPORTANT: Only enabled in non-production environments
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -134,6 +140,7 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
         nodetool.nodes.nodetool.code.ExecuteCommand.CommandImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
     command: str | OutputHandle[str] = connect_field(
         default="",
         description="Single command to run via the selected shell. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
@@ -151,7 +158,12 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
-    def __init__(self, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteCommand node.
 
@@ -159,13 +171,17 @@ class ExecuteCommand(GraphNode[nodetool.nodes.nodetool.code.ExecuteCommand.Outpu
         dynamic properties and automatically passed to the underlying BaseNode
         as dynamic_properties.
 
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
         Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
-        super().__init__(**kwargs)
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "ExecuteCommandOutputs":
@@ -200,17 +216,15 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.code
-import nodetool.nodes.nodetool.code
 
 
 class ExecuteJavaScript(
     GraphNode[nodetool.nodes.nodetool.code.ExecuteJavaScript.OutputType]
 ):
     """
-    Executes JavaScript (Node.js) code with safety restrictions.
-    javascript, nodejs, code, execute
 
+        Executes JavaScript (Node.js) code with safety restrictions.
+        javascript, nodejs, code, execute
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -224,6 +238,7 @@ class ExecuteJavaScript(
         nodetool.nodes.nodetool.code.ExecuteJavaScript.JavaScriptImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
     code: str | OutputHandle[str] = connect_field(
         default="",
         description="JavaScript code to execute as-is under Node.js. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
@@ -241,7 +256,12 @@ class ExecuteJavaScript(
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
-    def __init__(self, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteJavaScript node.
 
@@ -249,13 +269,17 @@ class ExecuteJavaScript(
         dynamic properties and automatically passed to the underlying BaseNode
         as dynamic_properties.
 
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
         Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
-        super().__init__(**kwargs)
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "ExecuteJavaScriptOutputs":
@@ -290,15 +314,13 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.code
-import nodetool.nodes.nodetool.code
 
 
 class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
     """
-    Executes Lua code with a local sandbox (no Docker).
-    lua, code, execute, sandbox
 
+        Executes Lua code with a local sandbox (no Docker).
+        lua, code, execute, sandbox
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -312,6 +334,7 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
         nodetool.nodes.nodetool.code.ExecuteLua.LuaExecutable
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
     code: str | OutputHandle[str] = connect_field(
         default="",
         description="Lua code to execute as-is in a restricted environment. Dynamic inputs are provided as variables. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
@@ -332,7 +355,12 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
-    def __init__(self, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteLua node.
 
@@ -340,13 +368,17 @@ class ExecuteLua(GraphNode[nodetool.nodes.nodetool.code.ExecuteLua.OutputType]):
         dynamic properties and automatically passed to the underlying BaseNode
         as dynamic_properties.
 
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
         Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
-        super().__init__(**kwargs)
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "ExecuteLuaOutputs":
@@ -381,22 +413,20 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.code
-import nodetool.nodes.nodetool.code
 
 
 class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputType]):
     """
-    Executes Python code with safety restrictions.
-    python, code, execute
 
-    Use cases:
-    - Run custom data transformations
-    - Prototype node functionality
-    - Debug and testing workflows
+        Executes Python code with safety restrictions.
+        python, code, execute
 
-    IMPORTANT: Only enabled in non-production environments
+        Use cases:
+        - Run custom data transformations
+        - Prototype node functionality
+        - Debug and testing workflows
 
+        IMPORTANT: Only enabled in non-production environments
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -410,6 +440,7 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
         nodetool.nodes.nodetool.code.ExecutePython.PythonImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
     code: str | OutputHandle[str] = connect_field(
         default="",
         description="Python code to execute as-is. Dynamic inputs are provided as local vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
@@ -427,7 +458,12 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
-    def __init__(self, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecutePython node.
 
@@ -435,13 +471,17 @@ class ExecutePython(GraphNode[nodetool.nodes.nodetool.code.ExecutePython.OutputT
         dynamic properties and automatically passed to the underlying BaseNode
         as dynamic_properties.
 
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
         Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
-        super().__init__(**kwargs)
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "ExecutePythonOutputs":
@@ -476,15 +516,13 @@ from nodetool.dsl.handles import (
 )
 import nodetool.nodes.nodetool.code
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.code
-import nodetool.nodes.nodetool.code
 
 
 class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]):
     """
-    Executes Ruby code with safety restrictions.
-    ruby, code, execute
 
+        Executes Ruby code with safety restrictions.
+        ruby, code, execute
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -498,6 +536,7 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
         nodetool.nodes.nodetool.code.ExecuteRuby.RubyImage
     )
     ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
     code: str | OutputHandle[str] = connect_field(
         default="",
         description="Ruby code to execute as-is. Dynamic inputs are provided as env vars. Stdout lines are emitted on 'stdout'; stderr lines on 'stderr'.",
@@ -515,7 +554,12 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
         description="String to write to process stdin before any streaming input. Use newlines to separate lines.",
     )
 
-    def __init__(self, **kwargs: typing.Any) -> None:
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
         """
         Initialize a ExecuteRuby node.
 
@@ -523,13 +567,17 @@ class ExecuteRuby(GraphNode[nodetool.nodes.nodetool.code.ExecuteRuby.OutputType]
         dynamic properties and automatically passed to the underlying BaseNode
         as dynamic_properties.
 
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
         Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
-        super().__init__(**kwargs)
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "ExecuteRubyOutputs":

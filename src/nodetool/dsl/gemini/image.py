@@ -17,11 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.image
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.gemini.image
 
 
 class ImageGeneration(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Generate an image using Google's Imagen model via the Gemini API.
     google, image generation, ai, imagen
 
@@ -34,6 +34,7 @@ class ImageGeneration(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Ima
     ImageGenerationModel: typing.ClassVar[type] = (
         nodetool.nodes.gemini.image.ImageGenerationModel
     )
+
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing the image to generate."
     )

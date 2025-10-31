@@ -23,6 +23,7 @@ class AddColumn(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Add list of values as new column to dataframe.
     dataframe, column, list
 
@@ -67,6 +68,7 @@ class Aggregate(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Aggregate dataframe by one or more columns.
     aggregate, groupby, group, sum, mean, count, min, max, std, var, median, first, last
 
@@ -108,6 +110,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Append(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Append two dataframes along rows.
     append, concat, rows
 
@@ -150,6 +153,7 @@ class DropDuplicates(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Remove duplicate rows from dataframe.
     duplicates, unique, clean
 
@@ -184,6 +188,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DropNA(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Remove rows with NA values from dataframe.
     na, missing, clean
 
@@ -218,6 +223,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractColumn(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Convert dataframe column to list.
     dataframe, column, list
 
@@ -255,6 +261,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FillNA(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Fill missing values in dataframe.
     fillna, missing, impute
 
@@ -300,6 +307,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Filter(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Filter dataframe based on condition.
     filter, query, condition
 
@@ -346,6 +354,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FindRow(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Find the first row in a dataframe that matches a given condition.
     filter, query, condition, single row
 
@@ -394,6 +403,7 @@ class FromList(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Convert list of dicts to dataframe.
     list, dataframe, convert
 
@@ -428,6 +438,7 @@ class ImportCSV(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Convert CSV string to dataframe.
     csv, dataframe, import
 
@@ -460,6 +471,7 @@ class JSONToDataframe(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Transforms a JSON string into a pandas DataFrame.
     json, dataframe, conversion
 
@@ -489,6 +501,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Join(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Join two dataframes on specified column.
     join, merge, column
 
@@ -532,6 +545,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadCSVAssets(GraphNode[nodetool.nodes.nodetool.data.LoadCSVAssets.OutputType]):
     """
+
     Load dataframes from an asset folder.
     load, dataframe, file, import
 
@@ -580,6 +594,7 @@ class LoadCSVFile(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Load CSV file from file path.
     csv, dataframe, import
     """
@@ -608,6 +623,7 @@ class LoadCSVURL(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Load CSV file from URL.
     csv, dataframe, import
     """
@@ -634,6 +650,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Merge(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Merge two dataframes along columns.
     merge, concat, columns
 
@@ -674,6 +691,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Pivot(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Pivot dataframe to reshape data.
     pivot, reshape, transform
 
@@ -721,6 +739,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Rename(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Rename columns in dataframe.
     rename, columns, names
 
@@ -758,6 +777,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RowIterator(GraphNode[nodetool.nodes.nodetool.data.RowIterator.OutputType]):
     """
+
     Iterate over rows of a dataframe.
     """
 
@@ -802,6 +822,7 @@ class SaveCSVDataframeFile(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Write a pandas DataFrame to a CSV file.
     files, csv, write, output, save, file
 
@@ -844,6 +865,7 @@ class SaveDataframe(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Save dataframe in specified folder.
     csv, folder, save
 
@@ -885,6 +907,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Schema(SingleOutputGraphNode[types.RecordType], GraphNode[types.RecordType]):
     """
+
     Define a schema for a dataframe.
     schema, dataframe, create
     """
@@ -914,6 +937,7 @@ class SelectColumn(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Select specific columns from dataframe.
     dataframe, columns, filter
 
@@ -951,6 +975,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Slice(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
+
     Slice a dataframe by rows using start and end indices.
     slice, subset, rows
 
@@ -994,6 +1019,7 @@ class SortByColumn(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Sort dataframe by specified column.
     sort, order, column
 
@@ -1031,6 +1057,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ToList(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Convert dataframe to list of dictionaries.
     dataframe, list, convert
 

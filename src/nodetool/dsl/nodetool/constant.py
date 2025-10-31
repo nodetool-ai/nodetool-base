@@ -20,13 +20,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
-    """Represents an audio file constant in the workflow.
-    audio, file, mp3, wav
+    """
+    Represents an audio file constant in the workflow.
+        audio, file, mp3, wav
 
-    Use cases:
-    - Provide a fixed audio input for audio processing nodes
-    - Reference a specific audio file in the workflow
-    - Set default audio for testing or demonstration purposes
+        Use cases:
+        - Provide a fixed audio input for audio processing nodes
+        - Reference a specific audio file in the workflow
+        - Set default audio for testing or demonstration purposes
     """
 
     value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -51,13 +52,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Bool(SingleOutputGraphNode[bool], GraphNode[bool]):
-    """Represents a boolean constant in the workflow.
-    boolean, logic, flag
+    """
+    Represents a boolean constant in the workflow.
+        boolean, logic, flag
 
-    Use cases:
-    - Control flow decisions in conditional nodes
-    - Toggle features or behaviors in the workflow
-    - Set default boolean values for configuration
+        Use cases:
+        - Control flow decisions in conditional nodes
+        - Toggle features or behaviors in the workflow
+        - Set default boolean values for configuration
     """
 
     value: bool | OutputHandle[bool] = connect_field(default=False, description=None)
@@ -79,14 +81,15 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Constant(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
-    """Base class for fixed-value nodes.
+    """
+    Base class for fixed-value nodes.
 
-    constant, parameter, default
+        constant, parameter, default
 
-    Use cases:
-    - Provide static inputs to a workflow
-    - Hold configuration values
-    - Simplify testing with deterministic outputs
+        Use cases:
+        - Provide static inputs to a workflow
+        - Hold configuration values
+        - Simplify testing with deterministic outputs
     """
 
     @classmethod
@@ -108,13 +111,14 @@ from nodetool.workflows.base_node import BaseNode
 class DataFrame(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
-    """Represents a fixed DataFrame constant in the workflow.
-    table, data, dataframe, pandas
+    """
+    Represents a fixed DataFrame constant in the workflow.
+        table, data, dataframe, pandas
 
-    Use cases:
-    - Provide static data for analysis or processing
-    - Define lookup tables or reference data
-    - Set sample data for testing or demonstration
+        Use cases:
+        - Provide static data for analysis or processing
+        - Define lookup tables or reference data
+        - Set sample data for testing or demonstration
     """
 
     value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
@@ -142,6 +146,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Date(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
+
     Make a date object from year, month, day.
     date, make, create
     """
@@ -174,6 +179,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Make a datetime object from year, month, day, hour, minute, second.
     datetime, make, create
     """
@@ -223,13 +229,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Dict(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
-    """Represents a dictionary constant in the workflow.
-    dictionary, key-value, mapping
+    """
+    Represents a dictionary constant in the workflow.
+        dictionary, key-value, mapping
 
-    Use cases:
-    - Store configuration settings
-    - Provide structured data inputs
-    - Define parameter sets for other nodes
+        Use cases:
+        - Store configuration settings
+        - Provide structured data inputs
+        - Define parameter sets for other nodes
     """
 
     value: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
@@ -253,8 +260,9 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Document(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
-    """Represents a document constant in the workflow.
-    document, pdf, word, docx
+    """
+    Represents a document constant in the workflow.
+        document, pdf, word, docx
     """
 
     value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
@@ -279,13 +287,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Float(SingleOutputGraphNode[float], GraphNode[float]):
-    """Represents a floating-point number constant in the workflow.
-    number, decimal, float
+    """
+    Represents a floating-point number constant in the workflow.
+        number, decimal, float
 
-    Use cases:
-    - Set numerical parameters for calculations
-    - Define thresholds or limits
-    - Provide fixed numerical inputs for processing
+        Use cases:
+        - Set numerical parameters for calculations
+        - Define thresholds or limits
+        - Provide fixed numerical inputs for processing
     """
 
     value: float | OutputHandle[float] = connect_field(default=0.0, description=None)
@@ -307,13 +316,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Image(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
-    """Represents an image file constant in the workflow.
-    picture, photo, image
+    """
+    Represents an image file constant in the workflow.
+        picture, photo, image
 
-    Use cases:
-    - Provide a fixed image input for image processing nodes
-    - Reference a specific image file in the workflow
-    - Set default image for testing or demonstration purposes
+        Use cases:
+        - Provide a fixed image input for image processing nodes
+        - Reference a specific image file in the workflow
+        - Set default image for testing or demonstration purposes
     """
 
     value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -338,13 +348,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Integer(SingleOutputGraphNode[int], GraphNode[int]):
-    """Represents an integer constant in the workflow.
-    number, integer, whole
+    """
+    Represents an integer constant in the workflow.
+        number, integer, whole
 
-    Use cases:
-    - Set numerical parameters for calculations
-    - Define counts, indices, or sizes
-    - Provide fixed numerical inputs for processing
+        Use cases:
+        - Set numerical parameters for calculations
+        - Define counts, indices, or sizes
+        - Provide fixed numerical inputs for processing
     """
 
     value: int | OutputHandle[int] = connect_field(default=0, description=None)
@@ -366,8 +377,9 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class JSON(SingleOutputGraphNode[types.JSONRef], GraphNode[types.JSONRef]):
-    """Represents a JSON constant in the workflow.
-    json, object, dictionary
+    """
+    Represents a JSON constant in the workflow.
+        json, object, dictionary
     """
 
     value: types.JSONRef | OutputHandle[types.JSONRef] = connect_field(
@@ -392,13 +404,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class List(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
-    """Represents a list constant in the workflow.
-    array, sequence, collection
+    """
+    Represents a list constant in the workflow.
+        array, sequence, collection
 
-    Use cases:
-    - Store multiple values of the same type
-    - Provide ordered data inputs
-    - Define sequences for iteration in other nodes
+        Use cases:
+        - Store multiple values of the same type
+        - Provide ordered data inputs
+        - Define sequences for iteration in other nodes
     """
 
     value: list[Any] | OutputHandle[list[Any]] = connect_field(
@@ -422,13 +435,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class String(SingleOutputGraphNode[str], GraphNode[str]):
-    """Represents a string constant in the workflow.
-    text, string, characters
+    """
+    Represents a string constant in the workflow.
+        text, string, characters
 
-    Use cases:
-    - Provide fixed text inputs for processing
-    - Define labels, identifiers, or names
-    - Set default text values for configuration
+        Use cases:
+        - Provide fixed text inputs for processing
+        - Define labels, identifiers, or names
+        - Set default text values for configuration
     """
 
     value: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -450,13 +464,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
-    """Represents a video file constant in the workflow.
-    video, movie, mp4, file
+    """
+    Represents a video file constant in the workflow.
+        video, movie, mp4, file
 
-    Use cases:
-    - Provide a fixed video input for video processing nodes
-    - Reference a specific video file in the workflow
-    - Set default video for testing or demonstration purposes
+        Use cases:
+        - Provide a fixed video input for video processing nodes
+        - Reference a specific video file in the workflow
+        - Set default video for testing or demonstration purposes
     """
 
     value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(

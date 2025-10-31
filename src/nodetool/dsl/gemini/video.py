@@ -17,12 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.gemini.video
-import nodetool.nodes.gemini.video
 
 
 class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Generate videos from images using Google's Veo models.
     google, video, generation, image-to-video, veo, ai, animation
 
@@ -39,6 +38,7 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     VeoModel: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoModel
     VeoAspectRatio: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoAspectRatio
+
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to animate into a video",
@@ -72,12 +72,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.gemini.video
-import nodetool.nodes.gemini.video
 
 
 class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Generate videos from text prompts using Google's Veo models.
     google, video, generation, text-to-video, veo, ai
 
@@ -94,6 +93,7 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
 
     VeoModel: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoModel
     VeoAspectRatio: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoAspectRatio
+
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing the video to generate"
     )

@@ -17,11 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ocr
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.ocr
 
 
 class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
     """
+
     Performs Optical Character Recognition (OCR) on images using PaddleOCR.
     image, text, ocr, document
 
@@ -33,6 +33,7 @@ class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
     """
 
     OCRLanguage: typing.ClassVar[type] = nodetool.nodes.lib.ocr.OCRLanguage
+
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to perform OCR on",

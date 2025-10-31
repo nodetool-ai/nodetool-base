@@ -23,6 +23,7 @@ class CollectionNode(
     SingleOutputGraphNode[types.Collection], GraphNode[types.Collection]
 ):
     """
+
     Get or create a collection.
     vector, embedding, collection, RAG, get, create, chroma
     """
@@ -61,6 +62,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Count(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Count the number of documents in a collection.
     vector, embedding, collection, RAG, chroma
     """
@@ -88,6 +90,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetDocuments(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Get documents from a chroma collection.
     vector, embedding, collection, RAG, retrieve, chroma
     """
@@ -124,6 +127,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class HybridSearch(GraphNode[nodetool.nodes.vector.chroma.HybridSearch.OutputType]):
     """
+
     Hybrid search combining semantic and keyword-based search for better retrieval. Uses reciprocal rank fusion to combine results from both methods.
     vector, RAG, query, semantic, text, similarity, chroma
     """
@@ -185,11 +189,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.vector.chroma
 
 
 class IndexAggregatedText(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Index multiple text chunks at once with aggregated embeddings from Ollama.
     vector, embedding, collection, RAG, index, text, chunk, batch, ollama, chroma
     """
@@ -197,6 +201,7 @@ class IndexAggregatedText(SingleOutputGraphNode[typing.Any], GraphNode[typing.An
     EmbeddingAggregation: typing.ClassVar[type] = (
         nodetool.nodes.vector.chroma.EmbeddingAggregation
     )
+
     collection: types.Collection | OutputHandle[types.Collection] = connect_field(
         default=types.Collection(type="collection", name=""),
         description="The collection to index",
@@ -240,6 +245,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IndexEmbedding(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Index a single embedding vector into a Chroma collection with optional metadata. Creates a searchable entry that can be queried for similarity matching.
     vector, index, embedding, chroma, storage, RAG
     """
@@ -277,6 +283,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IndexImage(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Index a list of image assets or files.
     vector, embedding, collection, RAG, index, image, batch, chroma
     """
@@ -317,6 +324,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IndexString(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Index a string with a Document ID to a collection.
     vector, embedding, collection, RAG, index, text, string, chroma
 
@@ -356,6 +364,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IndexTextChunk(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Index a single text chunk.
     vector, embedding, collection, RAG, index, text, chunk, chroma
     """
@@ -392,6 +401,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Peek(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Peek at the documents in a collection.
     vector, embedding, collection, RAG, preview, chroma
     """
@@ -422,6 +432,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
     """
+
     Query the index for similar images.
     vector, RAG, query, image, search, similarity, chroma
     """
@@ -478,6 +489,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class QueryText(GraphNode[nodetool.nodes.vector.chroma.QueryText.OutputType]):
     """
+
     Query the index for similar text.
     vector, RAG, query, text, search, similarity, chroma
     """
@@ -533,6 +545,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RemoveOverlap(GraphNode[nodetool.nodes.vector.chroma.RemoveOverlap.OutputType]):
     """
+
     Removes overlapping words between consecutive strings in a list. Splits text into words and matches word sequences for more accurate overlap detection.
     vector, RAG, query, text, processing, overlap, deduplication
     """

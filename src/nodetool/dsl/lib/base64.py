@@ -20,12 +20,13 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Decode(SingleOutputGraphNode[str], GraphNode[str]):
-    """Decodes Base64 text to plain string.
-    base64, decode, string
+    """
+    Decodes Base64 text to plain string.
+        base64, decode, string
 
-    Use cases:
-    - Read encoded data
-    - Extract original text from Base64
+        Use cases:
+        - Read encoded data
+        - Extract original text from Base64
     """
 
     data: str | OutputHandle[str] = connect_field(
@@ -49,12 +50,13 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class Encode(SingleOutputGraphNode[str], GraphNode[str]):
-    """Encodes text to Base64 format.
-    base64, encode, string
+    """
+    Encodes text to Base64 format.
+        base64, encode, string
 
-    Use cases:
-    - Prepare text for transmission
-    - Embed data in JSON or HTML
+        Use cases:
+        - Prepare text for transmission
+        - Embed data in JSON or HTML
     """
 
     text: str | OutputHandle[str] = connect_field(

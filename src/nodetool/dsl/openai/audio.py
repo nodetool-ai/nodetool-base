@@ -17,12 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.openai.audio
-import nodetool.nodes.openai.audio
 
 
 class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Converts text to speech using OpenAI TTS models.
     audio, tts, text-to-speech, voice, synthesis
 
@@ -35,6 +34,7 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     TtsModel: typing.ClassVar[type] = nodetool.nodes.openai.audio.TextToSpeech.TtsModel
     Voice: typing.ClassVar[type] = nodetool.nodes.openai.audio.TextToSpeech.Voice
+
     model: nodetool.nodes.openai.audio.TextToSpeech.TtsModel = Field(
         default=nodetool.nodes.openai.audio.TextToSpeech.TtsModel.tts_1,
         description=None,
@@ -59,12 +59,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.openai.audio
-import nodetool.nodes.openai.audio
 
 
 class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
     """
+
     Converts speech to text using OpenAI's speech-to-text API.
     audio, transcription, speech-to-text, stt, whisper
 
@@ -79,6 +78,7 @@ class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
         nodetool.nodes.openai.audio.Transcribe.TranscriptionModel
     )
     Language: typing.ClassVar[type] = nodetool.nodes.openai.audio.Transcribe.Language
+
     model: nodetool.nodes.openai.audio.Transcribe.TranscriptionModel = Field(
         default=nodetool.nodes.openai.audio.Transcribe.TranscriptionModel.WHISPER_1,
         description="The model to use for transcription.",
@@ -140,6 +140,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Translate(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Translates speech in audio to English text.
     audio, translation, speech-to-text, localization
 

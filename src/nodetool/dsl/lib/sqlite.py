@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreateTable(GraphNode[nodetool.nodes.lib.sqlite.CreateTable.OutputType]):
     """
+
     Create a new SQLite table with specified columns.
     sqlite, database, table, create, schema
 
@@ -84,6 +85,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Delete records from a SQLite table.
     sqlite, database, delete, remove, drop
 
@@ -122,6 +124,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExecuteSQL(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Execute arbitrary SQL statements for advanced operations.
     sqlite, database, sql, execute, custom
 
@@ -159,6 +162,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetDatabasePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get the full path to a SQLite database file.
     sqlite, database, path, location
 
@@ -190,6 +194,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Insert(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Insert a record into a SQLite table.
     sqlite, database, insert, add, record
 
@@ -230,6 +235,7 @@ class Query(
     SingleOutputGraphNode[list[dict[str, Any]]], GraphNode[list[dict[str, Any]]]
 ):
     """
+
     Query records from a SQLite table.
     sqlite, database, query, select, search, retrieve
 
@@ -277,6 +283,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Update records in a SQLite table.
     sqlite, database, update, modify, change
 

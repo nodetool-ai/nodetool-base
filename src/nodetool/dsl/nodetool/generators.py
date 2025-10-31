@@ -23,6 +23,7 @@ class ChartGenerator(
     SingleOutputGraphNode[types.PlotlyConfig], GraphNode[types.PlotlyConfig]
 ):
     """
+
     LLM Agent to create Plotly Express charts based on natural language descriptions.
     llm, data visualization, charts
 
@@ -74,6 +75,7 @@ class DataGenerator(
     GraphNode[nodetool.nodes.nodetool.generators.DataGenerator.OutputType]
 ):
     """
+
     LLM Agent to create a dataframe based on a user prompt.
     llm, dataframe creation, data structuring
 
@@ -146,6 +148,7 @@ class ListGenerator(
     GraphNode[nodetool.nodes.nodetool.generators.ListGenerator.OutputType]
 ):
     """
+
     LLM Agent to create a stream of strings based on a user prompt.
     llm, text streaming
 
@@ -207,6 +210,7 @@ class SVGGenerator(
     SingleOutputGraphNode[list[types.SVGElement]], GraphNode[list[types.SVGElement]]
 ):
     """
+
     LLM Agent to create SVG elements based on user prompts.
     svg, generator, vector, graphics
 
@@ -263,6 +267,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
     """
+
     Generate structured JSON objects from instructions using LLM providers.
     data-generation, structured-data, json, synthesis
 
@@ -298,6 +303,27 @@ class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
     context_window: int | OutputHandle[int] = connect_field(
         default=4096, description=None
     )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a StructuredOutputGenerator node.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values for the node.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> DynamicOutputsProxy:

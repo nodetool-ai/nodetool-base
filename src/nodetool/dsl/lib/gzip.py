@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GzipCompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Compress bytes using gzip.
     gzip, compress, bytes
 
@@ -52,6 +53,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GzipDecompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Decompress gzip data.
     gzip, decompress, bytes
 

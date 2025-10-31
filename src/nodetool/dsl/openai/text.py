@@ -17,11 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.text
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.openai.text
 
 
 class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Generate vector representations of text for semantic analysis.
     embeddings, similarity, search, clustering, classification
 
@@ -38,6 +38,7 @@ class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     EmbeddingModel: typing.ClassVar[type] = (
         nodetool.nodes.openai.text.Embedding.EmbeddingModel
     )
+
     input: str | OutputHandle[str] = connect_field(default="", description=None)
     model: nodetool.nodes.openai.text.Embedding.EmbeddingModel = Field(
         default=nodetool.nodes.openai.text.Embedding.EmbeddingModel.TEXT_EMBEDDING_3_SMALL,
@@ -63,6 +64,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WebSearch(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     🔍 OpenAI Web Search - Searches the web using OpenAI's web search capabilities.
 
     This node uses an OpenAI model equipped with web search functionality
