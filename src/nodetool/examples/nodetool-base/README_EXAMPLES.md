@@ -1,6 +1,6 @@
 # NodeTool Base DSL Examples
 
-This directory contains 22 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
+This directory contains 23 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
 
 ## Original Examples (10)
 
@@ -29,14 +29,15 @@ This directory contains 22 comprehensive examples demonstrating the capabilities
 14. **product_description_generator_dsl.py** - Generate marketing copy and product descriptions
 15. **content_translator_dsl.py** - Translate content between languages with quality assurance
 16. **research_paper_summarizer_dsl.py** - Extract and summarize research paper findings
+17. **text_to_image_concept_board_dsl.py** - Build cinematic prompts and render hero/variant concept art with OpenAI's text-to-image node
 
 ### Business Intelligence & Analysis
-17. **image_metadata_extractor_dsl.py** - Extract and analyze metadata from images
-18. **meeting_notes_summarizer_dsl.py** - Convert meeting transcripts into structured action items
-19. **content_personalization_dsl.py** - Generate personalized content for different audience segments
-20. **job_application_analyzer_dsl.py** - Analyze job descriptions and provide application advice
-21. **competitive_analysis_dsl.py** - Analyze competitor offerings and market positioning
-22. **data_validation_pipeline_dsl.py** - Validate and clean data for quality assurance
+18. **image_metadata_extractor_dsl.py** - Extract and analyze metadata from images
+19. **meeting_notes_summarizer_dsl.py** - Convert meeting transcripts into structured action items
+20. **content_personalization_dsl.py** - Generate personalized content for different audience segments
+21. **job_application_analyzer_dsl.py** - Analyze job descriptions and provide application advice
+22. **competitive_analysis_dsl.py** - Analyze competitor offerings and market positioning
+23. **data_validation_pipeline_dsl.py** - Validate and clean data for quality assurance
 
 ## How to Run Examples
 
