@@ -1,6 +1,6 @@
 # NodeTool Base DSL Examples
 
-This directory contains 22 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
+This directory contains 23 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
 
 ## Original Examples (10)
 
@@ -37,6 +37,7 @@ This directory contains 22 comprehensive examples demonstrating the capabilities
 20. **job_application_analyzer_dsl.py** - Analyze job descriptions and provide application advice
 21. **competitive_analysis_dsl.py** - Analyze competitor offerings and market positioning
 22. **data_validation_pipeline_dsl.py** - Validate and clean data for quality assurance
+23. **research_agent_market_analysis_dsl.py** - Run an autonomous ResearchAgent to gather market intelligence with dynamic outputs
 
 ## How to Run Examples
 
