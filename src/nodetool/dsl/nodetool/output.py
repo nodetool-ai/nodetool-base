@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ArrayOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for generic array data, typically numerical ('NPArray').
     array, numerical, list, tensor, vector, matrix
 
@@ -69,6 +70,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AudioOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for audio content references ('AudioRef').
     audio, sound, media, voice, speech, asset, reference
 
@@ -117,6 +119,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class BooleanOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a single boolean value.
     boolean, true, false, flag, condition, flow-control, branch, else, switch, toggle
 
@@ -162,6 +165,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DataframeOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for structured data references, typically tabular ('DataframeRef').
     dataframe, table, structured, csv, tabular_data, rows, columns
 
@@ -212,6 +216,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DictionaryOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for key-value pair data (dictionary).
     dictionary, key-value, mapping, object, json_object, struct
 
@@ -259,6 +264,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DocumentOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for document content references ('DocumentRef').
     document, file, pdf, text_file, asset, reference
 
@@ -307,6 +313,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilePathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a file path.
     file, path, file_path
     """
@@ -349,6 +356,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FloatOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a single float value.
     float, decimal, number
 
@@ -394,6 +402,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FolderPathOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a folder path.
     folder, path, folder_path
     """
@@ -436,6 +445,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ImageOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a single image reference ('ImageRef').
     image, picture, visual, asset, reference
 
@@ -484,6 +494,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IntegerOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a single integer value.
     integer, number, count
 
@@ -529,6 +540,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ListOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a list of arbitrary values.
     list, output, any
 
@@ -575,6 +587,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StringOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for a string value.
     string, text, output, label, name
 
@@ -621,6 +634,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class VideoOutput(GraphNode[nodetool.workflows.base_node.OutputNode.OutputType]):
     """
+
     Output node for video content references ('VideoRef').
     video, media, clip, asset, reference
 

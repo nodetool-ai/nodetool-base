@@ -23,6 +23,7 @@ class BatchToList(
     SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
 ):
     """
+
     Convert an image batch to a list of image references.
     batch, list, images, processing
 
@@ -53,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Crop an image to specified coordinates.
     image, crop
 
@@ -96,6 +98,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Resize an image to fit within specified dimensions while preserving aspect ratio.
     image, resize, fit
 
@@ -133,6 +136,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType]):
     """
+
     Get metadata about the input image.
     metadata, properties, analysis, information
 
@@ -191,6 +195,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Transform images using text prompts with any supported image provider.
     Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, transformation, AI, image-to-image, i2i
@@ -268,6 +273,7 @@ class LoadImageAssets(
     GraphNode[nodetool.nodes.nodetool.image.LoadImageAssets.OutputType]
 ):
     """
+
     Load images from an asset folder.
     load, image, file, import
     """
@@ -309,6 +315,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Read an image file from disk.
     image, input, load, file
 
@@ -342,6 +349,7 @@ class LoadImageFolder(
     GraphNode[nodetool.nodes.nodetool.image.LoadImageFolder.OutputType]
 ):
     """
+
     Load all images from a folder, optionally including subfolders.
     image, load, folder, files
 
@@ -397,6 +405,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Paste one image onto another at specified coordinates.
     paste, composite, positioning, overlay
 
@@ -439,6 +448,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Change image dimensions to specified width and height.
     image, resize
 
@@ -476,6 +486,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
 
@@ -516,6 +527,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Write an image to disk.
     image, output, save, file
 
@@ -559,6 +571,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Enlarge or shrink an image by a scale factor.
     image, resize, scale
 
@@ -593,6 +606,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Generate images from text prompts using any supported image provider.
     Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, generation, AI, text-to-image, t2i

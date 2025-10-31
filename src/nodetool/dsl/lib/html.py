@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Escape(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Escape special characters in text into HTML-safe sequences.
     html, escape, entities, convert
 
@@ -52,6 +53,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Unescape(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Convert HTML entities back to normal text.
     html, unescape, entities, decode
 

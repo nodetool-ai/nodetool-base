@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Background(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     The Background Node creates a blank background.
     image, background, blank, base, layer
     This node is mainly used for generating a base layer for image processing tasks. It produces a uniform image, having a user-specified width, height and color. The color is given in a hexadecimal format, defaulting to white if not specified.
@@ -55,6 +56,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GaussianNoise(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     This node creates and adds Gaussian noise to an image.
     image, noise, gaussian, distortion, artifact
 
@@ -85,11 +87,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.draw
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.pillow.draw
 
 
 class RenderText(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     This node allows you to add text to images.
     text, font, label, title, watermark, caption, image, overlay
     This node takes text, font updates, coordinates (where to place the text), and an image to work with. A user can use the Render Text Node to add a label or title to an image, watermark an image, or place a caption directly on an image.
@@ -106,6 +108,7 @@ class RenderText(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
     TextAlignment: typing.ClassVar[type] = (
         nodetool.nodes.lib.pillow.draw.RenderText.TextAlignment
     )
+
     text: str | OutputHandle[str] = connect_field(
         default="", description="The text to render."
     )

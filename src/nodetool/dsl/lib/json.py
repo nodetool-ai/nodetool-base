@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterJSON(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Filter JSON array based on a key-value condition.
     json, filter, array
 
@@ -57,6 +58,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetJSONPathBool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Extract a boolean value from a JSON path
     json, path, extract, boolean
     """
@@ -89,6 +91,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetJSONPathDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Extract a dictionary value from a JSON path
     json, path, extract, object
     """
@@ -121,6 +124,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetJSONPathFloat(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Extract a float value from a JSON path
     json, path, extract, number
     """
@@ -153,6 +157,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetJSONPathInt(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Extract an integer value from a JSON path
     json, path, extract, number
     """
@@ -185,6 +190,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetJSONPathList(SingleOutputGraphNode[list], GraphNode[list]):
     """
+
     Extract a list value from a JSON path
     json, path, extract, array
     """
@@ -217,6 +223,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetJSONPathStr(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Extract a string value from a JSON path
     json, path, extract, string
     """
@@ -249,6 +256,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JSONTemplate(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Template JSON strings with variable substitution.
     json, template, substitute, variables
 
@@ -288,6 +296,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType]):
     """
+
     Load JSON files from an asset folder.
     load, json, file, import
     """
@@ -329,6 +338,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ParseDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Parse a JSON string into a Python dictionary.
     json, parse, decode, dictionary
 
@@ -360,6 +370,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ParseList(SingleOutputGraphNode[list], GraphNode[list]):
     """
+
     Parse a JSON string into a Python list.
     json, parse, decode, array, list
 
@@ -391,6 +402,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StringifyJSON(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Convert a Python object to a JSON string.
     json, stringify, encode
 
@@ -424,6 +436,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ValidateJSON(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Validate JSON data against a schema.
     json, validate, schema
 

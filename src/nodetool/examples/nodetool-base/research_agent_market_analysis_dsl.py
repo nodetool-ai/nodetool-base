@@ -11,7 +11,7 @@ Workflow:
 4. **Report Assembly** – Format the structured findings into a briefing memo.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph, run_graph, run_graph_sync
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import ResearchAgent
@@ -74,26 +74,21 @@ research_agent = ResearchAgent(
     objective=research_objective.output,
     model=LanguageModel(
         type="language_model",
-        id="gpt-4o-mini",
-        provider=Provider.OpenAI,
+        id="openai/gpt-oss-120b",
+        provider=Provider.HuggingFaceCerebras
     ),
-    max_tokens=7000,
+    # Dynamic outputs describe the structured data the agent must return.
+    # Each entry maps a field name to a TypeMetadata instance.
+    dynamic_outputs = {
+        "executive_summary": str,
+        "market_landscape": str,
+        "key_players": list[str],
+        "opportunities": str,
+        "risk_factors": str,
+        "recommended_actions": str,
+        "sources": str
+    }
 )
-
-# Dynamic outputs describe the structured data the agent must return.
-# Each entry maps a field name to a TypeMetadata instance.
-research_agent.dynamic_outputs = {
-    "executive_summary": TypeMetadata(type="str"),
-    "market_landscape": TypeMetadata(type="str"),
-    "key_players": TypeMetadata(
-        type="list",
-        type_args=[TypeMetadata(type="str")],
-    ),
-    "opportunities": TypeMetadata(type="str"),
-    "risk_factors": TypeMetadata(type="str"),
-    "recommended_actions": TypeMetadata(type="str"),
-    "sources": TypeMetadata(type="str"),
-}
 
 # ---- Reporting --------------------------------------------------------------
 # Assemble a polished briefing memo using the agent's structured outputs.
@@ -144,6 +139,6 @@ graph = create_graph(research_output)
 if __name__ == "__main__":
     import asyncio
 
-    result = asyncio.run(run_graph(graph))
+    result = run_graph_sync(graph)
     print("✅ Market research brief ready!\n")
     print(result["market_research_brief"])

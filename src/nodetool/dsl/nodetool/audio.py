@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AudioMixer(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Mix up to 5 audio tracks together with individual volume controls.
     audio, mix, volume, combine, blend, layer, add, overlay
 
@@ -85,6 +86,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AudioToNumpy(GraphNode[nodetool.nodes.nodetool.audio.AudioToNumpy.OutputType]):
     """
+
     Convert audio to numpy array for processing.
     audio, numpy, convert, array
 
@@ -135,6 +137,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Concatenates two audio files together.
     audio, edit, join, +
 
@@ -170,6 +173,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ConcatList(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Concatenates multiple audio files together in sequence.
     audio, edit, join, multiple, +
 
@@ -203,6 +207,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Converts an audio file to a Array for further processing.
     audio, conversion, tensor
 
@@ -235,6 +240,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreateSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Creates a silent audio file with a specified duration.
     audio, silence, empty
 
@@ -266,6 +272,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FadeIn(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Applies a fade-in effect to the beginning of an audio file.
     audio, edit, transition
 
@@ -300,6 +307,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FadeOut(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Applies a fade-out effect to the end of an audio file.
     audio, edit, transition
 
@@ -336,6 +344,7 @@ class LoadAudioAssets(
     GraphNode[nodetool.nodes.nodetool.audio.LoadAudioAssets.OutputType]
 ):
     """
+
     Load audio files from an asset folder.
     load, audio, file, import
     """
@@ -377,6 +386,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Read an audio file from disk.
     audio, input, load, file
 
@@ -410,6 +420,7 @@ class LoadAudioFolder(
     GraphNode[nodetool.nodes.nodetool.audio.LoadAudioFolder.OutputType]
 ):
     """
+
     Load all audio files from a folder, optionally including subfolders.
     audio, load, folder, files
 
@@ -462,6 +473,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class MonoToStereo(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Converts a mono audio signal to stereo.
     audio, convert, channels
 
@@ -493,6 +505,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Normalize(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Normalizes the volume of an audio file.
     audio, fix, dynamics, volume
 
@@ -524,6 +537,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class NumpyToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Convert numpy array to audio.
     audio, numpy, convert
 
@@ -562,6 +576,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class OverlayAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Overlays two audio files together.
     audio, edit, transform
 
@@ -593,14 +608,13 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.audio
-import nodetool.nodes.nodetool.audio
 
 
 class RealtimeWhisper(
     GraphNode[nodetool.nodes.nodetool.audio.RealtimeWhisper.OutputType]
 ):
     """
+
     Stream audio input to WhisperLive and emit real-time transcription.
     realtime, whisper, transcription, streaming, audio-to-text, speech-to-text
 
@@ -616,6 +630,7 @@ class RealtimeWhisper(
     Language: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.audio.RealtimeWhisper.Language
     )
+
     model: nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel = Field(
         default=nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel.TINY,
         description="Whisper model size - larger models are more accurate but slower",
@@ -694,6 +709,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Removes or shortens silence in an audio file with smooth transitions.
     audio, edit, clean
 
@@ -746,6 +762,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Repeat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Loops an audio file a specified number of times.
     audio, edit, repeat
 
@@ -782,6 +799,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reverse(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Reverses an audio file.
     audio, edit, transform
 
@@ -813,6 +831,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Save an audio file to a specified asset folder.
     audio, folder, name
 
@@ -853,6 +872,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Write an audio file to disk.
     audio, output, save, file
 
@@ -891,6 +911,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SliceAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Extracts a section of an audio file.
     audio, edit, trim
 
@@ -928,6 +949,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StereoToMono(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Converts a stereo audio signal to mono.
     audio, convert, channels
 
@@ -963,6 +985,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class TextToSpeech(GraphNode[nodetool.nodes.nodetool.audio.TextToSpeech.OutputType]):
     """
+
     Generate speech audio from text using any supported TTS provider.
     Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
     audio, generation, AI, text-to-speech, tts, voice
@@ -1028,6 +1051,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Trim(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Trim an audio file to a specified duration.
     audio, trim, cut
 

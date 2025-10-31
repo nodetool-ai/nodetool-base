@@ -16,12 +16,12 @@ import typing
 from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
-from nodetool.nodes.lib.supabase import FilterOp
 from nodetool.workflows.base_node import BaseNode
 
 
 class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Delete records from a Supabase table.
     supabase, database, delete, remove
     """
@@ -32,7 +32,7 @@ class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     filters: (
         list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
     ) = connect_field(
-        default=[],
+        default=PydanticUndefined,
         description="Filters to select rows to delete (required for safety)",
     )
 
@@ -54,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Insert(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Insert record(s) into a Supabase table.
     supabase, database, insert, add, record
     """
@@ -66,8 +67,7 @@ class Insert(SingleOutputGraphNode[Any], GraphNode[Any]):
         | dict[str, typing.Any]
         | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]]
     ) = connect_field(
-        default=[],
-        description="One or multiple rows to insert"
+        default=PydanticUndefined, description="One or multiple rows to insert"
     )
     return_rows: bool | OutputHandle[bool] = connect_field(
         default=True, description="Return inserted rows (uses select('*'))"
@@ -91,6 +91,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RPC(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Call a PostgreSQL function via Supabase RPC.
     supabase, database, rpc, function
     """
@@ -99,8 +100,7 @@ class RPC(SingleOutputGraphNode[Any], GraphNode[Any]):
         default="", description="RPC function name"
     )
     params: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={},
-        description="Function params"
+        default=PydanticUndefined, description="Function params"
     )
     to_dataframe: bool | OutputHandle[bool] = connect_field(
         default=False, description="Return DataframeRef if result is a list of records"
@@ -124,6 +124,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Select(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Query records from a Supabase table.
     supabase, database, query, select
     """
@@ -138,8 +139,7 @@ class Select(SingleOutputGraphNode[Any], GraphNode[Any]):
     filters: (
         list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
     ) = connect_field(
-        default=[],
-        description="List of typed filters to apply"
+        default=PydanticUndefined, description="List of typed filters to apply"
     )
     order_by: str | OutputHandle[str] = connect_field(
         default="", description="Column to order by"
@@ -172,6 +172,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Update(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Update records in a Supabase table.
     supabase, database, update, modify, change
     """
@@ -180,12 +181,12 @@ class Update(SingleOutputGraphNode[Any], GraphNode[Any]):
         default="", description="Table to update"
     )
     values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description="New values"
+        default=PydanticUndefined, description="New values"
     )
     filters: (
         list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
     ) = connect_field(
-        default=[], description="Filters to select rows to update"
+        default=PydanticUndefined, description="Filters to select rows to update"
     )
     return_rows: bool | OutputHandle[bool] = connect_field(
         default=True, description="Return updated rows (uses select('*'))"
@@ -209,6 +210,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Upsert(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Insert or update (upsert) records in a Supabase table.
     supabase, database, upsert, merge
     """
@@ -221,7 +223,7 @@ class Upsert(SingleOutputGraphNode[Any], GraphNode[Any]):
         | dict[str, typing.Any]
         | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]]
     ) = connect_field(
-        default=[], description="One or multiple rows to upsert"
+        default=PydanticUndefined, description="One or multiple rows to upsert"
     )
     on_conflict: str | OutputHandle[str] | None = connect_field(
         default=None,

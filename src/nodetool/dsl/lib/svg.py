@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CircleNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Generate SVG circle element.
     svg, shape, vector, circle
     """
@@ -60,6 +61,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ClipPath(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Create clipping paths for SVG elements.
     svg, clip, mask
 
@@ -94,6 +96,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Document(SingleOutputGraphNode[types.SVGRef], GraphNode[types.SVGRef]):
     """
+
     Combine SVG elements into a complete SVG document.
     svg, document, combine
 
@@ -141,6 +144,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DropShadow(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Apply drop shadow filter to SVG elements.
     svg, filter, shadow, effects
     """
@@ -177,6 +181,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class EllipseNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Generate SVG ellipse element.
     svg, shape, vector, ellipse
     """
@@ -219,6 +224,7 @@ class GaussianBlur(
     SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]
 ):
     """
+
     Apply Gaussian blur filter to SVG elements.
     svg, filter, blur, effects
     """
@@ -241,11 +247,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.svg
 
 
 class Gradient(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Create linear or radial gradients for SVG elements.
     svg, gradient, color
 
@@ -256,6 +262,7 @@ class Gradient(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
     """
 
     GradientType: typing.ClassVar[type] = nodetool.nodes.lib.svg.Gradient.GradientType
+
     gradient_type: nodetool.nodes.lib.svg.Gradient.GradientType = Field(
         default=nodetool.nodes.lib.svg.Gradient.GradientType.LINEAR,
         description="Type of gradient",
@@ -299,6 +306,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LineNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Generate SVG line element.
     svg, shape, vector, line
     """
@@ -341,6 +349,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Generate SVG path element.
     svg, shape, vector, path
     """
@@ -376,6 +385,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Generate SVG polygon element.
     svg, shape, vector, polygon
     """
@@ -411,6 +421,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RectNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Generate SVG rectangle element.
     svg, shape, vector, rectangle
     """
@@ -447,6 +458,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SVGToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Create an SVG document and convert it to a raster image in one step.
     svg, document, raster, convert
 
@@ -493,11 +505,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.svg
 
 
 class Text(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Add text elements to SVG.
     svg, text, typography
 
@@ -508,6 +520,7 @@ class Text(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement])
     """
 
     SVGTextAnchor: typing.ClassVar[type] = nodetool.nodes.lib.svg.SVGTextAnchor
+
     text: str | OutputHandle[str] = connect_field(
         default="", description="Text content"
     )
@@ -545,6 +558,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Transform(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
+
     Apply transformations to SVG elements.
     svg, transform, animation
 

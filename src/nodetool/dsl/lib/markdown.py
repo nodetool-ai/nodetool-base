@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractBulletLists(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extracts bulleted lists from markdown.
     markdown, lists, bullets, extraction
 
@@ -52,6 +53,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractCodeBlocks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extracts code blocks and their languages from markdown.
     markdown, code, extraction
 
@@ -83,6 +85,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractHeaders(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extracts headers and creates a document structure/outline.
     markdown, headers, structure
 
@@ -117,6 +120,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractLinks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extracts all links from markdown text.
     markdown, links, extraction
 
@@ -151,6 +155,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractNumberedLists(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Extracts numbered lists from markdown.
     markdown, lists, numbered, extraction
 
@@ -184,6 +189,7 @@ class ExtractTables(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Extracts tables from markdown and converts them to structured data.
     markdown, tables, data
 

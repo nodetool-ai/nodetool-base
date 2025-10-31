@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reshape1D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Reshape an array to a 1D shape without changing its data.
     array, reshape, vector, flatten
 
@@ -56,6 +57,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reshape2D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Reshape an array to a new shape without changing its data.
     array, reshape, dimensions, structure
 
@@ -94,6 +96,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reshape3D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Reshape an array to a 3D shape without changing its data.
     array, reshape, dimensions, volume
 
@@ -135,6 +138,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Reshape4D(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Reshape an array to a 4D shape without changing its data.
     array, reshape, dimensions, batch
 

@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Compress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Compress binary data using the zlib algorithm.
     zlib, compress, deflate, binary
 
@@ -55,6 +56,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Decompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     """
+
     Decompress zlib-compressed binary data.
     zlib, decompress, inflate, binary
 

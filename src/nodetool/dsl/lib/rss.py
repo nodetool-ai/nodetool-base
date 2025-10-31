@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractFeedMetadata(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Extracts metadata from an RSS feed.
     rss, metadata, feed
 
@@ -52,6 +53,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FetchRSSFeed(GraphNode[nodetool.nodes.lib.rss.FetchRSSFeed.OutputType]):
     """
+
     Fetches and parses an RSS feed from a URL.
     rss, feed, network
 

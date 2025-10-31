@@ -23,6 +23,7 @@ class AssetFolderInput(
     SingleOutputGraphNode[types.FolderRef], GraphNode[types.FolderRef]
 ):
     """
+
     Accepts an asset folder as a parameter for workflows.
     input, parameter, folder, path, folderpath, local_folder, filesystem
     """
@@ -56,6 +57,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AudioInput(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
     input, parameter, audio, sound, voice, speech, asset
 
@@ -95,6 +97,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class BooleanInput(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.
     input, parameter, boolean, bool, toggle, switch, flag
 
@@ -132,6 +135,7 @@ class CollectionInput(
     SingleOutputGraphNode[types.Collection], GraphNode[types.Collection]
 ):
     """
+
     Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
     The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.
     Keywords: input, parameter, collection, database, vector_store, chroma, index
@@ -171,6 +175,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ColorInput(SingleOutputGraphNode[types.ColorRef], GraphNode[types.ColorRef]):
     """
+
     Accepts a color value as a parameter for workflows.
     input, parameter, color, color_picker, color_input
     """
@@ -206,6 +211,7 @@ class DocumentFileInput(
     GraphNode[nodetool.nodes.nodetool.input.DocumentFileInput.OutputType]
 ):
     """
+
     Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
     input, parameter, document, file, path, local_file, load
 
@@ -260,6 +266,7 @@ class DocumentInput(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.
     input, parameter, document, file, asset, reference
 
@@ -299,6 +306,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilePathInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Accepts a local filesystem path (to a file or directory) as input for workflows.
     input, parameter, path, filepath, directory, local_file, filesystem
 
@@ -337,6 +345,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FloatInput(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
     input, parameter, float, number, decimal, range
 
@@ -374,6 +383,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FolderPathInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Accepts a folder path as a parameter for workflows.
     input, parameter, folder, path, folderpath, local_folder, filesystem
     """
@@ -408,6 +418,7 @@ class HuggingFaceModelInput(
     SingleOutputGraphNode[types.HuggingFaceModel], GraphNode[types.HuggingFaceModel]
 ):
     """
+
     Accepts a Hugging Face model as a parameter for workflows.
     input, parameter, model, huggingface, hugging_face, model_name
     """
@@ -450,6 +461,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ImageInput(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.
     input, parameter, image, picture, graphic, visual, asset
 
@@ -491,6 +503,7 @@ class ImageModelInput(
     SingleOutputGraphNode[types.ImageModel], GraphNode[types.ImageModel]
 ):
     """
+
     Accepts an image generation model as a parameter for workflows.
     input, parameter, model, image, generation
     """
@@ -529,6 +542,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IntegerInput(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
     input, parameter, integer, number, count, index, whole_number
 
@@ -568,6 +582,7 @@ class LanguageModelInput(
     SingleOutputGraphNode[types.LanguageModel], GraphNode[types.LanguageModel]
 ):
     """
+
     Accepts a language model as a parameter for workflows.
     input, parameter, model, language, model_name
     """
@@ -608,6 +623,7 @@ class RealtimeAudioInput(
     GraphNode[nodetool.nodes.nodetool.input.RealtimeAudioInput.OutputType]
 ):
     """
+
     Accepts streaming audio data for workflows.
     input, parameter, audio, sound, voice, speech, asset
     """
@@ -654,6 +670,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Accepts a string value as a parameter for workflows.
     input, parameter, string, text, label, name, value
 
@@ -691,6 +708,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StringListInput(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Accepts a list of strings as a parameter for workflows.
     input, parameter, string, text, label, name, value
     """
@@ -723,6 +741,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class VideoInput(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
+
     Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
     input, parameter, video, movie, clip, visual, asset
 

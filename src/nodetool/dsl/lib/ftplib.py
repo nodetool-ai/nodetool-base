@@ -22,13 +22,14 @@ from nodetool.workflows.base_node import BaseNode
 class FTPDownloadFile(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
-    """Download a file from an FTP server.
-    ftp, download, file
+    """
+    Download a file from an FTP server.
+        ftp, download, file
 
-    Use cases:
-    - Retrieve remote files for processing
-    - Backup data from an FTP server
-    - Integrate legacy FTP systems
+        Use cases:
+        - Retrieve remote files for processing
+        - Backup data from an FTP server
+        - Integrate legacy FTP systems
     """
 
     host: str | OutputHandle[str] = connect_field(
@@ -61,13 +62,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class FTPListDirectory(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
-    """List files in a directory on an FTP server.
-    ftp, list, directory
+    """
+    List files in a directory on an FTP server.
+        ftp, list, directory
 
-    Use cases:
-    - Browse remote directories
-    - Check available files before download
-    - Monitor FTP server contents
+        Use cases:
+        - Browse remote directories
+        - Check available files before download
+        - Monitor FTP server contents
     """
 
     host: str | OutputHandle[str] = connect_field(
@@ -100,13 +102,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class FTPUploadFile(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
-    """Upload a file to an FTP server.
-    ftp, upload, file
+    """
+    Upload a file to an FTP server.
+        ftp, upload, file
 
-    Use cases:
-    - Transfer files to an FTP server
-    - Automate backups to a remote system
-    - Integrate with legacy FTP workflows
+        Use cases:
+        - Transfer files to an FTP server
+        - Automate backups to a remote system
+        - Integrate with legacy FTP workflows
     """
 
     host: str | OutputHandle[str] = connect_field(

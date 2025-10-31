@@ -28,6 +28,7 @@ class SimpleHttpServer(
     GraphNode[nodetool.nodes.lib.http_server.SimpleHttpServer.OutputType]
 ):
     """
+
     Starts a simple HTTP server inside Docker and streams logs.
     http, server, web
 
@@ -51,6 +52,27 @@ class SimpleHttpServer(
     ready_timeout_seconds: int | OutputHandle[int] = connect_field(
         default=15, description="Seconds to wait for server readiness"
     )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a SimpleHttpServer node.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values for the node.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
 
     @property
     def out(self) -> "SimpleHttpServerOutputs":

@@ -17,12 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.audio
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.gemini.audio
-import nodetool.nodes.gemini.audio
 
 
 class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Generate speech audio from text using Google's Gemini text-to-speech models.
     google, text-to-speech, tts, audio, speech, voice, ai
 
@@ -39,6 +38,7 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     TTSModel: typing.ClassVar[type] = nodetool.nodes.gemini.audio.TTSModel
     VoiceName: typing.ClassVar[type] = nodetool.nodes.gemini.audio.VoiceName
+
     text: str | OutputHandle[str] = connect_field(
         default="", description="The text to convert to speech."
     )

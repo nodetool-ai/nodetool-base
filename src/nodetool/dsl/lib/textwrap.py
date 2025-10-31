@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Dedent(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Removes any common leading whitespace from every line in text.
     textwrap, dedent, whitespace
     """
@@ -45,6 +46,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Fill(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Wraps text to a specified width, returning a formatted string.
     textwrap, fill, wrap
     """
@@ -70,6 +72,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Indent(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Adds a prefix to the beginning of each line in the text.
     textwrap, indent, prefix
     """
@@ -95,6 +98,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Shorten(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Shortens text to fit within a width, using a placeholder if truncated.
     textwrap, shorten, truncate
     """
@@ -123,6 +127,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Wrap(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Wraps text to a specified width, returning a list of lines.
     textwrap, wrap, lines
     """

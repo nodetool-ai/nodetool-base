@@ -23,6 +23,7 @@ class AdaptiveContrast(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
     """
+
     Applies localized contrast enhancement using adaptive techniques.
     image, contrast, enhance
 
@@ -60,6 +61,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AutoContrast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Automatically adjusts image contrast for enhanced visual quality.
     image, contrast, balance
 
@@ -96,6 +98,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Brightness(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Adjusts overall image brightness to lighten or darken.
     image, brightness, enhance
 
@@ -131,6 +134,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Color(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Adjusts color intensity of an image.
     image, color, enhance
 
@@ -166,6 +170,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Contrast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Adjusts image contrast to modify light-dark differences.
     image, contrast, enhance
 
@@ -201,6 +206,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Detail(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Enhances fine details in images.
     image, detail, enhance
 
@@ -233,6 +239,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class EdgeEnhance(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Enhances edge visibility by increasing contrast along boundaries.
     image, edge, enhance
 
@@ -265,6 +272,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Equalize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Enhances image contrast by equalizing intensity distribution.
     image, contrast, histogram
 
@@ -297,6 +305,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RankFilter(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Applies rank-based filtering to enhance or smooth image features.
     image, filter, enhance
 
@@ -335,6 +344,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Sharpen(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Enhances image detail by intensifying local pixel contrast.
     image, sharpen, clarity
 
@@ -367,6 +377,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Sharpness(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Adjusts image sharpness to enhance or reduce detail clarity.
     image, clarity, sharpness
 
@@ -402,6 +413,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class UnsharpMask(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Sharpens images using the unsharp mask technique.
     image, sharpen, enhance
 

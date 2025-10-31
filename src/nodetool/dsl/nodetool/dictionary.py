@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ArgMax(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Returns the label associated with the highest value in a dictionary.
     dictionary, maximum, label, argmax
 
@@ -53,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Combine(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Merges two dictionaries, with second dictionary values taking precedence.
     dictionary, merge, update, +, add, concatenate
 
@@ -87,6 +89,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Filter(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Creates a new dictionary with only specified keys from the input.
     dictionary, filter, select
 
@@ -121,6 +124,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetValue(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Retrieves a value from a dictionary using a specified key.
     dictionary, get, value, key
 
@@ -154,6 +158,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadCSVFile(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
+
     Read a CSV file from disk.
     files, csv, read, input, load, file
     """
@@ -180,14 +185,14 @@ from nodetool.workflows.base_node import BaseNode
 
 class MakeDictionary(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
-    Creates a simple dictionary with up to three key-value pairs.
-    dictionary, create, simple
 
-    Use cases:
-    - Create configuration entries
-    - Initialize simple data structures
-    - Build basic key-value mappings
+        Creates a simple dictionary with up to three key-value pairs.
+        dictionary, create, simple
 
+        Use cases:
+        - Create configuration entries
+        - Initialize simple data structures
+        - Build basic key-value mappings
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -208,8 +213,6 @@ class MakeDictionary(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, 
         Args:
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
         super().__init__(**kwargs)
 
@@ -231,6 +234,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ParseJSON(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Parses a JSON string into a Python dictionary.
     json, parse, dictionary
 
@@ -256,13 +260,13 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.dictionary
 
 
 class ReduceDictionaries(
     SingleOutputGraphNode[dict[Any, Any]], GraphNode[dict[Any, Any]]
 ):
     """
+
     Reduces a list of dictionaries into one dictionary based on a specified key field.
     dictionary, reduce, aggregate
 
@@ -275,6 +279,7 @@ class ReduceDictionaries(
     ConflictResolution: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
     )
+
     dictionaries: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = (
         connect_field(default=[], description="List of dictionaries to be reduced")
     )
@@ -311,6 +316,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Remove(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Removes a key-value pair from a dictionary.
     dictionary, remove, delete
 
@@ -343,6 +349,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveCSVFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Write a list of dictionaries to a CSV file.
     files, csv, write, output, save, file
 
@@ -380,6 +387,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
+
     Updates a dictionary with new key-value pairs.
     dictionary, add, update
 
@@ -414,6 +422,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Zip(SingleOutputGraphNode[dict[Any, Any]], GraphNode[dict[Any, Any]]):
     """
+
     Creates a dictionary from parallel lists of keys and values.
     dictionary, create, zip
 

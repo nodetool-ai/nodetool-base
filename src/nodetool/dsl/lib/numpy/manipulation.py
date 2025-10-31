@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IndexArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Select specific indices from an array along a specified axis.
     array, index, select, subset
 
@@ -59,6 +60,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class MatMul(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Perform matrix multiplication on two input arrays.
     array, matrix, multiplication, linear algebra
 
@@ -95,6 +97,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SliceArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Extract a slice of an array along a specified axis.
     array, slice, subset, index
 
@@ -141,6 +144,7 @@ class SplitArray(
     SingleOutputGraphNode[list[types.NPArray]], GraphNode[list[types.NPArray]]
 ):
     """
+
     Split an array into multiple sub-arrays along a specified axis.
     array, split, divide, partition
 
@@ -179,6 +183,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Stack(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Stack multiple arrays along a specified axis.
     array, stack, concatenate, join, merge, axis
 
@@ -213,6 +218,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class TransposeArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Transpose the dimensions of the input array.
     array, transpose, reshape, dimensions
 

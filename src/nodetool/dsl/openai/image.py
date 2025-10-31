@@ -17,14 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.image
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.openai.image
-import nodetool.nodes.openai.image
-import nodetool.nodes.openai.image
-import nodetool.nodes.openai.image
 
 
 class CreateImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Generates images from textual descriptions.
     image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration
 
@@ -42,6 +39,7 @@ class CreateImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
         nodetool.nodes.openai.image.CreateImage.Background
     )
     Quality: typing.ClassVar[type] = nodetool.nodes.openai.image.CreateImage.Quality
+
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The prompt to use."
     )

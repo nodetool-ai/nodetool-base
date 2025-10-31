@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ChartRenderer(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Node responsible for rendering chart configurations into image format using seaborn.
     chart, seaborn, plot, visualization, data
     """

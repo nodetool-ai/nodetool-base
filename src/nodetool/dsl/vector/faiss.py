@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddVectors(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
+
     Add vectors to a FAISS index.
     faiss, add, vectors
     """
@@ -52,6 +53,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddWithIds(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
+
     Add vectors with explicit integer IDs to a FAISS index.
     faiss, add, ids, vectors
     """
@@ -89,6 +91,7 @@ class CreateIndexFlatIP(
     SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
 ):
     """
+
     Create a FAISS IndexFlatIP (inner product / cosine with normalized vectors).
     faiss, index, ip, create
     """
@@ -117,6 +120,7 @@ class CreateIndexFlatL2(
     SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
 ):
     """
+
     Create a FAISS IndexFlatL2.
     faiss, index, l2, create
     """
@@ -139,18 +143,19 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.vector.faiss
 
 
 class CreateIndexIVFFlat(
     SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
 ):
     """
+
     Create a FAISS IndexIVFFlat (inverted file index with flat quantizer).
     faiss, index, ivf, create
     """
 
     Metric: typing.ClassVar[type] = nodetool.nodes.vector.faiss.Metric
+
     dim: int | OutputHandle[int] = connect_field(
         default=768, description="Embedding dimensionality"
     )
@@ -179,6 +184,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
     """
+
     Search a FAISS index with query vectors, returning distances and indices.
     faiss, search, query, knn
     """
@@ -230,6 +236,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class TrainIndex(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
+
     Train a FAISS index with training vectors (required for IVF indices).
     faiss, train, index
     """

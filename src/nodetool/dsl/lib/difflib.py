@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetCloseMatches(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Finds close matches for a word within a list of possibilities.
     difflib, fuzzy, match
 
@@ -61,6 +62,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SimilarityRatio(SingleOutputGraphNode[float], GraphNode[float]):
     """
+
     Calculates the similarity ratio between two strings.
     difflib, similarity, ratio, compare
 
@@ -95,6 +97,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class UnifiedDiff(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Generates a unified diff between two texts.
     difflib, diff, compare
 

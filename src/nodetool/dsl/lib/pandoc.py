@@ -17,12 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pandoc
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.pandoc
-import nodetool.nodes.lib.pandoc
 
 
 class ConvertFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Converts between different document formats using pandoc.
     convert, document, format, pandoc
 
@@ -34,6 +33,7 @@ class ConvertFile(SingleOutputGraphNode[str], GraphNode[str]):
 
     InputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.InputFormat
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
+
     input_path: types.FilePath | OutputHandle[types.FilePath] = connect_field(
         default=types.FilePath(type="file_path", path=""),
         description="Path to the input file",
@@ -63,12 +63,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pandoc
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.pandoc
-import nodetool.nodes.lib.pandoc
 
 
 class ConvertText(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Converts text content between different document formats using pandoc.
     convert, text, format, pandoc
 
@@ -80,6 +79,7 @@ class ConvertText(SingleOutputGraphNode[str], GraphNode[str]):
 
     InputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.InputFormat
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
+
     content: str | OutputHandle[str] = connect_field(
         default=PydanticUndefined, description="Text content to convert"
     )

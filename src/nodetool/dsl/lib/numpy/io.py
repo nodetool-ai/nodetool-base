@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Save a numpy array to a file in the specified folder.
     array, save, file, storage
 

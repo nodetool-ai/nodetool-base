@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class BaseUrl(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Extract the base URL from a given URL.
     url parsing, domain extraction, web utilities
 
@@ -53,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractAudio(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractAudio.OutputType]):
     """
+
     Extract audio elements from HTML content.
     extract, audio, src
 
@@ -100,6 +102,7 @@ class ExtractImages(
     GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractImages.OutputType]
 ):
     """
+
     Extract images from HTML content.
     extract, images, src
 
@@ -145,6 +148,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.OutputType]):
     """
+
     Extract links from HTML content.
     extract, links, urls
 
@@ -200,6 +204,7 @@ class ExtractMetadata(
     GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractMetadata.OutputType]
 ):
     """
+
     Extract metadata from HTML content.
     extract, metadata, seo
 
@@ -251,6 +256,7 @@ class ExtractVideos(
     GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractVideos.OutputType]
 ):
     """
+
     Extract videos from HTML content.
     extract, videos, src
 
@@ -296,6 +302,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class HTMLToText(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Converts HTML to plain text by removing tags and decoding entities using BeautifulSoup.
     html, text, convert
 
@@ -328,6 +335,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WebsiteContentExtractor(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Extract main content from a website, removing navigation, ads, and other non-essential elements.
     scrape, web scraping, content extraction, text analysis
 

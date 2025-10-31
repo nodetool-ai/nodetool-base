@@ -23,6 +23,7 @@ class AutomaticSpeechRecognition(
     GraphNode[nodetool.nodes.nodetool.text.AutomaticSpeechRecognition.OutputType]
 ):
     """
+
     Automatic speech recognition node.
     audio, speech, recognition
     """
@@ -69,6 +70,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Chunk(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Splits text into chunks of specified word length.
     text, chunk, split
 
@@ -103,6 +105,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Collect(GraphNode[nodetool.nodes.nodetool.text.Collect.OutputType]):
     """
+
     Collects a stream of text inputs into a single string.
     text, collect, list, stream
     """
@@ -138,6 +141,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Concat(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Concatenates two text inputs into a single output.
     text, concatenation, combine, +
 
@@ -168,6 +172,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Contains(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if text contains a specified substring.
     text, check, contains, compare, validate, substring, string
 
@@ -197,11 +202,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.text
 
 
 class CountTokens(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Counts the number of tokens in text using tiktoken.
     text, tokens, count, encoding
 
@@ -214,6 +219,7 @@ class CountTokens(SingleOutputGraphNode[int], GraphNode[int]):
     TiktokenEncoding: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding
     )
+
     text: str | OutputHandle[str] = connect_field(default="", description=None)
     encoding: nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding = Field(
         default=nodetool.nodes.nodetool.text.CountTokens.TiktokenEncoding.CL100K_BASE,
@@ -238,6 +244,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class EndsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if text ends with a specified suffix.
     text, check, suffix, compare, validate, substring, string
 
@@ -268,6 +275,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Extract(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Extracts a substring from input text.
     text, extract, substring
 
@@ -299,6 +307,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Extracts data from JSON using JSONPath expressions.
     json, extract, jsonpath
 
@@ -330,6 +339,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ExtractRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Extracts substrings matching regex groups from text.
     text, regex, extract
 
@@ -367,6 +377,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FindAllRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Finds all regex matches in text as separate substrings.
     text, regex, find
 
@@ -404,35 +415,35 @@ from nodetool.workflows.base_node import BaseNode
 
 class FormatText(SingleOutputGraphNode[str], GraphNode[str]):
     """
-    Replaces placeholders in a string with dynamic inputs using Jinja2 templating.
-    text, template, formatting
 
-    This node is dynamic and can be used to format text with dynamic properties.
+        Replaces placeholders in a string with dynamic inputs using Jinja2 templating.
+        text, template, formatting
 
-    Use cases:
-    - Generating personalized messages with dynamic content
-    - Creating parameterized queries or commands
-    - Formatting and filtering text output based on variable inputs
+        This node is dynamic and can be used to format text with dynamic properties.
 
-    Examples:
-    - text: "Hello, {{ name }}!"
-    - text: "Title: {{ title|truncate(20) }}"
-    - text: "Name: {{ name|upper }}"
+        Use cases:
+        - Generating personalized messages with dynamic content
+        - Creating parameterized queries or commands
+        - Formatting and filtering text output based on variable inputs
 
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
+        Examples:
+        - text: "Hello, {{ name }}!"
+        - text: "Title: {{ title|truncate(20) }}"
+        - text: "Name: {{ name|upper }}"
 
+        Available filters:
+        - truncate(length): Truncates text to given length
+        - upper: Converts text to uppercase
+        - lower: Converts text to lowercase
+        - title: Converts text to title case
+        - trim: Removes whitespace from start/end
+        - replace(old, new): Replaces substring
+        - default(value): Sets default if value is undefined
+        - first: Gets first character/item
+        - last: Gets last character/item
+        - length: Gets length of string/list
+        - sort: Sorts list
+        - join(delimiter): Joins list with delimiter
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -458,8 +469,6 @@ class FormatText(SingleOutputGraphNode[str], GraphNode[str]):
         Args:
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
         super().__init__(**kwargs)
 
@@ -481,6 +490,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class HasLength(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if text length meets specified conditions.
     text, check, length, compare, validate, whitespace, string
 
@@ -519,6 +529,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class HtmlToText(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Converts HTML content to plain text using html2text.
     html, convert, text, parse, extract
 
@@ -563,6 +574,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsEmpty(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if text is empty or contains only whitespace.
     text, check, empty, compare, validate, whitespace, string
 
@@ -595,6 +607,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Join(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Joins a list of strings into a single string using a specified separator.
     text, join, combine, +, add, concatenate
 
@@ -627,6 +640,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class LoadTextAssets(GraphNode[nodetool.nodes.nodetool.text.LoadTextAssets.OutputType]):
     """
+
     Load text files from an asset folder.
     load, text, file, import
 
@@ -673,6 +687,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ParseJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Parses a JSON string into a Python object.
     json, parse, convert
 
@@ -702,6 +717,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RegexMatch(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Find all matches of a regex pattern in text.
     regex, search, pattern, match
 
@@ -739,6 +755,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RegexReplace(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Replace text matching a regex pattern.
     regex, replace, substitute
 
@@ -779,6 +796,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RegexSplit(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Split text using a regex pattern as delimiter.
     regex, split, tokenize
 
@@ -816,6 +834,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RegexValidate(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if text matches a regex pattern.
     regex, validate, check
 
@@ -850,6 +869,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Replace(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Replaces a substring in a text with another substring.
     text, replace, substitute
 
@@ -881,6 +901,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveText(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
+
     Saves input text to a file in the assets folder.
     text, save, file
 
@@ -918,6 +939,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveTextFile(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
+
     Saves input text to a file in the assets folder.
     text, save, file
     """
@@ -949,6 +971,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Slice(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Slices text using Python's slice notation (start:stop:step).
     text, slice, substring
 
@@ -989,6 +1012,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Split(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Separates text into a list of strings based on a specified delimiter.
     text, split, tokenize
 
@@ -1019,6 +1043,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class StartsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if text starts with a specified prefix.
     text, check, prefix, compare, validate, substring, string
 
@@ -1049,33 +1074,33 @@ from nodetool.workflows.base_node import BaseNode
 
 class Template(SingleOutputGraphNode[str], GraphNode[str]):
     """
-    Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.
-    text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter
 
-    Use cases:
-    - Generating personalized messages with dynamic content
-    - Creating parameterized queries or commands
-    - Formatting and filtering text output based on variable inputs
+        Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.
+        text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter
 
-    Examples:
-    - text: "Hello, {{ name }}!"
-    - text: "Title: {{ title|truncate(20) }}"
-    - text: "Name: {{ name|upper }}"
+        Use cases:
+        - Generating personalized messages with dynamic content
+        - Creating parameterized queries or commands
+        - Formatting and filtering text output based on variable inputs
 
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
+        Examples:
+        - text: "Hello, {{ name }}!"
+        - text: "Title: {{ title|truncate(20) }}"
+        - text: "Name: {{ name|upper }}"
 
+        Available filters:
+        - truncate(length): Truncates text to given length
+        - upper: Converts text to uppercase
+        - lower: Converts text to lowercase
+        - title: Converts text to title case
+        - trim: Removes whitespace from start/end
+        - replace(old, new): Replaces substring
+        - default(value): Sets default if value is undefined
+        - first: Gets first character/item
+        - last: Gets last character/item
+        - length: Gets length of string/list
+        - sort: Sorts list
+        - join(delimiter): Joins list with delimiter
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -1105,8 +1130,6 @@ class Template(SingleOutputGraphNode[str], GraphNode[str]):
         Args:
             **kwargs: Field values and dynamic properties.
         """
-        # Separate known fields from dynamic properties
-        from pydantic import ConfigDict
 
         super().__init__(**kwargs)
 

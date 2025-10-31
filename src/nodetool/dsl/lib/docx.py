@@ -23,6 +23,7 @@ class AddHeading(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Adds a heading to the document
     document, docx, heading, format
     """
@@ -56,6 +57,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddImage(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
+
     Adds an image to the document
     document, docx, image, format
     """
@@ -95,6 +97,7 @@ class AddPageBreak(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Adds a page break to the document
     document, docx, format, layout
     """
@@ -118,13 +121,13 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.docx
 
 
 class AddParagraph(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Adds a paragraph of text to the document
     document, docx, text, format
     """
@@ -132,6 +135,7 @@ class AddParagraph(
     ParagraphAlignment: typing.ClassVar[type] = (
         nodetool.nodes.lib.docx.ParagraphAlignment
     )
+
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
         default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
         description="The document to add the paragraph to",
@@ -171,6 +175,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddTable(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
+
     Adds a table to the document
     document, docx, table, format
     """
@@ -206,6 +211,7 @@ class CreateDocument(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Creates a new Word document
     document, docx, file, create
     """
@@ -230,6 +236,7 @@ class LoadWordDocument(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Loads a Word document from disk
     document, docx, file, load, input
     """
@@ -256,6 +263,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveDocument(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Writes the document to a file
     document, docx, file, save, output
     """
@@ -293,6 +301,7 @@ class SetDocumentProperties(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Sets document metadata properties
     document, docx, metadata, properties
     """

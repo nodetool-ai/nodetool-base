@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class All(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if all boolean values in a list are True.
     boolean, all, check, logic, condition, flow-control, branch
 
@@ -49,11 +50,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.boolean
 
 
 class Compare(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Compares two values using a specified comparison operator.
     compare, condition, logic
 
@@ -66,6 +67,7 @@ class Compare(SingleOutputGraphNode[bool], GraphNode[bool]):
     Comparison: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.boolean.Compare.Comparison
     )
+
     a: Any | OutputHandle[Any] = connect_field(
         default=None, description="First value to compare"
     )
@@ -95,6 +97,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ConditionalSwitch(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Performs a conditional check on a boolean input and returns a value based on the result.
     if, condition, flow-control, branch, true, false, switch, toggle
 
@@ -132,6 +135,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsIn(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if a value is present in a list of options.
     membership, contains, check
 
@@ -166,6 +170,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsNone(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if a value is None.
     null, none, check
 
@@ -193,11 +198,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.nodetool.boolean
 
 
 class LogicalOperator(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Performs logical operations on two boolean inputs.
     boolean, logic, operator, condition, flow-control, branch, else, true, false, switch, toggle
 
@@ -210,6 +215,7 @@ class LogicalOperator(SingleOutputGraphNode[bool], GraphNode[bool]):
     BooleanOperation: typing.ClassVar[type] = (
         nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
     )
+
     a: bool | OutputHandle[bool] = connect_field(
         default=False, description="First boolean input"
     )
@@ -239,6 +245,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Not(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Performs logical NOT operation on a boolean input.
     boolean, logic, not, invert, !, negation, condition, else, true, false, switch, toggle, flow-control, branch
 
@@ -270,6 +277,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Some(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Checks if any boolean value in a list is True.
     boolean, any, check, logic, condition, flow-control, branch
 

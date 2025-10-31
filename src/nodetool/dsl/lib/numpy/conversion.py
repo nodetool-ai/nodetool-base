@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ArrayToList(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
+
     Convert a array to a nested list structure.
     array, list, conversion, type
 
@@ -53,6 +54,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ArrayToScalar(SingleOutputGraphNode[float | int], GraphNode[float | int]):
     """
+
     Convert a single-element array to a scalar value.
     array, scalar, conversion, type
 
@@ -85,6 +87,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Convert PIL Image to normalized tensor representation.
     image, tensor, conversion, normalization
 
@@ -117,6 +120,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ConvertToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
+
     Converts a array object back to an audio file.
     audio, conversion, array
 
@@ -152,6 +156,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ConvertToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Convert array data to PIL Image format.
     array, image, conversion, denormalization
 
@@ -184,6 +189,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ListToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Convert a list of values to a array.
     list, array, conversion, type
 
@@ -215,6 +221,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ScalarToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
+
     Convert a scalar value to a single-element array.
     scalar, array, conversion, type
 

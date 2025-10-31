@@ -23,6 +23,7 @@ class CombineImageGrid(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
     """
+
     Combine a grid of image tiles into a single image.
     image, grid, combine, tiles
 
@@ -59,6 +60,7 @@ class SliceImageGrid(
     SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
 ):
     """
+
     Slice an image into a grid of tiles.
     image, grid, slice, tiles
 

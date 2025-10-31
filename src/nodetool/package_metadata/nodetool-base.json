@@ -8,585 +8,6 @@
   "repo_id": "",
   "nodes": [
     {
-      "title": "Audio Classification",
-      "description": "Audio classification node using HuggingFace Inference API. Assigns a label or class to audio data.\n    audio, classification, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.AudioClassification",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_audio_classification_model"
-          },
-          "default": {
-            "type": "inference_provider_audio_classification_model",
-            "provider": "fal-ai",
-            "model_id": "superb/hubert-base-superb-er"
-          },
-          "title": "Model",
-          "description": "The model to use for audio classification"
-        },
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio to classify"
-        },
-        {
-          "name": "function_to_apply",
-          "type": {
-            "type": "enum",
-            "values": [
-              "sigmoid",
-              "softmax",
-              "none"
-            ],
-            "type_name": "nodetool.nodes.huggingface_hub.AudioClassification.OutputTransform"
-          },
-          "default": "none",
-          "title": "Function To Apply",
-          "description": "The function to apply to the model outputs"
-        },
-        {
-          "name": "top_k",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Top K",
-          "description": "The number of top predictions to return"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "audio",
-        "function_to_apply",
-        "top_k"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Image Classification",
-      "description": "Image classification node using HuggingFace Inference API. Assigns a label or class to image data.\n    image, classification, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.ImageClassification",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_image_classification_model"
-          },
-          "default": {
-            "type": "inference_provider_image_classification_model",
-            "provider": "hf-inference",
-            "model_id": "google/vit-base-patch16-224"
-          },
-          "title": "Model",
-          "description": "The model to use for image classification"
-        },
-        {
-          "name": "image",
-          "type": {
-            "type": "image"
-          },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Image",
-          "description": "The image to classify"
-        },
-        {
-          "name": "function_to_apply",
-          "type": {
-            "type": "enum",
-            "values": [
-              "sigmoid",
-              "softmax",
-              "none"
-            ],
-            "type_name": "nodetool.nodes.huggingface_hub.ImageClassification.OutputTransform"
-          },
-          "default": "none",
-          "title": "Function To Apply",
-          "description": "The function to apply to the model outputs"
-        },
-        {
-          "name": "top_k",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Top K",
-          "description": "The number of top predictions to return"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "image",
-        "function_to_apply",
-        "top_k"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Image Segmentation",
-      "description": "Image segmentation node using HuggingFace Inference API. Divides an image into segments where each pixel is mapped to an object.\n    image, segmentation, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.ImageSegmentation",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_image_segmentation_model"
-          },
-          "default": {
-            "type": "inference_provider_image_segmentation_model",
-            "provider": "hf-inference",
-            "model_id": "openmmlab/upernet-convnext-small"
-          },
-          "title": "Model",
-          "description": "The model to use for image segmentation"
-        },
-        {
-          "name": "image",
-          "type": {
-            "type": "image"
-          },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Image",
-          "description": "The image to segment"
-        },
-        {
-          "name": "mask_threshold",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.5,
-          "title": "Mask Threshold",
-          "description": "Threshold to use when turning the predicted masks into binary values"
-        },
-        {
-          "name": "overlap_mask_area_threshold",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.5,
-          "title": "Overlap Mask Area Threshold",
-          "description": "Mask overlap threshold to eliminate small, disconnected segments"
-        },
-        {
-          "name": "subtask",
-          "type": {
-            "type": "enum",
-            "values": [
-              "instance",
-              "panoptic",
-              "semantic"
-            ],
-            "type_name": "nodetool.nodes.huggingface_hub.ImageSegmentation.Subtask"
-          },
-          "default": "semantic",
-          "title": "Subtask",
-          "description": "The segmentation subtask to perform"
-        },
-        {
-          "name": "threshold",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.5,
-          "title": "Threshold",
-          "description": "Probability threshold to filter out predicted masks"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image_segmentation_result"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "image",
-        "mask_threshold",
-        "overlap_mask_area_threshold",
-        "subtask",
-        "threshold"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Summarization",
-      "description": "Summarization node using HuggingFace Inference API. Produces a shorter version of a document while preserving its important information. Some models can extract text from the original input, while others can generate entirely new text.\n    summarization, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.Summarization",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_summarization_model"
-          },
-          "default": {
-            "type": "inference_provider_summarization_model",
-            "provider": "hf-inference",
-            "model_id": "facebook/bart-large-cnn"
-          },
-          "title": "Model",
-          "description": "The model to use for summarization"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The input text to summarize"
-        },
-        {
-          "name": "clean_up_tokenization_spaces",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Clean Up Tokenization Spaces",
-          "description": "Whether to clean up the potential extra spaces in the text output"
-        },
-        {
-          "name": "truncation",
-          "type": {
-            "type": "enum",
-            "values": [
-              "do_not_truncate",
-              "longest_first",
-              "only_first",
-              "only_second"
-            ],
-            "type_name": "nodetool.nodes.huggingface_hub.Summarization.Truncation"
-          },
-          "default": "do_not_truncate",
-          "title": "Truncation",
-          "description": "Truncation strategy for the input text"
-        },
-        {
-          "name": "max_length",
-          "type": {
-            "type": "int"
-          },
-          "default": 150,
-          "title": "Max Length",
-          "description": "Maximum length of the generated summary",
-          "min": 1.0
-        },
-        {
-          "name": "min_length",
-          "type": {
-            "type": "int"
-          },
-          "default": 30,
-          "title": "Min Length",
-          "description": "Minimum length of the generated summary",
-          "min": 1.0
-        },
-        {
-          "name": "num_beams",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Num Beams",
-          "description": "Number of beams for beam search. 1 means no beam search",
-          "min": 1.0
-        },
-        {
-          "name": "temperature",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Temperature",
-          "description": "The value used to modulate the logits distribution",
-          "min": 0.1,
-          "max": 2.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "text",
-        "clean_up_tokenization_spaces",
-        "truncation",
-        "max_length",
-        "min_length",
-        "num_beams",
-        "temperature"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Text Classification",
-      "description": "Text classification node using HuggingFace Inference API. Assigns a label or class to given text. Use cases include sentiment analysis, natural language inference, and assessing grammatical correctness.\n    text, sentiment, classification, natural language, inference, grammatical correctness, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.TextClassification",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_text_classification_model"
-          },
-          "default": {
-            "type": "inference_provider_text_classification_model",
-            "provider": "hf-inference",
-            "model_id": "distilbert/distilbert-base-uncased-finetuned-sst-2-english"
-          },
-          "title": "Model",
-          "description": "The model to use for text classification"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The text to classify"
-        },
-        {
-          "name": "function_to_apply",
-          "type": {
-            "type": "enum",
-            "values": [
-              "sigmoid",
-              "softmax",
-              "none"
-            ],
-            "type_name": "nodetool.nodes.huggingface_hub.TextClassification.OutputTransform"
-          },
-          "default": "none",
-          "title": "Function To Apply",
-          "description": "The function to apply to the model outputs"
-        },
-        {
-          "name": "top_k",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Top K",
-          "description": "When specified, limits the output to the top K most probable classes"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "text",
-        "function_to_apply",
-        "top_k"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Translation",
-      "description": "Translation node using HuggingFace Inference API. Converts text from one language to another.\n    translation, huggingface, inference",
-      "namespace": "huggingface_hub",
-      "node_type": "huggingface_hub.Translation",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "inference_provider_translation_model"
-          },
-          "default": {
-            "type": "inference_provider_translation_model",
-            "provider": "hf-inference",
-            "model_id": "google-t5/t5-base"
-          },
-          "title": "Model",
-          "description": "The model to use for translation"
-        },
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The text to translate"
-        },
-        {
-          "name": "src_lang",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Src Lang",
-          "description": "The source language of the text. Required for models that can translate from multiple languages"
-        },
-        {
-          "name": "tgt_lang",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Tgt Lang",
-          "description": "Target language to translate to. Required for models that can translate to multiple languages"
-        },
-        {
-          "name": "clean_up_tokenization_spaces",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Clean Up Tokenization Spaces",
-          "description": "Whether to clean up the potential extra spaces in the text output"
-        },
-        {
-          "name": "truncation",
-          "type": {
-            "type": "enum",
-            "values": [
-              "do_not_truncate",
-              "longest_first",
-              "only_first",
-              "only_second"
-            ],
-            "type_name": "nodetool.nodes.huggingface_hub.Translation.Truncation"
-          },
-          "default": "do_not_truncate",
-          "title": "Truncation",
-          "description": "Truncation strategy for the input text"
-        },
-        {
-          "name": "max_length",
-          "type": {
-            "type": "int"
-          },
-          "default": 512,
-          "title": "Max Length",
-          "description": "Maximum length of the generated translation",
-          "min": 1.0
-        },
-        {
-          "name": "num_beams",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Num Beams",
-          "description": "Number of beams for beam search. 1 means no beam search",
-          "min": 1.0
-        },
-        {
-          "name": "temperature",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Temperature",
-          "description": "The value used to modulate the logits distribution",
-          "min": 0.1,
-          "max": 2.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "text",
-        "src_lang",
-        "tgt_lang",
-        "clean_up_tokenization_spaces",
-        "truncation",
-        "max_length",
-        "num_beams",
-        "temperature"
-      ],
-      "expose_as_tool": true
-    },
-    {
       "title": "Append",
       "description": "Adds a value to the end of a list.\n    list, add, insert, extend\n\n    Use cases:\n    - Grow a list dynamically\n    - Add new elements to an existing list\n    - Implement a stack-like structure",
       "namespace": "nodetool.list",
@@ -1756,7 +1177,7 @@
     },
     {
       "title": "Map Field",
-      "description": "Extracts a specific field from a list of dictionaries or objects.\n    list, map, field, extract, pluck\n\n    Use cases:\n    - Extract specific fields from a list of objects\n    - Transform complex data structures into simple lists\n    - Collect values for a particular key across multiple dictionaries",
+      "description": "Extracts a specific field from a list of dictionaries.\n    list, map, field, extract, pluck\n\n    Use cases:\n    - Extract specific fields from a list of dictionaries\n    - Transform complex data structures into simple lists\n    - Collect values for a particular key across multiple dictionaries",
       "namespace": "nodetool.list",
       "node_type": "nodetool.list.MapField",
       "properties": [
@@ -1766,13 +1187,13 @@
             "type": "list",
             "type_args": [
               {
-                "type": "union",
+                "type": "dict",
                 "type_args": [
                   {
-                    "type": "dict"
+                    "type": "str"
                   },
                   {
-                    "type": "object"
+                    "type": "any"
                   }
                 ]
               }
@@ -1792,7 +1213,8 @@
         {
           "name": "default",
           "type": {
-            "type": "any"
+            "type": "any",
+            "optional": true
           },
           "default": null,
           "title": "Default"
@@ -5141,93 +4563,6 @@
       ]
     },
     {
-      "title": "Inference Provider Input",
-      "description": "Accepts an inference provider as a parameter for workflows.\n    input, parameter, provider, inference, provider_name",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.InferenceProviderInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "enum",
-            "values": [
-              "cerebras",
-              "cohere",
-              "fal-ai",
-              "featherless-ai",
-              "fireworks-ai",
-              "groq",
-              "hf-inference",
-              "hyperbolic",
-              "nebius",
-              "novita",
-              "nscale",
-              "openai",
-              "replicate",
-              "sambanova",
-              "scaleway",
-              "together",
-              "zai-org"
-            ],
-            "type_name": "nodetool.metadata.types.InferenceProvider"
-          },
-          "default": "hf-inference",
-          "title": "Value",
-          "description": "The inference provider to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "enum",
-            "values": [
-              "cerebras",
-              "cohere",
-              "fal-ai",
-              "featherless-ai",
-              "fireworks-ai",
-              "groq",
-              "hf-inference",
-              "hyperbolic",
-              "nebius",
-              "novita",
-              "nscale",
-              "openai",
-              "replicate",
-              "sambanova",
-              "scaleway",
-              "together",
-              "zai-org"
-            ],
-            "type_name": "nodetool.metadata.types.InferenceProvider"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
       "title": "Integer Input",
       "description": "Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.\n    input, parameter, integer, number, count, index, whole_number\n\n    Use cases:\n    - Specify counts or quantities (e.g., number of items, iterations).\n    - Set index values for accessing elements in a list or array.\n    - Configure discrete numeric parameters like age, steps, or quantity.",
       "namespace": "nodetool.input",
@@ -5475,7 +4810,7 @@
               }
             ]
           },
-          "default": null,
+          "default": [],
           "title": "Value",
           "description": "The list of strings to use as input."
         },
@@ -6989,128 +6324,6 @@
       ]
     },
     {
-      "title": "Split Markdown",
-      "description": "Splits markdown text by headers while preserving header hierarchy in metadata.\n    markdown, split, headers\n\n    Use cases:\n    - Splitting markdown documentation while preserving structure\n    - Processing markdown files for semantic search\n    - Creating context-aware chunks from markdown content",
-      "namespace": "nodetool.document",
-      "node_type": "nodetool.document.SplitMarkdown",
-      "properties": [
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
-          },
-          "default": {
-            "type": "document",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Document"
-        },
-        {
-          "name": "headers_to_split_on",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "tuple",
-                "type_args": [
-                  {
-                    "type": "str"
-                  },
-                  {
-                    "type": "str"
-                  }
-                ]
-              }
-            ]
-          },
-          "default": [
-            [
-              "#",
-              "Header 1"
-            ],
-            [
-              "##",
-              "Header 2"
-            ],
-            [
-              "###",
-              "Header 3"
-            ]
-          ],
-          "title": "Headers To Split On",
-          "description": "List of tuples containing (header_symbol, header_name)"
-        },
-        {
-          "name": "strip_headers",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Strip Headers",
-          "description": "Whether to remove headers from the output content"
-        },
-        {
-          "name": "return_each_line",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Return Each Line",
-          "description": "Whether to split into individual lines instead of header sections"
-        },
-        {
-          "name": "chunk_size",
-          "type": {
-            "type": "int",
-            "optional": true
-          },
-          "default": null,
-          "title": "Chunk Size",
-          "description": "Optional maximum chunk size for further splitting"
-        },
-        {
-          "name": "chunk_overlap",
-          "type": {
-            "type": "int"
-          },
-          "default": 30,
-          "title": "Chunk Overlap",
-          "description": "Overlap size when using chunk_size"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "source_id"
-        },
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "start_index"
-        }
-      ],
-      "basic_fields": [
-        "document",
-        "headers_to_split_on",
-        "strip_headers",
-        "return_each_line",
-        "chunk_size",
-        "chunk_overlap"
-      ],
-      "is_streaming_output": true
-    },
-    {
       "title": "Save Document File",
       "description": "Write a document to disk.\n    files, document, write, output, save, file\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
       "namespace": "nodetool.document",
@@ -7164,15 +6377,13 @@
         {
           "name": "embed_model",
           "type": {
-            "type": "hf.text_generation"
+            "type": "language_model"
           },
           "default": {
-            "type": "hf.text_generation",
-            "repo_id": "BAAI/bge-small-en",
-            "path": null,
-            "variant": null,
-            "allow_patterns": null,
-            "ignore_patterns": null
+            "type": "language_model",
+            "provider": "ollama",
+            "id": "embeddinggemma",
+            "name": ""
           },
           "title": "Embed Model",
           "description": "Embedding model to use"
@@ -7232,6 +6443,43 @@
             "type": "int"
           },
           "name": "start_index"
+        }
+      ],
+      "recommended_models": [
+        {
+          "id": "embeddinggemma",
+          "type": "embedding_model",
+          "name": "Embedding Gemma",
+          "repo_id": "embeddinggemma",
+          "description": "Embedding model for semantic splitting"
+        },
+        {
+          "id": "nomic-embed-text",
+          "type": "embedding_model",
+          "name": "Nomic Embed Text",
+          "repo_id": "nomic-embed-text",
+          "description": "Embedding model for semantic splitting"
+        },
+        {
+          "id": "mxbai-embed-large",
+          "type": "embedding_model",
+          "name": "MXBai Embed Large",
+          "repo_id": "mxbai-embed-large",
+          "description": "Embedding model for semantic splitting"
+        },
+        {
+          "id": "bge-m3",
+          "type": "embedding_model",
+          "name": "BGE M3",
+          "repo_id": "bge-m3",
+          "description": "Embedding model for semantic splitting"
+        },
+        {
+          "id": "all-minilm",
+          "type": "embedding_model",
+          "name": "All Minilm",
+          "repo_id": "all-minilm",
+          "description": "Embedding model for semantic splitting"
         }
       ],
       "basic_fields": [
@@ -17944,6 +17192,520 @@
       ]
     },
     {
+      "title": "Delete",
+      "description": "Delete records from a Supabase table.\n    supabase, database, delete, remove",
+      "namespace": "lib.supabase",
+      "node_type": "lib.supabase.Delete",
+      "properties": [
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Table Name",
+          "description": "Table to delete from"
+        },
+        {
+          "name": "filters",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tuple",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "enum",
+                    "values": [
+                      "eq",
+                      "ne",
+                      "gt",
+                      "gte",
+                      "lt",
+                      "lte",
+                      "in",
+                      "like",
+                      "contains"
+                    ],
+                    "type_name": "nodetool.nodes.lib.supabase.FilterOp"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": null,
+          "title": "Filters",
+          "description": "Filters to select rows to delete (required for safety)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "table_name",
+        "filters"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Insert",
+      "description": "Insert record(s) into a Supabase table.\n    supabase, database, insert, add, record",
+      "namespace": "lib.supabase",
+      "node_type": "lib.supabase.Insert",
+      "properties": [
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Table Name",
+          "description": "Table to insert into"
+        },
+        {
+          "name": "records",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "dict",
+                    "type_args": [
+                      {
+                        "type": "str"
+                      },
+                      {
+                        "type": "any"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": null,
+          "title": "Records",
+          "description": "One or multiple rows to insert"
+        },
+        {
+          "name": "return_rows",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Return Rows",
+          "description": "Return inserted rows (uses select('*'))"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "table_name",
+        "records",
+        "return_rows"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "RPC",
+      "description": "Call a PostgreSQL function via Supabase RPC.\n    supabase, database, rpc, function",
+      "namespace": "lib.supabase",
+      "node_type": "lib.supabase.RPC",
+      "properties": [
+        {
+          "name": "function",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Function",
+          "description": "RPC function name"
+        },
+        {
+          "name": "params",
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": null,
+          "title": "Params",
+          "description": "Function params"
+        },
+        {
+          "name": "to_dataframe",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "To Dataframe",
+          "description": "Return DataframeRef if result is a list of records"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "function",
+        "params",
+        "to_dataframe"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Select",
+      "description": "Query records from a Supabase table.\n    supabase, database, query, select",
+      "namespace": "lib.supabase",
+      "node_type": "lib.supabase.Select",
+      "properties": [
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Table Name",
+          "description": "Table to query"
+        },
+        {
+          "name": "columns",
+          "type": {
+            "type": "record_type"
+          },
+          "default": {
+            "type": "record_type",
+            "columns": []
+          },
+          "title": "Columns",
+          "description": "Columns to select"
+        },
+        {
+          "name": "filters",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tuple",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "enum",
+                    "values": [
+                      "eq",
+                      "ne",
+                      "gt",
+                      "gte",
+                      "lt",
+                      "lte",
+                      "in",
+                      "like",
+                      "contains"
+                    ],
+                    "type_name": "nodetool.nodes.lib.supabase.FilterOp"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": null,
+          "title": "Filters",
+          "description": "List of typed filters to apply"
+        },
+        {
+          "name": "order_by",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Order By",
+          "description": "Column to order by"
+        },
+        {
+          "name": "descending",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Descending",
+          "description": "Order direction"
+        },
+        {
+          "name": "limit",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Limit",
+          "description": "Max rows to return (0 = no limit)"
+        },
+        {
+          "name": "to_dataframe",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "To Dataframe",
+          "description": "Return a DataframeRef instead of list of dicts"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "table_name",
+        "columns",
+        "filters",
+        "order_by",
+        "descending",
+        "limit",
+        "to_dataframe"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Update",
+      "description": "Update records in a Supabase table.\n    supabase, database, update, modify, change",
+      "namespace": "lib.supabase",
+      "node_type": "lib.supabase.Update",
+      "properties": [
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Table Name",
+          "description": "Table to update"
+        },
+        {
+          "name": "values",
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": null,
+          "title": "Values",
+          "description": "New values"
+        },
+        {
+          "name": "filters",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "tuple",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "enum",
+                    "values": [
+                      "eq",
+                      "ne",
+                      "gt",
+                      "gte",
+                      "lt",
+                      "lte",
+                      "in",
+                      "like",
+                      "contains"
+                    ],
+                    "type_name": "nodetool.nodes.lib.supabase.FilterOp"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": null,
+          "title": "Filters",
+          "description": "Filters to select rows to update"
+        },
+        {
+          "name": "return_rows",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Return Rows",
+          "description": "Return updated rows (uses select('*'))"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "table_name",
+        "values",
+        "filters",
+        "return_rows"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Upsert",
+      "description": "Insert or update (upsert) records in a Supabase table.\n    supabase, database, upsert, merge",
+      "namespace": "lib.supabase",
+      "node_type": "lib.supabase.Upsert",
+      "properties": [
+        {
+          "name": "table_name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Table Name",
+          "description": "Table to upsert into"
+        },
+        {
+          "name": "records",
+          "type": {
+            "type": "union",
+            "type_args": [
+              {
+                "type": "list",
+                "type_args": [
+                  {
+                    "type": "dict",
+                    "type_args": [
+                      {
+                        "type": "str"
+                      },
+                      {
+                        "type": "any"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": null,
+          "title": "Records",
+          "description": "One or multiple rows to upsert"
+        },
+        {
+          "name": "on_conflict",
+          "type": {
+            "type": "str",
+            "optional": true
+          },
+          "default": null,
+          "title": "On Conflict",
+          "description": "Optional column or comma-separated columns for ON CONFLICT"
+        },
+        {
+          "name": "return_rows",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Return Rows",
+          "description": "Return upserted rows (uses select('*'))"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "table_name",
+        "records",
+        "on_conflict",
+        "return_rows"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Hash File",
       "description": "Compute the cryptographic hash of a file.\n    hash, hashlib, digest, file\n\n    Use cases:\n    - Verify downloaded files\n    - Detect file changes\n    - Identify duplicates",
       "namespace": "lib.hashlib",
@@ -21611,44 +21373,6 @@
       "basic_fields": [
         "name",
         "default"
-      ]
-    },
-    {
-      "title": "Set Secret",
-      "description": "Set a secret value and persist it.\n    secrets, credentials, configuration",
-      "namespace": "lib.secret",
-      "node_type": "lib.secret.SetSecret",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "Secret key name"
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value",
-          "description": "Secret value"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "none"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
       ]
     },
     {
@@ -30126,142 +29850,6 @@
         "color",
         "align",
         "image"
-      ]
-    },
-    {
-      "title": "List Scheduled Events",
-      "description": "Fetch scheduled events for a Calendly user.",
-      "namespace": "calendly.events",
-      "node_type": "calendly.events.ListScheduledEvents",
-      "properties": [
-        {
-          "name": "user",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "User",
-          "description": "User URI to fetch events for"
-        },
-        {
-          "name": "count",
-          "type": {
-            "type": "int"
-          },
-          "default": 20,
-          "title": "Count",
-          "description": "Number of events to return",
-          "min": 1.0,
-          "max": 100.0
-        },
-        {
-          "name": "status",
-          "type": {
-            "type": "str"
-          },
-          "default": "active",
-          "title": "Status",
-          "description": "Event status filter"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "calendly_event"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "user",
-        "count",
-        "status"
-      ]
-    },
-    {
-      "title": "Scheduled Event Fields",
-      "description": "Extract fields from a CalendlyEvent.",
-      "namespace": "calendly.events",
-      "node_type": "calendly.events.ScheduledEventFields",
-      "properties": [
-        {
-          "name": "event",
-          "type": {
-            "type": "calendly_event"
-          },
-          "default": {
-            "type": "calendly_event",
-            "uri": "",
-            "name": "",
-            "start_time": {
-              "type": "datetime",
-              "year": 0,
-              "month": 0,
-              "day": 0,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "microsecond": 0,
-              "tzinfo": "UTC",
-              "utc_offset": 0
-            },
-            "end_time": {
-              "type": "datetime",
-              "year": 0,
-              "month": 0,
-              "day": 0,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "microsecond": 0,
-              "tzinfo": "UTC",
-              "utc_offset": 0
-            },
-            "location": ""
-          },
-          "title": "Event",
-          "description": "The Calendly event to extract"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "uri"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "name"
-        },
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "start_time"
-        },
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "end_time"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "location"
-        }
-      ],
-      "basic_fields": [
-        "event"
       ]
     },
     {

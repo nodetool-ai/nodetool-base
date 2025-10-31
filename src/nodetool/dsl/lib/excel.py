@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AutoFitColumns(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Automatically adjusts column widths to fit content.
     excel, format, columns
 
@@ -55,6 +56,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreateWorkbook(SingleOutputGraphNode[types.ExcelRef], GraphNode[types.ExcelRef]):
     """
+
     Creates a new Excel workbook.
     excel, workbook, create
 
@@ -85,6 +87,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class DataFrameToExcel(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Writes a DataFrame to an Excel worksheet.
     excel, dataframe, export
 
@@ -133,6 +136,7 @@ class ExcelToDataFrame(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):
     """
+
     Reads an Excel worksheet into a pandas DataFrame.
     excel, dataframe, import
 
@@ -170,6 +174,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FormatCells(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
+
     Applies formatting to a range of cells.
     excel, format, style
 
@@ -217,6 +222,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveWorkbook(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Saves an Excel workbook to disk.
     excel, save, export
 

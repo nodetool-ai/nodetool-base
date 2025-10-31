@@ -23,6 +23,7 @@ class ListDocuments(
     GraphNode[nodetool.nodes.nodetool.document.ListDocuments.OutputType]
 ):
     """
+
     List documents in a directory.
     files, list, directory
     """
@@ -67,6 +68,7 @@ class LoadDocumentFile(
     SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
 ):
     """
+
     Read a document from disk.
     files, document, read, input, load, file
     """
@@ -93,6 +95,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SaveDocumentFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Write a document to disk.
     files, document, write, output, save, file
 
@@ -133,6 +136,7 @@ class SplitDocument(
     GraphNode[nodetool.nodes.nodetool.document.SplitDocument.OutputType]
 ):
     """
+
     Split text semantically.
     chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
@@ -195,6 +199,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SplitHTML(GraphNode[nodetool.nodes.nodetool.document.SplitHTML.OutputType]):
     """
+
     Split HTML content into semantic chunks based on HTML tags.
     html, text, semantic, tags, parsing
     """
@@ -240,6 +245,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SplitJSON(GraphNode[nodetool.nodes.nodetool.document.SplitJSON.OutputType]):
     """
+
     Split JSON content into semantic chunks.
     json, parsing, semantic, structured
     """
@@ -293,6 +299,7 @@ class SplitMarkdown(
     GraphNode[nodetool.nodes.nodetool.document.SplitMarkdown.OutputType]
 ):
     """
+
     Splits markdown text by headers while preserving header hierarchy in metadata.
     markdown, split, headers
 
@@ -364,6 +371,7 @@ class SplitRecursively(
     GraphNode[nodetool.nodes.nodetool.document.SplitRecursively.OutputType]
 ):
     """
+
     Splits text recursively using LangChain's RecursiveCharacterTextSplitter.
     text, split, chunks
 
@@ -426,6 +434,7 @@ class SplitSentences(
     GraphNode[nodetool.nodes.nodetool.document.SplitSentences.OutputType]
 ):
     """
+
     Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.
     sentences, split, nlp
 

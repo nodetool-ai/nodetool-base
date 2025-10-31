@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetSecret(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     """
+
     Get a secret value from configuration.
     secrets, credentials, configuration
     """

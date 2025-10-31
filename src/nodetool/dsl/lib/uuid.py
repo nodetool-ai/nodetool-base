@@ -17,20 +17,21 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.uuid
 
 
 class FormatUUID(SingleOutputGraphNode[str], GraphNode[str]):
-    """Format a UUID string in different representations.
-    uuid, format, convert, hex, urn, identifier
+    """
+    Format a UUID string in different representations.
+        uuid, format, convert, hex, urn, identifier
 
-    Use cases:
-    - Convert UUID to different formats
-    - Generate URN representations
-    - Format UUIDs for specific use cases
+        Use cases:
+        - Convert UUID to different formats
+        - Generate URN representations
+        - Format UUIDs for specific use cases
     """
 
     UUIDFormat: typing.ClassVar[type] = nodetool.nodes.lib.uuid.UUIDFormat
+
     uuid_string: str | OutputHandle[str] = connect_field(
         default="", description="UUID string to format"
     )
@@ -56,13 +57,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class GenerateUUID1(SingleOutputGraphNode[str], GraphNode[str]):
-    """Generate a time-based UUID (version 1).
-    uuid, time, identifier, unique, guid, timestamp
+    """
+    Generate a time-based UUID (version 1).
+        uuid, time, identifier, unique, guid, timestamp
 
-    Use cases:
-    - Create sortable unique identifiers
-    - Generate time-ordered IDs
-    - Track creation timestamps in IDs
+        Use cases:
+        - Create sortable unique identifiers
+        - Generate time-ordered IDs
+        - Track creation timestamps in IDs
     """
 
     @classmethod
@@ -82,13 +84,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class GenerateUUID3(SingleOutputGraphNode[str], GraphNode[str]):
-    """Generate a name-based UUID using MD5 (version 3).
-    uuid, name, identifier, unique, guid, md5, deterministic
+    """
+    Generate a name-based UUID using MD5 (version 3).
+        uuid, name, identifier, unique, guid, md5, deterministic
 
-    Use cases:
-    - Create deterministic IDs from names
-    - Generate consistent identifiers for the same input
-    - Map names to unique identifiers
+        Use cases:
+        - Create deterministic IDs from names
+        - Generate consistent identifiers for the same input
+        - Map names to unique identifiers
     """
 
     namespace: str | OutputHandle[str] = connect_field(
@@ -115,13 +118,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class GenerateUUID4(SingleOutputGraphNode[str], GraphNode[str]):
-    """Generate a random UUID (version 4).
-    uuid, random, identifier, unique, guid
+    """
+    Generate a random UUID (version 4).
+        uuid, random, identifier, unique, guid
 
-    Use cases:
-    - Create unique identifiers for records
-    - Generate session IDs
-    - Produce random unique keys
+        Use cases:
+        - Create unique identifiers for records
+        - Generate session IDs
+        - Produce random unique keys
     """
 
     @classmethod
@@ -141,13 +145,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class GenerateUUID5(SingleOutputGraphNode[str], GraphNode[str]):
-    """Generate a name-based UUID using SHA-1 (version 5).
-    uuid, name, identifier, unique, guid, sha1, deterministic
+    """
+    Generate a name-based UUID using SHA-1 (version 5).
+        uuid, name, identifier, unique, guid, sha1, deterministic
 
-    Use cases:
-    - Create deterministic IDs from names (preferred over UUID3)
-    - Generate consistent identifiers for the same input
-    - Map names to unique identifiers with better collision resistance
+        Use cases:
+        - Create deterministic IDs from names (preferred over UUID3)
+        - Generate consistent identifiers for the same input
+        - Map names to unique identifiers with better collision resistance
     """
 
     namespace: str | OutputHandle[str] = connect_field(
@@ -174,13 +179,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class IsValidUUID(SingleOutputGraphNode[bool], GraphNode[bool]):
-    """Check if a string is a valid UUID.
-    uuid, validate, check, verify, identifier
+    """
+    Check if a string is a valid UUID.
+        uuid, validate, check, verify, identifier
 
-    Use cases:
-    - Validate user input
-    - Filter valid UUIDs from a dataset
-    - Conditional workflow based on UUID validity
+        Use cases:
+        - Validate user input
+        - Filter valid UUIDs from a dataset
+        - Conditional workflow based on UUID validity
     """
 
     uuid_string: str | OutputHandle[str] = connect_field(
@@ -204,13 +210,14 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class ParseUUID(SingleOutputGraphNode[dict], GraphNode[dict]):
-    """Parse and validate a UUID string.
-    uuid, parse, validate, check, identifier
+    """
+    Parse and validate a UUID string.
+        uuid, parse, validate, check, identifier
 
-    Use cases:
-    - Validate UUID format
-    - Normalize UUID strings
-    - Extract UUID version information
+        Use cases:
+        - Validate UUID format
+        - Normalize UUID strings
+        - Extract UUID version information
     """
 
     uuid_string: str | OutputHandle[str] = connect_field(

@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AddLabel(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Adds a label to a Gmail message.
     email, gmail, label
     """
@@ -50,6 +51,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class EmailFields(GraphNode[nodetool.nodes.lib.mail.EmailFields.OutputType]):
     """
+
     Decomposes an email into its individual components.
     email, decompose, extract
 
@@ -124,12 +126,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.mail
-import nodetool.nodes.lib.mail
 
 
 class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
     """
+
     Searches Gmail using Gmail-specific search operators and yields matching emails.
     email, gmail, search
 
@@ -141,6 +142,7 @@ class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
 
     DateFilter: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.DateFilter
     GmailFolder: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.GmailFolder
+
     from_address: str | OutputHandle[str] = connect_field(
         default="", description="Sender's email address to search for"
     )
@@ -218,6 +220,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class MoveToArchive(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Moves specified emails to Gmail archive.
     email, gmail, archive
     """
@@ -243,12 +246,13 @@ from nodetool.workflows.base_node import BaseNode
 
 
 class SendEmail(SingleOutputGraphNode[bool], GraphNode[bool]):
-    """Send a plain text email via SMTP.
-    email, smtp, send
+    """
+    Send a plain text email via SMTP.
+        email, smtp, send
 
-    Use cases:
-    - Send simple notification messages
-    - Automate email reports
+        Use cases:
+        - Send simple notification messages
+        - Automate email reports
     """
 
     smtp_server: str | OutputHandle[str] = connect_field(

@@ -17,11 +17,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.visualization
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.numpy.visualization
 
 
 class PlotArray(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Create a plot visualization of array data.
     array, plot, visualization, graph
 
@@ -34,6 +34,7 @@ class PlotArray(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
     PlotType: typing.ClassVar[type] = (
         nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType
     )
+
     values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Array to plot",

@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AbsolutePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Return the absolute path of a file or directory.
     files, path, absolute
 
@@ -52,6 +53,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class AccessedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Get file last accessed timestamp.
     files, metadata, accessed, time
     """
@@ -78,6 +80,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Basename(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get the base name component of a file path.
     files, path, basename
 
@@ -112,6 +115,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CopyFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Copy a file from source to destination path.
     files, copy, manage
 
@@ -146,6 +150,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreateDirectory(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Create a new directory at specified path.
     files, directory, create
 
@@ -179,6 +184,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class CreatedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Get file creation timestamp.
     files, metadata, created, time
     """
@@ -205,6 +211,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Dirname(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get the directory name component of a file path.
     files, path, dirname
 
@@ -236,6 +243,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if a file or directory exists at the specified path.
     files, check, exists
 
@@ -266,6 +274,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FileExtension(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get file extension.
     files, metadata, extension
     """
@@ -292,6 +301,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FileName(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get file name without path.
     files, metadata, name
     """
@@ -318,6 +328,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FileNameMatch(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Match a filename against a pattern using Unix shell-style wildcards.
     files, pattern, match, filter
 
@@ -356,6 +367,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FilterFileNames(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
+
     Filter a list of filenames using Unix shell-style wildcards.
     files, pattern, filter, list
 
@@ -394,6 +406,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get directory containing the file.
     files, metadata, directory
     """
@@ -420,6 +433,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetEnvironmentVariable(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     """
+
     Gets an environment variable value.
     environment, variable, system
 
@@ -453,6 +467,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
+
     Get file size in bytes.
     files, metadata, size
     """
@@ -479,6 +494,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetPathInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Gets information about a path.
     path, info, metadata
 
@@ -509,6 +525,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class GetSystemInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Gets system information.
     system, info, platform
 
@@ -535,6 +552,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if path is a directory.
     files, metadata, type
     """
@@ -561,6 +579,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class IsFile(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
+
     Check if path is a file.
     files, metadata, type
     """
@@ -587,6 +606,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class JoinPaths(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Joins path components.
     path, join, combine
 
@@ -617,6 +637,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ListFiles(GraphNode[nodetool.nodes.lib.os.ListFiles.OutputType]):
     """
+
     list files in a directory matching a pattern.
     files, list, directory
 
@@ -663,6 +684,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ModifiedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
+
     Get file last modified timestamp.
     files, metadata, modified, time
     """
@@ -689,6 +711,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class MoveFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
+
     Move a file from source to destination path.
     files, move, manage
 
@@ -723,6 +746,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class NormalizePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Normalizes a path.
     path, normalize, clean
 
@@ -753,6 +777,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class OpenWorkspaceDirectory(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
+
     Open the workspace directory.
     files, workspace, directory
     """
@@ -775,6 +800,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class PathToString(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Convert a FilePath object to a string.
     files, path, string, convert
 
@@ -806,6 +832,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class RelativePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Return a relative path to a target from a start directory.
     files, path, relative
 
@@ -840,6 +867,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SetEnvironmentVariable(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
+
     Sets an environment variable.
     environment, variable, system
 
@@ -873,6 +901,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class ShowNotification(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
+
     Shows a system notification.
     notification, system, alert
 
@@ -911,6 +940,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SplitExtension(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Split a path into root and extension components.
     files, path, extension, split
 
@@ -942,6 +972,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class SplitPath(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
+
     Split a path into directory and file components.
     files, path, split
 
@@ -973,6 +1004,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class WorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
+
     Get the workspace directory.
     files, workspace, directory
     """

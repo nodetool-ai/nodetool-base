@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Blur(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Apply a Gaussian blur effect to an image.
     image, filter, blur
 
@@ -55,6 +56,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Canny(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Apply Canny edge detection to an image.
     image, filter, edges
 
@@ -92,6 +94,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Contour(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Apply a contour filter to highlight image edges.
     image, filter, contour
 
@@ -125,6 +128,7 @@ class ConvertToGrayscale(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
     """
+
     Convert an image to grayscale.
     image, grayscale
 
@@ -156,6 +160,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Emboss(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Apply an emboss filter for a 3D raised effect.
     image, filter, emboss
 
@@ -187,6 +192,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Expand(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Add a border around an image to increase its size.
     image, border, expand
 
@@ -222,6 +228,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class FindEdges(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Detect and highlight edges in an image.
     image, filter, edges
 
@@ -249,11 +256,11 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.pillow.filter
 
 
 class GetChannel(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Extract a specific color channel from an image.
     image, color, channel, isolate, extract
 
@@ -265,6 +272,7 @@ class GetChannel(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
     ChannelEnum: typing.ClassVar[type] = (
         nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum
     )
+
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
         description="The image to get the channel from.",
@@ -292,6 +300,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Invert(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Invert the colors of an image.
     image, filter, invert
 
@@ -323,6 +332,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Posterize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Reduce the number of colors in an image for a poster-like effect.
     image, filter, posterize
 
@@ -357,6 +367,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Smooth(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Apply smoothing to reduce image noise and detail.
     image, filter, smooth
 
@@ -388,6 +399,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Solarize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
+
     Apply a solarize effect to partially invert image tones.
     image, filter, solarize
 

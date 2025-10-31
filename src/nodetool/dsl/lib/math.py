@@ -21,6 +21,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Adds two numbers.
     math, add, plus
     """
@@ -50,6 +51,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Cosine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Computes cosine of the given angle in radians.
     math, cosine, trig
     """
@@ -76,6 +78,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Divides A by B.
     math, divide, division, quotient
     """
@@ -101,16 +104,17 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
-import nodetool.nodes.lib.math
 
 
 class MathFunction(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Performs a selected unary math operation on an input.
     math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
     """
 
     Operation: typing.ClassVar[type] = nodetool.nodes.lib.math.MathFunction.Operation
+
     input: int | float | OutputHandle[int | float] = connect_field(
         default=0.0, description=None
     )
@@ -137,6 +141,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Computes A modulo B.
     math, modulus, modulo, remainder
     """
@@ -166,6 +171,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Multiplies two numbers.
     math, multiply, product
     """
@@ -195,6 +201,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Power(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Raises base to the given exponent.
     math, power, exponent
     """
@@ -224,6 +231,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Sine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Computes sine of the given angle in radians.
     math, sine, trig
     """
@@ -250,6 +258,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Sqrt(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Computes square root of x.
     math, sqrt, square_root
     """
@@ -276,6 +285,7 @@ from nodetool.workflows.base_node import BaseNode
 
 class Subtract(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
+
     Subtracts B from A.
     math, subtract, minus
     """
