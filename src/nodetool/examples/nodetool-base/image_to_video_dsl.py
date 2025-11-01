@@ -1,34 +1,25 @@
 """
 Image to Video Animation DSL Example
 
-Animate a still image into a short cinematic clip using the ImageToVideo node.
+Generate a high-quality still from text, then animate it into a short cinematic clip.
 
 Workflow:
-1. **Image Input** – Provide a reference frame to drive the animation
-2. **Creative Direction** – Capture a short story beat and motion cues from the user
-3. **Prompt Assembly** – Blend scene description with motion guidance for the generator
-4. **Image-to-Video Generation** – Animate the image with the selected video model
-5. **Video Output** – Export the rendered clip to the workspace for preview or download
+1. **Text → Still Image** – Create a hero frame using TextToImage (gpt-image)
+2. **Creative Direction** – Capture story beat and motion cues from the user
+3. **Prompt Assembly** – Blend scene description with motion guidance
+4. **Image → Video** – Animate the still using Sora (sora-2)
+5. **Video Output** – Export the rendered clip to the workspace
 """
 
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.workflows.processing_context import AssetOutputMode
-from nodetool.dsl.nodetool.input import ImageInput, StringInput
+from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.output import VideoOutput
 from nodetool.dsl.nodetool.text import FormatText
+from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.nodetool.video import ImageToVideo
-from nodetool.metadata.types import ImageRef, VideoModel, Provider
+from nodetool.metadata.types import ImageModel, VideoModel, Provider
 
-
-# --- Reference Image ---------------------------------------------------------
-reference_image = ImageInput(
-    name="reference_frame",
-    description="Hero frame or concept art to animate into motion",
-    value=ImageRef(
-        type="image",
-        uri="https://upload.wikimedia.org/wikipedia/commons/8/89/Stormy_sunset_over_the_ocean.jpg",
-    ),
-)
 
 # --- Creative Direction ------------------------------------------------------
 scene_prompt = StringInput(
@@ -47,6 +38,22 @@ duration_prompt = StringInput(
     name="duration_prompt",
     description="Short descriptor for pacing and clip duration",
     value="8 second dramatic reveal",
+)
+
+# --- Text → Image (gpt-image) ------------------------------------------------
+# Use OpenAI GPT-Image to synthesize a still hero frame from the scene prompt.
+image_model = ImageModel(
+    type="image_model",
+    provider=Provider.OpenAI,
+    id="gpt-image-1",
+    name="GPT-Image 1",
+)
+
+still_image = TextToImage(
+    model=image_model,
+    prompt=scene_prompt.output,
+    width=1280,
+    height=720,
 )
 
 # Combine the creative directives into a single generator prompt.
@@ -71,18 +78,18 @@ negative_prompt = StringInput(
 # --- Image to Video Generation -----------------------------------------------
 video_model = VideoModel(
     type="video_model",
-    provider=Provider.Gemini,
-    id="veo-3.0-fast-generate-001",
-    name="Veo 3.0 Fast",
+    provider=Provider.OpenAI,
+    id="sora-2",
+    name="Sora 2",
 )
 
 animated_video = ImageToVideo(
-    image=reference_image.output,
+    image=still_image.output,
     model=video_model,
     prompt=video_prompt.output,
     negative_prompt=negative_prompt.output,
     aspect_ratio=ImageToVideo.AspectRatio.RATIO_16_9,
-    resolution=ImageToVideo.Resolution.FHD,
+    resolution=ImageToVideo.Resolution.FULL_HD,
     num_frames=120,
     guidance_scale=8.0,
     num_inference_steps=28,
