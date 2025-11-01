@@ -79,5 +79,35 @@ graph = create_graph(text_output)
 
 
 if __name__ == "__main__":
-    result = run_graph(graph)
-    print(f"Sentiment Analysis: {result}")
+    import argparse
+    import sys
+
+    parser = argparse.ArgumentParser(description="Social media sentiment DSL example")
+    parser.add_argument(
+        "--gradio",
+        action="store_true",
+        help="Launch a Gradio UI for this workflow",
+    )
+    args = parser.parse_args()
+
+    if args.gradio:
+        try:
+            from nodetool.ui.gradio_auto import build_gradio_app
+        except Exception as e:
+            print(
+                "Gradio UI requires the optional dependency 'gradio'.\n"
+                "Install it with: pip install gradio",
+            )
+            raise
+
+        app = build_gradio_app(
+            graph,
+            title="Social Media Sentiment (DSL)",
+            description=(
+                "Enter a post or message to analyze sentiment and primary emotion."
+            ),
+        )
+        app.launch()
+    else:
+        result = run_graph(graph)
+        print(f"Sentiment Analysis: {result}")
