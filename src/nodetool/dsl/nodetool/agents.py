@@ -165,9 +165,6 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
     )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=1024, description="The maximum number of tokens to generate."
-    )
     context_window: int | OutputHandle[int] = connect_field(
         default=4096, description=None
     )
@@ -229,9 +226,6 @@ class Extractor(GraphNode[dict[str, Any]]):
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="Optional audio to assist extraction",
-    )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=4096, description="The maximum number of tokens to generate."
     )
     context_window: int | OutputHandle[int] = connect_field(
         default=4096, description=None
@@ -410,9 +404,6 @@ class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
         description="Optional audio to condition the summary",
-    )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=200, description="Target maximum number of tokens for the summary"
     )
     context_window: int | OutputHandle[int] = connect_field(
         default=4096, description=None

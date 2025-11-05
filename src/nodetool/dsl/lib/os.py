@@ -431,40 +431,6 @@ import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
 
-class GetEnvironmentVariable(SingleOutputGraphNode[str | None], GraphNode[str | None]):
-    """
-
-    Gets an environment variable value.
-    environment, variable, system
-
-    Use cases:
-    - Access configuration
-    - Get system settings
-    """
-
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="Environment variable name"
-    )
-    default: str | OutputHandle[str] | None = connect_field(
-        default=None, description="Default value if not found"
-    )
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.lib.os.GetEnvironmentVariable
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
-from nodetool.workflows.base_node import BaseNode
-
-
 class GetFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
@@ -510,33 +476,6 @@ class GetPathInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.lib.os.GetPathInfo
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
-from nodetool.workflows.base_node import BaseNode
-
-
-class GetSystemInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
-    """
-
-    Gets system information.
-    system, info, platform
-
-    Use cases:
-    - Check system compatibility
-    - Platform-specific logic
-    """
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.lib.os.GetSystemInfo
 
     @classmethod
     def get_node_type(cls):
@@ -852,40 +791,6 @@ class RelativePath(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.lib.os.RelativePath
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
-from nodetool.workflows.base_node import BaseNode
-
-
-class SetEnvironmentVariable(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
-    """
-
-    Sets an environment variable.
-    environment, variable, system
-
-    Use cases:
-    - Configure runtime settings
-    - Set up process environment
-    """
-
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="Environment variable name"
-    )
-    value: str | OutputHandle[str] = connect_field(
-        default="", description="Environment variable value"
-    )
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.lib.os.SetEnvironmentVariable
 
     @classmethod
     def get_node_type(cls):

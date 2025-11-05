@@ -94,12 +94,6 @@ class Summarizer(BaseNode):
         default=AudioRef(),
         description="Optional audio to condition the summary",
     )
-    max_tokens: int = Field(
-        default=200,
-        description="Target maximum number of tokens for the summary",
-        ge=50,
-        le=16384,
-    )
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
@@ -159,7 +153,7 @@ class Summarizer(BaseNode):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["text", "max_tokens", "model", "image", "audio"]
+        return ["text", "model", "image", "audio"]
 
     async def gen_process(
         self, context: ProcessingContext
@@ -185,12 +179,10 @@ class Summarizer(BaseNode):
         async for chunk in provider.generate_messages(
             messages=messages,
             model=self.model.id,
-            max_tokens=self.max_tokens,
             context_window=self.context_window,
         ):
             if isinstance(chunk, Chunk):
-                if chunk.content_type == "text" or chunk.content_type is None:
-                    yield {"chunk": chunk, "text": None}
+                yield {"chunk": chunk, "text": None}
                 text += chunk.content
 
         yield {"text": text, "chunk": None}
@@ -262,12 +254,6 @@ class Extractor(BaseNode):
     audio: AudioRef = Field(
         default=AudioRef(),
         description="Optional audio to assist extraction",
-    )
-    max_tokens: int = Field(
-        default=4096,
-        ge=1,
-        le=16384,
-        description="The maximum number of tokens to generate.",
     )
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
@@ -389,7 +375,6 @@ class Extractor(BaseNode):
         assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
-            max_tokens=self.max_tokens,
             context_window=self.context_window,
         )
 
@@ -487,12 +472,6 @@ class Classifier(BaseNode):
     categories: list[str] = Field(
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
-    )
-    max_tokens: int = Field(
-        default=1024,
-        ge=1,
-        le=16384,
-        description="The maximum number of tokens to generate.",
     )
     context_window: int = Field(
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
@@ -600,7 +579,6 @@ class Classifier(BaseNode):
                 model=self.model.id,
                 messages=messages,
                 context_window=self.context_window,
-                max_tokens=self.max_tokens,
                 response_format={
                     "type": "json_schema",
                     "json_schema": {

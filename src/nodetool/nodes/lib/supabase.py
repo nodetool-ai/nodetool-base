@@ -14,14 +14,14 @@ When Supabase is configured, existing asset save/load nodes will transparently
 use Supabase Storage via Environment; these DB nodes focus purely on table CRUD.
 """
 
-from typing import Any, ClassVar, Literal
+from typing import Any, ClassVar
 from enum import Enum
 
+from nodetool.runtime.resources import require_scope
 import pandas as pd
 from pydantic import BaseModel, Field
 
-from nodetool.config.environment import Environment
-from nodetool.metadata.types import DataframeRef, RecordType
+from nodetool.metadata.types import RecordType
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -92,7 +92,7 @@ class Select(BaseNode):
         if not self.table_name:
             raise ValueError("table_name cannot be empty")
 
-        client = await Environment.get_supabase_client()
+        client = await require_scope().get_supabase_client()
 
         # Build select columns
         if not self.columns.columns:
@@ -144,7 +144,7 @@ class Insert(BaseNode):
         if not self.table_name:
             raise ValueError("table_name cannot be empty")
 
-        client = await Environment.get_supabase_client()
+        client = await require_scope().get_supabase_client()
         data: list[dict[str, Any]]
         if isinstance(self.records, dict):
             data = [self.records]
@@ -182,7 +182,7 @@ class Update(BaseNode):
         if not self.values:
             raise ValueError("values cannot be empty")
 
-        client = await Environment.get_supabase_client()
+        client = await require_scope().get_supabase_client()
         q = client.table(self.table_name).update(self.values)
         if self.filters:
             q = _apply_filters(q, self.filters)
@@ -215,7 +215,7 @@ class Delete(BaseNode):
                 "At least one filter is required for DELETE operations to prevent accidental data loss"
             )
 
-        client = await Environment.get_supabase_client()
+        client = await require_scope().get_supabase_client()
         q = client.table(self.table_name).delete()
         q = _apply_filters(q, self.filters)
         await q.execute()
@@ -246,7 +246,7 @@ class Upsert(BaseNode):
         if not self.table_name:
             raise ValueError("table_name cannot be empty")
 
-        client = await Environment.get_supabase_client()
+        client = await require_scope().get_supabase_client()
         data: list[dict[str, Any]]
         if isinstance(self.records, dict):
             data = [self.records]
@@ -285,7 +285,7 @@ class RPC(BaseNode):
         if not self.function:
             raise ValueError("function cannot be empty")
 
-        client = await Environment.get_supabase_client()
+        client = await require_scope().get_supabase_client()
         # supabase-py v2 typically requires .execute() after .rpc()
         resp = await client.rpc(self.function, self.params).execute()
         result = getattr(resp, "data", None)

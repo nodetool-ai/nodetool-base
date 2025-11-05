@@ -97,9 +97,7 @@ import nodetool.nodes.lib.pymupdf
 from nodetool.workflows.base_node import BaseNode
 
 
-class ExtractText(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class ExtractText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     Extract plain text from a PDF document using PyMuPDF.

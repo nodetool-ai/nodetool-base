@@ -2989,17 +2989,6 @@
           "description": "List of possible categories. If empty, LLM will determine categories."
         },
         {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 1024,
-          "title": "Max Tokens",
-          "description": "The maximum number of tokens to generate.",
-          "min": 1.0,
-          "max": 16384.0
-        },
-        {
           "name": "context_window",
           "type": {
             "type": "int"
@@ -3141,17 +3130,6 @@
           },
           "title": "Audio",
           "description": "Optional audio to assist extraction"
-        },
-        {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Max Tokens",
-          "description": "The maximum number of tokens to generate.",
-          "min": 1.0,
-          "max": 16384.0
         },
         {
           "name": "context_window",
@@ -3396,17 +3374,6 @@
           "description": "Optional audio to condition the summary"
         },
         {
-          "name": "max_tokens",
-          "type": {
-            "type": "int"
-          },
-          "default": 200,
-          "title": "Max Tokens",
-          "description": "Target maximum number of tokens for the summary",
-          "min": 50.0,
-          "max": 16384.0
-        },
-        {
           "name": "context_window",
           "type": {
             "type": "int"
@@ -3483,7 +3450,6 @@
       ],
       "basic_fields": [
         "text",
-        "max_tokens",
         "model",
         "image",
         "audio"
@@ -18673,46 +18639,6 @@
       ]
     },
     {
-      "title": "Get Environment Variable",
-      "description": "Gets an environment variable value.\n    environment, variable, system\n\n    Use cases:\n    - Access configuration\n    - Get system settings",
-      "namespace": "lib.os",
-      "node_type": "lib.os.GetEnvironmentVariable",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "Environment variable name"
-        },
-        {
-          "name": "default",
-          "type": {
-            "type": "str",
-            "optional": true
-          },
-          "default": null,
-          "title": "Default",
-          "description": "Default value if not found"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str",
-            "optional": true
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "default"
-      ]
-    },
-    {
       "title": "Get File Size",
       "description": "Get file size in bytes.\n    files, metadata, size",
       "namespace": "lib.os",
@@ -18766,20 +18692,6 @@
       ],
       "basic_fields": [
         "path"
-      ]
-    },
-    {
-      "title": "Get System Info",
-      "description": "Gets system information.\n    system, info, platform\n\n    Use cases:\n    - Check system compatibility\n    - Platform-specific logic",
-      "namespace": "lib.os",
-      "node_type": "lib.os.GetSystemInfo",
-      "outputs": [
-        {
-          "type": {
-            "type": "dict"
-          },
-          "name": "output"
-        }
       ]
     },
     {
@@ -19084,44 +18996,6 @@
       "basic_fields": [
         "target_path",
         "start_path"
-      ]
-    },
-    {
-      "title": "Set Environment Variable",
-      "description": "Sets an environment variable.\n    environment, variable, system\n\n    Use cases:\n    - Configure runtime settings\n    - Set up process environment",
-      "namespace": "lib.os",
-      "node_type": "lib.os.SetEnvironmentVariable",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "Environment variable name"
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Value",
-          "description": "Environment variable value"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "none"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
       ]
     },
     {
