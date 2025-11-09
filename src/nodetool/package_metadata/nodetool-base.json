@@ -4157,6 +4157,59 @@
       ]
     },
     {
+      "title": "Dataframe Input",
+      "description": "Accepts a reference to a dataframe asset for workflows, specified by a 'DataframeRef'. Use this input when downstream nodes expect structured tabular data (e.g., pandas-compatible operations, aggregations, or visualizations).\n    input, parameter, dataframe, table, tabular, dataset\n\n    Use cases:\n    - Provide curated tabular data for analytics or visualization nodes.\n    - Feed training or evaluation datasets into machine learning pipelines.\n    - Pass intermediate dataframe results between data processing components.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.DataframeInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "title": "Value",
+          "description": "The dataframe to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Document Input",
       "description": "Accepts a reference to a document asset for workflows, specified by a 'DocumentRef'.  A 'DocumentRef' points to a structured document (e.g., PDF, DOCX, TXT) which can be processed or analyzed. This node is used when the workflow needs to operate on a document as a whole entity, potentially including its structure and metadata, rather than just raw text.\n    input, parameter, document, file, asset, reference\n\n    Use cases:\n    - Load a specific document (e.g., PDF, Word, text file) for content extraction or analysis.\n    - Pass a document to models that are designed to process specific document formats.\n    - Manage documents as distinct assets within a workflow.\n    - If you have a local file path and need to convert it to a 'DocumentRef', consider using 'DocumentFileInput'.",
       "namespace": "nodetool.input",

@@ -10,14 +10,6 @@ from nodetool.metadata.types import (
     HuggingFaceModel,
     LanguageModel,
     ImageModel,
-    Message,
-    MessageAudioContent,
-    MessageDocumentContent,
-    MessageVideoContent,
-    MessageImageContent,
-    MessageTextContent,
-    InferenceProvider,
-    FolderPath,
     FolderRef,
 )
 from nodetool.workflows.processing_context import ProcessingContext
@@ -233,6 +225,29 @@ class DocumentInput(InputNode):
     @classmethod
     def return_type(cls):
         return DocumentRef
+
+
+class DataframeInput(InputNode):
+    """
+    Accepts a reference to a dataframe asset for workflows, specified by a 'DataframeRef'. Use this input when downstream nodes expect structured tabular data (e.g., pandas-compatible operations, aggregations, or visualizations).
+    input, parameter, dataframe, table, tabular, dataset
+
+    Use cases:
+    - Provide curated tabular data for analytics or visualization nodes.
+    - Feed training or evaluation datasets into machine learning pipelines.
+    - Pass intermediate dataframe results between data processing components.
+    """
+
+    value: DataframeRef = Field(
+        DataframeRef(), description="The dataframe to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return DataframeRef
+
+    async def process(self, context: ProcessingContext) -> DataframeRef:
+        return self.value
 
 
 class ImageInput(InputNode):
