@@ -43,6 +43,9 @@ This directory contains 23 comprehensive examples demonstrating the capabilities
 ### Media Generation
 23. **text_to_video_campaign_dsl.py** - Generate realistic marketing videos from campaign briefs using text-to-video
 
+### Voice & Audio Storytelling
+23. **text_to_audio_storyteller_dsl.py** - Generate bilingual travel narration and synthesize polished audio tracks
+
 ## How to Run Examples
 
 Each example follows the same pattern:
