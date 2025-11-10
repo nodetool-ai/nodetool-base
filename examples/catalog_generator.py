@@ -23,7 +23,7 @@ from nodetool.metadata.types import RecordType, ColumnDef, LanguageModel, Provid
 LLM = LanguageModel(
     type="language_model",
     provider=Provider.Ollama,
-    id="gemma3:4b",
+    id="ollama/mistral",
 )
 
 
