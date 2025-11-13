@@ -526,10 +526,6 @@ class TextToImage(BaseNode):
         ge=-1,
         description="Random seed for reproducibility (-1 for random)",
     )
-    scheduler: str = Field(
-        default="",
-        description="Scheduler to use (provider-specific, leave empty for default)",
-    )
     safety_check: bool = Field(
         default=True,
         description="Enable safety checker to filter inappropriate content",
@@ -548,12 +544,11 @@ class TextToImage(BaseNode):
             guidance_scale=self.guidance_scale,
             num_inference_steps=self.num_inference_steps,
             seed=self.seed if self.seed != -1 else None,
-            scheduler=self.scheduler if self.scheduler else None,
             safety_check=self.safety_check,
         )
 
         # Generate image
-        image_bytes = await provider_instance.text_to_image(params, context=context)
+        image_bytes = await provider_instance.text_to_image(params, context=context, node_id=self.id)
 
         # Convert to ImageRef
         return await context.image_from_bytes(image_bytes)
@@ -561,6 +556,8 @@ class TextToImage(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "prompt", "width", "height", "seed"]
+
+    
 
 
 class ImageToImage(BaseNode):
@@ -666,7 +663,7 @@ class ImageToImage(BaseNode):
 
         # Transform image
         output_image_bytes = await provider_instance.image_to_image(
-            input_image_bytes, params
+            image=input_image_bytes, params=params, context=context, node_id=self.id
         )
 
         # Convert to ImageRef
@@ -675,3 +672,5 @@ class ImageToImage(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "image", "prompt", "strength", "seed"]
+
+    

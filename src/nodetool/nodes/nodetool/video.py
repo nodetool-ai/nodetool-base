@@ -243,6 +243,7 @@ class ImageToVideo(BaseNode):
             image=image_bytes,
             params=params,
             context=context,
+            node_id=self.id,
         )
 
         # Convert to VideoRef
