@@ -3,7 +3,13 @@ from unittest.mock import MagicMock, patch
 from typing import Any, AsyncGenerator
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.agents import Summarizer, Extractor, Classifier, Agent
+from nodetool.nodes.nodetool.agents import (
+    Agent,
+    Classifier,
+    Extractor,
+    Summarizer,
+    Synthesizer,
+)
 from nodetool.metadata.types import (
     LanguageModel,
     MessageAudioContent,
@@ -170,6 +176,51 @@ class TestSummarizer:
             assert final_text == "This is a summary", "Final text from last chunk"
 
 
+class TestSynthesizer:
+    @pytest.mark.asyncio
+    async def test_synthesizer_requires_model(self, context: ProcessingContext):
+        node = Synthesizer(
+            prompt="Hello",
+            model=LanguageModel(provider=Provider.Empty),
+        )
+
+        with pytest.raises(ValueError, match="Select a model"):
+            await node.process(context)
+
+    @pytest.mark.asyncio
+    async def test_synthesizer_renders_dynamic_properties(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        node = Synthesizer(
+            prompt="Hello {{ Name }}!",
+            model=mock_model,
+        )
+        node.id = "synth"
+        node._dynamic_properties = {"Name": "Alice", "AGE": 30}
+
+        posted_chunks: list[Chunk] = []
+
+        def fake_post_message(chunk: Chunk) -> None:
+            posted_chunks.append(chunk)
+
+        context.post_message = fake_post_message
+
+        call_args: dict[str, Any] = {}
+
+        async def fake_generate_messages(**kwargs):
+            call_args.update(kwargs)
+            yield Chunk(node_id=node.id, content="Hello Alice!", content_type="text")
+
+        context.generate_messages = fake_generate_messages
+
+        result = await node.process(context)
+
+        assert result == "Hello Alice!"
+        assert posted_chunks and posted_chunks[0].content == "Hello Alice!"
+        assert call_args["messages"][1].content[0].text == "Hello Alice!"
+        assert call_args["provider"] == mock_model.provider
+        assert call_args["model"] == mock_model.id
+        assert call_args["node_id"] == node.id
 class TestExtractor:
     @pytest.mark.asyncio
     async def test_extractor_basic(
