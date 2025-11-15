@@ -1,5 +1,6 @@
 import base64
 import asyncio
+import inspect
 import json
 import re
 from typing import Any, AsyncGenerator, cast, ClassVar, TypedDict
@@ -925,6 +926,34 @@ class Agent(BaseNode):
             tools.append(tool)
         return tools
 
+    async def _get_provider_safe(self, context: ProcessingContext):
+        """
+        Safely get provider with defensive check for coroutine issue.
+        This ensures the provider is fully resolved before use.
+        """
+        provider = await context.get_provider(self.model.provider)
+        
+        # Defensive check: if provider is still a coroutine, await it again
+        # This handles edge cases where get_provider might return a coroutine
+        if inspect.isawaitable(provider):
+            log.warning(
+                f"Provider was still awaitable after await, re-awaiting. "
+                f"type={type(provider)}"
+            )
+            provider = await provider
+        
+        if not hasattr(provider, 'generate_messages'):
+            log.error(
+                f"Provider missing generate_messages method. type={type(provider)}, "
+                f"attributes={[x for x in dir(provider) if not x.startswith('_')][:10]}"
+            )
+            raise AttributeError(
+                f"Provider {type(provider)} does not have generate_messages method. "
+                f"Got provider type: {type(provider)}, class: {provider.__class__.__name__}"
+            )
+        
+        return provider
+
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return [
@@ -1141,15 +1170,20 @@ class Agent(BaseNode):
             )
 
             try:
-                provider = await context.get_provider(self.model.provider)
+                provider = await self._get_provider_safe(context)
             except Exception as e:
+                log.error(
+                    f"Failed to get provider: {e}, "
+                    f"model.provider={self.model.provider}, type={type(e)}"
+                )
                 raise
 
             pending_tool_tasks: list[asyncio.Task] = []
             chunk_count = 0
             done_seen = False
             log.debug(
-                f"_execute_agent_loop starting provider.generate_messages: iteration={iteration}"
+                f"_execute_agent_loop starting provider.generate_messages: iteration={iteration}, "
+                f"provider_type={type(provider).__name__}"
             )
             async for chunk in provider.generate_messages(
                 messages=messages,
@@ -1640,9 +1674,6 @@ class ResearchAgent(BaseNode):
 
         # Get final results
         results = agent.get_results()
-
-        print("RESULTS")
-        print(results)
 
         if results is None:
             log.warning("Agent completed but returned no results")
