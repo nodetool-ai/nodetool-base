@@ -772,6 +772,9 @@ def serialize_tool_result(tool_result: Any) -> Any:
         return str(tool_result)
 
 
+GB = 1024 * 1024 * 1024
+
+
 class Agent(BaseNode):
     """
     Generate natural language responses using LLM providers and streams output.
@@ -824,24 +827,40 @@ class Agent(BaseNode):
                 id="gpt-oss:20b",
                 repo_id="gpt-oss:20b",
                 name="GPT - OSS",
-                description="OpenAI's open-weight GPT-4o-derived model excels at multi-tool routing and reasoning.",
-                size_on_disk=34359738368,
+                description="OpenAI's open-weight model excels at multi-tool routing and reasoning.",
+                size_on_disk=14 * GB,
                 type="llama_model",
             ),
             UnifiedModel(
-                id="mistral-small:latest",
-                repo_id="mistral-small:latest",
-                name="Mistral Small",
-                description="Mistral's function-calling tuned small MoE handles multi-tool orchestration reliably.",
-                size_on_disk=7730941132,
+                id="qwen3-vl:4b",
+                repo_id="qwen3-vl:4b",
+                name="Qwen3 VL - 4B",
+                description="The most powerful vision-language model in the Qwen model family to date.",
+                size_on_disk=3.3 * GB,
                 type="llama_model",
             ),
             UnifiedModel(
-                id="llama3.1:8b",
-                repo_id="llama3.1:8b",
-                name="Llama 3.1 - 8B",
-                description="Meta's 8B instruct excels at structured tool calls and JSON responses with long context.",
-                size_on_disk=14710262988,
+                id="qwen3-vl:8b",
+                repo_id="qwen3-vl:8b",
+                name="Qwen3 VL - 8B",
+                description="The most powerful vision-language model in the Qwen model family to date.",
+                size_on_disk=6.1 * GB,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="gemma3:1b",
+                repo_id="gemma3:1b",
+                name="Gemma3 - 1B",
+                description="Gemma3 1B is a small model that can process text and images.",
+                size_on_disk=0.815 * GB,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="gemma3:4b",
+                repo_id="gemma3:4b",
+                name="Gemma3 - 4B",
+                description="Gemma3 4B is a small model that can process text and images.",
+                size_on_disk=3.3 * GB,
                 type="llama_model",
             ),
             UnifiedModel(
@@ -853,36 +872,28 @@ class Agent(BaseNode):
                 type="llama_model",
             ),
             UnifiedModel(
+                id="qwen3:4b",
+                repo_id="qwen3:4b",
+                name="Qwen3 - 4B",
+                description="Qwen3 4B ships strong function-calling primitives and dependable multi-turn tool use.",
+                size_on_disk=2.5 * GB,
+                type="llama_model",
+            ),
+            UnifiedModel(
                 id="qwen3:8b",
                 repo_id="qwen3:8b",
                 name="Qwen3 - 8B",
                 description="Qwen3 8B ships strong function-calling primitives and dependable multi-turn tool use.",
-                size_on_disk=16106127360,
+                size_on_disk=5.2 * GB,
                 type="llama_model",
             ),
             UnifiedModel(
-                id="qwen2.5-coder:7b",
-                repo_id="qwen2.5-coder:7b",
-                name="Qwen2.5-Coder - 7B",
-                description="Coder-focused Qwen reliably emits structured arguments for complex toolchains.",
-                size_on_disk=15032385536,
-                type="llama_model",
-            ),
-            UnifiedModel(
-                id="deepseek-r1:7b",
-                repo_id="deepseek-r1:7b",
-                name="Deepseek R1 - 7B",
-                description="DeepSeek R1 7B balances reasoning with precise function calls for iterative agents.",
-                size_on_disk=4617089843,
-                type="llama_model",
-            ),
-            UnifiedModel(
-                id="deepseek-r1:14b",
-                repo_id="deepseek-r1:14b",
-                name="Deepseek R1 - 14B",
-                description="Higher-capacity DeepSeek R1 produces reliable tool arguments for complex tasks.",
-                size_on_disk=30064771072,
-                type="llama_model",
+                id="deepseek-r1:8b",
+                repo_id="deepseek-r1:8",
+                name="Deepseek R1 - 8B",
+                description="DeepSeek R1 8B balances reasoning with precise function calls for iterative agents.",
+                size_on_disk=5.2 * GB,
+                type="mistral_model",
             ),
         ]
 
@@ -959,9 +970,7 @@ class Agent(BaseNode):
             # Return empty string to signal no persistence
             return ""
 
-    async def _load_thread_messages(
-        self, context: ProcessingContext
-    ) -> list[Message]:
+    async def _load_thread_messages(self, context: ProcessingContext) -> list[Message]:
         """
         Loads messages from the thread.
 
@@ -1040,13 +1049,9 @@ class Agent(BaseNode):
             )
 
             await context.create_message(req)
-            log.debug(
-                f"Saved {message.role} message to thread {self.thread_id}"
-            )
+            log.debug(f"Saved {message.role} message to thread {self.thread_id}")
         except Exception as e:
-            log.error(
-                f"Failed to save message to thread {self.thread_id}: {e}"
-            )
+            log.error(f"Failed to save message to thread {self.thread_id}: {e}")
 
     async def _prepare_messages(self, context: ProcessingContext) -> list[Message]:
         """Build the message history for a single model interaction.
@@ -1351,7 +1356,11 @@ class Agent(BaseNode):
             "Agent loop complete (per-item): iteration=%d, final_text_len=%d, final_text=%s",
             iteration,
             len(message_text_content.text),
-            repr(message_text_content.text[:100]) if message_text_content.text else "EMPTY"
+            (
+                repr(message_text_content.text[:100])
+                if message_text_content.text
+                else "EMPTY"
+            ),
         )
 
     async def gen_process(
@@ -1361,7 +1370,9 @@ class Agent(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        log.debug(f"gen_process starting: node_id={self.id}, node_title={self.get_title()}")
+        log.debug(
+            f"gen_process starting: node_id={self.id}, node_title={self.get_title()}"
+        )
 
         messages = await self._prepare_messages(context)
 
@@ -1390,7 +1401,9 @@ class Agent(BaseNode):
             )
             yield item
 
-        log.debug(f"gen_process completed: node_id={self.id}, total_items_yielded={item_count}")
+        log.debug(
+            f"gen_process completed: node_id={self.id}, total_items_yielded={item_count}"
+        )
 
 
 DEFAULT_RESEARCH_SYSTEM_PROMPT = """You are a research assistant.
@@ -1452,37 +1465,29 @@ class ResearchAgent(BaseNode):
         return False
 
     objective: str = Field(
-        default="",
-        description="The research objective or question to investigate"
+        default="", description="The research objective or question to investigate"
     )
 
     model: LanguageModel = Field(
-        default=LanguageModel(),
-        description="Model to use for research and synthesis"
+        default=LanguageModel(), description="Model to use for research and synthesis"
     )
 
     system_prompt: str = Field(
         default=DEFAULT_RESEARCH_SYSTEM_PROMPT,
-        description="System prompt guiding the agent's research behavior"
+        description="System prompt guiding the agent's research behavior",
     )
 
     tools: list[ToolName] = Field(
         default=[ToolName(name="google_search"), ToolName(name="browser")],
-        description="Additional research tools to enable (workspace tools are always included)"
+        description="Additional research tools to enable (workspace tools are always included)",
     )
 
     max_tokens: int = Field(
-        default=8192,
-        ge=1,
-        le=100000,
-        description="Maximum tokens for agent responses"
+        default=8192, ge=1, le=100000, description="Maximum tokens for agent responses"
     )
 
     context_window: int = Field(
-        default=8192,
-        ge=1,
-        le=131072,
-        description="Context window size"
+        default=8192, ge=1, le=131072, description="Context window size"
     )
 
     @classmethod
@@ -1543,9 +1548,7 @@ class ResearchAgent(BaseNode):
         ]
 
         # Add requested research tools
-        tool_map = {
-            tool.name: tool for tool in tool_instances
-        }
+        tool_map = {tool.name: tool for tool in tool_instances}
         selected_tools = [
             WriteFileTool(),
             ReadFileTool(),
@@ -1561,9 +1564,7 @@ class ResearchAgent(BaseNode):
 
         return selected_tools
 
-    async def process(
-        self, context: ProcessingContext
-    ) -> dict[str, Any]:
+    async def process(self, context: ProcessingContext) -> dict[str, Any]:
         """Execute research agent and return structured results."""
         import json
         from nodetool.agents.agent import Agent as CoreAgent
