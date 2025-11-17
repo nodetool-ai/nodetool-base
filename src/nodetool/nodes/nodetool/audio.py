@@ -964,224 +964,227 @@ class TextToSpeech(BaseNode):
         return ["model", "text", "voice", "speed"]
 
 
-class RealtimeWhisper(BaseNode):
-    """
-    Stream audio input to WhisperLive and emit real-time transcription.
-    realtime, whisper, transcription, streaming, audio-to-text, speech-to-text
+# =======================================================
+# MUST GO INTO OWN PACKAGE BECAUSE OF TORCH DEPENDENCY
 
-    Emits:
-      - `chunk` Chunk(content=..., done=False) for transcript deltas
-      - `chunk` Chunk(content="", done=True) to mark segment end
-      - `text` final aggregated transcript when input ends
-    """
+# class RealtimeWhisper(BaseNode):
+#     """
+#     Stream audio input to WhisperLive and emit real-time transcription.
+#     realtime, whisper, transcription, streaming, audio-to-text, speech-to-text
 
-    class WhisperModel(str, Enum):
-        TINY = "tiny"
-        BASE = "base"
-        SMALL = "small"
-        MEDIUM = "medium"
-        LARGE = "large"
-        LARGE_V2 = "large-v2"
-        LARGE_V3 = "large-v3"
+#     Emits:
+#       - `chunk` Chunk(content=..., done=False) for transcript deltas
+#       - `chunk` Chunk(content="", done=True) to mark segment end
+#       - `text` final aggregated transcript when input ends
+#     """
 
-    class Language(str, Enum):
-        AUTO = "auto"
-        ENGLISH = "en"
-        SPANISH = "es"
-        FRENCH = "fr"
-        GERMAN = "de"
-        ITALIAN = "it"
-        PORTUGUESE = "pt"
-        DUTCH = "nl"
-        RUSSIAN = "ru"
-        CHINESE = "zh"
-        JAPANESE = "ja"
-        KOREAN = "ko"
-        ARABIC = "ar"
-        HINDI = "hi"
-        TURKISH = "tr"
-        POLISH = "pl"
-        UKRAINIAN = "uk"
-        VIETNAMESE = "vi"
+#     class WhisperModel(str, Enum):
+#         TINY = "tiny"
+#         BASE = "base"
+#         SMALL = "small"
+#         MEDIUM = "medium"
+#         LARGE = "large"
+#         LARGE_V2 = "large-v2"
+#         LARGE_V3 = "large-v3"
 
-    model: WhisperModel = Field(
-        default=WhisperModel.TINY,
-        description="Whisper model size - larger models are more accurate but slower",
-    )
-    language: Language = Field(
-        default=Language.ENGLISH,
-        description="Language code for transcription, or 'auto' for automatic detection",
-    )
-    chunk: Chunk = Field(
-        default=Chunk(),
-        description="The audio chunk to transcribe",
-    )
-    temperature: float = Field(
-        default=0.0,
-        ge=0.0,
-        le=1.0,
-        description="Sampling temperature for transcription",
-    )
-    initial_prompt: str = Field(
-        default="",
-        description="Optional initial prompt to guide transcription style",
-    )
+#     class Language(str, Enum):
+#         AUTO = "auto"
+#         ENGLISH = "en"
+#         SPANISH = "es"
+#         FRENCH = "fr"
+#         GERMAN = "de"
+#         ITALIAN = "it"
+#         PORTUGUESE = "pt"
+#         DUTCH = "nl"
+#         RUSSIAN = "ru"
+#         CHINESE = "zh"
+#         JAPANESE = "ja"
+#         KOREAN = "ko"
+#         ARABIC = "ar"
+#         HINDI = "hi"
+#         TURKISH = "tr"
+#         POLISH = "pl"
+#         UKRAINIAN = "uk"
+#         VIETNAMESE = "vi"
 
-    @classmethod
-    def is_cacheable(cls) -> bool:
-        return False
+#     model: WhisperModel = Field(
+#         default=WhisperModel.TINY,
+#         description="Whisper model size - larger models are more accurate but slower",
+#     )
+#     language: Language = Field(
+#         default=Language.ENGLISH,
+#         description="Language code for transcription, or 'auto' for automatic detection",
+#     )
+#     chunk: Chunk = Field(
+#         default=Chunk(),
+#         description="The audio chunk to transcribe",
+#     )
+#     temperature: float = Field(
+#         default=0.0,
+#         ge=0.0,
+#         le=1.0,
+#         description="Sampling temperature for transcription",
+#     )
+#     initial_prompt: str = Field(
+#         default="",
+#         description="Optional initial prompt to guide transcription style",
+#     )
 
-    @classmethod
-    def is_streaming_output(cls) -> bool:
-        return True
+#     @classmethod
+#     def is_cacheable(cls) -> bool:
+#         return False
 
-    @classmethod
-    def is_streaming_input(cls) -> bool:
-        return True
+#     @classmethod
+#     def is_streaming_output(cls) -> bool:
+#         return True
 
-    @classmethod
-    def return_type(cls):
-        return cls.OutputType
+#     @classmethod
+#     def is_streaming_input(cls) -> bool:
+#         return True
 
-    class OutputType(TypedDict):
-        start: float
-        end: float
-        text: str
-        chunk: Chunk
-        speaker: int
-        detected_language: str
-        translation: str
+#     @classmethod
+#     def return_type(cls):
+#         return cls.OutputType
 
-    async def run(
-        self,
-        context: ProcessingContext,
-        inputs: NodeInputs,
-        outputs: NodeOutputs,
-    ) -> None:
-        """Process streaming audio input and emit real-time transcription.
+#     class OutputType(TypedDict):
+#         start: float
+#         end: float
+#         text: str
+#         chunk: Chunk
+#         speaker: int
+#         detected_language: str
+#         translation: str
 
-        Args:
-            context: Processing context for the workflow
-            inputs: Streaming audio chunks
-            outputs: Output emitter for transcription chunks and final text
-        """
-        from whisperlivekit import TranscriptionEngine, AudioProcessor
+#     async def run(
+#         self,
+#         context: ProcessingContext,
+#         inputs: NodeInputs,
+#         outputs: NodeOutputs,
+#     ) -> None:
+#         """Process streaming audio input and emit real-time transcription.
 
-        log.info(f"Starting RealtimeWhisper with model: {self.model.value}")
+#         Args:
+#             context: Processing context for the workflow
+#             inputs: Streaming audio chunks
+#             outputs: Output emitter for transcription chunks and final text
+#         """
+#         from whisperlivekit import TranscriptionEngine, AudioProcessor
 
-        # Initialize transcription engine
-        transcription_engine = TranscriptionEngine(
-            model=self.model.value,
-            language=self.language.value,
-            temperature=self.temperature,
-            initial_prompt=self.initial_prompt if self.initial_prompt else None,
-            min_chunk_size=0.04,
-            pcm_input=True,
-        )
-        log.debug("TranscriptionEngine initialized")
+#         log.info(f"Starting RealtimeWhisper with model: {self.model.value}")
 
-        # Create audio processor
-        audio_processor = AudioProcessor(transcription_engine=transcription_engine)
-        log.debug("AudioProcessor created")
+#         # Initialize transcription engine
+#         transcription_engine = TranscriptionEngine(
+#             model=self.model.value,
+#             language=self.language.value,
+#             temperature=self.temperature,
+#             initial_prompt=self.initial_prompt if self.initial_prompt else None,
+#             min_chunk_size=0.04,
+#             pcm_input=True,
+#         )
+#         log.debug("TranscriptionEngine initialized")
 
-        # Create tasks for results processing
-        results_generator = await audio_processor.create_tasks()
-        log.debug("Results generator created")
+#         # Create audio processor
+#         audio_processor = AudioProcessor(transcription_engine=transcription_engine)
+#         log.debug("AudioProcessor created")
 
-        async def producer_loop():
-            """Read audio chunks from input and feed to processor."""
-            log.debug("Producer loop started")
-            try:
-                async for handle, item in inputs.any():
-                    if handle != "chunk":
-                        log.error(f"Unknown handle: {handle}")
-                        raise ValueError(f"Unknown handle: {handle}")
+#         # Create tasks for results processing
+#         results_generator = await audio_processor.create_tasks()
+#         log.debug("Results generator created")
 
-                    assert isinstance(item, Chunk)
+#         async def producer_loop():
+#             """Read audio chunks from input and feed to processor."""
+#             log.debug("Producer loop started")
+#             try:
+#                 async for handle, item in inputs.any():
+#                     if handle != "chunk":
+#                         log.error(f"Unknown handle: {handle}")
+#                         raise ValueError(f"Unknown handle: {handle}")
 
-                    # Only process audio chunks
-                    if item.content_type == "audio" and item.content:
-                        # Decode base64 audio if needed
-                        if isinstance(item.content, str):
-                            audio_bytes = base64.b64decode(item.content)
-                        else:
-                            audio_bytes = item.content
+#                     assert isinstance(item, Chunk)
 
-                        log.debug(f"Processing audio chunk: {len(audio_bytes)} bytes")
-                        await audio_processor.process_audio(audio_bytes)
+#                     # Only process audio chunks
+#                     if item.content_type == "audio" and item.content:
+#                         # Decode base64 audio if needed
+#                         if isinstance(item.content, str):
+#                             audio_bytes = base64.b64decode(item.content)
+#                         else:
+#                             audio_bytes = item.content
 
-                log.debug("Producer loop finished - input stream ended")
-            except Exception as e:
-                log.error(f"Error in producer loop: {e}", exc_info=True)
-                raise
-            finally:
-                # Signal end of audio input
-                await audio_processor.cleanup()
+#                         log.debug(f"Processing audio chunk: {len(audio_bytes)} bytes")
+#                         await audio_processor.process_audio(audio_bytes)
 
-        asyncio.create_task(producer_loop())
+#                 log.debug("Producer loop finished - input stream ended")
+#             except Exception as e:
+#                 log.error(f"Error in producer loop: {e}", exc_info=True)
+#                 raise
+#             finally:
+#                 # Signal end of audio input
+#                 await audio_processor.cleanup()
 
-        """Consume transcription results and emit chunks."""
-        log.debug("Consume transcription results and emit chunks")
-        aggregated_text = ""
+#         asyncio.create_task(producer_loop())
 
-        async for response in results_generator:
-            if response.error:
-                raise RuntimeError(f"Transcription error: {response.error}")
+#         """Consume transcription results and emit chunks."""
+#         log.debug("Consume transcription results and emit chunks")
+#         aggregated_text = ""
 
-            if not response.lines:
-                continue
+#         async for response in results_generator:
+#             if response.error:
+#                 raise RuntimeError(f"Transcription error: {response.error}")
 
-            # Process each line in the response, but skip the last one (it may still be updating)
-            # Only emit lines that are truly finalized (not the current in-progress line)
-            lines_to_process = response.lines[:-1] if len(response.lines) > 1 else []
+#             if not response.lines:
+#                 continue
 
-            for line in lines_to_process:
-                # Skip dummy lines
-                if getattr(line, 'is_dummy', False):
-                    continue
+#             # Process each line in the response, but skip the last one (it may still be updating)
+#             # Only emit lines that are truly finalized (not the current in-progress line)
+#             lines_to_process = response.lines[:-1] if len(response.lines) > 1 else []
 
-                # Skip placeholder/empty lines
-                if line.speaker == -2 or not line.text or line.text.strip() == "":
-                    continue
+#             for line in lines_to_process:
+#                 # Skip dummy lines
+#                 if getattr(line, 'is_dummy', False):
+#                     continue
 
-                line_text = line.text
+#                 # Skip placeholder/empty lines
+#                 if line.speaker == -2 or not line.text or line.text.strip() == "":
+#                     continue
 
-                # Find overlap: check if line_text is already contained in aggregated_text
-                if line_text in aggregated_text:
-                    log.debug(f"Skipping duplicate text: {line_text[:50]}...")
-                    continue
+#                 line_text = line.text
 
-                # Find if there's an overlap at the end of aggregated_text with the start of line_text
-                new_text = line_text
-                max_overlap = min(len(aggregated_text), len(line_text))
+#                 # Find overlap: check if line_text is already contained in aggregated_text
+#                 if line_text in aggregated_text:
+#                     log.debug(f"Skipping duplicate text: {line_text[:50]}...")
+#                     continue
 
-                for overlap_len in range(max_overlap, 0, -1):
-                    if aggregated_text.endswith(line_text[:overlap_len]):
-                        # Found overlap, only emit the new part
-                        new_text = line_text[overlap_len:]
-                        break
+#                 # Find if there's an overlap at the end of aggregated_text with the start of line_text
+#                 new_text = line_text
+#                 max_overlap = min(len(aggregated_text), len(line_text))
 
-                if not new_text.strip():
-                    continue
+#                 for overlap_len in range(max_overlap, 0, -1):
+#                     if aggregated_text.endswith(line_text[:overlap_len]):
+#                         # Found overlap, only emit the new part
+#                         new_text = line_text[overlap_len:]
+#                         break
 
-                # Add to aggregated text
-                aggregated_text += new_text
+#                 if not new_text.strip():
+#                     continue
 
-                log.debug(f"Emitting new text: start={line.start}, text={new_text[:50]}...")
+#                 # Add to aggregated text
+#                 aggregated_text += new_text
 
-                await outputs.emit("chunk", Chunk(content=new_text, done=False))
-                await outputs.emit("start", line.start)
-                await outputs.emit("end", line.end)
-                await outputs.emit("speaker", line.speaker)
-                await outputs.emit("detected_language", line.detected_language or "en")
-                await outputs.emit("translation", line.translation or "")
+#                 log.debug(f"Emitting new text: start={line.start}, text={new_text[:50]}...")
+
+#                 await outputs.emit("chunk", Chunk(content=new_text, done=False))
+#                 await outputs.emit("start", line.start)
+#                 await outputs.emit("end", line.end)
+#                 await outputs.emit("speaker", line.speaker)
+#                 await outputs.emit("detected_language", line.detected_language or "en")
+#                 await outputs.emit("translation", line.translation or "")
 
 
-        log.debug("Consumer loop finished - results generator ended")
+#         log.debug("Consumer loop finished - results generator ended")
 
 
-        # Emit final aggregated text
-        final_text = " ".join(aggregated_text).strip()
-        if final_text:
-            log.info(f"Emitting final transcript: {len(final_text)} characters")
-            await outputs.emit("text", final_text)
+#         # Emit final aggregated text
+#         final_text = " ".join(aggregated_text).strip()
+#         if final_text:
+#             log.info(f"Emitting final transcript: {len(final_text)} characters")
+#             await outputs.emit("text", final_text)
