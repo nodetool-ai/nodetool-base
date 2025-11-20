@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from io import StringIO
 from typing import AsyncGenerator, ClassVar, TypedDict
 import json
@@ -629,6 +630,18 @@ class Aggregate(BaseNode):
     - Create summary statistics by groups
     """
 
+    class AggregationType(str, Enum):
+        SUM = "sum"
+        MEAN = "mean"
+        COUNT = "count"
+        MIN = "min"
+        MAX = "max"
+        STD = "std"
+        VAR = "var"
+        MEDIAN = "median"
+        FIRST = "first"
+        LAST = "last"
+
     _expose_as_tool: ClassVar[bool] = True
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The DataFrame to group."
@@ -637,9 +650,9 @@ class Aggregate(BaseNode):
         default="",
         description="Comma-separated column names to group by.",
     )
-    aggregation: str = Field(
-        default="sum",
-        description="Aggregation function: sum, mean, count, min, max, std, var, median, first, last",
+    aggregation: AggregationType = Field(
+        default=AggregationType.SUM,
+        description="Aggregation function",
     )
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
@@ -647,25 +660,25 @@ class Aggregate(BaseNode):
         group_columns = [col.strip() for col in self.columns.split(",")]
 
         # Apply aggregation
-        if self.aggregation == "sum":
+        if self.aggregation == self.AggregationType.SUM:
             result = df.groupby(group_columns).sum()
-        elif self.aggregation == "mean":
+        elif self.aggregation == self.AggregationType.MEAN:
             result = df.groupby(group_columns).mean()
-        elif self.aggregation == "count":
+        elif self.aggregation == self.AggregationType.COUNT:
             result = df.groupby(group_columns).count()
-        elif self.aggregation == "min":
+        elif self.aggregation == self.AggregationType.MIN:
             result = df.groupby(group_columns).min()
-        elif self.aggregation == "max":
+        elif self.aggregation == self.AggregationType.MAX:
             result = df.groupby(group_columns).max()
-        elif self.aggregation == "std":
+        elif self.aggregation == self.AggregationType.STD:
             result = df.groupby(group_columns).std()
-        elif self.aggregation == "var":
+        elif self.aggregation == self.AggregationType.VAR:
             result = df.groupby(group_columns).var()
-        elif self.aggregation == "median":
+        elif self.aggregation == self.AggregationType.MEDIAN:
             result = df.groupby(group_columns).median()
-        elif self.aggregation == "first":
+        elif self.aggregation == self.AggregationType.FIRST:
             result = df.groupby(group_columns).first()
-        elif self.aggregation == "last":
+        elif self.aggregation == self.AggregationType.LAST:
             result = df.groupby(group_columns).last()
         else:
             raise ValueError(f"Unknown aggregation function: {self.aggregation}")

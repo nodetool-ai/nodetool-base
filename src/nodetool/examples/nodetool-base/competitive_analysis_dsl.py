@@ -14,7 +14,7 @@ Workflow:
 7. **Report** - Generate strategic recommendations
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph, run_graph, run_graph_async, run_graph_sync
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.text import FormatText
@@ -214,6 +214,6 @@ graph = create_graph(output)
 
 
 if __name__ == "__main__":
-    result = run_graph(graph)
+    result = run_graph_sync(graph)
     print("Competitive Analysis Report:")
     print(result['competitive_analysis'])
