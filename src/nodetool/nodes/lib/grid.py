@@ -1,16 +1,29 @@
 import math
-import PIL.Image
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef
+from typing import TYPE_CHECKING, List
+
 from pydantic import Field
 
-from typing import List
-from PIL import Image, ImageDraw
+from nodetool.metadata.types import ImageRef
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+
+if TYPE_CHECKING:
+    from PIL import Image
+
+_pil_imports: tuple[type["Image.Image"],] | None = None
+
+
+def _load_pil():
+    global _pil_imports
+    if _pil_imports is None:
+        from PIL import Image
+
+        _pil_imports = (Image,)
+    return _pil_imports
 
 
 class Tile:
-    def __init__(self, image: Image.Image, x: int, y: int):
+    def __init__(self, image: "Image.Image", x: int, y: int):
         self.image = image
         self.x = x
         self.y = y
@@ -44,11 +57,14 @@ def make_grid(
     return tiles, cols, rows
 
 
-def create_gradient_mask(tile_w: int, tile_h: int, overlap: int) -> Image.Image:
+def create_gradient_mask(tile_w: int, tile_h: int, overlap: int) -> "Image.Image":
     """
     Create a gradient mask for blending the overlapping region of a tile.
     The gradient will fade from fully opaque to fully transparent.
     """
+    (Image,) = _load_pil()
+    from PIL import ImageDraw
+
     mask = Image.new("L", (tile_w, tile_h), 0)
     draw = ImageDraw.Draw(mask)
 
@@ -76,11 +92,12 @@ def combine_grid(
     width: int,
     height: int,
     overlap: int,
-) -> Image.Image:
+) -> "Image.Image":
     """
     Combine a grid of tiles into a single image, taking overlaps into account.
     The overlapping areas are blended using a gradient mask.
     """
+    (Image,) = _load_pil()
     combined_image = Image.new("RGB", (width, height))
 
     for row in tiles:
@@ -125,6 +142,8 @@ class SliceImageGrid(BaseNode):
     rows: int = Field(default=0, ge=0, description="Number of rows in the grid.")
 
     async def process(self, context: ProcessingContext) -> list[ImageRef]:
+        (Image,) = _load_pil()
+
         image = await context.image_to_pil(self.image)
         width, height = image.size
 
@@ -173,6 +192,8 @@ class CombineImageGrid(BaseNode):
     async def process(self, context: ProcessingContext) -> ImageRef:
         if not self.tiles:
             raise ValueError("No tiles provided for combining.")
+
+        (Image,) = _load_pil()
 
         pil_tiles = [await context.image_to_pil(tile) for tile in self.tiles]
         pil_tiles = [tile.convert("RGBA") for tile in pil_tiles]

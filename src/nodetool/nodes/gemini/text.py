@@ -1,21 +1,12 @@
-from typing import Dict, Any, TypedDict
-from nodetool.metadata.types import Source
-from pydantic import Field
-from typing import ClassVar
 from enum import Enum
-from typing import ClassVar
-from google.genai import Client
-from google.genai.client import AsyncClient
-from google.genai.types import (
-    Tool as GenAITool,
-    GenerateContentConfig,
-    GoogleSearch,
-)
-from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from typing import Any, ClassVar, Dict, TypedDict
+
 from nodetool.config.environment import Environment
-from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.metadata.types import Provider, Source
 from nodetool.providers.gemini_provider import GeminiProvider
-from nodetool.metadata.types import Provider
+from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+from pydantic import Field
 
 
 class GeminiModel(str, Enum):
@@ -61,6 +52,12 @@ class GroundedSearch(BaseNode):
         Returns:
             Dict containing the search results and sources
         """
+        from google.genai.types import (
+            GenerateContentConfig,
+            GoogleSearch,
+            Tool as GenAITool,
+        )
+
         if not self.query:
             raise ValueError("Search query is required")
 

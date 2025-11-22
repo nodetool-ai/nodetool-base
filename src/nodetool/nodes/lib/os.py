@@ -6,7 +6,6 @@ import tarfile
 from datetime import datetime
 from pathlib import Path
 from typing import AsyncGenerator, TypedDict
-import pandas as pd
 from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode

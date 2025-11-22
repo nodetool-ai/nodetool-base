@@ -1,13 +1,11 @@
-import numpy as np
 from io import BytesIO
 from enum import Enum
+
 from pydantic import Field
-from matplotlib import pyplot as plt
-import seaborn as sns
-from nodetool.workflows.processing_context import ProcessingContext
+
+from nodetool.metadata.types import NPArray, ImageRef, to_numpy
 from nodetool.workflows.base_node import BaseNode
-from nodetool.metadata.types import to_numpy
-from nodetool.metadata.types import NPArray, ImageRef
+from nodetool.workflows.processing_context import ProcessingContext
 
 
 class PlotArray(BaseNode):
@@ -32,6 +30,9 @@ class PlotArray(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import seaborn as sns
+        from matplotlib import pyplot as plt
+
         arr = to_numpy(self.values)
         sns.set_theme(style="darkgrid")
         if self.plot_type == self.PlotType.LINE:

@@ -270,24 +270,19 @@ class Template(BaseNode):
     _is_dynamic: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
-        from jinja2 import Environment, BaseLoader
+        import re
 
-        try:
-            # Create Jinja2 environment
-            env = Environment(loader=BaseLoader())
-            template = env.from_string(self.string)
+        template_values = {}
+        if isinstance(self.values, dict):
+            template_values.update(self.values)
+        template_values.update(self._dynamic_properties)
 
-            # Merge values from the values field and dynamic properties
-            template_values = {}
-            if isinstance(self.values, dict):
-                template_values.update(self.values)
-            template_values.update(self._dynamic_properties)
-
-            # Render template
-            return template.render(**template_values)
-
-        except Exception as e:
-            raise ValueError(f"Template error: {str(e)}")
+        result = self.string
+        for key, value in template_values.items():
+            # Replace patterns like {{ key }} with the provided value
+            pattern = r"{{\s*" + re.escape(str(key)) + r"\s*}}"
+            result = re.sub(pattern, str(value), result)
+        return result
 
 
 class Replace(BaseNode):

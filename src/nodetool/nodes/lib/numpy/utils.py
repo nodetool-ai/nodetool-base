@@ -5,7 +5,6 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import to_numpy
 from nodetool.metadata.types import NPArray
-from pydub import AudioSegment
 
 
 # Import numpy_to_audio_segment from the centralized location

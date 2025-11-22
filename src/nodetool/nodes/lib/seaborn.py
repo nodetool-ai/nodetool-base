@@ -1,30 +1,10 @@
-from enum import Enum
-from matplotlib import pyplot as plt
-from nodetool.metadata.types import (
-    ChartConfig,
-    ImageRef,
-    SeabornPlotType,
-)
-import seaborn as sns
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-
-
-from pydantic import Field
-
-import matplotlib
-
-matplotlib.use("Agg")
-from matplotlib import pyplot as plt
 import io
-import pandas as pd
-
-
+from enum import Enum
 from typing import Any
+
 from pydantic import Field
-from nodetool.metadata.types import (
-    ImageRef,
-)
+
+from nodetool.metadata.types import ChartConfig, ImageRef, SeabornPlotType
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -98,6 +78,13 @@ class ChartRenderer(BaseNode):
     async def process(self, context: ProcessingContext) -> ImageRef:
         if self.data is None:
             raise ValueError("Data is required for rendering the chart.")
+
+        import matplotlib
+
+        matplotlib.use("Agg")
+        from matplotlib import pyplot as plt
+        import pandas as pd
+        import seaborn as sns
 
         # Convert data to pandas DataFrame
         df = pd.DataFrame(
@@ -263,7 +250,7 @@ class ChartRenderer(BaseNode):
             sns.despine(fig=fig)
 
         if self.trim_margins:
-            fig.tight_layout: ClassVar[str]()
+            fig.tight_layout()
 
         # Convert plot to image bytes
         buf = io.BytesIO()

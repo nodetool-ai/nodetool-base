@@ -1,17 +1,13 @@
-from io import BytesIO
-from typing import ClassVar
 from base64 import b64decode
-from nodetool.providers.gemini_provider import GeminiProvider
-from pydantic import Field
 from enum import Enum
+from typing import ClassVar
+
+from nodetool.config.environment import Environment
 from nodetool.metadata.types import AudioRef, Provider
+from nodetool.providers.gemini_provider import GeminiProvider
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from google.genai.client import AsyncClient
-from google.genai import types
-from nodetool.config.environment import Environment
-from google.genai import Client
-from pydub import AudioSegment
+from pydantic import Field
 
 
 class TTSModel(str, Enum):
@@ -87,6 +83,9 @@ class TextToSpeech(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> AudioRef:
+        from google.genai import types
+        from pydub import AudioSegment
+
         if not self.text:
             raise ValueError("The input text cannot be empty.")
 

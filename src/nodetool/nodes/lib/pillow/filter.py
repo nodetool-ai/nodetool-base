@@ -1,17 +1,20 @@
 from enum import Enum
-import PIL.Image
-import PIL.ImageDraw
-import PIL.ImageEnhance
-import PIL.ImageFilter
-import PIL.ImageFont
-import PIL.ImageOps
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.lib.pillow.enhance import (
-    canny_edge_detection,
-)
-from nodetool.metadata.types import ImageRef
-from nodetool.workflows.base_node import BaseNode
+from typing import TYPE_CHECKING
+
 from pydantic import Field
+
+from nodetool.metadata.types import ImageRef
+from nodetool.nodes.lib.pillow.enhance import canny_edge_detection
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+
+if TYPE_CHECKING:
+    import PIL.Image
+    import PIL.ImageDraw
+    import PIL.ImageEnhance
+    import PIL.ImageFilter
+    import PIL.ImageFont
+    import PIL.ImageOps
 
 
 class Invert(BaseNode):
@@ -29,6 +32,8 @@ class Invert(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageOps
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageOps.invert(image)
         return await context.image_from_pil(res)
@@ -50,6 +55,8 @@ class Solarize(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageOps
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageOps.solarize(image, threshold=self.threshold)
         return await context.image_from_pil(res)
@@ -71,6 +78,8 @@ class Posterize(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageOps
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageOps.posterize(image, bits=self.bits)
         return await context.image_from_pil(res)
@@ -91,6 +100,8 @@ class Expand(BaseNode):
     fill: int = Field(default=0, ge=0, le=255, description="Fill color.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageOps
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageOps.expand(image, border=self.border, fill=self.fill)
         return await context.image_from_pil(res)
@@ -110,6 +121,8 @@ class Blur(BaseNode):
     radius: int = Field(default=2, ge=0, le=128, description="Blur radius.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         res = image.filter(PIL.ImageFilter.GaussianBlur(self.radius))
         return await context.image_from_pil(res)
@@ -128,6 +141,8 @@ class Contour(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to contour.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.CONTOUR))
 
@@ -145,6 +160,8 @@ class Emboss(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to emboss.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.EMBOSS))
 
@@ -162,6 +179,8 @@ class FindEdges(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to find edges.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.FIND_EDGES))
 
@@ -179,6 +198,8 @@ class Smooth(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to smooth.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.SMOOTH))
 

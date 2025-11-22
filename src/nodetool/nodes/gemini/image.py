@@ -1,16 +1,12 @@
-from nodetool.providers.gemini_provider import GeminiProvider
-from pydantic import Field
 from enum import Enum
 from typing import ClassVar
+
+from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import ImageRef, Provider
+from nodetool.providers.gemini_provider import GeminiProvider
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from google.genai.client import AsyncClient
-from google.genai.types import GenerateImagesConfig, GenerateContentConfig
-from nodetool.config.environment import Environment
-from google.genai import Client
-from nodetool.config.logging_config import get_logger
-from google.genai.types import FinishReason
+from pydantic import Field
 
 log = get_logger(__name__)
 
@@ -51,6 +47,12 @@ class ImageGeneration(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        from google.genai.types import (
+            FinishReason,
+            GenerateContentConfig,
+            GenerateImagesConfig,
+        )
+
         if not self.prompt:
             raise ValueError("The input prompt cannot be empty.")
 

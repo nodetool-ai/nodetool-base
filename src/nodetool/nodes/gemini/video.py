@@ -1,15 +1,11 @@
-import uuid
-from nodetool.providers.gemini_provider import GeminiProvider
-from pydantic import Field
-from typing import ClassVar
 from enum import Enum
+from typing import ClassVar
+
 from nodetool.metadata.types import ImageRef, Provider, VideoRef
+from nodetool.providers.gemini_provider import GeminiProvider
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from google.genai.client import AsyncClient
-from google.genai.types import GenerateVideosConfig
-from nodetool.config.environment import Environment
-from google.genai import Client
+from pydantic import Field
 
 
 class VeoModel(str, Enum):
@@ -77,6 +73,8 @@ class TextToVideo(BaseNode):
             config_args["aspect_ratio"] = self.aspect_ratio.value
         if self.negative_prompt:
             config_args["negative_prompt"] = self.negative_prompt
+
+        from google.genai.types import GenerateVideosConfig
 
         config = GenerateVideosConfig(**config_args) if config_args else None
         provider = await context.get_provider(Provider.Gemini)
@@ -161,6 +159,8 @@ class ImageToVideo(BaseNode):
             config_args["aspect_ratio"] = self.aspect_ratio.value
         if self.negative_prompt:
             config_args["negative_prompt"] = self.negative_prompt
+
+        from google.genai.types import GenerateVideosConfig
 
         config = GenerateVideosConfig(**config_args) if config_args else None
 

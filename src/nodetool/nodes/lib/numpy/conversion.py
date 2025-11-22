@@ -1,12 +1,15 @@
 import numpy as np
-import PIL.Image
-from typing import Any
+from typing import Any, TYPE_CHECKING
+
 from pydantic import Field
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.base_node import BaseNode
-from nodetool.metadata.types import to_numpy
-from nodetool.metadata.types import NPArray, AudioRef, ImageRef
+
 from nodetool.media.audio.audio_helpers import numpy_to_audio_segment
+from nodetool.metadata.types import NPArray, AudioRef, ImageRef, to_numpy
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+
+if TYPE_CHECKING:
+    from PIL import Image
 
 
 class ConvertToArray(BaseNode):
@@ -65,7 +68,9 @@ class ConvertToImage(BaseNode):
         if (array_data.ndim == 3) and (array_data.shape[2] == 1):
             array_data = array_data.reshape(array_data.shape[0], array_data.shape[1])
         array_data = (array_data * 255).astype(np.uint8)
-        output_image = PIL.Image.fromarray(array_data)
+        from PIL import Image as PILImage
+
+        output_image = PILImage.fromarray(array_data)
         return await context.image_from_pil(output_image)
 
 

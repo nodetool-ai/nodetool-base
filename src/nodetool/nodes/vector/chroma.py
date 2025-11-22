@@ -3,12 +3,9 @@ Chroma nodes for Nodetool.
 """
 
 import asyncio
-from enum import Enum
-from typing import Any, Dict, TypedDict
-
-import numpy as np
-from pydantic import Field
 import re
+from enum import Enum
+from typing import TYPE_CHECKING, Any, Dict, TypedDict
 
 from nodetool.config.environment import Environment
 from nodetool.integrations.vectorstores.chroma.async_chroma_client import (
@@ -27,11 +24,16 @@ from nodetool.metadata.types import (
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import NodeProgress
+from pydantic import Field
 
-from ollama import AsyncClient
+if TYPE_CHECKING:
+    from ollama import AsyncClient
+    import numpy as np
 
 
-def get_ollama_client() -> AsyncClient:
+def get_ollama_client() -> "AsyncClient":
+    from ollama import AsyncClient
+
     api_url = Environment.get("OLLAMA_API_URL")
     assert api_url, "OLLAMA_API_URL not set"
 
@@ -185,6 +187,8 @@ class IndexImage(ChromaNode):
         if self.image.document_id is None:
             raise ValueError("document_id cannot be None for any image")
 
+        import numpy as np
+
         collection = await get_async_collection(self.collection.name)
         image = await context.image_to_pil(self.image)
         image_ids = [self.index_id or self.image.document_id]
@@ -317,6 +321,8 @@ class IndexAggregatedText(ChromaNode):
         if not self.text_chunks:
             raise ValueError("The text chunks cannot be empty")
 
+        import numpy as np
+
         collection = await get_async_collection(self.collection.name)
 
         model = collection.metadata.get("embedding_model")
@@ -410,6 +416,8 @@ class QueryImage(ChromaNode):
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.image.asset_id and not self.image.uri:
             raise ValueError("Image is not connected")
+
+        import numpy as np
 
         collection = await get_async_collection(self.collection.name)
         image = await context.image_to_pil(self.image)

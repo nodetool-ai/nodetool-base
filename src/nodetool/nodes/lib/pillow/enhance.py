@@ -1,7 +1,5 @@
-import PIL.Image
-import PIL.ImageEnhance
-import PIL.ImageFilter
-import PIL.ImageOps
+from typing import TYPE_CHECKING
+
 import numpy as np
 
 from nodetool.metadata.types import ImageRef
@@ -9,11 +7,15 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
 
+if TYPE_CHECKING:
+    import PIL.Image
+
 
 def adaptive_contrast(
-    image: PIL.Image.Image, clip_limit: float, grid_size: int
-) -> PIL.Image.Image:
+    image: "PIL.Image.Image", clip_limit: float, grid_size: int
+) -> "PIL.Image.Image":
     import cv2
+    import PIL.Image
 
     img = np.array(image)
 
@@ -36,9 +38,10 @@ def adaptive_contrast(
     return PIL.Image.fromarray(final_img)
 
 
-def sharpen_image(image: PIL.Image.Image) -> PIL.Image.Image:
+def sharpen_image(image: "PIL.Image.Image") -> "PIL.Image.Image":
     # Convert PIL image to CV
     import cv2
+    import PIL.Image
 
     img = np.array(image)
     kernel = np.array([[-1, -1, -1], [-1, 9, -1], [-1, -1, -1]])
@@ -47,9 +50,10 @@ def sharpen_image(image: PIL.Image.Image) -> PIL.Image.Image:
 
 
 def canny_edge_detection(
-    image: PIL.Image.Image, low_threshold: int, high_threshold: int
-) -> PIL.Image.Image:
+    image: "PIL.Image.Image", low_threshold: int, high_threshold: int
+) -> "PIL.Image.Image":
     import cv2
+    import PIL.Image
 
     arr = np.array(image)
     arr = cv2.Canny(arr, low_threshold, high_threshold)  # type: ignore
@@ -80,6 +84,8 @@ class AutoContrast(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageOps
+
         image = await context.image_to_pil(self.image)
         img = PIL.ImageOps.autocontrast(image, cutoff=self.cutoff)
         return await context.image_from_pil(img)
@@ -104,6 +110,8 @@ class Sharpness(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageEnhance
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageEnhance.Sharpness(image).enhance(self.factor)
         return await context.image_from_pil(res)
@@ -123,6 +131,8 @@ class Equalize(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to equalize.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageOps
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageOps.equalize(image)
         return await context.image_from_pil(res)
@@ -147,6 +157,8 @@ class Contrast(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageEnhance
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageEnhance.Contrast(image).enhance(self.factor)
         return await context.image_from_pil(res)
@@ -168,6 +180,8 @@ class EdgeEnhance(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.EDGE_ENHANCE))
 
@@ -186,6 +200,8 @@ class Sharpen(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to sharpen.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.SHARPEN))
 
@@ -206,6 +222,8 @@ class RankFilter(BaseNode):
     rank: int = Field(default=3, ge=1, le=512, description="Rank filter rank.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(
             image.filter(PIL.ImageFilter.RankFilter(self.size, self.rank))
@@ -235,6 +253,8 @@ class UnsharpMask(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         res = image.filter(
             PIL.ImageFilter.UnsharpMask(self.radius, self.percent, self.threshold)
@@ -261,6 +281,8 @@ class Brightness(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageEnhance
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(
             PIL.ImageEnhance.Brightness(image).enhance(self.factor)
@@ -286,6 +308,8 @@ class Color(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageEnhance
+
         image = await context.image_to_pil(self.image)
         res = PIL.ImageEnhance.Color(image).enhance(self.factor)
         return await context.image_from_pil(res)
@@ -305,6 +329,8 @@ class Detail(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to detail.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageFilter
+
         image = await context.image_to_pil(self.image)
         return await context.image_from_pil(image.filter(PIL.ImageFilter.DETAIL))
 

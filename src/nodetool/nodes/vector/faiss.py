@@ -3,20 +3,16 @@ FAISS nodes for Nodetool.
 """
 
 from enum import Enum
-from typing import Any, TypedDict
+from typing import TYPE_CHECKING, Any, TypedDict
 
-import numpy as np
-from pydantic import Field
-
-from nodetool.metadata.types import (
-    NPArray,
-    FaissIndex,
-)
+from nodetool.metadata.types import FaissIndex, NPArray
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+from pydantic import Field
 
-import faiss
-from nodetool.metadata.types import FaissIndex, NPArray
+if TYPE_CHECKING:
+    import faiss
+    import numpy as np
 
 
 class FaissNode(BaseNode):
@@ -34,13 +30,17 @@ class FaissNode(BaseNode):
         return cls is not FaissNode
 
 
-def _ensure_2d_float32(array: np.ndarray) -> np.ndarray:
+def _ensure_2d_float32(array: "np.ndarray") -> "np.ndarray":
+    import numpy as np
+
     if array.ndim == 1:
         array = array.reshape(1, -1)
     return np.ascontiguousarray(array.astype(np.float32))
 
 
-def _ensure_1d_int64(array: np.ndarray) -> np.ndarray:
+def _ensure_1d_int64(array: "np.ndarray") -> "np.ndarray":
+    import numpy as np
+
     array = np.ascontiguousarray(array.astype(np.int64))
     return array.reshape(-1)
 
@@ -59,6 +59,8 @@ class CreateIndexFlatL2(FaissNode):
     dim: int = Field(default=768, ge=1, description="Embedding dimensionality")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
+        import faiss
+
         idx = faiss.IndexFlatL2(self.dim)
         return FaissIndex(index=idx)
 
@@ -72,6 +74,8 @@ class CreateIndexFlatIP(FaissNode):
     dim: int = Field(default=768, ge=1, description="Embedding dimensionality")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
+        import faiss
+
         idx = faiss.IndexFlatIP(self.dim)
         return FaissIndex(index=idx)
 
@@ -87,6 +91,8 @@ class CreateIndexIVFFlat(FaissNode):
     metric: Metric = Field(default=Metric.L2, description="Distance metric")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
+        import faiss
+
         if self.metric == Metric.L2:
             quantizer = faiss.IndexFlatL2(self.dim)
             metric_const = faiss.METRIC_L2
@@ -165,6 +171,9 @@ class AddWithIds(FaissNode):
     ids: NPArray = Field(default=NPArray(), description="1-D int64 IDs (n,)")
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
+        import faiss
+        import numpy as np
+
         if self.index.index is None:
             raise ValueError("FAISS index is not set")
         if self.vectors.is_empty():
@@ -217,6 +226,8 @@ class Search(FaissNode):
         indices: NPArray
 
     async def process(self, context: ProcessingContext) -> OutputType:
+        import numpy as np
+
         if self.index.index is None:
             raise ValueError("FAISS index is not set")
         if self.query.is_empty():

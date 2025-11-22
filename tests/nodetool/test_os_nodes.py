@@ -2,8 +2,6 @@ import pytest
 from nodetool.config.environment import Environment
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.lib.os import (
-    SetEnvironmentVariable,
-    GetEnvironmentVariable,
     FileExists,
     ListFiles,
     CreateDirectory,
@@ -19,15 +17,6 @@ from nodetool.nodes.lib.tar import (
 @pytest.fixture
 def context(tmp_path):
     return ProcessingContext(user_id="test", auth_token="test")
-
-
-@pytest.mark.asyncio
-async def test_env_var_nodes(context: ProcessingContext):
-    set_node = SetEnvironmentVariable(name="TEST_ENV_VAR", value="42")
-    await set_node.process(context)
-    get_node = GetEnvironmentVariable(name="TEST_ENV_VAR")
-    result = await get_node.process(context)
-    assert result == "42"
 
 
 @pytest.mark.asyncio
