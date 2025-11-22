@@ -1,13 +1,13 @@
-import PIL.Image
 from io import BytesIO
-from typing import ClassVar
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef, Provider
-from nodetool.workflows.base_node import BaseNode
-from pydantic import Field
 from enum import Enum
+from typing import ClassVar
 
+from nodetool.metadata.types import ImageRef, Provider
 from nodetool.providers.openai_prediction import run_openai
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+from pydantic import Field
+
 
 
 class CreateImage(BaseNode):
@@ -58,6 +58,8 @@ class CreateImage(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.Image
+
         params = {
             "prompt": self.prompt,
             "n": 1,

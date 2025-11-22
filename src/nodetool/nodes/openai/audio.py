@@ -1,16 +1,13 @@
 import base64
 from enum import Enum
-from nodetool.workflows.base_node import BaseNode
-from pydantic import Field
-from typing import ClassVar, TypedDict
 from io import BytesIO
-from pydub import AudioSegment
-from nodetool.metadata.types import AudioChunk, AudioRef, Provider
-from nodetool.workflows.processing_context import ProcessingContext
-from openai.types.audio.transcription_verbose import TranscriptionVerbose
-from openai.types.audio.translation import Translation
+from typing import ClassVar, TypedDict
 
+from nodetool.metadata.types import AudioChunk, AudioRef, Provider
 from nodetool.providers.openai_prediction import run_openai
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+from pydantic import Field
 
 
 class TextToSpeech(BaseNode):
@@ -51,6 +48,8 @@ class TextToSpeech(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> AudioRef:
+        from pydub import AudioSegment
+
         res = await context.run_prediction(
             node_id=self._id,
             provider=Provider.OpenAI,
@@ -94,6 +93,8 @@ class Translate(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> str:
+        from openai.types.audio.translation import Translation
+
         audio_bytes = await context.asset_to_io(self.audio)
         response = await context.run_prediction(
             node_id=self._id,
@@ -226,6 +227,8 @@ class Transcribe(BaseNode):
         segments: list[AudioChunk]
 
     async def process(self, context: ProcessingContext) -> OutputType:
+        from openai.types.audio.transcription_verbose import TranscriptionVerbose
+
         audio_bytes = await context.audio_to_base64(self.audio)
 
         params = {

@@ -1,10 +1,11 @@
 from enum import Enum
+import os
+
 from pydantic import Field
+
 from nodetool.metadata.types import FilePath
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-import pypandoc
-import os
 
 
 class InputFormat(Enum):
@@ -104,6 +105,8 @@ class ConvertFile(BaseNode):
     extra_args: list[str] = Field(default=[], description="Additional pandoc arguments")
 
     async def process(self, context: ProcessingContext) -> str:
+        import pypandoc
+
         assert self.input_path.path, "Input path is not set"
         expanded_path = os.path.expanduser(self.input_path.path)
         if not os.path.exists(expanded_path):
@@ -134,6 +137,8 @@ class ConvertText(BaseNode):
     extra_args: list[str] = Field(default=[], description="Additional pandoc arguments")
 
     async def process(self, context: ProcessingContext) -> str:
+        import pypandoc
+
         return pypandoc.convert_text(
             self.content,
             self.output_format.value,

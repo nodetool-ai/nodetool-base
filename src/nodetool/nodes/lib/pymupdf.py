@@ -1,10 +1,16 @@
 from typing import List
+
 from pydantic import Field
+
+from nodetool.metadata.types import DocumentRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DocumentRef
-import pymupdf
-import pymupdf4llm
+
+
+def _open_document(pdf_bytes: bytes):
+    import pymupdf
+
+    return pymupdf.open(stream=pdf_bytes, filetype="pdf")
 
 
 class ExtractText(BaseNode):
@@ -32,7 +38,7 @@ class ExtractText(BaseNode):
 
     async def process(self, context: ProcessingContext) -> str:
         pdf_data = await context.asset_to_bytes(self.pdf)
-        doc = pymupdf.open(stream=pdf_data, filetype="pdf")
+        doc = _open_document(pdf_data)
 
         end = self.end_page if self.end_page != -1 else doc.page_count - 1
         text = ""
@@ -69,7 +75,7 @@ class ExtractTextBlocks(BaseNode):
 
     async def process(self, context: ProcessingContext) -> List[dict]:
         pdf_data = await context.asset_to_bytes(self.pdf)
-        doc = pymupdf.open(stream=pdf_data, filetype="pdf")
+        doc = _open_document(pdf_data)
 
         end = self.end_page if self.end_page != -1 else doc.page_count - 1
         blocks = []
@@ -105,7 +111,7 @@ class ExtractTextWithStyle(BaseNode):
 
     async def process(self, context: ProcessingContext) -> List[dict]:
         pdf_data = await context.asset_to_bytes(self.pdf)
-        doc = pymupdf.open(stream=pdf_data, filetype="pdf")
+        doc = _open_document(pdf_data)
 
         end = self.end_page if self.end_page != -1 else doc.page_count - 1
         styled_text = []
@@ -161,7 +167,7 @@ class ExtractTables(BaseNode):
 
     async def process(self, context: ProcessingContext) -> List[dict]:
         pdf_data = await context.asset_to_bytes(self.pdf)
-        doc = pymupdf.open(stream=pdf_data, filetype="pdf")
+        doc = _open_document(pdf_data)
 
         end = self.end_page if self.end_page != -1 else doc.page_count - 1
         all_tables = []
@@ -220,7 +226,9 @@ class ExtractMarkdown(BaseNode):
 
         pdf_data = await context.asset_to_bytes(self.pdf)
 
-        doc = pymupdf.open(stream=pdf_data, filetype="pdf")
+        import pymupdf4llm
+
+        doc = _open_document(pdf_data)
 
         md_text = pymupdf4llm.to_markdown(doc)
 

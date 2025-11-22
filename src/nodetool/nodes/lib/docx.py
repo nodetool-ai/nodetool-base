@@ -1,16 +1,33 @@
 from datetime import datetime
 import os
-from docx import Document as DocxDocument
-from docx.document import Document
-from docx.shared import Inches, Pt
-from docx.enum.text import WD_ALIGN_PARAGRAPH
 from enum import Enum
+from typing import TYPE_CHECKING, List
+
 from pydantic import Field
-from typing import List, Optional
-from nodetool.metadata.types import DocumentRef, FilePath, ImageRef
+
+from nodetool.metadata.types import DataframeRef, DocumentRef, FilePath, ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DataframeRef
+
+if TYPE_CHECKING:
+    from docx import Document as DocxDocument
+    from docx.document import Document
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.shared import Inches, Pt
+
+_docx_imports: tuple[type["DocxDocument"], type["Document"], "Inches", "Pt", "WD_ALIGN_PARAGRAPH"] | None = None
+
+
+def _load_docx():
+    global _docx_imports
+    if _docx_imports is None:
+        from docx import Document as DocxDocument
+        from docx.document import Document
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+        from docx.shared import Inches, Pt
+
+        _docx_imports = (DocxDocument, Document, Inches, Pt, WD_ALIGN_PARAGRAPH)
+    return _docx_imports
 
 
 class ParagraphAlignment(str, Enum):
@@ -27,6 +44,7 @@ class CreateDocument(BaseNode):
     """
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
+        DocxDocument, _, _, _, _ = _load_docx()
         return DocumentRef(data=DocxDocument())
 
 
@@ -39,6 +57,7 @@ class LoadWordDocument(BaseNode):
     path: str = Field(default="", description="Path to the document to load")
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
+        DocxDocument, _, _, _, _ = _load_docx()
         if not self.path.strip():
             raise ValueError("path cannot be empty")
         expanded_path = os.path.expanduser(self.path)
@@ -83,7 +102,9 @@ class AddParagraph(BaseNode):
     font_size: int = Field(default=12, description="Font size in points")
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
-        assert isinstance(self.document.data, Document), "Document is not connected"
+        _, DocumentClass, _, Pt, WD_ALIGN_PARAGRAPH = _load_docx()
+
+        assert isinstance(self.document.data, DocumentClass), "Document is not connected"
         paragraph = self.document.data.add_paragraph()
         run = paragraph.add_run(self.text)
 
@@ -119,7 +140,9 @@ class AddTable(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
-        assert isinstance(self.document.data, Document), "Document is not connected"
+        _, DocumentClass, _, _, _ = _load_docx()
+
+        assert isinstance(self.document.data, DocumentClass), "Document is not connected"
         table = self.document.data.add_table(
             rows=len(self.data.data or []), cols=len(self.data.columns or [])
         )
@@ -146,10 +169,12 @@ class AddImage(BaseNode):
     height: float = Field(default=0, description="Image height in inches")
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
+        _, DocumentClass, Inches, _, _ = _load_docx()
+
         width = Inches(self.width) if self.width else None
         height = Inches(self.height) if self.height else None
 
-        assert isinstance(self.document.data, Document), "Document is not connected"
+        assert isinstance(self.document.data, DocumentClass), "Document is not connected"
         image = await context.asset_to_io(self.image)
         self.document.data.add_picture(image, width=width, height=height)
         return self.document
@@ -166,7 +191,9 @@ class AddPageBreak(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
-        assert isinstance(self.document.data, Document), "Document is not connected"
+        _, DocumentClass, _, _, _ = _load_docx()
+
+        assert isinstance(self.document.data, DocumentClass), "Document is not connected"
         self.document.data.add_page_break()
         return self.document
 
@@ -186,7 +213,9 @@ class SetDocumentProperties(BaseNode):
     keywords: str = Field(default="", description="Document keywords")
 
     async def process(self, context: ProcessingContext) -> DocumentRef:
-        assert isinstance(self.document.data, Document), "Document is not connected"
+        _, DocumentClass, _, _, _ = _load_docx()
+
+        assert isinstance(self.document.data, DocumentClass), "Document is not connected"
         core_props = self.document.data.core_properties
 
         if self.title:
@@ -229,7 +258,9 @@ class SaveDocument(BaseNode):
     )
 
     async def process(self, context: ProcessingContext):
-        assert isinstance(self.document.data, Document), "Document is not connected"
+        _, DocumentClass, _, _, _ = _load_docx()
+
+        assert isinstance(self.document.data, DocumentClass), "Document is not connected"
         assert self.path.path, "Path is not set"
         filename = datetime.now().strftime(self.filename)
         expanded_path = os.path.expanduser(os.path.join(self.path.path, filename))

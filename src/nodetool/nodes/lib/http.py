@@ -1,18 +1,12 @@
 import asyncio
 import datetime
-from typing import ClassVar, TypedDict
 import os
 from enum import Enum
-from typing import Any, List
+from typing import Any, ClassVar, List, TypedDict
 from urllib.parse import urljoin
 
 import aiohttp
 from pydantic import Field
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from nodetool.metadata.types import (
     ColumnDef,
@@ -212,6 +206,12 @@ class FetchPage(BaseNode):
         error_message: str | None
 
     async def process(self, context: ProcessingContext) -> OutputType:
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as EC
+        from selenium.webdriver.support.ui import WebDriverWait
+
         options = Options()
         options.add_argument("--headless")
         driver = webdriver.Chrome(options=options)

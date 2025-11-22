@@ -1,17 +1,12 @@
+from enum import Enum
+from typing import ClassVar
+
+from nodetool.config.logging_config import get_logger
+from nodetool.metadata.types import NPArray, Provider
 from nodetool.providers.openai_prediction import run_openai
-import numpy as np
-from nodetool.metadata.types import (
-    NPArray,
-    Provider,
-)
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.config.logging_config import get_logger
-
-from openai.types.create_embedding_response import CreateEmbeddingResponse
 from pydantic import Field
-from typing import ClassVar
-from enum import Enum
 
 logger = get_logger(__name__)
 
@@ -49,6 +44,9 @@ class Embedding(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> NPArray:
+        import numpy as np
+        from openai.types.create_embedding_response import CreateEmbeddingResponse
+
         # chunk the input into smaller pieces
         chunks = [
             self.input[i : i + self.chunk_size]

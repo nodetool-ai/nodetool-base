@@ -1,11 +1,19 @@
 import os
 import tempfile
-from markitdown import MarkItDown
-from pydantic import Field
 from typing import ClassVar
+
+from pydantic import Field
+
+try:  # pragma: no cover - optional dependency
+    from markitdown import MarkItDown
+except ImportError:
+    class MarkItDown:  # type: ignore[dead-code]
+        def convert(self, uri: str):
+            raise ImportError("markitdown package is required to convert documents")
+
+from nodetool.metadata.types import DocumentRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DocumentRef
 
 
 class ConvertToMarkdown(BaseNode):

@@ -1,20 +1,27 @@
 import re
-from typing import AsyncGenerator, TypedDict
+from typing import TYPE_CHECKING, AsyncGenerator, TypedDict
 from urllib.parse import urljoin
+
 from pydantic import Field
-from nodetool.metadata.types import (
-    AudioRef,
-    ColumnDef,
-    DataframeRef,
-    ImageRef,
-    VideoRef,
-)
+
+from nodetool.html.convert_html import convert_html_to_text
+from nodetool.metadata.types import AudioRef, ColumnDef, DataframeRef, ImageRef, VideoRef
 from nodetool.workflows.base_node import BaseNode
-from nodetool.metadata.types import ColumnDef, DataframeRef
 from nodetool.workflows.processing_context import ProcessingContext
 
-from bs4 import BeautifulSoup, Tag
-from nodetool.html.convert_html import convert_html_to_text
+if TYPE_CHECKING:
+    from bs4 import BeautifulSoup, Tag
+
+_bs4_types: tuple[type["BeautifulSoup"], type["Tag"]] | None = None
+
+
+def _load_bs4():
+    global _bs4_types
+    if _bs4_types is None:
+        from bs4 import BeautifulSoup, Tag
+
+        _bs4_types = (BeautifulSoup, Tag)
+    return _bs4_types
 
 
 class BaseUrl(BaseNode):
@@ -76,6 +83,7 @@ class ExtractLinks(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
 
         for a in soup.find_all("a", href=True):
@@ -90,6 +98,7 @@ class ExtractLinks(BaseNode):
             yield {"href": href, "text": text, "type": link_type}
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
 
         rows: list[list[str]] = []
@@ -137,6 +146,7 @@ class ExtractMetadata(BaseNode):
         keywords: str
 
     async def process(self, context: ProcessingContext):
+        BeautifulSoup, _ = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
 
         return {
@@ -180,6 +190,7 @@ class ExtractImages(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
 
         for img in soup.find_all("img"):
@@ -217,6 +228,7 @@ class ExtractVideos(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
 
         for video in soup.find_all(["video", "iframe"]):
@@ -231,6 +243,7 @@ class ExtractVideos(BaseNode):
                 yield {"video": VideoRef(uri=full_url)}
 
     async def process(self, context: ProcessingContext) -> list[VideoRef]:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
         results: list[VideoRef] = []
         for video in soup.find_all(["video", "iframe"]):
@@ -271,6 +284,7 @@ class ExtractAudio(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
 
         for audio in soup.find_all(["audio", "source"]):
@@ -281,6 +295,7 @@ class ExtractAudio(BaseNode):
                 yield {"audio": AudioRef(uri=full_url)}
 
     async def process(self, context: ProcessingContext) -> list[AudioRef]:
+        BeautifulSoup, Tag = _load_bs4()
         soup = BeautifulSoup(self.html, "html.parser")
         results: list[AudioRef] = []
         for audio in soup.find_all(["audio", "source"]):
@@ -293,6 +308,7 @@ class ExtractAudio(BaseNode):
 
 
 def extract_content(html_content: str) -> str:
+    BeautifulSoup, _ = _load_bs4()
     soup = BeautifulSoup(html_content, "html.parser")
 
     def clean_text(text: str) -> str:

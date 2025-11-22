@@ -1,10 +1,11 @@
 from enum import Enum
 import io
-import PIL.Image
+
 from pydantic import Field
+
+from nodetool.metadata.types import ColorRef, ImageRef, SVGElement, SVGRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ColorRef, ImageRef, SVGRef, SVGElement
 
 
 class RectNode(BaseNode):
@@ -379,7 +380,9 @@ class SVGToImage(BaseNode):
 
         assert isinstance(png_data, bytes)
 
-        image = PIL.Image.open(io.BytesIO(png_data))
+        from PIL import Image as PILImage
+
+        image = PILImage.open(io.BytesIO(png_data))
         return await context.image_from_pil(image)
 
 

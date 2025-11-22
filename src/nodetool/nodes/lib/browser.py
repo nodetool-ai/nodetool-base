@@ -6,13 +6,7 @@ from typing import Any, Dict, Optional, ClassVar, TypedDict
 import hashlib
 
 import aiohttp
-import docker
-import html2text
-import trafilatura
-from bs4 import BeautifulSoup
 from pydantic import Field
-from langchain_openai import ChatOpenAI
-from langchain_anthropic import ChatAnthropic
 
 # ServerDockerRunner is used at runtime to start a Playwright WS server in Docker
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
@@ -72,6 +66,8 @@ def _ensure_custom_playwright_image(context: ProcessingContext, node: BaseNode) 
     Returns the image tag to use with Docker. Building happens in a workspace
     subdirectory so that users can inspect artifacts under `.nt-browser/`.
     """
+    import docker
+
     tag = _playwright_image_tag()
     client = docker.from_env()
     try:
@@ -299,6 +295,8 @@ class Browser(BaseNode):
             page = await ctx.new_page()
             await page.goto(self.url, wait_until="networkidle", timeout=self.timeout)
             html = await page.content()
+            import trafilatura
+
             try:
                 meta = trafilatura.extract_metadata(html).as_dict()
                 meta.pop("body", None)
@@ -502,6 +500,9 @@ class WebFetch(BaseNode):
             raise ValueError("URL is required")
 
         try:
+            from bs4 import BeautifulSoup
+            import html2text
+
             # Make HTTP request
             async with aiohttp.ClientSession(
                 headers={
@@ -862,6 +863,8 @@ class BrowserUseNode(BaseNode):
         Execute a browser agent task.
         """
         from browser_use import Agent, Browser as BrowserUse, BrowserConfig
+        from langchain_anthropic import ChatAnthropic
+        from langchain_openai import ChatOpenAI
 
         if self.model == BrowserUseModel.GPT_4O:
             openai_api_key = Environment.get("OPENAI_API_KEY")

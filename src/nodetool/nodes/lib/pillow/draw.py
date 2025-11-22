@@ -1,12 +1,17 @@
 from enum import Enum
-import PIL.Image
-import PIL.ImageDraw
-import PIL.ImageFont
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import FontRef, ImageRef, ColorRef
-from nodetool.workflows.base_node import BaseNode
+from typing import TYPE_CHECKING
+
 import numpy as np
 from pydantic import Field
+
+from nodetool.metadata.types import ColorRef, FontRef, ImageRef
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.processing_context import ProcessingContext
+
+if TYPE_CHECKING:
+    import PIL.Image
+    import PIL.ImageDraw
+    import PIL.ImageFont
 
 
 class Background(BaseNode):
@@ -26,6 +31,8 @@ class Background(BaseNode):
     color: ColorRef = Field(default=ColorRef(value="#FFFFFF"))
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.Image
+
         img = PIL.Image.new("RGB", (self.width, self.height), self.color.value)
         return await context.image_from_pil(img)
 
@@ -64,6 +71,9 @@ class RenderText(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to render on.")
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.ImageDraw
+        import PIL.ImageFont
+
         image = await context.image_to_pil(self.image)
         draw = PIL.ImageDraw.Draw(image)
         font_path = context.get_system_font_path(self.font.name)
@@ -97,6 +107,8 @@ class GaussianNoise(BaseNode):
     height: int = Field(default=512, ge=1, le=1024)
 
     async def process(self, context: ProcessingContext) -> ImageRef:
+        import PIL.Image
+
         image = np.random.normal(self.mean, self.stddev, (self.height, self.width, 3))
         image = (np.clip(image, 0, 1) * 255).astype(np.uint8)
         image = PIL.Image.fromarray(image)

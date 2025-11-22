@@ -1,15 +1,44 @@
 from datetime import datetime
 import os
-from turtle import pd
-from typing import Any, List, Optional, Union
 from enum import Enum
+from typing import TYPE_CHECKING, Any, List, Union
+
 from pydantic import Field
-import openpyxl
-from openpyxl.styles import Font, PatternFill, Alignment
-from openpyxl.utils import get_column_letter
+
+from nodetool.metadata.types import DataframeRef, ExcelRef, FilePath
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DataframeRef, ExcelRef, FilePath
+
+if TYPE_CHECKING:
+    import openpyxl
+    from openpyxl.styles import Font, PatternFill, Alignment
+
+_openpyxl_imports: tuple[
+    "openpyxl",
+    type["openpyxl.Workbook"],
+    "Font",
+    "PatternFill",
+    "Alignment",
+    Any,
+] | None = None
+
+
+def _load_openpyxl():
+    global _openpyxl_imports
+    if _openpyxl_imports is None:
+        import openpyxl
+        from openpyxl.styles import Alignment, Font, PatternFill
+        from openpyxl.utils import get_column_letter
+
+        _openpyxl_imports = (
+            openpyxl,
+            openpyxl.Workbook,
+            Font,
+            PatternFill,
+            Alignment,
+            get_column_letter,
+        )
+    return _openpyxl_imports
 
 
 class CreateWorkbook(BaseNode):
@@ -27,7 +56,9 @@ class CreateWorkbook(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> ExcelRef:
-        wb = openpyxl.Workbook()
+        _, WorkbookClass, _, _, _, _ = _load_openpyxl()
+
+        wb = WorkbookClass()
         assert wb.active is not None, "Workbook is empty"
         if wb.active.title != self.sheet_name:
             wb.active.title = self.sheet_name
@@ -57,8 +88,10 @@ class DataFrameToExcel(BaseNode):
     async def process(self, context: ProcessingContext) -> Any:
         df = await context.dataframe_to_pandas(self.dataframe)
         workbook = self.workbook.data
+        _, WorkbookClass, _, _, _, _ = _load_openpyxl()
+
         assert isinstance(
-            workbook, openpyxl.Workbook
+            workbook, WorkbookClass
         ), "Workbook is not an instance of openpyxl.Workbook"
 
         if self.sheet_name not in workbook.sheetnames:
@@ -97,8 +130,11 @@ class ExcelToDataFrame(BaseNode):
 
     async def process(self, context: ProcessingContext) -> DataframeRef:
         workbook = self.workbook.data
+        _, WorkbookClass, _, _, _, _ = _load_openpyxl()
+        import pandas as pd
+
         assert isinstance(
-            workbook, openpyxl.Workbook
+            workbook, WorkbookClass
         ), "Workbook is not an instance of openpyxl.Workbook"
         ws = workbook[self.sheet_name]
         data = []
@@ -140,8 +176,10 @@ class FormatCells(BaseNode):
 
     async def process(self, context: ProcessingContext) -> Any:
         workbook = self.workbook.data
+        _, WorkbookClass, Font, PatternFill, _, _ = _load_openpyxl()
+
         assert isinstance(
-            workbook, openpyxl.Workbook
+            workbook, WorkbookClass
         ), "Workbook is not an instance of openpyxl.Workbook"
         ws = workbook[self.sheet_name]
 
@@ -198,8 +236,10 @@ class SaveWorkbook(BaseNode):
 
     async def process(self, context: ProcessingContext):
         workbook = self.workbook.data
+        _, WorkbookClass, _, _, _, _ = _load_openpyxl()
+
         assert isinstance(
-            workbook, openpyxl.Workbook
+            workbook, WorkbookClass
         ), "Workbook is not an instance of openpyxl.Workbook"
         assert self.folder.path, "Path is not set"
         filename = datetime.now().strftime(self.filename)
@@ -224,8 +264,10 @@ class AutoFitColumns(BaseNode):
 
     async def process(self, context: ProcessingContext) -> Any:
         workbook = self.workbook.data
+        _, WorkbookClass, _, _, _, get_column_letter = _load_openpyxl()
+
         assert isinstance(
-            workbook, openpyxl.Workbook
+            workbook, WorkbookClass
         ), "Workbook is not an instance of openpyxl.Workbook"
         ws = workbook[self.sheet_name]
 

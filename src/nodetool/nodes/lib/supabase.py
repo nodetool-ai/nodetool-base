@@ -18,7 +18,6 @@ from typing import Any, ClassVar
 from enum import Enum
 
 from nodetool.runtime.resources import require_scope
-import pandas as pd
 from pydantic import BaseModel, Field
 
 from nodetool.metadata.types import RecordType
@@ -119,6 +118,8 @@ class Select(BaseNode):
             rows = resp
 
         if self.to_dataframe:
+            import pandas as pd
+
             df = pd.DataFrame(rows or [])
             return await context.dataframe_from_pandas(df)
         return rows or []

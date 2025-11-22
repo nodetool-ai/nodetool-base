@@ -1,9 +1,14 @@
-from nodetool.workflows.processing_context import ProcessingContext
+from typing import TYPE_CHECKING
+
+from pydantic import Field
+
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
-from pydantic import Field
-import PIL.Image
-import PIL.ImageOps
+from nodetool.workflows.processing_context import ProcessingContext
+
+if TYPE_CHECKING:
+    import PIL.Image
+    import PIL.ImageOps
 
 
 class Blend(BaseNode):
@@ -31,6 +36,9 @@ class Blend(BaseNode):
 
         if self.image2.is_empty():
             raise ValueError("The second image is not connected.")
+
+        import PIL.Image
+        import PIL.ImageOps
 
         image1 = await context.image_to_pil(self.image1)
         image2 = await context.image_to_pil(self.image2)
@@ -67,6 +75,9 @@ class Composite(BaseNode):
 
         if self.image2.is_empty():
             raise ValueError("The second image is not connected.")
+
+        import PIL.Image
+        import PIL.ImageOps
 
         image1 = await context.image_to_pil(self.image1)
         image2 = await context.image_to_pil(self.image2)

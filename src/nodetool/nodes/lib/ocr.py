@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from pydantic import Field
 
@@ -7,7 +7,9 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.types import NodeUpdate
 from nodetool.metadata.types import ImageRef, OCRResult
-from paddleocr import PaddleOCR
+
+if TYPE_CHECKING:
+    from paddleocr import PaddleOCR
 
 
 class OCRLanguage(str, Enum):
@@ -77,12 +79,14 @@ class PaddleOCRNode(BaseNode):
         default=OCRLanguage.ENGLISH, description="Language code for OCR"
     )
 
-    _ocr: PaddleOCR | None = None
+    _ocr: "PaddleOCR" | None = None
 
     def required_inputs(self):
         return ["image"]
 
     async def initialize(self, context: ProcessingContext):
+        from paddleocr import PaddleOCR
+
         context.post_message(
             NodeUpdate(
                 node_id=self.id,

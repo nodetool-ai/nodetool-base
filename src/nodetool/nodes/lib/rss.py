@@ -1,10 +1,17 @@
 from datetime import datetime
 from typing import AsyncGenerator, ClassVar, TypedDict
-import feedparser
+
 from pydantic import Field
+
+from nodetool.metadata.types import Datetime
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import Datetime
+
+
+def _parse_feed(url: str):
+    import feedparser
+
+    return feedparser.parse(url)
 
 
 class FetchRSSFeed(BaseNode):
@@ -36,7 +43,7 @@ class FetchRSSFeed(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
-        feed = feedparser.parse(self.url)
+        feed = _parse_feed(self.url)
 
         data = []
         for entry in feed.entries:
@@ -72,7 +79,7 @@ class ExtractFeedMetadata(BaseNode):
     url: str = Field(default="", description="URL of the RSS feed")
 
     async def process(self, context: ProcessingContext) -> dict:
-        feed = feedparser.parse(self.url)
+        feed = _parse_feed(self.url)
 
         return {
             "title": feed.get("title", ""),

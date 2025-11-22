@@ -1,11 +1,16 @@
 import io
 from io import BytesIO
-import pdfplumber
-from typing import List, Optional, Any
+from typing import List
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import DocumentRef, ImageRef, DataframeRef, ColumnDef
+
+
+def _open_pdf(pdf_bytes: bytes):
+    import pdfplumber
+
+    return pdfplumber.open(BytesIO(pdf_bytes))
 
 
 class ExtractText(BaseNode):
@@ -33,7 +38,7 @@ class ExtractText(BaseNode):
         pdf_data = await context.asset_to_bytes(self.pdf)
         text = []
 
-        with pdfplumber.open(BytesIO(pdf_data)) as pdf:
+        with _open_pdf(pdf_data) as pdf:
             page_range = range(
                 self.start_page,
                 len(pdf.pages) if self.end_page == -1 else self.end_page,
@@ -66,7 +71,7 @@ class ExtractImages(BaseNode):
         pdf_data = await context.asset_to_bytes(self.pdf)
         images = []
 
-        with pdfplumber.open(BytesIO(pdf_data)) as pdf:
+        with _open_pdf(pdf_data) as pdf:
             page_range = range(
                 self.start_page,
                 len(pdf.pages) if self.end_page == -1 else self.end_page,
@@ -98,7 +103,7 @@ class GetPageCount(BaseNode):
 
     async def process(self, context: ProcessingContext) -> int:
         pdf_data = await context.asset_to_bytes(self.pdf)
-        with pdfplumber.open(BytesIO(pdf_data)) as pdf:
+        with _open_pdf(pdf_data) as pdf:
             return len(pdf.pages)
 
 
@@ -125,7 +130,7 @@ class ExtractPageMetadata(BaseNode):
         pdf_data = await context.asset_to_bytes(self.pdf)
         metadata = []
 
-        with pdfplumber.open(BytesIO(pdf_data)) as pdf:
+        with _open_pdf(pdf_data) as pdf:
             page_range = range(
                 self.start_page,
                 len(pdf.pages) if self.end_page == -1 else self.end_page,
@@ -202,7 +207,7 @@ class ExtractTables(BaseNode):
         pdf_data = await context.asset_to_bytes(self.pdf)
         dataframes = []
 
-        with pdfplumber.open(BytesIO(pdf_data)) as pdf:
+        with _open_pdf(pdf_data) as pdf:
             # Convert 1-based page numbers to 0-based indices
             total_pages = len(pdf.pages)
             start_idx = (self.start_page - 1) if self.start_page is not None else 0
