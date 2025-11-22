@@ -829,7 +829,7 @@ class Agent(BaseNode):
                 repo_id="gpt-oss:20b",
                 name="GPT - OSS",
                 description="OpenAI's open-weight model excels at multi-tool routing and reasoning.",
-                size_on_disk=14 * GB,
+                size_on_disk=int(14 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -837,7 +837,7 @@ class Agent(BaseNode):
                 repo_id="qwen3-vl:4b",
                 name="Qwen3 VL - 4B",
                 description="The most powerful vision-language model in the Qwen model family to date.",
-                size_on_disk=3.3 * GB,
+                size_on_disk=int(3.3 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -845,7 +845,7 @@ class Agent(BaseNode):
                 repo_id="qwen3-vl:8b",
                 name="Qwen3 VL - 8B",
                 description="The most powerful vision-language model in the Qwen model family to date.",
-                size_on_disk=6.1 * GB,
+                size_on_disk=int(6.1 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -853,7 +853,7 @@ class Agent(BaseNode):
                 repo_id="gemma3:1b",
                 name="Gemma3 - 1B",
                 description="Gemma3 1B is a small model that can process text and images.",
-                size_on_disk=0.815 * GB,
+                size_on_disk=int(0.815 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -861,7 +861,7 @@ class Agent(BaseNode):
                 repo_id="gemma3:4b",
                 name="Gemma3 - 4B",
                 description="Gemma3 4B is a small model that can process text and images.",
-                size_on_disk=3.3 * GB,
+                size_on_disk=int(3.3 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -877,7 +877,7 @@ class Agent(BaseNode):
                 repo_id="qwen3:4b",
                 name="Qwen3 - 4B",
                 description="Qwen3 4B ships strong function-calling primitives and dependable multi-turn tool use.",
-                size_on_disk=2.5 * GB,
+                size_on_disk=int(2.5 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -885,7 +885,7 @@ class Agent(BaseNode):
                 repo_id="qwen3:8b",
                 name="Qwen3 - 8B",
                 description="Qwen3 8B ships strong function-calling primitives and dependable multi-turn tool use.",
-                size_on_disk=5.2 * GB,
+                size_on_disk=int(5.2 * GB),
                 type="llama_model",
             ),
             UnifiedModel(
@@ -893,7 +893,7 @@ class Agent(BaseNode):
                 repo_id="deepseek-r1:8",
                 name="Deepseek R1 - 8B",
                 description="DeepSeek R1 8B balances reasoning with precise function calls for iterative agents.",
-                size_on_disk=5.2 * GB,
+                size_on_disk=int(5.2 * GB),
                 type="mistral_model",
             ),
         ]
