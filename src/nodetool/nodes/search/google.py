@@ -127,15 +127,17 @@ class GoogleImages(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    async def process(self, context: ProcessingContext) -> Dict[str, Any]:
+    async def process(self, context: ProcessingContext) -> list[ImageRef]:
         if not self.keyword and not self.image_url:
-            return {"error": "One of 'keyword' or 'image_url' is required."}
+            raise ValueError("One of 'keyword' or 'image_url' is required.")
 
         provider_instance, error_response = await _get_configured_serp_provider(context)
         if error_response:
-            return error_response
+            raise ValueError(
+                error_response.get("error", "Failed to configure SERP provider")
+            )
         if not provider_instance:
-            return {"error": "Failed to initialize SERP provider."}
+            raise ValueError("Failed to initialize SERP provider.")
 
         async with provider_instance as provider:
             result_data = await provider.search_images(
@@ -149,15 +151,12 @@ class GoogleImages(BaseNode):
 
             response = GoogleImagesResponse(**result_data)
 
-            return {
-                "results": response.images_results,
-                "images": [
-                    ImageRef(
-                        uri=image.original,
-                    )
-                    for image in response.images_results
-                ],
-            }
+            return [
+                ImageRef(
+                    uri=image.original,
+                )
+                for image in response.images_results
+            ]
 
 
 class GoogleFinance(BaseNode):

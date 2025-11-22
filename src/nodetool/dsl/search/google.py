@@ -50,7 +50,9 @@ import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
 
-class GoogleImages(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+class GoogleImages(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
     """
 
     Search Google Images to retrieve live image results.
