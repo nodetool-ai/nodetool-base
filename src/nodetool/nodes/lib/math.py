@@ -9,7 +9,7 @@ from typing import ClassVar
 class Add(BaseNode):
     """
     Adds two numbers.
-    math, add, plus
+    math, add, plus, +
     """
 
     _layout: ClassVar[str] = "small"
@@ -25,7 +25,7 @@ class Add(BaseNode):
 class Subtract(BaseNode):
     """
     Subtracts B from A.
-    math, subtract, minus
+    math, subtract, minus, -
     """
 
     _layout: ClassVar[str] = "small"
@@ -41,7 +41,7 @@ class Subtract(BaseNode):
 class Multiply(BaseNode):
     """
     Multiplies two numbers.
-    math, multiply, product
+    math, multiply, product, *
     """
 
     _layout: ClassVar[str] = "small"
@@ -56,7 +56,7 @@ class Multiply(BaseNode):
 class Divide(BaseNode):
     """
     Divides A by B.
-    math, divide, division, quotient
+    math, divide, division, quotient, /
     """
 
     _layout: ClassVar[str] = "small"
@@ -72,7 +72,7 @@ class Divide(BaseNode):
 class Modulus(BaseNode):
     """
     Computes A modulo B.
-    math, modulus, modulo, remainder
+    math, modulus, modulo, remainder, %
     """
 
     _layout: ClassVar[str] = "small"
@@ -87,7 +87,7 @@ class Modulus(BaseNode):
 class MathFunction(BaseNode):
     """
     Performs a selected unary math operation on an input.
-    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
+    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log,   -, abs, ^2, ^3, sqrt, cbrt, sin, cos, tan, asin, acos, atan, log
     """
 
     _layout: ClassVar[str] = "small"
@@ -179,7 +179,7 @@ class Cosine(BaseNode):
 class Power(BaseNode):
     """
     Raises base to the given exponent.
-    math, power, exponent
+    math, power, exponent, ^
     """
 
     _layout: ClassVar[str] = "small"

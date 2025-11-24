@@ -23,7 +23,7 @@ class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Adds two numbers.
-    math, add, plus
+    math, add, plus, +
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
