@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2rc3",
+  "version": "0.6.2-rc.6",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -5663,7 +5663,7 @@
     },
     {
       "title": "Add",
-      "description": "Adds two numbers.\n    math, add, plus",
+      "description": "Adds two numbers.\n    math, add, plus, +",
       "namespace": "lib.math",
       "node_type": "lib.math.Add",
       "layout": "small",
@@ -5770,7 +5770,7 @@
     },
     {
       "title": "Divide",
-      "description": "Divides A by B.\n    math, divide, division, quotient",
+      "description": "Divides A by B.\n    math, divide, division, quotient, /",
       "namespace": "lib.math",
       "node_type": "lib.math.Divide",
       "layout": "small",
@@ -5832,7 +5832,7 @@
     },
     {
       "title": "Math Function",
-      "description": "Performs a selected unary math operation on an input.\n    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log",
+      "description": "Performs a selected unary math operation on an input.\n    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log,   -, abs, ^2, ^3, sqrt, cbrt, sin, cos, tan, asin, acos, atan, log",
       "namespace": "lib.math",
       "node_type": "lib.math.MathFunction",
       "layout": "small",
@@ -5903,7 +5903,7 @@
     },
     {
       "title": "Modulus",
-      "description": "Computes A modulo B.\n    math, modulus, modulo, remainder",
+      "description": "Computes A modulo B.\n    math, modulus, modulo, remainder, %",
       "namespace": "lib.math",
       "node_type": "lib.math.Modulus",
       "layout": "small",
@@ -5965,7 +5965,7 @@
     },
     {
       "title": "Multiply",
-      "description": "Multiplies two numbers.\n    math, multiply, product",
+      "description": "Multiplies two numbers.\n    math, multiply, product, *",
       "namespace": "lib.math",
       "node_type": "lib.math.Multiply",
       "layout": "small",
@@ -6027,7 +6027,7 @@
     },
     {
       "title": "Power",
-      "description": "Raises base to the given exponent.\n    math, power, exponent",
+      "description": "Raises base to the given exponent.\n    math, power, exponent, ^",
       "namespace": "lib.math",
       "node_type": "lib.math.Power",
       "layout": "small",
@@ -6179,7 +6179,7 @@
     },
     {
       "title": "Subtract",
-      "description": "Subtracts B from A.\n    math, subtract, minus",
+      "description": "Subtracts B from A.\n    math, subtract, minus, -",
       "namespace": "lib.math",
       "node_type": "lib.math.Subtract",
       "layout": "small",
@@ -16142,151 +16142,6 @@
         "b"
       ],
       "expose_as_tool": true
-    },
-    {
-      "title": "Realtime Whisper",
-      "description": "Stream audio input to WhisperLive and emit real-time transcription.\n    realtime, whisper, transcription, streaming, audio-to-text, speech-to-text\n\n    Emits:\n      - `chunk` Chunk(content=..., done=False) for transcript deltas\n      - `chunk` Chunk(content=\"\", done=True) to mark segment end\n      - `text` final aggregated transcript when input ends",
-      "namespace": "nodetool.audio",
-      "node_type": "nodetool.audio.RealtimeWhisper",
-      "properties": [
-        {
-          "name": "model",
-          "type": {
-            "type": "enum",
-            "values": [
-              "tiny",
-              "base",
-              "small",
-              "medium",
-              "large",
-              "large-v2",
-              "large-v3"
-            ],
-            "type_name": "nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel"
-          },
-          "default": "tiny",
-          "title": "Model",
-          "description": "Whisper model size - larger models are more accurate but slower"
-        },
-        {
-          "name": "language",
-          "type": {
-            "type": "enum",
-            "values": [
-              "auto",
-              "en",
-              "es",
-              "fr",
-              "de",
-              "it",
-              "pt",
-              "nl",
-              "ru",
-              "zh",
-              "ja",
-              "ko",
-              "ar",
-              "hi",
-              "tr",
-              "pl",
-              "uk",
-              "vi"
-            ],
-            "type_name": "nodetool.nodes.nodetool.audio.RealtimeWhisper.Language"
-          },
-          "default": "en",
-          "title": "Language",
-          "description": "Language code for transcription, or 'auto' for automatic detection"
-        },
-        {
-          "name": "chunk",
-          "type": {
-            "type": "chunk"
-          },
-          "default": {
-            "type": "chunk",
-            "node_id": null,
-            "content_type": "text",
-            "content": "",
-            "content_metadata": {},
-            "done": false
-          },
-          "title": "Chunk",
-          "description": "The audio chunk to transcribe"
-        },
-        {
-          "name": "temperature",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Temperature",
-          "description": "Sampling temperature for transcription",
-          "min": 0.0,
-          "max": 1.0
-        },
-        {
-          "name": "initial_prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Initial Prompt",
-          "description": "Optional initial prompt to guide transcription style"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "start"
-        },
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "end"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "chunk"
-          },
-          "name": "chunk"
-        },
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "speaker"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "detected_language"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "translation"
-        }
-      ],
-      "basic_fields": [
-        "model",
-        "language",
-        "chunk",
-        "temperature",
-        "initial_prompt"
-      ],
-      "is_streaming_output": true
     },
     {
       "title": "Remove Silence",
