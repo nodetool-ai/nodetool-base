@@ -110,14 +110,46 @@ class PaddleOCRNode(BaseNode):
         result = self._ocr.ocr(image)
 
         processed_results = []
-        for idx in range(len(result)):
-            res = result[idx]
+        for res in result or []:
+            if not res:
+                continue
             for line in res:
-                (top_left, top_right, bottom_right, bottom_left), (text, score) = line
+                if not line:
+                    continue
+                box_data = line[0] if len(line) > 0 else []
+                text_info = line[1] if len(line) > 1 else ""
+                extra_score = line[2] if len(line) > 2 else None
+
+                points = list(box_data) if isinstance(box_data, (list, tuple)) else []
+                # Pad or trim to exactly four points
+                while len(points) < 4:
+                    points.append((0.0, 0.0))
+                top_left, top_right, bottom_right, bottom_left = points[:4]
+
+                text = ""
+                score = 0.0
+                if isinstance(text_info, (list, tuple)):
+                    if text_info:
+                        text = text_info[0]
+                    if len(text_info) > 1:
+                        try:
+                            score = float(text_info[1])
+                        except (TypeError, ValueError):
+                            score = 0.0
+                elif isinstance(text_info, str):
+                    text = text_info
+
+                if not text and extra_score and isinstance(extra_score, str):
+                    text = extra_score
+                    extra_score = None
+
+                if score == 0.0 and isinstance(extra_score, (int, float)):
+                    score = float(extra_score)
+
                 processed_results.append(
                     OCRResult(
                         text=text,
-                        score=float(score),
+                        score=score,
                         top_left=top_left,
                         top_right=top_right,
                         bottom_right=bottom_right,
