@@ -148,7 +148,9 @@ class SplitDocument(BaseNode):
     )
 
     @classmethod
-    def unified_recommended_models(cls) -> list[UnifiedModel]:
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
         return [
             UnifiedModel(
                 id="embeddinggemma",
