@@ -100,7 +100,9 @@ class Summarizer(BaseNode):
     )
 
     @classmethod
-    def unified_recommended_models(cls) -> list[UnifiedModel]:
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
         return [
             UnifiedModel(
                 id="phi3.5:latest",
@@ -261,7 +263,9 @@ class Extractor(BaseNode):
     )
 
     @classmethod
-    def unified_recommended_models(cls) -> list[UnifiedModel]:
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
         return [
             UnifiedModel(
                 id="phi3.5:latest",
@@ -479,7 +483,9 @@ class Classifier(BaseNode):
     )
 
     @classmethod
-    def unified_recommended_models(cls) -> list[UnifiedModel]:
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
         return [
             UnifiedModel(
                 id="phi3.5:latest",
@@ -822,7 +828,9 @@ class Agent(BaseNode):
     _supports_dynamic_outputs: ClassVar[bool] = True
 
     @classmethod
-    def unified_recommended_models(cls) -> list[UnifiedModel]:
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
         return [
             UnifiedModel(
                 id="gpt-oss:20b",
@@ -1525,7 +1533,9 @@ class ResearchAgent(BaseNode):
     )
 
     @classmethod
-    def unified_recommended_models(cls) -> list[UnifiedModel]:
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
         return [
             UnifiedModel(
                 id="gpt-oss:20b",
