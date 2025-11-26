@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, TypedDict
+from typing import TYPE_CHECKING, Any, Optional, TypedDict
 
 from pydantic import Field
 
@@ -10,6 +10,8 @@ from nodetool.metadata.types import ImageRef, OCRResult
 
 if TYPE_CHECKING:
     from paddleocr import PaddleOCR
+else:
+    PaddleOCR = Any
 
 
 class OCRLanguage(str, Enum):
@@ -79,7 +81,7 @@ class PaddleOCRNode(BaseNode):
         default=OCRLanguage.ENGLISH, description="Language code for OCR"
     )
 
-    _ocr: "PaddleOCR" | None = None
+    _ocr: Optional["PaddleOCR"] = None
 
     def required_inputs(self):
         return ["image"]
