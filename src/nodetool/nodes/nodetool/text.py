@@ -2,6 +2,8 @@ from datetime import datetime
 from io import BytesIO
 import json
 import os
+import string
+import unicodedata
 
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.io import NodeInputs, NodeOutputs
@@ -704,6 +706,170 @@ class RegexValidate(BaseNode):
         return bool(re.match(self.pattern, self.text))
 
 
+class Compare(BaseNode):
+    """
+    Compares two text values and reports ordering.
+    text, compare, equality, sort, equals, =
+
+    Use cases:
+    - Checking if two strings are identical before branching
+    - Determining lexical order for sorting or deduplication
+    - Normalizing casing/spacing before compares
+    """
+
+    text_a: str = Field(title="First Text", default="")
+    text_b: str = Field(title="Second Text", default="")
+    case_sensitive: bool = Field(
+        title="Case Sensitive", default=True, description="Compare without lowercasing"
+    )
+    trim_whitespace: bool = Field(
+        title="Trim Whitespace",
+        default=False,
+        description="Strip leading/trailing whitespace before comparing",
+    )
+
+    class ComparisonResult(str, Enum):
+        LESS = "less"
+        EQUAL = "equal"
+        GREATER = "greater"
+
+    @classmethod
+    def get_title(cls):
+        return "Compare Text"
+
+    async def process(self, context: ProcessingContext) -> str:
+        def normalize(value: str) -> str:
+            result = value.strip() if self.trim_whitespace else value
+            return result if self.case_sensitive else result.lower()
+
+        left = normalize(self.text_a)
+        right = normalize(self.text_b)
+
+        if left < right:
+            return self.ComparisonResult.LESS.value
+        if left > right:
+            return self.ComparisonResult.GREATER.value
+        return self.ComparisonResult.EQUAL.value
+
+
+class Equals(BaseNode):
+    """
+    Checks if two text inputs are equal.
+    text, compare, equals, match, =
+
+    Use cases:
+    - Branching workflows when user input matches an expected value
+    - Guarding against duplicates before saving assets
+    - Quickly comparing normalized prompts or identifiers
+    """
+
+    text_a: str = Field(title="First Text", default="")
+    text_b: str = Field(title="Second Text", default="")
+    case_sensitive: bool = Field(
+        title="Case Sensitive", default=True, description="Disable lowercasing before compare"
+    )
+    trim_whitespace: bool = Field(
+        title="Trim Whitespace",
+        default=False,
+        description="Strip leading/trailing whitespace prior to comparison",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Equals"
+
+    async def process(self, context: ProcessingContext) -> bool:
+        def normalize(value: str) -> str:
+            result = value.strip() if self.trim_whitespace else value
+            return result if self.case_sensitive else result.lower()
+
+        return normalize(self.text_a) == normalize(self.text_b)
+
+
+class ToUppercase(BaseNode):
+    """
+    Converts text to uppercase.
+    text, transform, uppercase, format
+
+    Use cases:
+    - Normalizing identifiers before comparison
+    - Preparing titles that must display in all caps
+    - Converting prompts to a consistent casing convention
+    """
+
+    text: str = Field(title="Text", default="")
+
+    @classmethod
+    def get_title(cls):
+        return "To Uppercase"
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.text.upper()
+
+
+class ToLowercase(BaseNode):
+    """
+    Converts text to lowercase.
+    text, transform, lowercase, format
+
+    Use cases:
+    - Preparing data for case-insensitive comparisons
+    - Generating lowercase filenames or IDs
+    - Normalizing prompts before hashing
+    """
+
+    text: str = Field(title="Text", default="")
+
+    @classmethod
+    def get_title(cls):
+        return "To Lowercase"
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.text.lower()
+
+
+class ToTitlecase(BaseNode):
+    """
+    Converts text to title case.
+    text, transform, titlecase, format
+
+    Use cases:
+    - Cleaning user provided titles before display
+    - Normalizing headings in generated documents
+    - Making list entries easier to scan
+    """
+
+    text: str = Field(title="Text", default="")
+
+    @classmethod
+    def get_title(cls):
+        return "To Title Case"
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.text.title()
+
+
+class CapitalizeText(BaseNode):
+    """
+    Capitalizes only the first character.
+    text, transform, capitalize, format
+
+    Use cases:
+    - Formatting short labels or sentences
+    - Cleaning up LLM output before UI rendering
+    - Quickly fixing lowercase starts after concatenation
+    """
+
+    text: str = Field(title="Text", default="")
+
+    @classmethod
+    def get_title(cls):
+        return "Capitalize Text"
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.text.capitalize()
+
+
 class Slice(BaseNode):
     """
     Slices text using Python's slice notation (start:stop:step).
@@ -781,30 +947,121 @@ class EndsWith(BaseNode):
 class Contains(BaseNode):
     """
     Checks if text contains a specified substring.
-    text, check, contains, compare, validate, substring, string
+    text, compare, validate, substring, string
 
     Use cases:
-    - Searching for keywords in text
-    - Filtering content based on presence of terms
-    - Validating text content
+    - Ensuring safety or guard phrases appear
+    - Rejecting inputs when banned terms exist
+    - Matching multiple keywords with any/all logic
     """
+
+    class MatchMode(str, Enum):
+        ANY = "any"
+        ALL = "all"
+        NONE = "none"
 
     text: str = Field(title="Text", default="")
     substring: str = Field(title="Substring", default="")
+    search_values: list[str] = Field(
+        default_factory=list,
+        description="Optional list of additional substrings to check",
+    )
     case_sensitive: bool = Field(title="Case Sensitive", default=True)
+    match_mode: MatchMode = Field(
+        title="Match Mode",
+        default=MatchMode.ANY,
+        description="ANY requires one match, ALL needs every value, NONE ensures none",
+    )
 
     @classmethod
     def get_title(cls):
         return "Contains Text"
 
     async def process(self, context: ProcessingContext) -> bool:
-        text = self.text
-        if not self.case_sensitive:
-            text = text.lower()
-            substring = self.substring.lower()
-        else:
-            substring = self.substring
-        return substring in text
+        targets = self.search_values or [self.substring]
+        if not targets:
+            return False
+
+        haystack = self.text if self.case_sensitive else self.text.lower()
+        needles = (
+            targets
+            if self.case_sensitive
+            else [needle.lower() for needle in targets]
+        )
+
+        if self.match_mode == self.MatchMode.ALL:
+            return all(needle in haystack for needle in needles)
+        if self.match_mode == self.MatchMode.NONE:
+            return all(needle not in haystack for needle in needles)
+        return any(needle in haystack for needle in needles)
+
+
+class TrimWhitespace(BaseNode):
+    """
+    Trims whitespace from the start and/or end of text.
+    text, whitespace, clean, remove
+
+    Use cases:
+    - Cleaning user input before validation
+    - Removing accidental spaces after concatenation
+    - Prepping prompts for exact comparisons
+    """
+
+    text: str = Field(title="Text", default="")
+    trim_start: bool = Field(title="Trim Start", default=True)
+    trim_end: bool = Field(title="Trim End", default=True)
+
+    @classmethod
+    def get_title(cls):
+        return "Trim Whitespace"
+
+    async def process(self, context: ProcessingContext) -> str:
+        if self.trim_start and self.trim_end:
+            return self.text.strip()
+        if self.trim_start:
+            return self.text.lstrip()
+        if self.trim_end:
+            return self.text.rstrip()
+        return self.text
+
+
+class CollapseWhitespace(BaseNode):
+    """
+    Collapses consecutive whitespace into single separators.
+    text, whitespace, normalize, clean, remove
+
+    Use cases:
+    - Normalizing pasted text from PDFs or chat logs
+    - Cleaning prompts with erratic spacing
+    - Converting multi-line input into succinct sentences
+    """
+
+    text: str = Field(title="Text", default="")
+    preserve_newlines: bool = Field(
+        title="Preserve Newlines",
+        default=False,
+        description="Keep newline characters instead of replacing them",
+    )
+    replacement: str = Field(
+        title="Replacement",
+        default=" ",
+        description="String used to replace whitespace runs",
+    )
+    trim_edges: bool = Field(
+        title="Trim Edges",
+        default=True,
+        description="Strip whitespace before collapsing",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Collapse Whitespace"
+
+    async def process(self, context: ProcessingContext) -> str:
+        value = self.text.strip() if self.trim_edges else self.text
+        if self.preserve_newlines:
+            return re.sub(r"[^\S\r\n]+", self.replacement, value)
+        return re.sub(r"\s+", self.replacement, value)
 
 
 class IsEmpty(BaseNode):
@@ -830,6 +1087,103 @@ class IsEmpty(BaseNode):
         if self.trim_whitespace:
             text = text.strip()
         return len(text) == 0
+
+
+class RemovePunctuation(BaseNode):
+    """
+    Removes punctuation characters from text.
+    text, cleanup, punctuation, normalize
+
+    Use cases:
+    - Cleaning transcripts before keyword search
+    - Preparing identifiers for filesystem safe names
+    - Simplifying comparisons by stripping symbols
+    """
+
+    text: str = Field(title="Text", default="")
+    replacement: str = Field(
+        title="Replacement",
+        default="",
+        description="String to insert where punctuation was removed",
+    )
+    punctuation: str = Field(
+        title="Punctuation Characters",
+        default=string.punctuation,
+        description="Characters that should be removed or replaced",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Remove Punctuation"
+
+    async def process(self, context: ProcessingContext) -> str:
+        translation = {ord(ch): self.replacement for ch in self.punctuation}
+        return self.text.translate(translation)
+
+
+class StripAccents(BaseNode):
+    """
+    Removes accent marks while keeping base characters.
+    text, cleanup, accents, normalize
+
+    Use cases:
+    - Creating ASCII-only identifiers from user input
+    - Normalizing prompts that mix accented and plain characters
+    - Simplifying comparisons against datasets lacking accents
+    """
+
+    text: str = Field(title="Text", default="")
+    preserve_non_ascii: bool = Field(
+        title="Preserve Non-ASCII",
+        default=True,
+        description="Keep non-ASCII characters that are not accents",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Strip Accents"
+
+    async def process(self, context: ProcessingContext) -> str:
+        normalized = unicodedata.normalize("NFKD", self.text)
+        stripped = "".join(ch for ch in normalized if not unicodedata.combining(ch))
+        if self.preserve_non_ascii:
+            return stripped
+        return stripped.encode("ascii", "ignore").decode("ascii")
+
+
+class Slugify(BaseNode):
+    """
+    Converts text into a slug suitable for URLs or IDs.
+    text, slug, normalize, id
+
+    Use cases:
+    - Generating workflow IDs from titles
+    - Creating asset filenames from prompts
+    - Producing URL-safe paths for mini apps
+    """
+
+    text: str = Field(title="Text", default="")
+    separator: str = Field(title="Separator", default="-")
+    lowercase: bool = Field(title="Lowercase", default=True)
+    allow_unicode: bool = Field(
+        title="Allow Unicode",
+        default=False,
+        description="Keep unicode letters instead of converting to ASCII",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Slugify"
+
+    async def process(self, context: ProcessingContext) -> str:
+        value = unicodedata.normalize("NFKD", self.text)
+        if not self.allow_unicode:
+            value = value.encode("ascii", "ignore").decode("ascii")
+        value = re.sub(r"[^\w\s-]", "", value)
+        value = re.sub(r"[\s_-]+", self.separator, value).strip(self.separator)
+        if self.lowercase:
+            value = value.lower()
+        return value
 
 
 class HasLength(BaseNode):
@@ -865,6 +1219,217 @@ class HasLength(BaseNode):
             return False
 
         return True
+
+
+class TruncateText(BaseNode):
+    """
+    Truncates text to a maximum length.
+    text, truncate, length, clip
+
+    Use cases:
+    - Enforcing LLM input limits before sending prompts
+    - Creating previews in UI cards
+    - Guarding downstream systems that expect short strings
+    """
+
+    text: str = Field(title="Text", default="")
+    max_length: int = Field(title="Max Length", default=100, ge=0)
+    ellipsis: str = Field(
+        title="Ellipsis",
+        default="",
+        description="Optional suffix appended when truncation occurs",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Truncate Text"
+
+    async def process(self, context: ProcessingContext) -> str:
+        if self.max_length <= 0:
+            return self.ellipsis if self.ellipsis else ""
+        if len(self.text) <= self.max_length:
+            return self.text
+        if self.ellipsis and len(self.ellipsis) < self.max_length:
+            cut = self.max_length - len(self.ellipsis)
+            return f"{self.text[:cut]}{self.ellipsis}"
+        return self.text[: self.max_length]
+
+
+class PadText(BaseNode):
+    """
+    Pads text to a target length.
+    text, pad, length, format
+
+    Use cases:
+    - Aligning tabular text outputs
+    - Creating fixed-width fields for legacy systems
+    - Left-padding numbers with zeros
+    """
+
+    class PadDirection(str, Enum):
+        LEFT = "left"
+        RIGHT = "right"
+        BOTH = "both"
+
+    text: str = Field(title="Text", default="")
+    length: int = Field(title="Target Length", default=0, ge=0)
+    pad_character: str = Field(
+        title="Pad Character",
+        default=" ",
+        description="Single character to use for padding",
+    )
+    direction: PadDirection = Field(
+        title="Direction",
+        default=PadDirection.RIGHT,
+        description="Where padding should be applied",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Pad Text"
+
+    async def process(self, context: ProcessingContext) -> str:
+        if len(self.pad_character) != 1:
+            raise ValueError("pad_character must be a single character")
+        if self.length <= len(self.text):
+            return self.text
+
+        needed = self.length - len(self.text)
+        if self.direction == self.PadDirection.LEFT:
+            return self.pad_character * needed + self.text
+        if self.direction == self.PadDirection.BOTH:
+            left = needed // 2
+            right = needed - left
+            return f"{self.pad_character * left}{self.text}{self.pad_character * right}"
+        return self.text + self.pad_character * needed
+
+
+class Length(BaseNode):
+    """
+    Measures text length as characters, words, or lines.
+    text, analyze, length, count
+
+    Use cases:
+    - Quickly gating prompts by size before LLM calls
+    - Showing word or line counts in mini apps
+    - Tracking character budgets for UI copy
+    """
+
+    class Measure(str, Enum):
+        CHARACTERS = "characters"
+        WORDS = "words"
+        LINES = "lines"
+
+    text: str = Field(title="Text", default="")
+    measure: Measure = Field(
+        title="Measure",
+        default=Measure.CHARACTERS,
+        description="Choose whether to count characters, words, or lines",
+    )
+    trim_whitespace: bool = Field(
+        title="Trim Whitespace",
+        default=False,
+        description="Strip whitespace before counting",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Measure Length"
+
+    async def process(self, context: ProcessingContext) -> int:
+        value = self.text.strip() if self.trim_whitespace else self.text
+
+        if self.measure == self.Measure.WORDS:
+            return len([word for word in value.split() if word])
+        if self.measure == self.Measure.LINES:
+            if not value:
+                return 0
+            return len([line for line in value.splitlines() if line or not self.trim_whitespace])
+        return len(value)
+
+
+class IndexOf(BaseNode):
+    """
+    Finds the position of a substring in text.
+    text, search, find, substring
+
+    Use cases:
+    - Locating markers to drive downstream slices
+    - Building quick validations before parsing
+    - Detecting repeated terms by scanning from the end
+    """
+
+    text: str = Field(title="Text", default="")
+    substring: str = Field(title="Substring", default="")
+    case_sensitive: bool = Field(title="Case Sensitive", default=True)
+    start_index: int = Field(
+        title="Start Index",
+        default=0,
+        description="Index to begin the search from",
+        ge=0,
+    )
+    end_index: int | None = Field(
+        title="End Index",
+        default=None,
+        description="Optional exclusive end index for the search",
+    )
+    search_from_end: bool = Field(
+        title="Search From End",
+        default=False,
+        description="Use the last occurrence instead of the first",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Index Of"
+
+    async def process(self, context: ProcessingContext) -> int:
+        haystack = self.text
+        needle = self.substring
+        if not self.case_sensitive:
+            haystack = haystack.lower()
+            needle = needle.lower()
+
+        end = self.end_index if self.end_index is not None else len(haystack)
+        end = max(self.start_index, end)
+
+        if self.search_from_end:
+            return haystack.rfind(needle, self.start_index, end)
+        return haystack.find(needle, self.start_index, end)
+
+
+class SurroundWith(BaseNode):
+    """
+    Wraps text with the provided prefix and suffix.
+    text, format, surround, decorate
+
+    Use cases:
+    - Adding quotes or brackets before exporting values
+    - Ensuring prompts include guard rails or markup tokens
+    - Building template strings without using Format nodes
+    """
+
+    text: str = Field(title="Text", default="")
+    prefix: str = Field(title="Prefix", default="")
+    suffix: str = Field(title="Suffix", default="")
+    skip_if_wrapped: bool = Field(
+        title="Skip If Already Wrapped",
+        default=True,
+        description="Do not add duplicates if the text is already wrapped",
+    )
+
+    @classmethod
+    def get_title(cls):
+        return "Surround With"
+
+    async def process(self, context: ProcessingContext) -> str:
+        if (
+            self.skip_if_wrapped
+            and self.text.startswith(self.prefix)
+            and self.text.endswith(self.suffix)
+        ):
+            return self.text
+        return f"{self.prefix}{self.text}{self.suffix}"
 
 
 class CountTokens(BaseNode):
