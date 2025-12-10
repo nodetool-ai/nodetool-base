@@ -45,6 +45,7 @@ from nodetool.workflows.types import ToolCallUpdate, EdgeUpdate
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.metadata.types import Provider
 from nodetool.config.logging_config import get_logger
+from nodetool.models.thread import Thread as ThreadModel
 
 log = get_logger(__name__)
 # Log level is controlled by env (DEBUG/NODETOOL_LOG_LEVEL)
@@ -189,6 +190,43 @@ class Summarizer(BaseNode):
                 text += chunk.content
 
         yield {"text": text, "chunk": None}
+
+
+class CreateThread(BaseNode):
+    """
+    Create a new conversation thread and return its ID.
+    threads, chat, conversation, context
+
+    Use this to seed a thread_id that downstream Agent nodes can reuse for
+    persistent history across the graph or multiple runs.
+    """
+
+    class OutputType(TypedDict):
+        thread_id: str
+
+    title: str | None = Field(
+        default="Agent Conversation", description="Optional title for the new thread"
+    )
+    thread_id: str | None = Field(
+        default=None,
+        description="Optional custom thread ID. If provided and owned by the user, it will be reused; otherwise a new thread is created.",
+    )
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Create Thread"
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        # Reuse an existing thread if the caller supplied an ID they own.
+        if self.thread_id:
+            existing = await ThreadModel.find(user_id=context.user_id, id=self.thread_id)
+            if existing:
+                return {"thread_id": existing.id}
+
+        thread = await ThreadModel.create(
+            user_id=context.user_id, id=self.thread_id, title=self.title
+        )
+        return {"thread_id": thread.id}
 
 
 DEFAULT_EXTRACTOR_SYSTEM_PROMPT = """
