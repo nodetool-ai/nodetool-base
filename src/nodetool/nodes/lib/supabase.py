@@ -8,7 +8,8 @@ These nodes provide typed, safe access to Supabase tables for:
 - Delete (requires filters for safety)
 
 Authentication and configuration are handled via nodetool-core Environment:
-- SUPABASE_URL, SUPABASE_KEY
+- NODE_SUPABASE_URL / NODE_SUPABASE_KEY (required for user-provided nodes)
+- Optional NODE_SUPABASE_SCHEMA and NODE_SUPABASE_TABLE_PREFIX for namespacing
 
 When Supabase is configured, existing asset save/load nodes will transparently
 use Supabase Storage via Environment; these DB nodes focus purely on table CRUD.
@@ -17,8 +18,8 @@ use Supabase Storage via Environment; these DB nodes focus purely on table CRUD.
 from typing import Any, ClassVar
 from enum import Enum
 
-from nodetool.runtime.resources import require_scope
-from pydantic import BaseModel, Field
+from nodetool.config.environment import Environment
+from pydantic import Field
 
 from nodetool.metadata.types import RecordType
 from nodetool.workflows.base_node import BaseNode
@@ -40,6 +41,40 @@ class FilterOp(str, Enum):
 # Use a tuple form for filters to keep metadata compatible:
 # (field, operator, value)
 Filter = tuple[str, FilterOp, Any]
+
+
+def _qualify_table_name(table_name: str) -> str:
+    """
+    Apply NODE_SUPABASE_TABLE_PREFIX when set to avoid collisions with core tables.
+    """
+    prefix = Environment.get_node_supabase_table_prefix()
+    if prefix and not table_name.startswith(prefix):
+        return f"{prefix}{table_name}"
+    return table_name
+
+
+async def _get_supabase_client():
+    """
+    Build a Supabase client using node-specific credentials.
+
+    NODE_SUPABASE_URL and NODE_SUPABASE_KEY are required; we do not fall back to
+    core SUPABASE_* credentials to avoid cross-tenant data access.
+    """
+    supabase_url = Environment.get_node_supabase_url()
+    supabase_key = Environment.get_node_supabase_key()
+    schema = Environment.get_node_supabase_schema()
+
+    if supabase_url is None or supabase_key is None:
+        raise ValueError(
+            "Supabase URL or key is not set. Configure NODE_SUPABASE_URL and NODE_SUPABASE_KEY."
+        )
+
+    from supabase import create_async_client
+
+    client = await create_async_client(supabase_url, supabase_key)
+    if schema:
+        client = client.schema(schema)
+    return client
 
 
 def _apply_filters(query, filters: list[Filter]):
@@ -91,7 +126,8 @@ class Select(BaseNode):
         if not self.table_name:
             raise ValueError("table_name cannot be empty")
 
-        client = await require_scope().get_supabase_client()
+        client = await _get_supabase_client()
+        table_name = _qualify_table_name(self.table_name)
 
         # Build select columns
         if not self.columns.columns:
@@ -99,7 +135,7 @@ class Select(BaseNode):
         else:
             select_columns = ", ".join([c.name for c in self.columns.columns])
 
-        query = client.table(self.table_name).select(select_columns)
+        query = client.table(table_name).select(select_columns)
 
         # Filters
         if self.filters:
@@ -145,14 +181,15 @@ class Insert(BaseNode):
         if not self.table_name:
             raise ValueError("table_name cannot be empty")
 
-        client = await require_scope().get_supabase_client()
+        client = await _get_supabase_client()
+        table_name = _qualify_table_name(self.table_name)
         data: list[dict[str, Any]]
         if isinstance(self.records, dict):
             data = [self.records]
         else:
             data = self.records
 
-        q = client.table(self.table_name).insert(data)
+        q = client.table(table_name).insert(data)
         if self.return_rows:
             q = q.select("*") # type: ignore
         resp = await q.execute()
@@ -183,8 +220,9 @@ class Update(BaseNode):
         if not self.values:
             raise ValueError("values cannot be empty")
 
-        client = await require_scope().get_supabase_client()
-        q = client.table(self.table_name).update(self.values)
+        client = await _get_supabase_client()
+        table_name = _qualify_table_name(self.table_name)
+        q = client.table(table_name).update(self.values)
         if self.filters:
             q = _apply_filters(q, self.filters)
         if self.return_rows:
@@ -216,8 +254,9 @@ class Delete(BaseNode):
                 "At least one filter is required for DELETE operations to prevent accidental data loss"
             )
 
-        client = await require_scope().get_supabase_client()
-        q = client.table(self.table_name).delete()
+        client = await _get_supabase_client()
+        table_name = _qualify_table_name(self.table_name)
+        q = client.table(table_name).delete()
         q = _apply_filters(q, self.filters)
         await q.execute()
         return {"deleted": True}
@@ -247,7 +286,8 @@ class Upsert(BaseNode):
         if not self.table_name:
             raise ValueError("table_name cannot be empty")
 
-        client = await require_scope().get_supabase_client()
+        client = await _get_supabase_client()
+        table_name = _qualify_table_name(self.table_name)
         data: list[dict[str, Any]]
         if isinstance(self.records, dict):
             data = [self.records]
@@ -256,9 +296,9 @@ class Upsert(BaseNode):
 
         # Attempt to pass on_conflict if supported by the client
         if self.on_conflict is not None:
-            q = client.table(self.table_name).upsert(data, on_conflict=self.on_conflict)
+            q = client.table(table_name).upsert(data, on_conflict=self.on_conflict)
         else:
-            q = client.table(self.table_name).upsert(data)
+            q = client.table(table_name).upsert(data)
 
         if self.return_rows:
             q = q.select("*") # type: ignore
@@ -286,7 +326,7 @@ class RPC(BaseNode):
         if not self.function:
             raise ValueError("function cannot be empty")
 
-        client = await require_scope().get_supabase_client()
+        client = await _get_supabase_client()
         # supabase-py v2 typically requires .execute() after .rpc()
         resp = await client.rpc(self.function, self.params).execute()
         result = getattr(resp, "data", None)
@@ -295,6 +335,8 @@ class RPC(BaseNode):
 
         if self.to_dataframe and isinstance(result, list):
             # Only convert list-of-dicts
+            import pandas as pd
+
             df = pd.DataFrame(result)
             return await context.dataframe_from_pandas(df)
         return result
