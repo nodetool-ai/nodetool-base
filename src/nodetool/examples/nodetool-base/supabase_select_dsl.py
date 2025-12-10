@@ -4,7 +4,7 @@ Supabase Select DSL Example
 Run a typed SELECT query against a Supabase table and return a DataFrame.
 
 Requirements:
-- Set SUPABASE_URL and SUPABASE_KEY in your environment
+- Set NODE_SUPABASE_URL and NODE_SUPABASE_KEY for user-provided nodes
 - Ensure the table exists (e.g., "todos" with columns id, title, done)
 """
 
@@ -50,4 +50,3 @@ if __name__ == "__main__":
     result = run_graph(graph)
     print("Rows:")
     print(result["todos_df"])  # DataframeRef
-

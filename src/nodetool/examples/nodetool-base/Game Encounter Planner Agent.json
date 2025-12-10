@@ -1,0 +1,620 @@
+{
+  "id": "game_encounter_planner_agent",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "Game Encounter Planner Agent",
+  "tool_name": null,
+  "description": "Coordinate a squad of AI agents to design, critique, and brief a Frostfang Tundra combat encounter. Instead of hand-authored filters, agents negotiate the wave structure, evaluate balance risks, and author the final designer briefing.",
+  "tags": [
+    "agent",
+    "data",
+    "rag"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.ListOutput",
+        "data": {
+          "name": "encounter_waves",
+          "value": [],
+          "description": "Structured wave composition proposed by the planning agent"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "lib.json.GetJSONPathList",
+        "data": {
+          "data": null,
+          "path": "waves",
+          "default": []
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "lib.json.ParseDict",
+        "data": {
+          "json_string": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "provider": "openai",
+            "id": "gpt-4o-mini",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "system": "You are a veteran encounter designer. Produce balanced, data-grounded plans, and respond with strict JSON that matches the requested schema. Validate your calculations before finalizing.",
+          "prompt": "",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 900,
+          "context_window": 4096
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "You are the encounter architect for an action RPG.\n\nEncounter context:\n- Biome: {{ biome }}\n- Difficulty profile: {{ difficulty }}\n- Design focus: {{ focus }}\n\nEnemy roster (JSON array). You must restrict selections to this data:\n{{ roster }}\n\nResponsibilities:\n1. Build a three-wave encounter that escalates tension and difficulty.\n2. Only use enemies that match the biome \"Frostfang Tundra\".\n3. Track `danger_budget` by summing (danger * count) for each wave.\n4. Keep counts as integers and make sure spawn totals are realistic for the roster.\n5. Include tactical notes that explain positioning, synergies, or environmental hooks.\n\nOutput requirements:\n- Respond with a single JSON object only.\n- Keys: \"macro_strategy\" (string), \"waves\" (array), \"balance_notes\" (array of strings).\n- Each wave object must contain: \"wave\" (int), \"theme\" (string), \"danger_budget\" (int),\n  \"spawn_total\" (int), \"tactics\" (string), and \"picks\" (array of enemy dictionaries with\n  keys \"name\", \"role\", \"count\", \"rationale\").\n- Do not include code fences, comments, or extra narration.\n"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "biome": null,
+          "difficulty": null,
+          "focus": null,
+          "roster": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "target_biome",
+          "value": "Frostfang Tundra",
+          "description": "Target biome for the encounter"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "7",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "difficulty_profile",
+          "value": "Veteran party, late Act II, expects layered mechanics and spike moments",
+          "description": "How demanding the encounter should feel"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "8",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "design_focus",
+          "value": "Blend attrition with decisive boss pressure while highlighting terrain control and frost-based status effects.",
+          "description": "Experience goals that should guide the waves"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "9",
+        "parent_id": null,
+        "type": "lib.json.StringifyJSON",
+        "data": {
+          "data": {},
+          "indent": 2
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "10",
+        "parent_id": null,
+        "type": "nodetool.constant.List",
+        "data": {
+          "value": [
+            {
+              "wave": 1,
+              "name": "Icefang Skirmisher",
+              "role": "flanker",
+              "biome": "Frostfang Tundra",
+              "danger": 5,
+              "hp": 120,
+              "spawn_count": 6
+            },
+            {
+              "wave": 1,
+              "name": "Frostborn Shaman",
+              "role": "support",
+              "biome": "Frostfang Tundra",
+              "danger": 7,
+              "hp": 180,
+              "spawn_count": 2
+            },
+            {
+              "wave": 2,
+              "name": "Glacier Brute",
+              "role": "tank",
+              "biome": "Frostfang Tundra",
+              "danger": 8,
+              "hp": 420,
+              "spawn_count": 1
+            },
+            {
+              "wave": 2,
+              "name": "Icefang Skirmisher",
+              "role": "flanker",
+              "biome": "Frostfang Tundra",
+              "danger": 5,
+              "hp": 120,
+              "spawn_count": 8
+            },
+            {
+              "wave": 3,
+              "name": "Frostwyrm Matriarch",
+              "role": "boss",
+              "biome": "Frostfang Tundra",
+              "danger": 10,
+              "hp": 950,
+              "spawn_count": 1
+            },
+            {
+              "wave": 3,
+              "name": "Runic Howler",
+              "role": "controller",
+              "biome": "Frostfang Tundra",
+              "danger": 7,
+              "hp": 260,
+              "spawn_count": 2
+            },
+            {
+              "wave": 1,
+              "name": "Ashen Marauder",
+              "role": "flanker",
+              "biome": "Volcanic Rift",
+              "danger": 6,
+              "hp": 140,
+              "spawn_count": 5
+            },
+            {
+              "wave": 2,
+              "name": "Cinder Titan",
+              "role": "tank",
+              "biome": "Volcanic Rift",
+              "danger": 9,
+              "hp": 600,
+              "spawn_count": 1
+            }
+          ]
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "11",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "qa_review_notes",
+          "value": "",
+          "description": "QA agent assessment of pacing risks and mitigation ideas"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "12",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "provider": "openai",
+            "id": "gpt-4o-mini",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "system": "You are a sharp-eyed gameplay QA lead. Identify exploit risks, damage spikes, and tuning issues in encounter plans. Give concise, actionable feedback.",
+          "prompt": "",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 600,
+          "context_window": 4096
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "13",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "You are the encounter QA lead. Stress test the encounter plan below.\n\nContext:\n- Biome: {{ biome }}\n- Difficulty profile: {{ difficulty }}\n\nEncounter plan (JSON):\n{{ plan }}\n\nDeliverables:\n1. Start with a short paragraph summarizing pacing and risk spikes.\n2. Provide a bullet list titled \"Risk Flags\" covering potential player pain points.\n3. Provide a bullet list titled \"Mitigations\" with concrete tuning or encounter scripting fixes.\nKeep the tone actionable and avoid markdown headers beyond the requested labels.\n"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "biome": null,
+          "difficulty": null,
+          "plan": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "14",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "designer_briefing",
+          "value": "",
+          "description": "Markdown briefing summarizing the encounter plan and QA guidance"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "15",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "provider": "openai",
+            "id": "gpt-4o",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "system": "You assemble clear, production-ready briefs. Reformat supplied data, do not invent new enemies, and ensure markdown is clean and concise.",
+          "prompt": "",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 900,
+          "context_window": 4096
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "16",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "You are the lead encounter designer preparing a briefing for cross-functional teammates.\n\nEncounter context:\n- Biome: {{ biome }}\n- Difficulty profile: {{ difficulty }}\n- Design focus: {{ focus }}\n\nMacro strategy: {{ strategy }}\n\nWave plan (JSON):\n{{ waves }}\n\nQA review notes:\n{{ qa_review }}\n\nCompose markdown with sections:\n1. Overview (summarize macro strategy and player beats in 2-3 sentences)\n2. Wave Breakdown (subsections for each wave with theme, enemy list, danger budget, spawn total, and tactics)\n3. QA Calls To Action (two bullet lists: \"Risk Flags\" and \"Mitigation Actions\" based on the QA notes)\nEnd with a short reminder about next playtest goals.\n"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "biome": null,
+          "difficulty": null,
+          "focus": null,
+          "strategy": null,
+          "waves": null,
+          "qa_review": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "17",
+        "parent_id": null,
+        "type": "lib.json.GetJSONPathStr",
+        "data": {
+          "data": null,
+          "path": "macro_strategy",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "18",
+        "parent_id": null,
+        "type": "lib.json.StringifyJSON",
+        "data": {
+          "data": {},
+          "indent": 2
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "biome",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "difficulty",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "focus",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "10",
+        "sourceHandle": "output",
+        "target": "9",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "5",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "roster",
+        "ui_properties": null
+      },
+      {
+        "id": "6",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "7",
+        "source": "4",
+        "sourceHandle": "text",
+        "target": "3",
+        "targetHandle": "json_string",
+        "ui_properties": null
+      },
+      {
+        "id": "8",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "9",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "10",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "13",
+        "targetHandle": "biome",
+        "ui_properties": null
+      },
+      {
+        "id": "11",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "13",
+        "targetHandle": "difficulty",
+        "ui_properties": null
+      },
+      {
+        "id": "12",
+        "source": "4",
+        "sourceHandle": "text",
+        "target": "13",
+        "targetHandle": "plan",
+        "ui_properties": null
+      },
+      {
+        "id": "13",
+        "source": "13",
+        "sourceHandle": "output",
+        "target": "12",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "14",
+        "source": "12",
+        "sourceHandle": "text",
+        "target": "11",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "15",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "biome",
+        "ui_properties": null
+      },
+      {
+        "id": "16",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "difficulty",
+        "ui_properties": null
+      },
+      {
+        "id": "17",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "focus",
+        "ui_properties": null
+      },
+      {
+        "id": "18",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "17",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "19",
+        "source": "17",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "strategy",
+        "ui_properties": null
+      },
+      {
+        "id": "20",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "18",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "21",
+        "source": "18",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "waves",
+        "ui_properties": null
+      },
+      {
+        "id": "22",
+        "source": "12",
+        "sourceHandle": "text",
+        "target": "16",
+        "targetHandle": "qa_review",
+        "ui_properties": null
+      },
+      {
+        "id": "23",
+        "source": "16",
+        "sourceHandle": "output",
+        "target": "15",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "24",
+        "source": "15",
+        "sourceHandle": "text",
+        "target": "14",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

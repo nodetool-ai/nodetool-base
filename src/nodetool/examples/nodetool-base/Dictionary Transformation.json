@@ -1,0 +1,1135 @@
+{
+  "id": "dictionary_transformation",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "Dictionary Transformation",
+  "tool_name": null,
+  "description": "Normalize nested API payloads into a clean profile dictionary, enrich with derived fields, and validate the result against a JSON schema.",
+  "tags": [
+    "workflow"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.DictionaryOutput",
+        "data": {
+          "name": "normalized_profile",
+          "value": {},
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.dictionary.Combine",
+        "data": {
+          "dict_a": {},
+          "dict_b": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.dictionary.Combine",
+        "data": {
+          "dict_a": {},
+          "dict_b": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.dictionary.Combine",
+        "data": {
+          "dict_a": {},
+          "dict_b": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.dictionary.Combine",
+        "data": {
+          "dict_a": {},
+          "dict_b": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.dictionary.MakeDictionary",
+        "data": {},
+        "ui_properties": {},
+        "dynamic_properties": {
+          "customer_id": null,
+          "full_name": null,
+          "email": null,
+          "signup_channel": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "7",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "id",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "8",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "user",
+          "default": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "9",
+        "parent_id": null,
+        "type": "nodetool.dictionary.Filter",
+        "data": {
+          "dictionary": {},
+          "keys": [
+            "user",
+            "account",
+            "metrics",
+            "metadata",
+            "tags"
+          ]
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "10",
+        "parent_id": null,
+        "type": "nodetool.dictionary.ParseJSON",
+        "data": {
+          "json_string": "{\n  \"user\": {\n    \"id\": \"cust_8241\",\n    \"first_name\": \"Leah\",\n    \"last_name\": \"Jimenez\",\n    \"email\": \"leah.jimenez@example.com\"\n  },\n  \"account\": {\n    \"tier\": \"growth\",\n    \"seats\": 28,\n    \"renewal_date\": \"2025-02-01\"\n  },\n  \"metrics\": {\n    \"mrr\": 1825.75,\n    \"currency\": \"USD\",\n    \"churn_risk\": 0.18\n  },\n  \"metadata\": {\n    \"signup_source\": \"webinar\",\n    \"last_login\": \"2025-01-15T09:20:00Z\"\n  },\n  \"tags\": [\"b2b\", \"priority\", \"expansion\"]\n}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "11",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "{{ first }} {{ last }}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "first": null,
+          "last": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "12",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "first_name",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "13",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "last_name",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "14",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "email",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "15",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "signup_source",
+          "default": "unknown"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "16",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "metadata",
+          "default": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "17",
+        "parent_id": null,
+        "type": "nodetool.dictionary.MakeDictionary",
+        "data": {},
+        "ui_properties": {},
+        "dynamic_properties": {
+          "plan_tier": null,
+          "seat_count": null,
+          "renewal_date": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "18",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "{{ tier | upper }}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "tier": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "19",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "tier",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "20",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "account",
+          "default": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "21",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "seats",
+          "default": 0
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "22",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "renewal_date",
+          "default": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "23",
+        "parent_id": null,
+        "type": "nodetool.dictionary.MakeDictionary",
+        "data": {},
+        "ui_properties": {},
+        "dynamic_properties": {
+          "mrr": null,
+          "currency": null,
+          "churn_risk": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "24",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "mrr",
+          "default": 0.0
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "25",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "metrics",
+          "default": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "26",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "currency",
+          "default": "USD"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "27",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "churn_risk",
+          "default": 0.0
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "28",
+        "parent_id": null,
+        "type": "nodetool.dictionary.MakeDictionary",
+        "data": {},
+        "ui_properties": {},
+        "dynamic_properties": {
+          "lifecycle": null,
+          "renewal_overview": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "29",
+        "parent_id": null,
+        "type": "nodetool.dictionary.MakeDictionary",
+        "data": {},
+        "ui_properties": {},
+        "dynamic_properties": {
+          "churn_category": null,
+          "renewal_date": null,
+          "last_login": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "30",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "{% if risk <= 0.1 %}healthy{% elif risk <= 0.25 %}watchlist{% else %}at-risk{% endif %}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "risk": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "31",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "last_login",
+          "default": "1970-01-01T00:00:00Z"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "32",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "Renews on {{ date }} via {{ channel }} channel."
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "date": null,
+          "channel": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "33",
+        "parent_id": null,
+        "type": "nodetool.dictionary.MakeDictionary",
+        "data": {},
+        "ui_properties": {},
+        "dynamic_properties": {
+          "segments": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "34",
+        "parent_id": null,
+        "type": "nodetool.dictionary.GetValue",
+        "data": {
+          "dictionary": {},
+          "key": "tags",
+          "default": []
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "35",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "normalized_profile_json",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "36",
+        "parent_id": null,
+        "type": "lib.json.StringifyJSON",
+        "data": {
+          "data": {},
+          "indent": 2
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "37",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "profile_summary",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "38",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "# Normalized Customer Profile\n\n- **Customer ID:** {{ customer_id }}\n- **Name:** {{ full_name }}\n- **Plan:** {{ plan_tier }} ({{ seat_count }} seats)\n- **Monthly Recurring Revenue:** ${{ mrr | round(2) }} {{ currency }}\n- **Churn Risk:** {{ churn_risk | round(2) }} ({{ churn_category }})\n- **Lifecycle:** {{ renewal_overview }}\n- **Segments:** {{ segments | join(', ') }}\n\nSchema validation passed? {{ validation }}\n"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "customer_id": null,
+          "full_name": null,
+          "plan_tier": null,
+          "seat_count": null,
+          "mrr": null,
+          "currency": null,
+          "churn_risk": null,
+          "churn_category": null,
+          "renewal_overview": null,
+          "segments": null,
+          "validation": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "39",
+        "parent_id": null,
+        "type": "lib.json.ValidateJSON",
+        "data": {
+          "data": null,
+          "json_schema": {}
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "40",
+        "parent_id": null,
+        "type": "nodetool.dictionary.ParseJSON",
+        "data": {
+          "json_string": "{\n  \"type\": \"object\",\n  \"required\": [\n    \"customer_id\",\n    \"full_name\",\n    \"email\",\n    \"plan_tier\",\n    \"mrr\",\n    \"currency\",\n    \"segments\",\n    \"lifecycle\"\n  ],\n  \"properties\": {\n    \"customer_id\": { \"type\": \"string\" },\n    \"full_name\": { \"type\": \"string\" },\n    \"email\": { \"type\": \"string\" },\n    \"plan_tier\": { \"type\": \"string\" },\n    \"seat_count\": { \"type\": \"integer\" },\n    \"renewal_date\": { \"type\": \"string\" },\n    \"mrr\": { \"type\": \"number\" },\n    \"currency\": { \"type\": \"string\" },\n    \"churn_risk\": { \"type\": \"number\" },\n    \"renewal_overview\": { \"type\": \"string\" },\n    \"segments\": {\n      \"type\": \"array\",\n      \"items\": { \"type\": \"string\" }\n    },\n    \"lifecycle\": {\n      \"type\": \"object\",\n      \"required\": [\"churn_category\", \"renewal_date\", \"last_login\"],\n      \"properties\": {\n        \"churn_category\": { \"type\": \"string\" },\n        \"renewal_date\": { \"type\": \"string\" },\n        \"last_login\": { \"type\": \"string\" }\n      }\n    }\n  }\n}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "41",
+        "parent_id": null,
+        "type": "nodetool.output.BooleanOutput",
+        "data": {
+          "name": "schema_valid",
+          "value": false,
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "10",
+        "sourceHandle": "output",
+        "target": "9",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "7",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "customer_id",
+        "ui_properties": null
+      },
+      {
+        "id": "5",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "12",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "6",
+        "source": "12",
+        "sourceHandle": "output",
+        "target": "11",
+        "targetHandle": "first",
+        "ui_properties": null
+      },
+      {
+        "id": "7",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "13",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "8",
+        "source": "13",
+        "sourceHandle": "output",
+        "target": "11",
+        "targetHandle": "last",
+        "ui_properties": null
+      },
+      {
+        "id": "9",
+        "source": "11",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "full_name",
+        "ui_properties": null
+      },
+      {
+        "id": "10",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "14",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "11",
+        "source": "14",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "email",
+        "ui_properties": null
+      },
+      {
+        "id": "12",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "13",
+        "source": "16",
+        "sourceHandle": "output",
+        "target": "15",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "14",
+        "source": "15",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "signup_channel",
+        "ui_properties": null
+      },
+      {
+        "id": "15",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "dict_a",
+        "ui_properties": null
+      },
+      {
+        "id": "16",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "20",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "17",
+        "source": "20",
+        "sourceHandle": "output",
+        "target": "19",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "18",
+        "source": "19",
+        "sourceHandle": "output",
+        "target": "18",
+        "targetHandle": "tier",
+        "ui_properties": null
+      },
+      {
+        "id": "19",
+        "source": "18",
+        "sourceHandle": "output",
+        "target": "17",
+        "targetHandle": "plan_tier",
+        "ui_properties": null
+      },
+      {
+        "id": "20",
+        "source": "20",
+        "sourceHandle": "output",
+        "target": "21",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "21",
+        "source": "21",
+        "sourceHandle": "output",
+        "target": "17",
+        "targetHandle": "seat_count",
+        "ui_properties": null
+      },
+      {
+        "id": "22",
+        "source": "20",
+        "sourceHandle": "output",
+        "target": "22",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "23",
+        "source": "22",
+        "sourceHandle": "output",
+        "target": "17",
+        "targetHandle": "renewal_date",
+        "ui_properties": null
+      },
+      {
+        "id": "24",
+        "source": "17",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "dict_b",
+        "ui_properties": null
+      },
+      {
+        "id": "25",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "dict_a",
+        "ui_properties": null
+      },
+      {
+        "id": "26",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "25",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "27",
+        "source": "25",
+        "sourceHandle": "output",
+        "target": "24",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "28",
+        "source": "24",
+        "sourceHandle": "output",
+        "target": "23",
+        "targetHandle": "mrr",
+        "ui_properties": null
+      },
+      {
+        "id": "29",
+        "source": "25",
+        "sourceHandle": "output",
+        "target": "26",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "30",
+        "source": "26",
+        "sourceHandle": "output",
+        "target": "23",
+        "targetHandle": "currency",
+        "ui_properties": null
+      },
+      {
+        "id": "31",
+        "source": "25",
+        "sourceHandle": "output",
+        "target": "27",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "32",
+        "source": "27",
+        "sourceHandle": "output",
+        "target": "23",
+        "targetHandle": "churn_risk",
+        "ui_properties": null
+      },
+      {
+        "id": "33",
+        "source": "23",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "dict_b",
+        "ui_properties": null
+      },
+      {
+        "id": "34",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "dict_a",
+        "ui_properties": null
+      },
+      {
+        "id": "35",
+        "source": "27",
+        "sourceHandle": "output",
+        "target": "30",
+        "targetHandle": "risk",
+        "ui_properties": null
+      },
+      {
+        "id": "36",
+        "source": "30",
+        "sourceHandle": "output",
+        "target": "29",
+        "targetHandle": "churn_category",
+        "ui_properties": null
+      },
+      {
+        "id": "37",
+        "source": "22",
+        "sourceHandle": "output",
+        "target": "29",
+        "targetHandle": "renewal_date",
+        "ui_properties": null
+      },
+      {
+        "id": "38",
+        "source": "16",
+        "sourceHandle": "output",
+        "target": "31",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "39",
+        "source": "31",
+        "sourceHandle": "output",
+        "target": "29",
+        "targetHandle": "last_login",
+        "ui_properties": null
+      },
+      {
+        "id": "40",
+        "source": "29",
+        "sourceHandle": "output",
+        "target": "28",
+        "targetHandle": "lifecycle",
+        "ui_properties": null
+      },
+      {
+        "id": "41",
+        "source": "22",
+        "sourceHandle": "output",
+        "target": "32",
+        "targetHandle": "date",
+        "ui_properties": null
+      },
+      {
+        "id": "42",
+        "source": "15",
+        "sourceHandle": "output",
+        "target": "32",
+        "targetHandle": "channel",
+        "ui_properties": null
+      },
+      {
+        "id": "43",
+        "source": "32",
+        "sourceHandle": "output",
+        "target": "28",
+        "targetHandle": "renewal_overview",
+        "ui_properties": null
+      },
+      {
+        "id": "44",
+        "source": "28",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "dict_b",
+        "ui_properties": null
+      },
+      {
+        "id": "45",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "dict_a",
+        "ui_properties": null
+      },
+      {
+        "id": "46",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "34",
+        "targetHandle": "dictionary",
+        "ui_properties": null
+      },
+      {
+        "id": "47",
+        "source": "34",
+        "sourceHandle": "output",
+        "target": "33",
+        "targetHandle": "segments",
+        "ui_properties": null
+      },
+      {
+        "id": "48",
+        "source": "33",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "dict_b",
+        "ui_properties": null
+      },
+      {
+        "id": "49",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "50",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "36",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "51",
+        "source": "36",
+        "sourceHandle": "output",
+        "target": "35",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "52",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "customer_id",
+        "ui_properties": null
+      },
+      {
+        "id": "53",
+        "source": "11",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "full_name",
+        "ui_properties": null
+      },
+      {
+        "id": "54",
+        "source": "18",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "plan_tier",
+        "ui_properties": null
+      },
+      {
+        "id": "55",
+        "source": "21",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "seat_count",
+        "ui_properties": null
+      },
+      {
+        "id": "56",
+        "source": "24",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "mrr",
+        "ui_properties": null
+      },
+      {
+        "id": "57",
+        "source": "26",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "currency",
+        "ui_properties": null
+      },
+      {
+        "id": "58",
+        "source": "27",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "churn_risk",
+        "ui_properties": null
+      },
+      {
+        "id": "59",
+        "source": "30",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "churn_category",
+        "ui_properties": null
+      },
+      {
+        "id": "60",
+        "source": "32",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "renewal_overview",
+        "ui_properties": null
+      },
+      {
+        "id": "61",
+        "source": "34",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "segments",
+        "ui_properties": null
+      },
+      {
+        "id": "62",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "39",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "63",
+        "source": "40",
+        "sourceHandle": "output",
+        "target": "39",
+        "targetHandle": "json_schema",
+        "ui_properties": null
+      },
+      {
+        "id": "64",
+        "source": "39",
+        "sourceHandle": "output",
+        "target": "38",
+        "targetHandle": "validation",
+        "ui_properties": null
+      },
+      {
+        "id": "65",
+        "source": "38",
+        "sourceHandle": "output",
+        "target": "37",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "66",
+        "source": "39",
+        "sourceHandle": "output",
+        "target": "41",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

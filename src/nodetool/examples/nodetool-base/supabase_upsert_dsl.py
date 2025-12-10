@@ -4,7 +4,7 @@ Supabase Upsert DSL Example
 Demonstrates inserting or updating rows with ON CONFLICT.
 
 Requirements:
-- SUPABASE_URL and SUPABASE_KEY set
+- NODE_SUPABASE_URL and NODE_SUPABASE_KEY set
 - Table exists with a unique key/PK referenced by `on_conflict`
 """
 
@@ -31,4 +31,3 @@ if __name__ == "__main__":
     result = run_graph(graph)
     print("Upsert result:")
     print(result["upsert_result"])  # list of rows
-

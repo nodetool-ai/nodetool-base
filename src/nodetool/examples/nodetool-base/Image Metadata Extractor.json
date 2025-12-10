@@ -1,0 +1,130 @@
+{
+  "id": "image_metadata_extractor",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "Image Metadata Extractor",
+  "tool_name": null,
+  "description": "Extract and analyze metadata, objects, and descriptions from images.",
+  "tags": [
+    "data",
+    "image"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "image_analysis",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "# Image Analysis Report\n\n## Image Information:\n- **Source:** User provided image\n- **Analysis Type:** Comprehensive metadata extraction\n\n## Analysis Results:\n{{ analysis }}\n\n## Recommendations:\n- Use descriptive filenames for organization\n- Consider image copyright and usage rights\n- Optimize images for web if needed"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "analysis": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "provider": "openai",
+            "id": "gpt-4o",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "system": "You are an expert image analyst. Provide detailed analysis of images.",
+          "prompt": "",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 1000,
+          "context_window": 4096
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "Please analyze this image and provide:\n1. Objects detected\n2. Scene description\n3. Colors and composition\n4. Estimated image dimensions\n5. Quality assessment"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "3",
+        "sourceHandle": "text",
+        "target": "2",
+        "targetHandle": "analysis",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

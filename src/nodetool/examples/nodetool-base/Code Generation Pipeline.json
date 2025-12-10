@@ -1,0 +1,245 @@
+{
+  "id": "code_generation_pipeline",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "Code Generation Pipeline",
+  "tool_name": null,
+  "description": "Workflow for generating, validating, and executing Python code based on specifications.",
+  "tags": [
+    "code"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "code_generation_result",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.boolean.ConditionalSwitch",
+        "data": {
+          "condition": true,
+          "if_true": null,
+          "if_false": null
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "\u2705 CODE GENERATION SUCCESSFUL\n\n**Specification:** {{ spec }}\n\n**Generated Code:**\n{{ code }}\n\n**Validation:** Code executed without errors\n\n**Ready for:** Production use, integration, or deployment"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "spec": null,
+          "code": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "specification",
+          "value": "Create a Python function that calculates the factorial of a number using recursion",
+          "description": "Function specification to generate code from"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "```python\n{{ generated_code }}\n```"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "generated_code": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "provider": "openai",
+            "id": "gpt-5-mini",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "system": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+          "prompt": "",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 8192,
+          "context_window": 4096
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "7",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "You are an expert Python code generator. Based on the specification,\ngenerate clean, well-documented Python code. Return ONLY the code, no explanations.\n\nSpecification: {{ spec }}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "spec": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "8",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "\u274c CODE GENERATION FAILED\n\n**Specification:** {{ spec }}\n\n**Generated Code:**\n{{ code }}\n\n**Error:** The generated code contains syntax errors or execution issues.\n\n**Recommendation:** Review the generated code and specification for compatibility."
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "spec": null,
+          "code": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "spec",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "7",
+        "targetHandle": "spec",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "6",
+        "sourceHandle": "text",
+        "target": "5",
+        "targetHandle": "generated_code",
+        "ui_properties": null
+      },
+      {
+        "id": "5",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "code",
+        "ui_properties": null
+      },
+      {
+        "id": "6",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "if_true",
+        "ui_properties": null
+      },
+      {
+        "id": "7",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "spec",
+        "ui_properties": null
+      },
+      {
+        "id": "8",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "code",
+        "ui_properties": null
+      },
+      {
+        "id": "9",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "if_false",
+        "ui_properties": null
+      },
+      {
+        "id": "10",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

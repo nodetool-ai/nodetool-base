@@ -1,0 +1,393 @@
+{
+  "id": "conditional_logic_engine",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "Conditional Logic Engine",
+  "tool_name": null,
+  "description": "Workflow that demonstrates multi-branch decision logic with value routing.",
+  "tags": [
+    "workflow"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "decision_result",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "## Conditional Logic Decision Result\n\n**Input Value:** {{ value }}\n\n**Condition Checks:**\n- Greater than 100? {{ gt_100 }}\n- Less than 50? {{ lt_50 }}\n- Combined (OR): {{ combined }}\n- Route Decision: {{ route }}\n\n**Processing Path:**\n{{ processing }}\n\n**Decision Logic:**\nThis workflow demonstrates:\n- Multiple condition evaluation\n- Logical operations (OR gate)\n- Conditional branching\n- Multi-path routing\n- Result aggregation"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "value": null,
+          "gt_100": null,
+          "lt_50": null,
+          "combined": null,
+          "route": null,
+          "processing": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.input.IntegerInput",
+        "data": {
+          "name": "value",
+          "value": 75,
+          "description": "Numeric value to evaluate against multiple conditions",
+          "min": 0,
+          "max": 100
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.boolean.Compare",
+        "data": {
+          "a": null,
+          "b": 100,
+          "comparison": ">"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.boolean.Compare",
+        "data": {
+          "a": null,
+          "b": 50,
+          "comparison": "<"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.boolean.LogicalOperator",
+        "data": {
+          "a": false,
+          "b": false,
+          "operation": "or"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "7",
+        "parent_id": null,
+        "type": "nodetool.boolean.ConditionalSwitch",
+        "data": {
+          "condition": false,
+          "if_true": "EXTREME_VALUE",
+          "if_false": "MEDIUM_VALUE"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "8",
+        "parent_id": null,
+        "type": "nodetool.boolean.ConditionalSwitch",
+        "data": {
+          "condition": false,
+          "if_true": null,
+          "if_false": null
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "9",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "\ud83d\udd34 HIGH VALUE: {{ value }} is greater than 100. Priority processing engaged."
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "value": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "10",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "{{ text }}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "text": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "11",
+        "parent_id": null,
+        "type": "nodetool.boolean.ConditionalSwitch",
+        "data": {
+          "condition": false,
+          "if_true": null,
+          "if_false": null
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "12",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "\ud83d\udd35 LOW VALUE: {{ value }} is less than 50. Standard processing applied."
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "value": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "13",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "\ud83d\udfe1 MEDIUM VALUE: {{ value }} is between 50 and 100. Balanced processing selected."
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "value": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "a",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "gt_100",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "a",
+        "ui_properties": null
+      },
+      {
+        "id": "5",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "lt_50",
+        "ui_properties": null
+      },
+      {
+        "id": "6",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "a",
+        "ui_properties": null
+      },
+      {
+        "id": "7",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "b",
+        "ui_properties": null
+      },
+      {
+        "id": "8",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "combined",
+        "ui_properties": null
+      },
+      {
+        "id": "9",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "7",
+        "targetHandle": "condition",
+        "ui_properties": null
+      },
+      {
+        "id": "10",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "route",
+        "ui_properties": null
+      },
+      {
+        "id": "11",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "condition",
+        "ui_properties": null
+      },
+      {
+        "id": "12",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "9",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "13",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "if_true",
+        "ui_properties": null
+      },
+      {
+        "id": "14",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "11",
+        "targetHandle": "condition",
+        "ui_properties": null
+      },
+      {
+        "id": "15",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "12",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "16",
+        "source": "12",
+        "sourceHandle": "output",
+        "target": "11",
+        "targetHandle": "if_true",
+        "ui_properties": null
+      },
+      {
+        "id": "17",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "13",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "18",
+        "source": "13",
+        "sourceHandle": "output",
+        "target": "11",
+        "targetHandle": "if_false",
+        "ui_properties": null
+      },
+      {
+        "id": "19",
+        "source": "11",
+        "sourceHandle": "output",
+        "target": "10",
+        "targetHandle": "text",
+        "ui_properties": null
+      },
+      {
+        "id": "20",
+        "source": "10",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "if_false",
+        "ui_properties": null
+      },
+      {
+        "id": "21",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "processing",
+        "ui_properties": null
+      },
+      {
+        "id": "22",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

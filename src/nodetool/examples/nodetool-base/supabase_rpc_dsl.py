@@ -4,7 +4,7 @@ Supabase RPC DSL Example
 Calls a Postgres function via Supabase RPC and returns a DataFrame when appropriate.
 
 Requirements:
-- SUPABASE_URL and SUPABASE_KEY set
+- NODE_SUPABASE_URL and NODE_SUPABASE_KEY set
 - A Postgres function available (e.g., `search_todos(term text)` returning setof rows)
 """
 
@@ -28,4 +28,3 @@ if __name__ == "__main__":
     result = run_graph(graph)
     print("RPC result:")
     print(result["rpc_df"])  # DataframeRef
-

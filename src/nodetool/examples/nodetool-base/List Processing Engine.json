@@ -1,0 +1,763 @@
+{
+  "id": "list_processing_engine",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "List Processing Engine",
+  "tool_name": null,
+  "description": "Batch-transform customer records with map/filter/reduce style operations to produce regional summaries and marketing insights.",
+  "tags": [
+    "business",
+    "data"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.DataframeOutput",
+        "data": {
+          "name": "regional_summary",
+          "value": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.data.Rename",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "rename_map": "value_x:customer_count,value_y:total_mrr"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.data.Join",
+        "data": {
+          "dataframe_a": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "dataframe_b": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "join_on": "region"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.data.Rename",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "rename_map": "id:value"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.data.Aggregate",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "columns": "region",
+          "aggregation": "count"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "6",
+        "parent_id": null,
+        "type": "nodetool.data.SelectColumn",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "columns": "region,id"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "7",
+        "parent_id": null,
+        "type": "nodetool.data.FromList",
+        "data": {
+          "values": []
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "8",
+        "parent_id": null,
+        "type": "nodetool.list.FilterDictsByNumber",
+        "data": {
+          "values": [],
+          "key": "mrr",
+          "filter_type": "greater_than",
+          "value": 1200.0
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "9",
+        "parent_id": null,
+        "type": "nodetool.list.FilterDicts",
+        "data": {
+          "values": [],
+          "condition": "status == 'active'"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "10",
+        "parent_id": null,
+        "type": "nodetool.constant.List",
+        "data": {
+          "value": [
+            {
+              "id": 101,
+              "name": "Alice Gomez",
+              "email": "alice@example.com",
+              "plan": "Scale",
+              "region": "North America",
+              "status": "active",
+              "mrr": 2200
+            },
+            {
+              "id": 102,
+              "name": "Ben Yoon",
+              "email": "ben@example.com",
+              "plan": "Growth",
+              "region": "Asia Pacific",
+              "status": "trial",
+              "mrr": 300
+            },
+            {
+              "id": 103,
+              "name": "Chloe Martin",
+              "email": "chloe@example.com",
+              "plan": "Scale",
+              "region": "EMEA",
+              "status": "active",
+              "mrr": 1850
+            },
+            {
+              "id": 104,
+              "name": "Deepak Verma",
+              "email": "deepak@example.com",
+              "plan": "Enterprise",
+              "region": "Asia Pacific",
+              "status": "active",
+              "mrr": 4200
+            },
+            {
+              "id": 105,
+              "name": "Ella Chen",
+              "email": "ella@example.com",
+              "plan": "Growth",
+              "region": "North America",
+              "status": "active",
+              "mrr": 980
+            },
+            {
+              "id": 106,
+              "name": "Farah Hussein",
+              "email": "farah@example.com",
+              "plan": "Enterprise",
+              "region": "EMEA",
+              "status": "active",
+              "mrr": 3100
+            },
+            {
+              "id": 107,
+              "name": "Gabe Silva",
+              "email": "gabe@example.com",
+              "plan": "Scale",
+              "region": "Latin America",
+              "status": "active",
+              "mrr": 1560
+            },
+            {
+              "id": 108,
+              "name": "Hana Ito",
+              "email": "hana@example.com",
+              "plan": "Growth",
+              "region": "Asia Pacific",
+              "status": "active",
+              "mrr": 1210
+            },
+            {
+              "id": 109,
+              "name": "Ivan Petrov",
+              "email": "ivan@example.com",
+              "plan": "Scale",
+              "region": "EMEA",
+              "status": "churned",
+              "mrr": 0
+            },
+            {
+              "id": 110,
+              "name": "Jana Lopez",
+              "email": "jana@example.com",
+              "plan": "Enterprise",
+              "region": "North America",
+              "status": "active",
+              "mrr": 5100
+            }
+          ]
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "11",
+        "parent_id": null,
+        "type": "nodetool.data.Rename",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "rename_map": "mrr:value"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "12",
+        "parent_id": null,
+        "type": "nodetool.data.Aggregate",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "columns": "region",
+          "aggregation": "sum"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "13",
+        "parent_id": null,
+        "type": "nodetool.data.SelectColumn",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "columns": "region,mrr"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "14",
+        "parent_id": null,
+        "type": "nodetool.output.DataframeOutput",
+        "data": {
+          "name": "high_value_customers",
+          "value": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "15",
+        "parent_id": null,
+        "type": "nodetool.data.SortByColumn",
+        "data": {
+          "df": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "column": "region"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "16",
+        "parent_id": null,
+        "type": "nodetool.data.SelectColumn",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "columns": "id,name,email,plan,region,mrr"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "17",
+        "parent_id": null,
+        "type": "nodetool.output.ListOutput",
+        "data": {
+          "name": "campaign_emails",
+          "value": [],
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "18",
+        "parent_id": null,
+        "type": "nodetool.list.MapField",
+        "data": {
+          "values": [],
+          "field": "email",
+          "default": null
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "19",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "summary_report",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "20",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "# High-Value Customer Summary\n\n- Total high-value accounts: {{ hv_count }}\n- Active regions (sorted): {{ regions | join(', ') }}\n- Campaign emails: {{ emails | join(', ') }}\n\n## Regional Breakdown\n{% for row in summary %}\n- {{ row.region }} \u2192 {{ row.customer_count }} customers \u2022 Total MRR: ${{ row.total_mrr | round(0) }}\n{% endfor %}\n"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "hv_count": null,
+          "regions": null,
+          "emails": null,
+          "summary": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "21",
+        "parent_id": null,
+        "type": "nodetool.list.Length",
+        "data": {
+          "values": []
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "22",
+        "parent_id": null,
+        "type": "nodetool.list.Sort",
+        "data": {
+          "values": [],
+          "order": "ascending"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "23",
+        "parent_id": null,
+        "type": "nodetool.list.Dedupe",
+        "data": {
+          "values": []
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "24",
+        "parent_id": null,
+        "type": "nodetool.list.MapField",
+        "data": {
+          "values": [],
+          "field": "region",
+          "default": null
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "25",
+        "parent_id": null,
+        "type": "nodetool.data.ToList",
+        "data": {
+          "dataframe": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          }
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "10",
+        "sourceHandle": "output",
+        "target": "9",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "9",
+        "sourceHandle": "output",
+        "target": "8",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "7",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "6",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "5",
+        "source": "6",
+        "sourceHandle": "output",
+        "target": "5",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "6",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "7",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "dataframe_a",
+        "ui_properties": null
+      },
+      {
+        "id": "8",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "13",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "9",
+        "source": "13",
+        "sourceHandle": "output",
+        "target": "12",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "10",
+        "source": "12",
+        "sourceHandle": "output",
+        "target": "11",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "11",
+        "source": "11",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "dataframe_b",
+        "ui_properties": null
+      },
+      {
+        "id": "12",
+        "source": "3",
+        "sourceHandle": "output",
+        "target": "2",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "13",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "14",
+        "source": "7",
+        "sourceHandle": "output",
+        "target": "16",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "15",
+        "source": "16",
+        "sourceHandle": "output",
+        "target": "15",
+        "targetHandle": "df",
+        "ui_properties": null
+      },
+      {
+        "id": "16",
+        "source": "15",
+        "sourceHandle": "output",
+        "target": "14",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "17",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "18",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "18",
+        "source": "18",
+        "sourceHandle": "output",
+        "target": "17",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "19",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "21",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "20",
+        "source": "21",
+        "sourceHandle": "output",
+        "target": "20",
+        "targetHandle": "hv_count",
+        "ui_properties": null
+      },
+      {
+        "id": "21",
+        "source": "8",
+        "sourceHandle": "output",
+        "target": "24",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "22",
+        "source": "24",
+        "sourceHandle": "output",
+        "target": "23",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "23",
+        "source": "23",
+        "sourceHandle": "output",
+        "target": "22",
+        "targetHandle": "values",
+        "ui_properties": null
+      },
+      {
+        "id": "24",
+        "source": "22",
+        "sourceHandle": "output",
+        "target": "20",
+        "targetHandle": "regions",
+        "ui_properties": null
+      },
+      {
+        "id": "25",
+        "source": "18",
+        "sourceHandle": "output",
+        "target": "20",
+        "targetHandle": "emails",
+        "ui_properties": null
+      },
+      {
+        "id": "26",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "25",
+        "targetHandle": "dataframe",
+        "ui_properties": null
+      },
+      {
+        "id": "27",
+        "source": "25",
+        "sourceHandle": "output",
+        "target": "20",
+        "targetHandle": "summary",
+        "ui_properties": null
+      },
+      {
+        "id": "28",
+        "source": "20",
+        "sourceHandle": "output",
+        "target": "19",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

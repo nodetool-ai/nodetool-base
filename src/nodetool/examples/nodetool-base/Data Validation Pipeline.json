@@ -1,0 +1,153 @@
+{
+  "id": "data_validation_pipeline",
+  "access": "public",
+  "created_at": "2025-11-22T16:54:18.095690",
+  "updated_at": "2025-11-22T16:54:18.095690",
+  "name": "Data Validation Pipeline",
+  "tool_name": null,
+  "description": "Validate and clean data for quality assurance before processing.",
+  "tags": [
+    "data"
+  ],
+  "thumbnail": null,
+  "thumbnail_url": null,
+  "graph": {
+    "nodes": [
+      {
+        "id": "1",
+        "parent_id": null,
+        "type": "nodetool.output.StringOutput",
+        "data": {
+          "name": "validation_report",
+          "value": "",
+          "description": ""
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "2",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "# Data Validation Report\n\n## Input Summary:\n- **Format:** CSV\n- **Source:** User provided\n\n## Quality Analysis:\n{{ analysis }}\n\n## Issues Found:\n1. Invalid email formats\n2. Out-of-range values (negative age)\n3. Missing values\n4. Type mismatches\n\n## Recommendations:\n- Remove rows with missing emails\n- Validate age ranges (0-150)\n- Verify email format with regex\n- Handle missing values appropriately\n\n## Next Steps:\n- Apply automated cleaning\n- Re-validate cleaned dataset\n- Generate quality metrics\n- Save cleaned data to database\n\n## Quality Score: 60%\n- Valid records: 3 out of 6\n- Issues to fix: 3\n- Missing values: 1\n"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "analysis": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "3",
+        "parent_id": null,
+        "type": "nodetool.agents.Agent",
+        "data": {
+          "model": {
+            "type": "language_model",
+            "provider": "openai",
+            "id": "gpt-4o-mini",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "system": "You are a data quality analyst. Identify validation issues in datasets.",
+          "prompt": "",
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": null,
+          "max_tokens": 800,
+          "context_window": 4096
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "4",
+        "parent_id": null,
+        "type": "nodetool.text.FormatText",
+        "data": {
+          "template": "Analyze this CSV data and identify:\n1. Data quality issues\n2. Invalid records\n3. Missing values\n4. Type mismatches\n5. Recommendations for cleaning\n\nData:\n{{ data }}"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {
+          "data": null
+        },
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "5",
+        "parent_id": null,
+        "type": "nodetool.input.StringInput",
+        "data": {
+          "name": "data",
+          "value": "\nuser_id,email,age,country\n1,john@example.com,28,USA\n2,jane@invalid,35,UK\n3,bob@test.com,-5,Canada\n4,alice@gmail.com,42,USA\n5,,29,Germany\n6,charlie@yahoo.com,abc,USA\n",
+          "description": "Raw data for validation"
+        },
+        "ui_properties": {},
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      }
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "data",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "3",
+        "sourceHandle": "text",
+        "target": "2",
+        "targetHandle": "analysis",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      }
+    ]
+  },
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
+  "package_name": "nodetool-base",
+  "path": null,
+  "run_mode": null,
+  "required_providers": null,
+  "required_models": null
+}

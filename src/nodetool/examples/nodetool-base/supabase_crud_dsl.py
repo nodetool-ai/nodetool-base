@@ -5,7 +5,7 @@ Demonstrates Insert, Update, Delete, and a final Select.
 
 Note:
 - Adjust table name and filters to your schema.
-- Ensure SUPABASE_URL and SUPABASE_KEY are set.
+- NODE_SUPABASE_URL and NODE_SUPABASE_KEY are required for user-provided nodes.
 """
 
 from nodetool.dsl.graph import create_graph, run_graph
@@ -64,4 +64,3 @@ if __name__ == "__main__":
     print("Update result:", result["update_result"])  # list of rows
     print("Delete result:", result["delete_result"])  # {deleted: True}
     print("Todos:", result["todos_df"])  # DataframeRef
-
