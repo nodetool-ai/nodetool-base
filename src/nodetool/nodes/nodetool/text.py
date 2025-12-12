@@ -79,7 +79,7 @@ class Join(BaseNode):
     - Assembling formatted text from array elements
     """
 
-    strings: list[str] = Field(default=[])
+    strings: list[Any] = Field(default=[])
     separator: str = Field(default="")
 
     @classmethod
@@ -89,7 +89,7 @@ class Join(BaseNode):
     async def process(self, context: ProcessingContext) -> str:
         if len(self.strings) == 0:
             return ""
-        return self.separator.join(self.strings)
+        return self.separator.join([str(s) for s in self.strings])
 
 
 class Collect(BaseNode):
