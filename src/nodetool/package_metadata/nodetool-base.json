@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.9",
+  "version": "0.6.2-rc.10",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -5669,7 +5669,7 @@
             "type": "list",
             "type_args": [
               {
-                "type": "str"
+                "type": "any"
               }
             ]
           },
