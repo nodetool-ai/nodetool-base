@@ -153,6 +153,16 @@ class Summarizer(BaseNode):
                 size_on_disk=2684354560,
                 type="llama_model",
             ),
+            # llama.cpp GGUF models
+            UnifiedModel(
+                id="ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-4b-it-GGUF",
+                path="gemma-3-4b-it-Q4_K_M.gguf",
+                name="Gemma 3 4B IT (GGUF)",
+                description="Efficient Gemma 3 for summarization via llama.cpp.",
+                size_on_disk=int(2.9 * 1073741824),
+                type="llama_cpp_model",
+            ),
         ]
 
     @classmethod
@@ -352,6 +362,16 @@ class Extractor(BaseNode):
                 description="Reasoning-oriented DeepSeek shines when extraction needs cross-field validation.",
                 size_on_disk=4617089843,
                 type="llama_model",
+            ),
+            # llama.cpp GGUF models
+            UnifiedModel(
+                id="ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-4b-it-GGUF",
+                path="gemma-3-4b-it-Q4_K_M.gguf",
+                name="Gemma 3 4B IT (GGUF)",
+                description="Efficient Gemma 3 for extraction via llama.cpp.",
+                size_on_disk=int(2.9 * 1073741824),
+                type="llama_cpp_model",
             ),
         ]
 
@@ -572,6 +592,16 @@ class Classifier(BaseNode):
                 description="Reasoning-focused DeepSeek variant is great for multi-step label decisions.",
                 size_on_disk=912680550,
                 type="llama_model",
+            ),
+            # llama.cpp GGUF models
+            UnifiedModel(
+                id="ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-4b-it-GGUF",
+                path="gemma-3-4b-it-Q4_K_M.gguf",
+                name="Gemma 3 4B IT (GGUF)",
+                description="Efficient Gemma 3 for classification via llama.cpp.",
+                size_on_disk=int(2.9 * 1073741824),
+                type="llama_cpp_model",
             ),
         ]
 
@@ -941,6 +971,79 @@ class Agent(BaseNode):
                 description="DeepSeek R1 8B balances reasoning with precise function calls for iterative agents.",
                 size_on_disk=int(5.2 * GB),
                 type="mistral_model",
+            ),
+            # llama.cpp GGUF models (requires LLAMA_CPP_URL)
+            UnifiedModel(
+                id="ggml-org/gpt-oss-20b-GGUF:gpt-oss-20b-mxfp4.gguf",
+                repo_id="ggml-org/gpt-oss-20b-GGUF",
+                path="gpt-oss-20b-mxfp4.gguf",
+                name="GPT-OSS 20B (GGUF)",
+                description="OpenAI's open-weight model in efficient MXFP4 format for llama.cpp.",
+                size_on_disk=int(8.56 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-4b-it-GGUF",
+                path="gemma-3-4b-it-Q4_K_M.gguf",
+                name="Gemma 3 4B IT (GGUF)",
+                description="Google's Gemma 3 4B in Q4_K_M quantization for efficient inference.",
+                size_on_disk=int(2.9 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-12b-it-GGUF",
+                path="gemma-3-12b-it-Q4_K_M.gguf",
+                name="Gemma 3 12B IT (GGUF)",
+                description="Google's Gemma 3 12B in Q4_K_M quantization with strong reasoning.",
+                size_on_disk=int(7.3 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/Kimi-VL-A3B-Thinking-2506-GGUF:Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf",
+                repo_id="ggml-org/Kimi-VL-A3B-Thinking-2506-GGUF",
+                path="Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf",
+                name="Kimi VL A3B Thinking (GGUF)",
+                description="Moonshot AI's vision-language model with enhanced reasoning capabilities.",
+                size_on_disk=int(2.2 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF:qwen3-coder-30b-a3b-instruct-q8_0.gguf",
+                repo_id="ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF",
+                path="qwen3-coder-30b-a3b-instruct-q8_0.gguf",
+                name="Qwen3 Coder 30B A3B (GGUF)",
+                description="MoE coding model with 3B active params, excellent for code generation.",
+                size_on_disk=int(3.6 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/Qwen3-0.6B-GGUF:Qwen3-0.6B-Q4_0.gguf",
+                repo_id="ggml-org/Qwen3-0.6B-GGUF",
+                path="Qwen3-0.6B-Q4_0.gguf",
+                name="Qwen3 0.6B (GGUF)",
+                description="Ultra-lightweight Qwen3 for edge devices and fast inference.",
+                size_on_disk=int(0.4 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/gemma-3-270m-GGUF:gemma-3-270m-Q8_0.gguf",
+                repo_id="ggml-org/gemma-3-270m-GGUF",
+                path="gemma-3-270m-Q8_0.gguf",
+                name="Gemma 3 270M (GGUF)",
+                description="Tiny Gemma 3 for ultra-fast inference on CPU.",
+                size_on_disk=int(0.35 * GB),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/gemma-3-27b-it-GGUF:gemma-3-27b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-27b-it-GGUF",
+                path="gemma-3-27b-it-Q4_K_M.gguf",
+                name="Gemma 3 27B IT (GGUF)",
+                description="Google's largest Gemma 3 with strong reasoning and tool use.",
+                size_on_disk=int(15.8 * GB),
+                type="llama_cpp_model",
             ),
         ]
 
@@ -1590,6 +1693,25 @@ class ResearchAgent(BaseNode):
                 description="Qwen3 14B provides strong tool use and synthesis for local research agents.",
                 size_on_disk=30064771072,
                 type="llama_model",
+            ),
+            # llama.cpp GGUF models
+            UnifiedModel(
+                id="ggml-org/gpt-oss-20b-GGUF:gpt-oss-20b-mxfp4.gguf",
+                repo_id="ggml-org/gpt-oss-20b-GGUF",
+                path="gpt-oss-20b-mxfp4.gguf",
+                name="GPT-OSS 20B (GGUF)",
+                description="OpenAI's open-weight model for research via llama.cpp.",
+                size_on_disk=int(8.56 * 1073741824),
+                type="llama_cpp_model",
+            ),
+            UnifiedModel(
+                id="ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
+                repo_id="ggml-org/gemma-3-12b-it-GGUF",
+                path="gemma-3-12b-it-Q4_K_M.gguf",
+                name="Gemma 3 12B IT (GGUF)",
+                description="Google's Gemma 3 12B for research with strong reasoning.",
+                size_on_disk=int(7.3 * 1073741824),
+                type="llama_cpp_model",
             ),
         ]
 

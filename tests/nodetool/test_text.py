@@ -13,6 +13,7 @@ from nodetool.nodes.nodetool.text import (
     FindAllRegex,
     ParseJSON,
     ExtractJSON,
+    ToString,
 )
 
 
@@ -24,6 +25,14 @@ def context():
 # Create dummy inputs for testing
 dummy_string = "Hello, world!"
 dummy_text = TextRef(data=b"Hello, world!")
+
+
+class CustomObj:
+    def __str__(self):
+        return "str_custom"
+        
+    def __repr__(self):
+        return "repr_custom"
 
 
 @pytest.mark.asyncio
@@ -44,6 +53,8 @@ dummy_text = TextRef(data=b"Hello, world!")
             ExtractJSON(text='{"a": {"b": 2}}', json_path="$.a.b"),
             (int, float, str, bool, list, dict),
         ),
+        (ToString(value=123), str),
+        (ToString(value=123, mode="repr"), str),
     ],
 )
 async def test_text_nodes(context: ProcessingContext, node, expected_type):
@@ -52,6 +63,20 @@ async def test_text_nodes(context: ProcessingContext, node, expected_type):
         assert isinstance(result, expected_type)
     except Exception as e:
         pytest.fail(f"Error processing {node.__class__.__name__}: {str(e)}")
+
+
+@pytest.mark.asyncio
+async def test_to_string_custom(context: ProcessingContext):
+    # Test str mode
+    node = ToString(value=CustomObj(), mode="str")
+    result = await node.process(context)
+    assert result == "str_custom"
+
+    # Test repr mode
+    node = ToString(value=CustomObj(), mode="repr")
+    result = await node.process(context)
+    assert result == "repr_custom"
+
 
 
 @pytest.mark.asyncio

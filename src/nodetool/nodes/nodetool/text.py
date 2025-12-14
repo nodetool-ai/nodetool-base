@@ -20,6 +20,23 @@ from nodetool.io.uri_utils import create_file_uri
 from nodetool.workflows.types import SaveUpdate
 
 
+
+class ToString(BaseNode):
+    """
+    Converts any input to its string representation.
+    text, string, convert, repr, str, cast
+    """
+
+    value: Any = Field(default=None, title="Value")
+
+    @classmethod
+    def get_title(cls):
+        return "To String"
+
+    async def process(self, context: ProcessingContext) -> str:
+        return str(self.value)
+
+
 class AutomaticSpeechRecognition(BaseNode):
     """
     Automatic speech recognition node.
