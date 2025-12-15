@@ -5,6 +5,7 @@ Provides nodes for sending messages, photos, documents, and managing bot operati
 
 from typing import Any, ClassVar, Optional
 from pydantic import Field
+import aiohttp
 
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -59,8 +60,6 @@ class SendMessage(BaseNode):
             raise ValueError("Chat ID is required")
         if not self.text:
             raise ValueError("Message text is required")
-
-        import aiohttp
 
         url = f"https://api.telegram.org/bot{self.bot_token}/sendMessage"
 
@@ -138,8 +137,6 @@ class SendPhoto(BaseNode):
             raise ValueError("Chat ID is required")
         if not self.photo or not self.photo.asset_id:
             raise ValueError("Photo is required")
-
-        import aiohttp
 
         url = f"https://api.telegram.org/bot{self.bot_token}/sendPhoto"
 
@@ -228,8 +225,6 @@ class SendDocument(BaseNode):
         if not self.document_url:
             raise ValueError("Document URL is required")
 
-        import aiohttp
-
         url = f"https://api.telegram.org/bot{self.bot_token}/sendDocument"
 
         payload = {
@@ -297,8 +292,6 @@ class GetUpdates(BaseNode):
         if not self.bot_token:
             raise ValueError("Bot token is required")
 
-        import aiohttp
-
         url = f"https://api.telegram.org/bot{self.bot_token}/getUpdates"
 
         payload = {
@@ -350,8 +343,6 @@ class GetMe(BaseNode):
         """
         if not self.bot_token:
             raise ValueError("Bot token is required")
-
-        import aiohttp
 
         url = f"https://api.telegram.org/bot{self.bot_token}/getMe"
 
