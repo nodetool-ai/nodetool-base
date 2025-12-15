@@ -80,7 +80,7 @@ class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Divides A by B.
-    math, divide, division, quotient
+    math, divide, division, quotient, /
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -110,7 +110,7 @@ class MathFunction(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Performs a selected unary math operation on an input.
-    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log
+    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log,   -, abs, ^2, ^3, sqrt, cbrt, sin, cos, tan, asin, acos, atan, log
     """
 
     Operation: typing.ClassVar[type] = nodetool.nodes.lib.math.MathFunction.Operation
@@ -143,7 +143,7 @@ class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Computes A modulo B.
-    math, modulus, modulo, remainder
+    math, modulus, modulo, remainder, %
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -173,7 +173,7 @@ class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Multiplies two numbers.
-    math, multiply, product
+    math, multiply, product, *
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -203,7 +203,7 @@ class Power(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Raises base to the given exponent.
-    math, power, exponent
+    math, power, exponent, ^
     """
 
     base: int | float | OutputHandle[int | float] = connect_field(
@@ -287,7 +287,7 @@ class Subtract(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Subtracts B from A.
-    math, subtract, minus
+    math, subtract, minus, -
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(

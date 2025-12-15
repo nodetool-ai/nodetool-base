@@ -37,6 +37,8 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use for execution",
     )
@@ -59,7 +61,7 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
         default=[], description="The messages for the LLM"
     )
     thread_id: str | OutputHandle[str] | None = connect_field(
-        default=None,
+        default="",
         description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
     )
     max_tokens: int | OutputHandle[int] = connect_field(default=8192, description=None)
@@ -147,6 +149,8 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use for classification",
     )
@@ -176,6 +180,50 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
+
+
+class CreateThread(GraphNode[nodetool.nodes.nodetool.agents.CreateThread.OutputType]):
+    """
+
+    Create a new conversation thread and return its ID.
+    threads, chat, conversation, context
+
+    Use this to seed a thread_id that downstream Agent nodes can reuse for
+    persistent history across the graph or multiple runs.
+    """
+
+    title: str | OutputHandle[str] | None = connect_field(
+        default="Agent Conversation", description="Optional title for the new thread"
+    )
+    thread_id: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Optional custom thread ID. If provided and owned by the user, it will be reused; otherwise a new thread is created.",
+    )
+
+    @property
+    def out(self) -> "CreateThreadOutputs":
+        return CreateThreadOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.CreateThread
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class CreateThreadOutputs(OutputsProxy):
+    @property
+    def thread_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["thread_id"])
 
 
 import typing
@@ -213,6 +261,8 @@ class Extractor(GraphNode[dict[str, Any]]):
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use for data extraction",
     )
@@ -306,6 +356,8 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use for research and synthesis",
     )
@@ -391,6 +443,8 @@ class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use for summarization",
     )

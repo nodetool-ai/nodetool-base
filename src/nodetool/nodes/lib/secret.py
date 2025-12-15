@@ -11,8 +11,8 @@ class GetSecret(BaseNode):
     """
 
     name: str = Field(default="", description="Secret key name")
-    default: str | None = Field(
-        default=None,
+    default: str = Field(
+        default="",
         description="Default value if not found",
     )
 

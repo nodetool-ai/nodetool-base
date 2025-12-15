@@ -122,6 +122,285 @@ import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
 
+class FilterDictByNumber(
+    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByNumber.OutputType]
+):
+    """
+
+    Filters a stream of dictionaries based on numeric values for a specified key.
+    filter, dictionary, numbers, numeric, stream
+
+    Use cases:
+    - Filter dictionaries by numeric comparisons (greater than, less than, equal to)
+    - Filter records with even/odd numeric values
+    """
+
+    FilterDictNumberType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType
+    )
+
+    value: dict | OutputHandle[dict] = connect_field(
+        default={}, description="Input dictionary stream"
+    )
+    key: str | OutputHandle[str] = connect_field(
+        default="", description="The dictionary key to check"
+    )
+    filter_type: (
+        nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType
+    ) = Field(
+        default=nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType.GREATER_THAN,
+        description=None,
+    )
+    compare_value: float | OutputHandle[float] = connect_field(
+        default=0, description="Comparison value"
+    )
+
+    @property
+    def out(self) -> "FilterDictByNumberOutputs":
+        return FilterDictByNumberOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.FilterDictByNumber
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterDictByNumberOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
+class FilterDictByQuery(
+    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByQuery.OutputType]
+):
+    """
+
+    Filter a stream of dictionary objects based on a pandas query condition.
+    filter, query, condition, dictionary, stream
+
+    Basic Operators:
+    - Comparison: >, <, >=, <=, ==, !=
+    - Logical: and, or, not
+    - Membership: in, not in
+
+    Use cases:
+    - Filter dictionary objects based on complex criteria
+    - Extract subset of data meeting specific conditions
+    """
+
+    value: dict | OutputHandle[dict] = connect_field(
+        default={}, description="Input dictionary stream"
+    )
+    condition: str | OutputHandle[str] = connect_field(
+        default="", description="The filtering condition using pandas query syntax."
+    )
+
+    @property
+    def out(self) -> "FilterDictByQueryOutputs":
+        return FilterDictByQueryOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.FilterDictByQuery
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterDictByQueryOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
+class FilterDictByRange(
+    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByRange.OutputType]
+):
+    """
+
+    Filters a stream of dictionaries based on a numeric range for a specified key.
+    filter, dictionary, range, between, stream
+
+    Use cases:
+    - Filter records based on numeric ranges (e.g., price range, age range)
+    - Find entries with values within specified bounds
+    """
+
+    value: dict | OutputHandle[dict] = connect_field(
+        default={}, description="Input dictionary stream"
+    )
+    key: str | OutputHandle[str] = connect_field(
+        default="", description="The dictionary key to check for the range"
+    )
+    min_value: float | OutputHandle[float] = connect_field(
+        default=0, description="The minimum value (inclusive) of the range"
+    )
+    max_value: float | OutputHandle[float] = connect_field(
+        default=0, description="The maximum value (inclusive) of the range"
+    )
+    inclusive: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="If True, includes the min and max values in the results",
+    )
+
+    @property
+    def out(self) -> "FilterDictByRangeOutputs":
+        return FilterDictByRangeOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.FilterDictByRange
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterDictByRangeOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
+class FilterDictByValue(
+    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByValue.OutputType]
+):
+    """
+
+    Filters a stream of dictionaries based on their values using various criteria.
+    filter, dictionary, values, stream
+
+    Use cases:
+    - Filter dictionaries by value content
+    - Filter dictionaries by value type
+    - Filter dictionaries by value patterns
+    """
+
+    FilterType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType
+    )
+
+    value: dict | OutputHandle[dict] = connect_field(
+        default={}, description="Input dictionary stream"
+    )
+    key: str | OutputHandle[str] = connect_field(
+        default="", description="The dictionary key to check"
+    )
+    filter_type: nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType = (
+        Field(
+            default=nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType.CONTAINS,
+            description="The type of filter to apply",
+        )
+    )
+    criteria: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The filtering criteria (text to match, type name, or length as string)",
+    )
+
+    @property
+    def out(self) -> "FilterDictByValueOutputs":
+        return FilterDictByValueOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.FilterDictByValue
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterDictByValueOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
+class FilterDictRegex(
+    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictRegex.OutputType]
+):
+    """
+
+    Filters a stream of dictionaries using regular expressions on specified keys.
+    filter, regex, dictionary, pattern, stream
+
+    Use cases:
+    - Filter dictionaries with values matching complex patterns
+    - Search for dictionaries containing emails, dates, or specific formats
+    """
+
+    value: dict | OutputHandle[dict] = connect_field(
+        default={}, description="Input dictionary stream"
+    )
+    key: str | OutputHandle[str] = connect_field(
+        default="", description="The dictionary key to check"
+    )
+    pattern: str | OutputHandle[str] = connect_field(
+        default="", description="The regex pattern"
+    )
+    full_match: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Full match or partial"
+    )
+
+    @property
+    def out(self) -> "FilterDictRegexOutputs":
+        return FilterDictRegexOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.FilterDictRegex
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterDictRegexOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
 class GetValue(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
@@ -138,7 +417,7 @@ class GetValue(SingleOutputGraphNode[Any], GraphNode[Any]):
         default={}, description=None
     )
     key: str | OutputHandle[str] = connect_field(default="", description=None)
-    default: Any | OutputHandle[Any] = connect_field(default=None, description=None)
+    default: Any | OutputHandle[Any] = connect_field(default=(), description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -287,8 +566,8 @@ class ReduceDictionaries(
         default="",
         description="The field to use as the key in the resulting dictionary",
     )
-    value_field: str | OutputHandle[str] | None = connect_field(
-        default=None,
+    value_field: str | OutputHandle[str] = connect_field(
+        default="",
         description="Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value.",
     )
     conflict_resolution: (

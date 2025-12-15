@@ -38,8 +38,8 @@ class ArgMaxArray(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
-    axis: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Axis along which to find maximum indices"
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to find maximum indices"
     )
 
     @classmethod
@@ -77,8 +77,8 @@ class ArgMinArray(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
-    axis: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Axis along which to find minimum indices"
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to find minimum indices"
     )
 
     @classmethod
@@ -116,8 +116,8 @@ class MaxArray(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
-    axis: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Axis along which to compute maximum"
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute maximum"
     )
 
     @classmethod
@@ -155,8 +155,8 @@ class MeanArray(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
-    axis: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Axis along which to compute mean"
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute mean"
     )
 
     @classmethod
@@ -194,8 +194,8 @@ class MinArray(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
-    axis: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Axis along which to compute minimum"
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute minimum"
     )
 
     @classmethod
@@ -233,8 +233,8 @@ class SumArray(
         default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
         description="Input array",
     )
-    axis: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Axis along which to compute sum"
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute sum"
     )
 
     @classmethod

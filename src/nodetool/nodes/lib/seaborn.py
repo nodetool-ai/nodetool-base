@@ -4,7 +4,7 @@ from typing import Any
 
 from pydantic import Field
 
-from nodetool.metadata.types import ChartConfig, ImageRef, SeabornPlotType
+from nodetool.metadata.types import ChartConfig, ImageRef, SeabornPlotType, DataframeRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -63,8 +63,8 @@ class ChartRenderer(BaseNode):
         le=10000,
         description="The height of the chart in pixels.",
     )
-    data: Any = Field(
-        default=None, description="The data to visualize as a pandas DataFrame."
+    data: DataframeRef = Field(
+        default=DataframeRef(), description="The data to visualize as a pandas DataFrame."
     )
     despine: bool = Field(
         default=True,

@@ -352,6 +352,48 @@ import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
 
 
+class FilterNone(GraphNode[nodetool.nodes.nodetool.data.FilterNone.OutputType]):
+    """
+
+    Filters out None values from a stream.
+    filter, none, null, stream
+
+    Use cases:
+    - Clean data by removing null values
+    - Get only valid entries
+    - Remove placeholder values
+    """
+
+    value: Any | OutputHandle[Any] = connect_field(
+        default=(), description="Input stream"
+    )
+
+    @property
+    def out(self) -> "FilterNoneOutputs":
+        return FilterNoneOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.FilterNone
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterNoneOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
+
+
 class FindRow(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
 

@@ -32,7 +32,7 @@ class ExtractImages(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
     pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=PydanticUndefined, description="The PDF file to extract images from"
+        default="", description="The PDF file to extract images from"
     )
     start_page: int | OutputHandle[int] = connect_field(
         default=0, description="The start page to extract"
@@ -70,7 +70,7 @@ class ExtractPageMetadata(SingleOutputGraphNode[typing.Any], GraphNode[typing.An
     """
 
     pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=PydanticUndefined, description="The PDF file to analyze"
+        default="", description="The PDF file to analyze"
     )
     start_page: int | OutputHandle[int] = connect_field(
         default=0, description="The start page to extract. 0-based indexing"
@@ -204,7 +204,7 @@ class GetPageCount(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
     pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=PydanticUndefined, description="The PDF file to analyze"
+        default="", description="The PDF file to analyze"
     )
 
     @classmethod

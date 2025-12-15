@@ -879,3 +879,34 @@ class SaveCSVDataframeFile(BaseNode):
         ))
 
         return result
+
+
+class FilterNone(BaseNode):
+    """
+    Filters out None values from a stream.
+    filter, none, null, stream
+
+    Use cases:
+    - Clean data by removing null values
+    - Get only valid entries
+    - Remove placeholder values
+    """
+
+    value: Any = Field(default=(), description="Input stream")
+
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+    
+    class OutputType(TypedDict):
+        output: Any
+
+    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+        async for handle, item in self.iter_any_input():
+            if handle == "value":
+                if item is not None:
+                    yield {"output": item}

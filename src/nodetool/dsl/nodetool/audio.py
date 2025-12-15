@@ -610,103 +610,6 @@ import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
 
-class RealtimeWhisper(
-    GraphNode[nodetool.nodes.nodetool.audio.RealtimeWhisper.OutputType]
-):
-    """
-
-    Stream audio input to WhisperLive and emit real-time transcription.
-    realtime, whisper, transcription, streaming, audio-to-text, speech-to-text
-
-    Emits:
-      - `chunk` Chunk(content=..., done=False) for transcript deltas
-      - `chunk` Chunk(content="", done=True) to mark segment end
-      - `text` final aggregated transcript when input ends
-    """
-
-    WhisperModel: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel
-    )
-    Language: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.audio.RealtimeWhisper.Language
-    )
-
-    model: nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel = Field(
-        default=nodetool.nodes.nodetool.audio.RealtimeWhisper.WhisperModel.TINY,
-        description="Whisper model size - larger models are more accurate but slower",
-    )
-    language: nodetool.nodes.nodetool.audio.RealtimeWhisper.Language = Field(
-        default=nodetool.nodes.nodetool.audio.RealtimeWhisper.Language.ENGLISH,
-        description="Language code for transcription, or 'auto' for automatic detection",
-    )
-    chunk: types.Chunk | OutputHandle[types.Chunk] = connect_field(
-        default=types.Chunk(
-            type="chunk",
-            node_id=None,
-            content_type="text",
-            content="",
-            content_metadata={},
-            done=False,
-        ),
-        description="The audio chunk to transcribe",
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Sampling temperature for transcription"
-    )
-    initial_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Optional initial prompt to guide transcription style"
-    )
-
-    @property
-    def out(self) -> "RealtimeWhisperOutputs":
-        return RealtimeWhisperOutputs(self)
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.audio.RealtimeWhisper
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-class RealtimeWhisperOutputs(OutputsProxy):
-    @property
-    def start(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self["start"])
-
-    @property
-    def end(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self["end"])
-
-    @property
-    def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
-
-    @property
-    def chunk(self) -> OutputHandle[types.Chunk]:
-        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
-
-    @property
-    def speaker(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["speaker"])
-
-    @property
-    def detected_language(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["detected_language"])
-
-    @property
-    def translation(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["translation"])
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.audio
-from nodetool.workflows.base_node import BaseNode
-
-
 class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
@@ -1004,6 +907,7 @@ class TextToSpeech(GraphNode[nodetool.nodes.nodetool.audio.TextToSpeech.OutputTy
             provider=nodetool.metadata.types.Provider.OpenAI,
             id="tts-1",
             name="TTS 1",
+            path=None,
             voices=["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
             selected_voice="",
         ),

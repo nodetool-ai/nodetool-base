@@ -82,7 +82,7 @@ class BaseGetJSONPath(BaseNode):
     - Extract specific values from nested JSON with type safety
     """
 
-    data: Any = Field(default=None, description="JSON object to extract from")
+    data: Any = Field(default={}, description="JSON object to extract from")
     path: str = Field(
         default="", description="Path to the desired value (dot notation)"
     )
@@ -206,7 +206,7 @@ class ValidateJSON(BaseNode):
     - Validate configuration files
     """
 
-    data: Any = Field(default=None, description="JSON data to validate")
+    data: Any = Field(default={}, description="JSON data to validate")
     json_schema: dict = Field(default={}, description="JSON schema for validation")
 
     async def process(self, context: ProcessingContext) -> bool:
@@ -231,7 +231,7 @@ class FilterJSON(BaseNode):
 
     array: list[dict] = Field(default=[], description="Array of JSON objects to filter")
     key: str = Field(default="", description="Key to filter on")
-    value: Any = Field(default=None, description="Value to match")
+    value: Any = Field(default={}, description="Value to match")
 
     async def process(self, context: ProcessingContext) -> list[dict]:
         return [item for item in self.array if item.get(self.key) == self.value]

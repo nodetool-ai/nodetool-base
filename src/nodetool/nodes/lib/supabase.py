@@ -113,7 +113,7 @@ class Select(BaseNode):
     table_name: str = Field(default="", description="Table to query")
     columns: RecordType = Field(default=RecordType(), description="Columns to select")
     filters: list[Filter] = Field(
-        default_factory=list, description="List of typed filters to apply"
+        default=[], description="List of typed filters to apply"
     )
     order_by: str = Field(default="", description="Column to order by")
     descending: bool = Field(default=False, description="Order direction")
@@ -171,7 +171,7 @@ class Insert(BaseNode):
 
     table_name: str = Field(default="", description="Table to insert into")
     records: list[dict[str, Any]] | dict[str, Any] = Field(
-        default_factory=list, description="One or multiple rows to insert"
+        default=[], description="One or multiple rows to insert"
     )
     return_rows: bool = Field(
         default=True, description="Return inserted rows (uses select('*'))"
@@ -206,9 +206,9 @@ class Update(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     table_name: str = Field(default="", description="Table to update")
-    values: dict[str, Any] = Field(default_factory=dict, description="New values")
+    values: dict[str, Any] = Field(default={}, description="New values")
     filters: list[Filter] = Field(
-        default_factory=list, description="Filters to select rows to update"
+        default=[], description="Filters to select rows to update"
     )
     return_rows: bool = Field(
         default=True, description="Return updated rows (uses select('*'))"
@@ -242,7 +242,7 @@ class Delete(BaseNode):
 
     table_name: str = Field(default="", description="Table to delete from")
     filters: list[Filter] = Field(
-        default_factory=list,
+        default=[],
         description="Filters to select rows to delete (required for safety)",
     )
 
@@ -272,11 +272,7 @@ class Upsert(BaseNode):
 
     table_name: str = Field(default="", description="Table to upsert into")
     records: list[dict[str, Any]] | dict[str, Any] = Field(
-        default_factory=list, description="One or multiple rows to upsert"
-    )
-    on_conflict: str | None = Field(
-        default=None,
-        description="Optional column or comma-separated columns for ON CONFLICT",
+        default=[], description="One or multiple rows to upsert"
     )
     return_rows: bool = Field(
         default=True, description="Return upserted rows (uses select('*'))"
@@ -294,11 +290,7 @@ class Upsert(BaseNode):
         else:
             data = self.records
 
-        # Attempt to pass on_conflict if supported by the client
-        if self.on_conflict is not None:
-            q = client.table(table_name).upsert(data, on_conflict=self.on_conflict)
-        else:
-            q = client.table(table_name).upsert(data)
+        q = client.table(table_name).upsert(data)
 
         if self.return_rows:
             q = q.select("*") # type: ignore
@@ -316,7 +308,7 @@ class RPC(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     function: str = Field(default="", description="RPC function name")
-    params: dict[str, Any] = Field(default_factory=dict, description="Function params")
+    params: dict[str, Any] = Field(default={}, description="Function params")
     to_dataframe: bool = Field(
         default=False,
         description="Return DataframeRef if result is a list of records",

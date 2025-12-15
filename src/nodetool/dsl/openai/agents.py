@@ -145,6 +145,8 @@ class RealtimeTranscription(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use",
     )

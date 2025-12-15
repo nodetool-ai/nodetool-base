@@ -131,9 +131,9 @@ class ConvertText(BaseNode):
     - Process text snippets in different formats
     """
 
-    content: str = Field(description="Text content to convert")
-    input_format: InputFormat = Field(description="Input format")
-    output_format: OutputFormat = Field(description="Output format")
+    content: str = Field(default="", description="Text content to convert")
+    input_format: InputFormat = Field(default=InputFormat.MARKDOWN, description="Input format")
+    output_format: OutputFormat = Field(default=OutputFormat.DOCX, description="Output format")
     extra_args: list[str] = Field(default=[], description="Additional pandoc arguments")
 
     async def process(self, context: ProcessingContext) -> str:

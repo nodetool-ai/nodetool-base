@@ -39,6 +39,8 @@ class ChartGenerator(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="The model to use for chart generation.",
     )
@@ -91,6 +93,8 @@ class DataGenerator(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="The model to use for data generation.",
     )
@@ -163,6 +167,8 @@ class ListGenerator(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="The model to use for string generation.",
     )
@@ -226,6 +232,8 @@ class SVGGenerator(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="The language model to use for SVG generation.",
     )
@@ -288,6 +296,8 @@ class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="Model to use for structured generation.",
     )

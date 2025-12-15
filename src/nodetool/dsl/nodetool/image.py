@@ -213,6 +213,8 @@ class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
             provider=nodetool.metadata.types.Provider.HuggingFaceFalAI,
             id="fal-ai/flux/dev",
             name="FLUX.1 Dev",
+            path=None,
+            supported_tasks=[],
         ),
         description="The image generation model to use",
     )
@@ -624,6 +626,8 @@ class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
             provider=nodetool.metadata.types.Provider.HuggingFaceFalAI,
             id="fal-ai/flux/schnell",
             name="FLUX.1 Schnell",
+            path=None,
+            supported_tasks=[],
         ),
         description="The image generation model to use",
     )
@@ -649,10 +653,6 @@ class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
     )
     seed: int | OutputHandle[int] = connect_field(
         default=-1, description="Random seed for reproducibility (-1 for random)"
-    )
-    scheduler: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Scheduler to use (provider-specific, leave empty for default)",
     )
     safety_check: bool | OutputHandle[bool] = connect_field(
         default=True,

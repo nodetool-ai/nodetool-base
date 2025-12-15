@@ -34,6 +34,7 @@ class AutomaticSpeechRecognition(
             provider=nodetool.metadata.types.Provider.FalAI,
             id="openai/whisper-large-v3",
             name="",
+            path=None,
         ),
         description=None,
     )
@@ -68,6 +69,36 @@ import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class CapitalizeText(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Capitalizes only the first character.
+    text, transform, capitalize, format
+
+    Use cases:
+    - Formatting short labels or sentences
+    - Cleaning up LLM output before UI rendering
+    - Quickly fixing lowercase starts after concatenation
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.CapitalizeText
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class Chunk(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
@@ -83,13 +114,50 @@ class Chunk(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     text: str | OutputHandle[str] = connect_field(default="", description=None)
     length: int | OutputHandle[int] = connect_field(default=100, description=None)
     overlap: int | OutputHandle[int] = connect_field(default=0, description=None)
-    separator: str | OutputHandle[str] | None = connect_field(
-        default=None, description=None
-    )
+    separator: str | OutputHandle[str] = connect_field(default=" ", description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.Chunk
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class CollapseWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Collapses consecutive whitespace into single separators.
+    text, whitespace, normalize, clean, remove
+
+    Use cases:
+    - Normalizing pasted text from PDFs or chat logs
+    - Cleaning prompts with erratic spacing
+    - Converting multi-line input into succinct sentences
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    preserve_newlines: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Keep newline characters instead of replacing them"
+    )
+    replacement: str | OutputHandle[str] = connect_field(
+        default=" ", description="String used to replace whitespace runs"
+    )
+    trim_edges: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Strip whitespace before collapsing"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.CollapseWhitespace
 
     @classmethod
     def get_node_type(cls):
@@ -139,6 +207,43 @@ import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class Compare(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Compares two text values and reports ordering.
+    text, compare, equality, sort, equals, =
+
+    Use cases:
+    - Checking if two strings are identical before branching
+    - Determining lexical order for sorting or deduplication
+    - Normalizing casing/spacing before compares
+    """
+
+    text_a: str | OutputHandle[str] = connect_field(default="", description=None)
+    text_b: str | OutputHandle[str] = connect_field(default="", description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Compare without lowercasing"
+    )
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Strip leading/trailing whitespace before comparing"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.Compare
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class Concat(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
@@ -174,18 +279,27 @@ class Contains(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
     Checks if text contains a specified substring.
-    text, check, contains, compare, validate, substring, string
+    text, compare, validate, substring, string
 
     Use cases:
-    - Searching for keywords in text
-    - Filtering content based on presence of terms
-    - Validating text content
+    - Ensuring safety or guard phrases appear
+    - Rejecting inputs when banned terms exist
+    - Matching multiple keywords with any/all logic
     """
+
+    MatchMode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Contains.MatchMode
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
     substring: str | OutputHandle[str] = connect_field(default="", description=None)
+    search_values: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="Optional list of additional substrings to check"
+    )
     case_sensitive: bool | OutputHandle[bool] = connect_field(
         default=True, description=None
+    )
+    match_mode: nodetool.nodes.nodetool.text.Contains.MatchMode = Field(
+        default=nodetool.nodes.nodetool.text.Contains.MatchMode.ANY,
+        description="ANY requires one match, ALL needs every value, NONE ensures none",
     )
 
     @classmethod
@@ -260,6 +374,44 @@ class EndsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.EndsWith
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class Equals(SingleOutputGraphNode[bool], GraphNode[bool]):
+    """
+
+    Checks if two text inputs are equal.
+    text, compare, equals, match, =
+
+    Use cases:
+    - Branching workflows when user input matches an expected value
+    - Guarding against duplicates before saving assets
+    - Quickly comparing normalized prompts or identifiers
+    """
+
+    text_a: str | OutputHandle[str] = connect_field(default="", description=None)
+    text_b: str | OutputHandle[str] = connect_field(default="", description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Disable lowercasing before compare"
+    )
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Strip leading/trailing whitespace prior to comparison",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.Equals
 
     @classmethod
     def get_node_type(cls):
@@ -366,6 +518,110 @@ class ExtractRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class FilterRegexString(
+    GraphNode[nodetool.nodes.nodetool.text.FilterRegexString.OutputType]
+):
+    """
+
+    Filters a stream of strings using regular expressions.
+    filter, regex, pattern, text, stream
+
+    Use cases:
+    - Filter strings using complex patterns
+    - Extract strings matching specific formats (emails, dates, etc.)
+    """
+
+    value: str | OutputHandle[str] = connect_field(
+        default="", description="Input string stream"
+    )
+    pattern: str | OutputHandle[str] = connect_field(
+        default="", description="The regular expression pattern to match against."
+    )
+    full_match: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Whether to match the entire string or find pattern anywhere in string",
+    )
+
+    @property
+    def out(self) -> "FilterRegexStringOutputs":
+        return FilterRegexStringOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.FilterRegexString
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterRegexStringOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["output"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class FilterString(GraphNode[nodetool.nodes.nodetool.text.FilterString.OutputType]):
+    """
+
+    Filters a stream of strings based on various criteria.
+    filter, strings, text, stream
+
+    Use cases:
+    - Filter strings by length
+    - Filter strings containing specific text
+    - Filter strings by prefix/suffix
+    """
+
+    FilterType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.text.FilterString.FilterType
+    )
+
+    value: str | OutputHandle[str] = connect_field(
+        default="", description="Input string stream"
+    )
+    filter_type: nodetool.nodes.nodetool.text.FilterString.FilterType = Field(
+        default=nodetool.nodes.nodetool.text.FilterString.FilterType.CONTAINS,
+        description="The type of filter to apply",
+    )
+    criteria: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The filtering criteria (text to match or length as string)",
+    )
+
+    @property
+    def out(self) -> "FilterStringOutputs":
+        return FilterStringOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.FilterString
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class FilterStringOutputs(OutputsProxy):
+    @property
+    def output(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["output"])
 
 
 import typing
@@ -501,15 +757,9 @@ class HasLength(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
-    min_length: int | OutputHandle[int] | None = connect_field(
-        default=None, description=None
-    )
-    max_length: int | OutputHandle[int] | None = connect_field(
-        default=None, description=None
-    )
-    exact_length: int | OutputHandle[int] | None = connect_field(
-        default=None, description=None
-    )
+    min_length: int | OutputHandle[int] = connect_field(default=0, description=None)
+    max_length: int | OutputHandle[int] = connect_field(default=0, description=None)
+    exact_length: int | OutputHandle[int] = connect_field(default=0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -572,6 +822,49 @@ import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class IndexOf(SingleOutputGraphNode[int], GraphNode[int]):
+    """
+
+    Finds the position of a substring in text.
+    text, search, find, substring
+
+    Use cases:
+    - Locating markers to drive downstream slices
+    - Building quick validations before parsing
+    - Detecting repeated terms by scanning from the end
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    substring: str | OutputHandle[str] = connect_field(default="", description=None)
+    case_sensitive: bool | OutputHandle[bool] = connect_field(
+        default=True, description=None
+    )
+    start_index: int | OutputHandle[int] = connect_field(
+        default=0, description="Index to begin the search from"
+    )
+    end_index: int | OutputHandle[int] = connect_field(
+        default=0, description="Optional exclusive end index for the search"
+    )
+    search_from_end: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Use the last occurrence instead of the first"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.IndexOf
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class IsEmpty(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
@@ -617,7 +910,7 @@ class Join(SingleOutputGraphNode[str], GraphNode[str]):
     - Assembling formatted text from array elements
     """
 
-    strings: list[str] | OutputHandle[list[str]] = connect_field(
+    strings: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description=None
     )
     separator: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -625,6 +918,45 @@ class Join(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.Join
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class Length(SingleOutputGraphNode[int], GraphNode[int]):
+    """
+
+    Measures text length as characters, words, or lines.
+    text, analyze, length, count
+
+    Use cases:
+    - Quickly gating prompts by size before LLM calls
+    - Showing word or line counts in mini apps
+    - Tracking character budgets for UI copy
+    """
+
+    Measure: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Length.Measure
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    measure: nodetool.nodes.nodetool.text.Length.Measure = Field(
+        default=nodetool.nodes.nodetool.text.Length.Measure.CHARACTERS,
+        description="Choose whether to count characters, words, or lines",
+    )
+    trim_whitespace: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Strip whitespace before counting"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.Length
 
     @classmethod
     def get_node_type(cls):
@@ -685,6 +1017,48 @@ import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class PadText(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Pads text to a target length.
+    text, pad, length, format
+
+    Use cases:
+    - Aligning tabular text outputs
+    - Creating fixed-width fields for legacy systems
+    - Left-padding numbers with zeros
+    """
+
+    PadDirection: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.text.PadText.PadDirection
+    )
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    length: int | OutputHandle[int] = connect_field(default=0, description=None)
+    pad_character: str | OutputHandle[str] = connect_field(
+        default=" ", description="Single character to use for padding"
+    )
+    direction: nodetool.nodes.nodetool.text.PadText.PadDirection = Field(
+        default=nodetool.nodes.nodetool.text.PadText.PadDirection.RIGHT,
+        description="Where padding should be applied",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.PadText
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class ParseJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
@@ -733,8 +1107,8 @@ class RegexMatch(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     pattern: str | OutputHandle[str] = connect_field(
         default="", description="Regular expression pattern"
     )
-    group: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Capture group to extract (0 for full match)"
+    group: int | OutputHandle[int] = connect_field(
+        default=0, description="Capture group to extract (0 for full match)"
     )
 
     @classmethod
@@ -854,6 +1228,43 @@ class RegexValidate(SingleOutputGraphNode[bool], GraphNode[bool]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.RegexValidate
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class RemovePunctuation(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Removes punctuation characters from text.
+    text, cleanup, punctuation, normalize
+
+    Use cases:
+    - Cleaning transcripts before keyword search
+    - Preparing identifiers for filesystem safe names
+    - Simplifying comparisons by stripping symbols
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    replacement: str | OutputHandle[str] = connect_field(
+        default="", description="String to insert where punctuation was removed"
+    )
+    punctuation: str | OutputHandle[str] = connect_field(
+        default="!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+        description="Characters that should be removed or replaced",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.RemovePunctuation
 
     @classmethod
     def get_node_type(cls):
@@ -988,15 +1399,48 @@ class Slice(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
-    start: int | OutputHandle[int] | None = connect_field(
-        default=None, description=None
-    )
-    stop: int | OutputHandle[int] | None = connect_field(default=None, description=None)
-    step: int | OutputHandle[int] | None = connect_field(default=None, description=None)
+    start: int | OutputHandle[int] = connect_field(default=0, description=None)
+    stop: int | OutputHandle[int] = connect_field(default=0, description=None)
+    step: int | OutputHandle[int] = connect_field(default=1, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.Slice
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class Slugify(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts text into a slug suitable for URLs or IDs.
+    text, slug, normalize, id
+
+    Use cases:
+    - Generating workflow IDs from titles
+    - Creating asset filenames from prompts
+    - Producing URL-safe paths for mini apps
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    separator: str | OutputHandle[str] = connect_field(default="-", description=None)
+    lowercase: bool | OutputHandle[bool] = connect_field(default=True, description=None)
+    allow_unicode: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Keep unicode letters instead of converting to ASCII"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.Slugify
 
     @classmethod
     def get_node_type(cls):
@@ -1059,6 +1503,74 @@ class StartsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.StartsWith
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class StripAccents(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Removes accent marks while keeping base characters.
+    text, cleanup, accents, normalize
+
+    Use cases:
+    - Creating ASCII-only identifiers from user input
+    - Normalizing prompts that mix accented and plain characters
+    - Simplifying comparisons against datasets lacking accents
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    preserve_non_ascii: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Keep non-ASCII characters that are not accents"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.StripAccents
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class SurroundWith(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Wraps text with the provided prefix and suffix.
+    text, format, surround, decorate
+
+    Use cases:
+    - Adding quotes or brackets before exporting values
+    - Ensuring prompts include guard rails or markup tokens
+    - Building template strings without using Format nodes
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    prefix: str | OutputHandle[str] = connect_field(default="", description=None)
+    suffix: str | OutputHandle[str] = connect_field(default="", description=None)
+    skip_if_wrapped: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Do not add duplicates if the text is already wrapped"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.SurroundWith
 
     @classmethod
     def get_node_type(cls):
@@ -1136,6 +1648,195 @@ class Template(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.text.Template
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class ToLowercase(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts text to lowercase.
+    text, transform, lowercase, format
+
+    Use cases:
+    - Preparing data for case-insensitive comparisons
+    - Generating lowercase filenames or IDs
+    - Normalizing prompts before hashing
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.ToLowercase
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class ToString(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts any input to its string representation.
+    text, string, convert, repr, str, cast
+    """
+
+    Mode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.ToString.Mode
+
+    value: Any | OutputHandle[Any] = connect_field(default=(), description=None)
+    mode: nodetool.nodes.nodetool.text.ToString.Mode = Field(
+        default=nodetool.nodes.nodetool.text.ToString.Mode.STR,
+        description="Conversion mode: use `str(value)` or `repr(value)`.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.ToString
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class ToTitlecase(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts text to title case.
+    text, transform, titlecase, format
+
+    Use cases:
+    - Cleaning user provided titles before display
+    - Normalizing headings in generated documents
+    - Making list entries easier to scan
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.ToTitlecase
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class ToUppercase(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts text to uppercase.
+    text, transform, uppercase, format
+
+    Use cases:
+    - Normalizing identifiers before comparison
+    - Preparing titles that must display in all caps
+    - Converting prompts to a consistent casing convention
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.ToUppercase
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class TrimWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Trims whitespace from the start and/or end of text.
+    text, whitespace, clean, remove
+
+    Use cases:
+    - Cleaning user input before validation
+    - Removing accidental spaces after concatenation
+    - Prepping prompts for exact comparisons
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    trim_start: bool | OutputHandle[bool] = connect_field(
+        default=True, description=None
+    )
+    trim_end: bool | OutputHandle[bool] = connect_field(default=True, description=None)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.TrimWhitespace
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
+class TruncateText(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Truncates text to a maximum length.
+    text, truncate, length, clip
+
+    Use cases:
+    - Enforcing LLM input limits before sending prompts
+    - Creating previews in UI cards
+    - Guarding downstream systems that expect short strings
+    """
+
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    max_length: int | OutputHandle[int] = connect_field(default=100, description=None)
+    ellipsis: str | OutputHandle[str] = connect_field(
+        default="", description="Optional suffix appended when truncation occurs"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.TruncateText
 
     @classmethod
     def get_node_type(cls):

@@ -3,12 +3,8 @@ from nodetool.dsl.graph import graph_result
 from nodetool.dsl.nodetool.list import (
     Append,
     Chunk,
-    FilterDictsByValue,
-    FilterNone,
-    FilterNumbers,
     Flatten,
     Sort,
-    Transform,
     Union,
 )
 from nodetool.dsl.nodetool.output import StringOutput, ListOutput
@@ -29,21 +25,6 @@ basic_list_ops = StringOutput(
     value=join_list.output,
 )
 
-# List transformations and filtering
-transform_list = Transform(
-    values=["1", "2", "3", "4", "5"],
-    transform_type=Transform.TransformType("to_float"),
-)
-filter_numbers_node = FilterNumbers(
-    values=transform_list.output,
-    filter_type=FilterNumbers.FilterNumberType("greater_than"),
-    value=2.5,
-)
-list_transform = ListOutput(
-    name="list_transform",
-    value=filter_numbers_node.output,
-)
-
 # # List aggregation operations
 # list_aggregation = DictionaryOutput(
 #     name="list_aggregation",
@@ -61,46 +42,22 @@ list_sets = ListOutput(
     name="list_sets", value=union_lists.output
 )
 
-# Complex list manipulation
-flatten_list = Flatten(values=[[1, None, 2], [3, None], [4, 5]], max_depth=1)
-filter_none_list = FilterNone(values=flatten_list.output)
-chunk_node = Chunk(
-    values=filter_none_list.output,
-    chunk_size=2,
+chunk_node = Chunk(values=[1, 2, 3, 4, 5], chunk_size=2)
+chunk_list = ListOutput(
+    name="chunk_list", value=chunk_node.output
 )
+
+# Complex list manipulation
+flatten_list = Flatten(values=[[1, 2], [3, 4], [5]], max_depth=1)
 complex_list = ListOutput(
     name="complex_list",
-    value=chunk_node.output,
+    value=flatten_list.output,
 )
-
-# Dictionary list operations
-filter_dicts = FilterDictsByValue(
-    values=[
-        {"name": "Alice", "age": 25},
-        {"name": "Bob", "age": 30},
-        {"name": "Charlie", "age": 35},
-    ],
-    key="name",
-    filter_type=FilterDictsByValue.FilterType("contains"),
-    criteria="Bob",
-)
-dict_list_ops = ListOutput(
-    name="dict_list_ops",
-    value=filter_dicts.output,
-)
-
 
 @pytest.mark.asyncio
 async def test_basic_list_ops():
     result = await graph_result(basic_list_ops)
     assert result["basic_list_ops"] == "apple, banana, cherry, date"
-
-
-@pytest.mark.asyncio
-async def test_list_transform():
-    result = await graph_result(list_transform)
-    assert isinstance(result["list_transform"], list)
-    assert all(x > 2.5 for x in result["list_transform"])
 
 
 # @pytest.mark.asyncio
@@ -123,4 +80,11 @@ async def test_list_sets():
 async def test_complex_list():
     result = await graph_result(complex_list)
     assert isinstance(result["complex_list"], list)
-    assert result["complex_list"] == [[1, 2], [3, 4], [5]]
+    assert result["complex_list"] == [1, 2, 3, 4, 5]
+
+
+@pytest.mark.asyncio
+async def test_chunk_list():
+    result = await graph_result(chunk_list)
+    assert isinstance(result["chunk_list"], list)
+    assert result["chunk_list"] == [[1, 2], [3, 4], [5]]

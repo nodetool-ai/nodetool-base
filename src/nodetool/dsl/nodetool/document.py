@@ -148,6 +148,8 @@ class SplitDocument(
                 provider=nodetool.metadata.types.Provider.Ollama,
                 id="embeddinggemma",
                 name="",
+                path=None,
+                supported_tasks=[],
             ),
             description="Embedding model to use",
         )
@@ -326,8 +328,8 @@ class SplitMarkdown(
         default=False,
         description="Whether to split into individual lines instead of header sections",
     )
-    chunk_size: int | OutputHandle[int] | None = connect_field(
-        default=None, description="Optional maximum chunk size for further splitting"
+    chunk_size: int | OutputHandle[int] = connect_field(
+        default=1000, description="Optional maximum chunk size for further splitting"
     )
     chunk_overlap: int | OutputHandle[int] = connect_field(
         default=30, description="Overlap size when using chunk_size"

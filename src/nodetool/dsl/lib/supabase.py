@@ -32,8 +32,7 @@ class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     filters: (
         list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
     ) = connect_field(
-        default=PydanticUndefined,
-        description="Filters to select rows to delete (required for safety)",
+        default=[], description="Filters to select rows to delete (required for safety)"
     )
 
     @classmethod
@@ -66,9 +65,7 @@ class Insert(SingleOutputGraphNode[Any], GraphNode[Any]):
         list[dict[str, typing.Any]]
         | dict[str, typing.Any]
         | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]]
-    ) = connect_field(
-        default=PydanticUndefined, description="One or multiple rows to insert"
-    )
+    ) = connect_field(default=[], description="One or multiple rows to insert")
     return_rows: bool | OutputHandle[bool] = connect_field(
         default=True, description="Return inserted rows (uses select('*'))"
     )
@@ -100,7 +97,7 @@ class RPC(SingleOutputGraphNode[Any], GraphNode[Any]):
         default="", description="RPC function name"
     )
     params: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default=PydanticUndefined, description="Function params"
+        default={}, description="Function params"
     )
     to_dataframe: bool | OutputHandle[bool] = connect_field(
         default=False, description="Return DataframeRef if result is a list of records"
@@ -138,9 +135,7 @@ class Select(SingleOutputGraphNode[Any], GraphNode[Any]):
     )
     filters: (
         list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
-    ) = connect_field(
-        default=PydanticUndefined, description="List of typed filters to apply"
-    )
+    ) = connect_field(default=[], description="List of typed filters to apply")
     order_by: str | OutputHandle[str] = connect_field(
         default="", description="Column to order by"
     )
@@ -181,13 +176,11 @@ class Update(SingleOutputGraphNode[Any], GraphNode[Any]):
         default="", description="Table to update"
     )
     values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default=PydanticUndefined, description="New values"
+        default={}, description="New values"
     )
     filters: (
         list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
-    ) = connect_field(
-        default=PydanticUndefined, description="Filters to select rows to update"
-    )
+    ) = connect_field(default=[], description="Filters to select rows to update")
     return_rows: bool | OutputHandle[bool] = connect_field(
         default=True, description="Return updated rows (uses select('*'))"
     )
@@ -222,13 +215,7 @@ class Upsert(SingleOutputGraphNode[Any], GraphNode[Any]):
         list[dict[str, typing.Any]]
         | dict[str, typing.Any]
         | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]]
-    ) = connect_field(
-        default=PydanticUndefined, description="One or multiple rows to upsert"
-    )
-    on_conflict: str | OutputHandle[str] | None = connect_field(
-        default=None,
-        description="Optional column or comma-separated columns for ON CONFLICT",
-    )
+    ) = connect_field(default=[], description="One or multiple rows to upsert")
     return_rows: bool | OutputHandle[bool] = connect_field(
         default=True, description="Return upserted rows (uses select('*'))"
     )

@@ -18,9 +18,7 @@ class MaxArray(BaseNode):
     """
 
     values: NPArray = Field(default=NPArray(), description="Input array")
-    axis: int | None = Field(
-        default=None, description="Axis along which to compute maximum"
-    )
+    axis: int = Field(default=0, description="Axis along which to compute maximum")
 
     async def process(self, context: ProcessingContext) -> NPArray | float | int:
         res = np.max(to_numpy(self.values), axis=self.axis)
@@ -42,9 +40,7 @@ class MinArray(BaseNode):
     """
 
     values: NPArray = Field(default=NPArray(), description="Input array")
-    axis: int | None = Field(
-        default=None, description="Axis along which to compute minimum"
-    )
+    axis: int = Field(default=0, description="Axis along which to compute minimum")
 
     async def process(self, context: ProcessingContext) -> NPArray | float | int:
         res = np.min(to_numpy(self.values), axis=self.axis)
@@ -66,9 +62,7 @@ class MeanArray(BaseNode):
     """
 
     values: NPArray = Field(default=NPArray(), description="Input array")
-    axis: int | None = Field(
-        default=None, description="Axis along which to compute mean"
-    )
+    axis: int = Field(default=0, description="Axis along which to compute mean")
 
     async def process(self, context: ProcessingContext) -> NPArray | float | int:
         res = np.mean(to_numpy(self.values), axis=self.axis)
@@ -90,9 +84,7 @@ class SumArray(BaseNode):
     """
 
     values: NPArray = Field(default=NPArray(), description="Input array")
-    axis: int | None = Field(
-        default=None, description="Axis along which to compute sum"
-    )
+    axis: int = Field(default=0, description="Axis along which to compute sum")
 
     async def process(self, context: ProcessingContext) -> NPArray | float | int:
         res = np.sum(to_numpy(self.values), axis=self.axis)
@@ -114,9 +106,7 @@ class ArgMaxArray(BaseNode):
     """
 
     values: NPArray = Field(default=NPArray(), description="Input array")
-    axis: int | None = Field(
-        default=None, description="Axis along which to find maximum indices"
-    )
+    axis: int = Field(default=0, description="Axis along which to find maximum indices")
 
     async def process(self, context: ProcessingContext) -> NPArray | int:
         res = np.argmax(to_numpy(self.values), axis=self.axis)
@@ -138,9 +128,7 @@ class ArgMinArray(BaseNode):
     """
 
     values: NPArray = Field(default=NPArray(), description="Input array")
-    axis: int | None = Field(
-        default=None, description="Axis along which to find minimum indices"
-    )
+    axis: int = Field(default=0, description="Axis along which to find minimum indices")
 
     async def process(self, context: ProcessingContext) -> NPArray | int:
         res = np.argmin(to_numpy(self.values), axis=self.axis)

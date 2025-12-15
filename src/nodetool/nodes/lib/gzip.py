@@ -16,7 +16,7 @@ class GzipCompress(BaseNode):
     - Prepare data for network transfer
     """
 
-    data: bytes | None = Field(default=None, description="Data to compress")
+    data: bytes = Field(default=b"", description="Data to compress")
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -37,10 +37,7 @@ class GzipDecompress(BaseNode):
     - Process network payloads
     """
 
-    data: bytes | None = Field(
-        default=None,
-        description="Gzip data to decompress",
-    )
+    data: bytes = Field(default=b"", description="Gzip data to decompress")
 
     _expose_as_tool: ClassVar[bool] = True
 

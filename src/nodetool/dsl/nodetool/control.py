@@ -32,7 +32,7 @@ class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
     """
 
     input_item: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The input item to collect."
+        default=(), description="The input item to collect."
     )
 
     @property
@@ -122,7 +122,7 @@ class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
         default=False, description="The condition to evaluate"
     )
     value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value to pass to the next node"
+        default=(), description="The value to pass to the next node"
     )
 
     @property
@@ -168,7 +168,7 @@ class Reroute(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
     input_value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="Value to pass through unchanged"
+        default=(), description="Value to pass through unchanged"
     )
 
     @classmethod

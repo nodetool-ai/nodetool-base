@@ -17,7 +17,7 @@ class If(BaseNode):
     """
 
     condition: bool = Field(default=False, description="The condition to evaluate")
-    value: Any = Field(default=None, description="The value to pass to the next node")
+    value: Any = Field(default=(), description="The value to pass to the next node")
 
     @classmethod
     def is_streaming_output(cls) -> bool:
@@ -113,7 +113,7 @@ class Collect(BaseNode):
     - Aggregate outputs from parallel operations
     """
 
-    input_item: Any = Field(default=None, description="The input item to collect.")
+    input_item: Any = Field(default=(), description="The input item to collect.")
 
     @classmethod
     def get_title(cls) -> str:
@@ -146,7 +146,7 @@ class Reroute(BaseNode):
     """
 
     input_value: Any = Field(
-        default=None, description="Value to pass through unchanged"
+        default=(), description="Value to pass through unchanged"
     )
 
     @classmethod

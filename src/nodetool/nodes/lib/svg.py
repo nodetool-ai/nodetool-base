@@ -136,7 +136,7 @@ class PolygonNode(BaseNode):
     svg, shape, vector, polygon
     """
 
-    points: str = Field(description="Points in format 'x1,y1 x2,y2 x3,y3...'")
+    points: str = Field(default="", description="Points in format 'x1,y1 x2,y2 x3,y3...'")
     fill: ColorRef = Field(default=ColorRef(value="#000000"), description="Fill color")
     stroke: ColorRef = Field(default=ColorRef(value="none"), description="Stroke color")
     stroke_width: int = Field(default=1, description="Stroke width")
@@ -161,7 +161,7 @@ class PathNode(BaseNode):
     svg, shape, vector, path
     """
 
-    path_data: str = Field(description="SVG path data (d attribute)")
+    path_data: str = Field(default="", description="SVG path data (d attribute)")
     fill: ColorRef = Field(default=ColorRef(value="#000000"), description="Fill color")
     stroke: ColorRef = Field(default=ColorRef(value="none"), description="Stroke color")
     stroke_width: int = Field(default=1, description="Stroke width")
@@ -477,7 +477,7 @@ class Transform(BaseNode):
     - Prepare elements for animation
     """
 
-    content: SVGElement = Field(default=None, description="SVG element to transform")
+    content: SVGElement = Field(default=SVGElement(), description="SVG element to transform")
     translate_x: float = Field(default=0, description="X translation")
     translate_y: float = Field(default=0, description="Y translation")
     rotate: float = Field(default=0, description="Rotation angle in degrees")
@@ -517,9 +517,9 @@ class ClipPath(BaseNode):
     """
 
     clip_content: SVGElement = Field(
-        default=None, description="SVG element to use as clip path"
+        default=SVGElement(), description="SVG element to use as clip path"
     )
-    content: SVGElement = Field(default=None, description="SVG element to clip")
+    content: SVGElement = Field(default=SVGElement(), description="SVG element to clip")
 
     async def process(self, context: ProcessingContext) -> SVGElement:
         if not self.clip_content or not self.content:

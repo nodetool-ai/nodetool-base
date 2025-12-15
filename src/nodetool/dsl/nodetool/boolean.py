@@ -68,11 +68,11 @@ class Compare(SingleOutputGraphNode[bool], GraphNode[bool]):
         nodetool.nodes.nodetool.boolean.Compare.Comparison
     )
 
-    a: Any | OutputHandle[Any] = connect_field(
-        default=None, description="First value to compare"
+    a: int | float | OutputHandle[int | float] = connect_field(
+        default=0, description="First value to compare"
     )
-    b: Any | OutputHandle[Any] = connect_field(
-        default=None, description="Second value to compare"
+    b: int | float | OutputHandle[int | float] = connect_field(
+        default=0, description="Second value to compare"
     )
     comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(
         default=nodetool.nodes.nodetool.boolean.Compare.Comparison.EQUAL,
@@ -111,10 +111,10 @@ class ConditionalSwitch(SingleOutputGraphNode[Any], GraphNode[Any]):
         default=False, description="The condition to check"
     )
     if_true: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value to return if the condition is true"
+        default=(), description="The value to return if the condition is true"
     )
     if_false: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value to return if the condition is false"
+        default=(), description="The value to return if the condition is false"
     )
 
     @classmethod
@@ -146,7 +146,7 @@ class IsIn(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
     value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value to check for membership"
+        default=(), description="The value to check for membership"
     )
     options: list[Any] | OutputHandle[list[Any]] = connect_field(
         default=[], description="The list of options to check against"
@@ -181,7 +181,7 @@ class IsNone(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
     value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value to check for None"
+        default=(), description="The value to check for None"
     )
 
     @classmethod

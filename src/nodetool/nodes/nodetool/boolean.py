@@ -4,7 +4,6 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from typing import Any
 
-
 class ConditionalSwitch(BaseNode):
     """
     Performs a conditional check on a boolean input and returns a value based on the result.
@@ -18,10 +17,10 @@ class ConditionalSwitch(BaseNode):
 
     condition: bool = Field(default=False, description="The condition to check")
     if_true: Any = Field(
-        default=None, description="The value to return if the condition is true"
+        default=(), description="The value to return if the condition is true"
     )
     if_false: Any = Field(
-        default=None, description="The value to return if the condition is false"
+        default=(), description="The value to return if the condition is false"
     )
 
     async def process(self, context: ProcessingContext) -> Any:
@@ -103,8 +102,8 @@ class Compare(BaseNode):
         GREATER_THAN_OR_EQUAL = ">="
         LESS_THAN_OR_EQUAL = "<="
 
-    a: Any = Field(default=None, description="First value to compare")
-    b: Any = Field(default=None, description="Second value to compare")
+    a: int | float = Field(default=0, description="First value to compare")
+    b: int | float = Field(default=0, description="Second value to compare")
     comparison: Comparison = Field(
         default=Comparison.EQUAL, description="Comparison operator to use"
     )
@@ -137,7 +136,7 @@ class IsNone(BaseNode):
     - Implement null checks in data processing
     """
 
-    value: Any = Field(default=None, description="The value to check for None")
+    value: Any = Field(default=(), description="The value to check for None")
 
     async def process(self, context: ProcessingContext) -> bool:
         return self.value is None
@@ -154,7 +153,7 @@ class IsIn(BaseNode):
     - Filter data based on inclusion criteria
     """
 
-    value: Any = Field(default=None, description="The value to check for membership")
+    value: Any = Field(default=(), description="The value to check for membership")
     options: list[Any] = Field(
         default=[], description="The list of options to check against"
     )

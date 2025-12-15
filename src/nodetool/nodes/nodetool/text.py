@@ -27,13 +27,23 @@ class ToString(BaseNode):
     text, string, convert, repr, str, cast
     """
 
-    value: Any = Field(default=None, title="Value")
+    class Mode(str, Enum):
+        STR = "str"
+        REPR = "repr"
+
+    value: Any = Field(default=(), title="Value")
+    mode: Mode = Field(
+        default=Mode.STR,
+        description="Conversion mode: use `str(value)` or `repr(value)`.",
+    )
 
     @classmethod
     def get_title(cls):
         return "To String"
 
     async def process(self, context: ProcessingContext) -> str:
+        if self.mode == self.Mode.REPR:
+            return repr(self.value)
         return str(self.value)
 
 
@@ -490,7 +500,7 @@ class Chunk(BaseNode):
     text: str = Field(title="Text", default="")
     length: int = Field(title="Length", default=100, le=1000, ge=1)
     overlap: int = Field(title="Overlap", default=0)
-    separator: str | None = Field(title="Separator", default=None)
+    separator: str = Field(title="Separator", default=" ")
 
     @classmethod
     def get_title(cls):
@@ -635,8 +645,8 @@ class RegexMatch(BaseNode):
 
     text: str = Field(default="", description="Text to search in")
     pattern: str = Field(default="", description="Regular expression pattern")
-    group: int | None = Field(
-        default=None, description="Capture group to extract (0 for full match)"
+    group: int = Field(
+        default=0, description="Capture group to extract (0 for full match)"
     )
 
     @classmethod
@@ -905,9 +915,9 @@ class Slice(BaseNode):
     """
 
     text: str = Field(title="Text", default="")
-    start: int | None = Field(title="Start Index", default=None)
-    stop: int | None = Field(title="Stop Index", default=None)
-    step: int | None = Field(title="Step", default=None)
+    start: int = Field(title="Start Index", default=0)
+    stop: int = Field(title="Stop Index", default=0)
+    step: int = Field(title="Step", default=1)
 
     @classmethod
     def get_title(cls):
@@ -980,7 +990,7 @@ class Contains(BaseNode):
     text: str = Field(title="Text", default="")
     substring: str = Field(title="Substring", default="")
     search_values: list[str] = Field(
-        default_factory=list,
+        default=[],
         description="Optional list of additional substrings to check",
     )
     case_sensitive: bool = Field(title="Case Sensitive", default=True)
@@ -1215,9 +1225,9 @@ class HasLength(BaseNode):
     """
 
     text: str = Field(title="Text", default="")
-    min_length: int | None = Field(title="Minimum Length", default=None)
-    max_length: int | None = Field(title="Maximum Length", default=None)
-    exact_length: int | None = Field(title="Exact Length", default=None)
+    min_length: int = Field(title="Minimum Length", default=0)
+    max_length: int = Field(title="Maximum Length", default=0)
+    exact_length: int = Field(title="Exact Length", default=0)
 
     @classmethod
     def get_title(cls):
@@ -1385,9 +1395,9 @@ class IndexOf(BaseNode):
         description="Index to begin the search from",
         ge=0,
     )
-    end_index: int | None = Field(
+    end_index: int = Field(
         title="End Index",
-        default=None,
+        default=0,
         description="Optional exclusive end index for the search",
     )
     search_from_end: bool = Field(
@@ -1568,6 +1578,172 @@ class LoadTextAssets(BaseNode):
                 "text": TextRef(
                     type="text",
                     uri=await context.get_asset_url(asset.id),
-                    asset_id=asset.id,
                 ),
             }
+
+
+class FilterString(BaseNode):
+    """
+    Filters a stream of strings based on various criteria.
+    filter, strings, text, stream
+
+    Use cases:
+    - Filter strings by length
+    - Filter strings containing specific text
+    - Filter strings by prefix/suffix
+    """
+
+    class FilterType(str, Enum):
+        CONTAINS = "contains"
+        STARTS_WITH = "starts_with"
+        ENDS_WITH = "ends_with"
+        LENGTH_GREATER = "length_greater"
+        LENGTH_LESS = "length_less"
+        EXACT_LENGTH = "exact_length"
+
+    value: str = Field(default="", description="Input string stream")
+    filter_type: FilterType = Field(
+        default=FilterType.CONTAINS, description="The type of filter to apply"
+    )
+    criteria: str = Field(
+        default="",
+        description="The filtering criteria (text to match or length as string)",
+    )
+
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
+    class OutputType(TypedDict):
+        output: str
+
+    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+        current_filter_type = self.filter_type
+        current_criteria = self.criteria
+
+        async for handle, item in self.iter_any_input():
+            if handle == "filter_type":
+                current_filter_type = item
+                continue
+            elif handle == "criteria":
+                current_criteria = item
+                continue
+            elif handle == "value":
+                val = item
+                if not isinstance(val, str):
+                    continue
+
+                length_criteria = 0
+                if current_filter_type in [
+                    self.FilterType.LENGTH_GREATER,
+                    self.FilterType.LENGTH_LESS,
+                    self.FilterType.EXACT_LENGTH,
+                ]:
+                    try:
+                        length_criteria = int(current_criteria)
+                    except ValueError:
+                        continue # Skip if invalid criteria for length
+
+                matched = False
+                if current_filter_type == self.FilterType.CONTAINS:
+                    if current_criteria in val:
+                        matched = True
+                elif current_filter_type == self.FilterType.STARTS_WITH:
+                    if val.startswith(current_criteria):
+                        matched = True
+                elif current_filter_type == self.FilterType.ENDS_WITH:
+                    if val.endswith(current_criteria):
+                        matched = True
+                elif current_filter_type == self.FilterType.LENGTH_GREATER:
+                    if len(val) > length_criteria:
+                        matched = True
+                elif current_filter_type == self.FilterType.LENGTH_LESS:
+                    if len(val) < length_criteria:
+                        matched = True
+                elif current_filter_type == self.FilterType.EXACT_LENGTH:
+                     if len(val) == length_criteria:
+                        matched = True
+                
+                if matched:
+                    yield {"output": val}
+
+
+class FilterRegexString(BaseNode):
+    """
+    Filters a stream of strings using regular expressions.
+    filter, regex, pattern, text, stream
+
+    Use cases:
+    - Filter strings using complex patterns
+    - Extract strings matching specific formats (emails, dates, etc.)
+    """
+
+    value: str = Field(default="", description="Input string stream")
+    pattern: str = Field(
+        default="", description="The regular expression pattern to match against."
+    )
+    full_match: bool = Field(
+        default=False,
+        description="Whether to match the entire string or find pattern anywhere in string",
+    )
+
+    @classmethod
+    def is_streaming_output(cls) -> bool:
+        return True
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+    
+    class OutputType(TypedDict):
+        output: str
+
+    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+        import re
+        
+        current_pattern = self.pattern
+        current_full_match = self.full_match
+        regex = None
+
+        try:
+            regex = re.compile(current_pattern)
+        except re.error:
+            pass # Handle invalid regex gracefully (maybe log or just don't match)
+
+        async for handle, item in self.iter_any_input():
+            if handle == "pattern":
+                current_pattern = item
+                try:
+                    regex = re.compile(current_pattern)
+                except re.error:
+                    regex = None
+                continue
+            elif handle == "full_match":
+                current_full_match = item
+                continue
+            elif handle == "value":
+                if regex is None:
+                    try:
+                        # Fallback try to compile if it wasn't valid before
+                        regex = re.compile(current_pattern)
+                    except re.error:
+                        continue
+                
+                val = item
+                if not isinstance(val, str):
+                    continue
+                
+                matched = False
+                if current_full_match:
+                    if regex.fullmatch(val):
+                        matched = True
+                else:
+                    if regex.search(val):
+                        matched = True
+                
+                if matched:
+                    yield {"output": val}

@@ -217,8 +217,8 @@ class CreateThread(BaseNode):
     title: str | None = Field(
         default="Agent Conversation", description="Optional title for the new thread"
     )
-    thread_id: str | None = Field(
-        default=None,
+    thread_id: str = Field(
+        default="",
         description="Optional custom thread ID. If provided and owned by the user, it will be reused; otherwise a new thread is created.",
     )
 
@@ -885,7 +885,7 @@ class Agent(BaseNode):
     )
     thread_id: str | None = Field(
         title="Thread ID",
-        default=None,
+        default="",
         description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
     )
     max_tokens: int = Field(title="Max Tokens", default=8192, ge=1, le=100000)

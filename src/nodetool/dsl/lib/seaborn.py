@@ -69,8 +69,11 @@ class ChartRenderer(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
     height: int | OutputHandle[int] = connect_field(
         default=480, description="The height of the chart in pixels."
     )
-    data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The data to visualize as a pandas DataFrame."
+    data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="The data to visualize as a pandas DataFrame.",
     )
     despine: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove top and right spines."

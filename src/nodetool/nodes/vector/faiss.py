@@ -219,7 +219,7 @@ class Search(FaissNode):
         default=NPArray(), description="Query vectors (m, d) or (d,)"
     )
     k: int = Field(default=5, ge=1, description="Number of nearest neighbors")
-    nprobe: int | None = Field(default=None, description="nprobe for IVF indices")
+    nprobe: int = Field(default=10, ge=1, description="nprobe for IVF indices")
 
     class OutputType(TypedDict):
         distances: NPArray

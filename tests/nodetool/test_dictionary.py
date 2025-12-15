@@ -88,7 +88,7 @@ async def test_reduce_dictionaries(context: ProcessingContext):
 async def test_empty_dictionary(context: ProcessingContext):
     node = GetValue(dictionary={}, key="a")
     result = await node.process(context)
-    assert result is None
+    assert result == ()
 
 
 @pytest.mark.asyncio

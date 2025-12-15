@@ -72,7 +72,7 @@ class EncodeQueryParams(BaseNode):
     """
 
     params: dict[str, str] = Field(
-        default_factory=dict, description="Parameters to encode"
+        default={}, description="Parameters to encode"
     )
 
     @classmethod

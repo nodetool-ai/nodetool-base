@@ -58,9 +58,9 @@ class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
 
 class PaddleOCRNodeOutputs(OutputsProxy):
     @property
-    def boxes(self) -> OutputHandle[list[types.OCRResult]]:
-        return typing.cast(OutputHandle[list[types.OCRResult]], self["boxes"])
+    def boxes(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self["boxes"])
 
     @property
-    def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+    def text(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self["text"])

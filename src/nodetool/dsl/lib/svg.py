@@ -72,10 +72,16 @@ class ClipPath(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
     """
 
     clip_content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
-        default=None, description="SVG element to use as clip path"
+        default=types.SVGElement(
+            type="svg_element", name="", attributes={}, content=None, children=[]
+        ),
+        description="SVG element to use as clip path",
     )
     content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
-        default=None, description="SVG element to clip"
+        default=types.SVGElement(
+            type="svg_element", name="", attributes={}, content=None, children=[]
+        ),
+        description="SVG element to clip",
     )
 
     @classmethod
@@ -355,7 +361,7 @@ class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
     """
 
     path_data: str | OutputHandle[str] = connect_field(
-        default=PydanticUndefined, description="SVG path data (d attribute)"
+        default="", description="SVG path data (d attribute)"
     )
     fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
@@ -391,7 +397,7 @@ class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEl
     """
 
     points: str | OutputHandle[str] = connect_field(
-        default=PydanticUndefined, description="Points in format 'x1,y1 x2,y2 x3,y3...'"
+        default="", description="Points in format 'x1,y1 x2,y2 x3,y3...'"
     )
     fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
         default=types.ColorRef(type="color", value="#000000"), description="Fill color"
@@ -569,7 +575,10 @@ class Transform(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElem
     """
 
     content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
-        default=None, description="SVG element to transform"
+        default=types.SVGElement(
+            type="svg_element", name="", attributes={}, content=None, children=[]
+        ),
+        description="SVG element to transform",
     )
     translate_x: float | OutputHandle[float] = connect_field(
         default=0, description="X translation"

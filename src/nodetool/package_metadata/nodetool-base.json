@@ -31,8 +31,9 @@
           "type": {
             "type": "any"
           },
-          "default": null,
-          "title": "Value"
+          "default": [],
+          "title": "Value",
+          "description": "The value to append to the list."
         }
       ],
       "outputs": [
@@ -273,639 +274,6 @@
       "basic_fields": [
         "values",
         "other_values"
-      ]
-    },
-    {
-      "title": "Filter Dicts",
-      "description": "Filter a list of dictionaries based on a condition.\n    list, filter, query, condition\n\n    Basic Operators:\n    - Comparison: >, <, >=, <=, ==, !=\n    - Logical: and, or, not\n    - Membership: in, not in\n\n    Example Conditions:\n    # Basic comparisons\n    age > 30\n    price <= 100\n    status == 'active'\n\n    # Multiple conditions\n    age > 30 and salary < 50000\n    (price >= 100) and (price <= 200)\n    department in ['Sales', 'Marketing']\n\n    # String operations\n    name.str.startswith('J')\n    email.str.contains('@company.com')\n\n    # Datetime conditions\n    date > '2024-01-01'\n    date.dt.year == 2024\n    date.dt.month >= 6\n    date.dt.day_name() == 'Monday'\n\n    # Date ranges\n    date.between('2024-01-01', '2024-12-31')\n    date >= '2024-01-01' and date < '2025-01-01'\n\n    # Complex datetime\n    date.dt.hour < 12\n    date.dt.dayofweek <= 4  # Weekdays only\n\n    # Numeric operations\n    price.between(100, 200)\n    quantity % 2 == 0  # Even numbers\n\n    # Special values\n    value.isna()  # Check for NULL/NaN\n    value.notna()  # Check for non-NULL/non-NaN\n\n    Note: Dates should be in ISO format (YYYY-MM-DD) or include time (YYYY-MM-DD HH:MM:SS)\n\n    Use cases:\n    - Filter list of dictionary objects based on criteria\n    - Extract subset of data meeting specific conditions\n    - Clean data by removing unwanted entries",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterDicts",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "condition",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Condition",
-          "description": "\n        The filtering condition using pandas query syntax.\n\n        Basic Operators:\n        - Comparison: >, <, >=, <=, ==, !=\n        - Logical: and, or, not\n        - Membership: in, not in\n        \n        Example Conditions:\n        # Basic comparisons\n        age > 30\n        price <= 100\n        status == 'active'\n        \n        See node documentation for more examples.\n        "
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "condition"
-      ]
-    },
-    {
-      "title": "Filter Dicts By Number",
-      "description": "Filters a list of dictionaries based on numeric values for a specified key.\n    list, filter, dictionary, numbers, numeric\n\n    Use cases:\n    - Filter dictionaries by numeric comparisons (greater than, less than, equal to)\n    - Filter records with even/odd numeric values\n    - Filter entries with positive/negative numbers",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterDictsByNumber",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "key",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Key"
-        },
-        {
-          "name": "filter_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "greater_than",
-              "less_than",
-              "equal_to",
-              "even",
-              "odd",
-              "positive",
-              "negative"
-            ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterDictsByNumber.FilterDictNumberType"
-          },
-          "default": "greater_than",
-          "title": "Filter Type"
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "float",
-            "optional": true
-          },
-          "default": null,
-          "title": "Value"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "key",
-        "filter_type",
-        "value"
-      ]
-    },
-    {
-      "title": "Filter Dicts By Range",
-      "description": "Filters a list of dictionaries based on a numeric range for a specified key.\n    list, filter, dictionary, range, between\n\n    Use cases:\n    - Filter records based on numeric ranges (e.g., price range, age range)\n    - Find entries with values within specified bounds\n    - Filter data sets based on numeric criteria",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterDictsByRange",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "key",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Key",
-          "description": "The dictionary key to check for the range"
-        },
-        {
-          "name": "min_value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Min Value",
-          "description": "The minimum value (inclusive) of the range"
-        },
-        {
-          "name": "max_value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Max Value",
-          "description": "The maximum value (inclusive) of the range"
-        },
-        {
-          "name": "inclusive",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Inclusive",
-          "description": "If True, includes the min and max values in the results"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "key",
-        "min_value",
-        "max_value",
-        "inclusive"
-      ]
-    },
-    {
-      "title": "Filter Dicts By Value",
-      "description": "Filters a list of dictionaries based on their values using various criteria.\n    list, filter, dictionary, values\n\n    Use cases:\n    - Filter dictionaries by value content\n    - Filter dictionaries by value type\n    - Filter dictionaries by value patterns",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterDictsByValue",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "key",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Key",
-          "description": "The dictionary key to check"
-        },
-        {
-          "name": "filter_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "contains",
-              "starts_with",
-              "ends_with",
-              "equals",
-              "type_is",
-              "length_greater",
-              "length_less",
-              "exact_length"
-            ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterDictsByValue.FilterType"
-          },
-          "default": "contains",
-          "title": "Filter Type",
-          "description": "The type of filter to apply"
-        },
-        {
-          "name": "criteria",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Criteria",
-          "description": "The filtering criteria (text to match, type name, or length as string)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "key",
-        "filter_type",
-        "criteria"
-      ]
-    },
-    {
-      "title": "Filter Dicts Regex",
-      "description": "Filters a list of dictionaries using regular expressions on specified keys.\n    list, filter, regex, dictionary, pattern\n\n    Use cases:\n    - Filter dictionaries with values matching complex patterns\n    - Search for dictionaries containing emails, dates, or specific formats\n    - Advanced text pattern matching across dictionary values",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterDictsRegex",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "key",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Key"
-        },
-        {
-          "name": "pattern",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Pattern"
-        },
-        {
-          "name": "full_match",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Full Match"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "key",
-        "pattern",
-        "full_match"
-      ]
-    },
-    {
-      "title": "Filter None",
-      "description": "Filters out None values from a list.\n    list, filter, none, null\n\n    Use cases:\n    - Clean data by removing null values\n    - Get only valid entries\n    - Remove placeholder values",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterNone",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values"
-      ]
-    },
-    {
-      "title": "Filter Number Range",
-      "description": "Filters a list of numbers to find values within a specified range.\n    list, filter, numbers, range, between\n\n    Use cases:\n    - Find numbers within a specific range\n    - Filter data points within bounds\n    - Implement range-based filtering",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterNumberRange",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "min_value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Min Value"
-        },
-        {
-          "name": "max_value",
-          "type": {
-            "type": "float"
-          },
-          "default": 0,
-          "title": "Max Value"
-        },
-        {
-          "name": "inclusive",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Inclusive"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "min_value",
-        "max_value",
-        "inclusive"
-      ]
-    },
-    {
-      "title": "Filter Numbers",
-      "description": "Filters a list of numbers based on various numerical conditions.\n    list, filter, numbers, numeric\n\n    Use cases:\n    - Filter numbers by comparison (greater than, less than, equal to)\n    - Filter even/odd numbers\n    - Filter positive/negative numbers",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterNumbers",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "filter_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "greater_than",
-              "less_than",
-              "equal_to",
-              "even",
-              "odd",
-              "positive",
-              "negative"
-            ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterNumbers.FilterNumberType"
-          },
-          "default": "greater_than",
-          "title": "Filter Type",
-          "description": "The type of filter to apply"
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "float",
-            "optional": true
-          },
-          "default": null,
-          "title": "Value",
-          "description": "The comparison value (for greater_than, less_than, equal_to)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "float"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "filter_type",
-        "value"
-      ]
-    },
-    {
-      "title": "Filter Regex",
-      "description": "Filters a list of strings using regular expressions.\n    list, filter, regex, pattern, text\n\n    Use cases:\n    - Filter strings using complex patterns\n    - Extract strings matching specific formats (emails, dates, etc.)\n    - Advanced text pattern matching",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterRegex",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "pattern",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Pattern",
-          "description": "The regular expression pattern to match against."
-        },
-        {
-          "name": "full_match",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Full Match",
-          "description": "Whether to match the entire string or find pattern anywhere in string"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "pattern",
-        "full_match"
-      ]
-    },
-    {
-      "title": "Filter Strings",
-      "description": "Filters a list of strings based on various criteria.\n    list, filter, strings, text\n\n    Use cases:\n    - Filter strings by length\n    - Filter strings containing specific text\n    - Filter strings by prefix/suffix\n    - Filter strings using regex patterns",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.FilterStrings",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "filter_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "contains",
-              "starts_with",
-              "ends_with",
-              "length_greater",
-              "length_less",
-              "exact_length"
-            ],
-            "type_name": "nodetool.nodes.nodetool.list.FilterStrings.FilterType"
-          },
-          "default": "contains",
-          "title": "Filter Type",
-          "description": "The type of filter to apply"
-        },
-        {
-          "name": "criteria",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Criteria",
-          "description": "The filtering criteria (text to match or length as string)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "filter_type",
-        "criteria"
       ]
     },
     {
@@ -1173,70 +541,6 @@
         "start",
         "stop",
         "step"
-      ]
-    },
-    {
-      "title": "Map Field",
-      "description": "Extracts a specific field from a list of dictionaries.\n    list, map, field, extract, pluck\n\n    Use cases:\n    - Extract specific fields from a list of dictionaries\n    - Transform complex data structures into simple lists\n    - Collect values for a particular key across multiple dictionaries",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.MapField",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "dict",
-                "type_args": [
-                  {
-                    "type": "str"
-                  },
-                  {
-                    "type": "any"
-                  }
-                ]
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "field",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Field"
-        },
-        {
-          "name": "default",
-          "type": {
-            "type": "any",
-            "optional": true
-          },
-          "default": null,
-          "title": "Default"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "field",
-        "default"
       ]
     },
     {
@@ -1650,61 +954,6 @@
       ]
     },
     {
-      "title": "Transform",
-      "description": "Applies a transformation to each element in a list.\n    list, transform, map, convert\n\n    Use cases:\n    - Convert types (str to int, etc.)\n    - Apply formatting\n    - Mathematical operations",
-      "namespace": "nodetool.list",
-      "node_type": "nodetool.list.Transform",
-      "properties": [
-        {
-          "name": "values",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Values"
-        },
-        {
-          "name": "transform_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "to_int",
-              "to_float",
-              "to_string",
-              "uppercase",
-              "lowercase",
-              "strip"
-            ],
-            "type_name": "nodetool.nodes.nodetool.list.Transform.TransformType"
-          },
-          "default": "to_string",
-          "title": "Transform Type"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "values",
-        "transform_type"
-      ]
-    },
-    {
       "title": "Union",
       "description": "Combines unique elements from two lists.\n    list, set, union, combine\n\n    Use cases:\n    - Merge lists while removing duplicates\n    - Combine collections uniquely\n    - Create comprehensive set of items",
       "namespace": "nodetool.list",
@@ -1766,7 +1015,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "Input Item",
           "description": "The input item to collect."
         }
@@ -1848,7 +1097,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "Value",
           "description": "The value to pass to the next node"
         }
@@ -1884,7 +1133,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "Input Value",
           "description": "Value to pass through unchanged"
         }
@@ -2377,6 +1626,124 @@
       "supports_dynamic_outputs": true
     },
     {
+      "title": "Filter Number",
+      "description": "Filters a stream of numbers based on various numerical conditions.\n    filter, numbers, numeric, stream\n    \n    Use cases:\n    - Filter numbers by comparison (greater than, less than, equal to)\n    - Filter even/odd numbers\n    - Filter positive/negative numbers",
+      "namespace": "nodetool.numbers",
+      "node_type": "nodetool.numbers.FilterNumber",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Value",
+          "description": "Input number stream"
+        },
+        {
+          "name": "filter_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "greater_than",
+              "less_than",
+              "equal_to",
+              "even",
+              "odd",
+              "positive",
+              "negative"
+            ],
+            "type_name": "nodetool.nodes.nodetool.numbers.FilterNumber.FilterNumberType"
+          },
+          "default": "greater_than",
+          "title": "Filter Type",
+          "description": "The type of filter to apply"
+        },
+        {
+          "name": "compare_value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Compare Value",
+          "description": "The comparison value (for greater_than, less_than, equal_to)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "filter_type",
+        "compare_value"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Filter Number Range",
+      "description": "Filters a stream of numbers to find values within a specified range.\n    filter, numbers, range, between, stream\n\n    Use cases:\n    - Find numbers within a specific range\n    - Filter data points within bounds\n    - Implement range-based filtering",
+      "namespace": "nodetool.numbers",
+      "node_type": "nodetool.numbers.FilterNumberRange",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Value",
+          "description": "Input number stream"
+        },
+        {
+          "name": "min_value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Min Value",
+          "description": "Minimum value"
+        },
+        {
+          "name": "max_value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Max Value",
+          "description": "Maximum value"
+        },
+        {
+          "name": "inclusive",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Inclusive",
+          "description": "Inclusive bounds"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "min_value",
+        "max_value",
+        "inclusive"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "All",
       "description": "Checks if all boolean values in a list are True.\n    boolean, all, check, logic, condition, flow-control, branch\n\n\n    Use cases:\n    - Ensure all conditions in a set are met\n    - Implement comprehensive checks\n    - Validate multiple criteria simultaneously",
       "namespace": "nodetool.boolean",
@@ -2418,18 +1785,34 @@
         {
           "name": "a",
           "type": {
-            "type": "any"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
           },
-          "default": null,
+          "default": 0,
           "title": "A",
           "description": "First value to compare"
         },
         {
           "name": "b",
           "type": {
-            "type": "any"
+            "type": "union",
+            "type_args": [
+              {
+                "type": "int"
+              },
+              {
+                "type": "float"
+              }
+            ]
           },
-          "default": null,
+          "default": 0,
           "title": "B",
           "description": "Second value to compare"
         },
@@ -2486,7 +1869,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "If True",
           "description": "The value to return if the condition is true"
         },
@@ -2495,7 +1878,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "If False",
           "description": "The value to return if the condition is false"
         }
@@ -2525,7 +1908,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "Value",
           "description": "The value to check for membership"
         },
@@ -2568,7 +1951,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "Value",
           "description": "The value to check for None"
         }
@@ -2790,7 +2173,7 @@
             "type": "str",
             "optional": true
           },
-          "default": null,
+          "default": "",
           "title": "Thread ID",
           "description": "Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread."
         },
@@ -3406,10 +2789,9 @@
         {
           "name": "thread_id",
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "str"
           },
-          "default": null,
+          "default": "",
           "title": "Thread Id",
           "description": "Optional custom thread ID. If provided and owned by the user, it will be reused; otherwise a new thread is created."
         }
@@ -4552,56 +3934,6 @@
       ]
     },
     {
-      "title": "Collection Input",
-      "description": "Accepts a reference to a specific data collection, typically within a vector database or similar storage system.\n    The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.\n    Keywords: input, parameter, collection, database, vector_store, chroma, index\n\n    Use cases:\n    - Select a target vector database collection for indexing new documents.\n    - Specify a collection to perform a similarity search or query against.\n    - Choose a data source or destination that is represented as a named collection.",
-      "namespace": "nodetool.input",
-      "node_type": "nodetool.input.CollectionInput",
-      "properties": [
-        {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
-          "name": "value",
-          "type": {
-            "type": "collection"
-          },
-          "default": {
-            "type": "collection",
-            "name": ""
-          },
-          "title": "Value",
-          "description": "The collection to use as input."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "collection"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "name",
-        "value"
-      ]
-    },
-    {
       "title": "Color Input",
       "description": "Accepts a color value as a parameter for workflows.\n    input, parameter, color, color_picker, color_input",
       "namespace": "nodetool.input",
@@ -5215,11 +4547,16 @@
         {
           "name": "value",
           "type": {
-            "type": "any"
+            "type": "audio"
           },
-          "default": null,
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Value",
-          "description": "The value of the input."
+          "description": "The audio to use as input."
         },
         {
           "name": "description",
@@ -5229,20 +4566,6 @@
           "default": "",
           "title": "Description",
           "description": "The description of the input for the workflow."
-        },
-        {
-          "name": "audio",
-          "type": {
-            "type": "audio"
-          },
-          "default": {
-            "type": "audio",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Audio",
-          "description": "The audio to use as input."
         }
       ],
       "outputs": [
@@ -5256,7 +4579,7 @@
       "basic_fields": [
         "name",
         "value",
-        "audio"
+        "value"
       ],
       "is_streaming_output": true
     },
@@ -5467,6 +4790,33 @@
       "expose_as_tool": true
     },
     {
+      "title": "Capitalize Text",
+      "description": "Capitalizes only the first character.\n    text, transform, capitalize, format\n\n    Use cases:\n    - Formatting short labels or sentences\n    - Cleaning up LLM output before UI rendering\n    - Quickly fixing lowercase starts after concatenation",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.CapitalizeText",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text"
+      ]
+    },
+    {
       "title": "Split Text into Chunks",
       "description": "Splits text into chunks of specified word length.\n    text, chunk, split\n\n    Use cases:\n    - Preparing text for processing by models with input length limits\n    - Creating manageable text segments for parallel processing\n    - Generating summaries of text sections",
       "namespace": "nodetool.text",
@@ -5501,10 +4851,9 @@
         {
           "name": "separator",
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "str"
           },
-          "default": null,
+          "default": " ",
           "title": "Separator"
         }
       ],
@@ -5526,6 +4875,63 @@
         "length",
         "overlap",
         "separator"
+      ]
+    },
+    {
+      "title": "Collapse Whitespace",
+      "description": "Collapses consecutive whitespace into single separators.\n    text, whitespace, normalize, clean, remove\n\n    Use cases:\n    - Normalizing pasted text from PDFs or chat logs\n    - Cleaning prompts with erratic spacing\n    - Converting multi-line input into succinct sentences",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.CollapseWhitespace",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "preserve_newlines",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Preserve Newlines",
+          "description": "Keep newline characters instead of replacing them"
+        },
+        {
+          "name": "replacement",
+          "type": {
+            "type": "str"
+          },
+          "default": " ",
+          "title": "Replacement",
+          "description": "String used to replace whitespace runs"
+        },
+        {
+          "name": "trim_edges",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Trim Edges",
+          "description": "Strip whitespace before collapsing"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "preserve_newlines",
+        "replacement",
+        "trim_edges"
       ]
     },
     {
@@ -5562,6 +4968,62 @@
       "basic_fields": [
         "input_item",
         "separator"
+      ]
+    },
+    {
+      "title": "Compare Text",
+      "description": "Compares two text values and reports ordering.\n    text, compare, equality, sort, equals, =\n\n    Use cases:\n    - Checking if two strings are identical before branching\n    - Determining lexical order for sorting or deduplication\n    - Normalizing casing/spacing before compares",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.Compare",
+      "properties": [
+        {
+          "name": "text_a",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "First Text"
+        },
+        {
+          "name": "text_b",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Second Text"
+        },
+        {
+          "name": "case_sensitive",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Case Sensitive",
+          "description": "Compare without lowercasing"
+        },
+        {
+          "name": "trim_whitespace",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Trim Whitespace",
+          "description": "Strip leading/trailing whitespace before comparing"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text_a",
+        "text_b",
+        "case_sensitive",
+        "trim_whitespace"
       ]
     },
     {
@@ -5602,7 +5064,7 @@
     },
     {
       "title": "Contains Text",
-      "description": "Checks if text contains a specified substring.\n    text, check, contains, compare, validate, substring, string\n\n    Use cases:\n    - Searching for keywords in text\n    - Filtering content based on presence of terms\n    - Validating text content",
+      "description": "Checks if text contains a specified substring.\n    text, compare, validate, substring, string\n\n    Use cases:\n    - Ensuring safety or guard phrases appear\n    - Rejecting inputs when banned terms exist\n    - Matching multiple keywords with any/all logic",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Contains",
       "properties": [
@@ -5623,12 +5085,41 @@
           "title": "Substring"
         },
         {
+          "name": "search_values",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Search Values",
+          "description": "Optional list of additional substrings to check"
+        },
+        {
           "name": "case_sensitive",
           "type": {
             "type": "bool"
           },
           "default": true,
           "title": "Case Sensitive"
+        },
+        {
+          "name": "match_mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "any",
+              "all",
+              "none"
+            ],
+            "type_name": "nodetool.nodes.nodetool.text.Contains.MatchMode"
+          },
+          "default": "any",
+          "title": "Match Mode",
+          "description": "ANY requires one match, ALL needs every value, NONE ensures none"
         }
       ],
       "outputs": [
@@ -5642,7 +5133,9 @@
       "basic_fields": [
         "text",
         "substring",
-        "case_sensitive"
+        "search_values",
+        "case_sensitive",
+        "match_mode"
       ]
     },
     {
@@ -5722,6 +5215,62 @@
       "basic_fields": [
         "text",
         "suffix"
+      ]
+    },
+    {
+      "title": "Equals",
+      "description": "Checks if two text inputs are equal.\n    text, compare, equals, match, =\n\n    Use cases:\n    - Branching workflows when user input matches an expected value\n    - Guarding against duplicates before saving assets\n    - Quickly comparing normalized prompts or identifiers",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.Equals",
+      "properties": [
+        {
+          "name": "text_a",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "First Text"
+        },
+        {
+          "name": "text_b",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Second Text"
+        },
+        {
+          "name": "case_sensitive",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Case Sensitive",
+          "description": "Disable lowercasing before compare"
+        },
+        {
+          "name": "trim_whitespace",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Trim Whitespace",
+          "description": "Strip leading/trailing whitespace prior to comparison"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text_a",
+        "text_b",
+        "case_sensitive",
+        "trim_whitespace"
       ]
     },
     {
@@ -5883,6 +5432,113 @@
       ]
     },
     {
+      "title": "Filter Regex String",
+      "description": "Filters a stream of strings using regular expressions.\n    filter, regex, pattern, text, stream\n\n    Use cases:\n    - Filter strings using complex patterns\n    - Extract strings matching specific formats (emails, dates, etc.)",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.FilterRegexString",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value",
+          "description": "Input string stream"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Pattern",
+          "description": "The regular expression pattern to match against."
+        },
+        {
+          "name": "full_match",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Full Match",
+          "description": "Whether to match the entire string or find pattern anywhere in string"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "pattern",
+        "full_match"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Filter String",
+      "description": "Filters a stream of strings based on various criteria.\n    filter, strings, text, stream\n\n    Use cases:\n    - Filter strings by length\n    - Filter strings containing specific text\n    - Filter strings by prefix/suffix",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.FilterString",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Value",
+          "description": "Input string stream"
+        },
+        {
+          "name": "filter_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "contains",
+              "starts_with",
+              "ends_with",
+              "length_greater",
+              "length_less",
+              "exact_length"
+            ],
+            "type_name": "nodetool.nodes.nodetool.text.FilterString.FilterType"
+          },
+          "default": "contains",
+          "title": "Filter Type",
+          "description": "The type of filter to apply"
+        },
+        {
+          "name": "criteria",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Criteria",
+          "description": "The filtering criteria (text to match or length as string)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "filter_type",
+        "criteria"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "Find All Regex Matches",
       "description": "Finds all regex matches in text as separate substrings.\n    text, regex, find\n\n    Use cases:\n    - Identifying all occurrences of a pattern in text\n    - Extracting multiple instances of structured data\n    - Analyzing frequency and distribution of specific text patterns",
       "namespace": "nodetool.text",
@@ -5996,28 +5652,25 @@
         {
           "name": "min_length",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Minimum Length"
         },
         {
           "name": "max_length",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Maximum Length"
         },
         {
           "name": "exact_length",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Exact Length"
         }
       ],
@@ -6105,6 +5758,82 @@
       ]
     },
     {
+      "title": "Index Of",
+      "description": "Finds the position of a substring in text.\n    text, search, find, substring\n\n    Use cases:\n    - Locating markers to drive downstream slices\n    - Building quick validations before parsing\n    - Detecting repeated terms by scanning from the end",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.IndexOf",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "substring",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Substring"
+        },
+        {
+          "name": "case_sensitive",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Case Sensitive"
+        },
+        {
+          "name": "start_index",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Start Index",
+          "description": "Index to begin the search from",
+          "min": 0.0
+        },
+        {
+          "name": "end_index",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "End Index",
+          "description": "Optional exclusive end index for the search"
+        },
+        {
+          "name": "search_from_end",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Search From End",
+          "description": "Use the last occurrence instead of the first"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "substring",
+        "case_sensitive",
+        "start_index",
+        "end_index",
+        "search_from_end"
+      ]
+    },
+    {
       "title": "Is Empty",
       "description": "Checks if text is empty or contains only whitespace.\n    text, check, empty, compare, validate, whitespace, string\n\n    Use cases:\n    - Validating required text fields\n    - Filtering out empty content\n    - Checking for meaningful input",
       "namespace": "nodetool.text",
@@ -6182,6 +5911,59 @@
       ]
     },
     {
+      "title": "Measure Length",
+      "description": "Measures text length as characters, words, or lines.\n    text, analyze, length, count\n\n    Use cases:\n    - Quickly gating prompts by size before LLM calls\n    - Showing word or line counts in mini apps\n    - Tracking character budgets for UI copy",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.Length",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "measure",
+          "type": {
+            "type": "enum",
+            "values": [
+              "characters",
+              "words",
+              "lines"
+            ],
+            "type_name": "nodetool.nodes.nodetool.text.Length.Measure"
+          },
+          "default": "characters",
+          "title": "Measure",
+          "description": "Choose whether to count characters, words, or lines"
+        },
+        {
+          "name": "trim_whitespace",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Trim Whitespace",
+          "description": "Strip whitespace before counting"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "measure",
+        "trim_whitespace"
+      ]
+    },
+    {
       "title": "Load Text Assets",
       "description": "Load text files from an asset folder.\n    load, text, file, import\n\n    Use cases:\n    - Loading multiple text files for batch processing\n    - Importing text content from a directory\n    - Processing collections of text documents",
       "namespace": "nodetool.text",
@@ -6220,6 +6002,69 @@
         "folder"
       ],
       "is_streaming_output": true
+    },
+    {
+      "title": "Pad Text",
+      "description": "Pads text to a target length.\n    text, pad, length, format\n\n    Use cases:\n    - Aligning tabular text outputs\n    - Creating fixed-width fields for legacy systems\n    - Left-padding numbers with zeros",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.PadText",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "length",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Target Length",
+          "min": 0.0
+        },
+        {
+          "name": "pad_character",
+          "type": {
+            "type": "str"
+          },
+          "default": " ",
+          "title": "Pad Character",
+          "description": "Single character to use for padding"
+        },
+        {
+          "name": "direction",
+          "type": {
+            "type": "enum",
+            "values": [
+              "left",
+              "right",
+              "both"
+            ],
+            "type_name": "nodetool.nodes.nodetool.text.PadText.PadDirection"
+          },
+          "default": "right",
+          "title": "Direction",
+          "description": "Where padding should be applied"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "length",
+        "pad_character",
+        "direction"
+      ]
     },
     {
       "title": "Parse JSON String",
@@ -6275,10 +6120,9 @@
         {
           "name": "group",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Group",
           "description": "Capture group to extract (0 for full match)"
         }
@@ -6452,6 +6296,53 @@
       ]
     },
     {
+      "title": "Remove Punctuation",
+      "description": "Removes punctuation characters from text.\n    text, cleanup, punctuation, normalize\n\n    Use cases:\n    - Cleaning transcripts before keyword search\n    - Preparing identifiers for filesystem safe names\n    - Simplifying comparisons by stripping symbols",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.RemovePunctuation",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "replacement",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Replacement",
+          "description": "String to insert where punctuation was removed"
+        },
+        {
+          "name": "punctuation",
+          "type": {
+            "type": "str"
+          },
+          "default": "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~",
+          "title": "Punctuation Characters",
+          "description": "Characters that should be removed or replaced"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "replacement",
+        "punctuation"
+      ]
+    },
+    {
       "title": "Replace Text",
       "description": "Replaces a substring in a text with another substring.\n    text, replace, substitute\n\n    Use cases:\n    - Correcting or updating specific text patterns\n    - Sanitizing or normalizing text data\n    - Implementing simple text transformations",
       "namespace": "nodetool.text",
@@ -6612,28 +6503,25 @@
         {
           "name": "start",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Start Index"
         },
         {
           "name": "stop",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Stop Index"
         },
         {
           "name": "step",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 1,
           "title": "Step"
         }
       ],
@@ -6650,6 +6538,61 @@
         "start",
         "stop",
         "step"
+      ]
+    },
+    {
+      "title": "Slugify",
+      "description": "Converts text into a slug suitable for URLs or IDs.\n    text, slug, normalize, id\n\n    Use cases:\n    - Generating workflow IDs from titles\n    - Creating asset filenames from prompts\n    - Producing URL-safe paths for mini apps",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.Slugify",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "separator",
+          "type": {
+            "type": "str"
+          },
+          "default": "-",
+          "title": "Separator"
+        },
+        {
+          "name": "lowercase",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Lowercase"
+        },
+        {
+          "name": "allow_unicode",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Allow Unicode",
+          "description": "Keep unicode letters instead of converting to ASCII"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "separator",
+        "lowercase",
+        "allow_unicode"
       ]
     },
     {
@@ -6730,6 +6673,98 @@
       ]
     },
     {
+      "title": "Strip Accents",
+      "description": "Removes accent marks while keeping base characters.\n    text, cleanup, accents, normalize\n\n    Use cases:\n    - Creating ASCII-only identifiers from user input\n    - Normalizing prompts that mix accented and plain characters\n    - Simplifying comparisons against datasets lacking accents",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.StripAccents",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "preserve_non_ascii",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Preserve Non-ASCII",
+          "description": "Keep non-ASCII characters that are not accents"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "preserve_non_ascii"
+      ]
+    },
+    {
+      "title": "Surround With",
+      "description": "Wraps text with the provided prefix and suffix.\n    text, format, surround, decorate\n\n    Use cases:\n    - Adding quotes or brackets before exporting values\n    - Ensuring prompts include guard rails or markup tokens\n    - Building template strings without using Format nodes",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.SurroundWith",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "prefix",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prefix"
+        },
+        {
+          "name": "suffix",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Suffix"
+        },
+        {
+          "name": "skip_if_wrapped",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Skip If Already Wrapped",
+          "description": "Do not add duplicates if the text is already wrapped"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "prefix",
+        "suffix",
+        "skip_if_wrapped"
+      ]
+    },
+    {
       "title": "Template",
       "description": "Uses Jinja2 templating to format strings with variables and filters. This node is dynamic and can be used to format text with dynamic inputs.\n    text, template, formatting, format, combine, concatenate, +, add, variable, replace, filter\n\n    Use cases:\n    - Generating personalized messages with dynamic content\n    - Creating parameterized queries or commands\n    - Formatting and filtering text output based on variable inputs\n\n    Examples:\n    - text: \"Hello, {{ name }}!\"\n    - text: \"Title: {{ title|truncate(20) }}\"\n    - text: \"Name: {{ name|upper }}\"\n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter",
       "namespace": "nodetool.text",
@@ -6769,18 +6804,18 @@
       "is_dynamic": true
     },
     {
-      "title": "To String",
-      "description": "Converts any input to its string representation.\n    text, string, convert, repr, str, cast",
+      "title": "To Lowercase",
+      "description": "Converts text to lowercase.\n    text, transform, lowercase, format\n\n    Use cases:\n    - Preparing data for case-insensitive comparisons\n    - Generating lowercase filenames or IDs\n    - Normalizing prompts before hashing",
       "namespace": "nodetool.text",
-      "node_type": "nodetool.text.ToString",
+      "node_type": "nodetool.text.ToLowercase",
       "properties": [
         {
-          "name": "value",
+          "name": "text",
           "type": {
-            "type": "any"
+            "type": "str"
           },
-          "default": null,
-          "title": "Value"
+          "default": "",
+          "title": "Text"
         }
       ],
       "outputs": [
@@ -6792,7 +6827,195 @@
         }
       ],
       "basic_fields": [
-        "value"
+        "text"
+      ]
+    },
+    {
+      "title": "To String",
+      "description": "Converts any input to its string representation.\n    text, string, convert, repr, str, cast",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.ToString",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "any"
+          },
+          "default": [],
+          "title": "Value"
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "str",
+              "repr"
+            ],
+            "type_name": "nodetool.nodes.nodetool.text.ToString.Mode"
+          },
+          "default": "str",
+          "title": "Mode",
+          "description": "Conversion mode: use `str(value)` or `repr(value)`."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "mode"
+      ]
+    },
+    {
+      "title": "To Title Case",
+      "description": "Converts text to title case.\n    text, transform, titlecase, format\n\n    Use cases:\n    - Cleaning user provided titles before display\n    - Normalizing headings in generated documents\n    - Making list entries easier to scan",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.ToTitlecase",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text"
+      ]
+    },
+    {
+      "title": "To Uppercase",
+      "description": "Converts text to uppercase.\n    text, transform, uppercase, format\n\n    Use cases:\n    - Normalizing identifiers before comparison\n    - Preparing titles that must display in all caps\n    - Converting prompts to a consistent casing convention",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.ToUppercase",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text"
+      ]
+    },
+    {
+      "title": "Trim Whitespace",
+      "description": "Trims whitespace from the start and/or end of text.\n    text, whitespace, clean, remove\n\n    Use cases:\n    - Cleaning user input before validation\n    - Removing accidental spaces after concatenation\n    - Prepping prompts for exact comparisons",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.TrimWhitespace",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "trim_start",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Trim Start"
+        },
+        {
+          "name": "trim_end",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Trim End"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "trim_start",
+        "trim_end"
+      ]
+    },
+    {
+      "title": "Truncate Text",
+      "description": "Truncates text to a maximum length.\n    text, truncate, length, clip\n\n    Use cases:\n    - Enforcing LLM input limits before sending prompts\n    - Creating previews in UI cards\n    - Guarding downstream systems that expect short strings",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.TruncateText",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text"
+        },
+        {
+          "name": "max_length",
+          "type": {
+            "type": "int"
+          },
+          "default": 100,
+          "title": "Max Length",
+          "min": 0.0
+        },
+        {
+          "name": "ellipsis",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Ellipsis",
+          "description": "Optional suffix appended when truncation occurs"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "max_length",
+        "ellipsis"
       ]
     },
     {
@@ -7228,10 +7451,9 @@
         {
           "name": "chunk_size",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 1000,
           "title": "Chunk Size",
           "description": "Optional maximum chunk size for further splitting"
         },
@@ -10057,6 +10279,311 @@
       ]
     },
     {
+      "title": "Filter Dict By Number",
+      "description": "Filters a stream of dictionaries based on numeric values for a specified key.\n    filter, dictionary, numbers, numeric, stream\n\n    Use cases:\n    - Filter dictionaries by numeric comparisons (greater than, less than, equal to)\n    - Filter records with even/odd numeric values",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.FilterDictByNumber",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "Input dictionary stream"
+        },
+        {
+          "name": "key",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Key",
+          "description": "The dictionary key to check"
+        },
+        {
+          "name": "filter_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "greater_than",
+              "less_than",
+              "equal_to",
+              "even",
+              "odd",
+              "positive",
+              "negative"
+            ],
+            "type_name": "nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType"
+          },
+          "default": "greater_than",
+          "title": "Filter Type"
+        },
+        {
+          "name": "compare_value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Compare Value",
+          "description": "Comparison value"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "key",
+        "filter_type",
+        "compare_value"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Filter Dict By Query",
+      "description": "Filter a stream of dictionary objects based on a pandas query condition.\n    filter, query, condition, dictionary, stream\n\n    Basic Operators:\n    - Comparison: >, <, >=, <=, ==, !=\n    - Logical: and, or, not\n    - Membership: in, not in\n\n    Use cases:\n    - Filter dictionary objects based on complex criteria\n    - Extract subset of data meeting specific conditions",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.FilterDictByQuery",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "Input dictionary stream"
+        },
+        {
+          "name": "condition",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Condition",
+          "description": "The filtering condition using pandas query syntax."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "condition"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Filter Dict By Range",
+      "description": "Filters a stream of dictionaries based on a numeric range for a specified key.\n    filter, dictionary, range, between, stream\n\n    Use cases:\n    - Filter records based on numeric ranges (e.g., price range, age range)\n    - Find entries with values within specified bounds",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.FilterDictByRange",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "Input dictionary stream"
+        },
+        {
+          "name": "key",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Key",
+          "description": "The dictionary key to check for the range"
+        },
+        {
+          "name": "min_value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Min Value",
+          "description": "The minimum value (inclusive) of the range"
+        },
+        {
+          "name": "max_value",
+          "type": {
+            "type": "float"
+          },
+          "default": 0,
+          "title": "Max Value",
+          "description": "The maximum value (inclusive) of the range"
+        },
+        {
+          "name": "inclusive",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Inclusive",
+          "description": "If True, includes the min and max values in the results"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "key",
+        "min_value",
+        "max_value",
+        "inclusive"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Filter Dict By Value",
+      "description": "Filters a stream of dictionaries based on their values using various criteria.\n    filter, dictionary, values, stream\n\n    Use cases:\n    - Filter dictionaries by value content\n    - Filter dictionaries by value type\n    - Filter dictionaries by value patterns",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.FilterDictByValue",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "Input dictionary stream"
+        },
+        {
+          "name": "key",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Key",
+          "description": "The dictionary key to check"
+        },
+        {
+          "name": "filter_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "contains",
+              "starts_with",
+              "ends_with",
+              "equals",
+              "type_is",
+              "length_greater",
+              "length_less",
+              "exact_length"
+            ],
+            "type_name": "nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType"
+          },
+          "default": "contains",
+          "title": "Filter Type",
+          "description": "The type of filter to apply"
+        },
+        {
+          "name": "criteria",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Criteria",
+          "description": "The filtering criteria (text to match, type name, or length as string)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "key",
+        "filter_type",
+        "criteria"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Filter Dict Regex",
+      "description": "Filters a stream of dictionaries using regular expressions on specified keys.\n    filter, regex, dictionary, pattern, stream\n\n    Use cases:\n    - Filter dictionaries with values matching complex patterns\n    - Search for dictionaries containing emails, dates, or specific formats",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.FilterDictRegex",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "dict"
+          },
+          "default": {},
+          "title": "Value",
+          "description": "Input dictionary stream"
+        },
+        {
+          "name": "key",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Key",
+          "description": "The dictionary key to check"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Pattern",
+          "description": "The regex pattern"
+        },
+        {
+          "name": "full_match",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Full Match",
+          "description": "Full match or partial"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value",
+        "key",
+        "pattern",
+        "full_match"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "Get Value",
       "description": "Retrieves a value from a dictionary using a specified key.\n    dictionary, get, value, key\n\n    Use cases:\n    - Access a specific item in a configuration dictionary\n    - Retrieve a value from a parsed JSON object\n    - Extract a particular field from a data structure",
       "namespace": "nodetool.dictionary",
@@ -10092,7 +10619,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": [],
           "title": "Default"
         }
       ],
@@ -10243,10 +10770,9 @@
         {
           "name": "value_field",
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "str"
           },
-          "default": null,
+          "default": "",
           "title": "Value Field",
           "description": "Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value."
         },
@@ -13581,6 +14107,35 @@
       "expose_as_tool": true
     },
     {
+      "title": "Filter None",
+      "description": "Filters out None values from a stream.\n    filter, none, null, stream\n\n    Use cases:\n    - Clean data by removing null values\n    - Get only valid entries\n    - Remove placeholder values",
+      "namespace": "nodetool.data",
+      "node_type": "nodetool.data.FilterNone",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "any"
+          },
+          "default": [],
+          "title": "Value",
+          "description": "Input stream"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "Find Row",
       "description": "Find the first row in a dataframe that matches a given condition.\n    filter, query, condition, single row\n\n    Example conditions:\n    age > 30\n    age > 30 and salary < 50000\n    name == 'John Doe'\n    100 <= price <= 200\n    status in ['Active', 'Pending']\n    not (age < 18)\n\n    Use cases:\n    - Retrieve specific record based on criteria\n    - Find first occurrence of a particular condition\n    - Extract single data point for further analysis",
       "namespace": "nodetool.data",
@@ -16386,10 +16941,9 @@
         {
           "name": "data",
           "type": {
-            "type": "bytes",
-            "optional": true
+            "type": "bytes"
           },
-          "default": null,
+          "default": "",
           "title": "Data",
           "description": "Data to compress"
         }
@@ -16416,10 +16970,9 @@
         {
           "name": "data",
           "type": {
-            "type": "bytes",
-            "optional": true
+            "type": "bytes"
           },
-          "default": null,
+          "default": "",
           "title": "Data",
           "description": "Gzip data to decompress"
         }
@@ -17338,7 +17891,7 @@
           "type": {
             "type": "document"
           },
-          "default": null,
+          "default": "",
           "title": "Pdf",
           "description": "The PDF file to extract images from"
         },
@@ -17391,7 +17944,7 @@
           "type": {
             "type": "document"
           },
-          "default": null,
+          "default": "",
           "title": "Pdf",
           "description": "The PDF file to analyze"
         },
@@ -17577,7 +18130,7 @@
           "type": {
             "type": "document"
           },
-          "default": null,
+          "default": "",
           "title": "Pdf",
           "description": "The PDF file to analyze"
         }
@@ -17642,7 +18195,7 @@
               }
             ]
           },
-          "default": null,
+          "default": [],
           "title": "Filters",
           "description": "Filters to select rows to delete (required for safety)"
         }
@@ -17718,7 +18271,7 @@
               }
             ]
           },
-          "default": null,
+          "default": [],
           "title": "Records",
           "description": "One or multiple rows to insert"
         },
@@ -17775,7 +18328,7 @@
               }
             ]
           },
-          "default": null,
+          "default": {},
           "title": "Params",
           "description": "Function params"
         },
@@ -17864,7 +18417,7 @@
               }
             ]
           },
-          "default": null,
+          "default": [],
           "title": "Filters",
           "description": "List of typed filters to apply"
         },
@@ -17952,7 +18505,7 @@
               }
             ]
           },
-          "default": null,
+          "default": {},
           "title": "Values",
           "description": "New values"
         },
@@ -17989,7 +18542,7 @@
               }
             ]
           },
-          "default": null,
+          "default": [],
           "title": "Filters",
           "description": "Filters to select rows to update"
         },
@@ -18068,19 +18621,9 @@
               }
             ]
           },
-          "default": null,
+          "default": [],
           "title": "Records",
           "description": "One or multiple rows to upsert"
-        },
-        {
-          "name": "on_conflict",
-          "type": {
-            "type": "str",
-            "optional": true
-          },
-          "default": null,
-          "title": "On Conflict",
-          "description": "Optional column or comma-separated columns for ON CONFLICT"
         },
         {
           "name": "return_rows",
@@ -18103,7 +18646,6 @@
       "basic_fields": [
         "table_name",
         "records",
-        "on_conflict",
         "return_rows"
       ],
       "expose_as_tool": true
@@ -18465,7 +19007,7 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "",
           "title": "Content",
           "description": "Text content to convert"
         },
@@ -18523,7 +19065,7 @@
             ],
             "type_name": "nodetool.nodes.lib.pandoc.InputFormat"
           },
-          "default": null,
+          "default": "markdown",
           "title": "Input Format",
           "description": "Input format"
         },
@@ -18555,7 +19097,7 @@
             ],
             "type_name": "nodetool.nodes.lib.pandoc.OutputFormat"
           },
-          "default": null,
+          "default": "docx",
           "title": "Output Format",
           "description": "Output format"
         },
@@ -19810,9 +20352,15 @@
         {
           "name": "data",
           "type": {
-            "type": "any"
+            "type": "dataframe"
           },
-          "default": null,
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
           "title": "Data",
           "description": "The data to visualize as a pandas DataFrame."
         },
@@ -21664,10 +22212,9 @@
         {
           "name": "default",
           "type": {
-            "type": "str",
-            "optional": true
+            "type": "str"
           },
-          "default": null,
+          "default": "",
           "title": "Default",
           "description": "Default value if not found"
         }
@@ -22082,7 +22629,13 @@
           "type": {
             "type": "svg_element"
           },
-          "default": null,
+          "default": {
+            "type": "svg_element",
+            "name": "",
+            "attributes": {},
+            "content": null,
+            "children": []
+          },
           "title": "Clip Content",
           "description": "SVG element to use as clip path"
         },
@@ -22091,7 +22644,13 @@
           "type": {
             "type": "svg_element"
           },
-          "default": null,
+          "default": {
+            "type": "svg_element",
+            "name": "",
+            "attributes": {},
+            "content": null,
+            "children": []
+          },
           "title": "Content",
           "description": "SVG element to clip"
         }
@@ -22561,7 +23120,7 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "",
           "title": "Path Data",
           "description": "SVG path data (d attribute)"
         },
@@ -22625,7 +23184,7 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "",
           "title": "Points",
           "description": "Points in format 'x1,y1 x2,y2 x3,y3...'"
         },
@@ -22970,7 +23529,13 @@
           "type": {
             "type": "svg_element"
           },
-          "default": null,
+          "default": {
+            "type": "svg_element",
+            "name": "",
+            "attributes": {},
+            "content": null,
+            "children": []
+          },
           "title": "Content",
           "description": "SVG element to transform"
         },
@@ -24640,10 +25205,9 @@
         {
           "name": "data",
           "type": {
-            "type": "bytes",
-            "optional": true
+            "type": "bytes"
           },
-          "default": null,
+          "default": "",
           "title": "Data",
           "description": "The bytes to write to file"
         },
@@ -25556,7 +26120,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Value",
           "description": "Value to match"
         }
@@ -25591,7 +26155,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -25639,7 +26203,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -25687,7 +26251,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -25735,7 +26299,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -25783,7 +26347,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -25831,7 +26395,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON object to extract from"
         },
@@ -26059,7 +26623,7 @@
           "type": {
             "type": "any"
           },
-          "default": null,
+          "default": {},
           "title": "Data",
           "description": "JSON data to validate"
         },
@@ -26603,7 +27167,7 @@
               }
             ]
           },
-          "default": null,
+          "default": {},
           "title": "Params",
           "description": "Parameters to encode"
         }
@@ -28128,10 +28692,9 @@
         {
           "name": "axis",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Axis",
           "description": "Axis along which to find maximum indices"
         }
@@ -28182,10 +28745,9 @@
         {
           "name": "axis",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Axis",
           "description": "Axis along which to find minimum indices"
         }
@@ -28236,10 +28798,9 @@
         {
           "name": "axis",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Axis",
           "description": "Axis along which to compute maximum"
         }
@@ -28293,10 +28854,9 @@
         {
           "name": "axis",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Axis",
           "description": "Axis along which to compute mean"
         }
@@ -28350,10 +28910,9 @@
         {
           "name": "axis",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Axis",
           "description": "Axis along which to compute minimum"
         }
@@ -28407,10 +28966,9 @@
         {
           "name": "axis",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 0,
           "title": "Axis",
           "description": "Axis along which to compute sum"
         }
@@ -30436,12 +30994,12 @@
         {
           "name": "nprobe",
           "type": {
-            "type": "int",
-            "optional": true
+            "type": "int"
           },
-          "default": null,
+          "default": 10,
           "title": "Nprobe",
-          "description": "nprobe for IVF indices"
+          "description": "nprobe for IVF indices",
+          "min": 1.0
         }
       ],
       "outputs": [
@@ -32531,15 +33089,6 @@
       "description": "Validate and clean data for quality assurance before processing.",
       "tags": [
         "data"
-      ]
-    },
-    {
-      "id": "advanced_image_processing_suite",
-      "name": "Advanced Image Processing Suite",
-      "description": "Create synchronized image variants (thumbnail, web, HD) while capturing rich metadata.",
-      "tags": [
-        "data",
-        "image"
       ]
     },
     {

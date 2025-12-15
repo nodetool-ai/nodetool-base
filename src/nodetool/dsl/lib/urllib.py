@@ -33,7 +33,7 @@ class EncodeQueryParams(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     params: dict[str, str] | OutputHandle[dict[str, str]] = connect_field(
-        default=PydanticUndefined, description="Parameters to encode"
+        default={}, description="Parameters to encode"
     )
 
     @classmethod

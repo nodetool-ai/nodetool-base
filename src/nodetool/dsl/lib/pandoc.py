@@ -81,15 +81,14 @@ class ConvertText(SingleOutputGraphNode[str], GraphNode[str]):
     OutputFormat: typing.ClassVar[type] = nodetool.nodes.lib.pandoc.OutputFormat
 
     content: str | OutputHandle[str] = connect_field(
-        default=PydanticUndefined, description="Text content to convert"
+        default="", description="Text content to convert"
     )
     input_format: nodetool.nodes.lib.pandoc.InputFormat = Field(
-        default=nodetool.nodes.lib.pandoc.InputFormat(PydanticUndefined),
+        default=nodetool.nodes.lib.pandoc.InputFormat.MARKDOWN,
         description="Input format",
     )
     output_format: nodetool.nodes.lib.pandoc.OutputFormat = Field(
-        default=nodetool.nodes.lib.pandoc.OutputFormat(PydanticUndefined),
-        description="Output format",
+        default=nodetool.nodes.lib.pandoc.OutputFormat.DOCX, description="Output format"
     )
     extra_args: list[str] | OutputHandle[list[str]] = connect_field(
         default=[], description="Additional pandoc arguments"

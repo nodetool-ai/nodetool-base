@@ -200,8 +200,8 @@ class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
     k: int | OutputHandle[int] = connect_field(
         default=5, description="Number of nearest neighbors"
     )
-    nprobe: int | OutputHandle[int] | None = connect_field(
-        default=None, description="nprobe for IVF indices"
+    nprobe: int | OutputHandle[int] = connect_field(
+        default=10, description="nprobe for IVF indices"
     )
 
     @property

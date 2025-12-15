@@ -2,7 +2,6 @@ import datetime
 import os
 import glob
 from typing import TypedDict
-from llama_index.embeddings.huggingface.base import HuggingFaceEmbedding
 from nodetool.providers.base import AsyncGenerator
 from nodetool.types.model import UnifiedModel
 from pydantic import Field
@@ -399,8 +398,8 @@ class SplitMarkdown(BaseNode):
         default=False,
         description="Whether to split into individual lines instead of header sections",
     )
-    chunk_size: int | None = Field(
-        default=None,
+    chunk_size: int = Field(
+        default=1000,
         description="Optional maximum chunk size for further splitting",
     )
     chunk_overlap: int = Field(

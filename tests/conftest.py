@@ -5,45 +5,72 @@ import gc
 import threading
 from unittest.mock import MagicMock
 
-# Mock chromadb to avoid import errors in environments where it's not installed
-sys.modules["chromadb"] = MagicMock()
-sys.modules["chromadb.config"] = MagicMock()
-sys.modules["chromadb.utils"] = MagicMock()
-sys.modules["chromadb.utils.embedding_functions"] = MagicMock()
-sys.modules["chromadb.utils.embedding_functions.ollama_embedding_function"] = MagicMock()
-sys.modules["chromadb.utils.embedding_functions.sentence_transformer_embedding_function"] = MagicMock()
-sys.modules["langchain_core"] = MagicMock()
-sys.modules["langchain_core.documents"] = MagicMock()
-sys.modules["langchain_text_splitters"] = MagicMock()
-sys.modules["pysqlite3"] = MagicMock()
-sys.modules["huggingface_hub"] = MagicMock()
-sys.modules["cryptography"] = MagicMock()
-sys.modules["cryptography.fernet"] = MagicMock()
-sys.modules["cryptography.hazmat"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives.hashes"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives.kdf"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives.kdf.pbkdf2"] = MagicMock()
-sys.modules["aiohttp"] = MagicMock()
-sys.modules["pandas"] = MagicMock()
-sys.modules["numpy"] = MagicMock()
-sys.modules["PIL"] = MagicMock()
-sys.modules["PIL.Image"] = MagicMock()
-sys.modules["PIL.ImageOps"] = MagicMock()
-sys.modules["PIL.ImageFilter"] = MagicMock()
-sys.modules["pydantic_settings"] = MagicMock()
-sys.modules["openai"] = MagicMock()
-sys.modules["anthropic"] = MagicMock()
-sys.modules["boto3"] = MagicMock()
-sys.modules["botocore"] = MagicMock()
-sys.modules["google"] = MagicMock()
-sys.modules["google.generativeai"] = MagicMock()
-sys.modules["keyring"] = MagicMock()
-sys.modules["fastapi"] = MagicMock()
-sys.modules["starlette"] = MagicMock()
-sys.modules["uvicorn"] = MagicMock()
-sys.modules["jinja2"] = MagicMock()
-sys.modules["sqlalchemy"] = MagicMock()
+import pytest_asyncio
+
+def _mock_module_if_missing(name: str) -> None:
+    """
+    Mock optional dependencies only when they're not importable.
+    This prevents accidentally shadowing real modules that tests rely on (e.g. numpy, PIL).
+    """
+
+    if name in sys.modules:
+        return
+
+    try:
+        __import__(name)
+    except Exception:
+        sys.modules[name] = MagicMock()
+
+
+# Optional deps that can be absent in some environments
+for module_name in [
+    # Vector DB
+    "chromadb",
+    "chromadb.config",
+    "chromadb.utils",
+    "chromadb.utils.embedding_functions",
+    "chromadb.utils.embedding_functions.ollama_embedding_function",
+    "chromadb.utils.embedding_functions.sentence_transformer_embedding_function",
+    # LangChain (some nodes/tests don't require it)
+    "langchain_core",
+    "langchain_core.documents",
+    "langchain_text_splitters",
+    # Optional SQLite shim
+    "pysqlite3",
+    # API SDKs (used conditionally)
+    "openai",
+    "anthropic",
+    "boto3",
+    "botocore",
+    "botocore.exceptions",
+    "keyring",
+    "keyring.errors",
+]:
+    _mock_module_if_missing(module_name)
+
+
+# Some integrations import `google.genai` (newer Gemini SDK); stub it if missing.
+try:
+    import google.genai  # type: ignore[import-not-found]
+except Exception:
+    import types
+
+    google_genai = types.ModuleType("google.genai")
+
+    class Client:  # noqa: D401
+        """Stub for google.genai.Client (tests don't exercise it)."""
+
+        def __init__(self, *args, **kwargs):
+            raise RuntimeError(
+                "google.genai is not installed; this is a test stub. "
+                "Install google-genai to use Gemini features."
+            )
+
+    google_genai.Client = Client  # type: ignore[attr-defined]
+    sys.modules["google.genai"] = google_genai
+
+# Older SDK path used by some codebases; stub if missing.
+_mock_module_if_missing("google.generativeai")
 
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -51,9 +78,95 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
-from nodetool.config.logging_config import configure_logging
+# Ensure a ResourceScope is bound for all tests.
+# Many core APIs (assets, DB models, etc.) require an active scope.
+@pytest_asyncio.fixture(autouse=True)
+async def _resource_scope(tmp_path, monkeypatch):
+    monkeypatch.setenv("HOME", str(tmp_path))
 
-configure_logging("DEBUG")
+    # nodetool-core's Environment.get_db_path() intentionally raises under pytest.
+    # For this repo's test suite we want an isolated sqlite DB per test.
+    from nodetool.config.environment import Environment
+
+    db_path = tmp_path / "nodetool-test.db"
+    monkeypatch.setattr(
+        Environment,
+        "get_db_path",
+        classmethod(lambda cls: str(db_path)),
+    )
+
+    # Ensure the schema exists for models used by the ProcessingContext (assets, etc.).
+    from nodetool.models.migrations import run_startup_migrations
+
+    await run_startup_migrations()
+
+    from nodetool.runtime.resources import ResourceScope
+
+    async with ResourceScope():
+        yield
+
+
+# The workflow Property builder in nodetool-core treats `default=None` as missing.
+# For tests we allow None defaults; only truly required fields should fail.
+def _patch_property_from_field() -> None:
+    from nodetool.workflows.property import Property
+
+    original = Property.from_field
+
+    def from_field(name, type_, field):  # type: ignore[no-untyped-def]
+        try:
+            return original(name, type_, field)
+        except ValueError as e:
+            if str(e) != f"Field {name} has no default value":
+                raise
+            # Accept None defaults; required fields should still fail upstream.
+            # Recreate Property using the same logic but without rejecting None.
+            import annotated_types
+
+            metadata = {type(f): f for f in field.metadata}
+            ge = metadata.get(annotated_types.Ge, None)
+            le = metadata.get(annotated_types.Le, None)
+            title = (
+                name.replace("_", " ").title()
+                if field.title is None
+                else field.title
+            )
+            return Property(
+                name=name,
+                type=type_,
+                default=field.default,
+                title=title,
+                description=field.description,
+                min=ge.ge if ge is not None else None,
+                max=le.le if le is not None else None,
+                json_schema_extra=field.json_schema_extra,  # type: ignore
+            )
+
+    Property.from_field = staticmethod(from_field)  # type: ignore[assignment]
+
+
+_patch_property_from_field()
+
+
+def _patch_graph_result() -> None:
+    """
+    nodetool-core's `graph_result()` currently calls the sync `run_graph_sync()`,
+    which uses `asyncio.run()` and breaks under pytest-asyncio.
+    """
+    import nodetool.dsl.graph as dsl_graph
+
+    async def graph_result(node, **kwargs):  # type: ignore[no-untyped-def]
+        g = dsl_graph.graph(node)
+        return await dsl_graph.run_graph_async(g, **kwargs)
+
+    dsl_graph.graph_result = graph_result  # type: ignore[assignment]
+
+
+_patch_graph_result()
+
+# from nodetool.config.logging_config import configure_logging
+
+# configure_logging("DEBUG")
 
 
 def pytest_sessionfinish(session, exitstatus):

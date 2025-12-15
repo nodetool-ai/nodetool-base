@@ -31,6 +31,73 @@ from nodetool.chat.dataframes import GenerateDataTool
 logger = get_logger(__name__)
 
 
+def build_schema_from_slots(slots: list, title: str = "Structured Output Specification") -> dict[str, Any]:
+    if len(slots) == 0:
+        raise ValueError("Declare outputs for the fields you want to generate")
+
+    properties: dict[str, Any] = {
+        slot.name: slot.type.get_json_schema() for slot in slots
+    }
+    required: list[str] = [slot.name for slot in slots]
+
+    return {
+        "type": "object",
+        "title": title,
+        "additionalProperties": False,
+        "properties": properties,
+        "required": required,
+    }
+
+
+def build_schema_from_record_type(record_type: RecordType, title: str = "Item Schema") -> dict[str, Any]:
+    if not record_type.columns:
+        raise ValueError("Define columns for the stream")
+
+    properties = {}
+    for col in record_type.columns:
+        dtype = str(col.data_type).lower()
+
+        if "int" in dtype:
+            json_leaf = {"type": "integer"}
+        elif "float" in dtype or "number" in dtype:
+            json_leaf = {"type": "number"}
+        elif "bool" in dtype:
+            json_leaf = {"type": "boolean"}
+        elif "datetime" in dtype:
+            json_leaf = {"type": "string", "format": "date-time"}
+        else:
+            json_leaf = {"type": "string"}
+
+        properties[col.name] = json_leaf
+
+    required = [col.name for col in record_type.columns]
+
+    return {
+        "type": "object",
+        "title": title,
+        "additionalProperties": False,
+        "properties": properties,
+        "required": required,
+    }
+
+
+def format_structured_instructions(schema: dict[str, Any], instructions: str, context_text: str) -> str:
+    instructions_sections: list[str] = []
+    instructions_sections.append(
+        "<JSON_SCHEMA>\n" + json.dumps(schema, indent=2) + "\n</JSON_SCHEMA>"
+    )
+    if instructions.strip():
+        instructions_sections.append(
+            "<INSTRUCTIONS>\n" + instructions.strip() + "\n</INSTRUCTIONS>"
+        )
+    if context_text.strip():
+        instructions_sections.append(
+            "<CONTEXT>\n" + context_text.strip() + "\n</CONTEXT>"
+        )
+
+    return "\n" + "\n".join(instructions_sections) + "\n"
+
+
 DEFAULT_STRUCTURED_OUTPUT_SYSTEM_PROMPT = """
 You are a structured data generator focused on JSON outputs.
 
@@ -56,6 +123,7 @@ Generation rules
 Validation
 - Ensure the final JSON validates against <JSON_SCHEMA> exactly.
 """
+
 
 
 class StructuredOutputGenerator(BaseNode):
@@ -114,36 +182,8 @@ class StructuredOutputGenerator(BaseNode):
         provider = await context.get_provider(self.model.provider)
 
         output_slots = self.get_dynamic_output_slots()
-        if len(output_slots) == 0:
-            raise ValueError("Declare outputs for the fields you want to generate")
-
-        properties: dict[str, Any] = {
-            slot.name: slot.type.get_json_schema() for slot in output_slots
-        }
-        required: list[str] = [slot.name for slot in output_slots]
-
-        schema = {
-            "type": "object",
-            "title": "Structured Output Specification",
-            "additionalProperties": False,
-            "properties": properties,
-            "required": required,
-        }
-
-        instructions_sections: list[str] = []
-        instructions_sections.append(
-            "<JSON_SCHEMA>\n" + json.dumps(schema, indent=2) + "\n</JSON_SCHEMA>"
-        )
-        if self.instructions.strip():
-            instructions_sections.append(
-                "<INSTRUCTIONS>\n" + self.instructions.strip() + "\n</INSTRUCTIONS>"
-            )
-        if self.context.strip():
-            instructions_sections.append(
-                "<CONTEXT>\n" + self.context.strip() + "\n</CONTEXT>"
-            )
-
-        additional_instructions = "\n" + "\n".join(instructions_sections) + "\n"
+        schema = build_schema_from_slots(output_slots)
+        additional_instructions = format_structured_instructions(schema, self.instructions, self.context)
 
         user_content: list[MessageContent] = [
             MessageTextContent(

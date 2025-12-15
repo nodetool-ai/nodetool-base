@@ -31,8 +31,8 @@ class GzipCompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     - Prepare data for network transfer
     """
 
-    data: bytes | OutputHandle[bytes] | None = connect_field(
-        default=None, description="Data to compress"
+    data: bytes | OutputHandle[bytes] = connect_field(
+        default=b"", description="Data to compress"
     )
 
     @classmethod
@@ -63,8 +63,8 @@ class GzipDecompress(SingleOutputGraphNode[bytes], GraphNode[bytes]):
     - Process network payloads
     """
 
-    data: bytes | OutputHandle[bytes] | None = connect_field(
-        default=None, description="Gzip data to decompress"
+    data: bytes | OutputHandle[bytes] = connect_field(
+        default=b"", description="Gzip data to decompress"
     )
 
     @classmethod

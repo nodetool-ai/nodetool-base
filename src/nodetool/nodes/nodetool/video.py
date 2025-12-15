@@ -1,11 +1,11 @@
 import datetime
 import enum
+from fractions import Fraction
 import os
 import tempfile
 from typing import AsyncGenerator, ClassVar, TypedDict
 import uuid
 import ffmpeg
-import cv2
 from nodetool.config.logging_config import get_logger
 
 import PIL.Image
@@ -29,9 +29,36 @@ logger = get_logger(__name__)
 
 def safe_unlink(path: str):
     try:
-        safe_unlink(path)
-    except Exception:
-        pass
+        os.unlink(path)
+    except FileNotFoundError:
+        return
+    except Exception as e:
+        logger.debug("Failed to unlink %s: %s", path, e)
+
+
+def _probe_video_fps(path: str) -> float:
+    probe = ffmpeg.probe(path)
+    streams = probe.get("streams") or []
+    video_stream = next(
+        (s for s in streams if s.get("codec_type") == "video"),
+        None,
+    )
+    if not video_stream:
+        raise ValueError("No video stream found")
+    rate = video_stream.get("avg_frame_rate") or video_stream.get("r_frame_rate")
+    if not rate or rate in ("0/0", "0"):
+        raise ValueError("Could not determine FPS")
+    return float(Fraction(rate))
+
+
+def _require_cv2():
+    try:
+        import cv2  # type: ignore
+    except Exception as e:
+        raise RuntimeError(
+            "OpenCV (cv2) is required for this node, but it could not be imported."
+        ) from e
+    return cv2
 
 
 class TextToVideo(BaseNode):
@@ -475,6 +502,7 @@ class FrameIterator(BaseNode):
     async def gen_process(
         self, context: ProcessingContext
     ) -> AsyncGenerator[OutputType, None]:
+        cv2 = _require_cv2()
         video_file = await context.asset_to_io(self.video)
 
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
@@ -507,6 +535,7 @@ class FrameIterator(BaseNode):
             cap.release()
 
     async def get_fps(self, context: ProcessingContext) -> float:
+        cv2 = _require_cv2()
         video_file = await context.asset_to_io(self.video)
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
             temp.write(video_file.read())
@@ -539,12 +568,7 @@ class Fps(BaseNode):
         with tempfile.NamedTemporaryFile(suffix=".mp4", delete=True) as temp:
             temp.write(video_file.read())
             temp.flush()
-
-            cap = cv2.VideoCapture(temp.name)
-            fps = cap.get(cv2.CAP_PROP_FPS)
-            cap.release()
-
-            return fps
+            return _probe_video_fps(temp.name)
 
 
 class FrameToVideo(BaseNode):
@@ -1636,6 +1660,7 @@ class AddSubtitles(BaseNode):
         if self.video.is_empty():
             raise ValueError("Input video must be connected.")
 
+        cv2 = _require_cv2()
         video_file = await context.asset_to_io(self.video)
 
         with (
@@ -1754,8 +1779,6 @@ class AddSubtitles(BaseNode):
                 out.release()
 
                 # Now combine the processed frames with the original audio using ffmpeg
-                import ffmpeg
-
                 # Get the original video with audio
                 input_video = ffmpeg.input(temp_input.name)
                 # Get the processed frames

@@ -29,8 +29,8 @@ class GetSecret(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     name: str | OutputHandle[str] = connect_field(
         default="", description="Secret key name"
     )
-    default: str | OutputHandle[str] | None = connect_field(
-        default=None, description="Default value if not found"
+    default: str | OutputHandle[str] = connect_field(
+        default="", description="Default value if not found"
     )
 
     @classmethod

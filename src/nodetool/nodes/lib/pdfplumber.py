@@ -63,7 +63,7 @@ class ExtractImages(BaseNode):
     - Process PDF images for analysis
     """
 
-    pdf: DocumentRef = Field(description="The PDF file to extract images from")
+    pdf: DocumentRef = Field(default="", description="The PDF file to extract images from")
     start_page: int = Field(default=0, description="The start page to extract")
     end_page: int = Field(default=4, description="The end page to extract")
 
@@ -99,7 +99,7 @@ class GetPageCount(BaseNode):
     - Plan batch processing
     """
 
-    pdf: DocumentRef = Field(description="The PDF file to analyze")
+    pdf: DocumentRef = Field(default="", description="The PDF file to analyze")
 
     async def process(self, context: ProcessingContext) -> int:
         pdf_data = await context.asset_to_bytes(self.pdf)
@@ -118,7 +118,7 @@ class ExtractPageMetadata(BaseNode):
     - Check page orientations
     """
 
-    pdf: DocumentRef = Field(description="The PDF file to analyze")
+    pdf: DocumentRef = Field(default="", description="The PDF file to analyze")
     start_page: int = Field(
         default=0, description="The start page to extract. 0-based indexing"
     )

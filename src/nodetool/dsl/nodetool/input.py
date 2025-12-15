@@ -131,48 +131,6 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
-class CollectionInput(
-    SingleOutputGraphNode[types.Collection], GraphNode[types.Collection]
-):
-    """
-
-    Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
-    The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.
-    Keywords: input, parameter, collection, database, vector_store, chroma, index
-
-    Use cases:
-    - Select a target vector database collection for indexing new documents.
-    - Specify a collection to perform a similarity search or query against.
-    - Choose a data source or destination that is represented as a named collection.
-    """
-
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
-    value: types.Collection | OutputHandle[types.Collection] = connect_field(
-        default=types.Collection(type="collection", name=""),
-        description="The collection to use as input.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
-    )
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.input.CollectionInput
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.input
-from nodetool.workflows.base_node import BaseNode
-
-
 class ColorInput(SingleOutputGraphNode[types.ColorRef], GraphNode[types.ColorRef]):
     """
 
@@ -517,6 +475,8 @@ class ImageModelInput(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="The image generation model to use as input.",
     )
@@ -596,6 +556,8 @@ class LanguageModelInput(
             provider=nodetool.metadata.types.Provider.Empty,
             id="",
             name="",
+            path=None,
+            supported_tasks=[],
         ),
         description="The language model to use as input.",
     )
@@ -631,15 +593,12 @@ class RealtimeAudioInput(
     name: str | OutputHandle[str] = connect_field(
         default="", description="The parameter name for the workflow."
     )
-    value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="The value of the input."
+    value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        description="The audio to use as input.",
     )
     description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
-        description="The audio to use as input.",
     )
 
     @property

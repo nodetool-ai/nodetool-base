@@ -37,7 +37,7 @@ class FilterJSON(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
         default="", description="Key to filter on"
     )
     value: Any | OutputHandle[Any] = connect_field(
-        default=None, description="Value to match"
+        default={}, description="Value to match"
     )
 
     @classmethod
@@ -64,7 +64,7 @@ class GetJSONPathBool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON object to extract from"
+        default={}, description="JSON object to extract from"
     )
     path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
@@ -97,7 +97,7 @@ class GetJSONPathDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON object to extract from"
+        default={}, description="JSON object to extract from"
     )
     path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
@@ -130,7 +130,7 @@ class GetJSONPathFloat(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON object to extract from"
+        default={}, description="JSON object to extract from"
     )
     path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
@@ -163,7 +163,7 @@ class GetJSONPathInt(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON object to extract from"
+        default={}, description="JSON object to extract from"
     )
     path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
@@ -196,7 +196,7 @@ class GetJSONPathList(SingleOutputGraphNode[list], GraphNode[list]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON object to extract from"
+        default={}, description="JSON object to extract from"
     )
     path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
@@ -229,7 +229,7 @@ class GetJSONPathStr(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON object to extract from"
+        default={}, description="JSON object to extract from"
     )
     path: str | OutputHandle[str] = connect_field(
         default="", description="Path to the desired value (dot notation)"
@@ -446,7 +446,7 @@ class ValidateJSON(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
     data: Any | OutputHandle[Any] = connect_field(
-        default=None, description="JSON data to validate"
+        default={}, description="JSON data to validate"
     )
     json_schema: dict | OutputHandle[dict] = connect_field(
         default={}, description="JSON schema for validation"

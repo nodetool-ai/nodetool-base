@@ -307,12 +307,12 @@ class RealtimeAudioInput(InputNode):
     input, parameter, audio, sound, voice, speech, asset
     """
 
-    audio: AudioRef = Field(AudioRef(), description="The audio to use as input.")
+    value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         basic_fields = super().get_basic_fields()
-        return basic_fields + ["audio"]
+        return basic_fields + ["value"]
 
     @classmethod
     def is_streaming_output(cls) -> bool:
@@ -387,24 +387,3 @@ class DocumentFileInput(InputNode):
     @classmethod
     def return_type(cls):
         return cls.OutputType
-
-
-class CollectionInput(InputNode):
-    """
-    Accepts a reference to a specific data collection, typically within a vector database or similar storage system.
-    The input is a 'Collection' object, which identifies the target collection for operations like data insertion, querying, or similarity search.
-    Keywords: input, parameter, collection, database, vector_store, chroma, index
-
-    Use cases:
-    - Select a target vector database collection for indexing new documents.
-    - Specify a collection to perform a similarity search or query against.
-    - Choose a data source or destination that is represented as a named collection.
-    """
-
-    value: Collection = Field(
-        Collection(), description="The collection to use as input."
-    )
-
-    @classmethod
-    def return_type(cls):
-        return Collection

@@ -61,8 +61,8 @@ class SaveBytesFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     %H - Hour, %M - Minute, %S - Second
     """
 
-    data: bytes | OutputHandle[bytes] | None = connect_field(
-        default=None, description="The bytes to write to file"
+    data: bytes | OutputHandle[bytes] = connect_field(
+        default=b"", description="The bytes to write to file"
     )
     folder: str | OutputHandle[str] = connect_field(
         default="", description="Folder where the file will be saved"
