@@ -11,13 +11,11 @@ from typing import Any, Dict, ClassVar
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import (
-    ImageResult,
     JobResult,
     LocalResult,
     NewsResult,
     OrganicResult,
     ShoppingResult,
-    VisualMatchResult,
 )
 from nodetool.agents.serp_providers.types import (
     GoogleJobsResponse,

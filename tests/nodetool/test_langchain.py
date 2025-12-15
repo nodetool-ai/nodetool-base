@@ -1,5 +1,4 @@
 import pytest
-from unittest.mock import patch, MagicMock
 from nodetool.metadata.types import DocumentRef
 from nodetool.nodes.nodetool.document import (
     SplitRecursively,

@@ -5,15 +5,12 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -57,10 +54,7 @@ class AddColumn(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -101,10 +95,7 @@ class Aggregate(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -142,10 +133,7 @@ class Append(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Datafram
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -179,10 +167,7 @@ class DropDuplicates(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -214,10 +199,7 @@ class DropNA(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Datafram
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -252,10 +234,7 @@ class ExtractColumn(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -298,10 +277,7 @@ class FillNA(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Datafram
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -345,10 +321,7 @@ class Filter(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Datafram
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.data
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -387,8 +360,6 @@ class FilterNoneOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["output"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -434,8 +405,6 @@ class FindRow(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Datafra
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -469,8 +438,6 @@ class FromList(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -502,8 +469,6 @@ class ImportCSV(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -534,8 +499,6 @@ class JSONToDataframe(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -578,8 +541,6 @@ class Join(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeR
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -625,8 +586,6 @@ class LoadCSVAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -654,8 +613,6 @@ class LoadCSVFile(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -683,8 +640,6 @@ class LoadCSVURL(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -724,8 +679,6 @@ class Merge(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Dataframe
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -772,8 +725,6 @@ class Pivot(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Dataframe
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -810,8 +761,6 @@ class Rename(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Datafram
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -853,8 +802,6 @@ class RowIteratorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[Any], self["index"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -896,8 +843,6 @@ class SaveCSVDataframeFile(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -940,8 +885,6 @@ class SaveDataframe(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -968,8 +911,6 @@ class Schema(SingleOutputGraphNode[types.RecordType], GraphNode[types.RecordType
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -1008,8 +949,6 @@ class SelectColumn(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -1050,8 +989,6 @@ class Slice(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.Dataframe
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
@@ -1090,8 +1027,6 @@ class SortByColumn(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode

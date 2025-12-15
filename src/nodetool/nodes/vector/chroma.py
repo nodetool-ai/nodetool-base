@@ -2,10 +2,9 @@
 Chroma nodes for Nodetool.
 """
 
-import asyncio
 import re
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Dict, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from nodetool.config.environment import Environment
 from nodetool.integrations.vectorstores.chroma.async_chroma_client import (
@@ -23,12 +22,10 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import NodeProgress
 from pydantic import Field
 
 if TYPE_CHECKING:
     from ollama import AsyncClient
-    import numpy as np
 
 
 def get_ollama_client() -> "AsyncClient":

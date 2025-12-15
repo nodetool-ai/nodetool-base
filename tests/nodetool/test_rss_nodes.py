@@ -3,7 +3,6 @@ from datetime import datetime
 import feedparser
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.lib.rss import FetchRSSFeed, ExtractFeedMetadata
 
 
 @pytest.fixture

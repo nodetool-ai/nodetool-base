@@ -3,7 +3,7 @@ from io import BytesIO
 from PIL import Image
 from nodetool.nodes.lib.pillow import Blend, Composite
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef, NPArray, FolderRef
+from nodetool.metadata.types import ImageRef, FolderRef
 from nodetool.nodes.nodetool.image import (
     SaveImage,
     GetMetadata,

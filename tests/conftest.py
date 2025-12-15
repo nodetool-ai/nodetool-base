@@ -51,7 +51,7 @@ for module_name in [
 
 # Some integrations import `google.genai` (newer Gemini SDK); stub it if missing.
 try:
-    import google.genai  # type: ignore[import-not-found]
+    pass  # type: ignore[import-not-found]
 except Exception:
     import types
 

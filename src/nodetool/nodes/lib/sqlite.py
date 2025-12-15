@@ -4,13 +4,13 @@ SQLite database nodes for persistent storage and memory mechanisms.
 
 import sqlite3
 import json
-from typing import ClassVar, TypedDict, AsyncGenerator
+from typing import ClassVar, TypedDict
 from pathlib import Path
 from typing import Any
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import RecordType, DataframeRef
+from nodetool.metadata.types import RecordType
 from nodetool.config.logging_config import get_logger
 
 

@@ -4,14 +4,10 @@ from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.config.logging_config import get_logger
 from pydantic import Field
 
-from nodetool.chat.dataframes import (
-    json_schema_for_dataframe,
-)
 from nodetool.metadata.types import (
     Message,
     MessageContent,
     MessageTextContent,
-    MessageAudioContent,
     DataframeRef,
     RecordType,
     LanguageModel,
@@ -20,13 +16,11 @@ from nodetool.metadata.types import (
     AudioRef,
     SVGElement,
     Provider,
-    ToolCall,
 )
 from nodetool.workflows.types import Chunk
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-from nodetool.chat.dataframes import GenerateDataTool
 
 logger = get_logger(__name__)
 

@@ -5,15 +5,12 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
 from nodetool.workflows.base_node import BaseNode
@@ -66,9 +63,7 @@ class ChartGenerator(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.generators
 from nodetool.workflows.base_node import BaseNode
 
@@ -141,8 +136,6 @@ class DataGeneratorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["index"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
 from nodetool.workflows.base_node import BaseNode
@@ -205,8 +198,6 @@ class ListGeneratorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["index"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.generators
 from nodetool.workflows.base_node import BaseNode
@@ -261,8 +252,6 @@ class SVGGenerator(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import (
     OutputHandle,
     OutputsProxy,

@@ -11,12 +11,11 @@ Workflow:
 4. **Report Assembly** – Format the structured findings into a briefing memo.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph, run_graph_sync
+from nodetool.dsl.graph import create_graph, run_graph_sync
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import ResearchAgent
 from nodetool.dsl.nodetool.output import StringOutput
-from nodetool.metadata.type_metadata import TypeMetadata
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -137,7 +136,6 @@ graph = create_graph(research_output)
 
 
 if __name__ == "__main__":
-    import asyncio
 
     result = run_graph_sync(graph)
     print("✅ Market research brief ready!\n")

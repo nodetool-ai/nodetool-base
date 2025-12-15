@@ -9,7 +9,6 @@ Usage:
     python eval_svg_generator.py --output results.json
 """
 
-import re
 import time
 from typing import List, Tuple, Any
 from dataclasses import dataclass, field

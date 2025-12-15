@@ -3,8 +3,7 @@ import json
 import os
 import sys
 import asyncio
-import threading
-from typing import Any, Awaitable, Callable, Dict, List, Tuple, TypeVar
+from typing import Any, Dict, List, Tuple, TypeVar
 from nodetool.providers import get_provider
 from nodetool.providers.base import BaseProvider
 from rich.table import Table

@@ -8,7 +8,7 @@ from pydantic import Field
 from nodetool.config.environment import Environment
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
-from nodetool.metadata.types import DocumentRef, HFTextGeneration, LanguageModel, Provider
+from nodetool.metadata.types import DocumentRef, LanguageModel, Provider
 from llama_index.core.node_parser import (
     SemanticSplitterNodeParser,
     HTMLNodeParser,
@@ -16,14 +16,6 @@ from llama_index.core.node_parser import (
 )
 from llama_index.core.schema import Document
 from llama_index.embeddings.ollama import OllamaEmbedding
-from pydantic import Field
-from nodetool.workflows.base_node import BaseNode
-from nodetool.metadata.types import DocumentRef, LlamaModel, TextChunk, FolderPath
-from nodetool.workflows.processing_context import ProcessingContext
-from pydantic import Field
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DocumentRef, TextChunk
-from nodetool.workflows.base_node import BaseNode
 
 
 class LoadDocumentFile(BaseNode):

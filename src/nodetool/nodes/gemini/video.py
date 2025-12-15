@@ -3,7 +3,7 @@ from typing import ClassVar
 
 from nodetool.metadata.types import ImageRef, Provider, VideoRef
 from nodetool.providers.gemini_provider import GeminiProvider
-from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
 

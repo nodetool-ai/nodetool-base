@@ -5,16 +5,12 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
-from typing import Any
 import nodetool.metadata.types
-import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -42,10 +38,7 @@ class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.math
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -69,10 +62,7 @@ class Cosine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.math
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -99,10 +89,7 @@ class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.math
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -134,7 +121,7 @@ class MathFunction(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -164,7 +151,7 @@ class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -194,7 +181,7 @@ class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -224,7 +211,7 @@ class Power(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -251,7 +238,7 @@ class Sine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -278,7 +265,7 @@ class Sqrt(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 

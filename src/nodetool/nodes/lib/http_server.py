@@ -1,4 +1,4 @@
-from typing import Any, ClassVar, TypedDict
+from typing import ClassVar, TypedDict
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode

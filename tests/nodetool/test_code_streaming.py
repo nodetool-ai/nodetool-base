@@ -5,10 +5,9 @@ These tests validate Unix pipe-like functionality where the output of one
 code node can be streamed as input to another code node.
 """
 
-import asyncio
 from nodetool.workflows.run_workflow import WorkflowRunner
 import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.inbox import NodeInbox

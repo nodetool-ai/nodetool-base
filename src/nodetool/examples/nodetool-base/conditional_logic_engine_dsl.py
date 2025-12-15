@@ -24,7 +24,6 @@ from nodetool.dsl.nodetool.input import IntegerInput
 from nodetool.dsl.nodetool.boolean import Compare, LogicalOperator, ConditionalSwitch
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.output import StringOutput
-from nodetool.metadata.types import Provider, LanguageModel
 
 
 # Input: Numeric value to evaluate

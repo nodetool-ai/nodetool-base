@@ -1,9 +1,8 @@
-import base64
 import asyncio
 import inspect
 import json
 import re
-from typing import Any, AsyncGenerator, cast, ClassVar, TypedDict
+from typing import Any, AsyncGenerator, ClassVar, TypedDict
 
 from nodetool.agents.tools.workflow_tool import GraphTool
 from nodetool.types.model import UnifiedModel
@@ -21,13 +20,8 @@ from nodetool.workflows.types import (
     ToolCallUpdate,
 )
 
-from nodetool.types.model import UnifiedModel
 
 from nodetool.metadata.types import (
-    LanguageModel,
-    ToolName,
-    ImageRef,
-    AudioRef,
     Message,
     MessageTextContent,
     MessageImageContent,
@@ -41,8 +35,7 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import ToolCallUpdate, EdgeUpdate
-from nodetool.workflows.io import NodeInputs, NodeOutputs
+from nodetool.workflows.types import EdgeUpdate
 from nodetool.metadata.types import Provider
 from nodetool.config.logging_config import get_logger
 from nodetool.models.thread import Thread as ThreadModel

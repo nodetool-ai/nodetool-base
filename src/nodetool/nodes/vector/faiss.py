@@ -3,7 +3,7 @@ FAISS nodes for Nodetool.
 """
 
 from enum import Enum
-from typing import TYPE_CHECKING, Any, TypedDict
+from typing import TYPE_CHECKING, TypedDict
 
 from nodetool.metadata.types import FaissIndex, NPArray
 from nodetool.workflows.base_node import BaseNode
@@ -11,7 +11,6 @@ from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
 
 if TYPE_CHECKING:
-    import faiss
     import numpy as np
 
 
@@ -172,7 +171,6 @@ class AddWithIds(FaissNode):
 
     async def process(self, context: ProcessingContext) -> FaissIndex:
         import faiss
-        import numpy as np
 
         if self.index.index is None:
             raise ValueError("FAISS index is not set")

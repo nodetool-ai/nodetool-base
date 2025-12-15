@@ -1,4 +1,3 @@
-import numpy as np
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.base_node import BaseNode

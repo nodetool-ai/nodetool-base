@@ -1,5 +1,3 @@
-import os
-from nodetool.config.logging_config import configure_logging
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.types import OutputUpdate
 from nodetool.workflows.run_workflow import run_workflow
@@ -326,7 +324,6 @@ async def test_reroute_passes_stream_through(context: ProcessingContext):
 
 @pytest.mark.asyncio
 async def test_collect_node_aggregates_stream(context: ProcessingContext):
-    from nodetool.workflows.base_node import BaseNode
 
     nodes = [
         APINode(

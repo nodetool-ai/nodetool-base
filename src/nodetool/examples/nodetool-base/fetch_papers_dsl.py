@@ -13,12 +13,10 @@ Workflow:
 7. **Download** - Download all papers to a folder
 """
 
-import os
 from nodetool.dsl.graph import run_graph, create_graph
 from nodetool.dsl.lib.http import GetRequest, DownloadFiles
 from nodetool.dsl.lib.markdown import ExtractLinks
 from nodetool.dsl.nodetool.data import FromList, Filter, ExtractColumn
-from nodetool.dsl.nodetool.output import ListOutput
 
 
 # Fetch README

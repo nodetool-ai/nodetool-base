@@ -1,11 +1,9 @@
 
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.dsl.graph import graph_result
 from nodetool.dsl.nodetool.numbers import FilterNumber, FilterNumberRange
 from nodetool.dsl.nodetool.output import ListOutput
 from nodetool.dsl.nodetool.control import ForEach, Collect
-from nodetool.nodes.nodetool.numbers import FilterNumber as NumNode  # To access enums
 
 @pytest.fixture
 def context():

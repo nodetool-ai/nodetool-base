@@ -10,7 +10,7 @@ Workflow:
 4. **Preview** - Display the summary result
 """
 
-from nodetool.dsl.graph import AssetOutputMode, create_graph, run_graph
+from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.lib.mail import GmailSearch, EmailFields
 from nodetool.dsl.nodetool.agents import Summarizer
 from nodetool.dsl.nodetool.output import StringOutput

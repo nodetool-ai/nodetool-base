@@ -22,7 +22,7 @@ This demonstrates:
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.agents import Agent
-from nodetool.dsl.nodetool.text import FormatText, Extract
+from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.code import ExecutePython
 from nodetool.dsl.nodetool.boolean import ConditionalSwitch
 from nodetool.dsl.nodetool.output import StringOutput

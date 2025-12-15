@@ -1,6 +1,5 @@
 import pytest
 import pytest_asyncio
-from unittest.mock import patch, MagicMock
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.lib.secret import GetSecret
 from nodetool.models.secret import Secret

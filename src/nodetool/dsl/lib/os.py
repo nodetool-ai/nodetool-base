@@ -5,15 +5,11 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -44,10 +40,7 @@ class AbsolutePath(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -71,10 +64,7 @@ class AccessedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Dateti
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -106,10 +96,7 @@ class Basename(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -142,9 +129,7 @@ class CopyFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -176,9 +161,7 @@ class CreateDirectory(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -203,9 +186,7 @@ class CreatedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetim
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -235,9 +216,7 @@ class Dirname(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -266,9 +245,7 @@ class FileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -293,9 +270,7 @@ class FileExtension(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -320,9 +295,7 @@ class FileName(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -359,9 +332,7 @@ class FileNameMatch(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -398,9 +369,7 @@ class FilterFileNames(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -425,9 +394,7 @@ class GetDirectory(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -452,9 +419,7 @@ class GetFileSize(SingleOutputGraphNode[int], GraphNode[int]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -483,9 +448,7 @@ class GetPathInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -510,9 +473,7 @@ class IsDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -537,9 +498,7 @@ class IsFile(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -568,9 +527,7 @@ class JoinPaths(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.os
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -615,7 +572,6 @@ class ListFilesOutputs(OutputsProxy):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -642,7 +598,6 @@ class ModifiedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Dateti
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -677,7 +632,6 @@ class MoveFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -708,7 +662,6 @@ class NormalizePath(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -731,7 +684,6 @@ class OpenWorkspaceDirectory(SingleOutputGraphNode[NoneType], GraphNode[NoneType
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -763,7 +715,6 @@ class PathToString(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -798,7 +749,6 @@ class RelativePath(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -837,7 +787,6 @@ class ShowNotification(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -869,7 +818,6 @@ class SplitExtension(SingleOutputGraphNode[dict], GraphNode[dict]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
@@ -901,7 +849,6 @@ class SplitPath(SingleOutputGraphNode[dict], GraphNode[dict]):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode

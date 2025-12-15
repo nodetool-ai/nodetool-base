@@ -4,7 +4,7 @@ from typing import ClassVar
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import ImageRef, Provider
 from nodetool.providers.gemini_provider import GeminiProvider
-from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
 

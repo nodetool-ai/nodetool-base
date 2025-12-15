@@ -1,6 +1,5 @@
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, List, Sequence, Tuple
 
 from nodetool.agents.simple_agent import SimpleAgent
 

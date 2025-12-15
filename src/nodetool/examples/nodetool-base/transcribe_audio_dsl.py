@@ -14,7 +14,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import AudioInput
 from nodetool.dsl.nodetool.text import AutomaticSpeechRecognition
 from nodetool.dsl.nodetool.output import StringOutput
-from nodetool.metadata.types import ASRModel, AudioRef, LanguageModel, Provider
+from nodetool.metadata.types import ASRModel, AudioRef, Provider
 
 sample_audio_file = os.path.join(os.path.dirname(__file__), "harvard.mp3")
 

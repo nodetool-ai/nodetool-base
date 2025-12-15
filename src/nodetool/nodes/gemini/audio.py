@@ -1,11 +1,9 @@
-from base64 import b64decode
 from enum import Enum
 from typing import ClassVar
 
-from nodetool.config.environment import Environment
 from nodetool.metadata.types import AudioRef, Provider
 from nodetool.providers.gemini_provider import GeminiProvider
-from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
 

@@ -9,7 +9,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 if TYPE_CHECKING:
-    from PIL import Image
+    pass
 
 
 class ConvertToArray(BaseNode):

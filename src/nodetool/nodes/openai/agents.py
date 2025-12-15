@@ -34,7 +34,6 @@ from openai.types.beta.realtime.response_audio_transcript_delta_event import (
 from pydantic import Field
 
 from nodetool.agents.tools.base import Tool
-from nodetool.config.environment import Environment
 
 from nodetool.workflows.types import (
     ToolCallUpdate,

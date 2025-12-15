@@ -15,8 +15,8 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.agents import Classifier
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.output import DataframeOutput, StringOutput
-from nodetool.metadata.types import LanguageModel, Provider, ColumnDef, RecordType
+from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.metadata.types import LanguageModel, Provider
 
 
 # User input: social media text
@@ -80,7 +80,6 @@ graph = create_graph(text_output)
 
 if __name__ == "__main__":
     import argparse
-    import sys
 
     parser = argparse.ArgumentParser(description="Social media sentiment DSL example")
     parser.add_argument(
@@ -93,7 +92,7 @@ if __name__ == "__main__":
     if args.gradio:
         try:
             from nodetool.ui.gradio_auto import build_gradio_app
-        except Exception as e:
+        except Exception:
             print(
                 "Gradio UI requires the optional dependency 'gradio'.\n"
                 "Install it with: pip install gradio",

@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Any, AsyncGenerator, TypedDict
+from typing import AsyncGenerator, TypedDict
 
 from pydantic import Field
 

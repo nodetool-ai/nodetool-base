@@ -2,8 +2,6 @@ import io
 import os
 import datetime
 import base64
-import asyncio
-from enum import Enum
 from typing import AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.config.logging_config import get_logger
@@ -14,7 +12,6 @@ from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk, SaveUpdate
-from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
