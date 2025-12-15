@@ -16,7 +16,6 @@ from openai.types.beta.realtime import (
     ResponseDoneEvent,
     ResponseTextDeltaEvent,
     ResponseTextDoneEvent,
-    Session,
 )
 from openai.types.beta.realtime.session import (
     Tool as OpenAITool,

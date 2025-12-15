@@ -259,9 +259,9 @@ def validate_event(obj: Any) -> Tuple[bool, str]:
         return False, msg
 
     # Check all fields are non-empty strings
-    for field in ["title", "date", "location"]:
-        if not isinstance(obj.get(field), str) or not obj.get(field, "").strip():
-            return False, f"{field} must be a non-empty string"
+    for field_name in ["title", "date", "location"]:
+        if not isinstance(obj.get(field_name), str) or not obj.get(field_name, "").strip():
+            return False, f"{field_name} must be a non-empty string"
 
     return True, "Event object is valid"
 

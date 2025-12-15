@@ -1,29 +1,6 @@
 
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.dsl.nodetool.numbers import FilterNumber, FilterNumberRange
-from nodetool.dsl.nodetool.output import ListOutput
-from nodetool.dsl.nodetool.control import ForEach, Collect
-
-@pytest.fixture
-def context():
-    return ProcessingContext(user_id="test", auth_token="test")
-
-@pytest.mark.asyncio
-async def test_filter_number_greater_than():
-    # Stream: [1, 2, 3, 4, 5] -> Filter(>3) -> [4, 5]
-    source = ForEach(input_list=[1, 2, 3, 4, 5])
-    
-    # We need to construct the filter node
-    # Since we are using DSL, we assume DSL matches Node definition
-    # But wait, DSL generation might not be instant if I just added the file.
-    # The DSL is dynamically generated from nodes? 
-    # Usually in this codebase, DSL is available or needs to be used via direct node construction if DSL isn't updated.
-    # The tests I saw use `from nodetool.dsl.nodetool...` implies DSL exists.
-    # However, I just created `numbers.py`. It likely won't have DSL yet unless the system auto-generates it on the fly or I shouldn't use DSL for this test.
-    # I should use APINode and run_workflow manually like in `test_control_nodes.py` to be safe and test the NODE implementation, not the DSL.
-    pass
-
 from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
 from nodetool.workflows.run_job_request import RunJobRequest
 from nodetool.workflows.run_workflow import run_workflow
@@ -31,6 +8,10 @@ from nodetool.workflows.types import OutputUpdate
 from nodetool.nodes.nodetool.control import ForEach, Collect
 from nodetool.nodes.nodetool.numbers import FilterNumber, FilterNumberRange
 from nodetool.nodes.nodetool.output import ListOutput
+
+@pytest.fixture
+def context():
+    return ProcessingContext(user_id="test", auth_token="test")
 
 async def run_simple_filter_graph(context, input_list, filter_node_type, filter_data):
     nodes = [

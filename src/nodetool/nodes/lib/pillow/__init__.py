@@ -1,14 +1,8 @@
-from typing import TYPE_CHECKING
-
 from pydantic import Field
 
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-
-if TYPE_CHECKING:
-    import PIL.Image
-    import PIL.ImageOps
 
 
 class Blend(BaseNode):

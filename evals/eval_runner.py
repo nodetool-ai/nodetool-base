@@ -277,7 +277,7 @@ async def main() -> None:
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS))  # type: ignore
+                evaluator.on_update = lambda s, logs: live.update(make_view(s, logs, MODELS))  # type: ignore
                 data_result: EvaluationResult = await evaluator.evaluate()
                 live.update(make_view(data_result.stats, data_result.logs, MODELS))
             return
@@ -303,7 +303,7 @@ async def main() -> None:
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS))  # type: ignore
+                evaluator.on_update = lambda s, logs: live.update(make_view(s, logs, MODELS))  # type: ignore
                 math_result: EvaluationResult =  await evaluator.evaluate()
                 live.update(make_view(math_result.stats, math_result.logs, MODELS))
             return
@@ -334,7 +334,7 @@ async def main() -> None:
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS, max_log_lines, "Task", True))  # type: ignore
+                evaluator.on_update = lambda s, logs: live.update(make_view(s, logs, MODELS, max_log_lines, "Task", True))  # type: ignore
                 browser_result: EvaluationResult = await evaluator.evaluate()
                 live.update(
                     make_view(
@@ -374,7 +374,7 @@ async def main() -> None:
                 refresh_per_second=8,
                 console=console,
             ) as live:
-                evaluator.on_update = lambda s, l: live.update(make_view(s, l, MODELS, max_log_lines, "Task", True))  # type: ignore
+                evaluator.on_update = lambda s, logs: live.update(make_view(s, logs, MODELS, max_log_lines, "Task", True))  # type: ignore
                 search_result: EvaluationResult = await evaluator.evaluate()
                 live.update(
                     make_view(

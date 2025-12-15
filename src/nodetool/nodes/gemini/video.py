@@ -148,7 +148,9 @@ class ImageToVideo(BaseNode):
         if not self.image.uri:
             raise ValueError("Input image is required")
 
-        client = get_genai_client()
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         # Convert image to bytes for upload
         image_bytes = await context.asset_to_bytes(self.image)

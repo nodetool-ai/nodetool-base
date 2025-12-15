@@ -38,12 +38,12 @@ class TestCodeNodeStreaming:
     @pytest.mark.asyncio
     async def test_python_node_is_streaming_input(self):
         """Test that Python nodes opt into streaming input."""
-        assert ExecutePython.is_streaming_input() == True
+        assert ExecutePython.is_streaming_input()
 
     @pytest.mark.asyncio
     async def test_bash_node_is_streaming_input(self):
         """Test that Bash nodes opt into streaming input."""
-        assert ExecuteBash.is_streaming_input() == True
+        assert ExecuteBash.is_streaming_input()
 
     @pytest.mark.asyncio
     async def test_python_node_with_streaming_input(self, python_node, context):

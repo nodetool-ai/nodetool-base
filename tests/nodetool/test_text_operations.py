@@ -84,4 +84,4 @@ async def test_split_join():
 @pytest.mark.asyncio
 async def test_contains_check():
     result = await graph_result(contains_check)
-    assert result["contains_check"] == True
+    assert result["contains_check"]

@@ -27,7 +27,6 @@ def generate_wikipedia_tasks(
 
     Task tuple format: (description, starting_url, expected_substring)
     """
-    tasks: List[Tuple[str, str, str]] = []
 
     # Basic article information extraction
     return [
