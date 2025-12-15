@@ -9,7 +9,7 @@ from typing import List, Dict, Any
 
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
-from nodetool.dsl.nodetool.text import FormatText
+from nodetool.dsl.nodetool.text import FormatText, FormatText as MarkdownFormat
 from nodetool.dsl.nodetool.agents import ResearchAgent
 from nodetool.dsl.nodetool.output import StringOutput
 from nodetool.metadata.types import LanguageModel, Provider
@@ -68,8 +68,6 @@ learning_agent = ResearchAgent(
 )
 
 # Render a readable markdown view of the structured plan
-from nodetool.dsl.nodetool.text import FormatText as MarkdownFormat  # reuse under a clearer alias
-
 learning_plan_markdown = MarkdownFormat(
     template="""
 # Learning path: {{ topic }}

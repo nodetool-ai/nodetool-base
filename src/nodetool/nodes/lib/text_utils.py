@@ -1,10 +1,10 @@
 from __future__ import annotations
 
+from typing import List
+
 """
 Utilities for incremental text streaming and overlap handling.
 """
-
-from typing import List
 
 
 def _tokenize_whitespace(s: str) -> tuple[list[str], list[int]]:
