@@ -3,7 +3,6 @@ from nodetool.metadata.types import DocumentRef
 from nodetool.nodes.nodetool.document import (
     SplitRecursively,
     SplitMarkdown,
-    SplitSentences,
 )
 from nodetool.workflows.processing_context import ProcessingContext
 
