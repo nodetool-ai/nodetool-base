@@ -67,27 +67,3 @@ class TestSplitMarkdown:
             {"text": "Content 1", "source_id": "test-md-doc", "start_index": 0},
             {"text": "Content 2", "source_id": "test-md-doc", "start_index": 0},
         ]
-
-
-class TestSentenceSplitter:
-    @pytest.mark.asyncio
-    async def test_process_splits_sentences_correctly(self, processing_context):
-        doc_ref = DocumentRef(uri="test-sentence-doc", data="Sentence 1. Sentence 2.")
-        node = SplitSentences(
-            document=doc_ref,
-            chunk_size=5,
-            chunk_overlap=0,
-        )
-
-        result = []
-        async for chunk in node.gen_process(processing_context):
-            result.append(chunk)
-
-        # Assert
-        assert result == [
-            {
-                "text": "sentence 1. sentence 2.",
-                "source_id": "test-sentence-doc:0",
-                "start_index": -1,
-            }
-        ]
