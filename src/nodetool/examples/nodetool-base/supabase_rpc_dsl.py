@@ -9,7 +9,7 @@ Requirements:
 """
 
 from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.output import DataframeOutput, DictionaryOutput
+from nodetool.dsl.nodetool.output import DataframeOutput
 from nodetool.dsl.lib.supabase import RPC
 
 

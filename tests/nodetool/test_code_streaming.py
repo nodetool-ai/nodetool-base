@@ -5,10 +5,9 @@ These tests validate Unix pipe-like functionality where the output of one
 code node can be streamed as input to another code node.
 """
 
-import asyncio
 from nodetool.workflows.run_workflow import WorkflowRunner
 import pytest
-from unittest.mock import AsyncMock, Mock, patch
+from unittest.mock import Mock, patch
 
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.inbox import NodeInbox
@@ -39,12 +38,12 @@ class TestCodeNodeStreaming:
     @pytest.mark.asyncio
     async def test_python_node_is_streaming_input(self):
         """Test that Python nodes opt into streaming input."""
-        assert ExecutePython.is_streaming_input() == True
+        assert ExecutePython.is_streaming_input()
 
     @pytest.mark.asyncio
     async def test_bash_node_is_streaming_input(self):
         """Test that Bash nodes opt into streaming input."""
-        assert ExecuteBash.is_streaming_input() == True
+        assert ExecuteBash.is_streaming_input()
 
     @pytest.mark.asyncio
     async def test_python_node_with_streaming_input(self, python_node, context):

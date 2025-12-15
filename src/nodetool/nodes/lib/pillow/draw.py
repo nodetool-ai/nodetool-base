@@ -9,9 +9,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 if TYPE_CHECKING:
-    import PIL.Image
-    import PIL.ImageDraw
-    import PIL.ImageFont
+    pass
 
 
 class Background(BaseNode):

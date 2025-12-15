@@ -9,12 +9,7 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 if TYPE_CHECKING:
-    import PIL.Image
-    import PIL.ImageDraw
-    import PIL.ImageEnhance
-    import PIL.ImageFilter
-    import PIL.ImageFont
-    import PIL.ImageOps
+    pass
 
 
 class Invert(BaseNode):

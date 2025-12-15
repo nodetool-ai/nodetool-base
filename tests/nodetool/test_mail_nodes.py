@@ -3,7 +3,7 @@ from unittest.mock import AsyncMock, MagicMock
 from datetime import datetime, timedelta, timezone
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.lib.mail import EmailFields, get_date_condition, GmailSearch, MoveToArchive, AddLabel
+from nodetool.nodes.lib.mail import EmailFields, get_date_condition, GmailSearch, MoveToArchive
 from nodetool.metadata.types import Email, Datetime, DateCriteria, DateSearchCondition
 
 

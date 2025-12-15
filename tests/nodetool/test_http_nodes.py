@@ -1,5 +1,4 @@
 import pytest
-from types import SimpleNamespace
 from unittest.mock import AsyncMock, MagicMock
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.lib.http import GetRequest, PostRequest, PutRequest, DeleteRequest, HeadRequest

@@ -9,7 +9,6 @@ Usage:
     python eval_list_generator.py --output results.json
 """
 
-import re
 import time
 from typing import List, Tuple, Any
 from dataclasses import dataclass, field
@@ -17,7 +16,6 @@ from enum import Enum
 
 from nodetool.metadata.types import LanguageModel
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import Chunk
 from nodetool.nodes.nodetool.generators import ListGenerator
 
 try:

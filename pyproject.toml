@@ -25,6 +25,15 @@ dependencies = [
 [tool.hatch.metadata]
 allow-direct-references = true
 
+[tool.ruff.lint]
+# Ignore E402 (module level import not at top of file) in auto-generated DSL files
+# Also ignore in eval/example files that need imports after sys.path or sys.modules setup
+
+[tool.ruff.lint.extend-per-file-ignores]
+"src/nodetool/dsl/**/*.py" = ["E402", "F401", "F821"]
+"evals/eval_runner.py" = ["E402"]
+"examples/generate_json_examples.py" = ["E402"]
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/nodetool"]
 artifacts = [

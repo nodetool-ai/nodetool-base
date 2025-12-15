@@ -9,7 +9,7 @@ from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ASRModel, AudioChunk, FolderRef, AudioRef, Provider
+from nodetool.metadata.types import ASRModel, FolderRef, AudioRef, Provider
 from nodetool.workflows.base_node import BaseNode
 import re
 from jsonpath_ng import parse

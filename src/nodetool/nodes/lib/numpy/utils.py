@@ -8,7 +8,6 @@ from nodetool.metadata.types import NPArray
 
 
 # Import numpy_to_audio_segment from the centralized location
-from nodetool.media.audio.audio_helpers import numpy_to_audio_segment
 
 
 def pad_arrays(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:

@@ -5,15 +5,13 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -47,10 +45,7 @@ class Append(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -78,10 +73,7 @@ class Average(SingleOutputGraphNode[float], GraphNode[float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -111,10 +103,7 @@ class Chunk(SingleOutputGraphNode[list[list[Any]]], GraphNode[list[list[Any]]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -143,10 +132,7 @@ class Dedupe(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -178,10 +164,7 @@ class Difference(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -212,10 +195,7 @@ class Extend(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -249,10 +229,7 @@ class Flatten(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.list
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -288,8 +265,6 @@ class GenerateSequenceOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["output"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -321,8 +296,6 @@ class GetElement(SingleOutputGraphNode[Any], GraphNode[Any]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -356,8 +329,6 @@ class Intersection(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -388,8 +359,6 @@ class Length(SingleOutputGraphNode[int], GraphNode[int]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -420,8 +389,6 @@ class ListRange(SingleOutputGraphNode[list[int]], GraphNode[list[int]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -451,8 +418,6 @@ class Maximum(SingleOutputGraphNode[float], GraphNode[float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -482,8 +447,6 @@ class Minimum(SingleOutputGraphNode[float], GraphNode[float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -513,8 +476,6 @@ class Product(SingleOutputGraphNode[float], GraphNode[float]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -545,8 +506,6 @@ class Randomize(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -575,8 +534,6 @@ class Reverse(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -611,8 +568,6 @@ class SaveList(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -646,8 +601,6 @@ class SelectElements(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
@@ -681,8 +634,6 @@ class Slice(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode

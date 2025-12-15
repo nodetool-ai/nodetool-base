@@ -1,6 +1,5 @@
 import os
-from dataclasses import dataclass
-from typing import Any, Dict, List, Sequence, Tuple
+from typing import Any, List, Sequence, Tuple
 
 from nodetool.agents.simple_agent import SimpleAgent
 
@@ -28,7 +27,6 @@ def generate_wikipedia_tasks(
 
     Task tuple format: (description, starting_url, expected_substring)
     """
-    tasks: List[Tuple[str, str, str]] = []
 
     # Basic article information extraction
     return [

@@ -5,16 +5,11 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
-import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.pillow.enhance
 from nodetool.workflows.base_node import BaseNode
 
@@ -52,10 +47,7 @@ class AdaptiveContrast(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -89,10 +81,7 @@ class AutoContrast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -125,10 +114,7 @@ class Brightness(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -161,10 +147,7 @@ class Color(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -197,10 +180,7 @@ class Contrast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef])
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -230,10 +210,7 @@ class Detail(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -263,10 +240,7 @@ class EdgeEnhance(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -296,10 +270,7 @@ class Equalize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef])
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -335,10 +306,7 @@ class RankFilter(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -368,10 +336,7 @@ class Sharpen(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -404,10 +369,7 @@ class Sharpness(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.pillow.enhance
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 

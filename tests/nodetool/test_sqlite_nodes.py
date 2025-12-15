@@ -1,5 +1,4 @@
 import pytest
-from pathlib import Path
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ColumnDef, RecordType
 from nodetool.nodes.lib.sqlite import (

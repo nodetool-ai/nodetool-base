@@ -210,7 +210,7 @@ class CombineImageGrid(BaseNode):
         # Create a new image with the calculated size
         combined_width = max_width * self.columns
         combined_height = max_height * rows
-        combined_image = PIL.Image.new("RGBA", (combined_width, combined_height))
+        combined_image = Image.new("RGBA", (combined_width, combined_height))
 
         # Paste the tiles into the combined image
         for index, tile in enumerate(pil_tiles):

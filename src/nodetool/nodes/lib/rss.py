@@ -45,7 +45,6 @@ class FetchRSSFeed(BaseNode):
     ) -> AsyncGenerator[OutputType, None]:
         feed = _parse_feed(self.url)
 
-        data = []
         for entry in feed.entries:
             # Use published_parsed instead of manual parsing
             published = datetime.now()  # fallback

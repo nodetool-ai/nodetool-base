@@ -22,7 +22,6 @@ from nodetool.metadata.types import (
     RecordType,
 )
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import Chunk
 from nodetool.nodes.nodetool.generators import DataGenerator
 
 try:

@@ -7,7 +7,7 @@ import numpy as np
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.audio import TextToSpeech
 from nodetool.metadata.types import TTSModel, Provider, AudioRef
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 
 async def async_generator(items):

@@ -1,19 +1,15 @@
 from typing import Any
-import inspect
 
 from nodetool.metadata.types import DocumentRef
 from nodetool.metadata.types import NPArray
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import AudioRef
 from nodetool.metadata.types import DataframeRef
-from nodetool.metadata.types import ModelRef
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import (
-    BaseNode,
     OutputNode,
 )
 from nodetool.metadata.types import FilePath, FolderPath
-from nodetool.metadata.types import TextRef
 from nodetool.metadata.types import VideoRef
 
 

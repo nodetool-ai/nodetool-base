@@ -77,7 +77,6 @@ graph = create_graph(output)
 
 
 if __name__ == "__main__":
-    import asyncio
 
     result = run_graph(graph)
     print("Image Analysis Results:")

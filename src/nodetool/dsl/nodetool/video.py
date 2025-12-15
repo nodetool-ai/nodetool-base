@@ -5,15 +5,12 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
@@ -59,10 +56,7 @@ class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.video
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -117,7 +111,7 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -156,7 +150,7 @@ class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -201,7 +195,7 @@ class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -245,7 +239,7 @@ class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -281,7 +275,7 @@ class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -320,7 +314,7 @@ class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -350,7 +344,7 @@ class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -385,7 +379,7 @@ class Fps(SingleOutputGraphNode[float], GraphNode[float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 

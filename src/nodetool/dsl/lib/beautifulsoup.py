@@ -5,15 +5,11 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -45,10 +41,7 @@ class BaseUrl(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.beautifulsoup
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -91,8 +84,6 @@ class ExtractAudioOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.AudioRef], self["audio"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -139,8 +130,6 @@ class ExtractImagesOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.ImageRef], self["image"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -193,8 +182,6 @@ class ExtractLinksOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["type"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -245,8 +232,6 @@ class ExtractMetadataOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["keywords"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -293,8 +278,6 @@ class ExtractVideosOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.VideoRef], self["video"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -326,8 +309,6 @@ class HTMLToText(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode

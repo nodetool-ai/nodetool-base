@@ -12,7 +12,6 @@ from nodetool.metadata.types import (
     ColumnDef,
     DataframeRef,
     DocumentRef,
-    FilePath,
     ImageRef,
     RecordType,
 )

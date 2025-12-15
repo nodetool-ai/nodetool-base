@@ -1,6 +1,6 @@
 import pytest
 from nodetool.dsl.graph import graph_result
-from nodetool.dsl.lib.math import Add, Multiply, Divide, MathFunction, Power
+from nodetool.dsl.lib.math import Add, Multiply, Divide, MathFunction
 from nodetool.dsl.nodetool.output import FloatOutput
 
 # Example 1: Basic arithmetic (2 + 3) * 4

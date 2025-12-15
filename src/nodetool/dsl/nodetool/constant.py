@@ -5,16 +5,13 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
@@ -44,10 +41,7 @@ class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -73,10 +67,7 @@ class Bool(SingleOutputGraphNode[bool], GraphNode[bool]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -102,9 +93,7 @@ class Constant(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -138,9 +127,7 @@ class DataFrame(
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -171,9 +158,7 @@ class Date(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -222,9 +207,7 @@ class DateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime])
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -253,9 +236,7 @@ class Dict(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -280,9 +261,7 @@ class Document(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -309,9 +288,7 @@ class Float(SingleOutputGraphNode[float], GraphNode[float]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -341,9 +318,7 @@ class Image(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -370,9 +345,7 @@ class Integer(SingleOutputGraphNode[int], GraphNode[int]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -397,9 +370,7 @@ class JSON(SingleOutputGraphNode[types.JSONRef], GraphNode[types.JSONRef]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -428,9 +399,7 @@ class List(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -457,9 +426,7 @@ class String(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.constant
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 

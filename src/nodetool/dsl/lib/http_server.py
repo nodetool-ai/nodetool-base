@@ -5,18 +5,12 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
-from typing import Any
 import nodetool.metadata.types
-import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
+from nodetool.dsl.graph import GraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import (
     OutputHandle,
-    OutputsProxy,
     DynamicOutputsProxy,
     connect_field,
 )

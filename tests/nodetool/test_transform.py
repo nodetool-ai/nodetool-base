@@ -1,6 +1,5 @@
 from io import BytesIO
 import pytest
-import numpy as np
 from unittest.mock import AsyncMock, MagicMock, patch
 from pydub import AudioSegment
 

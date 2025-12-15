@@ -1,8 +1,12 @@
-import os
-from nodetool.config.logging_config import configure_logging
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.types import OutputUpdate
 from nodetool.workflows.run_workflow import run_workflow
+from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.run_job_request import RunJobRequest
+from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
+from nodetool.nodes.nodetool.output import ListOutput, StringOutput, IntegerOutput
+from nodetool.nodes.nodetool.control import If, ForEach, Reroute, Collect
+from nodetool.nodes.nodetool.list import GenerateSequence
 import pytest
 import asyncio
 from typing import AsyncGenerator, TypedDict
@@ -31,16 +35,6 @@ class _AsyncTimeoutIterator:
 
 def iter_with_timeout(agen, timeout: float = DEFAULT_TIMEOUT_SECONDS):
     return _AsyncTimeoutIterator(agen.__aiter__(), timeout)
-
-
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.run_job_request import RunJobRequest
-from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
-from nodetool.nodes.nodetool.output import ListOutput, StringOutput, IntegerOutput
-from nodetool.nodes.nodetool.control import If, ForEach
-from nodetool.nodes.nodetool.control import Reroute
-from nodetool.nodes.nodetool.control import Collect
-from nodetool.nodes.nodetool.list import GenerateSequence
 
 
 @pytest.fixture
@@ -326,7 +320,6 @@ async def test_reroute_passes_stream_through(context: ProcessingContext):
 
 @pytest.mark.asyncio
 async def test_collect_node_aggregates_stream(context: ProcessingContext):
-    from nodetool.workflows.base_node import BaseNode
 
     nodes = [
         APINode(

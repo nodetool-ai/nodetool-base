@@ -1,7 +1,7 @@
 from datetime import datetime
 import os
 from enum import Enum
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 

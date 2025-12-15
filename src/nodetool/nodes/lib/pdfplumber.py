@@ -4,7 +4,7 @@ from typing import List
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import DocumentRef, ImageRef, DataframeRef, ColumnDef
+from nodetool.metadata.types import DocumentRef, ImageRef, DataframeRef
 
 
 def _open_pdf(pdf_bytes: bytes):

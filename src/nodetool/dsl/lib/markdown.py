@@ -5,16 +5,12 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
@@ -45,9 +41,7 @@ class ExtractBulletLists(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.markdown
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -77,9 +71,7 @@ class ExtractCodeBlocks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.markdown
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -112,9 +104,7 @@ class ExtractHeaders(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.markdown
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -147,9 +137,7 @@ class ExtractLinks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.markdown
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -179,9 +167,7 @@ class ExtractNumberedLists(SingleOutputGraphNode[typing.Any], GraphNode[typing.A
 
 
 import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.markdown
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 

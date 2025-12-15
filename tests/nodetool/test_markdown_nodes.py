@@ -47,9 +47,9 @@ code block
 async def test_md_extract_links(context: ProcessingContext):
     node = ExtractLinks(markdown=MD)
     links = await node.process(context)
-    urls = {l["url"] for l in links}
+    urls = {link["url"] for link in links}
     assert "https://a.example" in urls and "https://b.example" in urls
-    assert any(l.get("title") for l in links)
+    assert any(link.get("title") for link in links)
 
 
 @pytest.mark.asyncio

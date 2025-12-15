@@ -1,23 +1,11 @@
-from typing import Any, TypedDict
-import inspect
+from typing import TypedDict
 from pydantic import Field
 from nodetool.metadata.types import (
     ColorRef,
-    DataframeRef,
     DocumentRef,
-    FilePath,
-    FolderRef,
     HuggingFaceModel,
     LanguageModel,
     ImageModel,
-    Message,
-    MessageAudioContent,
-    MessageDocumentContent,
-    MessageVideoContent,
-    MessageImageContent,
-    MessageTextContent,
-    InferenceProvider,
-    FolderPath,
     FolderRef,
 )
 from nodetool.workflows.processing_context import ProcessingContext
@@ -26,9 +14,6 @@ from nodetool.metadata.types import AudioRef
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import InputNode
 from nodetool.metadata.types import VideoRef
-from nodetool.metadata.types import Collection, ToolName
-from nodetool.config.environment import Environment
-from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)

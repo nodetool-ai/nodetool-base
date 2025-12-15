@@ -1,7 +1,6 @@
 from datetime import datetime
 import os
-from enum import Enum
-from typing import TYPE_CHECKING, Any, List, Union
+from typing import TYPE_CHECKING, Any
 
 from pydantic import Field
 
@@ -279,7 +278,7 @@ class AutoFitColumns(BaseNode):
                 try:
                     if len(str(cell.value)) > max_length:
                         max_length = len(str(cell.value))
-                except:
+                except Exception:
                     pass
 
             adjusted_width = max_length + 2

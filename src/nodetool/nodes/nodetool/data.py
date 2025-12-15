@@ -4,11 +4,11 @@ from typing import AsyncGenerator, ClassVar, TypedDict
 import json
 import os
 import pandas as pd
-from typing import Any, ClassVar
+from typing import Any
 from pydantic import Field
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ColumnDef, DataframeRef, FolderRef, RecordType
+from nodetool.metadata.types import DataframeRef, FolderRef, RecordType
 from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
 

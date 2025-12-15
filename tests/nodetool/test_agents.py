@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from typing import Any, AsyncGenerator
 
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.agents import Summarizer, Extractor, Classifier, Agent
@@ -14,19 +13,15 @@ from nodetool.metadata.types import (
     AudioRef,
     Message,
     MessageTextContent,
-    ToolName,
     TypeMetadata,
 )
-from typing import ClassVar
 from nodetool.providers import (
     Chunk,
     FakeProvider,
     create_simple_fake_provider,
-    create_streaming_fake_provider,
 )
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.workflows.workflow_runner import WorkflowRunner
-from nodetool.workflows.types import ToolCallUpdate
 
 
 class JsonResponseFakeProvider(FakeProvider):

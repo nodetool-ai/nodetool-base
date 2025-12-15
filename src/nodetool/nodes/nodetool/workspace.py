@@ -11,7 +11,6 @@ from pydantic import Field
 from nodetool.metadata.types import ImageRef, VideoRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import Datetime
 from nodetool.workflows.types import SaveUpdate
 from nodetool.io.uri_utils import create_file_uri
 from datetime import datetime

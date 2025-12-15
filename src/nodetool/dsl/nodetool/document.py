@@ -5,15 +5,11 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -57,8 +53,6 @@ class ListDocumentsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.DocumentRef], self["document"])
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -86,8 +80,6 @@ class LoadDocumentFile(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -126,7 +118,6 @@ class SaveDocumentFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any])
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -193,7 +184,6 @@ class SplitDocumentOutputs(OutputsProxy):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -239,7 +229,6 @@ class SplitHTMLOutputs(OutputsProxy):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -291,7 +280,6 @@ class SplitJSONOutputs(OutputsProxy):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -363,7 +351,6 @@ class SplitMarkdownOutputs(OutputsProxy):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -426,7 +413,6 @@ class SplitRecursivelyOutputs(OutputsProxy):
 
 
 import typing
-from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode

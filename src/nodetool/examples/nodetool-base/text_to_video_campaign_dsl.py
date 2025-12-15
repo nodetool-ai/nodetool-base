@@ -10,7 +10,7 @@ Workflow:
 4. **Output Asset** - Save the generated video for review and editing
 """
 
-from nodetool.dsl.graph import create_graph, run_graph, run_graph_sync
+from nodetool.dsl.graph import create_graph, run_graph_sync
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent

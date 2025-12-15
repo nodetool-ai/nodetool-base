@@ -3,10 +3,7 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import (
     AudioRef,
     ImageRef,
-    TextRef,
     VideoRef,
-    Message,
-    MessageTextContent,
 )
 from nodetool.nodes.nodetool.input import (
     FloatInput,

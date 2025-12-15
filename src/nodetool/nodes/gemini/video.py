@@ -3,7 +3,7 @@ from typing import ClassVar
 
 from nodetool.metadata.types import ImageRef, Provider, VideoRef
 from nodetool.providers.gemini_provider import GeminiProvider
-from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
+from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field
 
@@ -148,7 +148,9 @@ class ImageToVideo(BaseNode):
         if not self.image.uri:
             raise ValueError("Input image is required")
 
-        client = get_genai_client()
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         # Convert image to bytes for upload
         image_bytes = await context.asset_to_bytes(self.image)

@@ -5,16 +5,13 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 import typing
-from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -52,10 +49,7 @@ class CircleNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEle
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.svg
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -93,10 +87,7 @@ class ClipPath(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.svg
+from nodetool.dsl.handles import OutputHandle, connect_field
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -141,9 +132,7 @@ class Document(SingleOutputGraphNode[types.SVGRef], GraphNode[types.SVGRef]):
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -178,9 +167,7 @@ class DropShadow(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEle
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -219,9 +206,7 @@ class EllipseNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEl
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -248,9 +233,7 @@ class GaussianBlur(
         return cls.get_node_class().get_node_type()
 
 
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -305,7 +288,7 @@ class Gradient(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -348,7 +331,7 @@ class LineNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -384,7 +367,7 @@ class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -420,7 +403,7 @@ class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEl
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -457,7 +440,7 @@ class RectNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -508,7 +491,7 @@ class SVGToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -557,7 +540,7 @@ class Text(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement])
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+from nodetool.dsl.handles import OutputHandle, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 

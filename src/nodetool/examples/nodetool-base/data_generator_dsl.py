@@ -13,7 +13,6 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.generators import DataGenerator
 from nodetool.dsl.nodetool.output import DataframeOutput
 from nodetool.metadata.types import LanguageModel, Provider, RecordType, ColumnDef
-from nodetool.workflows.processing_context import AssetOutputMode
 
 
 # Define the data structure
