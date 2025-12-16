@@ -78,14 +78,15 @@ class ExtractFeedMetadata(BaseNode):
     url: str = Field(default="", description="URL of the RSS feed")
 
     async def process(self, context: ProcessingContext) -> dict:
-        feed = _parse_feed(self.url)
+        parsed = _parse_feed(self.url)
+        feed_info = parsed.feed
 
         return {
-            "title": feed.get("title", ""),
-            "description": feed.get("description", ""),
-            "link": feed.get("link", ""),
-            "language": feed.get("language", ""),
-            "updated": feed.get("updated", ""),
-            "generator": feed.get("generator", ""),
-            "entry_count": len(feed.entries),
+            "title": feed_info.get("title", ""),
+            "description": feed_info.get("description", ""),
+            "link": feed_info.get("link", ""),
+            "language": feed_info.get("language", ""),
+            "updated": feed_info.get("updated", ""),
+            "generator": feed_info.get("generator", ""),
+            "entry_count": len(parsed.entries),
         }

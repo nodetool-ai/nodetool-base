@@ -79,7 +79,7 @@ class TextToVideo(BaseNode):
         config = GenerateVideosConfig(**config_args) if config_args else None
         provider = await context.get_provider(Provider.Gemini)
         assert isinstance(provider, GeminiProvider)
-        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         res = await client.models.generate_videos(
             model=self.model.value,
@@ -150,7 +150,7 @@ class ImageToVideo(BaseNode):
 
         provider = await context.get_provider(Provider.Gemini)
         assert isinstance(provider, GeminiProvider)
-        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         # Convert image to bytes for upload
         image_bytes = await context.asset_to_bytes(self.image)

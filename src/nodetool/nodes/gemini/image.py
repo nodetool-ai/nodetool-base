@@ -58,7 +58,7 @@ class ImageGeneration(BaseNode):
 
         provider = await context.get_provider(Provider.Gemini)
         assert isinstance(provider, GeminiProvider)
-        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         # If a Gemini image-capable model is selected, use the IMAGE+TEXT API
         if self.model.value.startswith("gemini-"):

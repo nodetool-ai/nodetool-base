@@ -94,7 +94,7 @@ class TextToSpeech(BaseNode):
 
         provider = await context.get_provider(Provider.Gemini)
         assert isinstance(provider, GeminiProvider)
-        client = await provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
         response = await client.models.generate_content(
             model=self.model.value,
