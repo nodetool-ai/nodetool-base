@@ -5,7 +5,7 @@ from nodetool.metadata.types import AudioRef, Provider
 from nodetool.providers.gemini_provider import GeminiProvider
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from pydantic import Field
+from pydantic import Field, field_validator
 
 
 class TTSModel(str, Enum):
@@ -14,36 +14,36 @@ class TTSModel(str, Enum):
 
 
 class VoiceName(str, Enum):
-    ZEPHYR = "Zephyr"
-    PUCK = "Puck"
-    NOVA = "Nova"
-    QUEST = "Quest"
-    ECHO = "Echo"
-    FABLE = "Fable"
-    ORBIT = "Orbit"
-    CHIME = "Chime"
-    KORE = "Kore"
-    ZENITH = "Zenith"
-    COSMOS = "Cosmos"
-    SAGE = "Sage"
-    BREEZE = "Breeze"
-    GLIMMER = "Glimmer"
-    DRIFT = "Drift"
-    PEARL = "Pearl"
-    FLUX = "Flux"
-    PRISM = "Prism"
-    VEGA = "Vega"
-    LYRA = "Lyra"
-    RIPPLE = "Ripple"
-    AZURE = "Azure"
-    JUNO = "Juno"
-    RIVER = "River"
-    STERLING = "Sterling"
-    ATLAS = "Atlas"
-    BEACON = "Beacon"
-    EMBER = "Ember"
-    HARMONY = "Harmony"
-    SPIRIT = "Spirit"
+    ACHERNAR = "achernar"
+    ACHIRD = "achird"
+    ALGENIB = "algenib"
+    ALGIEBA = "algieba"
+    ALNILAM = "alnilam"
+    AOEDE = "aoede"
+    AUTONOE = "autonoe"
+    CALLIRRHOE = "callirrhoe"
+    CHARON = "charon"
+    DESPINA = "despina"
+    ENCELADUS = "enceladus"
+    ERINOME = "erinome"
+    FENRIR = "fenrir"
+    GACRUX = "gacrux"
+    IAPETUS = "iapetus"
+    KORE = "kore"
+    LAOMEDEIA = "laomedeia"
+    LEDA = "leda"
+    ORUS = "orus"
+    PUCK = "puck"
+    PULCHERRIMA = "pulcherrima"
+    RASALGETHI = "rasalgethi"
+    SADACHBIA = "sadachbia"
+    SADALTAGER = "sadaltager"
+    SCHEDAR = "schedar"
+    SULAFAT = "sulafat"
+    UMBRIEL = "umbriel"
+    VINDEMIATRIX = "vindemiatrix"
+    ZEPHYR = "zephyr"
+    ZUBENELGENUBI = "zubenelgenubi"
 
 
 class TextToSpeech(BaseNode):
@@ -53,6 +53,14 @@ class TextToSpeech(BaseNode):
 
     This node converts text input into natural-sounding speech audio using Google's
     advanced text-to-speech models with support for multiple voices and speech styles.
+
+    Supported voices:
+    - achernar, achird, algenib, algieba, alnilam
+    - aoede, autonoe, callirrhoe, charon, despina
+    - enceladus, erinome, fenrir, gacrux, iapetus
+    - kore, laomedeia, leda, orus, puck
+    - pulcherrima, rasalgethi, sadachbia, sadaltager, schedar
+    - sulafat, umbriel, vindemiatrix, zephyr, zubenelgenubi
 
     Use cases:
     - Create voiceovers for videos and presentations
@@ -74,6 +82,20 @@ class TextToSpeech(BaseNode):
     voice_name: VoiceName = Field(
         default=VoiceName.KORE, description="The voice to use for speech generation"
     )
+
+    @field_validator("voice_name", mode="before")
+    @classmethod
+    def validate_voice_name(cls, v):
+        if isinstance(v, VoiceName):
+            return v
+        if isinstance(v, str):
+            try:
+                # Try to map to a valid enum value
+                return VoiceName(v.lower())
+            except ValueError:
+                # Default to Kore if invalid
+                return VoiceName.KORE
+        return v
 
     style_prompt: str = Field(
         default="",
