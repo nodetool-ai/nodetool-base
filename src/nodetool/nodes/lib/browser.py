@@ -3,16 +3,12 @@ import os
 import re
 from enum import Enum
 from typing import Any, Dict, Optional, ClassVar, TypedDict
-import hashlib
 
 import aiohttp
 from pydantic import Field
 
-# ServerDockerRunner is used at runtime to start a Playwright WS server in Docker
 from nodetool.workflows.base_node import ApiKeyMissingError, BaseNode
-from nodetool.workflows.types import Notification, LogUpdate
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.code_runners.runtime_base import StreamRunnerBase
 from nodetool.config.logging_config import get_logger
 from nodetool.config.environment import Environment
 
@@ -20,154 +16,6 @@ logger = get_logger(__name__)
 
 # Browser Use
 os.environ["ANONYMIZED_TELEMETRY"] = "false"
-
-PLAYWRIGHT_BASE_IMAGE = "mcr.microsoft.com/playwright:v1.55.0-noble"
-PLAYWRIGHT_DRIVER_PORT = 3000
-
-# Dockerfile content for the custom Playwright driver image.
-# Builds on the official Microsoft Playwright image and ensures the Node.js
-# Playwright CLI is installed for running the remote driver server.
-_PLAYWRIGHT_DOCKERFILE = """
-# Base Microsoft Playwright image
-FROM mcr.microsoft.com/playwright:v1.55.0-noble
-
-# Become root to install global npm packages if requested
-USER root
-
-RUN npm install -y -g --unsafe-perm playwright
-
-# Set defaults and expose the Playwright driver port
-ENV PLAYWRIGHT_BROWSERS_PATH=/ms-playwright \
-    DRIVER_PORT=3000
-
-EXPOSE 3000
-
-# Drop back to the non-root user used by Playwright images
-USER pwuser
-
-# Default command runs the Playwright driver server
-CMD ["bash", "-lc", "playwright run-server --host 0.0.0.0 --port ${DRIVER_PORT}"]
-"""
-
-
-def _playwright_image_tag() -> str:
-    """Return a deterministic image tag derived from the Dockerfile content.
-
-    Including a short hash of the Dockerfile content in the tag ensures that
-    changes to this file produce a new local image and avoid stale caches.
-    """
-    h = hashlib.sha256(_PLAYWRIGHT_DOCKERFILE.encode("utf-8")).hexdigest()[:12]
-    return f"nodetool/playwright-driver:v1.55.0-noble-{h}"
-
-
-def _ensure_custom_playwright_image(context: ProcessingContext, node: BaseNode) -> str:
-    """Ensure the custom Playwright image exists locally; build if missing.
-
-    Returns the image tag to use with Docker. Building happens in a workspace
-    subdirectory so that users can inspect artifacts under `.nt-browser/`.
-    """
-    import docker
-
-    tag = _playwright_image_tag()
-    client = docker.from_env()
-    try:
-        client.ping()
-    except Exception as e:
-        raise RuntimeError(
-            "Docker daemon is not available. Please start Docker and try again."
-        ) from e
-
-    try:
-        client.images.get(tag)
-        return tag
-    except Exception:
-        pass
-
-    build_dir = context.resolve_workspace_path(
-        os.path.join(".nt-browser", "images", f"playwright-{tag.split('-')[-1]}")
-    )
-    os.makedirs(build_dir, exist_ok=True)
-    dockerfile_path = os.path.join(build_dir, "Dockerfile")
-    with open(dockerfile_path, "w", encoding="utf-8") as f:
-        f.write(_PLAYWRIGHT_DOCKERFILE)
-
-    context.post_message(
-        Notification(
-            node_id=node.id,
-            severity="info",
-            content=f"Building custom Playwright image: {tag}",
-        )
-    )
-    context.post_message(
-        LogUpdate(
-            node_id=node.id,
-            node_name=node.get_title(),
-            content=f"Building custom Playwright image: {tag}",
-            severity="info",
-        )
-    )
-
-    # Build the image; stream build output lines as progress notifications.
-    image, logs = client.images.build(
-        path=build_dir,
-        dockerfile="Dockerfile",
-        tag=tag,
-        rm=True,
-        pull=True,
-    )
-    for entry in logs:
-        text = str(entry)
-        context.post_message(
-            Notification(
-                node_id=node.id,
-                severity="info",
-                content=text,
-            )
-        )
-        context.post_message(
-            LogUpdate(
-                node_id=node.id,
-                node_name=node.get_title(),
-                content=text,
-                severity="info",
-            )
-        )
-
-    context.post_message(
-        Notification(
-            node_id=node.id,
-            severity="info",
-            content=f"Custom Playwright image ready: {tag}",
-        )
-    )
-    context.post_message(
-        LogUpdate(
-            node_id=node.id,
-            node_name=node.get_title(),
-            content=f"Custom Playwright image ready: {tag}",
-            severity="info",
-        )
-    )
-    return tag
-
-
-def _container_workspace_path(context: ProcessingContext, host_path: str) -> str:
-    """Translate an absolute host path to the container workspace path.
-
-    The Docker runner mounts the workspace at /workspace. This helper maps
-    a host path inside the workspace to the corresponding container path.
-    """
-    # Normalize and ensure we are within the workspace
-    abs_host = os.path.abspath(host_path)
-    ws = os.path.abspath(context.workspace_dir)
-    if not abs_host.startswith(ws + os.sep) and abs_host != ws:
-        raise ValueError(
-            f"Path '{host_path}' is outside of workspace '{context.workspace_dir}'"
-        )
-    rel = os.path.relpath(abs_host, ws)
-    # Map to container mount
-    return f"/workspace/{rel}" if rel != "." else "/workspace"
-
 
 def sanitize_node_id(node_id: str) -> str:
     """
@@ -231,62 +79,11 @@ class Browser(BaseNode):
         except Exception:
             return 60.0
 
-    _runner: StreamRunnerBase | None = None
 
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.url:
             raise ValueError("URL is required")
 
-        # Start Playwright driver in Docker and connect via remote WebSocket
-        server_cmd = (
-            f"playwright run-server --host 0.0.0.0 --port {PLAYWRIGHT_DRIVER_PORT}"
-        )
-        from nodetool.code_runners.server_runner import ServerDockerRunner
-
-        runner = ServerDockerRunner(
-            image=_ensure_custom_playwright_image(context, self),
-            container_port=PLAYWRIGHT_DRIVER_PORT,
-            scheme="ws",
-            timeout_seconds=max(5, int(self.timeout / 1000) + 10),
-            endpoint_path="/?ws=1",
-        )
-        self._runner = runner
-
-        endpoint: str | None = None
-        async for slot, value in runner.stream(
-            user_code=server_cmd,
-            env_locals={},
-            context=context,
-            node=self,
-        ):
-            # Stream docker logs as workflow logs
-            if slot == "stdout":
-                context.post_message(
-                    LogUpdate(
-                        node_id=self.id,
-                        node_name=self.get_title(),
-                        content=str(value).rstrip("\n"),
-                        severity="info",
-                    )
-                )
-            elif slot == "stderr":
-                context.post_message(
-                    LogUpdate(
-                        node_id=self.id,
-                        node_name=self.get_title(),
-                        content=str(value).rstrip("\n"),
-                        severity="error",
-                    )
-                )
-            elif slot == "endpoint":
-                endpoint = value
-                break
-
-        if not endpoint:
-            raise ValueError("Failed to start Playwright server (no endpoint)")
-
-        # Point Playwright Python at the remote driver
-        os.environ["PLAYWRIGHT_DRIVER_URL"] = str(endpoint)
         from playwright.async_api import async_playwright
 
         async with async_playwright() as apw:
@@ -308,27 +105,8 @@ class Browser(BaseNode):
             except Exception:
                 content = ""
             await browser.close()
-            # Proactively stop server container
-            try:
-                runner.stop()
-            except Exception:
-                pass
             return {"success": True, "metadata": meta, "content": content}
 
-    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
-        """Stop the Playwright driver container if still running.
-
-        Args:
-            context: Processing context (unused).
-
-        Returns:
-            None
-        """
-        if self._runner:
-            try:
-                self._runner.stop()
-            except Exception:
-                pass
 
 
 class Screenshot(BaseNode):
@@ -361,7 +139,6 @@ class Screenshot(BaseNode):
         default=30000, description="Timeout in milliseconds for page navigation"
     )
 
-    _runner: StreamRunnerBase | None = None
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if not self.url:
@@ -371,57 +148,7 @@ class Screenshot(BaseNode):
             raise ValueError("output_file cannot be empty")
         host_path = context.resolve_workspace_path(self.output_file)
         os.makedirs(os.path.dirname(host_path), exist_ok=True)
-        container_path = _container_workspace_path(context, host_path)
 
-        # Start Playwright driver in Docker and take a screenshot via remote driver
-        server_cmd = (
-            f"playwright run-server --host 0.0.0.0 --port {PLAYWRIGHT_DRIVER_PORT}"
-        )
-        from nodetool.code_runners.server_runner import ServerDockerRunner
-
-        runner = ServerDockerRunner(
-            image=_ensure_custom_playwright_image(context, self),
-            container_port=PLAYWRIGHT_DRIVER_PORT,
-            scheme="ws",
-            timeout_seconds=max(5, int(self.timeout / 1000) + 10),
-            endpoint_path="/?ws=1",
-        )
-        self._runner = runner
-
-        endpoint: str | None = None
-        async for slot, value in runner.stream(
-            user_code=server_cmd,
-            env_locals={},
-            context=context,
-            node=self,
-        ):
-            if slot == "stdout":
-                context.post_message(
-                    LogUpdate(
-                        node_id=self.id,
-                        node_name=self.get_title(),
-                        content=str(value).rstrip("\n"),
-                        severity="info",
-                    )
-                )
-            elif slot == "stderr":
-                context.post_message(
-                    LogUpdate(
-                        node_id=self.id,
-                        node_name=self.get_title(),
-                        content=str(value).rstrip("\n"),
-                        severity="error",
-                    )
-                )
-            elif slot == "endpoint":
-                endpoint = str(value)
-                break
-
-        if not endpoint:
-            raise ValueError("Failed to start Playwright server (no endpoint)")
-
-        # Configure Playwright client to use remote driver
-        os.environ["PLAYWRIGHT_DRIVER_URL"] = str(endpoint)
         from playwright.async_api import async_playwright
 
         async with async_playwright() as apw:
@@ -437,14 +164,10 @@ class Screenshot(BaseNode):
                     raise ValueError(
                         f"No element found matching selector: {self.selector}"
                     )
-                await el.screenshot(path=container_path)
+                await el.screenshot(path=host_path)
             else:
-                await page.screenshot(path=container_path)
+                await page.screenshot(path=host_path)
             await browser.close()
-            try:
-                runner.stop()
-            except Exception:
-                pass
             return {"success": True, "path": host_path, "url": self.url}
 
     def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
@@ -460,20 +183,6 @@ class Screenshot(BaseNode):
         except Exception:
             return 60.0
 
-    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
-        """Stop the Playwright driver container if still running.
-
-        Args:
-            context: Processing context (unused).
-
-        Returns:
-            None
-        """
-        if self._runner:
-            try:
-                self._runner.stop()
-            except Exception:
-                pass
 
 
 class WebFetch(BaseNode):
@@ -655,43 +364,11 @@ class BrowserNavigation(BaseNode):
         description="Attribute name to extract (when extract_type is 'attribute')",
     )
 
-    _runner: StreamRunnerBase | None = None
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
         if self.action == self.Action.GOTO and not self.url:
             raise ValueError("URL is required for goto action")
 
-        # Use ServerDockerRunner to start Playwright driver and connect via Python client
-        server_cmd = (
-            f"playwright run-server --host 0.0.0.0 --port {PLAYWRIGHT_DRIVER_PORT}"
-        )
-        from nodetool.code_runners.server_runner import ServerDockerRunner
-
-        runner = ServerDockerRunner(
-            image=_ensure_custom_playwright_image(context, self),
-            container_port=PLAYWRIGHT_DRIVER_PORT,
-            scheme="ws",
-            timeout_seconds=max(5, int(self.timeout / 1000) + 10),
-            endpoint_path="/?ws=1",
-        )
-        self._runner = runner
-
-        endpoint: str | None = None
-        async for slot, value in runner.stream(
-            user_code=server_cmd,
-            env_locals={},
-            context=context,
-            node=self,
-        ):
-            if slot == "endpoint":
-                endpoint = str(value)
-                break
-
-        if not endpoint:
-            raise ValueError("Failed to start Playwright server (no endpoint)")
-
-        # Configure Playwright client to use remote driver
-        os.environ["PLAYWRIGHT_DRIVER_URL"] = str(endpoint)
         from playwright.async_api import async_playwright
 
         async with async_playwright() as apw:
@@ -760,13 +437,7 @@ class BrowserNavigation(BaseNode):
                             "() => document.body ? document.body.innerText : ''"
                         )
 
-            try:
-                await browser.close()
-            finally:
-                try:
-                    runner.stop()
-                except Exception:
-                    pass
+            await browser.close()
             return {
                 "success": True,
                 "action": self.action.value,
@@ -786,20 +457,6 @@ class BrowserNavigation(BaseNode):
         except Exception:
             return 60.0
 
-    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
-        """Stop the Playwright driver container if still running.
-
-        Args:
-            context: Processing context (unused).
-
-        Returns:
-            None
-        """
-        if self._runner:
-            try:
-                self._runner.stop()
-            except Exception:
-                pass
 
 
 class BrowserUseModel(str, Enum):
