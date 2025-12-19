@@ -1805,8 +1805,6 @@ class ResearchAgent(BaseNode):
             model=self.model.id,
             tools=tool_instances,
             output_schema=output_schema,
-            enable_analysis_phase=False,
-            enable_data_contracts_phase=False,
             verbose=False,
         )
 
