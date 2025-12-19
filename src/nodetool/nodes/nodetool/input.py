@@ -10,7 +10,7 @@ from nodetool.metadata.types import (
 )
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk
-from nodetool.metadata.types import AudioRef
+from nodetool.metadata.types import AudioRef, DataframeRef
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import InputNode
 from nodetool.metadata.types import VideoRef
@@ -197,6 +197,19 @@ class ImageModelInput(InputNode):
     @classmethod
     def return_type(cls):
         return ImageModel
+
+
+class DataframeInput(InputNode):
+    """
+    Accepts a reference to a dataframe asset for workflows.
+    input, parameter, dataframe, table, data
+    """
+
+    value: DataframeRef = Field(DataframeRef(), description="The dataframe to use as input.")
+
+    @classmethod
+    def return_type(cls):
+        return DataframeRef
 
 
 class DocumentInput(InputNode):

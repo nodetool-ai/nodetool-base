@@ -2298,18 +2298,7 @@
           "repo_id": "ggml-org/gpt-oss-20b-GGUF",
           "path": "gpt-oss-20b-mxfp4.gguf",
           "description": "OpenAI's open-weight model in efficient MXFP4 format for llama.cpp.",
-          "size_on_disk": 9191230013,
-          "tags": [
-            "gguf",
-            "base_model:openai/gpt-oss-20b",
-            "base_model:quantized:openai/gpt-oss-20b",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 94468,
-          "likes": 113
+          "size_on_disk": 9191230013
         },
         {
           "id": "ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
@@ -2318,49 +2307,7 @@
           "repo_id": "ggml-org/gemma-3-4b-it-GGUF",
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Google's Gemma 3 4B in Q4_K_M quantization for efficient inference.",
-          "size_on_disk": 3113851289,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-4b-it",
-            "base_model:quantized:google/gemma-3-4b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 18924,
-          "likes": 44
+          "size_on_disk": 3113851289
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -2369,49 +2316,7 @@
           "repo_id": "ggml-org/gemma-3-12b-it-GGUF",
           "path": "gemma-3-12b-it-Q4_K_M.gguf",
           "description": "Google's Gemma 3 12B in Q4_K_M quantization with strong reasoning.",
-          "size_on_disk": 7838315315,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-12b-it",
-            "base_model:quantized:google/gemma-3-12b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 3037,
-          "likes": 30
+          "size_on_disk": 7838315315
         },
         {
           "id": "ggml-org/Kimi-VL-A3B-Thinking-2506-GGUF:Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf",
@@ -2420,18 +2325,7 @@
           "repo_id": "ggml-org/Kimi-VL-A3B-Thinking-2506-GGUF",
           "path": "Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf",
           "description": "Moonshot AI's vision-language model with enhanced reasoning capabilities.",
-          "size_on_disk": 2362232012,
-          "tags": [
-            "gguf",
-            "base_model:moonshotai/Kimi-VL-A3B-Thinking-2506",
-            "base_model:quantized:moonshotai/Kimi-VL-A3B-Thinking-2506",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 4998,
-          "likes": 25
+          "size_on_disk": 2362232012
         },
         {
           "id": "ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF:qwen3-coder-30b-a3b-instruct-q8_0.gguf",
@@ -2440,24 +2334,7 @@
           "repo_id": "ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF",
           "path": "qwen3-coder-30b-a3b-instruct-q8_0.gguf",
           "description": "MoE coding model with 3B active params, excellent for code generation.",
-          "size_on_disk": 3865470566,
-          "pipeline_tag": "text-generation",
-          "tags": [
-            "transformers",
-            "gguf",
-            "llama-cpp",
-            "gguf-my-repo",
-            "text-generation",
-            "base_model:Qwen/Qwen3-Coder-30B-A3B-Instruct",
-            "base_model:quantized:Qwen/Qwen3-Coder-30B-A3B-Instruct",
-            "license:apache-2.0",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 2881,
-          "likes": 7
+          "size_on_disk": 3865470566
         },
         {
           "id": "ggml-org/Qwen3-0.6B-GGUF:Qwen3-0.6B-Q4_0.gguf",
@@ -2466,19 +2343,7 @@
           "repo_id": "ggml-org/Qwen3-0.6B-GGUF",
           "path": "Qwen3-0.6B-Q4_0.gguf",
           "description": "Ultra-lightweight Qwen3 for edge devices and fast inference.",
-          "size_on_disk": 429496729,
-          "tags": [
-            "gguf",
-            "base_model:Qwen/Qwen3-0.6B",
-            "base_model:quantized:Qwen/Qwen3-0.6B",
-            "license:apache-2.0",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 42747,
-          "likes": 11
+          "size_on_disk": 429496729
         },
         {
           "id": "ggml-org/gemma-3-270m-GGUF:gemma-3-270m-Q8_0.gguf",
@@ -2487,17 +2352,7 @@
           "repo_id": "ggml-org/gemma-3-270m-GGUF",
           "path": "gemma-3-270m-Q8_0.gguf",
           "description": "Tiny Gemma 3 for ultra-fast inference on CPU.",
-          "size_on_disk": 375809638,
-          "tags": [
-            "gguf",
-            "base_model:google/gemma-3-270m",
-            "base_model:quantized:google/gemma-3-270m",
-            "endpoints_compatible",
-            "region:us"
-          ],
-          "has_model_index": false,
-          "downloads": 1021,
-          "likes": 17
+          "size_on_disk": 375809638
         },
         {
           "id": "ggml-org/gemma-3-27b-it-GGUF:gemma-3-27b-it-Q4_K_M.gguf",
@@ -2506,49 +2361,7 @@
           "repo_id": "ggml-org/gemma-3-27b-it-GGUF",
           "path": "gemma-3-27b-it-Q4_K_M.gguf",
           "description": "Google's largest Gemma 3 with strong reasoning and tool use.",
-          "size_on_disk": 16965120819,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-27b-it",
-            "base_model:quantized:google/gemma-3-27b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 2335,
-          "likes": 23
+          "size_on_disk": 16965120819
         }
       ],
       "basic_fields": [
@@ -2717,49 +2530,7 @@
           "repo_id": "ggml-org/gemma-3-4b-it-GGUF",
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Efficient Gemma 3 for classification via llama.cpp.",
-          "size_on_disk": 3113851289,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-4b-it",
-            "base_model:quantized:google/gemma-3-4b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 18924,
-          "likes": 44
+          "size_on_disk": 3113851289
         }
       ],
       "basic_fields": [
@@ -2944,49 +2715,7 @@
           "repo_id": "ggml-org/gemma-3-4b-it-GGUF",
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Efficient Gemma 3 for extraction via llama.cpp.",
-          "size_on_disk": 3113851289,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-4b-it",
-            "base_model:quantized:google/gemma-3-4b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 18924,
-          "likes": 44
+          "size_on_disk": 3113851289
         }
       ],
       "basic_fields": [
@@ -3105,18 +2834,7 @@
           "repo_id": "ggml-org/gpt-oss-20b-GGUF",
           "path": "gpt-oss-20b-mxfp4.gguf",
           "description": "OpenAI's open-weight model for research via llama.cpp.",
-          "size_on_disk": 9191230013,
-          "tags": [
-            "gguf",
-            "base_model:openai/gpt-oss-20b",
-            "base_model:quantized:openai/gpt-oss-20b",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 94468,
-          "likes": 113
+          "size_on_disk": 9191230013
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -3125,49 +2843,7 @@
           "repo_id": "ggml-org/gemma-3-12b-it-GGUF",
           "path": "gemma-3-12b-it-Q4_K_M.gguf",
           "description": "Google's Gemma 3 12B for research with strong reasoning.",
-          "size_on_disk": 7838315315,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-12b-it",
-            "base_model:quantized:google/gemma-3-12b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 3037,
-          "likes": 30
+          "size_on_disk": 7838315315
         }
       ],
       "basic_fields": [
@@ -3326,49 +3002,7 @@
           "repo_id": "ggml-org/gemma-3-4b-it-GGUF",
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Efficient Gemma 3 for summarization via llama.cpp.",
-          "size_on_disk": 3113851289,
-          "pipeline_tag": "image-text-to-text",
-          "tags": [
-            "gguf",
-            "image-text-to-text",
-            "arxiv:1905.07830",
-            "arxiv:1905.10044",
-            "arxiv:1911.11641",
-            "arxiv:1904.09728",
-            "arxiv:1705.03551",
-            "arxiv:1911.01547",
-            "arxiv:1907.10641",
-            "arxiv:1903.00161",
-            "arxiv:2009.03300",
-            "arxiv:2304.06364",
-            "arxiv:2103.03874",
-            "arxiv:2110.14168",
-            "arxiv:2311.12022",
-            "arxiv:2108.07732",
-            "arxiv:2107.03374",
-            "arxiv:2210.03057",
-            "arxiv:2106.03193",
-            "arxiv:1910.11856",
-            "arxiv:2502.12404",
-            "arxiv:2502.21228",
-            "arxiv:2404.16816",
-            "arxiv:2104.12756",
-            "arxiv:2311.16502",
-            "arxiv:2203.10244",
-            "arxiv:2404.12390",
-            "arxiv:1810.12440",
-            "arxiv:1908.02660",
-            "arxiv:2312.11805",
-            "base_model:google/gemma-3-4b-it",
-            "base_model:quantized:google/gemma-3-4b-it",
-            "license:gemma",
-            "endpoints_compatible",
-            "region:us",
-            "conversational"
-          ],
-          "has_model_index": false,
-          "downloads": 18924,
-          "likes": 44
+          "size_on_disk": 3113851289
         }
       ],
       "basic_fields": [
@@ -3974,6 +3608,59 @@
         {
           "type": {
             "type": "color"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Dataframe Input",
+      "description": "Accepts a reference to a dataframe asset for workflows.\n    input, parameter, dataframe, table, data",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.DataframeInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "dataframe"
+          },
+          "default": {
+            "type": "dataframe",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "columns": null
+          },
+          "title": "Value",
+          "description": "The dataframe to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dataframe"
           },
           "name": "output"
         }
@@ -7578,71 +7265,6 @@
         "chunk_size",
         "chunk_overlap",
         "separators"
-      ],
-      "is_streaming_output": true
-    },
-    {
-      "title": "Split into Sentences",
-      "description": "Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.\n    sentences, split, nlp\n\n    Use cases:\n    - Natural sentence-based text splitting\n    - Creating semantically meaningful chunks\n    - Processing text for sentence-level analysis",
-      "namespace": "nodetool.document",
-      "node_type": "nodetool.document.SplitSentences",
-      "properties": [
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
-          },
-          "default": {
-            "type": "document",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Document"
-        },
-        {
-          "name": "chunk_size",
-          "type": {
-            "type": "int"
-          },
-          "default": 40,
-          "title": "Chunk Size",
-          "description": "Maximum number of tokens per chunk"
-        },
-        {
-          "name": "chunk_overlap",
-          "type": {
-            "type": "int"
-          },
-          "default": 5,
-          "title": "Chunk Overlap",
-          "description": "Number of tokens to overlap between chunks"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "text"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "source_id"
-        },
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "start_index"
-        }
-      ],
-      "basic_fields": [
-        "document",
-        "chunk_size",
-        "chunk_overlap"
       ],
       "is_streaming_output": true
     },
@@ -15747,7 +15369,7 @@
     },
     {
       "title": "Text To Speech",
-      "description": "Generate speech audio from text using Google's Gemini text-to-speech models.\n    google, text-to-speech, tts, audio, speech, voice, ai\n\n    This node converts text input into natural-sounding speech audio using Google's\n    advanced text-to-speech models with support for multiple voices and speech styles.\n\n    Use cases:\n    - Create voiceovers for videos and presentations\n    - Generate audio content for podcasts and audiobooks\n    - Add voice narration to applications\n    - Create accessibility features with speech output\n    - Generate multilingual audio content",
+      "description": "Generate speech audio from text using Google's Gemini text-to-speech models.\n    google, text-to-speech, tts, audio, speech, voice, ai\n\n    This node converts text input into natural-sounding speech audio using Google's\n    advanced text-to-speech models with support for multiple voices and speech styles.\n\n    Supported voices:\n    - achernar, achird, algenib, algieba, alnilam\n    - aoede, autonoe, callirrhoe, charon, despina\n    - enceladus, erinome, fenrir, gacrux, iapetus\n    - kore, laomedeia, leda, orus, puck\n    - pulcherrima, rasalgethi, sadachbia, sadaltager, schedar\n    - sulafat, umbriel, vindemiatrix, zephyr, zubenelgenubi\n\n    Use cases:\n    - Create voiceovers for videos and presentations\n    - Generate audio content for podcasts and audiobooks\n    - Add voice narration to applications\n    - Create accessibility features with speech output\n    - Generate multilingual audio content",
       "namespace": "gemini.audio",
       "node_type": "gemini.audio.TextToSpeech",
       "properties": [
@@ -15779,40 +15401,40 @@
           "type": {
             "type": "enum",
             "values": [
-              "Zephyr",
-              "Puck",
-              "Nova",
-              "Quest",
-              "Echo",
-              "Fable",
-              "Orbit",
-              "Chime",
-              "Kore",
-              "Zenith",
-              "Cosmos",
-              "Sage",
-              "Breeze",
-              "Glimmer",
-              "Drift",
-              "Pearl",
-              "Flux",
-              "Prism",
-              "Vega",
-              "Lyra",
-              "Ripple",
-              "Azure",
-              "Juno",
-              "River",
-              "Sterling",
-              "Atlas",
-              "Beacon",
-              "Ember",
-              "Harmony",
-              "Spirit"
+              "achernar",
+              "achird",
+              "algenib",
+              "algieba",
+              "alnilam",
+              "aoede",
+              "autonoe",
+              "callirrhoe",
+              "charon",
+              "despina",
+              "enceladus",
+              "erinome",
+              "fenrir",
+              "gacrux",
+              "iapetus",
+              "kore",
+              "laomedeia",
+              "leda",
+              "orus",
+              "puck",
+              "pulcherrima",
+              "rasalgethi",
+              "sadachbia",
+              "sadaltager",
+              "schedar",
+              "sulafat",
+              "umbriel",
+              "vindemiatrix",
+              "zephyr",
+              "zubenelgenubi"
             ],
             "type_name": "nodetool.nodes.gemini.audio.VoiceName"
           },
-          "default": "Kore",
+          "default": "kore",
           "title": "Voice Name",
           "description": "The voice to use for speech generation"
         },

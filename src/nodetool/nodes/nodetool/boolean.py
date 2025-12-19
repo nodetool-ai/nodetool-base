@@ -1,8 +1,11 @@
 from enum import Enum
+from typing import Any
+
 from pydantic import Field
+
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from typing import Any
+
 
 class ConditionalSwitch(BaseNode):
     """
