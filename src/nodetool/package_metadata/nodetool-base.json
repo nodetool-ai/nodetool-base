@@ -11650,6 +11650,14 @@
           "description": "The FPS of the output video."
         }
       ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
       "basic_fields": [
         "frame",
         "fps"

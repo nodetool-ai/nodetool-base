@@ -585,26 +585,41 @@ class FrameToVideo(BaseNode):
     frame: ImageRef = Field(default=ImageRef(), description="Collect input frames")
     fps: float = Field(default=30, description="The FPS of the output video.")
 
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
+    @classmethod
+    def return_type(cls):
+        return VideoRef
+
     async def run(
         self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
     ):
-        if not self.frame:
-            raise ValueError("No frames provided to create video.")
-
+        logger.info("FrameToVideo execution started")
         index = 0
+        fps = self.fps
 
         with tempfile.TemporaryDirectory() as temp_dir:
-            async for frame in inputs.stream("frame"):
-                # Save all frames as images in the temporary directory
-                img = await context.image_to_pil(self.frame)
-                frame_path = os.path.join(temp_dir, f"frame_{index:05d}.png")
-                img.save(frame_path)
-                logger.debug("Saved frame %s to %s", index, frame_path)
-                index += 1
+            async for handle, value in inputs.any():
+                if handle == "frame":
+                    logger.info("Processing frame %s", index)
+                    img = await context.image_to_pil(value)
+                    frame_path = os.path.join(temp_dir, f"frame_{index:05d}.png")
+                    img.save(frame_path)
+                    logger.debug("Saved frame %s to %s", index, frame_path)
+                    index += 1
+                elif handle == "fps":
+                    fps = value
 
-            await outputs.emit("output", await self.create_video(context, temp_dir))
+            if index == 0:
+                logger.warning("No frames received in FrameToVideo")
+                return
 
-    async def create_video(self, context: ProcessingContext, temp_dir: str) -> VideoRef:
+            logger.info("Creating video with %s frames at %f fps", index, fps)
+            await outputs.emit("output", await self.create_video(context, temp_dir, fps))
+
+    async def create_video(self, context: ProcessingContext, temp_dir: str, fps: float) -> VideoRef:
         # Create a temporary file for the output video
         video_path = os.path.join(temp_dir, f"video_{str(uuid.uuid4())}.mp4")
         try:
@@ -612,7 +627,7 @@ class FrameToVideo(BaseNode):
             frame_path = os.path.join(temp_dir, "frame_%05d.png")
             logger.debug("Creating video from %s", frame_path)
             (
-                ffmpeg.input(frame_path, framerate=self.fps)
+                ffmpeg.input(frame_path, framerate=fps)
                 .output(video_path, vcodec="libx264", pix_fmt="yuv420p")
                 .overwrite_output()
                 .run(capture_stdout=True, capture_stderr=True)
