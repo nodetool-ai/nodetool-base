@@ -10,8 +10,14 @@ from nodetool.workflows.processing_context import ProcessingContext
 
 class RectNode(BaseNode):
     """
-    Generate SVG rectangle element.
+    Generate SVG rectangle element with customizable position, size, and styling.
     svg, shape, vector, rectangle
+
+    Use cases:
+    - Create rectangular shapes in SVG documents
+    - Design borders, frames, and backgrounds
+    - Build user interface components
+    - Create geometric patterns and layouts
     """
 
     x: int = Field(default=0, description="X coordinate")
@@ -41,8 +47,14 @@ class RectNode(BaseNode):
 
 class CircleNode(BaseNode):
     """
-    Generate SVG circle element.
+    Generate SVG circle element with customizable position, radius, and styling.
     svg, shape, vector, circle
+
+    Use cases:
+    - Create circular shapes and icons
+    - Design buttons, badges, and indicators
+    - Build data visualizations like pie charts
+    - Create decorative elements and patterns
     """
 
     cx: int = Field(default=0, description="Center X coordinate")
@@ -70,8 +82,14 @@ class CircleNode(BaseNode):
 
 class EllipseNode(BaseNode):
     """
-    Generate SVG ellipse element.
+    Generate SVG ellipse element with customizable position, radii, and styling.
     svg, shape, vector, ellipse
+
+    Use cases:
+    - Create oval shapes and organic forms
+    - Design speech bubbles and callouts
+    - Build data visualization elements
+    - Create decorative patterns and borders
     """
 
     cx: int = Field(default=0, description="Center X coordinate")
@@ -101,8 +119,14 @@ class EllipseNode(BaseNode):
 
 class LineNode(BaseNode):
     """
-    Generate SVG line element.
+    Generate SVG line element with customizable endpoints and styling.
     svg, shape, vector, line
+
+    Use cases:
+    - Draw straight lines and connectors
+    - Create dividers and separators
+    - Build diagrams and flowcharts
+    - Design grid patterns and borders
     """
 
     x1: int = Field(default=0, description="Start X coordinate")
@@ -132,8 +156,14 @@ class LineNode(BaseNode):
 
 class PolygonNode(BaseNode):
     """
-    Generate SVG polygon element.
+    Generate SVG polygon element with multiple vertices.
     svg, shape, vector, polygon
+
+    Use cases:
+    - Create multi-sided shapes like triangles, pentagons, stars
+    - Build custom icons and symbols
+    - Design complex geometric patterns
+    - Create irregular shapes and forms
     """
 
     points: str = Field(default="", description="Points in format 'x1,y1 x2,y2 x3,y3...'")
@@ -157,8 +187,14 @@ class PolygonNode(BaseNode):
 
 class PathNode(BaseNode):
     """
-    Generate SVG path element.
+    Generate SVG path element using path data commands.
     svg, shape, vector, path
+
+    Use cases:
+    - Create complex curved and custom shapes
+    - Build logos and custom icons
+    - Design intricate patterns and illustrations
+    - Import path data from design tools
     """
 
     path_data: str = Field(default="", description="SVG path data (d attribute)")
@@ -218,8 +254,14 @@ class Text(BaseNode):
 
 class GaussianBlur(BaseNode):
     """
-    Apply Gaussian blur filter to SVG elements.
+    Apply Gaussian blur filter effect to SVG elements.
     svg, filter, blur, effects
+
+    Use cases:
+    - Create soft focus and depth effects
+    - Add subtle shadows and glows
+    - Simulate motion blur
+    - Soften edges in graphics
     """
 
     std_deviation: float = Field(default=3.0, description="Standard deviation for blur")
@@ -240,8 +282,14 @@ class GaussianBlur(BaseNode):
 
 class DropShadow(BaseNode):
     """
-    Apply drop shadow filter to SVG elements.
+    Apply drop shadow filter effect to SVG elements for depth.
     svg, filter, shadow, effects
+
+    Use cases:
+    - Add depth and elevation to elements
+    - Create realistic shadow effects
+    - Enhance visual hierarchy
+    - Improve element separation and readability
     """
 
     std_deviation: float = Field(default=3.0, description="Standard deviation for blur")

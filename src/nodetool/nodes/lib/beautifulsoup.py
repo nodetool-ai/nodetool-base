@@ -57,13 +57,15 @@ class BaseUrl(BaseNode):
 
 class ExtractLinks(BaseNode):
     """
-    Extract links from HTML content.
-    extract, links, urls
+    Extract all links from HTML content with type classification.
+    extract, links, urls, web scraping, html
 
     Use cases:
-    - Analyze website structure
-    - Discover related content
-    - Build sitemaps
+    - Analyze website structure and navigation
+    - Discover related content and resources
+    - Build sitemaps and link graphs
+    - Find internal and external references
+    - Collect URLs for further processing
     """
 
     html: str = Field(

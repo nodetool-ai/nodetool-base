@@ -21,8 +21,14 @@ class DateFormat(str, Enum):
 
 class Today(BaseNode):
     """
-    Get the current date.
-    date, today, now
+    Get the current date in Date format.
+    date, today, now, current
+
+    Use cases:
+    - Get today's date for logging and timestamping
+    - Set default dates in forms and workflows
+    - Calculate date-based conditions
+    - Track daily operations and schedules
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -33,8 +39,14 @@ class Today(BaseNode):
 
 class Now(BaseNode):
     """
-    Get the current date and time.
-    datetime, current, now
+    Get the current date and time in UTC timezone.
+    datetime, current, now, timestamp
+
+    Use cases:
+    - Generate timestamps for events and logs
+    - Set default datetime values in workflows
+    - Calculate time-based conditions
+    - Track real-time operations
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -47,8 +59,14 @@ class Now(BaseNode):
 
 class ParseDate(BaseNode):
     """
-    Parse a date string into components.
-    date, parse, format
+    Parse a date string into a structured Date object.
+    date, parse, format, convert
+
+    Use cases:
+    - Convert date strings from various sources into standard format
+    - Extract date components from text input
+    - Validate and normalize date formats
+    - Process dates from CSV, JSON, or API responses
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -66,12 +84,14 @@ class ParseDate(BaseNode):
 
 class ParseDateTime(BaseNode):
     """
-    Parse a date/time string into components.
-    datetime, parse, format
+    Parse a date/time string into a structured Datetime object.
+    datetime, parse, format, convert
 
     Use cases:
-    - Extract date components from strings
-    - Convert between date formats
+    - Extract datetime components from strings
+    - Convert between datetime formats
+    - Process timestamps from logs and databases
+    - Standardize datetime data from multiple sources
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -89,12 +109,14 @@ class ParseDateTime(BaseNode):
 
 class AddTimeDelta(BaseNode):
     """
-    Add or subtract time from a datetime.
-    datetime, add, subtract
+    Add or subtract time from a datetime using specified intervals.
+    datetime, add, subtract, delta, offset
 
     Use cases:
     - Calculate future/past dates
     - Generate date ranges
+    - Schedule events at specific intervals
+    - Calculate expiration dates and deadlines
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -128,12 +150,14 @@ class AddTimeDelta(BaseNode):
 
 class DateDifference(BaseNode):
     """
-    Calculate the difference between two dates.
-    datetime, difference, duration
+    Calculate the time difference between two datetimes.
+    datetime, difference, duration, elapsed
 
     Use cases:
-    - Calculate time periods
-    - Measure durations
+    - Calculate time periods between events
+    - Measure durations and elapsed time
+    - Track age or time since events
+    - Compute service level agreement (SLA) metrics
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -161,12 +185,14 @@ class DateDifference(BaseNode):
 
 class FormatDateTime(BaseNode):
     """
-    Convert a datetime object to a formatted string.
-    datetime, format, convert
+    Convert a datetime object to a custom formatted string.
+    datetime, format, convert, string
 
     Use cases:
-    - Standardize date formats
-    - Prepare dates for different systems
+    - Standardize date formats across systems
+    - Prepare dates for different locales and regions
+    - Generate human-readable date strings
+    - Format dates for filenames and reports
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -186,11 +212,13 @@ class FormatDateTime(BaseNode):
 class GetWeekday(BaseNode):
     """
     Get the weekday name or number from a datetime.
-    datetime, weekday, name
+    datetime, weekday, name, day
 
     Use cases:
-    - Get day names for scheduling
+    - Get day names for scheduling and calendar displays
     - Filter events by weekday
+    - Build day-of-week based logic
+    - Generate weekly reports
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -208,12 +236,14 @@ class GetWeekday(BaseNode):
 
 class DateRange(BaseNode):
     """
-    Generate a list of dates between start and end dates.
-    datetime, range, list
+    Generate a list of dates between start and end dates with custom intervals.
+    datetime, range, list, sequence
 
     Use cases:
-    - Generate date sequences
-    - Create date-based iterations
+    - Generate date sequences for reporting
+    - Create date-based iterations in workflows
+    - Build calendar views
+    - Schedule recurring events
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -241,12 +271,14 @@ class DateRange(BaseNode):
 
 class IsDateInRange(BaseNode):
     """
-    Check if a date falls within a specified range.
-    datetime, range, check
+    Check if a date falls within a specified range with optional inclusivity.
+    datetime, range, check, validate
 
     Use cases:
-    - Validate date ranges
+    - Validate date ranges in forms and inputs
     - Filter date-based data
+    - Check if events fall within specific periods
+    - Implement date-based access control
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -281,11 +313,13 @@ class IsDateInRange(BaseNode):
 class GetQuarter(BaseNode):
     """
     Get the quarter number and start/end dates for a given datetime.
-    datetime, quarter, period
+    datetime, quarter, period, fiscal
 
     Use cases:
     - Financial reporting periods
-    - Quarterly analytics
+    - Quarterly analytics and metrics
+    - Business cycle calculations
+    - Group data by fiscal quarters
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -320,8 +354,14 @@ class GetQuarter(BaseNode):
 
 class DateToDatetime(BaseNode):
     """
-    Convert a Date object to a Datetime object.
-    date, datetime, convert
+    Convert a Date object to a Datetime object at midnight.
+    date, datetime, convert, transformation
+
+    Use cases:
+    - Convert dates to datetime for time calculations
+    - Standardize date types in workflows
+    - Prepare dates for timestamp comparisons
+    - Convert legacy date formats
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -336,8 +376,14 @@ class DateToDatetime(BaseNode):
 
 class DatetimeToDate(BaseNode):
     """
-    Convert a Datetime object to a Date object.
-    date, datetime, convert
+    Convert a Datetime object to a Date object, removing time component.
+    date, datetime, convert, transformation
+
+    Use cases:
+    - Extract date portion from timestamps
+    - Remove time information for date-only comparisons
+    - Normalize datetime data to dates
+    - Simplify date-based grouping
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -364,12 +410,14 @@ class TimeUnitType(str, Enum):
 
 class RelativeTime(BaseNode):
     """
-    Get datetime relative to current time (past or future).
+    Get datetime relative to current time (past or future) with configurable units.
     datetime, past, future, relative, hours, days, months
 
     Use cases:
-    - Calculate past or future dates
-    - Generate relative timestamps
+    - Calculate past or future dates dynamically
+    - Generate relative timestamps for scheduling
+    - Set expiration times
+    - Create time-based filters
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -429,12 +477,14 @@ class PeriodType(str, Enum):
 
 class BoundaryTime(BaseNode):
     """
-    Get the start or end of a time period (day, week, month, year).
+    Get the start or end boundary of a time period (day, week, month, year).
     datetime, start, end, boundary, day, week, month, year
 
     Use cases:
-    - Get period boundaries for reporting
+    - Get period boundaries for reporting and analytics
     - Normalize dates to period starts/ends
+    - Calculate billing cycles
+    - Group data by time periods
     """
 
     _expose_as_tool: ClassVar[bool] = True

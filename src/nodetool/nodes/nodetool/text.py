@@ -23,8 +23,14 @@ from nodetool.workflows.types import SaveUpdate
 
 class ToString(BaseNode):
     """
-    Converts any input to its string representation.
+    Converts any input value to its string representation.
     text, string, convert, repr, str, cast
+
+    Use cases:
+    - Convert numbers, objects, or complex types to strings
+    - Prepare data for text output or logging
+    - Debug values by viewing their representations
+    - Standardize data types in text workflows
     """
 
     class Mode(str, Enum):
@@ -49,8 +55,15 @@ class ToString(BaseNode):
 
 class AutomaticSpeechRecognition(BaseNode):
     """
-    Automatic speech recognition node.
-    audio, speech, recognition
+    Transcribe audio to text using automatic speech recognition models.
+    audio, speech, recognition, transcription, ASR, whisper
+
+    Use cases:
+    - Transcribe recorded audio to text
+    - Generate subtitles from video audio
+    - Convert voice notes to written text
+    - Process meeting recordings
+    - Enable voice-based data entry
     """
 
     class OutputType(TypedDict):
@@ -123,8 +136,14 @@ class Join(BaseNode):
 
 class Collect(BaseNode):
     """
-    Collects a stream of text inputs into a single string.
-    text, collect, list, stream
+    Collects a stream of text inputs into a single concatenated string.
+    text, collect, list, stream, aggregate
+
+    Use cases:
+    - Combine multiple streaming text outputs
+    - Accumulate results from iterative processes
+    - Build composite text from multiple sources
+    - Aggregate log messages or status updates
     """
 
     input_item: str = Field(default="")
