@@ -225,7 +225,6 @@ class Extend(BaseNode):
 
     list, merge, concatenate, combine
     """
-    """
 
     values: list[Any] = Field(default=[])
     other_values: list[Any] = Field(default=[])

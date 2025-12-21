@@ -212,9 +212,6 @@ class Filter(BaseNode):
 
     dictionary, filter, select
     """
-    - Implement data access controls
-    - Prepare specific data subsets for processing
-    """
 
     dictionary: dict[(str, Any)] = Field(default={})
     keys: list[str] = Field(default=[])
