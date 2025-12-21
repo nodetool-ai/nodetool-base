@@ -5250,7 +5250,7 @@
     },
     {
       "title": "Automatic Speech Recognition",
-      "description": "Automatic speech recognition node.\n    audio, speech, recognition",
+      "description": "Transcribe audio to text using automatic speech recognition models.\n    audio, speech, recognition, transcription, ASR, whisper\n\n    Use cases:\n    - Transcribe recorded audio to text\n    - Generate subtitles from video audio\n    - Convert voice notes to written text\n    - Process meeting recordings\n    - Enable voice-based data entry",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.AutomaticSpeechRecognition",
       "properties": [
@@ -5444,7 +5444,7 @@
     },
     {
       "title": "Collect",
-      "description": "Collects a stream of text inputs into a single string.\n    text, collect, list, stream",
+      "description": "Collects a stream of text inputs into a single concatenated string.\n    text, collect, list, stream, aggregate\n\n    Use cases:\n    - Combine multiple streaming text outputs\n    - Accumulate results from iterative processes\n    - Build composite text from multiple sources\n    - Aggregate log messages or status updates",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Collect",
       "properties": [
@@ -7340,7 +7340,7 @@
     },
     {
       "title": "To String",
-      "description": "Converts any input to its string representation.\n    text, string, convert, repr, str, cast",
+      "description": "Converts any input value to its string representation.\n    text, string, convert, repr, str, cast\n\n    Use cases:\n    - Convert numbers, objects, or complex types to strings\n    - Prepare data for text output or logging\n    - Debug values by viewing their representations\n    - Standardize data types in text workflows",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.ToString",
       "properties": [
@@ -11840,7 +11840,7 @@
     },
     {
       "title": "Concat",
-      "description": "Concatenate multiple video files into a single video, including audio when available.\n    video, concat, merge, combine, audio, +",
+      "description": "Concatenate multiple video files into a single video, including audio when available.\n    video, concat, merge, combine, audio, +\n\n    Use cases:\n    - Merge multiple video clips into one continuous video\n    - Combine intro, main content, and outro sequences\n    - Join video segments from different sources\n    - Create video compilations and montages",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.Concat",
       "properties": [
@@ -11939,7 +11939,7 @@
     },
     {
       "title": "Extract Audio",
-      "description": "Separate audio from a video file.\n    video, audio, extract, separate",
+      "description": "Separate and extract audio track from a video file.\n    video, audio, extract, separate, split\n\n    Use cases:\n    - Extract audio for podcasts or music\n    - Create audio-only versions of video content\n    - Analyze or transcribe video audio separately\n    - Reuse audio in different contexts\n    - Convert video soundtracks to audio files",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.ExtractAudio",
       "properties": [
@@ -12336,7 +12336,7 @@
     },
     {
       "title": "Overlay",
-      "description": "Overlay one video on top of another, including audio overlay when available.\n    video, overlay, composite, picture-in-picture, audio",
+      "description": "Overlay one video on top of another, including audio overlay when available.\n    video, overlay, composite, picture-in-picture, audio\n\n    Use cases:\n    - Create picture-in-picture effects for commentary videos\n    - Add watermarks or logos to videos\n    - Combine multiple video streams\n    - Create split-screen or multi-view presentations\n    - Layer video effects over main content",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.Overlay",
       "properties": [
@@ -16513,7 +16513,7 @@
     },
     {
       "title": "Google Finance",
-      "description": "Retrieve financial market data from Google Finance.\n    google, finance, stocks, market, serp",
+      "description": "Retrieve financial market data and stock information from Google Finance.\n    google, finance, stocks, market, serp, trading\n\n    Use cases:\n    - Track stock prices and market performance\n    - Monitor financial instruments and indices\n    - Gather historical market data\n    - Build financial analysis workflows\n    - Research investment opportunities",
       "namespace": "search.google",
       "node_type": "search.google.GoogleFinance",
       "properties": [
@@ -16560,7 +16560,7 @@
     },
     {
       "title": "Google Images",
-      "description": "Search Google Images to retrieve live image results.\n    google, images, serp, visual, reverse, search",
+      "description": "Search Google Images to find visual content or perform reverse image search.\n    google, images, serp, visual, reverse, search\n\n    Use cases:\n    - Find images related to a topic or keyword\n    - Perform reverse image searches to find sources\n    - Gather visual assets for projects\n    - Identify similar or related images\n    - Research visual trends and styles",
       "namespace": "search.google",
       "node_type": "search.google.GoogleImages",
       "properties": [
@@ -16614,7 +16614,7 @@
     },
     {
       "title": "Google Jobs",
-      "description": "Search Google Jobs for job listings.\n    google, jobs, employment, careers, serp",
+      "description": "Search Google Jobs for employment opportunities and job listings.\n    google, jobs, employment, careers, serp, hiring\n\n    Use cases:\n    - Find job opportunities matching specific criteria\n    - Monitor job market trends\n    - Aggregate job listings for career sites\n    - Research salary ranges and requirements\n    - Track hiring patterns in industries",
       "namespace": "search.google",
       "node_type": "search.google.GoogleJobs",
       "properties": [
@@ -16668,7 +16668,7 @@
     },
     {
       "title": "Google Lens",
-      "description": "Search with an image URL using Google Lens to find visual matches and related content.\n    google, lens, visual, image, search, serp",
+      "description": "Analyze images using Google Lens to find visual matches and related content.\n    google, lens, visual, image, search, serp, identify\n\n    Use cases:\n    - Identify objects, products, or landmarks in images\n    - Find visually similar images\n    - Discover where images appear online\n    - Get information about items shown in photos\n    - Research products and shopping options",
       "namespace": "search.google",
       "node_type": "search.google.GoogleLens",
       "properties": [
@@ -16699,7 +16699,7 @@
     },
     {
       "title": "Google Maps",
-      "description": "Search Google Maps for places or get details about a specific place.\n    google, maps, places, locations, serp",
+      "description": "Search Google Maps for places, businesses, and get location details.\n    google, maps, places, locations, serp, geography\n\n    Use cases:\n    - Find businesses and points of interest\n    - Get location information and addresses\n    - Research geographic areas and neighborhoods\n    - Build location-based applications\n    - Gather place reviews and ratings",
       "namespace": "search.google",
       "node_type": "search.google.GoogleMaps",
       "properties": [
@@ -16743,7 +16743,7 @@
     },
     {
       "title": "Google News",
-      "description": "Search Google News to retrieve live news articles.\n    google, news, serp, articles",
+      "description": "Search Google News to retrieve current news articles and headlines.\n    google, news, serp, articles, journalism\n\n    Use cases:\n    - Monitor breaking news and current events\n    - Track news coverage on specific topics\n    - Gather articles for research and analysis\n    - Build news aggregation workflows\n    - Monitor brand mentions in media",
       "namespace": "search.google",
       "node_type": "search.google.GoogleNews",
       "properties": [
@@ -16787,7 +16787,7 @@
     },
     {
       "title": "Google Search",
-      "description": "Search Google to retrieve organic search results.\n    google, search, serp, web",
+      "description": "Search Google to retrieve organic search results from the web.\n    google, search, serp, web, query\n\n    Use cases:\n    - Find relevant websites and pages on any topic\n    - Research information and gather sources\n    - Discover recent content and trending topics\n    - Gather search engine optimization (SEO) insights\n    - Automate web research workflows",
       "namespace": "search.google",
       "node_type": "search.google.GoogleSearch",
       "properties": [
@@ -16831,7 +16831,7 @@
     },
     {
       "title": "Google Shopping",
-      "description": "Search Google Shopping for products.\n    google, shopping, products, ecommerce, serp",
+      "description": "Search Google Shopping for products with filters and pricing information.\n    google, shopping, products, ecommerce, serp, prices\n\n    Use cases:\n    - Find products and compare prices\n    - Research product availability and options\n    - Monitor pricing trends\n    - Build price comparison tools\n    - Gather product information for e-commerce",
       "namespace": "search.google",
       "node_type": "search.google.GoogleShopping",
       "properties": [
@@ -21568,7 +21568,7 @@
     },
     {
       "title": "Extract Links",
-      "description": "Extract links from HTML content.\n    extract, links, urls\n\n    Use cases:\n    - Analyze website structure\n    - Discover related content\n    - Build sitemaps",
+      "description": "Extract all links from HTML content with type classification.\n    extract, links, urls, web scraping, html\n\n    Use cases:\n    - Analyze website structure and navigation\n    - Discover related content and resources\n    - Build sitemaps and link graphs\n    - Find internal and external references\n    - Collect URLs for further processing",
       "namespace": "lib.beautifulsoup",
       "node_type": "lib.beautifulsoup.ExtractLinks",
       "properties": [
@@ -21763,7 +21763,7 @@
     },
     {
       "title": "Circle",
-      "description": "Generate SVG circle element.\n    svg, shape, vector, circle",
+      "description": "Generate SVG circle element with customizable position, radius, and styling.\n    svg, shape, vector, circle\n\n    Use cases:\n    - Create circular shapes and icons\n    - Design buttons, badges, and indicators\n    - Build data visualizations like pie charts\n    - Create decorative elements and patterns",
       "namespace": "lib.svg",
       "node_type": "lib.svg.Circle",
       "properties": [
@@ -21975,7 +21975,7 @@
     },
     {
       "title": "Drop Shadow",
-      "description": "Apply drop shadow filter to SVG elements.\n    svg, filter, shadow, effects",
+      "description": "Apply drop shadow filter effect to SVG elements for depth.\n    svg, filter, shadow, effects\n\n    Use cases:\n    - Add depth and elevation to elements\n    - Create realistic shadow effects\n    - Enhance visual hierarchy\n    - Improve element separation and readability",
       "namespace": "lib.svg",
       "node_type": "lib.svg.DropShadow",
       "properties": [
@@ -22036,7 +22036,7 @@
     },
     {
       "title": "Ellipse",
-      "description": "Generate SVG ellipse element.\n    svg, shape, vector, ellipse",
+      "description": "Generate SVG ellipse element with customizable position, radii, and styling.\n    svg, shape, vector, ellipse\n\n    Use cases:\n    - Create oval shapes and organic forms\n    - Design speech bubbles and callouts\n    - Build data visualization elements\n    - Create decorative patterns and borders",
       "namespace": "lib.svg",
       "node_type": "lib.svg.Ellipse",
       "properties": [
@@ -22130,7 +22130,7 @@
     },
     {
       "title": "Gaussian Blur",
-      "description": "Apply Gaussian blur filter to SVG elements.\n    svg, filter, blur, effects",
+      "description": "Apply Gaussian blur filter effect to SVG elements.\n    svg, filter, blur, effects\n\n    Use cases:\n    - Create soft focus and depth effects\n    - Add subtle shadows and glows\n    - Simulate motion blur\n    - Soften edges in graphics",
       "namespace": "lib.svg",
       "node_type": "lib.svg.GaussianBlur",
       "properties": [
@@ -22257,7 +22257,7 @@
     },
     {
       "title": "Line",
-      "description": "Generate SVG line element.\n    svg, shape, vector, line",
+      "description": "Generate SVG line element with customizable endpoints and styling.\n    svg, shape, vector, line\n\n    Use cases:\n    - Draw straight lines and connectors\n    - Create dividers and separators\n    - Build diagrams and flowcharts\n    - Design grid patterns and borders",
       "namespace": "lib.svg",
       "node_type": "lib.svg.Line",
       "properties": [
@@ -22338,7 +22338,7 @@
     },
     {
       "title": "Path",
-      "description": "Generate SVG path element.\n    svg, shape, vector, path",
+      "description": "Generate SVG path element using path data commands.\n    svg, shape, vector, path\n\n    Use cases:\n    - Create complex curved and custom shapes\n    - Build logos and custom icons\n    - Design intricate patterns and illustrations\n    - Import path data from design tools",
       "namespace": "lib.svg",
       "node_type": "lib.svg.Path",
       "properties": [
@@ -22402,7 +22402,7 @@
     },
     {
       "title": "Polygon",
-      "description": "Generate SVG polygon element.\n    svg, shape, vector, polygon",
+      "description": "Generate SVG polygon element with multiple vertices.\n    svg, shape, vector, polygon\n\n    Use cases:\n    - Create multi-sided shapes like triangles, pentagons, stars\n    - Build custom icons and symbols\n    - Design complex geometric patterns\n    - Create irregular shapes and forms",
       "namespace": "lib.svg",
       "node_type": "lib.svg.Polygon",
       "properties": [
@@ -22466,7 +22466,7 @@
     },
     {
       "title": "Rectangle",
-      "description": "Generate SVG rectangle element.\n    svg, shape, vector, rectangle",
+      "description": "Generate SVG rectangle element with customizable position, size, and styling.\n    svg, shape, vector, rectangle\n\n    Use cases:\n    - Create rectangular shapes in SVG documents\n    - Design borders, frames, and backgrounds\n    - Build user interface components\n    - Create geometric patterns and layouts",
       "namespace": "lib.svg",
       "node_type": "lib.svg.Rect",
       "properties": [
@@ -23819,7 +23819,7 @@
     },
     {
       "title": "Add",
-      "description": "Adds two numbers.\n    math, add, plus, +",
+      "description": "Adds two numbers together.\n    math, add, plus, +, sum\n\n    Use cases:\n    - Perform basic arithmetic operations\n    - Calculate totals and sums\n    - Combine numerical values\n    - Increment counters and scores",
       "namespace": "lib.math",
       "node_type": "lib.math.Add",
       "layout": "small",
@@ -23926,7 +23926,7 @@
     },
     {
       "title": "Divide",
-      "description": "Divides A by B.\n    math, divide, division, quotient, /",
+      "description": "Divides A by B to calculate the quotient.\n    math, divide, division, quotient, /\n\n    Use cases:\n    - Calculate averages and ratios\n    - Distribute quantities evenly\n    - Determine rates and proportions\n    - Compute per-unit values",
       "namespace": "lib.math",
       "node_type": "lib.math.Divide",
       "layout": "small",
@@ -24059,7 +24059,7 @@
     },
     {
       "title": "Modulus",
-      "description": "Computes A modulo B.\n    math, modulus, modulo, remainder, %",
+      "description": "Computes A modulo B to find the remainder after division.\n    math, modulus, modulo, remainder, %\n\n    Use cases:\n    - Determine if numbers are even or odd\n    - Implement cyclic patterns and rotations\n    - Calculate remainders in division\n    - Build repeating sequences",
       "namespace": "lib.math",
       "node_type": "lib.math.Modulus",
       "layout": "small",
@@ -24121,7 +24121,7 @@
     },
     {
       "title": "Multiply",
-      "description": "Multiplies two numbers.\n    math, multiply, product, *",
+      "description": "Multiplies two numbers together.\n    math, multiply, product, *, times\n\n    Use cases:\n    - Calculate products and totals\n    - Scale values by factors\n    - Compute areas and volumes\n    - Apply multipliers and rates",
       "namespace": "lib.math",
       "node_type": "lib.math.Multiply",
       "layout": "small",
@@ -24335,7 +24335,7 @@
     },
     {
       "title": "Subtract",
-      "description": "Subtracts B from A.\n    math, subtract, minus, -",
+      "description": "Subtracts B from A.\n    math, subtract, minus, -, difference\n\n    Use cases:\n    - Calculate differences between values\n    - Determine remaining amounts\n    - Compute offsets and deltas\n    - Track decrements and reductions",
       "namespace": "lib.math",
       "node_type": "lib.math.Subtract",
       "layout": "small",
@@ -24397,7 +24397,7 @@
     },
     {
       "title": "Add Time Delta",
-      "description": "Add or subtract time from a datetime.\n    datetime, add, subtract\n\n    Use cases:\n    - Calculate future/past dates\n    - Generate date ranges",
+      "description": "Add or subtract time from a datetime using specified intervals.\n    datetime, add, subtract, delta, offset\n\n    Use cases:\n    - Calculate future/past dates\n    - Generate date ranges\n    - Schedule events at specific intervals\n    - Calculate expiration dates and deadlines",
       "namespace": "lib.date",
       "node_type": "lib.date.AddTimeDelta",
       "properties": [
@@ -24473,7 +24473,7 @@
     },
     {
       "title": "Boundary Time",
-      "description": "Get the start or end of a time period (day, week, month, year).\n    datetime, start, end, boundary, day, week, month, year\n\n    Use cases:\n    - Get period boundaries for reporting\n    - Normalize dates to period starts/ends",
+      "description": "Get the start or end boundary of a time period (day, week, month, year).\n    datetime, start, end, boundary, day, week, month, year\n\n    Use cases:\n    - Get period boundaries for reporting and analytics\n    - Normalize dates to period starts/ends\n    - Calculate billing cycles\n    - Group data by time periods",
       "namespace": "lib.date",
       "node_type": "lib.date.BoundaryTime",
       "properties": [
@@ -24555,7 +24555,7 @@
     },
     {
       "title": "Date Difference",
-      "description": "Calculate the difference between two dates.\n    datetime, difference, duration\n\n    Use cases:\n    - Calculate time periods\n    - Measure durations",
+      "description": "Calculate the time difference between two datetimes.\n    datetime, difference, duration, elapsed\n\n    Use cases:\n    - Calculate time periods between events\n    - Measure durations and elapsed time\n    - Track age or time since events\n    - Compute service level agreement (SLA) metrics",
       "namespace": "lib.date",
       "node_type": "lib.date.DateDifference",
       "properties": [
@@ -24640,7 +24640,7 @@
     },
     {
       "title": "Date Range",
-      "description": "Generate a list of dates between start and end dates.\n    datetime, range, list\n\n    Use cases:\n    - Generate date sequences\n    - Create date-based iterations",
+      "description": "Generate a list of dates between start and end dates with custom intervals.\n    datetime, range, list, sequence\n\n    Use cases:\n    - Generate date sequences for reporting\n    - Create date-based iterations in workflows\n    - Build calendar views\n    - Schedule recurring events",
       "namespace": "lib.date",
       "node_type": "lib.date.DateRange",
       "properties": [
@@ -24716,7 +24716,7 @@
     },
     {
       "title": "Date To Datetime",
-      "description": "Convert a Date object to a Datetime object.\n    date, datetime, convert",
+      "description": "Convert a Date object to a Datetime object at midnight.\n    date, datetime, convert, transformation\n\n    Use cases:\n    - Convert dates to datetime for time calculations\n    - Standardize date types in workflows\n    - Prepare dates for timestamp comparisons\n    - Convert legacy date formats",
       "namespace": "lib.date",
       "node_type": "lib.date.DateToDatetime",
       "properties": [
@@ -24750,7 +24750,7 @@
     },
     {
       "title": "Datetime To Date",
-      "description": "Convert a Datetime object to a Date object.\n    date, datetime, convert",
+      "description": "Convert a Datetime object to a Date object, removing time component.\n    date, datetime, convert, transformation\n\n    Use cases:\n    - Extract date portion from timestamps\n    - Remove time information for date-only comparisons\n    - Normalize datetime data to dates\n    - Simplify date-based grouping",
       "namespace": "lib.date",
       "node_type": "lib.date.DatetimeToDate",
       "properties": [
@@ -24790,7 +24790,7 @@
     },
     {
       "title": "Format Date Time",
-      "description": "Convert a datetime object to a formatted string.\n    datetime, format, convert\n\n    Use cases:\n    - Standardize date formats\n    - Prepare dates for different systems",
+      "description": "Convert a datetime object to a custom formatted string.\n    datetime, format, convert, string\n\n    Use cases:\n    - Standardize date formats across systems\n    - Prepare dates for different locales and regions\n    - Generate human-readable date strings\n    - Format dates for filenames and reports",
       "namespace": "lib.date",
       "node_type": "lib.date.FormatDateTime",
       "properties": [
@@ -24852,7 +24852,7 @@
     },
     {
       "title": "Get Quarter",
-      "description": "Get the quarter number and start/end dates for a given datetime.\n    datetime, quarter, period\n\n    Use cases:\n    - Financial reporting periods\n    - Quarterly analytics",
+      "description": "Get the quarter number and start/end dates for a given datetime.\n    datetime, quarter, period, fiscal\n\n    Use cases:\n    - Financial reporting periods\n    - Quarterly analytics and metrics\n    - Business cycle calculations\n    - Group data by fiscal quarters",
       "namespace": "lib.date",
       "node_type": "lib.date.GetQuarter",
       "properties": [
@@ -24904,7 +24904,7 @@
     },
     {
       "title": "Get Weekday",
-      "description": "Get the weekday name or number from a datetime.\n    datetime, weekday, name\n\n    Use cases:\n    - Get day names for scheduling\n    - Filter events by weekday",
+      "description": "Get the weekday name or number from a datetime.\n    datetime, weekday, name, day\n\n    Use cases:\n    - Get day names for scheduling and calendar displays\n    - Filter events by weekday\n    - Build day-of-week based logic\n    - Generate weekly reports",
       "namespace": "lib.date",
       "node_type": "lib.date.GetWeekday",
       "properties": [
@@ -24962,7 +24962,7 @@
     },
     {
       "title": "Is Date In Range",
-      "description": "Check if a date falls within a specified range.\n    datetime, range, check\n\n    Use cases:\n    - Validate date ranges\n    - Filter date-based data",
+      "description": "Check if a date falls within a specified range with optional inclusivity.\n    datetime, range, check, validate\n\n    Use cases:\n    - Validate date ranges in forms and inputs\n    - Filter date-based data\n    - Check if events fall within specific periods\n    - Implement date-based access control",
       "namespace": "lib.date",
       "node_type": "lib.date.IsDateInRange",
       "properties": [
@@ -25054,7 +25054,7 @@
     },
     {
       "title": "Now",
-      "description": "Get the current date and time.\n    datetime, current, now",
+      "description": "Get the current date and time in UTC timezone.\n    datetime, current, now, timestamp\n\n    Use cases:\n    - Generate timestamps for events and logs\n    - Set default datetime values in workflows\n    - Calculate time-based conditions\n    - Track real-time operations",
       "namespace": "lib.date",
       "node_type": "lib.date.Now",
       "outputs": [
@@ -25069,7 +25069,7 @@
     },
     {
       "title": "Parse Date",
-      "description": "Parse a date string into components.\n    date, parse, format",
+      "description": "Parse a date string into a structured Date object.\n    date, parse, format, convert\n\n    Use cases:\n    - Convert date strings from various sources into standard format\n    - Extract date components from text input\n    - Validate and normalize date formats\n    - Process dates from CSV, JSON, or API responses",
       "namespace": "lib.date",
       "node_type": "lib.date.ParseDate",
       "properties": [
@@ -25120,7 +25120,7 @@
     },
     {
       "title": "Parse Date Time",
-      "description": "Parse a date/time string into components.\n    datetime, parse, format\n\n    Use cases:\n    - Extract date components from strings\n    - Convert between date formats",
+      "description": "Parse a date/time string into a structured Datetime object.\n    datetime, parse, format, convert\n\n    Use cases:\n    - Extract datetime components from strings\n    - Convert between datetime formats\n    - Process timestamps from logs and databases\n    - Standardize datetime data from multiple sources",
       "namespace": "lib.date",
       "node_type": "lib.date.ParseDateTime",
       "properties": [
@@ -25171,7 +25171,7 @@
     },
     {
       "title": "Relative Time",
-      "description": "Get datetime relative to current time (past or future).\n    datetime, past, future, relative, hours, days, months\n\n    Use cases:\n    - Calculate past or future dates\n    - Generate relative timestamps",
+      "description": "Get datetime relative to current time (past or future) with configurable units.\n    datetime, past, future, relative, hours, days, months\n\n    Use cases:\n    - Calculate past or future dates dynamically\n    - Generate relative timestamps for scheduling\n    - Set expiration times\n    - Create time-based filters",
       "namespace": "lib.date",
       "node_type": "lib.date.RelativeTime",
       "properties": [
@@ -25232,7 +25232,7 @@
     },
     {
       "title": "Today",
-      "description": "Get the current date.\n    date, today, now",
+      "description": "Get the current date in Date format.\n    date, today, now, current\n\n    Use cases:\n    - Get today's date for logging and timestamping\n    - Set default dates in forms and workflows\n    - Calculate date-based conditions\n    - Track daily operations and schedules",
       "namespace": "lib.date",
       "node_type": "lib.date.Today",
       "outputs": [
@@ -25735,7 +25735,7 @@
     },
     {
       "title": "Stringify JSON",
-      "description": "Convert a Python object to a JSON string.\n    json, stringify, encode\n\n    Use cases:\n    - Prepare data for API requests\n    - Save data in JSON format",
+      "description": "Convert a Python object to a formatted JSON string.\n    json, stringify, encode, serialize\n\n    Use cases:\n    - Prepare data for API requests\n    - Save data in JSON format\n    - Format data for storage or transmission\n    - Create human-readable JSON output",
       "namespace": "lib.json",
       "node_type": "lib.json.StringifyJSON",
       "properties": [
@@ -31084,7 +31084,7 @@
     },
     {
       "title": "Collection",
-      "description": "Get or create a collection.\n    vector, embedding, collection, RAG, get, create, chroma",
+      "description": "Get or create a named vector database collection for storing embeddings.\n    vector, embedding, collection, RAG, get, create, chroma\n\n    Use cases:\n    - Initialize collections for semantic search\n    - Organize embeddings by topic or domain\n    - Set up vector stores for RAG applications\n    - Manage multiple vector databases\n    - Configure embedding models per collection",
       "namespace": "vector.chroma",
       "node_type": "vector.chroma.Collection",
       "properties": [
