@@ -64,6 +64,8 @@ class FileExists(BaseNode):
 
     Tests for existence of file system entry at the given path. Supports
     tilde expansion for home directory. Not cacheable as file system may change.
+    Restricted to development environments for security (prevents path traversal
+    attacks in production).
 
     Parameters:
     - path (required): File or directory path to check (supports ~ for home)

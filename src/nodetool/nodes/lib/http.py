@@ -27,7 +27,8 @@ class HTTPBaseNode(BaseNode):
     """Base class for HTTP request nodes.
 
     Provides common URL field and request configuration for HTTP operations.
-    Not directly visible in the UI; extended by specific HTTP method nodes.
+    This base class is not visible in the UI; only concrete HTTP method subclasses
+    (GetRequest, PostRequest, etc.) appear in the node palette.
 
     http, network, request
     """

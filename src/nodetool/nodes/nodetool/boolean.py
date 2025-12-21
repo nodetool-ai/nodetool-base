@@ -116,8 +116,8 @@ class Compare(BaseNode):
     """
     Compare two numeric values using specified comparison operator.
 
-    Evaluates comparison between two numbers and returns boolean result. Supports
-    equality, inequality, and relational comparisons.
+    Evaluates comparison between two numbers (int or float) and returns boolean result. 
+    Supports equality, inequality, and relational comparisons.
 
     Parameters:
     - a (required, default=0): First value (int or float)

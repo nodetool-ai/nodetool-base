@@ -139,7 +139,7 @@ class AddTimeDelta(BaseNode):
 
     Parameters:
     - input_datetime (required): Starting datetime to modify
-    - days (optional, default=0): Days to add (-3650 to 3650, ~10 years)
+    - days (optional, default=0): Days to add (-3650 to 3650)
     - hours (optional, default=0): Hours to add (-24 to 24)
     - minutes (optional, default=0): Minutes to add (-60 to 60)
 

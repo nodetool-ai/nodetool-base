@@ -102,8 +102,8 @@ class BaseGetJSONPath(BaseNode):
     Base class for extracting typed values from JSON using dot notation paths.
 
     Navigates nested JSON structures using dot-separated keys. Supports dictionary
-    navigation and array indexing by numeric strings. Not directly visible in UI;
-    extended by type-specific subclasses.
+    navigation and array indexing by numeric strings (e.g., "0", "1", "2"). Not 
+    directly visible in UI; extended by type-specific subclasses.
 
     Path examples for {"a": {"b": {"c": 1}}}:
     - "a.b.c" extracts 1
