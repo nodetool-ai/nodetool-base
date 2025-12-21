@@ -17384,64 +17384,6 @@
       "expose_as_tool": true
     },
     {
-      "title": "Gzip Compress",
-      "description": "Compress bytes using gzip.\n    gzip, compress, bytes\n\n    Use cases:\n    - Reduce size of binary data\n    - Store assets in compressed form\n    - Prepare data for network transfer",
-      "namespace": "lib.gzip",
-      "node_type": "lib.gzip.GzipCompress",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "bytes"
-          },
-          "default": "",
-          "title": "Data",
-          "description": "Data to compress"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "data"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Gzip Decompress",
-      "description": "Decompress gzip data.\n    gzip, decompress, bytes\n\n    Use cases:\n    - Restore compressed files\n    - Read data from gzip archives\n    - Process network payloads",
-      "namespace": "lib.gzip",
-      "node_type": "lib.gzip.GzipDecompress",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "bytes"
-          },
-          "default": "",
-          "title": "Data",
-          "description": "Gzip data to decompress"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "data"
-      ],
-      "expose_as_tool": true
-    },
-    {
       "title": "Add Heading",
       "description": "Adds a heading to the document\n    document, docx, heading, format",
       "namespace": "lib.docx",
@@ -18083,252 +18025,6 @@
         "url"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
-    },
-    {
-      "title": "Dedent Text",
-      "description": "Removes any common leading whitespace from every line in text.\n    textwrap, dedent, whitespace",
-      "namespace": "lib.textwrap",
-      "node_type": "lib.textwrap.Dedent",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text"
-      ]
-    },
-    {
-      "title": "Fill Text",
-      "description": "Wraps text to a specified width, returning a formatted string.\n    textwrap, fill, wrap",
-      "namespace": "lib.textwrap",
-      "node_type": "lib.textwrap.Fill",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text"
-        },
-        {
-          "name": "width",
-          "type": {
-            "type": "int"
-          },
-          "default": 70,
-          "title": "Width",
-          "min": 1.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text",
-        "width"
-      ]
-    },
-    {
-      "title": "Indent Text",
-      "description": "Adds a prefix to the beginning of each line in the text.\n    textwrap, indent, prefix",
-      "namespace": "lib.textwrap",
-      "node_type": "lib.textwrap.Indent",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text"
-        },
-        {
-          "name": "prefix",
-          "type": {
-            "type": "str"
-          },
-          "default": "    ",
-          "title": "Prefix"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text",
-        "prefix"
-      ]
-    },
-    {
-      "title": "Shorten Text",
-      "description": "Shortens text to fit within a width, using a placeholder if truncated.\n    textwrap, shorten, truncate",
-      "namespace": "lib.textwrap",
-      "node_type": "lib.textwrap.Shorten",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text"
-        },
-        {
-          "name": "width",
-          "type": {
-            "type": "int"
-          },
-          "default": 70,
-          "title": "Width",
-          "min": 1.0
-        },
-        {
-          "name": "placeholder",
-          "type": {
-            "type": "str"
-          },
-          "default": "...",
-          "title": "Placeholder"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text",
-        "width",
-        "placeholder"
-      ]
-    },
-    {
-      "title": "Wrap Text",
-      "description": "Wraps text to a specified width, returning a list of lines.\n    textwrap, wrap, lines",
-      "namespace": "lib.textwrap",
-      "node_type": "lib.textwrap.Wrap",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text"
-        },
-        {
-          "name": "width",
-          "type": {
-            "type": "int"
-          },
-          "default": 70,
-          "title": "Width",
-          "min": 1.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text",
-        "width"
-      ]
-    },
-    {
-      "title": "Decode Base64",
-      "description": "Decodes Base64 text to plain string.\n    base64, decode, string\n\n    Use cases:\n    - Read encoded data\n    - Extract original text from Base64",
-      "namespace": "lib.base64",
-      "node_type": "lib.base64.Decode",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Data",
-          "description": "Base64 encoded text"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "data"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Encode Base64",
-      "description": "Encodes text to Base64 format.\n    base64, encode, string\n\n    Use cases:\n    - Prepare text for transmission\n    - Embed data in JSON or HTML",
-      "namespace": "lib.base64",
-      "node_type": "lib.base64.Encode",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "Text to encode"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text"
-      ],
       "expose_as_tool": true
     },
     {
@@ -19102,214 +18798,6 @@
       "expose_as_tool": true
     },
     {
-      "title": "Hash File",
-      "description": "Compute the cryptographic hash of a file.\n    hash, hashlib, digest, file\n\n    Use cases:\n    - Verify downloaded files\n    - Detect file changes\n    - Identify duplicates",
-      "namespace": "lib.hashlib",
-      "node_type": "lib.hashlib.HashFile",
-      "properties": [
-        {
-          "name": "file",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "File",
-          "description": "The file to hash"
-        },
-        {
-          "name": "algorithm",
-          "type": {
-            "type": "str"
-          },
-          "default": "md5",
-          "title": "Algorithm",
-          "description": "Hash algorithm name (e.g. md5, sha1, sha256)"
-        },
-        {
-          "name": "chunk_size",
-          "type": {
-            "type": "int"
-          },
-          "default": 8192,
-          "title": "Chunk Size",
-          "description": "Read size for hashing in bytes",
-          "min": 1.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "file",
-        "algorithm",
-        "chunk_size"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Hash String",
-      "description": "Compute the cryptographic hash of a string using hashlib.\n    hash, hashlib, digest, string\n\n    Use cases:\n    - Generate deterministic identifiers\n    - Verify data integrity\n    - Create fingerprints for caching",
-      "namespace": "lib.hashlib",
-      "node_type": "lib.hashlib.HashString",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The text to hash"
-        },
-        {
-          "name": "algorithm",
-          "type": {
-            "type": "str"
-          },
-          "default": "md5",
-          "title": "Algorithm",
-          "description": "Hash algorithm name (e.g. md5, sha1, sha256)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text",
-        "algorithm"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Create Tar",
-      "description": "Create a tar archive from a directory.\n    files, tar, create\n\n    Use cases:\n    - Package multiple files into a single archive\n    - Backup directories\n    - Prepare archives for distribution",
-      "namespace": "lib.tar",
-      "node_type": "lib.tar.CreateTar",
-      "properties": [
-        {
-          "name": "source_folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Source Folder",
-          "description": "Folder to archive"
-        },
-        {
-          "name": "tar_path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Tar Path",
-          "description": "Output tar file path"
-        },
-        {
-          "name": "gzip",
-          "type": {
-            "type": "bool"
-          },
-          "default": false,
-          "title": "Gzip",
-          "description": "Use gzip compression"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "source_folder",
-        "tar_path",
-        "gzip"
-      ]
-    },
-    {
-      "title": "Extract Tar",
-      "description": "Extract a tar archive to a folder.\n    files, tar, extract\n\n    Use cases:\n    - Unpack archived data\n    - Restore backups\n    - Retrieve files for processing",
-      "namespace": "lib.tar",
-      "node_type": "lib.tar.ExtractTar",
-      "properties": [
-        {
-          "name": "tar_path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Tar Path",
-          "description": "Tar archive to extract"
-        },
-        {
-          "name": "output_folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Output Folder",
-          "description": "Folder to extract into"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "tar_path",
-        "output_folder"
-      ]
-    },
-    {
-      "title": "List Tar",
-      "description": "List contents of a tar archive.\n    files, tar, list\n\n    Use cases:\n    - Inspect archives without extracting\n    - Preview tar contents\n    - Verify archive contents",
-      "namespace": "lib.tar",
-      "node_type": "lib.tar.ListTar",
-      "properties": [
-        {
-          "name": "tar_path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Tar Path",
-          "description": "Tar archive to inspect"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "tar_path"
-      ]
-    },
-    {
       "title": "Convert File",
       "description": "Converts between different document formats using pandoc.\n    convert, document, format, pandoc\n\n    Use cases:\n    - Convert between various document formats (Markdown, HTML, LaTeX, etc.)\n    - Generate documentation in different formats\n    - Create publication-ready documents",
       "namespace": "lib.pandoc",
@@ -19581,64 +19069,6 @@
         "output_format",
         "extra_args"
       ]
-    },
-    {
-      "title": "Escape",
-      "description": "Escape special characters in text into HTML-safe sequences.\n    html, escape, entities, convert\n\n    Use cases:\n    - Prepare text for inclusion in HTML\n    - Prevent cross-site scripting in user content\n    - Encode strings for web output",
-      "namespace": "lib.html",
-      "node_type": "lib.html.Escape",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The text to escape"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Unescape",
-      "description": "Convert HTML entities back to normal text.\n    html, unescape, entities, decode\n\n    Use cases:\n    - Decode HTML-encoded data\n    - Process text scraped from the web\n    - Convert form submissions to plain text",
-      "namespace": "lib.html",
-      "node_type": "lib.html.Unescape",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "The HTML text to unescape"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text"
-      ],
-      "expose_as_tool": true
     },
     {
       "title": "Absolute Path",
@@ -20547,186 +19977,6 @@
       ]
     },
     {
-      "title": "Get Close Matches",
-      "description": "Finds close matches for a word within a list of possibilities.\n    difflib, fuzzy, match\n\n    Use cases:\n    - Suggest alternatives for misspelled words\n    - Map user input to valid options\n    - Provide recommendations based on partial text",
-      "namespace": "lib.difflib",
-      "node_type": "lib.difflib.GetCloseMatches",
-      "properties": [
-        {
-          "name": "word",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Word",
-          "description": "Word to match"
-        },
-        {
-          "name": "possibilities",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Possibilities",
-          "description": "List of possible words"
-        },
-        {
-          "name": "n",
-          "type": {
-            "type": "int"
-          },
-          "default": 3,
-          "title": "N",
-          "description": "Maximum number of matches to return",
-          "min": 1.0
-        },
-        {
-          "name": "cutoff",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.6,
-          "title": "Cutoff",
-          "description": "Minimum similarity ratio",
-          "min": 0.0,
-          "max": 1.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "word",
-        "possibilities",
-        "n",
-        "cutoff"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Sequence Similarity Ratio",
-      "description": "Calculates the similarity ratio between two strings.\n    difflib, similarity, ratio, compare\n\n    Use cases:\n    - Fuzzy string matching\n    - Compare document versions\n    - Evaluate similarity of user input",
-      "namespace": "lib.difflib",
-      "node_type": "lib.difflib.SimilarityRatio",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "A",
-          "description": "First string to compare"
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "B",
-          "description": "Second string to compare"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Unified Diff",
-      "description": "Generates a unified diff between two texts.\n    difflib, diff, compare\n\n    Use cases:\n    - Display differences between versions of text files\n    - Highlight changes in user submitted documents\n    - Compare code snippets",
-      "namespace": "lib.difflib",
-      "node_type": "lib.difflib.UnifiedDiff",
-      "properties": [
-        {
-          "name": "a",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "A",
-          "description": "Original text"
-        },
-        {
-          "name": "b",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "B",
-          "description": "Modified text"
-        },
-        {
-          "name": "fromfile",
-          "type": {
-            "type": "str"
-          },
-          "default": "a",
-          "title": "Fromfile",
-          "description": "Name of the original file"
-        },
-        {
-          "name": "tofile",
-          "type": {
-            "type": "str"
-          },
-          "default": "b",
-          "title": "Tofile",
-          "description": "Name of the modified file"
-        },
-        {
-          "name": "lineterm",
-          "type": {
-            "type": "str"
-          },
-          "default": "\n",
-          "title": "Lineterm",
-          "description": "Line terminator"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "a",
-        "b",
-        "fromfile",
-        "tofile",
-        "lineterm"
-      ],
-      "expose_as_tool": true
-    },
-    {
       "title": "Chart Renderer",
       "description": "Node responsible for rendering chart configurations into image format using seaborn.\n    chart, seaborn, plot, visualization, data",
       "namespace": "lib.seaborn",
@@ -20850,88 +20100,6 @@
         "despine",
         "trim_margins"
       ]
-    },
-    {
-      "title": "Simple Http Server",
-      "description": "Starts a simple HTTP server inside Docker and streams logs.\n    http, server, web\n\n    Emits the reachable endpoint URL on the \"endpoint\" output when ready,\n    then streams stdout/stderr lines on the corresponding outputs.",
-      "namespace": "lib.http_server",
-      "node_type": "lib.http_server.SimpleHttpServer",
-      "properties": [
-        {
-          "name": "image",
-          "type": {
-            "type": "str"
-          },
-          "default": "python:3.11-slim",
-          "title": "Image",
-          "description": "Docker image to run the server in"
-        },
-        {
-          "name": "container_port",
-          "type": {
-            "type": "int"
-          },
-          "default": 8000,
-          "title": "Container Port",
-          "description": "Port the server listens on inside the container"
-        },
-        {
-          "name": "command",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Command",
-          "description": "Startup command. If empty, uses 'python -m http.server <container_port> --bind 0.0.0.0'"
-        },
-        {
-          "name": "timeout_seconds",
-          "type": {
-            "type": "int"
-          },
-          "default": 600,
-          "title": "Timeout Seconds",
-          "description": "Max lifetime of the server container (seconds)"
-        },
-        {
-          "name": "ready_timeout_seconds",
-          "type": {
-            "type": "int"
-          },
-          "default": 15,
-          "title": "Ready Timeout Seconds",
-          "description": "Seconds to wait for server readiness"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "endpoint"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "stdout"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "stderr"
-        }
-      ],
-      "basic_fields": [
-        "image",
-        "container_port",
-        "command",
-        "timeout_seconds",
-        "ready_timeout_seconds"
-      ],
-      "is_streaming_output": true,
-      "supports_dynamic_outputs": true
     },
     {
       "title": "Auto Fit Columns",
@@ -21266,330 +20434,6 @@
         "folder",
         "filename"
       ]
-    },
-    {
-      "title": "Random Bool",
-      "description": "Return a random boolean value.\n    random, boolean, coinflip, bool\n\n    Use cases:\n    - Make random yes/no decisions\n    - Simulate coin flips\n    - Introduce randomness in control flow",
-      "namespace": "lib.random",
-      "node_type": "lib.random.RandomBool",
-      "outputs": [
-        {
-          "type": {
-            "type": "bool"
-          },
-          "name": "output"
-        }
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Random Choice",
-      "description": "Select a random element from a list.\n    random, choice, select, pick\n\n    Use cases:\n    - Choose a random sample from options\n    - Implement simple lottery behaviour\n    - Pick a random item from user input",
-      "namespace": "lib.random",
-      "node_type": "lib.random.RandomChoice",
-      "properties": [
-        {
-          "name": "options",
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "any"
-              }
-            ]
-          },
-          "default": [],
-          "title": "Options",
-          "description": "List of options"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "any"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "options"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Random Float",
-      "description": "Generate a random floating point number within a range.\n    random, float, number, rand, uniform\n\n    Use cases:\n    - Create random probabilities\n    - Generate noisy data for testing\n    - Produce random values for simulations",
-      "namespace": "lib.random",
-      "node_type": "lib.random.RandomFloat",
-      "properties": [
-        {
-          "name": "minimum",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.0,
-          "title": "Minimum",
-          "description": "Minimum value"
-        },
-        {
-          "name": "maximum",
-          "type": {
-            "type": "float"
-          },
-          "default": 1.0,
-          "title": "Maximum",
-          "description": "Maximum value"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "float"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "minimum",
-        "maximum"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Random Int",
-      "description": "Generate a random integer within a range.\n    random, integer, number, rand, randint\n\n    Use cases:\n    - Pick a random index or identifier\n    - Create randomized counters or IDs\n    - Sample integers for testing",
-      "namespace": "lib.random",
-      "node_type": "lib.random.RandomInt",
-      "properties": [
-        {
-          "name": "minimum",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Minimum",
-          "description": "Minimum value (inclusive)"
-        },
-        {
-          "name": "maximum",
-          "type": {
-            "type": "int"
-          },
-          "default": 100,
-          "title": "Maximum",
-          "description": "Maximum value (inclusive)"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "int"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "minimum",
-        "maximum"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Download File",
-      "description": "Download a file from an FTP server.\n    ftp, download, file\n\n    Use cases:\n    - Retrieve remote files for processing\n    - Backup data from an FTP server\n    - Integrate legacy FTP systems",
-      "namespace": "lib.ftplib",
-      "node_type": "lib.ftplib.FTPDownloadFile",
-      "properties": [
-        {
-          "name": "host",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Host",
-          "description": "FTP server host"
-        },
-        {
-          "name": "username",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Username",
-          "description": "Username for authentication"
-        },
-        {
-          "name": "password",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Password",
-          "description": "Password for authentication"
-        },
-        {
-          "name": "remote_path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Remote Path",
-          "description": "Remote file path to download"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "document"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "host",
-        "username",
-        "password",
-        "remote_path"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "List Directory",
-      "description": "List files in a directory on an FTP server.\n    ftp, list, directory\n\n    Use cases:\n    - Browse remote directories\n    - Check available files before download\n    - Monitor FTP server contents",
-      "namespace": "lib.ftplib",
-      "node_type": "lib.ftplib.FTPListDirectory",
-      "properties": [
-        {
-          "name": "host",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Host",
-          "description": "FTP server host"
-        },
-        {
-          "name": "username",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Username",
-          "description": "Username for authentication"
-        },
-        {
-          "name": "password",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Password",
-          "description": "Password for authentication"
-        },
-        {
-          "name": "directory",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Directory",
-          "description": "Remote directory to list"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "host",
-        "username",
-        "password",
-        "directory"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Upload File",
-      "description": "Upload a file to an FTP server.\n    ftp, upload, file\n\n    Use cases:\n    - Transfer files to an FTP server\n    - Automate backups to a remote system\n    - Integrate with legacy FTP workflows",
-      "namespace": "lib.ftplib",
-      "node_type": "lib.ftplib.FTPUploadFile",
-      "properties": [
-        {
-          "name": "host",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Host",
-          "description": "FTP server host"
-        },
-        {
-          "name": "username",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Username",
-          "description": "Username for authentication"
-        },
-        {
-          "name": "password",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Password",
-          "description": "Password for authentication"
-        },
-        {
-          "name": "remote_path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Remote Path",
-          "description": "Remote file path to upload to"
-        },
-        {
-          "name": "document",
-          "type": {
-            "type": "document"
-          },
-          "default": {
-            "type": "document",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Document",
-          "description": "Document to upload"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "none"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "host",
-        "username",
-        "password",
-        "remote_path",
-        "document"
-      ],
-      "expose_as_tool": true
     },
     {
       "title": "Create Table",
@@ -22061,74 +20905,6 @@
         "where"
       ],
       "expose_as_tool": true
-    },
-    {
-      "title": "Compress",
-      "description": "Compress binary data using the zlib algorithm.\n    zlib, compress, deflate, binary\n\n    Use cases:\n    - Reduce size of binary data\n    - Prepare payloads for transmission\n    - Store data in compressed form",
-      "namespace": "lib.zlib",
-      "node_type": "lib.zlib.Compress",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "bytes"
-          },
-          "default": "",
-          "title": "Data",
-          "description": "Data to compress"
-        },
-        {
-          "name": "level",
-          "type": {
-            "type": "int"
-          },
-          "default": 9,
-          "title": "Level",
-          "description": "Compression level",
-          "min": 0.0,
-          "max": 9.0
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "data",
-        "level"
-      ]
-    },
-    {
-      "title": "Decompress",
-      "description": "Decompress zlib-compressed binary data.\n    zlib, decompress, inflate, binary\n\n    Use cases:\n    - Restore compressed payloads\n    - Read previously compressed files\n    - Handle zlib streams from external services",
-      "namespace": "lib.zlib",
-      "node_type": "lib.zlib.Decompress",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "bytes"
-          },
-          "default": "",
-          "title": "Data",
-          "description": "Data to decompress"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "data"
-      ]
     },
     {
       "title": "Browser",
@@ -25620,74 +24396,6 @@
       "expose_as_tool": true
     },
     {
-      "title": "Load Bytes File",
-      "description": "Read raw bytes from a file on disk.\n    files, bytes, read, input, load, file\n\n    Use cases:\n    - Load binary data for processing\n    - Read binary files for a workflow",
-      "namespace": "lib.bytes",
-      "node_type": "lib.bytes.LoadBytesFile",
-      "properties": [
-        {
-          "name": "path",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Path",
-          "description": "Path to the file to read"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "bytes"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "path"
-      ]
-    },
-    {
-      "title": "Save Bytes File",
-      "description": "Write raw bytes to a file on disk.\n    files, bytes, save, output\n\n    The filename can include time and date variables:\n    %Y - Year, %m - Month, %d - Day\n    %H - Hour, %M - Minute, %S - Second",
-      "namespace": "lib.bytes",
-      "node_type": "lib.bytes.SaveBytesFile",
-      "properties": [
-        {
-          "name": "data",
-          "type": {
-            "type": "bytes"
-          },
-          "default": "",
-          "title": "Data",
-          "description": "The bytes to write to file"
-        },
-        {
-          "name": "folder",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Folder",
-          "description": "Folder where the file will be saved"
-        },
-        {
-          "name": "filename",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Filename",
-          "description": "Name of the file to save. Supports strftime format codes."
-        }
-      ],
-      "basic_fields": [
-        "data",
-        "folder",
-        "filename"
-      ]
-    },
-    {
       "title": "Add Time Delta",
       "description": "Add or subtract time from a datetime.\n    datetime, add, subtract\n\n    Use cases:\n    - Calculate future/past dates\n    - Generate date ranges",
       "namespace": "lib.date",
@@ -27598,164 +26306,6 @@
         "uuid_string"
       ],
       "expose_as_tool": true
-    },
-    {
-      "title": "Encode Query Params",
-      "description": "Encode a dictionary of parameters into a query string using\n    ``urllib.parse.urlencode``.\n    urllib, query, encode, params\n\n    Use cases:\n    - Build GET request URLs\n    - Serialize data for APIs\n    - Convert parameters to query strings",
-      "namespace": "lib.urllib",
-      "node_type": "lib.urllib.EncodeQueryParams",
-      "properties": [
-        {
-          "name": "params",
-          "type": {
-            "type": "dict",
-            "type_args": [
-              {
-                "type": "str"
-              },
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "default": {},
-          "title": "Params",
-          "description": "Parameters to encode"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "params"
-      ]
-    },
-    {
-      "title": "Join URL",
-      "description": "Join a base URL with a relative URL using ``urllib.parse.urljoin``.\n    urllib, join, url\n\n    Use cases:\n    - Build absolute links from relative paths\n    - Combine API base with endpoints\n    - Resolve resources from a base URL",
-      "namespace": "lib.urllib",
-      "node_type": "lib.urllib.JoinURL",
-      "properties": [
-        {
-          "name": "base",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Base",
-          "description": "Base URL"
-        },
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "Relative or absolute URL"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "base",
-        "url"
-      ]
-    },
-    {
-      "title": "Parse URL",
-      "description": "Parse a URL into its components using ``urllib.parse.urlparse``.\n    urllib, parse, url\n\n    Use cases:\n    - Inspect links for validation\n    - Extract host or path information\n    - Analyze query parameters",
-      "namespace": "lib.urllib",
-      "node_type": "lib.urllib.ParseURL",
-      "properties": [
-        {
-          "name": "url",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Url",
-          "description": "URL to parse"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "dict"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "url"
-      ]
-    },
-    {
-      "title": "Quote URL",
-      "description": "Percent-encode a string for safe use in URLs using ``urllib.parse.quote``.\n    urllib, quote, encode\n\n    Use cases:\n    - Escape spaces or special characters\n    - Prepare text for query parameters\n    - Encode file names in URLs",
-      "namespace": "lib.urllib",
-      "node_type": "lib.urllib.QuoteURL",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "Text to quote"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text"
-      ]
-    },
-    {
-      "title": "Unquote URL",
-      "description": "Decode a percent-encoded URL string using ``urllib.parse.unquote``.\n    urllib, unquote, decode\n\n    Use cases:\n    - Convert encoded URLs to readable form\n    - Parse user input from URLs\n    - Display unescaped paths",
-      "namespace": "lib.urllib",
-      "node_type": "lib.urllib.UnquoteURL",
-      "properties": [
-        {
-          "name": "text",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Text",
-          "description": "Encoded text"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "text"
-      ]
     },
     {
       "title": "Index Array",
@@ -30447,6 +28997,1016 @@
         "image1",
         "image2",
         "mask"
+      ]
+    },
+    {
+      "title": "CDL",
+      "description": "ASC CDL (Color Decision List) color correction.\n    cdl, slope, offset, power, saturation, asc, color decision list\n\n    Use cases:\n    - Apply industry-standard CDL color correction\n    - Exchange color grades between different software\n    - Apply precise mathematical color transformations\n    - Create consistent looks across multiple shots\n\n    Formula: output = (input * slope + offset) ^ power\n    Followed by saturation adjustment.",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.CDL",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to color correct."
+        },
+        {
+          "name": "slope_r",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Slope R",
+          "description": "Red slope (multiplier).",
+          "min": 0.0,
+          "max": 4.0
+        },
+        {
+          "name": "slope_g",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Slope G",
+          "description": "Green slope (multiplier).",
+          "min": 0.0,
+          "max": 4.0
+        },
+        {
+          "name": "slope_b",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Slope B",
+          "description": "Blue slope (multiplier).",
+          "min": 0.0,
+          "max": 4.0
+        },
+        {
+          "name": "offset_r",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Offset R",
+          "description": "Red offset (addition).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "offset_g",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Offset G",
+          "description": "Green offset (addition).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "offset_b",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Offset B",
+          "description": "Blue offset (addition).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "power_r",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Power R",
+          "description": "Red power (gamma).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "power_g",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Power G",
+          "description": "Green power (gamma).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "power_b",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Power B",
+          "description": "Blue power (gamma).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "saturation",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Saturation",
+          "description": "Saturation adjustment.",
+          "min": 0.0,
+          "max": 4.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "slope_r",
+        "slope_g",
+        "slope_b",
+        "offset_r",
+        "offset_g",
+        "offset_b",
+        "power_r",
+        "power_g",
+        "power_b",
+        "saturation"
+      ]
+    },
+    {
+      "title": "Color Balance",
+      "description": "Adjust color temperature and tint for white balance correction.\n    white balance, temperature, tint, color balance, warm, cool\n\n    Use cases:\n    - Correct white balance in photos and video\n    - Warm up or cool down the overall image\n    - Fix color casts from mixed lighting\n    - Create mood through color temperature shifts",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.ColorBalance",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust."
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Temperature",
+          "description": "Color temperature. Positive = warmer (orange), negative = cooler (blue).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "tint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Tint",
+          "description": "Color tint. Positive = magenta, negative = green.",
+          "min": -1.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "temperature",
+        "tint"
+      ]
+    },
+    {
+      "title": "Curves",
+      "description": "RGB curves adjustment with control points for precise tonal control.\n    curves, rgb, tonal, contrast, levels\n\n    Use cases:\n    - Create custom contrast curves\n    - Adjust specific tonal ranges precisely\n    - Create cross-processed or stylized looks\n    - Match the tonal characteristics of film stocks",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.Curves",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust."
+        },
+        {
+          "name": "black_point",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Black Point",
+          "description": "Input black point (lifts shadows).",
+          "min": 0.0,
+          "max": 0.5
+        },
+        {
+          "name": "white_point",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "White Point",
+          "description": "Input white point (compresses highlights).",
+          "min": 0.5,
+          "max": 1.0
+        },
+        {
+          "name": "shadows",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Shadows",
+          "description": "Shadow curve adjustment.",
+          "min": -0.5,
+          "max": 0.5
+        },
+        {
+          "name": "midtones",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Midtones",
+          "description": "Midtone curve adjustment (gamma).",
+          "min": -0.5,
+          "max": 0.5
+        },
+        {
+          "name": "highlights",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Highlights",
+          "description": "Highlight curve adjustment.",
+          "min": -0.5,
+          "max": 0.5
+        },
+        {
+          "name": "red_midtones",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Red Midtones",
+          "description": "Red channel midtone adjustment.",
+          "min": -0.5,
+          "max": 0.5
+        },
+        {
+          "name": "green_midtones",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Green Midtones",
+          "description": "Green channel midtone adjustment.",
+          "min": -0.5,
+          "max": 0.5
+        },
+        {
+          "name": "blue_midtones",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Blue Midtones",
+          "description": "Blue channel midtone adjustment.",
+          "min": -0.5,
+          "max": 0.5
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "black_point",
+        "white_point",
+        "shadows",
+        "midtones",
+        "highlights",
+        "red_midtones",
+        "green_midtones",
+        "blue_midtones"
+      ]
+    },
+    {
+      "title": "Exposure",
+      "description": "Comprehensive tonal exposure controls similar to Lightroom/Camera Raw.\n    exposure, contrast, highlights, shadows, whites, blacks, tonal\n\n    Use cases:\n    - Correct over/underexposed images\n    - Recover highlight and shadow detail\n    - Adjust overall contrast and tonal range\n    - Fine-tune the brightness of specific tonal regions",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.Exposure",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust."
+        },
+        {
+          "name": "exposure",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Exposure",
+          "description": "Exposure adjustment in stops. Affects entire image.",
+          "min": -5.0,
+          "max": 5.0
+        },
+        {
+          "name": "contrast",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Contrast",
+          "description": "Contrast adjustment. Affects midtone separation.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "highlights",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Highlights",
+          "description": "Highlight recovery/boost. Affects brightest areas.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "shadows",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Shadows",
+          "description": "Shadow recovery/darken. Affects darkest areas.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "whites",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Whites",
+          "description": "White point adjustment. Sets the brightest white.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "blacks",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Blacks",
+          "description": "Black point adjustment. Sets the darkest black.",
+          "min": -1.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "exposure",
+        "contrast",
+        "highlights",
+        "shadows",
+        "whites",
+        "blacks"
+      ]
+    },
+    {
+      "title": "Film Look",
+      "description": "Apply preset cinematic film looks with adjustable intensity.\n    film look, cinematic, preset, movie, lut, color grade\n\n    Use cases:\n    - Quickly apply popular cinematic color grades\n    - Create consistent looks across multiple images\n    - Emulate classic film stock characteristics\n    - Starting point for custom color grading",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.FilmLook",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to apply the film look to."
+        },
+        {
+          "name": "preset",
+          "type": {
+            "type": "enum",
+            "values": [
+              "teal_orange",
+              "blockbuster",
+              "noir",
+              "vintage",
+              "cold_blue",
+              "warm_sunset",
+              "matrix",
+              "bleach_bypass",
+              "cross_process",
+              "faded_film"
+            ],
+            "type_name": "nodetool.nodes.lib.pillow.color_grading.FilmLookPreset"
+          },
+          "default": "teal_orange",
+          "title": "Preset",
+          "description": "The cinematic look to apply."
+        },
+        {
+          "name": "intensity",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Intensity",
+          "description": "Intensity of the effect. 0=none, 1=full, 2=exaggerated.",
+          "min": 0.0,
+          "max": 2.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "preset",
+        "intensity"
+      ]
+    },
+    {
+      "title": "HSLAdjust",
+      "description": "Adjust hue, saturation, and luminance for specific color ranges.\n    hsl, hue, saturation, luminance, selective color, color range\n\n    Use cases:\n    - Shift specific colors (e.g., make blues more cyan)\n    - Desaturate or boost individual color ranges\n    - Brighten or darken specific colors\n    - Create color-specific looks (teal skies, orange skin)",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.HSLAdjust",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust."
+        },
+        {
+          "name": "color_range",
+          "type": {
+            "type": "enum",
+            "values": [
+              "reds",
+              "oranges",
+              "yellows",
+              "greens",
+              "cyans",
+              "blues",
+              "purples",
+              "magentas"
+            ],
+            "type_name": "nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange"
+          },
+          "default": "reds",
+          "title": "Color Range",
+          "description": "The color range to adjust."
+        },
+        {
+          "name": "hue_shift",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Hue Shift",
+          "description": "Hue shift for the selected color range. -1 to 1 = -180 to +180 degrees.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "saturation",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Saturation",
+          "description": "Saturation adjustment for the selected color range.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "luminance",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Luminance",
+          "description": "Luminance adjustment for the selected color range.",
+          "min": -1.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "color_range",
+        "hue_shift",
+        "saturation",
+        "luminance"
+      ]
+    },
+    {
+      "title": "Lift Gamma Gain",
+      "description": "Three-way color corrector for shadows, midtones, and highlights.\n    lift, gamma, gain, color wheels, primary correction, shadows, midtones, highlights\n\n    Use cases:\n    - Apply the industry-standard three-way color correction\n    - Balance colors across different tonal ranges\n    - Create color contrast between shadows and highlights\n    - Match footage from different sources\n\n    Lift affects shadows, Gamma affects midtones, Gain affects highlights.\n    Each control adjusts both luminance and color for its tonal range.",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.LiftGammaGain",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to color correct."
+        },
+        {
+          "name": "lift_r",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Lift R",
+          "description": "Red lift (shadow color shift).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "lift_g",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Lift G",
+          "description": "Green lift (shadow color shift).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "lift_b",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Lift B",
+          "description": "Blue lift (shadow color shift).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "lift_master",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Lift Master",
+          "description": "Master lift (shadow brightness).",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "gamma_r",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gamma R",
+          "description": "Red gamma (midtone adjustment).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "gamma_g",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gamma G",
+          "description": "Green gamma (midtone adjustment).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "gamma_b",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gamma B",
+          "description": "Blue gamma (midtone adjustment).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "gamma_master",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gamma Master",
+          "description": "Master gamma (overall midtones).",
+          "min": 0.1,
+          "max": 4.0
+        },
+        {
+          "name": "gain_r",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gain R",
+          "description": "Red gain (highlight multiplier).",
+          "min": 0.0,
+          "max": 4.0
+        },
+        {
+          "name": "gain_g",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gain G",
+          "description": "Green gain (highlight multiplier).",
+          "min": 0.0,
+          "max": 4.0
+        },
+        {
+          "name": "gain_b",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gain B",
+          "description": "Blue gain (highlight multiplier).",
+          "min": 0.0,
+          "max": 4.0
+        },
+        {
+          "name": "gain_master",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Gain Master",
+          "description": "Master gain (overall brightness).",
+          "min": 0.0,
+          "max": 4.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "lift_r",
+        "lift_g",
+        "lift_b",
+        "lift_master",
+        "gamma_r",
+        "gamma_g",
+        "gamma_b",
+        "gamma_master",
+        "gain_r",
+        "gain_g",
+        "gain_b",
+        "gain_master"
+      ]
+    },
+    {
+      "title": "Saturation Vibrance",
+      "description": "Adjust color saturation with vibrance protection for skin tones.\n    saturation, vibrance, color intensity, skin tones\n\n    Use cases:\n    - Boost color intensity without clipping\n    - Protect skin tones while increasing saturation\n    - Create desaturated or oversaturated looks\n    - Fine-tune color intensity independently",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.SaturationVibrance",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to adjust."
+        },
+        {
+          "name": "saturation",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Saturation",
+          "description": "Global saturation. 0 = no change, -1 = grayscale, 1 = 2x saturation.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "vibrance",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Vibrance",
+          "description": "Smart saturation that protects already-saturated colors and skin tones.",
+          "min": -1.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "saturation",
+        "vibrance"
+      ]
+    },
+    {
+      "title": "Split Toning",
+      "description": "Apply different color tints to shadows and highlights.\n    split toning, shadows, highlights, tint, duotone\n\n    Use cases:\n    - Create classic teal and orange looks\n    - Add color contrast between shadows and highlights\n    - Emulate film processing techniques\n    - Create stylized color-graded images",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.SplitToning",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to apply split toning to."
+        },
+        {
+          "name": "shadow_hue",
+          "type": {
+            "type": "float"
+          },
+          "default": 200.0,
+          "title": "Shadow Hue",
+          "description": "Hue of shadow tint in degrees (0=red, 120=green, 240=blue).",
+          "min": 0.0,
+          "max": 360.0
+        },
+        {
+          "name": "shadow_saturation",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.3,
+          "title": "Shadow Saturation",
+          "description": "Saturation of shadow tint.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "highlight_hue",
+          "type": {
+            "type": "float"
+          },
+          "default": 40.0,
+          "title": "Highlight Hue",
+          "description": "Hue of highlight tint in degrees.",
+          "min": 0.0,
+          "max": 360.0
+        },
+        {
+          "name": "highlight_saturation",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.3,
+          "title": "Highlight Saturation",
+          "description": "Saturation of highlight tint.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "balance",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Balance",
+          "description": "Balance between shadows (-1) and highlights (+1).",
+          "min": -1.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "shadow_hue",
+        "shadow_saturation",
+        "highlight_hue",
+        "highlight_saturation",
+        "balance"
+      ]
+    },
+    {
+      "title": "Vignette",
+      "description": "Apply cinematic vignette effect to darken or lighten image edges.\n    vignette, edge, darken, focus, cinematic\n\n    Use cases:\n    - Draw attention to the center of the image\n    - Create a classic cinematic look\n    - Simulate lens light falloff\n    - Add subtle framing to photos",
+      "namespace": "lib.pillow.color_grading",
+      "node_type": "lib.pillow.color_grading.Vignette",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to apply vignette to."
+        },
+        {
+          "name": "amount",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Amount",
+          "description": "Vignette amount. Positive darkens edges, negative lightens.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "midpoint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Midpoint",
+          "description": "Distance from center where vignette begins (0=center, 1=edges).",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "roundness",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Roundness",
+          "description": "Shape of vignette. 0=oval matching image aspect, 1=circular, -1=rectangular.",
+          "min": -1.0,
+          "max": 1.0
+        },
+        {
+          "name": "feather",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Feather",
+          "description": "Softness of the vignette edge.",
+          "min": 0.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "amount",
+        "midpoint",
+        "roundness",
+        "feather"
       ]
     },
     {
@@ -33589,6 +33149,11 @@
   "assets": [
     {
       "package_name": "nodetool-base",
+      "name": "Autonomous Research Agent.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Categorize Mails.jpg",
       "path": ""
     },
@@ -33610,6 +33175,11 @@
     {
       "package_name": "nodetool-base",
       "name": "Story to Video Generator.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Data Validation Pipeline.jpg",
       "path": ""
     },
     {
@@ -33649,7 +33219,17 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Agent Google Search.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Creative Story Ideas.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Color Boost Video.jpg",
       "path": ""
     },
     {
@@ -33660,6 +33240,16 @@
     {
       "package_name": "nodetool-base",
       "name": "Summarize Newsletters.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "AI Workflows on Reddit.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Competitive Analysis.jpg",
       "path": ""
     },
     {
@@ -33854,7 +33444,7 @@
     {
       "id": "game_encounter_planner_agent",
       "name": "Game Encounter Planner Agent",
-      "description": "Coordinate a squad of AI agents to design, critique, and brief a Frostfang Tundra combat encounter. Instead of hand-authored filters, agents negotiate the wave structure, evaluate balance risks, and author the final designer briefing.",
+      "description": "Coordinate a squad of AI agents to design, critique, and brief a Frostfang Tundra combat encounter using StructuredOutputGenerator for robust schema enforcement.",
       "tags": [
         "agent",
         "data",
@@ -33979,6 +33569,17 @@
         "start",
         "audio",
         "huggingface"
+      ]
+    },
+    {
+      "id": "agent-google-search-example",
+      "name": "Agent Google Search",
+      "description": "Demonstrates an Agent using dynamic outputs to perform Google searches and display results.",
+      "tags": [
+        "agent",
+        "google",
+        "search",
+        "dynamic-outputs"
       ]
     },
     {
