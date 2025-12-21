@@ -9,13 +9,25 @@ from nodetool.workflows.processing_context import ProcessingContext
 
 class FilterNumber(BaseNode):
     """
-    Filters a stream of numbers based on various numerical conditions.
+    Filter number stream based on numerical conditions (comparison, parity, sign).
+
+    Processes streaming numbers and emits only those matching the filter criteria.
+    Supports comparison filters (>, <, ==), parity filters (even/odd), and sign
+    filters (positive/negative). Streaming configuration values can update filter
+    dynamically.
+
+    Parameters:
+    - value (required): Input number stream or single value
+    - filter_type (required, default=greater_than): Type of filter to apply
+    - compare_value (optional, default=0): Reference value for comparison filters
+
+    Yields: Dictionary with "output" (number) for each matching value
+
+    Typical usage: Filter numeric streams, extract values meeting criteria, or
+    implement numeric predicates. Precede with number-generating nodes. Follow
+    with Collect or further stream processing.
+
     filter, numbers, numeric, stream
-    
-    Use cases:
-    - Filter numbers by comparison (greater than, less than, equal to)
-    - Filter even/odd numbers
-    - Filter positive/negative numbers
     """
 
     class FilterNumberType(str, Enum):

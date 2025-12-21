@@ -9,13 +9,23 @@ from nodetool.workflows.processing_context import ProcessingContext
 
 class ConditionalSwitch(BaseNode):
     """
-    Performs a conditional check on a boolean input and returns a value based on the result.
-    if, condition, flow-control, branch, true, false, switch, toggle
+    Return one of two values based on boolean condition.
 
-    Use cases:
-    - Implement conditional logic in workflows
-    - Create dynamic branches in workflows
-    - Implement decision points in workflows
+    Evaluates condition and returns if_true value when condition is true, otherwise
+    returns if_false value. Simple inline conditional without branching the workflow.
+
+    Parameters:
+    - condition (required, default=False): Boolean to evaluate
+    - if_true (optional, default=()): Value returned when condition is true
+    - if_false (optional, default=()): Value returned when condition is false
+
+    Returns: Either if_true or if_false value
+
+    Typical usage: Select between two alternatives, implement ternary logic, or
+    choose values without branching workflow. For workflow branching use If node
+    instead. Follow with further processing or output.
+
+    if, condition, flow-control, branch, true, false, switch, toggle
     """
 
     condition: bool = Field(default=False, description="The condition to check")
@@ -32,13 +42,23 @@ class ConditionalSwitch(BaseNode):
 
 class LogicalOperator(BaseNode):
     """
-    Performs logical operations on two boolean inputs.
-    boolean, logic, operator, condition, flow-control, branch, else, true, false, switch, toggle
+    Combine two boolean values using logical operations (AND, OR, XOR, NAND, NOR).
 
-    Use cases:
-    - Combine multiple conditions in decision-making
-    - Implement complex logical rules in workflows
-    - Create advanced filters or triggers
+    Applies selected logical operation to two boolean inputs and returns the result.
+    Supports standard boolean algebra operations.
+
+    Parameters:
+    - a (required, default=False): First boolean operand
+    - b (required, default=False): Second boolean operand
+    - operation (required, default=AND): Logical operation (and, or, xor, nand, nor)
+
+    Returns: Boolean result of the operation
+
+    Typical usage: Combine multiple conditions, implement complex logic rules, or
+    create compound filters. Precede with comparison nodes. Follow with If node for
+    branching or further boolean logic.
+
+    boolean, logic, operator, condition, flow-control, branch, else, true, false, switch, toggle
     """
 
     class BooleanOperation(str, Enum):
@@ -71,13 +91,19 @@ class LogicalOperator(BaseNode):
 
 class Not(BaseNode):
     """
-    Performs logical NOT operation on a boolean input.
-    boolean, logic, not, invert, !, negation, condition, else, true, false, switch, toggle, flow-control, branch
+    Invert boolean value (logical NOT).
 
-    Use cases:
-    - Invert a condition's result
-    - Implement toggle functionality
-    - Create opposite logic branches
+    Returns the opposite of the input boolean. True becomes False, False becomes True.
+
+    Parameters:
+    - value (required, default=False): Boolean to negate
+
+    Returns: Inverted boolean
+
+    Typical usage: Invert conditions, implement toggle logic, or create opposite
+    branches. Follow with If node or other boolean operations.
+
+    boolean, logic, not, invert, !, negation, condition, else, true, false, switch, toggle, flow-control, branch
     """
 
     value: bool = Field(default=False, description="Boolean input to negate")
@@ -88,13 +114,23 @@ class Not(BaseNode):
 
 class Compare(BaseNode):
     """
-    Compares two values using a specified comparison operator.
-    compare, condition, logic
+    Compare two numeric values using specified comparison operator.
 
-    Use cases:
-    - Implement decision points in workflows
-    - Filter data based on specific criteria
-    - Create dynamic thresholds or limits
+    Evaluates comparison between two numbers and returns boolean result. Supports
+    equality, inequality, and relational comparisons.
+
+    Parameters:
+    - a (required, default=0): First value (int or float)
+    - b (required, default=0): Second value (int or float)
+    - comparison (required, default==): Operator (==, !=, >, <, >=, <=)
+
+    Returns: Boolean result of comparison
+
+    Typical usage: Create conditional logic based on numeric values, implement
+    thresholds, or filter data. Follow with If node for branching or boolean
+    operations for complex conditions.
+
+    compare, condition, logic
     """
 
     class Comparison(str, Enum):
@@ -130,13 +166,21 @@ class Compare(BaseNode):
 
 class IsNone(BaseNode):
     """
-    Checks if a value is None.
-    null, none, check
+    Check if value is None/null.
 
-    Use cases:
-    - Validate input presence
-    - Handle optional parameters
-    - Implement null checks in data processing
+    Tests whether the input value is Python None. Useful for detecting missing
+    or uninitialized values.
+
+    Parameters:
+    - value (required): Value to check for None
+
+    Returns: Boolean - true if value is None, false otherwise
+
+    Typical usage: Validate optional parameters, handle missing data, or implement
+    null checks before processing. Follow with If node for conditional handling or
+    default value nodes.
+
+    null, none, check
     """
 
     value: Any = Field(default=(), description="The value to check for None")
@@ -147,13 +191,22 @@ class IsNone(BaseNode):
 
 class IsIn(BaseNode):
     """
-    Checks if a value is present in a list of options.
-    membership, contains, check
+    Check if value exists in list of options (membership test).
 
-    Use cases:
-    - Validate input against a set of allowed values
-    - Implement category or group checks
-    - Filter data based on inclusion criteria
+    Tests whether value is present in the options list using Python 'in' operator.
+    Value equality is used for comparison.
+
+    Parameters:
+    - value (required): Value to search for
+    - options (required): List of possible values
+
+    Returns: Boolean - true if value found in options, false otherwise
+
+    Typical usage: Validate against allowed values, implement category checks, or
+    filter by inclusion criteria. Follow with If node for conditional processing or
+    error handling.
+
+    membership, contains, check
     """
 
     value: Any = Field(default=(), description="The value to check for membership")
@@ -167,14 +220,21 @@ class IsIn(BaseNode):
 
 class All(BaseNode):
     """
-    Checks if all boolean values in a list are True.
+    Check if all boolean values in list are true (logical AND across list).
+
+    Returns true only if every boolean in the list is true. Empty list returns true
+    (vacuous truth). Equivalent to logical AND of all elements.
+
+    Parameters:
+    - values (required): List of boolean values
+
+    Returns: Boolean - true if all values are true, false if any is false
+
+    Typical usage: Ensure all conditions met, validate multiple criteria together,
+    or implement comprehensive checks. Precede with multiple comparison nodes.
+    Follow with If node for branching.
+
     boolean, all, check, logic, condition, flow-control, branch
-
-
-    Use cases:
-    - Ensure all conditions in a set are met
-    - Implement comprehensive checks
-    - Validate multiple criteria simultaneously
     """
 
     values: list[bool] = Field(
@@ -187,13 +247,21 @@ class All(BaseNode):
 
 class Some(BaseNode):
     """
-    Checks if any boolean value in a list is True.
-    boolean, any, check, logic, condition, flow-control, branch
+    Check if any boolean value in list is true (logical OR across list).
 
-    Use cases:
-    - Check if at least one condition in a set is met
-    - Implement optional criteria checks
-    - Create flexible validation rules
+    Returns true if at least one boolean in the list is true. Empty list returns
+    false. Equivalent to logical OR of all elements.
+
+    Parameters:
+    - values (required): List of boolean values
+
+    Returns: Boolean - true if any value is true, false if all are false
+
+    Typical usage: Check if at least one condition met, implement optional criteria,
+    or create flexible validation. Precede with multiple comparison nodes. Follow
+    with If node for branching.
+
+    boolean, any, check, logic, condition, flow-control, branch
     """
 
     values: list[bool] = Field(
