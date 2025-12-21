@@ -8,6 +8,461 @@
   "repo_id": "",
   "nodes": [
     {
+      "title": "File Watch Trigger",
+      "description": "Trigger node that monitors filesystem changes.\n\n    This trigger uses the watchdog library to monitor a directory or file\n    for changes. When a change is detected, an event is emitted containing:\n    - The path of the changed file\n    - The type of change (created, modified, deleted, moved)\n    - Timestamp of the event\n\n    This trigger is useful for:\n    - Processing files as they arrive in a directory\n    - Triggering workflows on configuration changes\n    - Building file-based automation pipelines",
+      "namespace": "nodetool.triggers",
+      "node_type": "nodetool.triggers.FileWatchTrigger",
+      "properties": [
+        {
+          "name": "max_events",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Events",
+          "description": "Maximum number of events to process (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": ".",
+          "title": "Path",
+          "description": "Path to watch (file or directory)"
+        },
+        {
+          "name": "recursive",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Recursive",
+          "description": "Watch subdirectories recursively"
+        },
+        {
+          "name": "patterns",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            "*"
+          ],
+          "title": "Patterns",
+          "description": "File patterns to watch (e.g., ['*.txt', '*.json'])"
+        },
+        {
+          "name": "ignore_patterns",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Ignore Patterns",
+          "description": "File patterns to ignore"
+        },
+        {
+          "name": "events",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            "created",
+            "modified",
+            "deleted",
+            "moved"
+          ],
+          "title": "Events",
+          "description": "Types of events to watch for"
+        },
+        {
+          "name": "debounce_seconds",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Debounce Seconds",
+          "description": "Debounce time to avoid duplicate events",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "event"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "path"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "dest_path"
+        },
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "is_directory"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "timestamp"
+        }
+      ],
+      "basic_fields": [
+        "max_events",
+        "path",
+        "recursive",
+        "patterns",
+        "ignore_patterns",
+        "events",
+        "debounce_seconds"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Interval Trigger",
+      "description": "Trigger node that fires at regular time intervals.\n\n    This trigger emits events at a configured interval, similar to a timer\n    or scheduler. Each event contains:\n    - The tick number (how many times the trigger has fired)\n    - The current timestamp\n    - The configured interval\n\n    This trigger is useful for:\n    - Periodic data collection or polling\n    - Scheduled batch processing\n    - Heartbeat or keepalive workflows\n    - Time-based automation",
+      "namespace": "nodetool.triggers",
+      "node_type": "nodetool.triggers.IntervalTrigger",
+      "properties": [
+        {
+          "name": "max_events",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Events",
+          "description": "Maximum number of events to process (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "interval_seconds",
+          "type": {
+            "type": "float"
+          },
+          "default": 60.0,
+          "title": "Interval Seconds",
+          "description": "Interval between triggers in seconds"
+        },
+        {
+          "name": "initial_delay_seconds",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Initial Delay Seconds",
+          "description": "Delay before the first trigger fires",
+          "min": 0.0
+        },
+        {
+          "name": "emit_on_start",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Emit On Start",
+          "description": "Whether to emit an event immediately on start"
+        },
+        {
+          "name": "include_drift_compensation",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Include Drift Compensation",
+          "description": "Compensate for execution time to maintain accurate intervals"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "tick"
+        },
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "elapsed_seconds"
+        },
+        {
+          "type": {
+            "type": "float"
+          },
+          "name": "interval_seconds"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "timestamp"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "event_type"
+        }
+      ],
+      "basic_fields": [
+        "max_events",
+        "interval_seconds",
+        "initial_delay_seconds",
+        "emit_on_start",
+        "include_drift_compensation"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Manual Trigger",
+      "description": "Trigger node that waits for manual events pushed via the API.\n\n    This trigger enables interactive workflows where events are pushed\n    programmatically through the workflow runner's input API. Each event\n    pushed to the trigger is emitted and processed by the workflow.\n\n    This trigger is useful for:\n    - Building chatbot-style workflows\n    - Interactive processing pipelines\n    - Manual batch processing\n    - Testing and debugging workflows",
+      "namespace": "nodetool.triggers",
+      "node_type": "nodetool.triggers.ManualTrigger",
+      "properties": [
+        {
+          "name": "max_events",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Events",
+          "description": "Maximum number of events to process (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "manual_trigger",
+          "title": "Name",
+          "description": "Name for this trigger (used in API calls)"
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "float",
+            "optional": true
+          },
+          "default": null,
+          "title": "Timeout Seconds",
+          "description": "Timeout waiting for events (None = wait forever)",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "data"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "timestamp"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "event_type"
+        }
+      ],
+      "basic_fields": [
+        "max_events",
+        "name",
+        "timeout_seconds"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Webhook Trigger",
+      "description": "Trigger node that starts an HTTP server to receive webhook requests.\n\n    Each incoming HTTP request is emitted as an event containing:\n    - The request body (parsed as JSON if applicable)\n    - Request headers\n    - Query parameters\n    - HTTP method\n\n    This trigger is useful for:\n    - Receiving notifications from external services\n    - Building API endpoints that trigger workflows\n    - Integration with third-party webhook providers",
+      "namespace": "nodetool.triggers",
+      "node_type": "nodetool.triggers.WebhookTrigger",
+      "properties": [
+        {
+          "name": "max_events",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Events",
+          "description": "Maximum number of events to process (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "port",
+          "type": {
+            "type": "int"
+          },
+          "default": 8080,
+          "title": "Port",
+          "description": "Port to listen on for webhook requests",
+          "min": 1.0,
+          "max": 65535.0
+        },
+        {
+          "name": "path",
+          "type": {
+            "type": "str"
+          },
+          "default": "/webhook",
+          "title": "Path",
+          "description": "URL path to listen on"
+        },
+        {
+          "name": "host",
+          "type": {
+            "type": "str"
+          },
+          "default": "127.0.0.1",
+          "title": "Host",
+          "description": "Host address to bind to. Use '0.0.0.0' to listen on all interfaces."
+        },
+        {
+          "name": "methods",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            "POST"
+          ],
+          "title": "Methods",
+          "description": "HTTP methods to accept"
+        },
+        {
+          "name": "secret",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Secret",
+          "description": "Optional secret for validating requests (checks X-Webhook-Secret header)"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "any"
+          },
+          "name": "body"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "headers"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "query"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "method"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "path"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "timestamp"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "event_type"
+        }
+      ],
+      "basic_fields": [
+        "max_events",
+        "port",
+        "path",
+        "host",
+        "methods",
+        "secret"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "Append",
       "description": "Adds a value to the end of a list.\n    list, add, insert, extend\n\n    Use cases:\n    - Grow a list dynamically\n    - Add new elements to an existing list\n    - Implement a stack-like structure",
       "namespace": "nodetool.list",
@@ -31943,6 +32398,543 @@
       "basic_fields": [
         "documents",
         "min_overlap_words"
+      ]
+    },
+    {
+      "title": "Telegram Bot Trigger",
+      "description": "Trigger node that listens for Telegram messages using long polling.\n\n    This trigger connects to Telegram using a bot token and emits events\n    for incoming messages.",
+      "namespace": "messaging.telegram",
+      "node_type": "messaging.telegram.TelegramBotTrigger",
+      "properties": [
+        {
+          "name": "max_events",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Events",
+          "description": "Maximum number of events to process (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "token",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Token",
+          "description": "Telegram bot token"
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Chat Id",
+          "description": "Optional chat ID to filter messages"
+        },
+        {
+          "name": "allow_bot_messages",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Allow Bot Messages",
+          "description": "Include messages authored by bots"
+        },
+        {
+          "name": "include_edited_messages",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Include Edited Messages",
+          "description": "Include edited messages"
+        },
+        {
+          "name": "poll_timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Poll Timeout Seconds",
+          "description": "Long polling timeout in seconds",
+          "min": 1.0,
+          "max": 60.0
+        },
+        {
+          "name": "poll_interval_seconds",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.2,
+          "title": "Poll Interval Seconds",
+          "description": "Delay between polling requests",
+          "min": 0.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "update_id"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "update_type"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "message_id"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "caption"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "entities"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "chat"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "from"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "attachments"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "timestamp"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "event_type"
+        }
+      ],
+      "basic_fields": [
+        "max_events",
+        "token",
+        "chat_id",
+        "allow_bot_messages",
+        "include_edited_messages",
+        "poll_timeout_seconds",
+        "poll_interval_seconds"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Telegram Send Message",
+      "description": "Node that sends a message to a Telegram chat using a bot token.",
+      "namespace": "messaging.telegram",
+      "node_type": "messaging.telegram.TelegramSendMessage",
+      "properties": [
+        {
+          "name": "token",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Token",
+          "description": "Telegram bot token"
+        },
+        {
+          "name": "chat_id",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Chat Id",
+          "description": "Target chat ID",
+          "min": 1.0
+        },
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "Message text"
+        },
+        {
+          "name": "parse_mode",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Parse Mode",
+          "description": "Optional parse mode (MarkdownV2 or HTML)"
+        },
+        {
+          "name": "disable_web_page_preview",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Disable Web Page Preview",
+          "description": "Disable link previews"
+        },
+        {
+          "name": "disable_notification",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Disable Notification",
+          "description": "Send silently"
+        },
+        {
+          "name": "reply_to_message_id",
+          "type": {
+            "type": "int",
+            "optional": true
+          },
+          "default": null,
+          "title": "Reply To Message Id",
+          "description": "Reply to a specific message ID",
+          "min": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "token",
+        "chat_id",
+        "text",
+        "parse_mode",
+        "disable_web_page_preview",
+        "disable_notification",
+        "reply_to_message_id"
+      ]
+    },
+    {
+      "title": "Discord Bot Trigger",
+      "description": "Trigger node that listens for Discord messages from a bot account.\n\n    This trigger connects to Discord using a bot token and emits events\n    for incoming messages.",
+      "namespace": "messaging.discord",
+      "node_type": "messaging.discord.DiscordBotTrigger",
+      "properties": [
+        {
+          "name": "max_events",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Max Events",
+          "description": "Maximum number of events to process (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "token",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Token",
+          "description": "Discord bot token"
+        },
+        {
+          "name": "channel_id",
+          "type": {
+            "type": "str",
+            "optional": true
+          },
+          "default": null,
+          "title": "Channel Id",
+          "description": "Optional channel ID to filter messages"
+        },
+        {
+          "name": "allow_bot_messages",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Allow Bot Messages",
+          "description": "Include messages authored by bots"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "message_id"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "content"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "author"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "channel"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "guild"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "name": "attachments"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "timestamp"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "source"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "event_type"
+        }
+      ],
+      "basic_fields": [
+        "max_events",
+        "token",
+        "channel_id",
+        "allow_bot_messages"
+      ],
+      "is_streaming_output": true
+    },
+    {
+      "title": "Discord Send Message",
+      "description": "Node that sends a message to a Discord channel using a bot token.",
+      "namespace": "messaging.discord",
+      "node_type": "messaging.discord.DiscordSendMessage",
+      "properties": [
+        {
+          "name": "token",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Token",
+          "description": "Discord bot token"
+        },
+        {
+          "name": "channel_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Channel Id",
+          "description": "Target channel ID"
+        },
+        {
+          "name": "content",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Content",
+          "description": "Message content"
+        },
+        {
+          "name": "tts",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Tts",
+          "description": "Send as text-to-speech"
+        },
+        {
+          "name": "embeds",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "dict",
+                "type_args": [
+                  {
+                    "type": "str"
+                  },
+                  {
+                    "type": "any"
+                  }
+                ]
+              }
+            ]
+          },
+          "default": null,
+          "title": "Embeds",
+          "description": "Embeds as Discord embed dictionaries",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "token",
+        "channel_id",
+        "content",
+        "tts",
+        "embeds"
       ]
     },
     {
