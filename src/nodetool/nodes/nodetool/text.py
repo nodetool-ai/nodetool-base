@@ -20,11 +20,16 @@ from nodetool.io.uri_utils import create_file_uri
 from nodetool.workflows.types import SaveUpdate
 
 
-
 class ToString(BaseNode):
     """
-    Converts any input to its string representation.
+    Converts any input value to its string representation.
     text, string, convert, repr, str, cast
+
+    Use cases:
+    - Convert numbers, objects, or complex types to strings
+    - Prepare data for text output or logging
+    - Debug values by viewing their representations
+    - Standardize data types in text workflows
     """
 
     class Mode(str, Enum):
@@ -49,8 +54,15 @@ class ToString(BaseNode):
 
 class AutomaticSpeechRecognition(BaseNode):
     """
-    Automatic speech recognition node.
-    audio, speech, recognition
+    Transcribe audio to text using automatic speech recognition models.
+    audio, speech, recognition, transcription, ASR, whisper
+
+    Use cases:
+    - Transcribe recorded audio to text
+    - Generate subtitles from video audio
+    - Convert voice notes to written text
+    - Process meeting recordings
+    - Enable voice-based data entry
     """
 
     class OutputType(TypedDict):
@@ -59,9 +71,7 @@ class AutomaticSpeechRecognition(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     model: ASRModel = Field(
-        default=ASRModel(
-            provider=Provider.FalAI, id="openai/whisper-large-v3"
-        )
+        default=ASRModel(provider=Provider.FalAI, id="openai/whisper-large-v3")
     )
     audio: AudioRef = Field(default=AudioRef(), description="The audio to transcribe")
 
@@ -69,11 +79,11 @@ class AutomaticSpeechRecognition(BaseNode):
         provider = await context.get_provider(self.model.provider)
         audio_bytes = await context.asset_to_bytes(self.audio)
         text = await provider.automatic_speech_recognition(
-            audio_bytes, model=self.model.id,
+            audio_bytes,
+            model=self.model.id,
         )
-        return {
-            "text": text
-        }
+        return {"text": text}
+
 
 class Concat(BaseNode):
     """
@@ -123,8 +133,14 @@ class Join(BaseNode):
 
 class Collect(BaseNode):
     """
-    Collects a stream of text inputs into a single string.
-    text, collect, list, stream
+    Collects a stream of text inputs into a single concatenated string.
+    text, collect, list, stream, aggregate
+
+    Use cases:
+    - Combine multiple streaming text outputs
+    - Accumulate results from iterative processes
+    - Build composite text from multiple sources
+    - Aggregate log messages or status updates
     """
 
     input_item: str = Field(default="")
@@ -375,12 +391,9 @@ class SaveTextFile(BaseNode):
         result = TextRef(uri=create_file_uri(expanded_path), data=file.getvalue())
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="text"
-        ))
+        context.post_message(
+            SaveUpdate(node_id=self.id, name=filename, value=result, output_type="text")
+        )
 
         return result
 
@@ -431,12 +444,9 @@ class SaveText(BaseNode):
         result = TextRef(uri=asset_uri or "", asset_id=asset.id)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="text"
-        ))
+        context.post_message(
+            SaveUpdate(node_id=self.id, name=filename, value=result, output_type="text")
+        )
 
         return result
 
@@ -793,7 +803,9 @@ class Equals(BaseNode):
     text_a: str = Field(title="First Text", default="")
     text_b: str = Field(title="Second Text", default="")
     case_sensitive: bool = Field(
-        title="Case Sensitive", default=True, description="Disable lowercasing before compare"
+        title="Case Sensitive",
+        default=True,
+        description="Disable lowercasing before compare",
     )
     trim_whitespace: bool = Field(
         title="Trim Whitespace",
@@ -1011,9 +1023,7 @@ class Contains(BaseNode):
 
         haystack = self.text if self.case_sensitive else self.text.lower()
         needles = (
-            targets
-            if self.case_sensitive
-            else [needle.lower() for needle in targets]
+            targets if self.case_sensitive else [needle.lower() for needle in targets]
         )
 
         if self.match_mode == self.MatchMode.ALL:
@@ -1371,7 +1381,13 @@ class Length(BaseNode):
         if self.measure == self.Measure.LINES:
             if not value:
                 return 0
-            return len([line for line in value.splitlines() if line or not self.trim_whitespace])
+            return len(
+                [
+                    line
+                    for line in value.splitlines()
+                    if line or not self.trim_whitespace
+                ]
+            )
         return len(value)
 
 
@@ -1621,7 +1637,9 @@ class FilterString(BaseNode):
     class OutputType(TypedDict):
         output: str
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         current_filter_type = self.filter_type
         current_criteria = self.criteria
 
@@ -1646,7 +1664,7 @@ class FilterString(BaseNode):
                     try:
                         length_criteria = int(current_criteria)
                     except ValueError:
-                        continue # Skip if invalid criteria for length
+                        continue  # Skip if invalid criteria for length
 
                 matched = False
                 if current_filter_type == self.FilterType.CONTAINS:
@@ -1665,9 +1683,9 @@ class FilterString(BaseNode):
                     if len(val) < length_criteria:
                         matched = True
                 elif current_filter_type == self.FilterType.EXACT_LENGTH:
-                     if len(val) == length_criteria:
+                    if len(val) == length_criteria:
                         matched = True
-                
+
                 if matched:
                     yield {"output": val}
 
@@ -1698,13 +1716,15 @@ class FilterRegexString(BaseNode):
     @classmethod
     def is_streaming_input(cls) -> bool:
         return True
-    
+
     class OutputType(TypedDict):
         output: str
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         import re
-        
+
         current_pattern = self.pattern
         current_full_match = self.full_match
         regex = None
@@ -1712,7 +1732,7 @@ class FilterRegexString(BaseNode):
         try:
             regex = re.compile(current_pattern)
         except re.error:
-            pass # Handle invalid regex gracefully (maybe log or just don't match)
+            pass  # Handle invalid regex gracefully (maybe log or just don't match)
 
         async for handle, item in self.iter_any_input():
             if handle == "pattern":
@@ -1732,11 +1752,11 @@ class FilterRegexString(BaseNode):
                         regex = re.compile(current_pattern)
                     except re.error:
                         continue
-                
+
                 val = item
                 if not isinstance(val, str):
                     continue
-                
+
                 matched = False
                 if current_full_match:
                     if regex.fullmatch(val):
@@ -1744,6 +1764,6 @@ class FilterRegexString(BaseNode):
                 else:
                     if regex.search(val):
                         matched = True
-                
+
                 if matched:
                     yield {"output": val}

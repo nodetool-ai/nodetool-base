@@ -14,7 +14,14 @@ import PIL.ImageDraw
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 import numpy as np
 from pydantic import Field
-from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef, VideoModel, Provider
+from nodetool.metadata.types import (
+    AudioChunk,
+    AudioRef,
+    ColorRef,
+    FolderRef,
+    VideoModel,
+    Provider,
+)
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -153,7 +160,9 @@ class TextToVideo(BaseNode):
         )
 
         # Generate video
-        video_bytes = await provider_instance.text_to_video(params, context=context, node_id=self.id)
+        video_bytes = await provider_instance.text_to_video(
+            params, context=context, node_id=self.id
+        )
 
         # Convert to VideoRef
         return await context.video_from_bytes(video_bytes)
@@ -359,12 +368,11 @@ class SaveVideoFile(BaseNode):
         result = VideoRef(uri=create_file_uri(expanded_path), data=video_data)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="video"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="video"
+            )
+        )
 
         return result
 
@@ -463,12 +471,11 @@ class SaveVideo(BaseNode):
         )
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="video"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="video"
+            )
+        )
 
         return result
 
@@ -617,9 +624,13 @@ class FrameToVideo(BaseNode):
                 return
 
             logger.info("Creating video with %s frames at %f fps", index, fps)
-            await outputs.emit("output", await self.create_video(context, temp_dir, fps))
+            await outputs.emit(
+                "output", await self.create_video(context, temp_dir, fps)
+            )
 
-    async def create_video(self, context: ProcessingContext, temp_dir: str, fps: float) -> VideoRef:
+    async def create_video(
+        self, context: ProcessingContext, temp_dir: str, fps: float
+    ) -> VideoRef:
         # Create a temporary file for the output video
         video_path = os.path.join(temp_dir, f"video_{str(uuid.uuid4())}.mp4")
         try:
@@ -650,6 +661,12 @@ class Concat(BaseNode):
     """
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
+
+    Use cases:
+    - Merge multiple video clips into one continuous video
+    - Combine intro, main content, and outro sequences
+    - Join video segments from different sources
+    - Create video compilations and montages
     """
 
     video_a: VideoRef = Field(
@@ -1036,6 +1053,13 @@ class Overlay(BaseNode):
     """
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
+
+    Use cases:
+    - Create picture-in-picture effects for commentary videos
+    - Add watermarks or logos to videos
+    - Combine multiple video streams
+    - Create split-screen or multi-view presentations
+    - Layer video effects over main content
     """
 
     main_video: VideoRef = Field(
@@ -2202,8 +2226,15 @@ class ChromaKey(BaseNode):
 
 class ExtractAudio(BaseNode):
     """
-    Separate audio from a video file.
-    video, audio, extract, separate
+    Separate and extract audio track from a video file.
+    video, audio, extract, separate, split
+
+    Use cases:
+    - Extract audio for podcasts or music
+    - Create audio-only versions of video content
+    - Analyze or transcribe video audio separately
+    - Reuse audio in different contexts
+    - Convert video soundtracks to audio files
     """
 
     video: VideoRef = Field(
