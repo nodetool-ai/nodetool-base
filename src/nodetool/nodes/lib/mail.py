@@ -93,15 +93,22 @@ async def run_with_retries(
 
 class EmailFields(BaseNode):
     """
-    Decomposes an email into its individual components.
-    email, decompose, extract
+    Extract individual fields from an Email object into separate outputs.
 
-    Takes an Email object and returns its individual fields:
-    - id: Message ID
-    - subject: Email subject
-    - sender: Sender address
-    - date: Datetime of email
-    - body: Email body content
+    Decomposes an Email into its constituent parts for individual access or
+    further processing. All fields are extracted simultaneously.
+
+    Parameters:
+    - email (required): Email object to decompose
+
+    Returns: Dictionary with "id" (message ID string), "subject" (string),
+    "sender" (email address string), "date" (Datetime), and "body" (content string)
+
+    Typical usage: Process individual email components separately, extract specific
+    fields for filtering or analysis, or prepare email data for display. Follow with
+    text analysis, conditional logic, or output nodes.
+
+    email, decompose, extract
     """
 
     email: Email = Field(default=Email(), description="Email object to decompose")
@@ -128,13 +135,35 @@ class EmailFields(BaseNode):
 
 class GmailSearch(BaseNode):
     """
-    Searches Gmail using Gmail-specific search operators and yields matching emails.
-    email, gmail, search
+    Search Gmail using Gmail-specific operators and stream matching emails.
 
-    Use cases:
-    - Search for emails based on specific criteria
-    - Retrieve emails from a specific sender
-    - Filter emails by subject, sender, or date
+    Connects to Gmail via IMAP using credentials from secrets, searches with
+    configurable criteria, and yields matching emails. Supports retries for
+    transient network errors. Streams results for processing individual emails.
+
+    Parameters:
+    - from_address (optional, default=""): Filter by sender email address
+    - to_address (optional, default=""): Filter by recipient email address
+    - subject (optional, default=""): Search text in subject line
+    - body (optional, default=""): Search text in email body
+    - date_filter (optional, default=SINCE_ONE_DAY): Time range filter
+    - keywords (optional, default=""): Custom keywords or labels
+    - folder (optional, default=INBOX): Gmail folder to search
+    - text (optional, default=""): General text search across email
+    - max_results (optional, default=50): Maximum emails to return
+    - retry_attempts (optional, default=3): Max connection retry attempts
+    - retry_base_delay (optional, default=0.5): Base retry delay in seconds
+    - retry_max_delay (optional, default=5.0): Max retry delay in seconds
+
+    Yields: Email objects one at a time
+
+    Side effects: IMAP connection to Gmail, reads secrets for credentials
+
+    Typical usage: Monitor inbox for specific emails, fetch emails from sender, or
+    search by date range. Requires Gmail credentials in secrets. Follow with
+    EmailFields for decomposition or content analysis nodes. Use Collect to aggregate.
+
+    email, gmail, search
     """
 
     class DateFilter(Enum):

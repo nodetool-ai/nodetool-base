@@ -21,7 +21,15 @@ class DateFormat(str, Enum):
 
 class Today(BaseNode):
     """
-    Get the current date.
+    Get current date without time component.
+
+    Returns today's date in UTC timezone with time set to midnight.
+
+    Returns: Date object representing today
+
+    Typical usage: Generate timestamps, create date-based filenames, or filter by
+    current date. Follow with date formatting, date arithmetic, or comparison nodes.
+
     date, today, now
     """
 
@@ -33,7 +41,16 @@ class Today(BaseNode):
 
 class Now(BaseNode):
     """
-    Get the current date and time.
+    Get current date and time with full precision.
+
+    Returns the current moment in UTC timezone with date and time components.
+
+    Returns: Datetime object representing the current instant
+
+    Typical usage: Generate precise timestamps, measure durations, or create
+    time-based records. Follow with datetime formatting, time arithmetic, or
+    comparison nodes.
+
     datetime, current, now
     """
 
@@ -47,7 +64,22 @@ class Now(BaseNode):
 
 class ParseDate(BaseNode):
     """
-    Parse a date string into components.
+    Parse date string into Date object using specified format.
+
+    Converts a date string in a known format to a structured Date object.
+    Supports multiple common date formats (ISO, US, European, etc.).
+
+    Parameters:
+    - date_string (required): Date string to parse
+    - input_format (optional, default=ISO): Format pattern matching the input string
+
+    Returns: Date object
+
+    Raises: ValueError if string doesn't match format
+
+    Typical usage: Convert date strings from APIs, parse user input, or normalize
+    date formats. Follow with date arithmetic, formatting, or comparison nodes.
+
     date, parse, format
     """
 
@@ -66,12 +98,23 @@ class ParseDate(BaseNode):
 
 class ParseDateTime(BaseNode):
     """
-    Parse a date/time string into components.
-    datetime, parse, format
+    Parse datetime string into Datetime object using specified format.
 
-    Use cases:
-    - Extract date components from strings
-    - Convert between date formats
+    Converts a datetime string in a known format to a structured Datetime object
+    with both date and time components. Supports multiple common datetime formats.
+
+    Parameters:
+    - datetime_string (required): Datetime string to parse
+    - input_format (optional, default=ISO): Format pattern matching the input string
+
+    Returns: Datetime object
+
+    Raises: ValueError if string doesn't match format
+
+    Typical usage: Convert datetime strings from APIs, parse timestamps, or normalize
+    datetime formats. Follow with time arithmetic, formatting, or comparison nodes.
+
+    datetime, parse, format
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -89,12 +132,24 @@ class ParseDateTime(BaseNode):
 
 class AddTimeDelta(BaseNode):
     """
-    Add or subtract time from a datetime.
-    datetime, add, subtract
+    Add or subtract time offset from a datetime.
 
-    Use cases:
-    - Calculate future/past dates
-    - Generate date ranges
+    Adjusts a datetime by adding or subtracting days, hours, and minutes.
+    Use negative values to subtract time.
+
+    Parameters:
+    - input_datetime (required): Starting datetime to modify
+    - days (optional, default=0): Days to add (-3650 to 3650, ~10 years)
+    - hours (optional, default=0): Hours to add (-24 to 24)
+    - minutes (optional, default=0): Minutes to add (-60 to 60)
+
+    Returns: New Datetime with offset applied
+
+    Typical usage: Calculate future or past dates, schedule events, generate date
+    ranges, or implement relative time logic. Follow with datetime formatting or
+    comparison nodes.
+
+    datetime, add, subtract
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -128,12 +183,22 @@ class AddTimeDelta(BaseNode):
 
 class DateDifference(BaseNode):
     """
-    Calculate the difference between two dates.
-    datetime, difference, duration
+    Calculate time duration between two datetimes.
 
-    Use cases:
-    - Calculate time periods
-    - Measure durations
+    Computes the difference between start and end datetimes, returning the
+    interval broken down into multiple time units.
+
+    Parameters:
+    - start_date (required): Beginning datetime
+    - end_date (required): Ending datetime
+
+    Returns: Dictionary with "total_seconds" (int), "days" (int), "hours" (int),
+    "minutes" (int), and "seconds" (int) representing the duration
+
+    Typical usage: Measure elapsed time, calculate event durations, or determine
+    time intervals. Follow with arithmetic, comparison, or conditional logic nodes.
+
+    datetime, difference, duration
     """
 
     _expose_as_tool: ClassVar[bool] = True

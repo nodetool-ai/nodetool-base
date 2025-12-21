@@ -14,7 +14,17 @@ import subprocess
 
 class WorkspaceDirectory(BaseNode):
     """
-    Get the workspace directory.
+    Get the absolute path to the current workflow workspace directory.
+
+    Returns the workspace directory path where workflow files and assets are stored.
+    Each workflow execution has its own isolated workspace.
+
+    Returns: Workspace directory path string
+
+    Typical usage: Construct file paths for reading/writing workflow files, access
+    workspace assets, or pass directory to file operation nodes. Follow with file
+    path construction or directory listing nodes.
+
     files, workspace, directory
     """
 
@@ -24,7 +34,20 @@ class WorkspaceDirectory(BaseNode):
 
 class OpenWorkspaceDirectory(BaseNode):
     """
-    Open the workspace directory.
+    Open workspace directory in system file browser (development only).
+
+    Launches the default file browser to display the workspace directory contents.
+    Only available in development mode; raises error in production.
+
+    Returns: None
+
+    Side effects: Opens file browser window
+
+    Raises: ValueError in production environment
+
+    Typical usage: Quick access to workspace files during development, inspect
+    generated files, or debug file operations. Not available in production workflows.
+
     files, workspace, directory
     """
 
@@ -37,12 +60,23 @@ class OpenWorkspaceDirectory(BaseNode):
 
 class FileExists(BaseNode):
     """
-    Check if a file or directory exists at the specified path.
-    files, check, exists
+    Check whether file or directory exists at specified path.
 
-    Use cases:
-    - Validate file presence before processing
-    - Implement conditional logic based on file existence
+    Tests for existence of file system entry at the given path. Supports
+    tilde expansion for home directory. Not cacheable as file system may change.
+
+    Parameters:
+    - path (required): File or directory path to check (supports ~ for home)
+
+    Returns: Boolean - true if exists, false if not
+
+    Raises: ValueError in production environment or if path is empty
+
+    Typical usage: Validate files before processing, implement conditional file
+    operations, or check prerequisites. Follow with If node for conditional logic
+    or file operation nodes.
+
+    files, check, exists
     """
 
     @classmethod
@@ -62,12 +96,25 @@ class FileExists(BaseNode):
 
 class ListFiles(BaseNode):
     """
-    list files in a directory matching a pattern.
-    files, list, directory
+    List files in directory matching pattern, optionally recursing subdirectories.
 
-    Use cases:
-    - Get files for batch processing
-    - Filter files by extension or pattern
+    Scans a directory for files matching a glob pattern, emitting each matching
+    file path as a stream item. Supports tilde expansion and recursive search.
+
+    Parameters:
+    - folder (required, default="~"): Directory to scan (supports ~ for home)
+    - pattern (optional, default="*"): Glob pattern like "*.txt" or "data_*.csv"
+    - include_subdirectories (optional, default=False): Search recursively
+
+    Yields: Dictionary with "file" (absolute file path string) for each match
+
+    Raises: ValueError in production environment or if folder is empty
+
+    Typical usage: Batch process files, find files by extension, or collect files
+    for processing. Follow with ForEach for individual processing or Collect to
+    aggregate paths.
+
+    files, list, directory
     """
 
     @classmethod
