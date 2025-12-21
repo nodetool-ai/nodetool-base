@@ -5,7 +5,13 @@ from urllib.parse import urljoin
 from pydantic import Field
 
 from nodetool.html.convert_html import convert_html_to_text
-from nodetool.metadata.types import AudioRef, ColumnDef, DataframeRef, ImageRef, VideoRef
+from nodetool.metadata.types import (
+    AudioRef,
+    ColumnDef,
+    DataframeRef,
+    ImageRef,
+    VideoRef,
+)
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 

@@ -14,7 +14,14 @@ import PIL.ImageDraw
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 import numpy as np
 from pydantic import Field
-from nodetool.metadata.types import AudioChunk, AudioRef, ColorRef, FolderRef, VideoModel, Provider
+from nodetool.metadata.types import (
+    AudioChunk,
+    AudioRef,
+    ColorRef,
+    FolderRef,
+    VideoModel,
+    Provider,
+)
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.metadata.types import ImageRef
 from nodetool.workflows.base_node import BaseNode
@@ -153,7 +160,9 @@ class TextToVideo(BaseNode):
         )
 
         # Generate video
-        video_bytes = await provider_instance.text_to_video(params, context=context, node_id=self.id)
+        video_bytes = await provider_instance.text_to_video(
+            params, context=context, node_id=self.id
+        )
 
         # Convert to VideoRef
         return await context.video_from_bytes(video_bytes)
@@ -359,12 +368,11 @@ class SaveVideoFile(BaseNode):
         result = VideoRef(uri=create_file_uri(expanded_path), data=video_data)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="video"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="video"
+            )
+        )
 
         return result
 
@@ -463,12 +471,11 @@ class SaveVideo(BaseNode):
         )
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="video"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="video"
+            )
+        )
 
         return result
 
@@ -617,9 +624,13 @@ class FrameToVideo(BaseNode):
                 return
 
             logger.info("Creating video with %s frames at %f fps", index, fps)
-            await outputs.emit("output", await self.create_video(context, temp_dir, fps))
+            await outputs.emit(
+                "output", await self.create_video(context, temp_dir, fps)
+            )
 
-    async def create_video(self, context: ProcessingContext, temp_dir: str, fps: float) -> VideoRef:
+    async def create_video(
+        self, context: ProcessingContext, temp_dir: str, fps: float
+    ) -> VideoRef:
         # Create a temporary file for the output video
         video_path = os.path.join(temp_dir, f"video_{str(uuid.uuid4())}.mp4")
         try:

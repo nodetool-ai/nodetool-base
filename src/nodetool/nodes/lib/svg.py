@@ -166,7 +166,9 @@ class PolygonNode(BaseNode):
     - Create irregular shapes and forms
     """
 
-    points: str = Field(default="", description="Points in format 'x1,y1 x2,y2 x3,y3...'")
+    points: str = Field(
+        default="", description="Points in format 'x1,y1 x2,y2 x3,y3...'"
+    )
     fill: ColorRef = Field(default=ColorRef(value="#000000"), description="Fill color")
     stroke: ColorRef = Field(default=ColorRef(value="none"), description="Stroke color")
     stroke_width: int = Field(default=1, description="Stroke width")
@@ -525,7 +527,9 @@ class Transform(BaseNode):
     - Prepare elements for animation
     """
 
-    content: SVGElement = Field(default=SVGElement(), description="SVG element to transform")
+    content: SVGElement = Field(
+        default=SVGElement(), description="SVG element to transform"
+    )
     translate_x: float = Field(default=0, description="X translation")
     translate_y: float = Field(default=0, description="Y translation")
     rotate: float = Field(default=0, description="Rotation angle in degrees")
