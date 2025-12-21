@@ -16,13 +16,23 @@ logger = get_logger(__name__)
 
 class GetValue(BaseNode):
     """
-    Retrieves a value from a dictionary using a specified key.
-    dictionary, get, value, key
+    Retrieve value from dictionary by key, with optional default.
 
-    Use cases:
-    - Access a specific item in a configuration dictionary
-    - Retrieve a value from a parsed JSON object
-    - Extract a particular field from a data structure
+    Looks up the specified key in the dictionary. Returns the associated value
+    if the key exists, or the default value if the key is not found.
+
+    Parameters:
+    - dictionary (required): Dictionary to query
+    - key (required): Key to look up
+    - default (optional, default=()): Value returned when key not found
+
+    Returns: Value at key, or default
+
+    Typical usage: Access configuration values, extract fields from parsed JSON,
+    or safely read dictionary properties. Follow with type conversion, validation,
+    or conditional logic nodes.
+
+    dictionary, get, value, key
     """
 
     _layout: ClassVar[str] = "small"
@@ -37,13 +47,21 @@ class GetValue(BaseNode):
 
 class Update(BaseNode):
     """
-    Updates a dictionary with new key-value pairs.
-    dictionary, add, update
+    Merge new key-value pairs into dictionary, modifying in place.
 
-    Use cases:
-    - Extend a configuration with additional settings
-    - Add new entries to a cache or lookup table
-    - Merge user input with existing data
+    Adds new keys or updates existing keys with values from new_pairs.
+    Original dictionary is modified; keys in new_pairs overwrite existing keys.
+
+    Parameters:
+    - dictionary (required): Dictionary to update
+    - new_pairs (required): Dictionary of keys and values to merge in
+
+    Returns: Updated dictionary
+
+    Typical usage: Extend configurations, merge user input with defaults, or add
+    computed values to data structures. Follow with validation or output nodes.
+
+    dictionary, add, update
     """
 
     _layout: ClassVar[str] = "small"
@@ -59,13 +77,21 @@ class Update(BaseNode):
 
 class Remove(BaseNode):
     """
-    Removes a key-value pair from a dictionary.
-    dictionary, remove, delete
+    Delete key-value pair from dictionary by key.
 
-    Use cases:
-    - Delete a specific configuration option
-    - Remove sensitive information before processing
-    - Clean up temporary entries in a data structure
+    Removes the specified key and its value from the dictionary if the key exists.
+    Dictionary is modified in place. No error if key doesn't exist.
+
+    Parameters:
+    - dictionary (required): Dictionary to modify
+    - key (required): Key to remove
+
+    Returns: Modified dictionary
+
+    Typical usage: Clean sensitive fields, remove temporary data, or exclude
+    specific properties before processing. Follow with validation or output nodes.
+
+    dictionary, remove, delete
     """
 
     _layout: ClassVar[str] = "small"
@@ -81,13 +107,23 @@ class Remove(BaseNode):
 
 class ParseJSON(BaseNode):
     """
-    Parses a JSON string into a Python dictionary.
-    json, parse, dictionary
+    Parse JSON string into dictionary object.
 
-    Use cases:
-    - Process API responses
-    - Load configuration files
-    - Deserialize stored data
+    Decodes JSON string and validates it represents an object/dictionary.
+    Raises error if JSON is invalid or not a dictionary type.
+
+    Parameters:
+    - json_string (required): Valid JSON string representing object
+
+    Returns: Python dictionary
+
+    Raises: ValueError if JSON invalid or not dictionary type
+
+    Typical usage: Parse API responses, load JSON config strings, or deserialize
+    stored data. For lists use ParseList instead. Follow with GetValue or JSON
+    path extraction nodes.
+
+    json, parse, dictionary
     """
 
     _layout: ClassVar[str] = "small"
@@ -103,13 +139,22 @@ class ParseJSON(BaseNode):
 
 class Zip(BaseNode):
     """
-    Creates a dictionary from parallel lists of keys and values.
-    dictionary, create, zip
+    Create dictionary from parallel lists of keys and values.
 
-    Use cases:
-    - Convert separate data columns into key-value pairs
-    - Create lookups from parallel data structures
-    - Transform list data into associative arrays
+    Pairs corresponding elements from keys and values lists into dictionary.
+    If lists are different lengths, pairs up to the shorter list length.
+
+    Parameters:
+    - keys (required): List of keys
+    - values (required): List of corresponding values
+
+    Returns: Dictionary mapping keys to values
+
+    Typical usage: Convert columnar data to key-value structure, create lookups
+    from separate lists, or transform paired data. Follow with dictionary operations
+    or output nodes.
+
+    dictionary, create, zip
     """
 
     _layout: ClassVar[str] = "small"
@@ -123,13 +168,21 @@ class Zip(BaseNode):
 
 class Combine(BaseNode):
     """
-    Merges two dictionaries, with second dictionary values taking precedence.
-    dictionary, merge, update, +, add, concatenate
+    Merge two dictionaries with second dictionary values taking precedence.
 
-    Use cases:
-    - Combine default and custom configurations
-    - Merge partial updates with existing data
-    - Create aggregate data structures
+    Creates new dictionary containing all keys from both inputs. When keys overlap,
+    dict_b values override dict_a values. Original dictionaries unchanged.
+
+    Parameters:
+    - dict_a (required): First dictionary (lower priority)
+    - dict_b (required): Second dictionary (higher priority)
+
+    Returns: New merged dictionary
+
+    Typical usage: Apply overrides to defaults, merge configuration layers, or
+    combine partial data structures. Follow with validation or output nodes.
+
+    dictionary, merge, update, +, add, concatenate
     """
 
     _layout: ClassVar[str] = "small"
@@ -143,11 +196,22 @@ class Combine(BaseNode):
 
 class Filter(BaseNode):
     """
-    Creates a new dictionary with only specified keys from the input.
-    dictionary, filter, select
+    Create new dictionary containing only specified keys from input.
 
-    Use cases:
-    - Extract relevant fields from a larger data structure
+    Selects subset of keys from input dictionary, creating new dictionary with
+    only those keys and their values. Keys not in input are silently skipped.
+
+    Parameters:
+    - dictionary (required): Dictionary to filter
+    - keys (required): List of keys to keep
+
+    Returns: New dictionary with only specified keys
+
+    Typical usage: Extract relevant fields from large objects, remove unwanted
+    properties, or project specific columns. Follow with validation or output nodes.
+
+    dictionary, filter, select
+    """
     - Implement data access controls
     - Prepare specific data subsets for processing
     """

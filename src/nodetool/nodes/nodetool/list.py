@@ -11,13 +11,19 @@ from typing import Any, AsyncGenerator, TypedDict
 
 class Length(BaseNode):
     """
-    Calculates the length of a list.
-    list, count, size
+    Calculate number of elements in a list.
 
-    Use cases:
-    - Determine the number of elements in a list
-    - Check if a list is empty
-    - Validate list size constraints
+    Returns the count of items in the list. Empty lists return 0.
+
+    Parameters:
+    - values (required): List to measure
+
+    Returns: Integer count of elements
+
+    Typical usage: Validate list size, check for empty lists, or count results.
+    Follow with comparison, conditional logic, or output nodes.
+
+    list, count, size
     """
 
     values: list[Any] = []
@@ -28,13 +34,22 @@ class Length(BaseNode):
 
 class ListRange(BaseNode):
     """
-    Generates a list of integers within a specified range.
-    list, range, sequence, numbers
+    Generate list of integers from start to stop with optional step.
 
-    Use cases:
-    - Create numbered lists
-    - Generate index sequences
-    - Produce arithmetic progressions
+    Creates sequence of integers using Python range semantics. Stop value is
+    exclusive. Negative step produces descending sequences.
+
+    Parameters:
+    - start (required): Starting value (inclusive)
+    - stop (required): Ending value (exclusive)
+    - step (optional, default=1): Increment between values
+
+    Returns: List of integers
+
+    Typical usage: Generate index sequences, create numbered lists, or produce
+    arithmetic progressions. Follow with ForEach for iteration or mapping operations.
+
+    list, range, sequence, numbers
     """
 
     start: int = 0
@@ -47,7 +62,22 @@ class ListRange(BaseNode):
 
 class GenerateSequence(BaseNode):
     """
-    Iterates over a sequence of numbers.
+    Stream integers from start to stop, emitting each value individually.
+
+    Produces integers using range semantics but as a stream rather than complete
+    list. Useful for driving iteration without pre-allocating full sequence.
+
+    Parameters:
+    - start (required): Starting value (inclusive)
+    - stop (required): Ending value (exclusive)
+    - step (optional, default=1): Increment between values
+
+    Yields: Dictionary with "output" (integer) for each value in sequence
+
+    Typical usage: Drive downstream processing with sequential numbers, implement
+    loops without full list, or generate indices on demand. Follow with nodes that
+    consume streaming inputs.
+
     list, range, sequence, numbers
     """
 
@@ -67,13 +97,23 @@ class GenerateSequence(BaseNode):
 
 class Slice(BaseNode):
     """
-    Extracts a subset from a list using start, stop, and step indices.
-    list, slice, subset, extract
+    Extract subset of list using start, stop, and step indices.
 
-    Use cases:
-    - Get a portion of a list
-    - Implement pagination
-    - Extract every nth element
+    Returns portion of list using Python slice semantics. Negative indices count
+    from end. Step > 1 skips elements; negative step reverses direction.
+
+    Parameters:
+    - values (required): List to slice
+    - start (optional, default=0): Starting index (inclusive)
+    - stop (optional, default=0): Ending index (exclusive, 0 means end)
+    - step (optional, default=1): Index increment
+
+    Returns: New list with selected elements
+
+    Typical usage: Extract list portion, implement pagination, get every nth element,
+    or reverse lists. Follow with further list operations or ForEach.
+
+    list, slice, subset, extract
     """
 
     values: list[Any] = Field(default=[])
@@ -87,13 +127,23 @@ class Slice(BaseNode):
 
 class SelectElements(BaseNode):
     """
-    Selects specific values from a list using index positions.
-    list, select, index, extract
+    Create new list by selecting elements at specified index positions.
 
-    Use cases:
-    - Pick specific elements by their positions
-    - Rearrange list elements
-    - Create a new list from selected indices
+    Picks elements from input list using provided indices. Indices can be in any
+    order and can repeat. Maintains index order in output.
+
+    Parameters:
+    - values (required): Source list
+    - indices (required): List of integer positions to select
+
+    Returns: New list containing selected elements
+
+    Raises: IndexError if any index is out of range
+
+    Typical usage: Reorder list elements, pick specific items by position, or
+    extract multiple non-contiguous elements. Follow with further processing.
+
+    list, select, index, extract
     """
 
     values: list[Any] = Field(default=[])
@@ -105,13 +155,23 @@ class SelectElements(BaseNode):
 
 class GetElement(BaseNode):
     """
-    Retrieves a single value from a list at a specific index.
-    list, get, extract, value
+    Retrieve single element from list at specified index.
 
-    Use cases:
-    - Access a specific element by position
-    - Implement array-like indexing
-    - Extract the first or last element
+    Returns the value at the given position. Negative indices count from end
+    (-1 is last element).
+
+    Parameters:
+    - values (required): List to access
+    - index (required, default=0): Position to retrieve (0-based)
+
+    Returns: Element at index
+
+    Raises: IndexError if index out of range
+
+    Typical usage: Access first/last element, get specific position, or extract
+    single result from list. Follow with type-specific processing or output.
+
+    list, get, extract, value
     """
 
     values: list[Any] = Field(default=[])
@@ -123,13 +183,20 @@ class GetElement(BaseNode):
 
 class Append(BaseNode):
     """
-    Adds a value to the end of a list.
-    list, add, insert, extend
+    Add single value to end of list, modifying in place.
 
-    Use cases:
-    - Grow a list dynamically
-    - Add new elements to an existing list
-    - Implement a stack-like structure
+    Appends value to the list, modifying the original list object.
+
+    Parameters:
+    - values (required): List to extend
+    - value (required): Value to add at end
+
+    Returns: Modified list with new element at end
+
+    Typical usage: Build lists incrementally, add computed results, or grow
+    collections dynamically. Follow with further list operations or output.
+
+    list, add, insert, extend
     """
 
     values: list[Any] = Field(default=[])
@@ -142,12 +209,22 @@ class Append(BaseNode):
 
 class Extend(BaseNode):
     """
-    Merges one list into another, extending the original list.
-    list, merge, concatenate, combine
+    Concatenate second list to first list, modifying first list in place.
 
-    Use cases:
-    - Combine multiple lists
-    - Add all elements from one list to another
+    Adds all elements from other_values to the end of values list. Original
+    values list is modified.
+
+    Parameters:
+    - values (required): List to extend
+    - other_values (required): List to append to first list
+
+    Returns: Modified first list with all elements from both lists
+
+    Typical usage: Combine multiple lists, merge results from parallel operations,
+    or build aggregate collections. Follow with deduplication or sorting if needed.
+
+    list, merge, concatenate, combine
+    """
     """
 
     values: list[Any] = Field(default=[])
