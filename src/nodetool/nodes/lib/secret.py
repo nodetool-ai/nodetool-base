@@ -5,7 +5,23 @@ from pydantic import Field
 
 class GetSecret(BaseNode):
     """
-    Get a secret value from configuration.
+    Retrieve secret value from secure configuration storage.
+
+    Fetches a secret by name from the configured secrets backend. Returns the
+    secret value or a default if not found. Secrets are not exposed in logs.
+
+    Parameters:
+    - name (required): Secret key identifier
+    - default (optional, default=""): Value returned if secret not found
+
+    Returns: Secret value as string, or default
+
+    Side effects: Accesses secrets backend
+
+    Typical usage: Retrieve API keys, tokens, passwords, or credentials for use in
+    HTTP requests, database connections, or API nodes. Never hardcode secrets; always
+    use this node. Follow with nodes that require authentication.
+
     secrets, credentials, configuration
     """
 

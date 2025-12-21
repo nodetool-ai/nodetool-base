@@ -7,13 +7,24 @@ from nodetool.workflows.io import NodeInputs, NodeOutputs
 
 class If(BaseNode):
     """
-    Conditionally executes one of two branches based on a condition.
-    control, flow, condition, logic, else, true, false, switch, toggle, flow-control
+    Route values to different branches based on boolean condition.
 
-    Use cases:
-    - Branch workflow based on conditions
-    - Handle different cases in data processing
-    - Implement decision logic
+    Evaluates a condition and emits the value to either if_true or if_false output.
+    Supports both static conditions and streaming condition/value pairs. When used
+    with streams, routes each value according to paired or latest condition.
+
+    Parameters:
+    - condition (required, default=False): Boolean to evaluate, or stream of booleans
+    - value (optional, default=()): Value to route, or stream of values
+
+    Returns: Dictionary with "if_true" (value or None) and "if_false" (value or None).
+    Only one field is set per emission.
+
+    Typical usage: Implement conditional logic in workflows, handle different data
+    cases, or filter streams. Precede with comparison or boolean logic nodes. Follow
+    with separate processing paths for true/false cases.
+
+    control, flow, condition, logic, else, true, false, switch, toggle, flow-control
     """
 
     condition: bool = Field(default=False, description="The condition to evaluate")
@@ -77,12 +88,22 @@ class If(BaseNode):
 
 class ForEach(BaseNode):
     """
-    Iterate over a list and emit each item sequentially.
-    iterator, loop, list, sequence
+    Iterate over list and emit each element individually with its index.
 
-    Use cases:
-    - Process each item of a collection in order
-    - Drive downstream nodes with individual elements
+    Converts a list into a stream of individual items, allowing downstream nodes
+    to process each element separately. Emits items sequentially in order.
+
+    Parameters:
+    - input_list (required): List of items to iterate over
+
+    Yields: Dictionary with "output" (current item) and "index" (zero-based position)
+    for each list element
+
+    Typical usage: Process list elements individually, drive parallel operations per
+    item, or transform collections. Precede with list generation or API nodes that
+    return arrays. Follow with item-level processing nodes, then Collect to reaggregate.
+
+    iterator, loop, list, sequence
     """
 
     input_list: list[Any] = Field(
@@ -104,13 +125,21 @@ class ForEach(BaseNode):
 
 class Collect(BaseNode):
     """
-    Collect items until the end of the stream and return them as a list.
-    collector, aggregate, list, stream
+    Accumulate all stream items into a single list.
 
-    Use cases:
-    - Gather results from multiple processing steps
-    - Collect streaming data into batches
-    - Aggregate outputs from parallel operations
+    Consumes an input stream completely, gathering all emitted items, then returns
+    them as a single list. Blocks until the upstream stream completes.
+
+    Parameters:
+    - input_item (required): Stream of items to collect (use streaming input)
+
+    Returns: Dictionary with "output" (list of all collected items)
+
+    Typical usage: Aggregate results from ForEach loops, gather parallel processing
+    results, or batch streaming data. Follow ForEach or other streaming nodes. Use
+    before nodes that expect complete collections rather than individual items.
+
+    collector, aggregate, list, stream
     """
 
     input_item: Any = Field(default=(), description="The input item to collect.")
@@ -136,13 +165,22 @@ class Collect(BaseNode):
 
 class Reroute(BaseNode):
     """
-    Pass data through unchanged for tidier workflow layouts.
-    reroute, passthrough, organize, tidy, flow, connection, redirect
+    Pass value through unchanged to simplify workflow visual layout.
 
-    Use cases:
-    - Organize complex workflows by routing connections
-    - Create cleaner visual layouts
-    - Redirect data flow without modification
+    Acts as a passthrough connector that forwards the input value without
+    modification. Useful for organizing complex workflows and routing connections
+    more cleanly in the visual editor.
+
+    Parameters:
+    - input_value (required): Value to pass through
+
+    Returns: The input value unchanged
+
+    Typical usage: Organize visual layouts, reduce crossing connections, create
+    cleaner workflow diagrams, or split one output to multiple consumers. Can be
+    placed anywhere to improve readability without affecting data flow.
+
+    reroute, passthrough, organize, tidy, flow, connection, redirect
     """
 
     input_value: Any = Field(

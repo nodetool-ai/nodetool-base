@@ -24,14 +24,12 @@ logger = get_logger(__name__)
 
 
 class HTTPBaseNode(BaseNode):
-    """Base node for HTTP requests.
+    """Base class for HTTP request nodes.
+
+    Provides common URL field and request configuration for HTTP operations.
+    Not directly visible in the UI; extended by specific HTTP method nodes.
 
     http, network, request
-
-    Use cases:
-    - Share common fields for HTTP nodes
-    - Add custom request parameters in subclasses
-    - Control visibility of specific request types
     """
 
     url: str = Field(
@@ -53,14 +51,23 @@ class HTTPBaseNode(BaseNode):
 
 class GetRequest(HTTPBaseNode):
     """
-    Perform an HTTP GET request to retrieve data from a specified URL.
-    http, get, request, url
+    Perform an HTTP GET request and return the response body as text.
 
-    Use cases:
-    - Fetch web page content
-    - Retrieve API data
-    - Download files
-    - Check website availability
+    Makes a synchronous HTTP GET request to the specified URL and decodes the response
+    content using the detected or default UTF-8 encoding. Returns the full response body
+    as a string.
+
+    Parameters:
+    - url (required): The complete URL to request, including protocol (http:// or https://)
+
+    Returns: Response body decoded as text string
+
+    Side effects: Network request to external URL
+
+    Typical usage: Fetch HTML pages, API responses, or text-based resources. Follow with
+    parsing nodes (BeautifulSoup, JSON) or text processing nodes to extract structured data.
+
+    http, get, request, url
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -76,14 +83,24 @@ class GetRequest(HTTPBaseNode):
 
 class PostRequest(HTTPBaseNode):
     """
-    Send data to a server using an HTTP POST request.
-    http, post, request, url, data
+    Send data to a server using HTTP POST and return the response body as text.
 
-    Use cases:
-    - Submit form data
-    - Create new resources on an API
-    - Upload files
-    - Authenticate users
+    Makes an HTTP POST request with the provided data payload. Response is decoded
+    using the detected or default UTF-8 encoding.
+
+    Parameters:
+    - url (required): Target endpoint URL
+    - data (optional, default=""): Payload to send in the request body as string
+
+    Returns: Response body decoded as text string
+
+    Side effects: Network request that may create or modify server-side resources
+
+    Typical usage: Submit form data, create API resources, or trigger server-side actions.
+    For structured JSON data, use JSONPostRequest instead. Follow with response parsing
+    nodes if the server returns structured data.
+
+    http, post, request, url, data
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -106,14 +123,24 @@ class PostRequest(HTTPBaseNode):
 
 class PutRequest(HTTPBaseNode):
     """
-    Update existing resources on a server using an HTTP PUT request.
-    http, put, request, url, data
+    Update or replace resources using HTTP PUT and return the response body as text.
 
-    Use cases:
-    - Update user profiles
-    - Modify existing API resources
-    - Replace file contents
-    - Set configuration values
+    Makes an HTTP PUT request with the provided data payload. Used for full resource
+    replacement in REST APIs. Response is decoded as text.
+
+    Parameters:
+    - url (required): Target resource URL
+    - data (optional, default=""): Replacement data to send in the request body
+
+    Returns: Response body decoded as text string
+
+    Side effects: Network request that replaces or creates server-side resources
+
+    Typical usage: Update complete API resources, replace configuration, or modify
+    server state. For partial updates use JSONPatchRequest. For JSON payloads use
+    JSONPutRequest instead.
+
+    http, put, request, url, data
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -136,14 +163,22 @@ class PutRequest(HTTPBaseNode):
 
 class DeleteRequest(HTTPBaseNode):
     """
-    Remove a resource from a server using an HTTP DELETE request.
-    http, delete, request, url
+    Remove a resource using HTTP DELETE and return the response body as text.
 
-    Use cases:
-    - Delete user accounts
-    - Remove API resources
-    - Cancel subscriptions
-    - Clear cache entries
+    Makes an HTTP DELETE request to remove the resource at the specified URL.
+    Response is decoded as text and may contain deletion confirmation or status.
+
+    Parameters:
+    - url (required): URL of the resource to delete
+
+    Returns: Response body decoded as text string
+
+    Side effects: Network request that removes server-side resources
+
+    Typical usage: Delete API resources, cancel operations, or clear server-side state.
+    Typically followed by conditional logic to verify successful deletion or handle errors.
+
+    http, delete, request, url
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -159,13 +194,23 @@ class DeleteRequest(HTTPBaseNode):
 
 class HeadRequest(HTTPBaseNode):
     """
-    Retrieve headers from a resource using an HTTP HEAD request.
-    http, head, request, url
+    Retrieve HTTP headers without downloading the full response body.
 
-    Use cases:
-    - Check resource existence
-    - Get metadata without downloading content
-    - Verify authentication or permissions
+    Makes an HTTP HEAD request to fetch only the response headers, useful for checking
+    resource metadata, existence, or size without transferring the entire content.
+
+    Parameters:
+    - url (required): URL to check
+
+    Returns: Dictionary of header name-value pairs
+
+    Side effects: Network request (minimal data transfer)
+
+    Typical usage: Verify resource existence before downloading, check content type or
+    size, validate URLs, or check authentication. Often precedes conditional GET requests
+    or used in URL validation workflows.
+
+    http, head, request, url
     """
 
     @classmethod
@@ -179,13 +224,26 @@ class HeadRequest(HTTPBaseNode):
 
 class FetchPage(BaseNode):
     """
-    Fetch a web page using Selenium and return its content.
-    selenium, fetch, webpage, http
+    Fetch a web page using headless Chrome browser and return fully-rendered HTML.
 
-    Use cases:
-    - Retrieve content from dynamic websites
-    - Capture JavaScript-rendered content
-    - Interact with web applications
+    Uses Selenium with headless Chrome to load the page, execute JavaScript, and wait
+    for the DOM to be ready. Returns the complete rendered HTML including content
+    generated by client-side scripts.
+
+    Parameters:
+    - url (required): Web page URL to fetch
+    - wait_time (optional, default=10): Maximum seconds to wait for page load
+
+    Returns: Dictionary with "html" (rendered page source), "success" (boolean),
+    and "error_message" (string or None)
+
+    Side effects: Launches Chrome browser process, network request, executes JavaScript
+
+    Typical usage: Scrape JavaScript-heavy websites (SPAs, React apps), capture dynamic
+    content, or interact with web applications. Follow with BeautifulSoup nodes to parse
+    the rendered HTML. Use GetRequest for static pages to avoid browser overhead.
+
+    selenium, fetch, webpage, http
     """
 
     url: str = Field(
@@ -241,13 +299,26 @@ class FetchPage(BaseNode):
 
 class ImageDownloader(BaseNode):
     """
-    Download images from list of URLs and return a list of ImageRefs.
-    image download, web scraping, data processing
+    Download multiple images concurrently from URLs and return as ImageRef list.
 
-    Use cases:
-    - Prepare image datasets for machine learning tasks
-    - Archive images from web pages
-    - Process and analyze images extracted from websites
+    Downloads images in parallel with configurable concurrency. Handles relative URLs
+    when base_url is provided. Failed downloads are tracked separately.
+
+    Parameters:
+    - images (required): List of image URLs (absolute or relative)
+    - base_url (optional, default=""): Base URL prepended to relative image URLs
+    - max_concurrent_downloads (optional, default=10): Parallel download limit
+
+    Returns: Dictionary with "images" (list of ImageRef objects for successful downloads)
+    and "failed_urls" (list of strings for failed URLs)
+
+    Side effects: Multiple concurrent network requests, image data stored in context
+
+    Typical usage: Batch download images from web scraping results, prepare image
+    datasets, or collect visual assets. Precede with web scraping or API nodes that
+    extract image URLs. Follow with image processing or ML model nodes.
+
+    image download, web scraping, data processing
     """
 
     images: list[str] = Field(
@@ -326,14 +397,23 @@ class ImageDownloader(BaseNode):
 
 class GetRequestBinary(HTTPBaseNode):
     """
-    Perform an HTTP GET request and return raw binary data.
-    http, get, request, url, binary, download
+    Perform HTTP GET request and return response as raw binary bytes.
 
-    Use cases:
-    - Download binary files
-    - Fetch images or media
-    - Retrieve PDF documents
-    - Download any non-text content
+    Retrieves the resource without any text decoding, preserving the exact binary
+    content. Use for any non-text resources.
+
+    Parameters:
+    - url (required): URL of the binary resource
+
+    Returns: Raw bytes of the response content
+
+    Side effects: Network request
+
+    Typical usage: Download binary files, images, media, PDFs, or any non-text content.
+    Follow with binary-to-image nodes, document processing nodes, or file save nodes.
+    For text responses use GetRequest; for images use GetRequestDocument or ImageDownloader.
+
+    http, get, request, url, binary, download
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -349,14 +429,23 @@ class GetRequestBinary(HTTPBaseNode):
 
 class GetRequestDocument(HTTPBaseNode):
     """
-    Perform an HTTP GET request and return a document
-    http, get, request, url, document
+    Perform HTTP GET request and return response as DocumentRef.
 
-    Use cases:
-    - Download PDF documents
-    - Retrieve Word documents
-    - Fetch Excel files
-    - Download any document format
+    Downloads the resource and wraps the binary content in a DocumentRef for use
+    with document processing nodes.
+
+    Parameters:
+    - url (required): URL of the document to download
+
+    Returns: DocumentRef containing the document binary data
+
+    Side effects: Network request
+
+    Typical usage: Download PDFs, Word docs, Excel files, or other documents for
+    processing. Follow with PDF extraction nodes (PDFPlumber, PyMuPDF), document
+    conversion nodes (Pandoc, MarkItDown), or OCR nodes for image-based documents.
+
+    http, get, request, url, document
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -372,14 +461,24 @@ class GetRequestDocument(HTTPBaseNode):
 
 class PostRequestBinary(HTTPBaseNode):
     """
-    Send data using an HTTP POST request and return raw binary data.
-    http, post, request, url, data, binary
+    Send data via HTTP POST and return the response as raw binary bytes.
 
-    Use cases:
-    - Upload and receive binary files
-    - Interact with binary APIs
-    - Process image or media uploads
-    - Handle binary file transformations
+    Posts the provided data (string or binary) and returns the unencoded response.
+    Useful for APIs that return binary content in response to uploads or transformations.
+
+    Parameters:
+    - url (required): Target endpoint URL
+    - data (optional, default=""): Data to send (string or bytes)
+
+    Returns: Raw bytes of the response content
+
+    Side effects: Network request that may create or modify resources
+
+    Typical usage: Post data to APIs that return binary responses (image processing APIs,
+    file converters, media encoders). Follow with binary-to-image, document processing,
+    or file save nodes.
+
+    http, post, request, url, data, binary
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -402,14 +501,29 @@ class PostRequestBinary(HTTPBaseNode):
 
 class DownloadDataframe(HTTPBaseNode):
     """
-    Download data from a URL and return as a dataframe.
-    http, get, request, url, dataframe, csv, json, data
+    Download tabular data from URL and return as structured DataframeRef.
 
-    Use cases:
-    - Download CSV data and convert to dataframe
-    - Fetch JSON data and convert to dataframe
-    - Retrieve tabular data from APIs
-    - Process data files from URLs
+    Fetches CSV, TSV, or JSON data and parses it into a dataframe with typed columns.
+    Column definitions control structure, order, and type casting. Missing columns
+    in source data are filled with None.
+
+    Parameters:
+    - url (required): URL of the data file
+    - file_format (required, default="csv"): Format type (csv, tsv, or json)
+    - columns (required): RecordType defining expected column names and data types
+    - encoding (optional, default="utf-8"): Text encoding of the file
+    - delimiter (optional, default=","): Column delimiter for CSV/TSV
+
+    Returns: DataframeRef with columns and rows matching the definition
+
+    Side effects: Network request
+
+    Typical usage: Import datasets from web sources, fetch API data in tabular format,
+    or download analytics exports. Precede with URL construction nodes. Follow with
+    dataframe filtering, transformation, or visualization nodes. Empty columns definition
+    returns empty dataframe.
+
+    http, get, request, url, dataframe, csv, json, data
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -630,13 +744,24 @@ class DownloadDataframe(HTTPBaseNode):
 
 class FilterValidURLs(HTTPBaseNode):
     """
-    Filter a list of URLs by checking their validity using HEAD requests.
-    url validation, http, head request
+    Filter URL list to only valid URLs by checking HTTP status with HEAD requests.
 
-    Use cases:
-    - Clean URL lists by removing broken links
-    - Verify resource availability
-    - Validate website URLs before processing
+    Performs concurrent HEAD requests to each URL and returns only those with
+    successful status codes (200-399). Invalid or unreachable URLs are filtered out.
+
+    Parameters:
+    - urls (required): List of URLs to validate
+    - max_concurrent_requests (optional, default=10): Parallel request limit
+
+    Returns: List of valid URLs (strings)
+
+    Side effects: Multiple concurrent network requests
+
+    Typical usage: Clean URL lists from web scraping, verify resource availability
+    before downloading, or validate links before processing. Precede with URL extraction
+    or list generation nodes. Follow with download nodes or URL processing workflows.
+
+    url validation, http, head request
     """
 
     @classmethod
@@ -693,14 +818,28 @@ class FilterValidURLs(HTTPBaseNode):
 
 class DownloadFiles(BaseNode):
     """
-    Download files from a list of URLs into a local folder.
-    download, files, urls, batch
+    Download multiple files concurrently from URLs and save to local folder.
 
-    Use cases:
-    - Batch download files from multiple URLs
-    - Create local copies of remote resources
-    - Archive web content
-    - Download datasets
+    Downloads files in parallel with configurable concurrency and emits progress updates.
+    Creates the output folder if it doesn't exist. Filenames are extracted from URLs
+    or Content-Disposition headers.
+
+    Parameters:
+    - urls (required): List of file URLs to download
+    - output_folder (required, default="downloads"): Local directory path for saved files
+    - max_concurrent_downloads (optional, default=5): Parallel download limit
+
+    Returns: Dictionary with "success" (list of saved file paths) and "failed"
+    (list of URLs that failed to download)
+
+    Side effects: Multiple concurrent network requests, local file system writes,
+    directory creation, progress messages emitted during processing
+
+    Typical usage: Batch download files, archive web content, or collect remote
+    resources. Precede with URL collection or extraction nodes. Follow with file
+    processing nodes or directory scanning workflows.
+
+    download, files, urls, batch
     """
 
     urls: list[str] = Field(
@@ -816,13 +955,24 @@ class DownloadFiles(BaseNode):
 
 class JSONPostRequest(HTTPBaseNode):
     """
-    Send JSON data to a server using an HTTP POST request.
-    http, post, request, url, json, api
+    Send JSON dictionary via HTTP POST and return parsed JSON response.
 
-    Use cases:
-    - Send structured data to REST APIs
-    - Create resources with JSON payloads
-    - Interface with modern web services
+    Serializes the data dictionary to JSON, sends with Content-Type: application/json
+    header, and parses the response JSON automatically.
+
+    Parameters:
+    - url (required): Target API endpoint URL
+    - data (optional, default={}): Dictionary to serialize and send as JSON
+
+    Returns: Parsed JSON response as dictionary
+
+    Side effects: Network request that may create or modify resources
+
+    Typical usage: Create API resources, submit structured data to REST endpoints, or
+    interact with JSON APIs. Precede with dictionary construction or transformation nodes.
+    Follow with JSON path extraction or response validation nodes.
+
+    http, post, request, url, json, api
     """
 
     @classmethod
@@ -847,13 +997,24 @@ class JSONPostRequest(HTTPBaseNode):
 
 class JSONPutRequest(HTTPBaseNode):
     """
-    Update resources with JSON data using an HTTP PUT request.
-    http, put, request, url, json, api
+    Replace resource with JSON dictionary via HTTP PUT and return parsed JSON response.
 
-    Use cases:
-    - Update existing API resources
-    - Replace complete objects in REST APIs
-    - Set configuration with JSON data
+    Serializes the data dictionary to JSON, sends with Content-Type: application/json
+    header for full resource replacement, and parses the response JSON automatically.
+
+    Parameters:
+    - url (required): Target resource URL
+    - data (optional, default={}): Dictionary to serialize and send as JSON
+
+    Returns: Parsed JSON response as dictionary
+
+    Side effects: Network request that replaces or creates server-side resources
+
+    Typical usage: Update complete API resources, replace configuration, or modify
+    server state with structured data. For partial updates use JSONPatchRequest.
+    Follow with response validation or confirmation logic.
+
+    http, put, request, url, json, api
     """
 
     @classmethod
@@ -877,13 +1038,25 @@ class JSONPutRequest(HTTPBaseNode):
 
 class JSONPatchRequest(HTTPBaseNode):
     """
-    Partially update resources with JSON data using an HTTP PATCH request.
-    http, patch, request, url, json, api
+    Partially update resource with JSON dictionary via HTTP PATCH and return parsed JSON response.
 
-    Use cases:
-    - Partial updates to API resources
-    - Modify specific fields without full replacement
-    - Efficient updates for large objects
+    Serializes the data dictionary to JSON, sends with Content-Type: application/json
+    header for partial resource modification, and parses the response JSON automatically.
+    More efficient than PUT for updating specific fields.
+
+    Parameters:
+    - url (required): Target resource URL
+    - data (optional, default={}): Dictionary with fields to update
+
+    Returns: Parsed JSON response as dictionary
+
+    Side effects: Network request that modifies server-side resources
+
+    Typical usage: Update specific fields of API resources without replacing entire
+    objects, modify configuration values, or make efficient updates to large resources.
+    For full replacement use JSONPutRequest. Follow with response validation nodes.
+
+    http, patch, request, url, json, api
     """
 
     @classmethod
@@ -907,13 +1080,23 @@ class JSONPatchRequest(HTTPBaseNode):
 
 class JSONGetRequest(HTTPBaseNode):
     """
-    Perform an HTTP GET request and parse the response as JSON.
-    http, get, request, url, json, api
+    Perform HTTP GET request and return parsed JSON response as dictionary.
 
-    Use cases:
-    - Fetch data from REST APIs
-    - Retrieve JSON-formatted responses
-    - Interface with JSON web services
+    Sends request with Accept: application/json header and automatically parses
+    the JSON response body. Raises error if response is not valid JSON.
+
+    Parameters:
+    - url (required): Target API endpoint URL
+
+    Returns: Parsed JSON response as dictionary
+
+    Side effects: Network request
+
+    Typical usage: Fetch data from REST APIs, retrieve JSON configuration, or access
+    JSON web services. Follow with JSON path extraction, validation, or transformation
+    nodes to process the structured response.
+
+    http, get, request, url, json, api
     """
 
     @classmethod

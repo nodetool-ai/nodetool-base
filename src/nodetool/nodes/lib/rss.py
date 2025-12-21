@@ -16,13 +16,25 @@ def _parse_feed(url: str):
 
 class FetchRSSFeed(BaseNode):
     """
-    Fetches and parses an RSS feed from a URL.
-    rss, feed, network
+    Fetch and parse RSS feed from URL, emitting each entry as a stream item.
 
-    Use cases:
-    - Monitor news feeds
-    - Aggregate content from multiple sources
-    - Process blog updates
+    Downloads and parses an RSS/Atom feed, extracting entry metadata including title,
+    link, publication date, summary, and author. Emits entries as a stream for
+    individual processing.
+
+    Parameters:
+    - url (required): RSS/Atom feed URL
+
+    Yields: Dictionary for each entry with "title" (string), "link" (URL string),
+    "published" (Datetime), "summary" (content string), and "author" (string)
+
+    Side effects: Network request to fetch feed
+
+    Typical usage: Monitor news feeds, aggregate blog updates, or collect content
+    from multiple sources. Follow with filtering, text processing, or summarization
+    nodes. Use Collect node to gather all entries.
+
+    rss, feed, network
     """
 
     url: str = Field(default="", description="URL of the RSS feed to fetch")
@@ -62,13 +74,24 @@ class FetchRSSFeed(BaseNode):
 
 class ExtractFeedMetadata(BaseNode):
     """
-    Extracts metadata from an RSS feed.
-    rss, metadata, feed
+    Extract metadata about an RSS feed itself (not individual entries).
 
-    Use cases:
-    - Get feed information
-    - Validate feed details
-    - Extract feed metadata
+    Fetches and parses the feed to extract high-level information about the feed
+    source, including title, description, language, and entry count.
+
+    Parameters:
+    - url (required): RSS/Atom feed URL
+
+    Returns: Dictionary with "title", "description", "link", "language", "updated",
+    "generator" (all strings), and "entry_count" (integer)
+
+    Side effects: Network request to fetch feed
+
+    Typical usage: Validate feed sources, catalog feeds, or extract feed information
+    before processing entries. Precede with URL list or configuration nodes. Follow
+    with conditional logic or data aggregation.
+
+    rss, metadata, feed
     """
 
     @classmethod

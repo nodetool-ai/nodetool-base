@@ -10,13 +10,23 @@ from nodetool.metadata.types import FolderRef
 
 class ParseDict(BaseNode):
     """
-    Parse a JSON string into a Python dictionary.
-    json, parse, decode, dictionary
+    Parse JSON string into Python dictionary object.
 
-    Use cases:
-    - Convert JSON API responses to Python dictionaries
-    - Process JSON configuration files
-    - Parse object-like JSON data
+    Decodes a JSON string representing an object/dictionary. Raises ValueError
+    if the JSON string represents a different type (array, string, etc.).
+
+    Parameters:
+    - json_string (required): Valid JSON string representing an object
+
+    Returns: Python dictionary
+
+    Raises: ValueError if JSON is invalid or not an object type
+
+    Typical usage: Parse JSON responses from APIs, decode JSON configuration strings,
+    or convert JSON object strings to dictionaries. Precede with HTTP GET or text
+    extraction nodes. Follow with dictionary access, JSON path, or validation nodes.
+
+    json, parse, decode, dictionary
     """
 
     json_string: str = Field(
@@ -32,13 +42,23 @@ class ParseDict(BaseNode):
 
 class ParseList(BaseNode):
     """
-    Parse a JSON string into a Python list.
-    json, parse, decode, array, list
+    Parse JSON string into Python list object.
 
-    Use cases:
-    - Convert JSON array responses to Python lists
-    - Process JSON data collections
-    - Parse array-like JSON data
+    Decodes a JSON string representing an array/list. Raises ValueError if the
+    JSON string represents a different type (object, string, etc.).
+
+    Parameters:
+    - json_string (required): Valid JSON string representing an array
+
+    Returns: Python list
+
+    Raises: ValueError if JSON is invalid or not an array type
+
+    Typical usage: Parse JSON array responses from APIs, decode JSON list strings,
+    or convert JSON arrays to lists. Follow with list iteration (ForEach), filtering,
+    or transformation nodes.
+
+    json, parse, decode, array, list
     """
 
     json_string: str = Field(default="", description="JSON string to parse into a list")
@@ -52,12 +72,22 @@ class ParseList(BaseNode):
 
 class StringifyJSON(BaseNode):
     """
-    Convert a Python object to a JSON string.
-    json, stringify, encode
+    Convert Python object to formatted JSON string.
 
-    Use cases:
-    - Prepare data for API requests
-    - Save data in JSON format
+    Serializes any JSON-compatible Python object (dict, list, primitives) to a
+    JSON string with configurable indentation for readability.
+
+    Parameters:
+    - data (optional, default={}): Python object to serialize (must be JSON-compatible)
+    - indent (optional, default=2): Number of spaces for indentation (0 for compact)
+
+    Returns: JSON-formatted string
+
+    Typical usage: Prepare data for API POST requests, save configuration as JSON text,
+    or format data for display. Precede with dictionary construction or data transformation
+    nodes. Follow with HTTP POST, file save, or text output nodes.
+
+    json, stringify, encode
     """
 
     data: Any = Field(default={}, description="Data to convert to JSON")
@@ -69,17 +99,21 @@ class StringifyJSON(BaseNode):
 
 class BaseGetJSONPath(BaseNode):
     """
-    Base class for extracting typed data from a JSON object using a path expression.
+    Base class for extracting typed values from JSON using dot notation paths.
+
+    Navigates nested JSON structures using dot-separated keys. Supports dictionary
+    navigation and array indexing by numeric strings. Not directly visible in UI;
+    extended by type-specific subclasses.
+
+    Path examples for {"a": {"b": {"c": 1}}}:
+    - "a.b.c" extracts 1
+    - "a.b" extracts {"c": 1}
+    - "a" extracts {"b": {"c": 1}}
+
+    Array example for {"list": [10, 20, 30]}:
+    - "list.0" extracts 10
+
     json, path, extract
-
-    Examples for an object {"a": {"b": {"c": 1}}}
-    "a.b.c" -> 1
-    "a.b" -> {"c": 1}
-    "a" -> {"b": {"c": 1}}
-
-    Use cases:
-    - Navigate complex JSON structures
-    - Extract specific values from nested JSON with type safety
     """
 
     data: Any = Field(default={}, description="JSON object to extract from")
@@ -108,7 +142,21 @@ class BaseGetJSONPath(BaseNode):
 
 class GetJSONPathStr(BaseGetJSONPath):
     """
-    Extract a string value from a JSON path
+    Extract string value from JSON object using dot notation path.
+
+    Navigates to the specified path and converts the value to string. Returns
+    default if path not found or value is None.
+
+    Parameters:
+    - data (required): JSON object (dict or list) to extract from
+    - path (required): Dot-separated path to the value (e.g., "user.name")
+    - default (optional, default=""): Value returned if path not found
+
+    Returns: String value at path, or default
+
+    Typical usage: Extract text fields from API responses, get configuration values,
+    or navigate nested JSON structures. Follow with text processing or string manipulation.
+
     json, path, extract, string
     """
 
@@ -123,7 +171,21 @@ class GetJSONPathStr(BaseGetJSONPath):
 
 class GetJSONPathInt(BaseGetJSONPath):
     """
-    Extract an integer value from a JSON path
+    Extract integer value from JSON object using dot notation path.
+
+    Navigates to the specified path and converts the value to integer. Returns
+    default if path not found or value is None.
+
+    Parameters:
+    - data (required): JSON object (dict or list) to extract from
+    - path (required): Dot-separated path to the value
+    - default (optional, default=0): Value returned if path not found
+
+    Returns: Integer value at path, or default
+
+    Typical usage: Extract numeric IDs, counts, or integer fields from API responses.
+    Follow with arithmetic, comparison, or conditional logic nodes.
+
     json, path, extract, number
     """
 
@@ -138,7 +200,21 @@ class GetJSONPathInt(BaseGetJSONPath):
 
 class GetJSONPathFloat(BaseGetJSONPath):
     """
-    Extract a float value from a JSON path
+    Extract float value from JSON object using dot notation path.
+
+    Navigates to the specified path and converts the value to floating point number.
+    Returns default if path not found or value is None.
+
+    Parameters:
+    - data (required): JSON object (dict or list) to extract from
+    - path (required): Dot-separated path to the value
+    - default (optional, default=0.0): Value returned if path not found
+
+    Returns: Float value at path, or default
+
+    Typical usage: Extract prices, percentages, measurements, or decimal fields from
+    API responses. Follow with math operations or numeric formatting nodes.
+
     json, path, extract, number
     """
 
@@ -153,7 +229,21 @@ class GetJSONPathFloat(BaseGetJSONPath):
 
 class GetJSONPathBool(BaseGetJSONPath):
     """
-    Extract a boolean value from a JSON path
+    Extract boolean value from JSON object using dot notation path.
+
+    Navigates to the specified path and converts the value to boolean. Returns
+    default if path not found or value is None.
+
+    Parameters:
+    - data (required): JSON object (dict or list) to extract from
+    - path (required): Dot-separated path to the value
+    - default (optional, default=False): Value returned if path not found
+
+    Returns: Boolean value at path, or default
+
+    Typical usage: Extract flags, status indicators, or boolean fields from API
+    responses. Follow with conditional logic (If node) or boolean operations.
+
     json, path, extract, boolean
     """
 
@@ -168,7 +258,21 @@ class GetJSONPathBool(BaseGetJSONPath):
 
 class GetJSONPathList(BaseGetJSONPath):
     """
-    Extract a list value from a JSON path
+    Extract list/array value from JSON object using dot notation path.
+
+    Navigates to the specified path and converts the value to list. Returns
+    default if path not found or value is None.
+
+    Parameters:
+    - data (required): JSON object (dict or list) to extract from
+    - path (required): Dot-separated path to the array value
+    - default (optional, default=[]): Value returned if path not found
+
+    Returns: List value at path, or default
+
+    Typical usage: Extract arrays from nested JSON structures, get lists of items
+    from API responses. Follow with ForEach for iteration, filtering, or list operations.
+
     json, path, extract, array
     """
 
@@ -183,7 +287,22 @@ class GetJSONPathList(BaseGetJSONPath):
 
 class GetJSONPathDict(BaseGetJSONPath):
     """
-    Extract a dictionary value from a JSON path
+    Extract dictionary/object value from JSON object using dot notation path.
+
+    Navigates to the specified path and converts the value to dictionary. Returns
+    default if path not found or value is None.
+
+    Parameters:
+    - data (required): JSON object (dict or list) to extract from
+    - path (required): Dot-separated path to the object value
+    - default (optional, default={}): Value returned if path not found
+
+    Returns: Dictionary value at path, or default
+
+    Typical usage: Extract nested objects from JSON structures, get configuration
+    sections, or isolate sub-structures. Follow with further JSON path extraction
+    or dictionary manipulation nodes.
+
     json, path, extract, object
     """
 
@@ -198,12 +317,22 @@ class GetJSONPathDict(BaseGetJSONPath):
 
 class ValidateJSON(BaseNode):
     """
-    Validate JSON data against a schema.
-    json, validate, schema
+    Validate JSON data against JSON Schema specification.
 
-    Use cases:
-    - Ensure API payloads match specifications
-    - Validate configuration files
+    Checks if the provided data conforms to the given JSON Schema. Returns true
+    for valid data, false for invalid. Uses jsonschema library for validation.
+
+    Parameters:
+    - data (required): JSON data to validate (dict, list, or primitive)
+    - json_schema (required): JSON Schema definition as dictionary
+
+    Returns: Boolean - true if valid, false if invalid
+
+    Typical usage: Validate API responses before processing, verify configuration
+    format, or ensure data quality. Follow with conditional logic (If node) to handle
+    validation results.
+
+    json, validate, schema
     """
 
     data: Any = Field(default={}, description="JSON data to validate")
@@ -221,12 +350,23 @@ class ValidateJSON(BaseNode):
 
 class FilterJSON(BaseNode):
     """
-    Filter JSON array based on a key-value condition.
-    json, filter, array
+    Filter array of JSON objects by matching key-value condition.
 
-    Use cases:
-    - Filter arrays of objects
-    - Search JSON data
+    Returns only objects where the specified key exactly matches the given value.
+    Objects without the key are excluded.
+
+    Parameters:
+    - array (required): List of dictionaries to filter
+    - key (required): Dictionary key to check
+    - value (required): Value to match against
+
+    Returns: Filtered list of dictionaries
+
+    Typical usage: Filter API results, select specific items from data collections,
+    or search JSON arrays. Precede with JSON parsing or API response nodes. Follow
+    with iteration, transformation, or further filtering.
+
+    json, filter, array
     """
 
     array: list[dict] = Field(default=[], description="Array of JSON objects to filter")
@@ -239,18 +379,29 @@ class FilterJSON(BaseNode):
 
 class JSONTemplate(BaseNode):
     """
-    Template JSON strings with variable substitution.
+    Generate JSON dictionary from template with variable substitution.
+
+    Replaces $variable placeholders in the template string with provided values,
+    then parses the result as JSON. Raises error if result is not valid JSON or
+    not a dictionary.
+
+    Template example:
+    - template: '{"name": "$user", "age": $age}'
+    - values: {"user": "John", "age": 30}
+    - result: {"name": "John", "age": 30}
+
+    Parameters:
+    - template (required): JSON template string with $variable placeholders
+    - values (optional, default={}): Dictionary mapping variable names to values
+
+    Returns: Dictionary parsed from substituted template
+
+    Raises: ValueError if resulting JSON is invalid or not a dictionary
+
+    Typical usage: Create dynamic API payloads, generate parameterized JSON, or build
+    structured data from variables. Follow with JSON POST or validation nodes.
+
     json, template, substitute, variables
-
-    Example:
-    template: '{"name": "$user", "age": $age}'
-    values: {"user": "John", "age": 30}
-    result: '{"name": "John", "age": 30}'
-
-    Use cases:
-    - Create dynamic JSON payloads
-    - Generate JSON with variable data
-    - Build API request templates
     """
 
     @classmethod
@@ -281,7 +432,24 @@ class JSONTemplate(BaseNode):
 
 class LoadJSONAssets(BaseNode):
     """
-    Load JSON files from an asset folder.
+    Load all JSON files from an asset folder and emit each as a stream item.
+
+    Scans the specified asset folder for JSON files, parses each file, and emits
+    a stream of JSON objects with their filenames. Streaming output allows downstream
+    nodes to process each file individually.
+
+    Parameters:
+    - folder (required): FolderRef pointing to the asset folder containing JSON files
+
+    Yields: Dictionary with "json" (parsed JSON data) and "name" (filename string)
+    for each JSON file
+
+    Raises: ValueError if folder is empty or JSON files contain invalid JSON
+
+    Typical usage: Batch process JSON configuration files, load multiple datasets,
+    or iterate through JSON documents. Follow with ForEach or Collect nodes to
+    process or aggregate the stream.
+
     load, json, file, import
     """
 
