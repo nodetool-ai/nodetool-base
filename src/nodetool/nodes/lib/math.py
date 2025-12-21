@@ -8,8 +8,14 @@ from typing import ClassVar
 
 class Add(BaseNode):
     """
-    Adds two numbers.
-    math, add, plus, +
+    Adds two numbers together.
+    math, add, plus, +, sum
+
+    Use cases:
+    - Perform basic arithmetic operations
+    - Calculate totals and sums
+    - Combine numerical values
+    - Increment counters and scores
     """
 
     _layout: ClassVar[str] = "small"
@@ -25,7 +31,13 @@ class Add(BaseNode):
 class Subtract(BaseNode):
     """
     Subtracts B from A.
-    math, subtract, minus, -
+    math, subtract, minus, -, difference
+
+    Use cases:
+    - Calculate differences between values
+    - Determine remaining amounts
+    - Compute offsets and deltas
+    - Track decrements and reductions
     """
 
     _layout: ClassVar[str] = "small"
@@ -40,8 +52,14 @@ class Subtract(BaseNode):
 
 class Multiply(BaseNode):
     """
-    Multiplies two numbers.
-    math, multiply, product, *
+    Multiplies two numbers together.
+    math, multiply, product, *, times
+
+    Use cases:
+    - Calculate products and totals
+    - Scale values by factors
+    - Compute areas and volumes
+    - Apply multipliers and rates
     """
 
     _layout: ClassVar[str] = "small"
@@ -55,8 +73,14 @@ class Multiply(BaseNode):
 
 class Divide(BaseNode):
     """
-    Divides A by B.
+    Divides A by B to calculate the quotient.
     math, divide, division, quotient, /
+
+    Use cases:
+    - Calculate averages and ratios
+    - Distribute quantities evenly
+    - Determine rates and proportions
+    - Compute per-unit values
     """
 
     _layout: ClassVar[str] = "small"
@@ -71,8 +95,14 @@ class Divide(BaseNode):
 
 class Modulus(BaseNode):
     """
-    Computes A modulo B.
+    Computes A modulo B to find the remainder after division.
     math, modulus, modulo, remainder, %
+
+    Use cases:
+    - Determine if numbers are even or odd
+    - Implement cyclic patterns and rotations
+    - Calculate remainders in division
+    - Build repeating sequences
     """
 
     _layout: ClassVar[str] = "small"

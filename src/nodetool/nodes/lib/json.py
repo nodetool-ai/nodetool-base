@@ -52,12 +52,14 @@ class ParseList(BaseNode):
 
 class StringifyJSON(BaseNode):
     """
-    Convert a Python object to a JSON string.
-    json, stringify, encode
+    Convert a Python object to a formatted JSON string.
+    json, stringify, encode, serialize
 
     Use cases:
     - Prepare data for API requests
     - Save data in JSON format
+    - Format data for storage or transmission
+    - Create human-readable JSON output
     """
 
     data: Any = Field(default={}, description="Data to convert to JSON")
