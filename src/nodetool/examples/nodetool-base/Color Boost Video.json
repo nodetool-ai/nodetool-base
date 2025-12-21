@@ -55,16 +55,38 @@
         "dynamic_properties": {}
       },
       {
-        "id": "b14f7601-b826-4b1c-8298-90f55b6022e1",
+        "id": "e30d1d60-0a2a-4c28-9844-3d9a1e09c85b",
         "parent_id": null,
-        "type": "lib.pillow.enhance.Color",
+        "type": "lib.pillow.color_grading.Exposure",
         "data": {
-          "factor": 3
+          "exposure": 0.2,
+          "contrast": 0.1,
+          "highlights": -0.1,
+          "shadows": 0.1
         },
         "ui_properties": {
           "position": {
-            "x": 540,
-            "y": 110
+            "x": 520,
+            "y": 60
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {}
+      },
+      {
+        "id": "s41e2d70-1b3b-5d39-0955-4e0b2f1ac96c",
+        "parent_id": null,
+        "type": "lib.pillow.color_grading.SaturationVibrance",
+        "data": {
+          "saturation": 0.5,
+          "vibrance": 0.4
+        },
+        "ui_properties": {
+          "position": {
+            "x": 760,
+            "y": 140
           },
           "zIndex": 0,
           "width": 200,
@@ -79,7 +101,7 @@
         "data": {},
         "ui_properties": {
           "position": {
-            "x": 800,
+            "x": 1000,
             "y": 112
           },
           "zIndex": 0,
@@ -97,7 +119,7 @@
         },
         "ui_properties": {
           "position": {
-            "x": 1030,
+            "x": 1240,
             "y": 93
           },
           "zIndex": 0,
@@ -179,11 +201,11 @@
                   "text": "\t3.\t"
                 },
                 {
-                  "text": "Color Enhancement: ",
+                  "text": "Professional Color Correction: ",
                   "bold": true
                 },
                 {
-                  "text": "Each frame\u2019s color is amplified using a factor of 3.0 with Pillow\u2019s Enhance module."
+                  "text": "Each frame is processed through a high-quality grading pipeline using Exposure and Saturation/Vibrance nodes for cinematic results."
                 }
               ]
             },
@@ -254,7 +276,7 @@
         "id": "5239206d-e632-47cb-878c-4568d9ee0d3e",
         "source": "abb8ee0b-dbf0-4969-8046-c2e690b7d1e4",
         "sourceHandle": "frame",
-        "target": "b14f7601-b826-4b1c-8298-90f55b6022e1",
+        "target": "e30d1d60-0a2a-4c28-9844-3d9a1e09c85b",
         "targetHandle": "image",
         "ui_properties": {
           "className": "image"
@@ -262,7 +284,17 @@
       },
       {
         "id": "f52b58cb-77ce-42fe-a412-2aef5dfd79be",
-        "source": "b14f7601-b826-4b1c-8298-90f55b6022e1",
+        "source": "e30d1d60-0a2a-4c28-9844-3d9a1e09c85b",
+        "sourceHandle": "output",
+        "target": "s41e2d70-1b3b-5d39-0955-4e0b2f1ac96c",
+        "targetHandle": "image",
+        "ui_properties": {
+          "className": "image"
+        }
+      },
+      {
+        "id": "b14f7601-b826-4b1c-8298-90f55b6022e1",
+        "source": "s41e2d70-1b3b-5d39-0955-4e0b2f1ac96c",
         "sourceHandle": "output",
         "target": "4ca8874f-5caa-413c-a329-936d90358e8e",
         "targetHandle": "frame",
