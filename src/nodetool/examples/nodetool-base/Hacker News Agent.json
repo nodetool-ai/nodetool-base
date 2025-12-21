@@ -2,14 +2,15 @@
   "id": "19c0d61c-97c3-43ea-9ec1-e287e10db833",
   "access": "public",
   "created_at": "2025-12-02T21:18:56.745629",
-  "updated_at": "2025-12-02T21:18:56.745629",
+  "updated_at": "2025-12-21T14:03:00.000000",
   "name": "Hacker News Agent",
   "tool_name": null,
-  "description": "Scrape and analyze the front page of Hacker News.",
+  "description": "Demonstrates an Agent triggering a browser tool while explaining its actions.",
   "tags": [
     "hackernews",
     "news",
-    "analysis"
+    "agent",
+    "browser"
   ],
   "thumbnail": null,
   "thumbnail_url": null,
@@ -20,99 +21,80 @@
         "parent_id": null,
         "type": "nodetool.output.StringOutput",
         "data": {
-          "name": "hn_report",
+          "name": "agent_thought",
           "value": "",
-          "description": ""
+          "description": "The Agent's explanation and plan."
         },
-        "ui_properties": {},
+        "ui_properties": {
+          "position": {
+            "x": 600,
+            "y": 100
+          }
+        },
         "dynamic_properties": {},
-        "dynamic_outputs": {},
-        "sync_mode": "on_any"
-      },
-      {
-        "id": "2",
-        "parent_id": null,
-        "type": "nodetool.text.FormatText",
-        "data": {
-          "template": "\n# Hacker News snapshot\n\n## Overview\n{{ summary }}\n\n{% for p in posts %}\n### {{ p.title }}\n{{ p.url }}\n\nTop comments:\n{% for c in p.top_comments %}\n- {{ c.author }}: {{ c.text }}\n{% endfor %}\n\n{% endfor %}\n"
-        },
-        "ui_properties": {},
-        "dynamic_properties": {
-          "summary": null,
-          "posts": null
-        },
         "dynamic_outputs": {},
         "sync_mode": "on_any"
       },
       {
         "id": "3",
         "parent_id": null,
-        "type": "nodetool.agents.ResearchAgent",
+        "type": "nodetool.agents.Agent",
         "data": {
-          "objective": "",
+          "system": "You are a research agent.\n\nTask:\n1. Explain that you will scrape Hacker News.\n2. Trigger the 'visit_url' tool with 'https://news.ycombinator.com/'.\n",
+          "prompt": "Start research.",
           "model": {
             "type": "language_model",
-            "provider": "huggingface_cerebras",
-            "id": "openai/gpt-oss-120b",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
-          },
-          "system_prompt": "You are a research assistant.\n\nGoal\n- Conduct thorough research on the given objective\n- Use tools to gather information from multiple sources\n- Write intermediate findings to the workspace for reference\n- Synthesize information into the structured output format specified\n\nTools Available\n- google_search: Search the web for information\n- browser: Navigate to URLs and extract content\n- write_file: Save research findings to files\n- read_file: Read previously saved research files\n- list_directory: List files in the workspace\n\nWorkflow\n1. Break down the research objective into specific queries\n2. Use google_search to find relevant sources\n3. Use browser to extract content from promising URLs\n4. Save important findings using write_file\n5. Synthesize all findings into the requested output format\n\nOutput Format\n- Return a structured JSON object matching the defined output schema\n- Be thorough and cite sources where appropriate\n- Ensure all required fields are populated with accurate information\n",
-          "tools": [
-            {
-              "type": "tool_name",
-              "name": "google_search"
-            },
-            {
-              "type": "tool_name",
-              "name": "browser"
-            }
-          ],
-          "max_tokens": 8192,
-          "context_window": 8192
+            "id": "gpt-4o",
+            "provider": "openai"
+          }
         },
-        "ui_properties": {},
+        "ui_properties": {
+          "position": {
+            "x": 300,
+            "y": 100
+          }
+        },
         "dynamic_properties": {},
         "dynamic_outputs": {
-          "summary": {
+          "visit_url": {
             "type": "str",
             "optional": false,
             "values": null,
-            "type_args": [],
-            "type_name": null
-          },
-          "posts": {
-            "type": "list",
-            "optional": false,
-            "values": null,
-            "type_args": [
-              {
-                "type": "dict",
-                "optional": false,
-                "values": null,
-                "type_args": [
-                  {
-                    "type": "str",
-                    "optional": false,
-                    "values": null,
-                    "type_args": [],
-                    "type_name": null
-                  },
-                  {
-                    "type": "any",
-                    "optional": false,
-                    "values": null,
-                    "type_args": [],
-                    "type_name": null
-                  }
-                ],
-                "type_name": null
-              }
-            ],
-            "type_name": null
+            "type_args": []
           }
         },
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "browser-1",
+        "parent_id": null,
+        "type": "lib.browser.Browser",
+        "data": {
+          "url": ""
+        },
+        "ui_properties": {
+          "position": {
+            "x": 600,
+            "y": 300
+          }
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "preview-browser",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {},
+        "ui_properties": {
+          "position": {
+            "x": 900,
+            "y": 300
+          }
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {},
         "sync_mode": "on_any"
       },
       {
@@ -120,9 +102,14 @@
         "parent_id": null,
         "type": "nodetool.text.FormatText",
         "data": {
-          "template": "\nScrape the front page of https://news.ycombinator.com/ and analyze activity.\n\nTasks:\n1) Identify the top 5 posts on the front page.\n2) For each post:\n   - Record title and url.\n   - Fetch the discussion thread with the browser tool.\n   - Extract the top 3 comments by score or prominence.\n   - For each comment, store text and author.\n\n3) Summarize the overall themes across the selected posts.\n\nOutput format (JSON):\n{\n  \"summary\": \"<high level summary of the 5 posts>\",\n  \"posts\": [\n    {\n      \"title\": \"<title>\",\n      \"url\": \"<url>\",\n      \"top_comments\": [\n        {\"text\": \"<comment text>\", \"author\": \"<username>\"},\n        ...\n      ]\n    },\n    ...\n  ]\n}\n"
+          "template": "Research Goal: Check the top news on HN."
         },
-        "ui_properties": {},
+        "ui_properties": {
+          "position": {
+            "x": 100,
+            "y": 100
+          }
+        },
         "dynamic_properties": {},
         "dynamic_outputs": {},
         "sync_mode": "on_any"
@@ -134,30 +121,30 @@
         "source": "4",
         "sourceHandle": "output",
         "target": "3",
-        "targetHandle": "objective",
+        "targetHandle": "prompt",
         "ui_properties": null
       },
       {
-        "id": "2",
+        "id": "edge-text",
         "source": "3",
-        "sourceHandle": "summary",
-        "target": "2",
-        "targetHandle": "summary",
-        "ui_properties": null
-      },
-      {
-        "id": "3",
-        "source": "3",
-        "sourceHandle": "posts",
-        "target": "2",
-        "targetHandle": "posts",
-        "ui_properties": null
-      },
-      {
-        "id": "4",
-        "source": "2",
-        "sourceHandle": "output",
+        "sourceHandle": "chunk",
         "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
+      },
+      {
+        "id": "edge-tool-trigger",
+        "source": "3",
+        "sourceHandle": "visit_url",
+        "target": "browser-1",
+        "targetHandle": "url",
+        "ui_properties": null
+      },
+      {
+        "id": "edge-tool-preview",
+        "source": "browser-1",
+        "sourceHandle": "content",
+        "target": "preview-browser",
         "targetHandle": "value",
         "ui_properties": null
       }

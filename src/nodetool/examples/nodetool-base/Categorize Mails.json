@@ -2,13 +2,14 @@
   "id": "1302ffe8a2f911f0b74c000014916b9c",
   "access": "public",
   "created_at": "2025-10-06T23:30:29.580375",
-  "updated_at": "2025-10-06T23:30:29.580392",
+  "updated_at": "2025-12-21T14:03:00.000000",
   "name": "Categorize Mails",
   "tool_name": null,
-  "description": "Automatically categorize and organize emails using AI",
+  "description": "Automatically categorize and organize emails using AI, showing the reasoning.",
   "tags": [
     "email",
-    "start"
+    "start",
+    "agent"
   ],
   "thumbnail": null,
   "thumbnail_url": null,
@@ -19,7 +20,7 @@
         "parent_id": null,
         "type": "nodetool.workflows.base_node.Comment",
         "data": {
-          "comment": "# Categorize Emails\n\nThis workflow classifies emails into predefined categories (e.g., Newsletter, Work, Family, Friends) using a large language model and applies the matching Gmail labels.\n\n## Workflow Steps:\n\n2. **Gmail Search** - Fetches up to 10 recent emails using the specified filters (e.g., date, subject, sender).\n2. **Template** - Formats each email into a structured prompt including subject, sender, and a truncated body snippet.\n3. **Classifier** - Uses an LLM to classify the email into one or more of the categories: newsletter, work, family, friends.\n4. **Add Label** - Applies the determined label(s) to each email message in Gmail."
+          "comment": "# Categorize Emails\n\nThis workflow classifies emails into predefined categories (e.g., Newsletter, Work, Family, Friends) using a large language model and applies the matching Gmail labels.\n\n## Workflow Steps:\n\n1. **Gmail Search** - Fetches up to 10 recent emails using the specified filters (e.g., date, subject, sender).\n2. **Template** - Formats each email into a structured prompt including subject, sender, and a truncated body snippet.\n3. **Agent** - Uses an LLM to classify the email. It outputs the reasoning as text and triggers 'apply_label' to set the label.\n4. **Add Label** - Applies the determined label(s) to each email message in Gmail."
         },
         "ui_properties": {
           "selected": false,
@@ -60,27 +61,63 @@
       {
         "id": "a6df088f-3515-49c7-9a86-fb158ae223cc",
         "parent_id": null,
-        "type": "nodetool.agents.Classifier",
+        "type": "nodetool.agents.Agent",
         "data": {
-          "system_prompt": "\n        You are a precise text classifier. Your task is to analyze the input text and assign confidence scores.\n        ",
+          "system": "You are a precise text classifier. Your task is to analyze the input text and assign one of the following categories: newsletter, work, family, friends.\n\nInstructions:\n1. Analyze the email content and briefly explain your reasoning.\n2. Select the most appropriate category.\n3. Use the 'apply_label' tool (dynamic output) to apply the category as a label.\n",
+          "prompt": "",
           "model": {
             "type": "language_model",
-            "id": "qwen3:4b",
-            "provider": "ollama"
+            "id": "gpt-4o",
+            "provider": "openai",
+            "name": "gpt-4o"
           },
-          "categories": [
-            "newsletter",
-            "work",
-            "family",
-            "friends"
-          ],
-          "multi_label": false
+          "image": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "audio": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "history": [],
+          "thread_id": "",
+          "max_tokens": 8192,
+          "context_window": 4096
         },
         "ui_properties": {
           "selected": false,
           "position": {
             "x": 502,
             "y": 49
+          },
+          "zIndex": 0,
+          "width": 200,
+          "selectable": true
+        },
+        "dynamic_properties": {},
+        "dynamic_outputs": {
+          "apply_label": {
+            "type": "str",
+            "type_args": [],
+            "optional": false
+          }
+        },
+        "sync_mode": "on_any"
+      },
+      {
+        "id": "preview_reasoning",
+        "parent_id": null,
+        "type": "nodetool.workflows.base_node.Preview",
+        "data": {},
+        "ui_properties": {
+          "selected": false,
+          "position": {
+            "x": 800,
+            "y": 50
           },
           "zIndex": 0,
           "width": 200,
@@ -98,8 +135,8 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 767,
-            "y": 291
+            "x": 800,
+            "y": 300
           },
           "zIndex": 0,
           "width": 200,
@@ -145,13 +182,21 @@
         "source": "29a39ff1-2304-4861-a648-d536916c72e2",
         "sourceHandle": "output",
         "target": "a6df088f-3515-49c7-9a86-fb158ae223cc",
-        "targetHandle": "text",
+        "targetHandle": "prompt",
+        "ui_properties": null
+      },
+      {
+        "id": "edge-reasoning",
+        "source": "a6df088f-3515-49c7-9a86-fb158ae223cc",
+        "sourceHandle": "chunk",
+        "target": "preview_reasoning",
+        "targetHandle": "value",
         "ui_properties": null
       },
       {
         "id": "d8b39826-9631-465d-9b61-1af5f1761e0a",
         "source": "a6df088f-3515-49c7-9a86-fb158ae223cc",
-        "sourceHandle": "output",
+        "sourceHandle": "apply_label",
         "target": "6633542c-e07a-4847-845d-49c5d079647e",
         "targetHandle": "label",
         "ui_properties": null

@@ -33149,6 +33149,11 @@
   "assets": [
     {
       "package_name": "nodetool-base",
+      "name": "AI Product Launch Video Generator.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Autonomous Research Agent.jpg",
       "path": ""
     },
@@ -33164,7 +33169,17 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "ChromaDB Research Agent.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Index PDFs.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Product Description Generator.jpg",
       "path": ""
     },
     {
@@ -33180,6 +33195,11 @@
     {
       "package_name": "nodetool-base",
       "name": "Data Validation Pipeline.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Instagram Scraper.jpg",
       "path": ""
     },
     {
@@ -33239,6 +33259,11 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Image to Video Animation.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Summarize Newsletters.jpg",
       "path": ""
     },
@@ -33277,11 +33302,12 @@
     {
       "id": "4f0806c6-3102-4f9a-8573-6ffda4dfb4eb",
       "name": "Wikipedia Agent",
-      "description": "Wikipedia style research and documentation agent.",
+      "description": "Demonstrates an Agent triggering multiple tools in parallel while explaining its plan.",
       "tags": [
         "wikipedia",
         "research",
-        "writing"
+        "agent",
+        "parallel"
       ]
     },
     {
@@ -33294,13 +33320,14 @@
       ]
     },
     {
-      "id": "product_description_generator",
+      "id": "",
       "name": "Product Description Generator",
       "description": "Automatically generate marketing copy and product descriptions from product data.",
       "tags": [
         "business",
         "data",
-        "research"
+        "research",
+        "example"
       ]
     },
     {
@@ -33309,15 +33336,6 @@
       "description": "Extract and summarize key findings from research papers and technical documents.",
       "tags": [
         "research"
-      ]
-    },
-    {
-      "id": "image_metadata_extractor",
-      "name": "Image Metadata Extractor",
-      "description": "Extract and analyze metadata, objects, and descriptions from images.",
-      "tags": [
-        "data",
-        "image"
       ]
     },
     {
@@ -33330,13 +33348,14 @@
       ]
     },
     {
-      "id": "ai_product_launch_video_generator",
+      "id": "",
       "name": "AI Product Launch Video Generator",
       "description": "Create a realistic 16:9 marketing video for a new product launch using the TextToVideo node.",
       "tags": [
         "business",
         "data",
-        "video"
+        "video",
+        "example"
       ]
     },
     {
@@ -33367,13 +33386,14 @@
       ]
     },
     {
-      "id": "bdd1b02f-6b02-40aa-a729-9c30db1872de",
+      "id": "",
       "name": "ChromaDB Research Agent",
       "description": "Query a Chroma collection of papers.",
       "tags": [
         "chromadb",
         "rag",
-        "research"
+        "research",
+        "example"
       ]
     },
     {
@@ -33415,11 +33435,12 @@
     {
       "id": "19c0d61c-97c3-43ea-9ec1-e287e10db833",
       "name": "Hacker News Agent",
-      "description": "Scrape and analyze the front page of Hacker News.",
+      "description": "Demonstrates an Agent triggering a browser tool while explaining its actions.",
       "tags": [
         "hackernews",
         "news",
-        "analysis"
+        "agent",
+        "browser"
       ]
     },
     {
@@ -33442,21 +33463,14 @@
       ]
     },
     {
-      "id": "game_encounter_planner_agent",
+      "id": "",
       "name": "Game Encounter Planner Agent",
       "description": "Coordinate a squad of AI agents to design, critique, and brief a Frostfang Tundra combat encounter using StructuredOutputGenerator for robust schema enforcement.",
       "tags": [
         "agent",
         "data",
-        "rag"
-      ]
-    },
-    {
-      "id": "document_q_a_extractor",
-      "name": "Document Q&A Extractor",
-      "description": "Extract specific information and answer questions from documents using AI.",
-      "tags": [
-        "workflow"
+        "rag",
+        "example"
       ]
     },
     {
@@ -33480,10 +33494,11 @@
     {
       "id": "1302ffe8a2f911f0b74c000014916b9c",
       "name": "Categorize Mails",
-      "description": "Automatically categorize and organize emails using AI",
+      "description": "Automatically categorize and organize emails using AI, showing the reasoning.",
       "tags": [
         "email",
-        "start"
+        "start",
+        "agent"
       ]
     },
     {
@@ -33593,20 +33608,13 @@
       ]
     },
     {
-      "id": "code_generation_pipeline",
-      "name": "Code Generation Pipeline",
-      "description": "Workflow for generating, validating, and executing Python code based on specifications.",
-      "tags": [
-        "code"
-      ]
-    },
-    {
-      "id": "image_to_video_animation",
+      "id": "",
       "name": "Image to Video Animation",
       "description": "Generate a high-quality still from text, then animate it into a short cinematic clip.",
       "tags": [
         "image",
-        "video"
+        "video",
+        "example"
       ]
     },
     {
@@ -33618,13 +33626,14 @@
       ]
     },
     {
-      "id": "3b10ae1c-6d09-41e8-b8b3-df807fd3e4ef",
+      "id": "",
       "name": "Instagram Scraper",
       "description": "Analyze Instagram trends for a specific topic.",
       "tags": [
         "instagram",
         "social-media",
-        "trends"
+        "trends",
+        "example"
       ]
     },
     {
@@ -33642,14 +33651,6 @@
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
       "tags": [
         "agents"
-      ]
-    },
-    {
-      "id": "dictionary_transformation",
-      "name": "Dictionary Transformation",
-      "description": "Normalize nested API payloads into a clean profile dictionary, enrich with derived fields, and validate the result against a JSON schema.",
-      "tags": [
-        "workflow"
       ]
     },
     {
@@ -33673,11 +33674,12 @@
       ]
     },
     {
-      "id": "data_validation_pipeline",
+      "id": "",
       "name": "Data Validation Pipeline",
       "description": "Validate and clean data for quality assurance before processing.",
       "tags": [
-        "data"
+        "data",
+        "example"
       ]
     },
     {
