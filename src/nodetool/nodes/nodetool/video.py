@@ -650,6 +650,12 @@ class Concat(BaseNode):
     """
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
+
+    Use cases:
+    - Merge multiple video clips into one continuous video
+    - Combine intro, main content, and outro sequences
+    - Join video segments from different sources
+    - Create video compilations and montages
     """
 
     video_a: VideoRef = Field(
@@ -1036,6 +1042,13 @@ class Overlay(BaseNode):
     """
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
+
+    Use cases:
+    - Create picture-in-picture effects for commentary videos
+    - Add watermarks or logos to videos
+    - Combine multiple video streams
+    - Create split-screen or multi-view presentations
+    - Layer video effects over main content
     """
 
     main_video: VideoRef = Field(
@@ -2202,8 +2215,15 @@ class ChromaKey(BaseNode):
 
 class ExtractAudio(BaseNode):
     """
-    Separate audio from a video file.
-    video, audio, extract, separate
+    Separate and extract audio track from a video file.
+    video, audio, extract, separate, split
+
+    Use cases:
+    - Extract audio for podcasts or music
+    - Create audio-only versions of video content
+    - Analyze or transcribe video audio separately
+    - Reuse audio in different contexts
+    - Convert video soundtracks to audio files
     """
 
     video: VideoRef = Field(
