@@ -2,10 +2,14 @@
 
 This module provides nodes for generating images using Kie.ai's various APIs:
 - 4O Image API (GPT-4o powered image generation)
-- Seedream (ByteDance's image generation model)
-- Z-Image (High-quality image generation)
-- Nano Banana (Google's efficient image model)
+- Seedream 4.5 (ByteDance's image generation model)
+- Z-Image Turbo (Alibaba's photorealistic image generation)
+- Nano Banana (Google Gemini 2.5 image model)
+- Nano Banana Pro (Google Gemini 3.0 image model)
+- Flux Kontext (Black Forest Labs advanced image generation)
 - Flux Pro (Black Forest Labs text-to-image)
+- Topaz Image Upscaler (AI image upscaling and enhancement)
+- Grok Imagine (xAI multimodal image generation)
 """
 
 import asyncio
@@ -282,14 +286,18 @@ class Generate4OImage(KieBaseNode):
 
 
 class SeedreamGenerate(KieBaseNode):
-    """Generate images using ByteDance's Seedream model via Kie.ai.
+    """Generate images using ByteDance's Seedream 4.5 model via Kie.ai.
 
-    kie, seedream, bytedance, image generation, ai, text-to-image
+    kie, seedream, bytedance, image generation, ai, text-to-image, 4k
+
+    Seedream 4.5 generates high-quality visuals up to 4K resolution with
+    improved detail fidelity, multi-image blending, and sharp text/face rendering.
 
     Use cases:
     - Generate creative and artistic images
-    - Create diverse visual content
+    - Create diverse visual content up to 4K
     - Generate illustrations with unique styles
+    - Multi-image reference for consistency
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -312,7 +320,7 @@ class SeedreamGenerate(KieBaseNode):
     )
 
     def _get_base_endpoint(self) -> str:
-        return "/v1/market/seedream"
+        return "/v1/market/seedream-4-5"
 
     def _get_submit_payload(self) -> dict[str, Any]:
         if not self.prompt:
@@ -328,14 +336,18 @@ class SeedreamGenerate(KieBaseNode):
 
 
 class ZImageGenerate(KieBaseNode):
-    """Generate images using Z-Image model via Kie.ai.
+    """Generate images using Alibaba's Z-Image Turbo model via Kie.ai.
 
-    kie, z-image, zimage, image generation, ai, text-to-image, high-quality
+    kie, z-image, zimage, alibaba, image generation, ai, text-to-image, photorealistic
+
+    Z-Image Turbo produces realistic, detail-rich images with very low latency.
+    It supports bilingual text (English/Chinese) in images with sharp text rendering.
 
     Use cases:
-    - Generate high-quality photorealistic images
-    - Create detailed illustrations
-    - Generate product visualizations
+    - Generate high-quality photorealistic images quickly
+    - Create images with embedded text (English/Chinese)
+    - Generate detailed illustrations with low latency
+    - Product visualizations
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -374,14 +386,18 @@ class ZImageGenerate(KieBaseNode):
 
 
 class NanoBananaGenerate(KieBaseNode):
-    """Generate images using Google's Nano Banana model via Kie.ai.
+    """Generate images using Google's Nano Banana model (Gemini 2.5) via Kie.ai.
 
-    kie, nano-banana, google, image generation, ai, text-to-image, efficient
+    kie, nano-banana, google, gemini, image generation, ai, text-to-image, fast
+
+    Nano Banana is powered by Gemini 2.5 Flash Image and offers fast
+    language-driven image generation/editing, focusing on speed and iteration efficiency.
 
     Use cases:
     - Generate images with efficient processing
     - Create visual content quickly
     - Generate images for rapid prototyping
+    - Fast iteration on image concepts
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -478,6 +494,212 @@ class FluxProTextToImage(KieBaseNode):
             "aspect_ratio": self.aspect_ratio.value,
             "steps": self.steps,
             "guidance_scale": self.guidance_scale,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes = await self._execute_task(context)
+        return await context.image_from_bytes(image_bytes)
+
+
+class NanoBananaProGenerate(KieBaseNode):
+    """Generate images using Google's Nano Banana Pro model (Gemini 3.0) via Kie.ai.
+
+    kie, nano-banana-pro, google, gemini, image generation, ai, text-to-image, 4k, high-fidelity
+
+    Nano Banana Pro is based on Gemini 3.0 Pro Image and provides higher fidelity
+    with sharper structure, 4K output, and better text rendering for photorealistic results.
+
+    Use cases:
+    - Generate high-fidelity photorealistic images
+    - Create 4K resolution content
+    - Generate images with sharp text rendering
+    - Professional-grade visual content
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/google/nano-banana-pro"
+
+    def _get_submit_payload(self) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes = await self._execute_task(context)
+        return await context.image_from_bytes(image_bytes)
+
+
+class FluxKontextGenerate(KieBaseNode):
+    """Generate images using Black Forest Labs' Flux Kontext model via Kie.ai.
+
+    kie, flux, flux-kontext, black-forest-labs, image generation, ai, text-to-image, editing
+
+    Flux Kontext supports Pro (speed-optimized) and Max (quality-focused) variants
+    with features like multiple aspect ratios, safety controls, and async processing.
+
+    Use cases:
+    - Generate high-quality artistic images
+    - Advanced image editing and generation
+    - Create professional visual content
+    - Generate images with fine detail and artistic style
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Mode(str, Enum):
+        PRO = "pro"
+        MAX = "max"
+
+    mode: Mode = Field(
+        default=Mode.PRO,
+        description="Generation mode: 'pro' for speed, 'max' for quality.",
+    )
+
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/flux-kontext"
+
+    def _get_submit_payload(self) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "mode": self.mode.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes = await self._execute_task(context)
+        return await context.image_from_bytes(image_bytes)
+
+
+class GrokImagineGenerate(KieBaseNode):
+    """Generate images using xAI's Grok Imagine model via Kie.ai.
+
+    kie, grok, xai, image generation, ai, text-to-image, multimodal
+
+    Grok Imagine is a multimodal generative model that can generate images
+    from text prompts with coherent motion and synchronized background audio for videos.
+
+    Use cases:
+    - Generate images from text descriptions
+    - Create visual content with AI
+    - Multimodal content generation
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/grok-imagine"
+
+    def _get_submit_payload(self) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes = await self._execute_task(context)
+        return await context.image_from_bytes(image_bytes)
+
+
+class TopazImageUpscale(KieBaseNode):
+    """Upscale and enhance images using Topaz Labs AI via Kie.ai.
+
+    kie, topaz, upscale, enhance, image, ai, super-resolution
+
+    Leverages Topaz Labs' image super-resolution models to upscale and enhance images.
+    Can enlarge images by 2x, 4x, etc., while unblurring and sharpening details.
+
+    Use cases:
+    - Upscale low-resolution images to high resolution
+    - Enhance old or degraded photos
+    - Improve AI-generated art quality
+    - Prepare images for large format printing
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The image to upscale.",
+    )
+
+    class ScaleFactor(str, Enum):
+        X2 = "2"
+        X4 = "4"
+
+    scale_factor: ScaleFactor = Field(
+        default=ScaleFactor.X2,
+        description="The upscaling factor (2x or 4x).",
+    )
+
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/topaz-image-upscale"
+
+    def _get_submit_payload(self) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        return {
+            "image": self.image.to_dict(),
+            "scale_factor": self.scale_factor.value,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
