@@ -120,6 +120,8 @@ class TestGenerate4OImage:
     async def test_endpoints(self):
         """Test endpoint generation."""
         node = Generate4OImage(prompt="test")
+        assert node._get_base_endpoint() == "/v1/4o-images"
+        # Derived endpoints
         assert node._get_submit_endpoint() == "/v1/4o-images/generate"
         assert node._get_status_endpoint("task123") == "/v1/4o-images/task123"
         assert (
@@ -164,6 +166,8 @@ class TestSeedreamGenerate:
     async def test_endpoints(self):
         """Test endpoint generation."""
         node = SeedreamGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/seedream"
+        # Derived endpoints
         assert node._get_submit_endpoint() == "/v1/market/seedream/generate"
         assert node._get_status_endpoint("task123") == "/v1/market/seedream/task123"
         assert (
@@ -189,6 +193,8 @@ class TestZImageGenerate:
     async def test_endpoints(self):
         """Test endpoint generation."""
         node = ZImageGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/z-image"
+        # Derived endpoints
         assert node._get_submit_endpoint() == "/v1/market/z-image/generate"
         assert node._get_status_endpoint("task123") == "/v1/market/z-image/task123"
         assert (
@@ -204,6 +210,8 @@ class TestNanoBananaGenerate:
     async def test_endpoints(self):
         """Test endpoint generation."""
         node = NanoBananaGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/google/nano-banana"
+        # Derived endpoints
         assert node._get_submit_endpoint() == "/v1/market/google/nano-banana/generate"
         assert (
             node._get_status_endpoint("task123")
@@ -222,6 +230,8 @@ class TestFluxProTextToImage:
     async def test_endpoints(self):
         """Test endpoint generation."""
         node = FluxProTextToImage(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/flux2/pro"
+        # FluxPro uses text-to-image instead of generate
         assert node._get_submit_endpoint() == "/v1/market/flux2/pro/text-to-image"
         assert node._get_status_endpoint("task123") == "/v1/market/flux2/pro/task123"
         assert (
