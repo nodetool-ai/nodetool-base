@@ -11,7 +11,22 @@ from nodetool.nodes.kie.image import (
     ZImageGenerate,
     NanoBananaGenerate,
     FluxProTextToImage,
+    NanoBananaProGenerate,
+    FluxKontextGenerate,
+    GrokImagineGenerate,
+    TopazImageUpscale,
 )
+from nodetool.nodes.kie.video import (
+    Veo31Generate,
+    Wan26Generate,
+    Sora2Generate,
+    Sora2ProGenerate,
+    Seedance10Generate,
+    Hailuo23Generate,
+    KlingAIAvatar,
+    TopazVideoUpscale,
+)
+from nodetool.nodes.kie.audio import SunoMusicGenerate
 
 
 class MockResponse:
@@ -90,11 +105,27 @@ class TestKieBaseNode:
 
     def test_subclass_is_visible(self):
         """Subclasses should be visible."""
+        # Image generation nodes
         assert Generate4OImage.is_visible()
         assert SeedreamGenerate.is_visible()
         assert ZImageGenerate.is_visible()
         assert NanoBananaGenerate.is_visible()
         assert FluxProTextToImage.is_visible()
+        assert NanoBananaProGenerate.is_visible()
+        assert FluxKontextGenerate.is_visible()
+        assert GrokImagineGenerate.is_visible()
+        assert TopazImageUpscale.is_visible()
+        # Video generation nodes
+        assert Veo31Generate.is_visible()
+        assert Wan26Generate.is_visible()
+        assert Sora2Generate.is_visible()
+        assert Sora2ProGenerate.is_visible()
+        assert Seedance10Generate.is_visible()
+        assert Hailuo23Generate.is_visible()
+        assert KlingAIAvatar.is_visible()
+        assert TopazVideoUpscale.is_visible()
+        # Audio generation nodes
+        assert SunoMusicGenerate.is_visible()
 
 
 class TestGenerate4OImage:
@@ -166,13 +197,13 @@ class TestSeedreamGenerate:
     async def test_endpoints(self):
         """Test endpoint generation."""
         node = SeedreamGenerate(prompt="test")
-        assert node._get_base_endpoint() == "/v1/market/seedream"
+        assert node._get_base_endpoint() == "/v1/market/seedream-4-5"
         # Derived endpoints
-        assert node._get_submit_endpoint() == "/v1/market/seedream/generate"
-        assert node._get_status_endpoint("task123") == "/v1/market/seedream/task123"
+        assert node._get_submit_endpoint() == "/v1/market/seedream-4-5/generate"
+        assert node._get_status_endpoint("task123") == "/v1/market/seedream-4-5/task123"
         assert (
             node._get_download_endpoint("task123")
-            == "/v1/market/seedream/task123/download"
+            == "/v1/market/seedream-4-5/task123/download"
         )
 
     @pytest.mark.asyncio
@@ -369,3 +400,158 @@ class TestKiePollingLogic:
             await node.process(mock_context)
 
         mock_context.image_from_bytes.assert_called_once_with(b"actual_image_bytes")
+
+
+class TestNanoBananaProGenerate:
+    """Tests for NanoBananaProGenerate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = NanoBananaProGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/google/nano-banana-pro"
+        assert (
+            node._get_submit_endpoint() == "/v1/market/google/nano-banana-pro/generate"
+        )
+
+
+class TestFluxKontextGenerate:
+    """Tests for FluxKontextGenerate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = FluxKontextGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/flux-kontext"
+
+    @pytest.mark.asyncio
+    async def test_submit_payload_with_mode(self):
+        """Test submit payload includes mode."""
+        node = FluxKontextGenerate(
+            prompt="artwork",
+            mode=FluxKontextGenerate.Mode.MAX,
+        )
+        payload = node._get_submit_payload()
+        assert payload["mode"] == "max"
+
+
+class TestGrokImagineGenerate:
+    """Tests for GrokImagineGenerate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = GrokImagineGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/grok-imagine"
+
+
+class TestVeo31Generate:
+    """Tests for Veo31Generate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = Veo31Generate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/veo-3-1"
+
+    @pytest.mark.asyncio
+    async def test_submit_payload(self):
+        """Test submit payload generation."""
+        node = Veo31Generate(
+            prompt="a sunset",
+            mode=Veo31Generate.Mode.FAST,
+            duration=10,
+        )
+        payload = node._get_submit_payload()
+        assert payload["prompt"] == "a sunset"
+        assert payload["mode"] == "fast"
+        assert payload["duration"] == 10
+
+
+class TestWan26Generate:
+    """Tests for Wan26Generate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = Wan26Generate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/wan-2-6"
+
+    @pytest.mark.asyncio
+    async def test_submit_payload_with_multi_shots(self):
+        """Test submit payload with multi_shots enabled."""
+        node = Wan26Generate(
+            prompt="action scene",
+            multi_shots=True,
+            resolution=Wan26Generate.Resolution.FULL_HD_1080P,
+        )
+        payload = node._get_submit_payload()
+        assert payload["multi_shots"] is True
+        assert payload["resolution"] == "1080p"
+
+
+class TestSora2Generate:
+    """Tests for Sora2Generate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = Sora2Generate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/sora-2"
+
+
+class TestSora2ProGenerate:
+    """Tests for Sora2ProGenerate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = Sora2ProGenerate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/sora-2-pro"
+
+
+class TestSeedance10Generate:
+    """Tests for Seedance10Generate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = Seedance10Generate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/seedance-1-0"
+
+
+class TestHailuo23Generate:
+    """Tests for Hailuo23Generate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = Hailuo23Generate(prompt="test")
+        assert node._get_base_endpoint() == "/v1/market/hailuo-2-3"
+
+
+class TestSunoMusicGenerate:
+    """Tests for SunoMusicGenerate node."""
+
+    @pytest.mark.asyncio
+    async def test_endpoints(self):
+        """Test endpoint generation."""
+        node = SunoMusicGenerate(prompt="upbeat pop song")
+        assert node._get_base_endpoint() == "/v1/market/suno"
+
+    @pytest.mark.asyncio
+    async def test_submit_payload(self):
+        """Test submit payload generation."""
+        node = SunoMusicGenerate(
+            prompt="energetic rock song",
+            style=SunoMusicGenerate.Style.ROCK,
+            instrumental=True,
+            duration=120,
+            model=SunoMusicGenerate.Model.V4_5_PLUS,
+        )
+        payload = node._get_submit_payload()
+        assert payload["prompt"] == "energetic rock song"
+        assert payload["style"] == "rock"
+        assert payload["instrumental"] is True
+        assert payload["duration"] == 120
+        assert payload["model"] == "v4.5+"
