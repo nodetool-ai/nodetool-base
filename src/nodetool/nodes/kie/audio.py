@@ -18,7 +18,7 @@ from .image import KieBaseNode
 log = get_logger(__name__)
 
 
-class SunoMusicGenerate(KieBaseNode):
+class Suno(KieBaseNode):
     """Generate music using Suno AI via Kie.ai.
 
     kie, suno, music, audio, ai, generation, vocals, instrumental
@@ -34,6 +34,8 @@ class SunoMusicGenerate(KieBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 4.0
+    _max_poll_attempts: int = 120
 
     prompt: str = Field(
         default="",
@@ -85,10 +87,10 @@ class SunoMusicGenerate(KieBaseNode):
         description="Suno model version to use.",
     )
 
-    def _get_base_endpoint(self) -> str:
-        return "/v1/market/suno"
+    def _get_model(self) -> str:
+        return "suno"
 
-    def _get_submit_payload(self) -> dict[str, Any]:
+    def _get_input_params(self) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         payload: dict[str, Any] = {
