@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.12",
+  "version": "0.6.2-rc.13",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -30731,6 +30731,1529 @@
         "align",
         "image"
       ]
+    },
+    {
+      "title": "Suno Music Generate",
+      "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals up to around 8 minutes long.\n    Supports the latest Suno V4.5+ model with improved vocal quality and composition.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.SunoMusicGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Description of the music to generate (genre, mood, instruments, etc.)."
+        },
+        {
+          "name": "lyrics",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Lyrics",
+          "description": "Optional lyrics for the song. Leave empty for instrumental."
+        },
+        {
+          "name": "style",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pop",
+              "rock",
+              "jazz",
+              "classical",
+              "electronic",
+              "hip-hop",
+              "r&b",
+              "country",
+              "folk",
+              "ambient",
+              "custom"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.SunoMusicGenerate.Style"
+          },
+          "default": "custom",
+          "title": "Style",
+          "description": "Music style/genre. Use 'custom' for prompt-based generation."
+        },
+        {
+          "name": "instrumental",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Instrumental",
+          "description": "Generate instrumental-only (no vocals)."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 60,
+          "title": "Duration",
+          "description": "Approximate duration in seconds.",
+          "min": 30.0,
+          "max": 480.0
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "v4",
+              "v4.5",
+              "v4.5+"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.SunoMusicGenerate.Model"
+          },
+          "default": "v4.5+",
+          "title": "Model",
+          "description": "Suno model version to use."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "lyrics",
+        "style",
+        "instrumental",
+        "duration",
+        "model"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Hailuo 23 Generate",
+      "description": "Generate videos using MiniMax's Hailuo 2.3 model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, text-to-video, cinematic\n\n    Hailuo 2.3 specializes in realistic character motion, expressive facial\n    micro-expressions, and cinematic quality for text-to-video and image-to-video.\n\n    Use cases:\n    - Generate cinematic videos with realistic characters\n    - Create content with expressive facial animations\n    - High-fidelity text-to-video generation\n    - Image-to-video with complex movements",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Hailuo23Generate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Optional reference image for image-to-video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Hailuo23Generate.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "fast"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Hailuo23Generate.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' for quality, 'fast' for speed."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "image",
+        "resolution",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling AIAvatar",
+      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingAIAvatar",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The face/character image to animate."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio track for lip-syncing."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide emotions and expressions."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingAIAvatar.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' or 'pro' for higher quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "image",
+        "audio",
+        "prompt",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedance 10 Generate",
+      "description": "Generate videos using ByteDance's Seedance 1.0 model via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, text-to-video, multi-shot\n\n    Seedance 1.0 supports text and/or image to video generation with\n    Lite (faster) and Pro (higher quality) modes.\n\n    Use cases:\n    - Generate videos from text/image\n    - Create multi-shot videos with scene transitions\n    - Fast video prototyping with Lite mode\n    - High-quality output with Pro mode",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Seedance10Generate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Optional reference image for image-to-video generation."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "lite",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Seedance10Generate.Mode"
+          },
+          "default": "pro",
+          "title": "Mode",
+          "description": "Generation mode: 'lite' for speed, 'pro' for quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "image",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sora 2 Generate",
+      "description": "Generate videos using OpenAI's Sora 2 model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, realistic\n\n    Sora 2 generates short videos (up to 10 seconds) from text or images,\n    emphasizing realistic motion, physics consistency, and native audio.\n\n    Use cases:\n    - Generate realistic videos from text\n    - Create videos with native audio (dialogue/ambient sound)\n    - Image-to-video generation\n    - Cinematic content creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Sora2Generate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Optional reference image for image-to-video generation."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2Generate.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' or 'pro' for higher quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "image",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sora 2 Pro Generate",
+      "description": "Generate videos using OpenAI's Sora 2 Pro model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, pro, 1080p\n\n    Sora 2 Pro supports higher resolution (HD) and longer clips (15s),\n    with improved realism in motion and physics.\n\n    Use cases:\n    - Generate professional-grade HD videos\n    - Create longer 15-second clips\n    - High-fidelity motion and physics\n    - Premium content creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Sora2ProGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Optional reference image for image-to-video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2ProGenerate.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "image",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Topaz Video Upscale",
+      "description": "Upscale and enhance videos using Topaz Labs AI via Kie.ai.\n\n    kie, topaz, upscale, enhance, video, ai, 4k\n\n    Uses Topaz Labs' video enhancement AI to upscale videos to 1080p or 4K,\n    sharpen frames, reduce noise, and interpolate frames for smoother motion.\n\n    Use cases:\n    - Upscale old or low-quality footage to HD/4K\n    - Enhance YouTube content or game recordings\n    - Restore and improve home videos\n    - Prepare videos for high-resolution displays",
+      "namespace": "kie.video",
+      "node_type": "kie.video.TopazVideoUpscale",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video",
+          "description": "The video to upscale."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1080p",
+              "4k"
+            ],
+            "type_name": "nodetool.nodes.kie.video.TopazVideoUpscale.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Target resolution for upscaling."
+        },
+        {
+          "name": "denoise",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Denoise",
+          "description": "Apply denoising to reduce artifacts."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "video",
+        "resolution",
+        "denoise"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Veo 31 Generate",
+      "description": "Generate videos using Google DeepMind's Veo 3.1 model via Kie.ai.\n\n    kie, veo, google, deepmind, video generation, ai, text-to-video, 1080p\n\n    Veo 3.1 creates 1080p videos with synchronized native audio, extended clip\n    durations beyond 8 seconds, and fine-grained frame control.\n\n    Use cases:\n    - Generate videos from text descriptions\n    - Create 1080p content with native audio\n    - Generate cinematic short videos\n    - Image-to-video generation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Veo31Generate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Optional reference image for image-to-video generation."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "fast",
+              "quality"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31Generate.Mode"
+          },
+          "default": "quality",
+          "title": "Mode",
+          "description": "Generation mode: 'fast' for speed, 'quality' for higher fidelity."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 8,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 4.0,
+          "max": 15.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "image",
+        "mode",
+        "duration"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Wan 26 Generate",
+      "description": "Generate videos using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 1080p\n\n    Wan 2.6 supports text-to-video, image-to-video, and video-to-video modes\n    with up to 1080p resolution. Can produce coherent multi-scene videos.\n\n    Use cases:\n    - Generate 15-second HD videos\n    - Create multi-shot videos with scene transitions\n    - Image-to-video animation\n    - Video-to-video transformations",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Wan26Generate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "Optional reference image for image-to-video generation."
+        },
+        {
+          "name": "multi_shots",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Multi Shots",
+          "description": "Enable multi-shot mode for coherent scene transitions."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Wan26Generate.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "image",
+        "multi_shots",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux Kontext Generate",
+      "description": "Generate images using Black Forest Labs' Flux Kontext model via Kie.ai.\n\n    kie, flux, flux-kontext, black-forest-labs, image generation, ai, text-to-image, editing\n\n    Flux Kontext supports Pro (speed-optimized) and Max (quality-focused) variants\n    with features like multiple aspect ratios, safety controls, and async processing.\n\n    Use cases:\n    - Generate high-quality artistic images\n    - Advanced image editing and generation\n    - Create professional visual content\n    - Generate images with fine detail and artistic style",
+      "namespace": "kie.image",
+      "node_type": "kie.image.FluxKontextGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.FluxKontextGenerate.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pro",
+              "max"
+            ],
+            "type_name": "nodetool.nodes.kie.image.FluxKontextGenerate.Mode"
+          },
+          "default": "pro",
+          "title": "Mode",
+          "description": "Generation mode: 'pro' for speed, 'max' for quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux Pro Text To Image",
+      "description": "Generate images using Black Forest Labs' Flux Pro model via Kie.ai.\n\n    kie, flux, flux-pro, black-forest-labs, image generation, ai, text-to-image\n\n    Use cases:\n    - Generate high-quality artistic images\n    - Create professional visual content\n    - Generate images with fine detail and artistic style",
+      "namespace": "kie.image",
+      "node_type": "kie.image.FluxProTextToImage",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.FluxProTextToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 25,
+          "title": "Steps",
+          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
+          "min": 1.0,
+          "max": 50.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+          "min": 1.0,
+          "max": 20.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio",
+        "steps",
+        "guidance_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Generate 4 OImage",
+      "description": "Generate images using Kie.ai's 4O Image API (GPT-4o powered).\n\n    kie, 4o, gpt4o, image generation, ai, text-to-image\n\n    Use cases:\n    - Generate high-quality images from text descriptions\n    - Create illustrations and artwork\n    - Generate product mockups\n    - Create visual content for marketing",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Generate4OImage",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "21:9",
+              "9:21"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Generate4OImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Grok Imagine Generate",
+      "description": "Generate images using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, image generation, ai, text-to-image, multimodal\n\n    Grok Imagine is a multimodal generative model that can generate images\n    from text prompts with coherent motion and synchronized background audio for videos.\n\n    Use cases:\n    - Generate images from text descriptions\n    - Create visual content with AI\n    - Multimodal content generation",
+      "namespace": "kie.image",
+      "node_type": "kie.image.GrokImagineGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.GrokImagineGenerate.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Nano Banana Generate",
+      "description": "Generate images using Google's Nano Banana model (Gemini 2.5) via Kie.ai.\n\n    kie, nano-banana, google, gemini, image generation, ai, text-to-image, fast\n\n    Nano Banana is powered by Gemini 2.5 Flash Image and offers fast\n    language-driven image generation/editing, focusing on speed and iteration efficiency.\n\n    Use cases:\n    - Generate images with efficient processing\n    - Create visual content quickly\n    - Generate images for rapid prototyping\n    - Fast iteration on image concepts",
+      "namespace": "kie.image",
+      "node_type": "kie.image.NanoBananaGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.NanoBananaGenerate.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Nano Banana Pro Generate",
+      "description": "Generate images using Google's Nano Banana Pro model (Gemini 3.0) via Kie.ai.\n\n    kie, nano-banana-pro, google, gemini, image generation, ai, text-to-image, 4k, high-fidelity\n\n    Nano Banana Pro is based on Gemini 3.0 Pro Image and provides higher fidelity\n    with sharper structure, 4K output, and better text rendering for photorealistic results.\n\n    Use cases:\n    - Generate high-fidelity photorealistic images\n    - Create 4K resolution content\n    - Generate images with sharp text rendering\n    - Professional-grade visual content",
+      "namespace": "kie.image",
+      "node_type": "kie.image.NanoBananaProGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.NanoBananaProGenerate.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedream Generate",
+      "description": "Generate images using ByteDance's Seedream 4.5 model via Kie.ai.\n\n    kie, seedream, bytedance, image generation, ai, text-to-image, 4k\n\n    Seedream 4.5 generates high-quality visuals up to 4K resolution with\n    improved detail fidelity, multi-image blending, and sharp text/face rendering.\n\n    Use cases:\n    - Generate creative and artistic images\n    - Create diverse visual content up to 4K\n    - Generate illustrations with unique styles\n    - Multi-image reference for consistency",
+      "namespace": "kie.image",
+      "node_type": "kie.image.SeedreamGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.SeedreamGenerate.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Topaz Image Upscale",
+      "description": "Upscale and enhance images using Topaz Labs AI via Kie.ai.\n\n    kie, topaz, upscale, enhance, image, ai, super-resolution\n\n    Leverages Topaz Labs' image super-resolution models to upscale and enhance images.\n    Can enlarge images by 2x, 4x, etc., while unblurring and sharpening details.\n\n    Use cases:\n    - Upscale low-resolution images to high resolution\n    - Enhance old or degraded photos\n    - Improve AI-generated art quality\n    - Prepare images for large format printing",
+      "namespace": "kie.image",
+      "node_type": "kie.image.TopazImageUpscale",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to upscale."
+        },
+        {
+          "name": "scale_factor",
+          "type": {
+            "type": "enum",
+            "values": [
+              "2",
+              "4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.TopazImageUpscale.ScaleFactor"
+          },
+          "default": "2",
+          "title": "Scale Factor",
+          "description": "The upscaling factor (2x or 4x)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "image",
+        "scale_factor"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "ZImage Generate",
+      "description": "Generate images using Alibaba's Z-Image Turbo model via Kie.ai.\n\n    kie, z-image, zimage, alibaba, image generation, ai, text-to-image, photorealistic\n\n    Z-Image Turbo produces realistic, detail-rich images with very low latency.\n    It supports bilingual text (English/Chinese) in images with sharp text rendering.\n\n    Use cases:\n    - Generate high-quality photorealistic images quickly\n    - Create images with embedded text (English/Chinese)\n    - Generate detailed illustrations with low latency\n    - Product visualizations",
+      "namespace": "kie.image",
+      "node_type": "kie.image.ZImageGenerate",
+      "properties": [
+        {
+          "name": "poll_interval",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Poll Interval",
+          "description": "Interval in seconds between status checks.",
+          "min": 0.5,
+          "max": 30.0
+        },
+        {
+          "name": "max_poll_attempts",
+          "type": {
+            "type": "int"
+          },
+          "default": 120,
+          "title": "Max Poll Attempts",
+          "description": "Maximum number of polling attempts before timeout.",
+          "min": 1.0,
+          "max": 600.0
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.ZImageGenerate.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "poll_interval",
+        "max_poll_attempts",
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Add Vectors",
