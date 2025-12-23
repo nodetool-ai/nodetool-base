@@ -74,19 +74,28 @@ class KieBaseNode(BaseNode):
         }
 
     @abstractmethod
+    def _get_base_endpoint(self) -> str:
+        """Get the base API endpoint for this model.
+
+        Subclasses only need to implement this single method.
+        Other endpoints are derived from it:
+        - Submit: {base_endpoint}/generate
+        - Status: {base_endpoint}/{task_id}
+        - Download: {base_endpoint}/{task_id}/download
+        """
+        ...
+
     def _get_submit_endpoint(self) -> str:
         """Get the API endpoint for submitting tasks."""
-        ...
+        return f"{self._get_base_endpoint()}/generate"
 
-    @abstractmethod
     def _get_status_endpoint(self, task_id: str) -> str:
         """Get the API endpoint for checking task status."""
-        ...
+        return f"{self._get_base_endpoint()}/{task_id}"
 
-    @abstractmethod
     def _get_download_endpoint(self, task_id: str) -> str:
         """Get the API endpoint for downloading results."""
-        ...
+        return f"{self._get_base_endpoint()}/{task_id}/download"
 
     @abstractmethod
     def _get_submit_payload(self) -> dict[str, Any]:
@@ -256,14 +265,8 @@ class Generate4OImage(KieBaseNode):
         description="The aspect ratio of the generated image.",
     )
 
-    def _get_submit_endpoint(self) -> str:
-        return "/v1/4o-images/generate"
-
-    def _get_status_endpoint(self, task_id: str) -> str:
-        return f"/v1/4o-images/{task_id}"
-
-    def _get_download_endpoint(self, task_id: str) -> str:
-        return f"/v1/4o-images/{task_id}/download"
+    def _get_base_endpoint(self) -> str:
+        return "/v1/4o-images"
 
     def _get_submit_payload(self) -> dict[str, Any]:
         if not self.prompt:
@@ -308,14 +311,8 @@ class SeedreamGenerate(KieBaseNode):
         description="The aspect ratio of the generated image.",
     )
 
-    def _get_submit_endpoint(self) -> str:
-        return "/v1/market/seedream/generate"
-
-    def _get_status_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/seedream/{task_id}"
-
-    def _get_download_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/seedream/{task_id}/download"
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/seedream"
 
     def _get_submit_payload(self) -> dict[str, Any]:
         if not self.prompt:
@@ -360,14 +357,8 @@ class ZImageGenerate(KieBaseNode):
         description="The aspect ratio of the generated image.",
     )
 
-    def _get_submit_endpoint(self) -> str:
-        return "/v1/market/z-image/generate"
-
-    def _get_status_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/z-image/{task_id}"
-
-    def _get_download_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/z-image/{task_id}/download"
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/z-image"
 
     def _get_submit_payload(self) -> dict[str, Any]:
         if not self.prompt:
@@ -412,14 +403,8 @@ class NanoBananaGenerate(KieBaseNode):
         description="The aspect ratio of the generated image.",
     )
 
-    def _get_submit_endpoint(self) -> str:
-        return "/v1/market/google/nano-banana/generate"
-
-    def _get_status_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/google/nano-banana/{task_id}"
-
-    def _get_download_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/google/nano-banana/{task_id}/download"
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/google/nano-banana"
 
     def _get_submit_payload(self) -> dict[str, Any]:
         if not self.prompt:
@@ -478,14 +463,12 @@ class FluxProTextToImage(KieBaseNode):
         le=20.0,
     )
 
+    def _get_base_endpoint(self) -> str:
+        return "/v1/market/flux2/pro"
+
     def _get_submit_endpoint(self) -> str:
-        return "/v1/market/flux2/pro/text-to-image"
-
-    def _get_status_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/flux2/pro/{task_id}"
-
-    def _get_download_endpoint(self, task_id: str) -> str:
-        return f"/v1/market/flux2/pro/{task_id}/download"
+        """Override to use text-to-image instead of generate."""
+        return f"{self._get_base_endpoint()}/text-to-image"
 
     def _get_submit_payload(self) -> dict[str, Any]:
         if not self.prompt:
