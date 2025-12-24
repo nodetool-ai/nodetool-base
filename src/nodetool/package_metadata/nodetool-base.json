@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.12",
+  "version": "0.6.2-rc.13",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -30731,6 +30731,2489 @@
         "align",
         "image"
       ]
+    },
+    {
+      "title": "Suno",
+      "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals up to around 8 minutes long.\n    Supports the latest Suno V4.5+ model with improved vocal quality and composition.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.Suno",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Description of the music to generate (genre, mood, instruments, etc.)."
+        },
+        {
+          "name": "lyrics",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Lyrics",
+          "description": "Optional lyrics for the song. Leave empty for instrumental."
+        },
+        {
+          "name": "style",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pop",
+              "rock",
+              "jazz",
+              "classical",
+              "electronic",
+              "hip-hop",
+              "r&b",
+              "country",
+              "folk",
+              "ambient",
+              "custom"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.Suno.Style"
+          },
+          "default": "custom",
+          "title": "Style",
+          "description": "Music style/genre. Use 'custom' for prompt-based generation."
+        },
+        {
+          "name": "instrumental",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Instrumental",
+          "description": "Generate instrumental-only (no vocals)."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 60,
+          "title": "Duration",
+          "description": "Approximate duration in seconds.",
+          "min": 30.0,
+          "max": 480.0
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "v4",
+              "v4.5",
+              "v4.5+"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.Suno.Model"
+          },
+          "default": "v4.5+",
+          "title": "Model",
+          "description": "Suno model version to use."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "lyrics",
+        "style",
+        "instrumental",
+        "duration",
+        "model"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Grok Imagine Image To Video",
+      "description": "Generate videos from images using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, image-to-video, multimodal\n\n    Grok Imagine can transform images into videos with coherent motion and\n    synchronized background elements.\n\n    Use cases:\n    - Animate static images\n    - Create videos from photos\n    - Generate motion from images",
+      "namespace": "kie.video",
+      "node_type": "kie.video.GrokImagineImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The source image to animate."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the animation."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "short",
+              "medium",
+              "long"
+            ],
+            "type_name": "nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration"
+          },
+          "default": "medium",
+          "title": "Duration",
+          "description": "Duration of the generated video."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "duration"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Grok Imagine Text To Video",
+      "description": "Generate videos from text using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, text-to-video, multimodal\n\n    Grok Imagine can generate videos from text prompts with coherent motion\n    and synchronized background elements.\n\n    Use cases:\n    - Generate videos from text descriptions\n    - Create cinematic content from prompts\n    - Text-to-video generation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.GrokImagineTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "short",
+              "medium",
+              "long"
+            ],
+            "type_name": "nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration"
+          },
+          "default": "medium",
+          "title": "Duration",
+          "description": "Duration of the generated video."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "duration",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Hailuo Image To Video Pro",
+      "description": "Generate videos from images using MiniMax's Hailuo 2.3 Pro model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, pro, high-quality\n\n    Hailuo 2.3 Pro specializes in realistic character motion, expressive facial\n    micro-expressions, and cinematic quality for image-to-video generation.\n\n    Use cases:\n    - Generate high-quality cinematic videos from images\n    - Create content with expressive facial animations\n    - Professional image-to-video production\n    - Complex character movements from static images",
+      "namespace": "kie.video",
+      "node_type": "kie.video.HailuoImageToVideoPro",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Hailuo Image To Video Standard",
+      "description": "Generate videos from images using MiniMax's Hailuo 2.3 Standard model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, standard, fast\n\n    Hailuo 2.3 Standard offers efficient image-to-video generation with good quality\n    and faster processing times for practical use cases.\n\n    Use cases:\n    - Generate quality videos from images efficiently\n    - Quick image animation with realistic motion\n    - Fast image-to-video prototyping\n    - Practical video content creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.HailuoImageToVideoStandard",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling AIAvatar Pro",
+      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingAIAvatarPro",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The face/character image to animate."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio track for lip-syncing."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide emotions and expressions."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingAIAvatarPro.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' or 'pro' for higher quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "audio",
+        "prompt",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling AIAvatar Standard",
+      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingAIAvatarStandard",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The face/character image to animate."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio track for lip-syncing."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide emotions and expressions."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' or 'pro' for higher quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "audio",
+        "prompt",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling Image To Video",
+      "description": "Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, realistic\n\n    Kling 2.6 Image-to-Video transforms reference images into high-quality videos\n    with realistic motion, physics consistency, and cinematic quality output.\n\n    Use cases:\n    - Generate high-quality videos from images\n    - Create realistic motion and physics from images\n    - Animate static images with cinematic quality\n    - Professional image-to-video production",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingImageToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingImageToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "sound",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Sound",
+          "description": "Whether the generated video includes sound."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "duration",
+        "seed",
+        "sound"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling Text To Video",
+      "description": "Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, realistic\n\n    Kling 2.6 offers high-quality text-to-video generation with realistic motion,\n    physics consistency, and cinematic quality output.\n\n    Use cases:\n    - Generate high-quality videos from text\n    - Create realistic motion and physics\n    - Cinematic content creation\n    - Professional video production",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingTextToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "duration",
+        "seed"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedance V 1 Lite Image To Video",
+      "description": "Generate videos from images using ByteDance's Seedance V1 Lite model via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, image-to-video, lite, fast\n\n    Seedance V1 Lite offers fast image-to-video generation with efficient processing,\n    transforming reference images into dynamic video sequences.\n\n    Use cases:\n    - Fast image animation from reference images\n    - Quick video prototyping\n    - Animate static images efficiently\n    - Rapid iteration on image-to-video concepts",
+      "namespace": "kie.video",
+      "node_type": "kie.video.SeedanceV1LiteImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1LiteImageToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "camera_fixed",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Camera Fixed",
+          "description": "Whether to keep the camera fixed or allow camera movement."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "enable_safety_checker",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Safety Checker",
+          "description": "Enable safety checker to filter inappropriate content."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "resolution",
+        "duration",
+        "camera_fixed",
+        "seed",
+        "enable_safety_checker"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedance V 1 Lite Text To Video",
+      "description": "Generate videos from text using ByteDance's Seedance V1 Lite model via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, text-to-video, lite, fast\n\n    Seedance V1 Lite offers fast text-to-video generation with efficient processing,\n    supporting multi-shot videos and cinematic scene transitions.\n\n    Use cases:\n    - Fast video prototyping from text\n    - Create multi-shot videos with scene transitions\n    - Quick concept visualization\n    - Rapid iteration on video ideas",
+      "namespace": "kie.video",
+      "node_type": "kie.video.SeedanceV1LiteTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate. Supports shot descriptions with [Cut to] notation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1LiteTextToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1LiteTextToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "camera_fixed",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Camera Fixed",
+          "description": "Whether to keep the camera fixed or allow camera movement."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "enable_safety_checker",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Safety Checker",
+          "description": "Enable safety checker to filter inappropriate content."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "duration",
+        "camera_fixed",
+        "seed",
+        "enable_safety_checker"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedance V 1 Pro Fast Image To Video",
+      "description": "Generate videos from images using ByteDance's Seedance V1 Pro Fast model via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, image-to-video, pro, fast\n\n    Seedance V1 Pro Fast offers balanced image-to-video generation with both\n    quality and speed, transforming reference images into high-quality video sequences\n    with optimized processing time.\n\n    Use cases:\n    - Generate high-quality videos from images efficiently\n    - Fast professional image animations\n    - Balanced quality and speed image-to-video conversion\n    - Production-ready image animation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.SeedanceV1ProFastImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1ProFastImageToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "camera_fixed",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Camera Fixed",
+          "description": "Whether to keep the camera fixed or allow camera movement."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "enable_safety_checker",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Safety Checker",
+          "description": "Enable safety checker to filter inappropriate content."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "resolution",
+        "duration",
+        "camera_fixed",
+        "seed",
+        "enable_safety_checker"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedance V 1 Pro Image To Video",
+      "description": "Generate videos from images using ByteDance's Seedance V1 Pro model via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, image-to-video, pro, high-quality\n\n    Seedance V1 Pro offers high-quality image-to-video generation with improved\n    fidelity, transforming reference images into professional video sequences.\n\n    Use cases:\n    - Generate high-quality videos from images\n    - Create professional image animations\n    - Cinematic image-to-video conversion\n    - High-fidelity video production from images",
+      "namespace": "kie.video",
+      "node_type": "kie.video.SeedanceV1ProImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1ProImageToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "camera_fixed",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Camera Fixed",
+          "description": "Whether to keep the camera fixed or allow camera movement."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "enable_safety_checker",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Safety Checker",
+          "description": "Enable safety checker to filter inappropriate content."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "resolution",
+        "duration",
+        "camera_fixed",
+        "seed",
+        "enable_safety_checker"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedance V 1 Pro Text To Video",
+      "description": "Generate videos from text using ByteDance's Seedance V1 Pro model via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, text-to-video, pro, high-quality\n\n    Seedance V1 Pro offers high-quality text-to-video generation with improved\n    fidelity, supporting multi-shot videos and cinematic scene transitions.\n\n    Use cases:\n    - Generate high-quality videos from text\n    - Create professional multi-shot videos\n    - Cinematic content creation\n    - High-fidelity video production",
+      "namespace": "kie.video",
+      "node_type": "kie.video.SeedanceV1ProTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate. Supports shot descriptions with [Cut to] notation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1ProTextToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.SeedanceV1ProTextToVideo.Resolution"
+          },
+          "default": "720p",
+          "title": "Resolution",
+          "description": "Video resolution."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "int"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds.",
+          "min": 1.0,
+          "max": 10.0
+        },
+        {
+          "name": "camera_fixed",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Camera Fixed",
+          "description": "Whether to keep the camera fixed or allow camera movement."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "enable_safety_checker",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Safety Checker",
+          "description": "Enable safety checker to filter inappropriate content."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "duration",
+        "camera_fixed",
+        "seed",
+        "enable_safety_checker"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sora 2 Pro Image To Video",
+      "description": "Generate videos from images using OpenAI's Sora 2 Pro model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, image-to-video, pro, 1080p\n\n    Sora 2 Pro Image-to-Video transforms reference images into professional-grade\n    HD videos with improved realism in motion and physics. Supports higher resolution\n    (HD) and longer clips (15s).\n\n    Use cases:\n    - Generate professional-grade HD videos from images\n    - Create longer 15-second video clips\n    - High-fidelity motion and physics from images\n    - Premium image-to-video content creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Sora2ProImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The reference image to animate into a video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "landscape",
+              "portrait",
+              "square"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2ProImageToVideo.AspectRatio"
+          },
+          "default": "landscape",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "n_frames",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "N Frames",
+          "description": "Number of frames for the video.",
+          "min": 1.0,
+          "max": 60.0
+        },
+        {
+          "name": "remove_watermark",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Remove Watermark",
+          "description": "Whether to remove the watermark from the generated video."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "aspect_ratio",
+        "n_frames",
+        "remove_watermark"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sora 2 Pro Storyboard",
+      "description": "Generate storyboard videos using OpenAI's Sora 2 Pro model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, storyboard, pro, 1080p\n\n    Sora 2 Pro Storyboard creates professional-grade storyboard videos with\n    scene transitions, cinematic framing, and professional editing techniques.\n\n    Use cases:\n    - Generate cinematic storyboards from text\n    - Create professional video previews\n    - Plan video shoots with visual storyboards\n    - Develop video concepts with scene sequences",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Sora2ProStoryboard",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the storyboard sequence."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "landscape",
+              "portrait",
+              "square"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2ProStoryboard.AspectRatio"
+          },
+          "default": "landscape",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "n_frames",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "N Frames",
+          "description": "Number of frames for the video.",
+          "min": 1.0,
+          "max": 60.0
+        },
+        {
+          "name": "remove_watermark",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Remove Watermark",
+          "description": "Whether to remove the watermark from the generated video."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "n_frames",
+        "remove_watermark"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sora 2 Pro Text To Video",
+      "description": "Generate videos from text using OpenAI's Sora 2 Pro model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, pro, 1080p\n\n    Sora 2 Pro Text-to-Video generates professional-grade HD videos from text prompts\n    with improved realism in motion and physics. Supports higher resolution (HD) and\n    longer clips (15s).\n\n    Use cases:\n    - Generate professional-grade HD videos from text\n    - Create longer 15-second clips\n    - High-fidelity motion and physics\n    - Premium text-to-video content creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Sora2ProTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "landscape",
+              "portrait",
+              "square"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2ProTextToVideo.AspectRatio"
+          },
+          "default": "landscape",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "n_frames",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "N Frames",
+          "description": "Number of frames for the video.",
+          "min": 1.0,
+          "max": 60.0
+        },
+        {
+          "name": "remove_watermark",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Remove Watermark",
+          "description": "Whether to remove the watermark from the generated video."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "n_frames",
+        "remove_watermark"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Sora 2 Text To Video",
+      "description": "Generate videos from text using OpenAI's Sora 2 model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, realistic\n\n    Sora 2 Text-to-Video generates short videos (up to 10 seconds) from text prompts,\n    emphasizing realistic motion, physics consistency, and native audio. Supports\n    standard and pro modes for different quality/speed tradeoffs.\n\n    Use cases:\n    - Generate realistic videos from text\n    - Create videos with native audio (dialogue/ambient sound)\n    - Quick text-to-video prototyping\n    - Cinematic content creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Sora2TextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the video to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "landscape",
+              "portrait",
+              "square"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2TextToVideo.AspectRatio"
+          },
+          "default": "landscape",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "n_frames",
+          "type": {
+            "type": "int"
+          },
+          "default": 10,
+          "title": "N Frames",
+          "description": "Number of frames for the video.",
+          "min": 1.0,
+          "max": 60.0
+        },
+        {
+          "name": "remove_watermark",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Remove Watermark",
+          "description": "Whether to remove the watermark from the generated video."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2TextToVideo.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' or 'pro' for higher quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "n_frames",
+        "remove_watermark",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Topaz Video Upscale",
+      "description": "Upscale and enhance videos using Topaz Labs AI via Kie.ai.\n\n    kie, topaz, upscale, enhance, video, ai, 4k\n\n    Uses Topaz Labs' video enhancement AI to upscale videos to 1080p or 4K,\n    sharpen frames, reduce noise, and interpolate frames for smoother motion.\n\n    Use cases:\n    - Upscale old or low-quality footage to HD/4K\n    - Enhance YouTube content or game recordings\n    - Restore and improve home videos\n    - Prepare videos for high-resolution displays",
+      "namespace": "kie.video",
+      "node_type": "kie.video.TopazVideoUpscale",
+      "properties": [
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video",
+          "description": "The video to upscale."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1080p",
+              "4k"
+            ],
+            "type_name": "nodetool.nodes.kie.video.TopazVideoUpscale.Resolution"
+          },
+          "default": "1080p",
+          "title": "Resolution",
+          "description": "Target resolution for upscaling."
+        },
+        {
+          "name": "denoise",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Denoise",
+          "description": "Apply denoising to reduce artifacts."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "video",
+        "resolution",
+        "denoise"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux 2 Flex Image To Image",
+      "description": "Generate images using Black Forest Labs' Flux 2 Flex Image-to-Image model via Kie.ai.\n\n    kie, flux, flux-2, flux-flex, black-forest-labs, image generation, ai, image-to-image\n\n    Use cases:\n    - Transform existing images with text prompts\n    - Apply artistic styles to photos\n    - Create variations of existing images\n    - Enhance and modify images",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Flux2FlexImageToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing how to transform the image."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The source image to transform."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1K",
+              "2K"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution"
+          },
+          "default": "1K",
+          "title": "Resolution",
+          "description": "Output image resolution."
+        },
+        {
+          "name": "steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 25,
+          "title": "Steps",
+          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
+          "min": 1.0,
+          "max": 50.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+          "min": 1.0,
+          "max": 20.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "aspect_ratio",
+        "resolution",
+        "steps",
+        "guidance_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux 2 Flex Text To Image",
+      "description": "Generate images using Black Forest Labs' Flux 2 Flex Text-to-Image model via Kie.ai.\n\n    kie, flux, flux-2, flux-flex, black-forest-labs, image generation, ai, text-to-image\n\n    Use cases:\n    - Generate high-quality images from text with flexible parameters\n    - Create professional visual content\n    - Generate images with fine detail and artistic style",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Flux2FlexTextToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1K",
+              "2K"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution"
+          },
+          "default": "1K",
+          "title": "Resolution",
+          "description": "Output image resolution."
+        },
+        {
+          "name": "steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 25,
+          "title": "Steps",
+          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
+          "min": 1.0,
+          "max": 50.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+          "min": 1.0,
+          "max": 20.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "steps",
+        "guidance_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux 2 Pro Image To Image",
+      "description": "Generate images using Black Forest Labs' Flux 2 Pro Image-to-Image model via Kie.ai.\n\n    kie, flux, flux-2, flux-pro, black-forest-labs, image generation, ai, image-to-image\n\n    Use cases:\n    - Transform existing images with text prompts\n    - Apply artistic styles to photos\n    - Create variations of existing images\n    - Enhance and modify images",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Flux2ProImageToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing how to transform the image."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The source image to transform."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1K",
+              "2K"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution"
+          },
+          "default": "1K",
+          "title": "Resolution",
+          "description": "Output image resolution."
+        },
+        {
+          "name": "steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 25,
+          "title": "Steps",
+          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
+          "min": 1.0,
+          "max": 50.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+          "min": 1.0,
+          "max": 20.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "aspect_ratio",
+        "resolution",
+        "steps",
+        "guidance_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux 2 Pro Text To Image",
+      "description": "Generate images using Black Forest Labs' Flux 2 Pro Text-to-Image model via Kie.ai.\n\n    kie, flux, flux-2, flux-pro, black-forest-labs, image generation, ai, text-to-image\n\n    Use cases:\n    - Generate high-quality artistic images from text\n    - Create professional visual content\n    - Generate images with fine detail and artistic style",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Flux2ProTextToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1K",
+              "2K"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution"
+          },
+          "default": "1K",
+          "title": "Resolution",
+          "description": "Output image resolution."
+        },
+        {
+          "name": "steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 25,
+          "title": "Steps",
+          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
+          "min": 1.0,
+          "max": 50.0
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+          "min": 1.0,
+          "max": 20.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "resolution",
+        "steps",
+        "guidance_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Flux Kontext",
+      "description": "Generate images using Black Forest Labs' Flux Kontext model via Kie.ai.\n\n    kie, flux, flux-kontext, black-forest-labs, image generation, ai, text-to-image, editing\n\n    Flux Kontext supports Pro (speed-optimized) and Max (quality-focused) variants\n    with features like multiple aspect ratios, safety controls, and async processing.\n\n    Use cases:\n    - Generate high-quality artistic images\n    - Advanced image editing and generation\n    - Create professional visual content\n    - Generate images with fine detail and artistic style",
+      "namespace": "kie.image",
+      "node_type": "kie.image.FluxKontext",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.FluxKontext.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pro",
+              "max"
+            ],
+            "type_name": "nodetool.nodes.kie.image.FluxKontext.Mode"
+          },
+          "default": "pro",
+          "title": "Mode",
+          "description": "Generation mode: 'pro' for speed, 'max' for quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Grok Imagine Text To Image",
+      "description": "Generate images using xAI's Grok Imagine Text-to-Image model via Kie.ai.\n\n    kie, grok, xai, image generation, ai, text-to-image, multimodal\n\n    Grok Imagine is a multimodal generative model that can generate images\n    from text prompts.\n\n    Use cases:\n    - Generate images from text descriptions\n    - Create visual content with AI",
+      "namespace": "kie.image",
+      "node_type": "kie.image.GrokImagineTextToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Grok Imagine Upscale",
+      "description": "Upscale images using xAI's Grok Imagine Upscale model via Kie.ai.\n\n    kie, grok, xai, upscale, enhance, image, ai, super-resolution\n\n    Grok Imagine Upscale enhances and upscales images to higher resolutions\n    while maintaining quality and detail.\n\n    Use cases:\n    - Upscale low-resolution images\n    - Enhance image quality and detail\n    - Improve resolution for printing or display",
+      "namespace": "kie.image",
+      "node_type": "kie.image.GrokImagineUpscale",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to upscale."
+        },
+        {
+          "name": "scale_factor",
+          "type": {
+            "type": "enum",
+            "values": [
+              "2",
+              "4",
+              "8"
+            ],
+            "type_name": "nodetool.nodes.kie.image.GrokImagineUpscale.ScaleFactor"
+          },
+          "default": "2",
+          "title": "Scale Factor",
+          "description": "The upscaling factor (2x, 4x, or 8x)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "scale_factor"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Nano Banana",
+      "description": "Generate images using Google's Nano Banana model (Gemini 2.5) via Kie.ai.\n\n    kie, nano-banana, google, gemini, image generation, ai, text-to-image, fast\n\n    Nano Banana is powered by Gemini 2.5 Flash Image and offers fast\n    language-driven image generation/editing, focusing on speed and iteration efficiency.\n\n    Use cases:\n    - Generate images with efficient processing\n    - Create visual content quickly\n    - Generate images for rapid prototyping\n    - Fast iteration on image concepts",
+      "namespace": "kie.image",
+      "node_type": "kie.image.NanoBanana",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.NanoBanana.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Nano Banana Pro",
+      "description": "Generate images using Google's Nano Banana Pro model (Gemini 3.0) via Kie.ai.\n\n    kie, nano-banana-pro, google, gemini, image generation, ai, text-to-image, 4k, high-fidelity\n\n    Nano Banana Pro is based on Gemini 3.0 Pro Image and provides higher fidelity\n    with sharper structure, 4K output, and better text rendering for photorealistic results.\n\n    Use cases:\n    - Generate high-fidelity photorealistic images\n    - Create 4K resolution content\n    - Generate images with sharp text rendering\n    - Professional-grade visual content",
+      "namespace": "kie.image",
+      "node_type": "kie.image.NanoBananaPro",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.NanoBananaPro.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Qwen Image To Image",
+      "description": "Transform images using Qwen's Image-to-Image model via Kie.ai.\n\n    kie, qwen, alibaba, image transformation, ai, image-to-image\n\n    Qwen's image-to-image model transforms existing images based on text prompts.\n\n    Use cases:\n    - Transform and edit existing images\n    - Apply styles and effects to photos\n    - Create variations of images\n    - Enhance or modify image content",
+      "namespace": "kie.image",
+      "node_type": "kie.image.QwenImageToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing how to transform the image."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The source image to transform."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.QwenImageToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the output image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Qwen Text To Image",
+      "description": "Generate images using Qwen's Text-to-Image model via Kie.ai.\n\n    kie, qwen, alibaba, image generation, ai, text-to-image\n\n    Qwen's text-to-image model generates high-quality images from text descriptions.\n\n    Use cases:\n    - Generate images from text descriptions\n    - Create artistic and realistic images\n    - Generate illustrations and artwork",
+      "namespace": "kie.image",
+      "node_type": "kie.image.QwenTextToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.QwenTextToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedream 45 Edit",
+      "description": "Edit images using ByteDance's Seedream 4.5 Edit model via Kie.ai.\n\n    kie, seedream, bytedance, image editing, ai, image-to-image, 4k\n\n    Seedream 4.5 Edit allows you to modify existing images while maintaining\n    high quality and detail fidelity up to 4K resolution.\n\n    Use cases:\n    - Edit and enhance existing images\n    - Apply style changes to photos\n    - Modify specific regions of images\n    - Improve image quality and resolution",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Seedream45Edit",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing how to edit the image."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The source image to edit."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Seedream45Edit.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the output image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Seedream 45 Text To Image",
+      "description": "Generate images using ByteDance's Seedream 4.5 Text-to-Image model via Kie.ai.\n\n    kie, seedream, bytedance, image generation, ai, text-to-image, 4k\n\n    Seedream 4.5 generates high-quality visuals up to 4K resolution with\n    improved detail fidelity, multi-image blending, and sharp text/face rendering.\n\n    Use cases:\n    - Generate creative and artistic images from text\n    - Create diverse visual content up to 4K\n    - Generate illustrations with unique styles",
+      "namespace": "kie.image",
+      "node_type": "kie.image.Seedream45TextToImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Topaz Image Upscale",
+      "description": "Upscale and enhance images using Topaz Labs AI via Kie.ai.\n\n    kie, topaz, upscale, enhance, image, ai, super-resolution\n\n    Leverages Topaz Labs' image super-resolution models to upscale and enhance images.\n    Can enlarge images by 2x, 4x, etc., while unblurring and sharpening details.\n\n    Use cases:\n    - Upscale low-resolution images to high resolution\n    - Enhance old or degraded photos\n    - Improve AI-generated art quality\n    - Prepare images for large format printing",
+      "namespace": "kie.image",
+      "node_type": "kie.image.TopazImageUpscale",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The image to upscale."
+        },
+        {
+          "name": "scale_factor",
+          "type": {
+            "type": "enum",
+            "values": [
+              "2",
+              "4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.TopazImageUpscale.ScaleFactor"
+          },
+          "default": "2",
+          "title": "Scale Factor",
+          "description": "The upscaling factor (2x or 4x)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "scale_factor"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "ZImage",
+      "description": "Generate images using Alibaba's Z-Image Turbo model via Kie.ai.\n\n    kie, z-image, zimage, alibaba, image generation, ai, text-to-image, photorealistic\n\n    Z-Image Turbo produces realistic, detail-rich images with very low latency.\n    It supports bilingual text (English/Chinese) in images with sharp text rendering.\n\n    Use cases:\n    - Generate high-quality photorealistic images quickly\n    - Create images with embedded text (English/Chinese)\n    - Generate detailed illustrations with low latency\n    - Product visualizations",
+      "namespace": "kie.image",
+      "node_type": "kie.image.ZImage",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The text prompt describing the image to generate."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4"
+            ],
+            "type_name": "nodetool.nodes.kie.image.ZImage.AspectRatio"
+          },
+          "default": "1:1",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Add Vectors",
