@@ -53,8 +53,17 @@ class ExtractTar(BaseNode):
         if not self.output_folder:
             raise ValueError("output_folder cannot be empty")
 
+        output_folder = os.path.abspath(self.output_folder)
+
         with tarfile.open(self.tar_path, "r:*") as tar:
-            tar.extractall(path=self.output_folder)
+            # Validate all members to prevent path traversal attacks
+            for member in tar.getmembers():
+                member_path = os.path.abspath(os.path.join(output_folder, member.name))
+                if not member_path.startswith(output_folder):
+                    raise ValueError(
+                        f"Attempted path traversal in tar file: {member.name}"
+                    )
+            tar.extractall(path=output_folder)
 
         return self.output_folder
 
