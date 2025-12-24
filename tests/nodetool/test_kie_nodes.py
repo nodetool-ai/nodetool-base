@@ -25,7 +25,6 @@ from nodetool.nodes.kie.video import (
     Sora2ProTextToVideo,
     Sora2ProImageToVideo,
     Sora2ProStoryboard,
-    Sora2ImageToVideo,
     SeedanceV1LiteTextToVideo,
     SeedanceV1ProTextToVideo,
     SeedanceV1LiteImageToVideo,
@@ -35,10 +34,8 @@ from nodetool.nodes.kie.video import (
     HailuoImageToVideoStandard,
     KlingTextToVideo,
     KlingImageToVideo,
-    KlingAIAvatar,
-    TopazVideoUpscale,
-    GrokImagineImageToVideo,
-    GrokImagineTextToVideo,
+    KlingAIAvatarStandard,
+    KlingAIAvatarPro,
 )
 from nodetool.nodes.kie.audio import Suno
 
@@ -206,9 +203,33 @@ class TestFlux2ProTextToImage:
         # 3. Download (get status again): same as #2
         # 4. Download image: actual image bytes
         responses = [
-            MockResponse(json_data={"code": 200, "message": "success", "data": {"taskId": "task123"}}),
-            MockResponse(json_data={"code": 200, "message": "success", "data": {"state": "success", "resultJson": '{"resultUrls":["https://example.com/img.png"]}'}}),
-            MockResponse(json_data={"code": 200, "message": "success", "data": {"state": "success", "resultJson": '{"resultUrls":["https://example.com/img.png"]}'}}),
+            MockResponse(
+                json_data={
+                    "code": 200,
+                    "message": "success",
+                    "data": {"taskId": "task123"},
+                }
+            ),
+            MockResponse(
+                json_data={
+                    "code": 200,
+                    "message": "success",
+                    "data": {
+                        "state": "success",
+                        "resultJson": '{"resultUrls":["https://example.com/img.png"]}',
+                    },
+                }
+            ),
+            MockResponse(
+                json_data={
+                    "code": 200,
+                    "message": "success",
+                    "data": {
+                        "state": "success",
+                        "resultJson": '{"resultUrls":["https://example.com/img.png"]}',
+                    },
+                }
+            ),
             MockResponse(content=b"image_bytes", content_type="image/png"),
         ]
 
@@ -388,7 +409,9 @@ class TestKiePollingLogic:
         responses = [
             MockResponse(json_data={"data": {"taskId": "task123"}}),
             MockResponse(
-                json_data={"data": {"state": "failed", "failMsg": "Content policy violation"}}
+                json_data={
+                    "data": {"state": "failed", "failMsg": "Content policy violation"}
+                }
             ),
         ]
 
@@ -409,8 +432,22 @@ class TestKiePollingLogic:
         # Submit, status (completed), status again (for download), then actual image
         responses = [
             MockResponse(json_data={"data": {"taskId": "task123"}}),
-            MockResponse(json_data={"data": {"state": "success", "resultJson": '{"resultUrls":["https://example.com/img.png"]}'}}),
-            MockResponse(json_data={"data": {"state": "success", "resultJson": '{"resultUrls":["https://example.com/img.png"]}'}}),
+            MockResponse(
+                json_data={
+                    "data": {
+                        "state": "success",
+                        "resultJson": '{"resultUrls":["https://example.com/img.png"]}',
+                    }
+                }
+            ),
+            MockResponse(
+                json_data={
+                    "data": {
+                        "state": "success",
+                        "resultJson": '{"resultUrls":["https://example.com/img.png"]}',
+                    }
+                }
+            ),
             MockResponse(content=b"actual_image_bytes", content_type="image/png"),
         ]
 
@@ -494,7 +531,9 @@ class TestSora2ProImageToVideo:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = Sora2ProImageToVideo(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = Sora2ProImageToVideo(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "sora-2-pro-image-to-video"
         params = node._get_input_params()
         assert params["prompt"] == "test"
@@ -543,7 +582,9 @@ class TestSora2ImageToVideo:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = Sora2ImageToVideo(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = Sora2ImageToVideo(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "sora-2-image-to-video"
         params = node._get_input_params()
         assert params["prompt"] == "test"
@@ -598,7 +639,9 @@ class TestSeedanceV1LiteImageToVideo:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = SeedanceV1LiteImageToVideo(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = SeedanceV1LiteImageToVideo(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "bytedance/v1-lite-image-to-video"
         params = node._get_input_params()
         assert params["prompt"] == "test"
@@ -618,7 +661,9 @@ class TestSeedanceV1ProImageToVideo:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = SeedanceV1ProImageToVideo(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = SeedanceV1ProImageToVideo(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "bytedance/v1-pro-image-to-video"
         params = node._get_input_params()
         assert params["prompt"] == "test"
@@ -638,7 +683,9 @@ class TestSeedanceV1ProFastImageToVideo:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = SeedanceV1ProFastImageToVideo(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = SeedanceV1ProFastImageToVideo(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "bytedance/v1-pro-fast-image-to-video"
         params = node._get_input_params()
         assert params["prompt"] == "test"
@@ -658,7 +705,9 @@ class TestHailuoImageToVideoPro:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = HailuoImageToVideoPro(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = HailuoImageToVideoPro(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "hailuo/2-3-image-to-video-pro"
         params = node._get_input_params()
         assert params["prompt"] == "test"
@@ -674,7 +723,9 @@ class TestHailuoImageToVideoStandard:
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
-        node = HailuoImageToVideoStandard(image=ImageRef(uri="http://example.com/image.jpg"), prompt="test")
+        node = HailuoImageToVideoStandard(
+            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+        )
         assert node._get_model() == "hailuo/2-3-image-to-video-standard"
         params = node._get_input_params()
         assert params["prompt"] == "test"

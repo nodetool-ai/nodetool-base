@@ -13,6 +13,9 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 """
 
 import asyncio
+import os
+import uuid
+from urllib.parse import urlparse
 from abc import abstractmethod
 from enum import Enum
 from typing import Any, ClassVar
@@ -29,6 +32,7 @@ log = get_logger(__name__)
 
 # Kie.ai API base URL
 KIE_API_BASE_URL = "https://api.kie.ai"
+KIE_FILE_UPLOAD_URL = "https://kieai.redpandaai.co/api/file-stream-upload"
 
 
 class KieBaseNode(BaseNode):
@@ -67,6 +71,94 @@ class KieBaseNode(BaseNode):
             "Content-Type": "application/json",
         }
 
+    def _resolve_upload_filename(
+        self,
+        asset: Any,
+        default_extension: str,
+        file_obj: Any | None = None,
+    ) -> str:
+        filename = None
+        file_name_attr = getattr(file_obj, "name", None) if file_obj else None
+        if file_name_attr and not str(file_name_attr).startswith("<"):
+            filename = os.path.basename(str(file_name_attr))
+
+        if not filename:
+            uri = getattr(asset, "uri", "") or ""
+            if uri:
+                parsed = urlparse(uri)
+                base = os.path.basename(parsed.path)
+                if base:
+                    filename = base
+
+        if not filename:
+            filename = f"nodetool-{uuid.uuid4().hex}{default_extension}"
+
+        root, ext = os.path.splitext(filename)
+        if not ext and default_extension:
+            filename = f"{root}{default_extension}"
+
+        return filename
+
+    async def _upload_asset(
+        self,
+        context: ProcessingContext,
+        asset: Any,
+        upload_path: str,
+        default_extension: str,
+    ) -> str:
+        """Upload an asset to Kie.ai and return the download URL."""
+        api_key = await self._get_api_key(context)
+        file_obj = await context.asset_to_io(asset)
+        filename = self._resolve_upload_filename(
+            asset, default_extension=default_extension, file_obj=file_obj
+        )
+        form = aiohttp.FormData()
+        form.add_field("file", file_obj, filename=filename)
+        form.add_field("uploadPath", upload_path)
+        form.add_field("fileName", filename)
+
+        headers = {"Authorization": f"Bearer {api_key}"}
+        try:
+            async with aiohttp.ClientSession() as session:
+                async with session.post(
+                    KIE_FILE_UPLOAD_URL, data=form, headers=headers
+                ) as response:
+                    response_data = await response.json()
+                    if response.status != 200 or not response_data.get("success"):
+                        raise ValueError(
+                            f"Failed to upload file: {response.status} - {response_data}"
+                        )
+        finally:
+            close_fn = getattr(file_obj, "close", None)
+            if callable(close_fn):
+                close_fn()
+
+        download_url = response_data.get("data", {}).get("downloadUrl")
+        if not download_url:
+            raise ValueError(f"No downloadUrl in upload response: {response_data}")
+        return download_url
+
+    async def _upload_image(
+        self, context: ProcessingContext, image: ImageRef
+    ) -> str:
+        return await self._upload_asset(
+            context, asset=image, upload_path="images/user-uploads", default_extension=".png"
+        )
+
+    async def _upload_audio(
+        self, context: ProcessingContext, audio: Any
+    ) -> str:
+        return await self._upload_asset(
+            context, asset=audio, upload_path="audio/user-uploads", default_extension=".mp3"
+        )
+
+    async def _upload_video(
+        self, context: ProcessingContext, video: Any
+    ) -> str:
+        return await self._upload_asset(
+            context, asset=video, upload_path="videos/user-uploads", default_extension=".mp4"
+        )
+
     @abstractmethod
     def _get_model(self) -> str:
         """Get the model name for this node.
@@ -77,15 +169,22 @@ class KieBaseNode(BaseNode):
         ...
 
     @abstractmethod
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         """Get the input parameters for the API request.
 
         Subclasses should return a dict with model-specific input parameters.
         This will be nested under the 'input' field in the API payload.
+
+        Args:
+            context: Optional ProcessingContext for async operations like file upload.
         """
         ...
 
-    def _get_submit_payload(self) -> dict[str, Any]:
+    async def _get_submit_payload(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         """Get the payload for the task submission request.
 
         Returns payload in the format:
@@ -99,7 +198,7 @@ class KieBaseNode(BaseNode):
         """
         return {
             "model": self._get_model(),
-            "input": self._get_input_params(),
+            "input": await self._get_input_params(context),
         }
 
     def _extract_task_id(self, response: dict[str, Any]) -> str:
@@ -138,7 +237,10 @@ class KieBaseNode(BaseNode):
         return data.get("failMsg") or "Unknown error occurred"
 
     async def _submit_task(
-        self, session: aiohttp.ClientSession, api_key: str
+        self,
+        session: aiohttp.ClientSession,
+        api_key: str,
+        context: ProcessingContext | None = None,
     ) -> dict[str, Any]:
         """Submit a task to the Kie.ai API.
 
@@ -152,7 +254,7 @@ class KieBaseNode(BaseNode):
         }
         """
         url = f"{KIE_API_BASE_URL}/api/v1/jobs/createTask"
-        payload = self._get_submit_payload()
+        payload = await self._get_submit_payload(context)
         headers = self._get_headers(api_key)
         log.debug(f"Submitting task to {url}")
         log.debug(f"Payload: {payload}")
@@ -250,15 +352,12 @@ class KieBaseNode(BaseNode):
         api_key = await self._get_api_key(context)
 
         async with aiohttp.ClientSession() as session:
-            # Submit the task
-            submit_response = await self._submit_task(session, api_key)
+            submit_response = await self._submit_task(session, api_key, context)
             task_id = self._extract_task_id(submit_response)
             log.info(f"Task submitted with ID: {task_id}")
 
-            # Poll for completion
             await self._poll_status(session, api_key, task_id)
 
-            # Download the result
             return await self._download_result(session, api_key, task_id)
 
 
@@ -320,7 +419,9 @@ class Flux2ProTextToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "flux-2/pro-text-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -400,14 +501,21 @@ class Flux2ProImageToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "flux-2/pro-image-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         if not self.image.is_set():
             raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
         return {
             "prompt": self.prompt,
-            "image": self.image.to_dict(),
+            "input_urls": [
+                input_url,
+            ],
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
             "steps": self.steps,
@@ -477,7 +585,9 @@ class Flux2FlexTextToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "flux-2/flex-text-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -557,14 +667,21 @@ class Flux2FlexImageToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "flux-2/flex-image-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         if not self.image.is_set():
             raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
         return {
             "prompt": self.prompt,
-            "image": self.image.to_dict(),
+            "input_urls": [
+                input_url,
+            ],
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
             "steps": self.steps,
@@ -614,7 +731,9 @@ class Seedream45TextToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "seedream/4.5-text-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -671,14 +790,21 @@ class Seedream45Edit(KieBaseNode):
     def _get_model(self) -> str:
         return "seedream/4.5-edit"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         if not self.image.is_set():
             raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
         return {
             "prompt": self.prompt,
-            "image": self.image.to_dict(),
+            "input_urls": [
+                input_url,
+            ],
             "aspect_ratio": self.aspect_ratio.value,
         }
 
@@ -726,7 +852,9 @@ class ZImage(KieBaseNode):
     def _get_model(self) -> str:
         return "z-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -778,7 +906,9 @@ class NanoBanana(KieBaseNode):
     def _get_model(self) -> str:
         return "google/nano-banana"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -830,7 +960,9 @@ class NanoBananaPro(KieBaseNode):
     def _get_model(self) -> str:
         return "google/nano-banana-pro"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -891,7 +1023,9 @@ class FluxKontext(KieBaseNode):
     def _get_model(self) -> str:
         return "flux-kontext"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -942,7 +1076,9 @@ class GrokImagineTextToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "grok-imagine/text-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -991,11 +1127,18 @@ class GrokImagineUpscale(KieBaseNode):
     def _get_model(self) -> str:
         return "grok-imagine/upscale"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
         if not self.image.is_set():
             raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
         return {
-            "image": self.image.to_dict(),
+            "input_urls": [
+                input_url,
+            ],
             "scale_factor": self.scale_factor.value,
         }
 
@@ -1041,7 +1184,9 @@ class QwenTextToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "qwen/text-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -1097,14 +1242,21 @@ class QwenImageToImage(KieBaseNode):
     def _get_model(self) -> str:
         return "qwen/image-to-image"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         if not self.image.is_set():
             raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
         return {
             "prompt": self.prompt,
-            "image": self.image.to_dict(),
+            "input_urls": [
+                input_url,
+            ],
             "aspect_ratio": self.aspect_ratio.value,
         }
 
@@ -1149,11 +1301,18 @@ class TopazImageUpscale(KieBaseNode):
     def _get_model(self) -> str:
         return "topaz-image-upscale"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
         if not self.image.is_set():
             raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
         return {
-            "image": self.image.to_dict(),
+            "input_urls": [
+                input_url,
+            ],
             "scale_factor": self.scale_factor.value,
         }
 

@@ -10,6 +10,7 @@ This module provides nodes for generating videos using Kie.ai's various APIs:
 - Topaz Video Upscaler (AI video enhancement)
 """
 
+import asyncio
 from enum import Enum
 from typing import Any, ClassVar
 
@@ -92,7 +93,9 @@ class Sora2ProTextToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "sora-2-pro-text-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -160,11 +163,16 @@ class Sora2ProImageToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "sora-2-pro-image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_urls": [self.image.to_dict()["uri"]],
+            "image_urls": [image_url],
             "aspect_ratio": self.aspect_ratio.value,
             "n_frames": str(self.n_frames),
             "remove_watermark": self.remove_watermark,
@@ -172,6 +180,14 @@ class Sora2ProImageToVideo(KieVideoBaseNode):
         if self.prompt:
             payload["prompt"] = self.prompt
         return payload
+
+    async def _get_submit_payload(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        return {
+            "model": self._get_model(),
+            "input": await self._get_input_params(context),
+        }
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         video_bytes = await self._execute_video_task(context)
@@ -225,7 +241,9 @@ class Sora2ProStoryboard(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "sora-2-pro-storyboard"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -295,91 +313,14 @@ class Sora2TextToVideo(KieVideoBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "sora-2-text-to-video"
-
-    def _get_input_params(self) -> dict[str, Any]:
-        if not self.prompt:
-            raise ValueError("Prompt cannot be empty")
-        return {
-            "prompt": self.prompt,
-            "aspect_ratio": self.aspect_ratio.value,
-            "n_frames": str(self.n_frames),
-            "remove_watermark": self.remove_watermark,
-            "mode": self.mode.value,
-        }
-
-    async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
-        return await context.video_from_bytes(video_bytes)
-
-
-class Sora2ImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using OpenAI's Sora 2 model via Kie.ai.
-
-    kie, sora, openai, video generation, ai, image-to-video, realistic
-
-    Sora 2 Image-to-Video transforms reference images into videos emphasizing
-    realistic motion, physics consistency, and native audio. Supports standard
-    and pro modes for different quality/speed tradeoffs.
-
-    Use cases:
-    - Generate realistic videos from images
-    - Create videos with native audio (dialogue/ambient sound)
-    - Animate static images with realistic motion
-    - Cinematic content creation from images
-    """
-
-    _expose_as_tool: ClassVar[bool] = True
-
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The reference image to animate into a video.",
-    )
-
-    prompt: str = Field(
-        default="",
-        description="Optional text to guide the video generation.",
-    )
-
-    class AspectRatio(str, Enum):
-        LANDSCAPE = "landscape"
-        PORTRAIT = "portrait"
-        SQUARE = "square"
-
-    aspect_ratio: AspectRatio = Field(
-        default=AspectRatio.LANDSCAPE,
-        description="The aspect ratio of the generated video.",
-    )
-
-    n_frames: int = Field(
-        default=10,
-        description="Number of frames for the video.",
-        ge=1,
-        le=60,
-    )
-
-    remove_watermark: bool = Field(
-        default=True,
-        description="Whether to remove the watermark from the generated video.",
-    )
-
-    class Mode(str, Enum):
-        STANDARD = "standard"
-        PRO = "pro"
-
-    mode: Mode = Field(
-        default=Mode.STANDARD,
-        description="Generation mode: 'standard' or 'pro' for higher quality.",
-    )
-
-    def _get_model(self) -> str:
         return "sora-2-image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
-        if not self.image.is_set():
-            raise ValueError("Image is required")
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for upload handling")
         payload: dict[str, Any] = {
-            "image_urls": [self.image.to_dict()["uri"]],
             "aspect_ratio": self.aspect_ratio.value,
             "n_frames": str(self.n_frames),
             "remove_watermark": self.remove_watermark,
@@ -460,7 +401,9 @@ class SeedanceV1LiteTextToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "bytedance/v1-lite-text-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -544,7 +487,9 @@ class SeedanceV1ProTextToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "bytedance/v1-pro-text-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -623,11 +568,16 @@ class SeedanceV1LiteImageToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "bytedance/v1-lite-image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": self.image.to_dict()["uri"],
+            "image_url": image_url,
             "resolution": self.resolution.value,
             "duration": str(self.duration),
             "camera_fixed": self.camera_fixed,
@@ -704,11 +654,16 @@ class SeedanceV1ProImageToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "bytedance/v1-pro-image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": self.image.to_dict()["uri"],
+            "image_url": image_url,
             "resolution": self.resolution.value,
             "duration": str(self.duration),
             "camera_fixed": self.camera_fixed,
@@ -786,11 +741,16 @@ class SeedanceV1ProFastImageToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "bytedance/v1-pro-fast-image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": self.image.to_dict()["uri"],
+            "image_url": image_url,
             "resolution": self.resolution.value,
             "duration": str(self.duration),
             "camera_fixed": self.camera_fixed,
@@ -845,11 +805,16 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "hailuo/2-3-image-to-video-pro"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": self.image.to_dict()["uri"],
+            "image_url": image_url,
             "resolution": self.resolution.value,
         }
         if self.prompt:
@@ -900,11 +865,16 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "hailuo/2-3-image-to-video-standard"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": self.image.to_dict()["uri"],
+            "image_url": image_url,
             "resolution": self.resolution.value,
         }
         if self.prompt:
@@ -972,7 +942,9 @@ class KlingTextToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "kling-2.6/text-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -1046,18 +1018,29 @@ class KlingImageToVideo(KieVideoBaseNode):
         description="Random seed for reproducible results. Use -1 for random seed.",
     )
 
+    sound: bool = Field(
+        default=False,
+        description="Whether the generated video includes sound.",
+    )
+
     def _get_model(self) -> str:
         return "kling-2.6/image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": self.image.to_dict()["uri"],
+            "image_url": image_url,
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
-            "duration": str(self.duration),
+            "duration": "10" if self.duration >= 10 else "5",
             "seed": self.seed,
+            "sound": self.sound,
         }
         if self.prompt:
             payload["prompt"] = self.prompt
@@ -1068,7 +1051,7 @@ class KlingImageToVideo(KieVideoBaseNode):
         return await context.video_from_bytes(video_bytes)
 
 
-class KlingAIAvatar(KieVideoBaseNode):
+class KlingAIAvatarStandard(KieVideoBaseNode):
     """Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.
 
     kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync
@@ -1110,16 +1093,95 @@ class KlingAIAvatar(KieVideoBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "kling-ai-avatar"
+        return "kling/v1-avatar-standard"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
         if not self.audio.is_set():
             raise ValueError("Audio is required")
+        if context is None:
+            raise ValueError("Context is required for media upload")
+        image_url, audio_url = await asyncio.gather(
+            self._upload_image(context, self.image),
+            self._upload_audio(context, self.audio),
+        )
         payload: dict[str, Any] = {
-            "image": self.image.to_dict(),
-            "audio": self.audio.to_dict(),
+            "image_url": image_url,
+            "audio_url": audio_url,
+            "mode": self.mode.value,
+        }
+        if self.prompt:
+            payload["prompt"] = self.prompt
+        return payload
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        video_bytes = await self._execute_video_task(context)
+        return await context.video_from_bytes(video_bytes)
+
+
+class KlingAIAvatarPro(KieVideoBaseNode):
+    """Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.
+
+    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync
+
+    Transforms a photo plus audio track into a lip-synced talking avatar video
+    with natural-looking speech animation and consistent identity.
+
+    Use cases:
+    - Create virtual influencer content
+    - Generate educational presenters
+    - Lip-synced avatar videos
+    - Virtual spokesperson creation
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The face/character image to animate.",
+    )
+
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="The audio track for lip-syncing.",
+    )
+
+    prompt: str = Field(
+        default="",
+        description="Optional text to guide emotions and expressions.",
+    )
+
+    class Mode(str, Enum):
+        STANDARD = "standard"
+        PRO = "pro"
+
+    mode: Mode = Field(
+        default=Mode.STANDARD,
+        description="Generation mode: 'standard' or 'pro' for higher quality.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v1-avatar-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if not self.audio.is_set():
+            raise ValueError("Audio is required")
+        if context is None:
+            raise ValueError("Context is required for media upload")
+        image_url, audio_url = await asyncio.gather(
+            self._upload_image(context, self.image),
+            self._upload_audio(context, self.audio),
+        )
+        payload: dict[str, Any] = {
+            "image_url": image_url,
+            "audio_url": audio_url,
             "mode": self.mode.value,
         }
         if self.prompt:
@@ -1170,11 +1232,16 @@ class GrokImagineImageToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "grok-imagine/image-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image": self.image.to_dict(),
+            "image": image_url,
             "duration": self.duration.value,
         }
         if self.prompt:
@@ -1229,7 +1296,9 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "grok-imagine/text-to-video"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         return {
@@ -1282,11 +1351,16 @@ class TopazVideoUpscale(KieVideoBaseNode):
     def _get_model(self) -> str:
         return "topaz-video-upscaler"
 
-    def _get_input_params(self) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.video.is_set():
             raise ValueError("Video is required")
+        if context is None:
+            raise ValueError("Context is required for video upload")
+        video_url = await self._upload_video(context, self.video)
         return {
-            "video": self.video.to_dict(),
+            "video": video_url,
             "resolution": self.resolution.value,
             "denoise": self.denoise,
         }

@@ -31072,10 +31072,10 @@
       "expose_as_tool": true
     },
     {
-      "title": "Kling AIAvatar",
+      "title": "Kling AIAvatar Pro",
       "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
       "namespace": "kie.video",
-      "node_type": "kie.video.KlingAIAvatar",
+      "node_type": "kie.video.KlingAIAvatarPro",
       "properties": [
         {
           "name": "image",
@@ -31122,7 +31122,81 @@
               "standard",
               "pro"
             ],
-            "type_name": "nodetool.nodes.kie.video.KlingAIAvatar.Mode"
+            "type_name": "nodetool.nodes.kie.video.KlingAIAvatarPro.Mode"
+          },
+          "default": "standard",
+          "title": "Mode",
+          "description": "Generation mode: 'standard' or 'pro' for higher quality."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "audio",
+        "prompt",
+        "mode"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling AIAvatar Standard",
+      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingAIAvatarStandard",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image",
+          "description": "The face/character image to animate."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Audio",
+          "description": "The audio track for lip-syncing."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text to guide emotions and expressions."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "standard",
+              "pro"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode"
           },
           "default": "standard",
           "title": "Mode",
@@ -31222,6 +31296,15 @@
           "default": -1,
           "title": "Seed",
           "description": "Random seed for reproducible results. Use -1 for random seed."
+        },
+        {
+          "name": "sound",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Sound",
+          "description": "Whether the generated video includes sound."
         }
       ],
       "outputs": [
@@ -31238,7 +31321,8 @@
         "aspect_ratio",
         "resolution",
         "duration",
-        "seed"
+        "seed",
+        "sound"
       ],
       "expose_as_tool": true
     },
@@ -31828,103 +31912,6 @@
         "camera_fixed",
         "seed",
         "enable_safety_checker"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Sora 2 Image To Video",
-      "description": "Generate videos from images using OpenAI's Sora 2 model via Kie.ai.\n\n    kie, sora, openai, video generation, ai, image-to-video, realistic\n\n    Sora 2 Image-to-Video transforms reference images into videos emphasizing\n    realistic motion, physics consistency, and native audio. Supports standard\n    and pro modes for different quality/speed tradeoffs.\n\n    Use cases:\n    - Generate realistic videos from images\n    - Create videos with native audio (dialogue/ambient sound)\n    - Animate static images with realistic motion\n    - Cinematic content creation from images",
-      "namespace": "kie.video",
-      "node_type": "kie.video.Sora2ImageToVideo",
-      "properties": [
-        {
-          "name": "image",
-          "type": {
-            "type": "image"
-          },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null
-          },
-          "title": "Image",
-          "description": "The reference image to animate into a video."
-        },
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Prompt",
-          "description": "Optional text to guide the video generation."
-        },
-        {
-          "name": "aspect_ratio",
-          "type": {
-            "type": "enum",
-            "values": [
-              "landscape",
-              "portrait",
-              "square"
-            ],
-            "type_name": "nodetool.nodes.kie.video.Sora2ImageToVideo.AspectRatio"
-          },
-          "default": "landscape",
-          "title": "Aspect Ratio",
-          "description": "The aspect ratio of the generated video."
-        },
-        {
-          "name": "n_frames",
-          "type": {
-            "type": "int"
-          },
-          "default": 10,
-          "title": "N Frames",
-          "description": "Number of frames for the video.",
-          "min": 1.0,
-          "max": 60.0
-        },
-        {
-          "name": "remove_watermark",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Remove Watermark",
-          "description": "Whether to remove the watermark from the generated video."
-        },
-        {
-          "name": "mode",
-          "type": {
-            "type": "enum",
-            "values": [
-              "standard",
-              "pro"
-            ],
-            "type_name": "nodetool.nodes.kie.video.Sora2ImageToVideo.Mode"
-          },
-          "default": "standard",
-          "title": "Mode",
-          "description": "Generation mode: 'standard' or 'pro' for higher quality."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "image",
-        "prompt",
-        "aspect_ratio",
-        "n_frames",
-        "remove_watermark",
-        "mode"
       ],
       "expose_as_tool": true
     },
