@@ -4,6 +4,7 @@ SQLite database nodes for persistent storage and memory mechanisms.
 
 import sqlite3
 import json
+import re
 from typing import ClassVar, TypedDict
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,29 @@ from nodetool.config.logging_config import get_logger
 
 
 log = get_logger(__name__)
+
+
+def validate_identifier(name: str) -> str:
+    """Validate and return a SQL identifier (table or column name).
+    
+    Prevents SQL injection by ensuring the identifier only contains
+    valid characters: alphanumeric, underscores, and must start with
+    a letter or underscore.
+    
+    Args:
+        name: The identifier to validate
+        
+    Returns:
+        The validated identifier
+        
+    Raises:
+        ValueError: If the identifier contains invalid characters
+    """
+    if not name:
+        raise ValueError("Identifier cannot be empty")
+    if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', name):
+        raise ValueError(f"Invalid SQL identifier: '{name}'. Only alphanumeric characters and underscores allowed, must start with letter or underscore.")
+    return name
 
 
 def column_type_to_sqlite(column_type: str) -> str:
@@ -72,9 +96,16 @@ class CreateTable(BaseNode):
         db_path = Path(context.workspace_dir) / self.database_name
         log.info(f"Creating table {self.table_name} in database {self.database_name} at {db_path}")
 
+        # Validate table name to prevent SQL injection
+        validated_table = validate_identifier(self.table_name)
+        
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
-        table_exists = conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{self.table_name}'").fetchone() is not None
+        # Use parameterized query for the check
+        table_exists = conn.execute(
+            "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+            (validated_table,)
+        ).fetchone() is not None
         if table_exists:
             return {
                 "database_name": self.database_name,
@@ -86,17 +117,19 @@ class CreateTable(BaseNode):
 
             column_defs = []
             for i, col in enumerate(self.columns.columns):
+                # Validate column name
+                validated_col_name = validate_identifier(col.name)
                 sqlite_type = column_type_to_sqlite(col.data_type)
 
                 # Make first int column a primary key if requested
                 if i == 0 and self.add_primary_key and col.data_type == "int":
-                    column_defs.append(f"{col.name} INTEGER PRIMARY KEY AUTOINCREMENT")
+                    column_defs.append(f"{validated_col_name} INTEGER PRIMARY KEY AUTOINCREMENT")
                 else:
-                    column_defs.append(f"{col.name} {sqlite_type}")
+                    column_defs.append(f"{validated_col_name} {sqlite_type}")
 
             columns_sql = ", ".join(column_defs)
             if_not_exists_clause = "IF NOT EXISTS " if self.if_not_exists else ""
-            sql = f"CREATE TABLE {if_not_exists_clause}{self.table_name} ({columns_sql})"
+            sql = f"CREATE TABLE {if_not_exists_clause}{validated_table} ({columns_sql})"
 
             cursor.execute(sql)
             conn.commit()
@@ -139,14 +172,18 @@ class Insert(BaseNode):
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         db_path = Path(context.workspace_dir) / self.database_name
 
+        # Validate table and column names to prevent SQL injection
+        validated_table = validate_identifier(self.table_name)
+        validated_columns = [validate_identifier(col) for col in self.data.keys()]
+        
         conn = sqlite3.connect(db_path)
         log.info(f"Inserting record into table {self.table_name} in database {self.database_name} at {db_path}")
         try:
             cursor = conn.cursor()
 
-            columns = ", ".join(self.data.keys())
+            columns = ", ".join(validated_columns)
             placeholders = ", ".join(["?" for _ in self.data.values()])
-            sql = f"INSERT INTO {self.table_name} ({columns}) VALUES ({placeholders})"
+            sql = f"INSERT INTO {validated_table} ({columns}) VALUES ({placeholders})"
 
             values = []
             for v in self.data.values():
@@ -212,6 +249,9 @@ class Query(BaseNode):
         if not db_path.exists():
             return []
 
+        # Validate table name to prevent SQL injection
+        validated_table = validate_identifier(self.table_name)
+        
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         try:
@@ -221,18 +261,30 @@ class Query(BaseNode):
             if not self.columns.columns:
                 columns = "*"
             else:
-                columns = ", ".join([f"{col.name}" for col in self.columns.columns])
+                # Validate each column name
+                validated_cols = [validate_identifier(col.name) for col in self.columns.columns]
+                columns = ", ".join(validated_cols)
 
-            sql = f"SELECT {columns} FROM {self.table_name}"
+            sql = f"SELECT {columns} FROM {validated_table}"
 
+            # Note: WHERE clause allows limited SQL expressions - validate ORDER BY column
             if self.where:
+                # Log warning about potential SQL injection risk in WHERE clause
+                log.warning("Using user-provided WHERE clause - ensure input is sanitized")
                 sql += f" WHERE {self.where}"
 
             if self.order_by:
-                sql += f" ORDER BY {self.order_by}"
+                # Validate order_by as identifier (column name)
+                validated_order = validate_identifier(self.order_by.split()[0])  # Get column name part
+                order_suffix = " ".join(self.order_by.split()[1:])  # Get ASC/DESC if present
+                if order_suffix.upper() not in ("", "ASC", "DESC"):
+                    raise ValueError(f"Invalid ORDER BY direction: {order_suffix}")
+                sql += f" ORDER BY {validated_order}"
+                if order_suffix:
+                    sql += f" {order_suffix.upper()}"
 
             if self.limit > 0:
-                sql += f" LIMIT {self.limit}"
+                sql += f" LIMIT {int(self.limit)}"
 
             cursor.execute(sql)
 
@@ -292,14 +344,20 @@ class Update(BaseNode):
         db_path = Path(context.workspace_dir) / self.database_name
         log.info(f"Updating table {self.table_name} in database {self.database_name} at {db_path}")
 
+        # Validate table and column names to prevent SQL injection
+        validated_table = validate_identifier(self.table_name)
+        validated_columns = [validate_identifier(col) for col in self.data.keys()]
+        
         conn = sqlite3.connect(db_path)
         try:
             cursor = conn.cursor()
 
-            set_clause = ", ".join([f"{col} = ?" for col in self.data.keys()])
-            sql = f"UPDATE {self.table_name} SET {set_clause}"
+            set_clause = ", ".join([f"{col} = ?" for col in validated_columns])
+            sql = f"UPDATE {validated_table} SET {set_clause}"
 
             if self.where:
+                # Log warning about potential SQL injection risk in WHERE clause
+                log.warning("Using user-provided WHERE clause - ensure input is sanitized")
                 sql += f" WHERE {self.where}"
 
             values = []
@@ -350,13 +408,18 @@ class Delete(BaseNode):
         if not self.where:
             raise ValueError("WHERE clause is required for DELETE operations to prevent accidental data loss")
 
+        # Validate table name to prevent SQL injection
+        validated_table = validate_identifier(self.table_name)
+        
         db_path = Path(context.workspace_dir) / self.database_name
 
         conn = sqlite3.connect(db_path)
         try:
             cursor = conn.cursor()
 
-            sql = f"DELETE FROM {self.table_name} WHERE {self.where}"
+            # Log warning about potential SQL injection risk in WHERE clause
+            log.warning("Using user-provided WHERE clause - ensure input is sanitized")
+            sql = f"DELETE FROM {validated_table} WHERE {self.where}"
 
             cursor.execute(sql)
             conn.commit()

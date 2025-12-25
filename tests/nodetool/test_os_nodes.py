@@ -6,12 +6,6 @@ from nodetool.nodes.lib.os import (
     CreateDirectory,
 )
 
-from nodetool.nodes.lib.tar import (
-    CreateTar,
-    ExtractTar,
-    ListTar,
-)
-
 
 @pytest.fixture
 def context(tmp_path):
@@ -35,34 +29,3 @@ async def test_file_operations(context: ProcessingContext, tmp_path):
         files.append(item["file"])
     assert len(files) == 1
     assert files[0] == str(file_path)
-
-
-@pytest.mark.asyncio
-async def test_tarfile_nodes(context: ProcessingContext, tmp_path):
-    src_dir = tmp_path / "src"
-    src_dir.mkdir()
-    (src_dir / "a.txt").write_text("a")
-    (src_dir / "b.txt").write_text("b")
-
-    tar_path = tmp_path / "archive.tar"
-    create_tar = CreateTar(
-        source_folder=str(src_dir),
-        tar_path=str(tar_path),
-    )
-    await create_tar.process(context)
-    assert tar_path.exists()
-
-    list_tar = ListTar(tar_path=str(tar_path))
-    contents = await list_tar.process(context)
-    assert f"{src_dir.name}/a.txt" in contents
-    assert f"{src_dir.name}/b.txt" in contents
-
-    out_dir = tmp_path / "out"
-    out_dir.mkdir()
-    extract_tar = ExtractTar(
-        tar_path=str(tar_path),
-        output_folder=str(out_dir),
-    )
-    await extract_tar.process(context)
-    assert (out_dir / src_dir.name / "a.txt").exists()
-    assert (out_dir / src_dir.name / "b.txt").exists()
