@@ -8,11 +8,21 @@
     "release_ready": false
   },
   "summary": {
-    "total_findings": 63,
-    "critical": 3,
-    "high": 3,
-    "medium": 4,
-    "low": 2,
+    "total_findings": 17,
+    "by_severity": {
+      "critical": 6,
+      "high": 3,
+      "medium": 6,
+      "low": 2
+    },
+    "by_category": {
+      "security": 5,
+      "broken": 4,
+      "fragile": 4,
+      "tech-debt": 2,
+      "incomplete": 1,
+      "test-gap": 1
+    },
     "test_status": {
       "passed": 473,
       "failed": 27,
