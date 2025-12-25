@@ -90,7 +90,9 @@ class Suno(KieBaseNode):
     def _get_model(self) -> str:
         return "suno"
 
-    def _get_input_params(self, context: ProcessingContext | None = None) -> dict[str, Any]:
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
         payload: dict[str, Any] = {

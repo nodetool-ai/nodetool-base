@@ -36,6 +36,9 @@ from nodetool.nodes.kie.video import (
     KlingImageToVideo,
     KlingAIAvatarStandard,
     KlingAIAvatarPro,
+    TopazVideoUpscale,
+    GrokImagineImageToVideo,
+    GrokImagineTextToVideo,
 )
 from nodetool.nodes.kie.audio import Suno
 
@@ -104,6 +107,7 @@ def mock_context():
     ctx = MagicMock(spec=ProcessingContext)
     ctx.get_secret = AsyncMock(return_value="test-api-key")
     ctx.image_from_bytes = AsyncMock(return_value=MagicMock())
+    ctx.asset_to_io = AsyncMock(return_value=MagicMock(name="test.jpg"))
     return ctx
 
 
@@ -134,7 +138,6 @@ class TestKieBaseNode:
         assert Sora2ProTextToVideo.is_visible()
         assert Sora2ProImageToVideo.is_visible()
         assert Sora2ProStoryboard.is_visible()
-        assert Sora2ImageToVideo.is_visible()
         assert SeedanceV1LiteTextToVideo.is_visible()
         assert SeedanceV1ProTextToVideo.is_visible()
         assert SeedanceV1LiteImageToVideo.is_visible()
@@ -144,7 +147,7 @@ class TestKieBaseNode:
         assert HailuoImageToVideoStandard.is_visible()
         assert KlingTextToVideo.is_visible()
         assert KlingImageToVideo.is_visible()
-        assert KlingAIAvatar.is_visible()
+        assert KlingAIAvatarStandard.is_visible()
         assert TopazVideoUpscale.is_visible()
         assert GrokImagineImageToVideo.is_visible()
         assert GrokImagineTextToVideo.is_visible()
@@ -161,12 +164,13 @@ class TestFlux2ProTextToImage:
         node = Flux2ProTextToImage(
             prompt="a cat", aspect_ratio=Flux2ProTextToImage.AspectRatio.LANDSCAPE
         )
-        payload = node._get_submit_payload()
+        payload = await node._get_submit_payload()
         assert payload == {
             "model": "flux-2/pro-text-to-image",
             "input": {
                 "prompt": "a cat",
                 "aspect_ratio": "16:9",
+                "resolution": "1K",
                 "steps": 25,
                 "guidance_scale": 7.5,
             },
@@ -177,14 +181,14 @@ class TestFlux2ProTextToImage:
         """Test that empty prompt raises ValueError."""
         node = Flux2ProTextToImage(prompt="")
         with pytest.raises(ValueError, match="Prompt cannot be empty"):
-            node._get_submit_payload()
+            await node._get_submit_payload()
 
     @pytest.mark.asyncio
     async def test_model_and_params(self):
         """Test model name and input parameters."""
         node = Flux2ProTextToImage(prompt="test")
         assert node._get_model() == "flux-2/pro-text-to-image"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -193,9 +197,9 @@ class TestFlux2ProTextToImage:
         """Test successful image generation."""
         node = Flux2ProTextToImage(
             prompt="a beautiful sunset",
-            poll_interval=0.5,
-            max_poll_attempts=5,
         )
+        node._poll_interval = 0.5
+        node._max_poll_attempts = 5
 
         # Mock responses:
         # 1. Submit: {code: 200, message: "success", data: {taskId: "task123"}}
@@ -256,7 +260,7 @@ class TestSeedream45TextToImage:
         """Test model name and input parameters."""
         node = Seedream45TextToImage(prompt="test")
         assert node._get_model() == "seedream/4.5-text-to-image"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -267,7 +271,7 @@ class TestSeedream45TextToImage:
             prompt="artistic scene",
             aspect_ratio=Seedream45TextToImage.AspectRatio.PORTRAIT,
         )
-        payload = node._get_submit_payload()
+        payload = await node._get_submit_payload()
         assert payload == {
             "model": "seedream/4.5-text-to-image",
             "input": {"prompt": "artistic scene", "aspect_ratio": "9:16"},
@@ -282,7 +286,7 @@ class TestZImage:
         """Test model name and input parameters."""
         node = ZImage(prompt="test")
         assert node._get_model() == "z-image"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -295,7 +299,7 @@ class TestNanoBanana:
         """Test model name and input parameters."""
         node = NanoBanana(prompt="test")
         assert node._get_model() == "google/nano-banana"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -308,7 +312,7 @@ class TestFlux2Pro:
         """Test model name and input parameters."""
         node = Flux2ProTextToImage(prompt="test")
         assert node._get_model() == "flux-2/pro-text-to-image"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -321,12 +325,13 @@ class TestFlux2Pro:
             steps=30,
             guidance_scale=10.0,
         )
-        payload = node._get_submit_payload()
+        payload = await node._get_submit_payload()
         assert payload == {
             "model": "flux-2/pro-text-to-image",
             "input": {
                 "prompt": "detailed artwork",
                 "aspect_ratio": "4:3",
+                "resolution": "1K",
                 "steps": 30,
                 "guidance_scale": 10.0,
             },
@@ -380,11 +385,9 @@ class TestKiePollingLogic:
     @pytest.mark.asyncio
     async def test_poll_timeout(self, mock_context):
         """Test that polling times out after max attempts."""
-        node = Flux2ProTextToImage(
-            prompt="test",
-            poll_interval=0.5,
-            max_poll_attempts=3,
-        )
+        node = Flux2ProTextToImage(prompt="test")
+        node._poll_interval = 0.5
+        node._max_poll_attempts = 3
 
         # Submit succeeds, but status always returns processing
         responses = [
@@ -401,10 +404,8 @@ class TestKiePollingLogic:
     @pytest.mark.asyncio
     async def test_task_failure_handling(self, mock_context):
         """Test that task failure is properly handled."""
-        node = Flux2ProTextToImage(
-            prompt="test",
-            poll_interval=0.5,
-        )
+        node = Flux2ProTextToImage(prompt="test")
+        node._poll_interval = 0.5
 
         responses = [
             MockResponse(json_data={"data": {"taskId": "task123"}}),
@@ -424,10 +425,8 @@ class TestKiePollingLogic:
     @pytest.mark.asyncio
     async def test_download_result_from_status_response(self, mock_context):
         """Test that result is downloaded from the status response's resultJson."""
-        node = Flux2ProTextToImage(
-            prompt="test",
-            poll_interval=0.5,
-        )
+        node = Flux2ProTextToImage(prompt="test")
+        node._poll_interval = 0.5
 
         # Submit, status (completed), status again (for download), then actual image
         responses = [
@@ -465,7 +464,7 @@ class TestNanoBananaProGenerate:
         """Test model name and input parameters."""
         node = NanoBananaPro(prompt="test")
         assert node._get_model() == "google/nano-banana-pro"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -478,7 +477,7 @@ class TestFluxKontext:
         """Test model name and input parameters."""
         node = FluxKontext(prompt="test")
         assert node._get_model() == "flux-kontext"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
         assert params["mode"] == "pro"
@@ -490,7 +489,7 @@ class TestFluxKontext:
             prompt="artwork",
             mode=FluxKontext.Mode.MAX,
         )
-        payload = node._get_submit_payload()
+        payload = await node._get_submit_payload()
         assert payload["model"] == "flux-kontext"
         assert payload["input"]["mode"] == "max"
 
@@ -503,7 +502,7 @@ class TestGrokImagineTextToImage:
         """Test model name and input parameters."""
         node = GrokImagineTextToImage(prompt="test")
         assert node._get_model() == "grok-imagine/text-to-image"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
 
@@ -516,7 +515,7 @@ class TestSora2ProTextToVideo:
         """Test model name and input parameters."""
         node = Sora2ProTextToVideo(prompt="test")
         assert node._get_model() == "sora-2-pro-text-to-video"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "landscape"
         assert params["n_frames"] == "10"
@@ -527,7 +526,7 @@ class TestSora2ProImageToVideo:
     """Tests for Sora2ProImageToVideo node."""
 
     @pytest.mark.asyncio
-    async def test_model_and_params(self):
+    async def test_model_and_params(self, mock_context):
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
@@ -535,9 +534,12 @@ class TestSora2ProImageToVideo:
             image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
         assert node._get_model() == "sora-2-pro-image-to-video"
-        params = node._get_input_params()
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_urls"] == ["http://example.com/image.jpg"]
+        assert params["image_urls"] == ["http://uploaded-url.com/image.jpg"]
         assert params["aspect_ratio"] == "landscape"
         assert params["n_frames"] == "10"
         assert params["remove_watermark"] is True
@@ -551,7 +553,7 @@ class TestSora2ProStoryboard:
         """Test model name and input parameters."""
         node = Sora2ProStoryboard(prompt="test storyboard")
         assert node._get_model() == "sora-2-pro-storyboard"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test storyboard"
         assert params["aspect_ratio"] == "landscape"
         assert params["n_frames"] == "10"
@@ -566,29 +568,8 @@ class TestSora2TextToVideo:
         """Test model name and input parameters."""
         node = Sora2TextToVideo(prompt="test")
         assert node._get_model() == "sora-2-text-to-video"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
-        assert params["aspect_ratio"] == "landscape"
-        assert params["n_frames"] == "10"
-        assert params["remove_watermark"] is True
-        assert params["mode"] == "standard"
-
-
-class TestSora2ImageToVideo:
-    """Tests for Sora2ImageToVideo node."""
-
-    @pytest.mark.asyncio
-    async def test_model_and_params(self):
-        """Test model name and input parameters."""
-        from nodetool.metadata.types import ImageRef
-
-        node = Sora2ImageToVideo(
-            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
-        )
-        assert node._get_model() == "sora-2-image-to-video"
-        params = node._get_input_params()
-        assert params["prompt"] == "test"
-        assert params["image_urls"] == ["http://example.com/image.jpg"]
         assert params["aspect_ratio"] == "landscape"
         assert params["n_frames"] == "10"
         assert params["remove_watermark"] is True
@@ -603,7 +584,7 @@ class TestSeedanceV1LiteTextToVideo:
         """Test model name and input parameters."""
         node = SeedanceV1LiteTextToVideo(prompt="test")
         assert node._get_model() == "bytedance/v1-lite-text-to-video"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
@@ -621,7 +602,7 @@ class TestSeedanceV1ProTextToVideo:
         """Test model name and input parameters."""
         node = SeedanceV1ProTextToVideo(prompt="test")
         assert node._get_model() == "bytedance/v1-pro-text-to-video"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
@@ -635,7 +616,7 @@ class TestSeedanceV1LiteImageToVideo:
     """Tests for SeedanceV1LiteImageToVideo node."""
 
     @pytest.mark.asyncio
-    async def test_model_and_params(self):
+    async def test_model_and_params(self, mock_context):
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
@@ -643,9 +624,12 @@ class TestSeedanceV1LiteImageToVideo:
             image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
         assert node._get_model() == "bytedance/v1-lite-image-to-video"
-        params = node._get_input_params()
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://example.com/image.jpg"
+        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
         assert params["camera_fixed"] is False
@@ -657,7 +641,7 @@ class TestSeedanceV1ProImageToVideo:
     """Tests for SeedanceV1ProImageToVideo node."""
 
     @pytest.mark.asyncio
-    async def test_model_and_params(self):
+    async def test_model_and_params(self, mock_context):
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
@@ -665,9 +649,12 @@ class TestSeedanceV1ProImageToVideo:
             image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
         assert node._get_model() == "bytedance/v1-pro-image-to-video"
-        params = node._get_input_params()
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://example.com/image.jpg"
+        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
         assert params["camera_fixed"] is False
@@ -679,7 +666,7 @@ class TestSeedanceV1ProFastImageToVideo:
     """Tests for SeedanceV1ProFastImageToVideo node."""
 
     @pytest.mark.asyncio
-    async def test_model_and_params(self):
+    async def test_model_and_params(self, mock_context):
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
@@ -687,9 +674,12 @@ class TestSeedanceV1ProFastImageToVideo:
             image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
         assert node._get_model() == "bytedance/v1-pro-fast-image-to-video"
-        params = node._get_input_params()
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://example.com/image.jpg"
+        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
         assert params["camera_fixed"] is False
@@ -701,7 +691,7 @@ class TestHailuoImageToVideoPro:
     """Tests for HailuoImageToVideoPro node."""
 
     @pytest.mark.asyncio
-    async def test_model_and_params(self):
+    async def test_model_and_params(self, mock_context):
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
@@ -709,9 +699,12 @@ class TestHailuoImageToVideoPro:
             image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
         assert node._get_model() == "hailuo/2-3-image-to-video-pro"
-        params = node._get_input_params()
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://example.com/image.jpg"
+        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
         assert params["resolution"] == "1080p"
 
 
@@ -719,7 +712,7 @@ class TestHailuoImageToVideoStandard:
     """Tests for HailuoImageToVideoStandard node."""
 
     @pytest.mark.asyncio
-    async def test_model_and_params(self):
+    async def test_model_and_params(self, mock_context):
         """Test model name and input parameters."""
         from nodetool.metadata.types import ImageRef
 
@@ -727,9 +720,12 @@ class TestHailuoImageToVideoStandard:
             image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
         assert node._get_model() == "hailuo/2-3-image-to-video-standard"
-        params = node._get_input_params()
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://example.com/image.jpg"
+        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
         assert params["resolution"] == "720p"
 
 
@@ -741,7 +737,7 @@ class TestSuno:
         """Test model name and input parameters."""
         node = Suno(prompt="upbeat pop song")
         assert node._get_model() == "suno"
-        params = node._get_input_params()
+        params = await node._get_input_params()
         assert params["prompt"] == "upbeat pop song"
         assert params["instrumental"] is False
         assert params["duration"] == 60
@@ -757,7 +753,7 @@ class TestSuno:
             duration=120,
             model=Suno.Model.V4_5_PLUS,
         )
-        payload = node._get_submit_payload()
+        payload = await node._get_submit_payload()
         assert payload["model"] == "suno"
         assert payload["input"]["prompt"] == "energetic rock song"
         assert payload["input"]["style"] == "rock"

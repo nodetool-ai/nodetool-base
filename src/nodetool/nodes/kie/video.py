@@ -313,13 +313,11 @@ class Sora2TextToVideo(KieVideoBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "sora-2-image-to-video"
+        return "sora-2-text-to-video"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
-        if context is None:
-            raise ValueError("Context is required for upload handling")
         payload: dict[str, Any] = {
             "aspect_ratio": self.aspect_ratio.value,
             "n_frames": str(self.n_frames),
