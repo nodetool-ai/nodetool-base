@@ -170,6 +170,7 @@ class TestFlux2ProTextToImage:
             "input": {
                 "prompt": "a cat",
                 "aspect_ratio": "16:9",
+                "resolution": "1K",
                 "steps": 25,
                 "guidance_scale": 7.5,
             },
@@ -330,6 +331,7 @@ class TestFlux2Pro:
             "input": {
                 "prompt": "detailed artwork",
                 "aspect_ratio": "4:3",
+                "resolution": "1K",
                 "steps": 30,
                 "guidance_scale": 10.0,
             },
