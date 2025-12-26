@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
@@ -56,7 +59,10 @@ class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -111,7 +117,7 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -150,7 +156,7 @@ class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -195,7 +201,7 @@ class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -239,7 +245,7 @@ class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -249,6 +255,12 @@ class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
+
+    Use cases:
+    - Merge multiple video clips into one continuous video
+    - Combine intro, main content, and outro sequences
+    - Join video segments from different sources
+    - Create video compilations and montages
     """
 
     video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -275,7 +287,7 @@ class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -314,7 +326,7 @@ class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -322,8 +334,15 @@ from nodetool.workflows.base_node import BaseNode
 class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-    Separate audio from a video file.
-    video, audio, extract, separate
+    Separate and extract audio track from a video file.
+    video, audio, extract, separate, split
+
+    Use cases:
+    - Extract audio for podcasts or music
+    - Create audio-only versions of video content
+    - Analyze or transcribe video audio separately
+    - Reuse audio in different contexts
+    - Convert video soundtracks to audio files
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -344,7 +363,7 @@ class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -379,7 +398,7 @@ class Fps(SingleOutputGraphNode[float], GraphNode[float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -443,7 +462,7 @@ import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
 
-class FrameToVideo(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+class FrameToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
     Combine a sequence of frames into a single video file.
@@ -646,6 +665,13 @@ class Overlay(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
+
+    Use cases:
+    - Create picture-in-picture effects for commentary videos
+    - Add watermarks or logos to videos
+    - Combine multiple video streams
+    - Create split-screen or multi-view presentations
+    - Layer video effects over main content
     """
 
     main_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(

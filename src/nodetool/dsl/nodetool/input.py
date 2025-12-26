@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -44,7 +48,10 @@ class AssetFolderInput(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -81,7 +88,10 @@ class AudioInput(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -114,7 +124,10 @@ class BooleanInput(SingleOutputGraphNode[bool], GraphNode[bool]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -145,7 +158,48 @@ class ColorInput(SingleOutputGraphNode[types.ColorRef], GraphNode[types.ColorRef
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
+class DataframeInput(
+    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
+):
+    """
+
+    Accepts a reference to a dataframe asset for workflows.
+    input, parameter, dataframe, table, data
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
+        default=types.DataframeRef(
+            type="dataframe", uri="", asset_id=None, data=None, columns=None
+        ),
+        description="The dataframe to use as input.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.DataframeInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -197,6 +251,8 @@ class DocumentFileInputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["path"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -237,6 +293,8 @@ class DocumentInput(
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -274,6 +332,8 @@ class FilePathInput(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -310,6 +370,8 @@ class FloatInput(SingleOutputGraphNode[float], GraphNode[float]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -341,6 +403,8 @@ class FolderPathInput(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -384,6 +448,8 @@ class HuggingFaceModelInput(
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -422,6 +488,8 @@ class ImageInput(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -463,6 +531,8 @@ class ImageModelInput(
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -499,6 +569,8 @@ class IntegerInput(SingleOutputGraphNode[int], GraphNode[int]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -540,6 +612,8 @@ class LanguageModelInput(
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -584,6 +658,8 @@ class RealtimeAudioInputOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.Chunk], self["chunk"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -620,6 +696,8 @@ class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
@@ -651,6 +729,8 @@ class StringListInput(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
