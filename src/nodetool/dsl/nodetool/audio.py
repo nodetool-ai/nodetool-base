@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -73,7 +77,10 @@ class AudioMixer(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -121,6 +128,8 @@ class AudioToNumpyOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["channels"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -155,6 +164,8 @@ class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -187,6 +198,8 @@ class ConcatList(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -218,6 +231,8 @@ class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArr
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -248,6 +263,8 @@ class CreateSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -281,6 +298,8 @@ class FadeIn(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -314,6 +333,8 @@ class FadeOut(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -356,6 +377,8 @@ class LoadAudioAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -386,6 +409,8 @@ class LoadAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -439,6 +464,8 @@ class LoadAudioFolderOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["path"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -469,6 +496,8 @@ class MonoToStereo(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -499,6 +528,8 @@ class Normalize(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -536,6 +567,8 @@ class NumpyToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -570,6 +603,8 @@ class OverlayAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -621,6 +656,8 @@ class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -656,6 +693,8 @@ class Repeat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -686,6 +725,8 @@ class Reverse(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -725,6 +766,8 @@ class SaveAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -762,6 +805,8 @@ class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -798,6 +843,8 @@ class SliceAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -832,6 +879,8 @@ class StereoToMono(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -897,6 +946,8 @@ class TextToSpeechOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.Chunk], self["chunk"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode

@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
@@ -42,7 +45,10 @@ class All(SingleOutputGraphNode[bool], GraphNode[bool]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -84,7 +90,7 @@ class Compare(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
@@ -122,7 +128,7 @@ class ConditionalSwitch(SingleOutputGraphNode[Any], GraphNode[Any]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
@@ -157,7 +163,7 @@ class IsIn(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
@@ -189,7 +195,7 @@ class IsNone(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
@@ -232,7 +238,7 @@ class LogicalOperator(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
@@ -264,7 +270,7 @@ class Not(SingleOutputGraphNode[bool], GraphNode[bool]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 

@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -53,6 +57,8 @@ class ListDocumentsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.DocumentRef], self["document"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -80,6 +86,8 @@ class LoadDocumentFile(
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -118,6 +126,7 @@ class SaveDocumentFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any])
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -184,6 +193,7 @@ class SplitDocumentOutputs(OutputsProxy):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -229,6 +239,7 @@ class SplitHTMLOutputs(OutputsProxy):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -280,6 +291,7 @@ class SplitJSONOutputs(OutputsProxy):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -351,6 +363,7 @@ class SplitMarkdownOutputs(OutputsProxy):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
@@ -399,64 +412,6 @@ class SplitRecursively(
 
 
 class SplitRecursivelyOutputs(OutputsProxy):
-    @property
-    def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
-
-    @property
-    def source_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source_id"])
-
-    @property
-    def start_index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["start_index"])
-
-
-import typing
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.document
-from nodetool.workflows.base_node import BaseNode
-
-
-class SplitSentences(
-    GraphNode[nodetool.nodes.nodetool.document.SplitSentences.OutputType]
-):
-    """
-
-    Splits text into sentences using LangChain's SentenceTransformersTokenTextSplitter.
-    sentences, split, nlp
-
-    Use cases:
-    - Natural sentence-based text splitting
-    - Creating semantically meaningful chunks
-    - Processing text for sentence-level analysis
-    """
-
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
-        description=None,
-    )
-    chunk_size: int | OutputHandle[int] = connect_field(
-        default=40, description="Maximum number of tokens per chunk"
-    )
-    chunk_overlap: int | OutputHandle[int] = connect_field(
-        default=5, description="Number of tokens to overlap between chunks"
-    )
-
-    @property
-    def out(self) -> "SplitSentencesOutputs":
-        return SplitSentencesOutputs(self)
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.document.SplitSentences
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-class SplitSentencesOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
         return typing.cast(OutputHandle[str], self["text"])

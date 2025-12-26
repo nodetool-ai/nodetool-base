@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
@@ -53,7 +56,7 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
 

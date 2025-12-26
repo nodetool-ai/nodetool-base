@@ -5,13 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -22,8 +24,15 @@ class AutomaticSpeechRecognition(
 ):
     """
 
-    Automatic speech recognition node.
-    audio, speech, recognition
+    Transcribe audio to text using automatic speech recognition models.
+    audio, speech, recognition, transcription, ASR, whisper
+
+    Use cases:
+    - Transcribe recorded audio to text
+    - Generate subtitles from video audio
+    - Convert voice notes to written text
+    - Process meeting recordings
+    - Enable voice-based data entry
     """
 
     model: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
@@ -60,6 +69,8 @@ class AutomaticSpeechRecognitionOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["text"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -88,6 +99,8 @@ class CapitalizeText(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -119,6 +132,8 @@ class Chunk(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -156,6 +171,8 @@ class CollapseWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -164,8 +181,14 @@ from nodetool.workflows.base_node import BaseNode
 class Collect(GraphNode[nodetool.nodes.nodetool.text.Collect.OutputType]):
     """
 
-    Collects a stream of text inputs into a single string.
-    text, collect, list, stream
+    Collects a stream of text inputs into a single concatenated string.
+    text, collect, list, stream, aggregate
+
+    Use cases:
+    - Combine multiple streaming text outputs
+    - Accumulate results from iterative processes
+    - Build composite text from multiple sources
+    - Aggregate log messages or status updates
     """
 
     input_item: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -190,6 +213,8 @@ class CollectOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["output"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -225,6 +250,8 @@ class Compare(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -254,6 +281,8 @@ class Concat(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
@@ -1678,8 +1707,14 @@ from nodetool.workflows.base_node import BaseNode
 class ToString(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Converts any input to its string representation.
+    Converts any input value to its string representation.
     text, string, convert, repr, str, cast
+
+    Use cases:
+    - Convert numbers, objects, or complex types to strings
+    - Prepare data for text output or logging
+    - Debug values by viewing their representations
+    - Standardize data types in text workflows
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.ToString.Mode

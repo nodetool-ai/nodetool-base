@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -41,7 +45,10 @@ class BatchToList(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -82,7 +89,10 @@ class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -117,7 +127,10 @@ class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -173,6 +186,8 @@ class GetMetadataOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["channels"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -249,6 +264,8 @@ class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -291,6 +308,8 @@ class LoadImageAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -321,6 +340,8 @@ class LoadImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -377,6 +398,8 @@ class LoadImageFolderOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["path"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -418,6 +441,8 @@ class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -454,6 +479,8 @@ class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -493,6 +520,8 @@ class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -535,6 +564,8 @@ class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -568,6 +599,8 @@ class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode

@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
@@ -19,12 +22,14 @@ from nodetool.workflows.base_node import BaseNode
 class AddTimeDelta(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Add or subtract time from a datetime.
-    datetime, add, subtract
+    Add or subtract time from a datetime using specified intervals.
+    datetime, add, subtract, delta, offset
 
     Use cases:
     - Calculate future/past dates
     - Generate date ranges
+    - Schedule events at specific intervals
+    - Calculate expiration dates and deadlines
     """
 
     input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -61,19 +66,24 @@ class AddTimeDelta(SingleOutputGraphNode[types.Datetime], GraphNode[types.Dateti
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
 
 
 class BoundaryTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Get the start or end of a time period (day, week, month, year).
+    Get the start or end boundary of a time period (day, week, month, year).
     datetime, start, end, boundary, day, week, month, year
 
     Use cases:
-    - Get period boundaries for reporting
+    - Get period boundaries for reporting and analytics
     - Normalize dates to period starts/ends
+    - Calculate billing cycles
+    - Group data by time periods
     """
 
     PeriodType: typing.ClassVar[type] = nodetool.nodes.lib.date.PeriodType
@@ -117,7 +127,7 @@ class BoundaryTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Dateti
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.date
 from nodetool.workflows.base_node import BaseNode
 
@@ -125,12 +135,14 @@ from nodetool.workflows.base_node import BaseNode
 class DateDifference(GraphNode[nodetool.nodes.lib.date.DateDifference.OutputType]):
     """
 
-    Calculate the difference between two dates.
-    datetime, difference, duration
+    Calculate the time difference between two datetimes.
+    datetime, difference, duration, elapsed
 
     Use cases:
-    - Calculate time periods
-    - Measure durations
+    - Calculate time periods between events
+    - Measure durations and elapsed time
+    - Track age or time since events
+    - Compute service level agreement (SLA) metrics
     """
 
     start_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -211,12 +223,14 @@ class DateRange(
 ):
     """
 
-    Generate a list of dates between start and end dates.
-    datetime, range, list
+    Generate a list of dates between start and end dates with custom intervals.
+    datetime, range, list, sequence
 
     Use cases:
-    - Generate date sequences
-    - Create date-based iterations
+    - Generate date sequences for reporting
+    - Create date-based iterations in workflows
+    - Build calendar views
+    - Schedule recurring events
     """
 
     start_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -272,8 +286,14 @@ from nodetool.workflows.base_node import BaseNode
 class DateToDatetime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Convert a Date object to a Datetime object.
-    date, datetime, convert
+    Convert a Date object to a Datetime object at midnight.
+    date, datetime, convert, transformation
+
+    Use cases:
+    - Convert dates to datetime for time calculations
+    - Standardize date types in workflows
+    - Prepare dates for timestamp comparisons
+    - Convert legacy date formats
     """
 
     input_date: types.Date | OutputHandle[types.Date] = connect_field(
@@ -300,8 +320,14 @@ from nodetool.workflows.base_node import BaseNode
 class DatetimeToDate(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
 
-    Convert a Datetime object to a Date object.
-    date, datetime, convert
+    Convert a Datetime object to a Date object, removing time component.
+    date, datetime, convert, transformation
+
+    Use cases:
+    - Extract date portion from timestamps
+    - Remove time information for date-only comparisons
+    - Normalize datetime data to dates
+    - Simplify date-based grouping
     """
 
     input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -339,12 +365,14 @@ from nodetool.workflows.base_node import BaseNode
 class FormatDateTime(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Convert a datetime object to a formatted string.
-    datetime, format, convert
+    Convert a datetime object to a custom formatted string.
+    datetime, format, convert, string
 
     Use cases:
-    - Standardize date formats
-    - Prepare dates for different systems
+    - Standardize date formats across systems
+    - Prepare dates for different locales and regions
+    - Generate human-readable date strings
+    - Format dates for filenames and reports
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
@@ -389,11 +417,13 @@ class GetQuarter(GraphNode[nodetool.nodes.lib.date.GetQuarter.OutputType]):
     """
 
     Get the quarter number and start/end dates for a given datetime.
-    datetime, quarter, period
+    datetime, quarter, period, fiscal
 
     Use cases:
     - Financial reporting periods
-    - Quarterly analytics
+    - Quarterly analytics and metrics
+    - Business cycle calculations
+    - Group data by fiscal quarters
     """
 
     input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -450,11 +480,13 @@ class GetWeekday(SingleOutputGraphNode[str | int], GraphNode[str | int]):
     """
 
     Get the weekday name or number from a datetime.
-    datetime, weekday, name
+    datetime, weekday, name, day
 
     Use cases:
-    - Get day names for scheduling
+    - Get day names for scheduling and calendar displays
     - Filter events by weekday
+    - Build day-of-week based logic
+    - Generate weekly reports
     """
 
     input_datetime: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -495,12 +527,14 @@ from nodetool.workflows.base_node import BaseNode
 class IsDateInRange(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Check if a date falls within a specified range.
-    datetime, range, check
+    Check if a date falls within a specified range with optional inclusivity.
+    datetime, range, check, validate
 
     Use cases:
-    - Validate date ranges
+    - Validate date ranges in forms and inputs
     - Filter date-based data
+    - Check if events fall within specific periods
+    - Implement date-based access control
     """
 
     check_date: types.Datetime | OutputHandle[types.Datetime] = connect_field(
@@ -571,8 +605,14 @@ from nodetool.workflows.base_node import BaseNode
 class Now(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Get the current date and time.
-    datetime, current, now
+    Get the current date and time in UTC timezone.
+    datetime, current, now, timestamp
+
+    Use cases:
+    - Generate timestamps for events and logs
+    - Set default datetime values in workflows
+    - Calculate time-based conditions
+    - Track real-time operations
     """
 
     @classmethod
@@ -594,8 +634,14 @@ from nodetool.workflows.base_node import BaseNode
 class ParseDate(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
 
-    Parse a date string into components.
-    date, parse, format
+    Parse a date string into a structured Date object.
+    date, parse, format, convert
+
+    Use cases:
+    - Convert date strings from various sources into standard format
+    - Extract date components from text input
+    - Validate and normalize date formats
+    - Process dates from CSV, JSON, or API responses
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
@@ -627,12 +673,14 @@ from nodetool.workflows.base_node import BaseNode
 class ParseDateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Parse a date/time string into components.
-    datetime, parse, format
+    Parse a date/time string into a structured Datetime object.
+    datetime, parse, format, convert
 
     Use cases:
-    - Extract date components from strings
-    - Convert between date formats
+    - Extract datetime components from strings
+    - Convert between datetime formats
+    - Process timestamps from logs and databases
+    - Standardize datetime data from multiple sources
     """
 
     DateFormat: typing.ClassVar[type] = nodetool.nodes.lib.date.DateFormat
@@ -664,12 +712,14 @@ from nodetool.workflows.base_node import BaseNode
 class RelativeTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Get datetime relative to current time (past or future).
+    Get datetime relative to current time (past or future) with configurable units.
     datetime, past, future, relative, hours, days, months
 
     Use cases:
-    - Calculate past or future dates
-    - Generate relative timestamps
+    - Calculate past or future dates dynamically
+    - Generate relative timestamps for scheduling
+    - Set expiration times
+    - Create time-based filters
     """
 
     TimeUnitType: typing.ClassVar[type] = nodetool.nodes.lib.date.TimeUnitType
@@ -705,8 +755,14 @@ from nodetool.workflows.base_node import BaseNode
 class Today(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
     """
 
-    Get the current date.
-    date, today, now
+    Get the current date in Date format.
+    date, today, now, current
+
+    Use cases:
+    - Get today's date for logging and timestamping
+    - Set default dates in forms and workflows
+    - Calculate date-based conditions
+    - Track daily operations and schedules
     """
 
     @classmethod

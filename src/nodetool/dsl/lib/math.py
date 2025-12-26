@@ -5,12 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
+import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -18,8 +22,14 @@ from nodetool.workflows.base_node import BaseNode
 class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-    Adds two numbers.
-    math, add, plus, +
+    Adds two numbers together.
+    math, add, plus, +, sum
+
+    Use cases:
+    - Perform basic arithmetic operations
+    - Calculate totals and sums
+    - Combine numerical values
+    - Increment counters and scores
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -38,7 +48,10 @@ class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -62,15 +75,24 @@ class Cosine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
 
 class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-    Divides A by B.
+    Divides A by B to calculate the quotient.
     math, divide, division, quotient, /
+
+    Use cases:
+    - Calculate averages and ratios
+    - Distribute quantities evenly
+    - Determine rates and proportions
+    - Compute per-unit values
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -89,7 +111,10 @@ class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -121,7 +146,7 @@ class MathFunction(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -129,8 +154,14 @@ from nodetool.workflows.base_node import BaseNode
 class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-    Computes A modulo B.
+    Computes A modulo B to find the remainder after division.
     math, modulus, modulo, remainder, %
+
+    Use cases:
+    - Determine if numbers are even or odd
+    - Implement cyclic patterns and rotations
+    - Calculate remainders in division
+    - Build repeating sequences
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -151,7 +182,7 @@ class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -159,8 +190,14 @@ from nodetool.workflows.base_node import BaseNode
 class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-    Multiplies two numbers.
-    math, multiply, product, *
+    Multiplies two numbers together.
+    math, multiply, product, *, times
+
+    Use cases:
+    - Calculate products and totals
+    - Scale values by factors
+    - Compute areas and volumes
+    - Apply multipliers and rates
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
@@ -181,7 +218,7 @@ class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -211,7 +248,7 @@ class Power(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -238,7 +275,7 @@ class Sine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -265,7 +302,7 @@ class Sqrt(SingleOutputGraphNode[int | float], GraphNode[int | float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
@@ -274,7 +311,13 @@ class Subtract(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
     Subtracts B from A.
-    math, subtract, minus, -
+    math, subtract, minus, -, difference
+
+    Use cases:
+    - Calculate differences between values
+    - Determine remaining amounts
+    - Compute offsets and deltas
+    - Track decrements and reductions
     """
 
     a: int | float | OutputHandle[int | float] = connect_field(
