@@ -154,7 +154,8 @@ async def test_math_function_inverse_trig(context: ProcessingContext):
 
 @pytest.mark.asyncio
 async def test_math_function_log(context: ProcessingContext):
-    node = MathFunction(input=np.e, operation=MathFunction.Operation.LOG)
+    # Test natural logarithm with a simple value
+    node = MathFunction(input=2.718281828, operation=MathFunction.Operation.LOG)
     result = await node.process(context)
     assert abs(result - 1) < 0.0001
 

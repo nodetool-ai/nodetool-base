@@ -217,10 +217,10 @@ async def test_whitespace_operations(context: ProcessingContext):
     result = await node.process(context)
     assert result is True
     
-    # IsEmpty - whitespace-only string (not considered empty)
+    # IsEmpty - whitespace-only string is considered empty
     node = IsEmpty(text="  ")
     result = await node.process(context)
-    assert result is True  # Changed: whitespace strings are considered empty after trimming
+    assert result is True
 
 
 @pytest.mark.asyncio
@@ -245,9 +245,7 @@ async def test_text_cleaning(context: ProcessingContext):
 async def test_text_length_operations(context: ProcessingContext):
     text = "hello world"
     
-    # HasLength - Don't set exact_length, so it will check min/max
-    # But need to check implementation - if exact_length is 0, it still checks it
-    # Let's just test cases that work with the implementation
+    # HasLength - exact length match
     node = HasLength(text=text, exact_length=11)
     result = await node.process(context)
     assert result is True
@@ -285,8 +283,7 @@ async def test_pad_text(context: ProcessingContext):
 async def test_index_of(context: ProcessingContext):
     text = "hello world hello"
     
-    # IndexOf with end_index set properly (or not set, which means search entire string)
-    # Default end_index is 0, but the code handles this by setting end = len(haystack)
+    # IndexOf - find substring position
     node = IndexOf(text=text, substring="world", end_index=len(text))
     result = await node.process(context)
     assert result == 6
