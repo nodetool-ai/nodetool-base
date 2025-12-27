@@ -2589,7 +2589,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to analyze"
@@ -2603,7 +2604,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio to analyze"
@@ -3064,7 +3066,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "Optional image to classify in context"
@@ -3078,7 +3081,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "Optional audio to classify in context"
@@ -3313,7 +3317,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "Optional image to assist extraction"
@@ -3327,7 +3332,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "Optional audio to assist extraction"
@@ -3681,7 +3687,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "Optional image to condition the summary"
@@ -3695,7 +3702,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "Optional audio to condition the summary"
@@ -3875,6 +3883,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Data",
@@ -4109,7 +4118,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "Image to use for generation"
@@ -4123,7 +4133,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "Audio to use for generation"
@@ -4262,7 +4273,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value",
           "description": "The folder to use as input."
@@ -4314,7 +4326,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value",
           "description": "The audio to use as input."
@@ -4463,6 +4476,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Value",
@@ -4571,7 +4585,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value",
           "description": "The document to use as input."
@@ -4839,7 +4854,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value",
           "description": "The image to use as input."
@@ -5061,7 +5077,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value",
           "description": "The audio to use as input."
@@ -5219,6 +5236,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -5277,7 +5295,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio to transcribe"
@@ -6486,7 +6505,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to load the text files from."
@@ -6918,7 +6938,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "Name of the output folder."
@@ -7618,7 +7639,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to save"
@@ -7679,7 +7701,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "Document ID to associate with the text content"
@@ -7787,7 +7810,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "Document ID to associate with the HTML content"
@@ -7833,7 +7857,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "Document ID to associate with the JSON content"
@@ -7899,7 +7924,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document"
         },
@@ -8020,7 +8046,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document"
         },
@@ -8104,7 +8131,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Track1",
           "description": "First audio track to mix."
@@ -8118,7 +8146,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Track2",
           "description": "Second audio track to mix."
@@ -8132,7 +8161,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Track3",
           "description": "Third audio track to mix."
@@ -8146,7 +8176,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Track4",
           "description": "Fourth audio track to mix."
@@ -8160,7 +8191,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Track5",
           "description": "Fifth audio track to mix."
@@ -8257,7 +8289,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio to convert to numpy."
@@ -8302,7 +8335,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "A",
           "description": "The first audio file."
@@ -8316,7 +8350,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "B",
           "description": "The second audio file."
@@ -8385,7 +8420,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to convert to a tensor."
@@ -8447,7 +8483,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to apply fade-in to."
@@ -8492,7 +8529,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to apply fade-out to."
@@ -8537,7 +8575,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to load the audio files from."
@@ -8672,7 +8711,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The mono audio file to convert."
@@ -8706,7 +8746,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to normalize."
@@ -8795,7 +8836,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "A",
           "description": "The first audio file."
@@ -8809,7 +8851,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "B",
           "description": "The second audio file."
@@ -8844,7 +8887,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to process."
@@ -8938,7 +8982,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to loop."
@@ -8984,7 +9029,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to reverse."
@@ -9018,7 +9064,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio"
         },
@@ -9031,7 +9078,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to save the audio file to. "
@@ -9076,7 +9124,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio to save"
@@ -9129,7 +9178,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file."
@@ -9185,7 +9235,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The stereo audio file to convert."
@@ -9303,7 +9354,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to trim."
@@ -9359,7 +9411,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value"
         }
@@ -9427,6 +9480,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "DataFrame"
@@ -9661,7 +9715,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document"
         }
@@ -9721,7 +9776,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value"
         }
@@ -9781,7 +9837,8 @@
             "type": "json",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value"
         }
@@ -9879,6 +9936,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -10329,7 +10387,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to save"
@@ -10393,6 +10452,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11488,6 +11548,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11503,7 +11564,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to add to the video."
@@ -11560,6 +11622,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11664,6 +11727,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11711,6 +11775,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11783,6 +11848,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11854,6 +11920,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11870,6 +11937,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11906,6 +11974,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11953,6 +12022,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -11988,6 +12058,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12023,6 +12094,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12090,7 +12162,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Frame",
           "description": "Collect input frames"
@@ -12133,7 +12206,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The input image to animate into a video"
@@ -12281,7 +12355,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to load the video files from."
@@ -12350,6 +12425,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12366,6 +12442,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12444,6 +12521,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12499,6 +12577,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12534,6 +12613,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12581,6 +12661,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12628,6 +12709,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12643,7 +12725,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to save the video in."
@@ -12688,6 +12771,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12743,6 +12827,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12788,6 +12873,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -12847,6 +12933,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -13037,6 +13124,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -13053,6 +13141,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -13172,6 +13261,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -13226,7 +13316,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image A",
           "description": "First image (displayed on left/top)"
@@ -13240,7 +13331,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image B",
           "description": "Second image (displayed on right/bottom)"
@@ -13292,7 +13384,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Batch",
           "description": "The batch of images to convert."
@@ -13330,7 +13423,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to crop."
@@ -13411,7 +13505,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to fit."
@@ -13468,7 +13563,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The input image."
@@ -13541,7 +13637,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "Input image to transform"
@@ -13666,6 +13763,26 @@
       "expose_as_tool": true
     },
     {
+      "title": "Images To List",
+      "description": "Convert all dynamic properties to a list of image references.\n    list, images, processing",
+      "namespace": "nodetool.image",
+      "node_type": "nodetool.image.ImagesToList",
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "is_dynamic": true
+    },
+    {
       "title": "Load Image Assets",
       "description": "Load images from an asset folder.\n    load, image, file, import",
       "namespace": "nodetool.image",
@@ -13680,7 +13797,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to load the images from."
@@ -13826,7 +13944,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to paste into."
@@ -13840,7 +13959,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Paste",
           "description": "The image to paste."
@@ -13898,7 +14018,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to resize."
@@ -13955,7 +14076,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to save."
@@ -13969,7 +14091,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to save the image in."
@@ -14013,7 +14136,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to save"
@@ -14076,7 +14200,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to scale."
@@ -14243,6 +14368,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -14303,6 +14429,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -14358,6 +14485,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe A",
@@ -14373,6 +14501,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe B",
@@ -14409,6 +14538,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Df",
@@ -14444,6 +14574,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Df",
@@ -14479,6 +14610,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -14529,6 +14661,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -14594,6 +14727,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Df",
@@ -14668,6 +14802,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Df",
@@ -14804,6 +14939,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe A",
@@ -14819,6 +14955,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe B",
@@ -14864,7 +15001,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to load the dataframes from."
@@ -14964,6 +15102,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe A",
@@ -14979,6 +15118,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe B",
@@ -15015,6 +15155,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15090,6 +15231,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15135,6 +15277,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15176,6 +15319,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15230,6 +15374,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Df"
@@ -15243,7 +15388,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "Name of the output folder."
@@ -15320,6 +15466,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15365,6 +15512,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15420,6 +15568,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Df"
@@ -15463,6 +15612,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -15565,7 +15715,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value"
         },
@@ -15665,6 +15816,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Value"
@@ -15772,7 +15924,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value"
         },
@@ -15971,7 +16124,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Value"
         },
@@ -16170,6 +16324,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -16374,7 +16529,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to animate into a video"
@@ -16557,7 +16713,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to use as a base for the generation."
@@ -17465,7 +17622,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to add the heading to"
@@ -17520,7 +17678,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to add the image to"
@@ -17534,7 +17693,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to add"
@@ -17588,7 +17748,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to add the page break to"
@@ -17621,7 +17782,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to add the paragraph to"
@@ -17711,7 +17873,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to add the table to"
@@ -17726,6 +17889,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Data",
@@ -17802,7 +17966,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to write"
@@ -17850,7 +18015,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to modify"
@@ -17967,7 +18133,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to slice into a grid."
@@ -18215,7 +18382,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF document to extract tables from"
@@ -18295,7 +18463,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF file to extract text from"
@@ -20127,6 +20296,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Data",
@@ -20183,7 +20353,8 @@
             "type": "excel",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Workbook",
           "description": "The Excel workbook to format"
@@ -20254,7 +20425,8 @@
             "type": "excel",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Workbook",
           "description": "The Excel workbook to write to"
@@ -20269,6 +20441,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "columns": null
           },
           "title": "Dataframe",
@@ -20333,7 +20506,8 @@
             "type": "excel",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Workbook",
           "description": "The Excel workbook to read from"
@@ -20386,7 +20560,8 @@
             "type": "excel",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Workbook",
           "description": "The Excel workbook to format"
@@ -20469,7 +20644,8 @@
             "type": "excel",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Workbook",
           "description": "The Excel workbook to save"
@@ -21378,7 +21554,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Input Image",
           "description": "The image to perform OCR on"
@@ -21469,7 +21646,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Document",
           "description": "The document to convert to markdown"
@@ -25719,7 +25897,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The asset folder to load the JSON files from."
@@ -25891,7 +26070,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF document to convert to markdown"
@@ -25945,7 +26125,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF document to extract tables from"
@@ -26004,7 +26185,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF document to extract text from"
@@ -26058,7 +26240,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF document to extract text blocks from"
@@ -26117,7 +26300,8 @@
             "type": "document",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Pdf",
           "description": "The PDF document to extract styled text from"
@@ -27318,7 +27502,8 @@
             "type": "folder",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Folder",
           "description": "The folder to save the array in."
@@ -27445,7 +27630,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The input image to convert to a tensor. The image should have either 1 (grayscale), 3 (RGB), or 4 (RGBA) channels."
@@ -28418,7 +28604,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the contrast for."
@@ -28475,7 +28662,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the contrast for."
@@ -28520,7 +28708,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the brightness for."
@@ -28571,7 +28760,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the brightness for."
@@ -28614,7 +28804,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the brightness for."
@@ -28657,7 +28848,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to detail."
@@ -28690,7 +28882,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to edge enhance."
@@ -28723,7 +28916,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to equalize."
@@ -28756,7 +28950,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to rank filter."
@@ -28813,7 +29008,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to sharpen."
@@ -28846,7 +29042,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the brightness for."
@@ -28889,7 +29086,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to unsharp mask."
@@ -28958,7 +29156,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "The first image to blend."
@@ -28972,7 +29171,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "The second image to blend."
@@ -29018,7 +29218,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "The first image to composite."
@@ -29032,7 +29233,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "The second image to composite."
@@ -29046,7 +29248,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Mask",
           "description": "The mask to composite with."
@@ -29081,7 +29284,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to color correct."
@@ -29234,7 +29438,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust."
@@ -29291,7 +29496,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust."
@@ -29420,7 +29626,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust."
@@ -29525,7 +29732,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to apply the film look to."
@@ -29593,7 +29801,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust."
@@ -29683,7 +29892,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to color correct."
@@ -29860,7 +30070,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust."
@@ -29917,7 +30128,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to apply split toning to."
@@ -30010,7 +30222,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to apply vignette to."
@@ -30091,7 +30304,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to blur."
@@ -30136,7 +30350,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to canny."
@@ -30193,7 +30408,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to contour."
@@ -30226,7 +30442,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to convert."
@@ -30259,7 +30476,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to emboss."
@@ -30292,7 +30510,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to expand."
@@ -30349,7 +30568,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to find edges."
@@ -30382,7 +30602,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to get the channel from."
@@ -30430,7 +30651,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to adjust the brightness for."
@@ -30463,7 +30685,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to posterize."
@@ -30508,7 +30731,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to smooth."
@@ -30541,7 +30765,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to solarize."
@@ -30774,7 +30999,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to render on."
@@ -30924,7 +31150,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to animate."
@@ -31044,7 +31271,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to animate."
@@ -31124,7 +31352,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The reference image to animate into a video."
@@ -31198,7 +31427,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The reference image to animate into a video."
@@ -31252,80 +31482,6 @@
       "basic_fields": [
         "image",
         "prompt",
-        "duration",
-        "resolution"
-      ],
-      "expose_as_tool": true
-    },
-    {
-      "title": "Hailuo Text To Video",
-      "description": "Generate videos from text using MiniMax's Hailuo model via Kie.ai.",
-      "namespace": "kie.video",
-      "node_type": "kie.video.HailuoTextToVideo",
-      "properties": [
-        {
-          "name": "prompt",
-          "type": {
-            "type": "str"
-          },
-          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
-          "title": "Prompt",
-          "description": "The text prompt describing the video."
-        },
-        {
-          "name": "model_type",
-          "type": {
-            "type": "enum",
-            "values": [
-              "pro",
-              "standard"
-            ],
-            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideo.ModelType"
-          },
-          "default": "pro",
-          "title": "Model Type",
-          "description": "The model tier to use."
-        },
-        {
-          "name": "duration",
-          "type": {
-            "type": "enum",
-            "values": [
-              "6",
-              "10"
-            ],
-            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideo.Duration"
-          },
-          "default": "6",
-          "title": "Duration",
-          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
-        },
-        {
-          "name": "resolution",
-          "type": {
-            "type": "enum",
-            "values": [
-              "768P",
-              "1080P"
-            ],
-            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideo.Resolution"
-          },
-          "default": "768P",
-          "title": "Resolution",
-          "description": "The resolution of the video."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "video"
-          },
-          "name": "output"
-        }
-      ],
-      "basic_fields": [
-        "prompt",
-        "model_type",
         "duration",
         "resolution"
       ],
@@ -31473,7 +31629,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image."
@@ -31487,7 +31644,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The source audio track."
@@ -31537,7 +31695,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The face/character image to animate."
@@ -31551,7 +31710,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio track for lip-syncing."
@@ -31611,7 +31771,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The face/character image to animate."
@@ -31625,7 +31786,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio track for lip-syncing."
@@ -31694,7 +31856,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "First source image for the video generation."
@@ -31708,7 +31871,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "Second source image (optional)."
@@ -31722,7 +31886,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image3",
           "description": "Third source image (optional)."
@@ -31924,7 +32089,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "First source image for the video generation."
@@ -31938,7 +32104,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "Second source image (optional)."
@@ -31952,7 +32119,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image3",
           "description": "Third source image (optional)."
@@ -32136,7 +32304,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "First source image for the video generation."
@@ -32150,7 +32319,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "Second source image (optional)."
@@ -32164,7 +32334,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image3",
           "description": "Third source image (optional)."
@@ -32268,7 +32439,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "First source image for the video generation."
@@ -32282,7 +32454,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "Second source image (optional)."
@@ -32296,7 +32469,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image3",
           "description": "Third source image (optional)."
@@ -32469,7 +32643,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to animate."
@@ -32551,7 +32726,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "First source image for the video generation."
@@ -32565,7 +32741,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "Second source image (optional)."
@@ -32579,7 +32756,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image3",
           "description": "Third source image (optional)."
@@ -32754,6 +32932,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -32823,7 +33002,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image1",
           "description": "First source image for the video generation."
@@ -32837,7 +33017,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image2",
           "description": "Second source image (optional)."
@@ -32851,7 +33032,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image3",
           "description": "Third source image (optional)."
@@ -32987,6 +33169,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -33003,6 +33186,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -33019,6 +33203,7 @@
             "uri": "",
             "asset_id": null,
             "data": null,
+            "metadata": null,
             "duration": null,
             "format": null
           },
@@ -33183,7 +33368,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to transform."
@@ -33370,7 +33556,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to transform."
@@ -33649,13 +33836,19 @@
       "node_type": "kie.image.GrokImagineUpscale",
       "properties": [
         {
-          "name": "task_id",
+          "name": "image",
           "type": {
-            "type": "str"
+            "type": "image"
           },
-          "default": "",
-          "title": "Task Id",
-          "description": "Task ID of a previously generated Grok Imagine image to upscale."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "The image to upscale. Must be an image previously generated by a Kie.ai node."
         }
       ],
       "outputs": [
@@ -33667,7 +33860,7 @@
         }
       ],
       "basic_fields": [
-        "task_id"
+        "image"
       ],
       "expose_as_tool": true
     },
@@ -33695,7 +33888,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "Base image to remix."
@@ -33773,15 +33967,6 @@
           "description": "The size of the output image."
         },
         {
-          "name": "num_images",
-          "type": {
-            "type": "str"
-          },
-          "default": "1",
-          "title": "Num Images",
-          "description": "Number of images to generate (string '1', '2', '3', or '4')."
-        },
-        {
           "name": "strength",
           "type": {
             "type": "float"
@@ -33841,7 +34026,6 @@
         "style",
         "expand_prompt",
         "image_size",
-        "num_images",
         "strength",
         "negative_prompt",
         "additional_images",
@@ -33864,7 +34048,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "URL of the image to reframe."
@@ -33919,15 +34104,6 @@
           "description": "Generation style."
         },
         {
-          "name": "num_images",
-          "type": {
-            "type": "str"
-          },
-          "default": "1",
-          "title": "Num Images",
-          "description": "Number of images to generate (string '1', '2', '3', or '4')."
-        },
-        {
           "name": "seed",
           "type": {
             "type": "int"
@@ -33950,7 +34126,6 @@
         "image_size",
         "rendering_speed",
         "style",
-        "num_images",
         "seed"
       ],
       "expose_as_tool": true
@@ -33997,17 +34172,6 @@
           "description": "The aspect ratio of the generated image."
         },
         {
-          "name": "num_images",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Num Images",
-          "description": "Number of images to generate.",
-          "min": 1.0,
-          "max": 4.0
-        },
-        {
           "name": "seed",
           "type": {
             "type": "int"
@@ -34029,7 +34193,6 @@
         "prompt",
         "negative_prompt",
         "aspect_ratio",
-        "num_images",
         "seed"
       ],
       "expose_as_tool": true
@@ -34074,17 +34237,6 @@
           "default": "1:1",
           "title": "Aspect Ratio",
           "description": "The aspect ratio of the generated image."
-        },
-        {
-          "name": "num_images",
-          "type": {
-            "type": "int"
-          },
-          "default": 1,
-          "title": "Num Images",
-          "description": "Number of images to generate.",
-          "min": 1.0,
-          "max": 4.0
         }
       ],
       "outputs": [
@@ -34098,8 +34250,7 @@
       "basic_fields": [
         "prompt",
         "negative_prompt",
-        "aspect_ratio",
-        "num_images"
+        "aspect_ratio"
       ],
       "expose_as_tool": true
     },
@@ -34186,35 +34337,25 @@
           "description": "The text prompt describing the image to generate."
         },
         {
-          "name": "output_format",
-          "type": {
-            "type": "enum",
-            "values": [
-              "png",
-              "jpg",
-              "webp"
-            ],
-            "type_name": "nodetool.nodes.kie.image.NanoBanana.OutputFormat"
-          },
-          "default": "webp",
-          "title": "Output Format",
-          "description": "The output format of the generated image."
-        },
-        {
           "name": "image_size",
           "type": {
             "type": "enum",
             "values": [
-              "square",
-              "square_hd",
-              "portrait_4_3",
-              "portrait_16_9",
-              "landscape_4_3",
-              "landscape_16_9"
+              "1:1",
+              "9:16",
+              "16:9",
+              "3:4",
+              "4:3",
+              "3:2",
+              "2:3",
+              "5:4",
+              "4:5",
+              "21:9",
+              "auto"
             ],
             "type_name": "nodetool.nodes.kie.image.NanoBanana.ImageSize"
           },
-          "default": "square_hd",
+          "default": "1:1",
           "title": "Image Size",
           "description": "The size of the output image."
         }
@@ -34229,7 +34370,6 @@
       ],
       "basic_fields": [
         "prompt",
-        "output_format",
         "image_size"
       ],
       "expose_as_tool": true
@@ -34264,35 +34404,25 @@
           "description": "Images to edit."
         },
         {
-          "name": "output_format",
-          "type": {
-            "type": "enum",
-            "values": [
-              "png",
-              "jpg",
-              "webp"
-            ],
-            "type_name": "nodetool.nodes.kie.image.NanoBananaEdit.OutputFormat"
-          },
-          "default": "webp",
-          "title": "Output Format",
-          "description": "The output format of the generated image."
-        },
-        {
           "name": "image_size",
           "type": {
             "type": "enum",
             "values": [
-              "square",
-              "square_hd",
-              "portrait_4_3",
-              "portrait_16_9",
-              "landscape_4_3",
-              "landscape_16_9"
+              "1:1",
+              "9:16",
+              "16:9",
+              "3:4",
+              "4:3",
+              "3:2",
+              "2:3",
+              "5:4",
+              "4:5",
+              "21:9",
+              "auto"
             ],
             "type_name": "nodetool.nodes.kie.image.NanoBananaEdit.ImageSize"
           },
-          "default": "square_hd",
+          "default": "1:1",
           "title": "Image Size",
           "description": "The size of the output image."
         }
@@ -34308,7 +34438,6 @@
       "basic_fields": [
         "prompt",
         "image_input",
-        "output_format",
         "image_size"
       ],
       "expose_as_tool": true
@@ -34373,21 +34502,6 @@
           "default": "2K",
           "title": "Resolution",
           "description": "Output image resolution."
-        },
-        {
-          "name": "output_format",
-          "type": {
-            "type": "enum",
-            "values": [
-              "png",
-              "jpg",
-              "webp"
-            ],
-            "type_name": "nodetool.nodes.kie.image.NanoBananaPro.OutputFormat"
-          },
-          "default": "webp",
-          "title": "Output Format",
-          "description": "The output format of the generated image."
         }
       ],
       "outputs": [
@@ -34402,8 +34516,7 @@
         "prompt",
         "image_input",
         "aspect_ratio",
-        "resolution",
-        "output_format"
+        "resolution"
       ],
       "expose_as_tool": true
     },
@@ -34431,7 +34544,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to transform."
@@ -34531,7 +34645,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to upscale."
@@ -34565,7 +34680,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to remove the background from."
@@ -34608,7 +34724,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The source image to edit."
@@ -34738,7 +34855,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to upscale."
@@ -35843,7 +35961,8 @@
             "type": "image",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Image",
           "description": "The image to query"
@@ -36951,7 +37070,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to transcribe (max 25 MB)."
@@ -37112,7 +37232,8 @@
             "type": "audio",
             "uri": "",
             "asset_id": null,
-            "data": null
+            "data": null,
+            "metadata": null
           },
           "title": "Audio",
           "description": "The audio file to translate."
