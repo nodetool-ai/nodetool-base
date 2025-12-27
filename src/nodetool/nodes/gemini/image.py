@@ -14,6 +14,7 @@ log = get_logger(__name__)
 class ImageGenerationModel(str, Enum):
     GEMINI_2_0_FLASH_PREVIEW = "gemini-2.0-flash-preview-image-generation"
     GEMINI_2_5_FLASH_IMAGE_PREVIEW = "gemini-2.5-flash-image-preview"
+    GEMINI_3_PRO_IMAGE_PREVIEW = "gemini-3-pro-image-preview"
     IMAGEN_3_0_GENERATE_001 = "imagen-3.0-generate-001"
     IMAGEN_3_0_GENERATE_002 = "imagen-3.0-generate-002"
     IMAGEN_4_0_GENERATE_PREVIEW = "imagen-4.0-generate-preview-06-06"
