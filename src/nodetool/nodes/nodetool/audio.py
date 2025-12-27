@@ -866,8 +866,7 @@ class ConcatList(BaseNode):
 
 class TextToSpeech(BaseNode):
     """
-    Generate speech audio from text using any supported TTS provider.
-    Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
+    Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
     audio, generation, AI, text-to-speech, tts, voice
 
     Use cases:
