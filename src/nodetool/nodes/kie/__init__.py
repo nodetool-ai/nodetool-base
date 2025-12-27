@@ -23,6 +23,14 @@ from nodetool.nodes.kie.image import (
     GrokImagineTextToImage,
     GrokImagineUpscale,
     TopazImageUpscale,
+    RecraftRemoveBackground,
+    IdeogramCharacterRemix,
+    IdeogramV3Reframe,
+    RecraftCrispUpscale,
+    Imagen4Fast,
+    Imagen4Ultra,
+    Imagen4,
+    NanoBananaEdit,
 )
 
 from nodetool.nodes.kie.video import (
@@ -37,6 +45,7 @@ from nodetool.nodes.kie.video import (
     SeedanceV1ProFastImageToVideo,
     HailuoImageToVideoPro,
     HailuoImageToVideoStandard,
+    HailuoImageToVideo,
     KlingTextToVideo,
     KlingImageToVideo,
     KlingAIAvatarStandard,
@@ -44,6 +53,11 @@ from nodetool.nodes.kie.video import (
     TopazVideoUpscale,
     GrokImagineImageToVideo,
     GrokImagineTextToVideo,
+    WanMultiShotTextToVideoPro,
+    Wan26TextToVideo,
+    Wan26ImageToVideo,
+    Wan26VideoToVideo,
+    InfinitalkV1,
 )
 
 from nodetool.nodes.kie.audio import Suno
@@ -63,6 +77,14 @@ __all__ = [
     "GrokImagineTextToImage",
     "GrokImagineUpscale",
     "TopazImageUpscale",
+    "RecraftRemoveBackground",
+    "IdeogramCharacterRemix",
+    "IdeogramV3Reframe",
+    "RecraftCrispUpscale",
+    "Imagen4Fast",
+    "Imagen4Ultra",
+    "Imagen4",
+    "NanoBananaEdit",
     # Video generation nodes
     "Sora2TextToVideo",
     "Sora2ProTextToVideo",
@@ -75,6 +97,7 @@ __all__ = [
     "SeedanceV1ProFastImageToVideo",
     "HailuoImageToVideoPro",
     "HailuoImageToVideoStandard",
+    "HailuoImageToVideo",
     "KlingTextToVideo",
     "KlingImageToVideo",
     "KlingAIAvatarStandard",
@@ -82,6 +105,11 @@ __all__ = [
     "TopazVideoUpscale",
     "GrokImagineImageToVideo",
     "GrokImagineTextToVideo",
+    "WanMultiShotTextToVideoPro",
+    "Wan26TextToVideo",
+    "Wan26ImageToVideo",
+    "Wan26VideoToVideo",
+    "InfinitalkV1",
     # Audio generation nodes
     "Suno",
 ]
