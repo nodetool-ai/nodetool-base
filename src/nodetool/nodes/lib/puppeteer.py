@@ -61,7 +61,6 @@ class PuppeteerGoto(BaseNode):
         if not self.url:
             raise ValueError("URL is required")
 
-
         browser = await pyppeteer.launch(headless=True)
         try:
             page = await browser.newPage()
@@ -119,7 +118,6 @@ class PuppeteerClick(BaseNode):
             raise ValueError("URL is required")
         if not self.selector:
             raise ValueError("Selector is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
@@ -186,7 +184,6 @@ class PuppeteerType(BaseNode):
         if not self.selector:
             raise ValueError("Selector is required")
 
-
         browser = await pyppeteer.launch(headless=True)
         try:
             page = await browser.newPage()
@@ -247,7 +244,6 @@ class PuppeteerScreenshot(BaseNode):
     async def process(self, context: ProcessingContext) -> ImageRef:
         if not self.url:
             raise ValueError("URL is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
@@ -310,7 +306,6 @@ class PuppeteerEvaluate(BaseNode):
         if not self.script:
             raise ValueError("Script is required")
 
-
         browser = await pyppeteer.launch(headless=True)
         try:
             page = await browser.newPage()
@@ -367,8 +362,6 @@ class PuppeteerWaitForSelector(BaseNode):
             raise ValueError("URL is required")
         if not self.selector:
             raise ValueError("Selector is required")
-
-
         browser = await pyppeteer.launch(headless=True)
         try:
             page = await browser.newPage()
@@ -383,7 +376,7 @@ class PuppeteerWaitForSelector(BaseNode):
             if self.hidden:
                 options["hidden"] = True
 
-            await page.waitForSelector(self.selector, options)
+            await page.waitForSelector(self.selector, **options)
             return {
                 "success": True,
                 "found": True,
@@ -432,7 +425,6 @@ class PuppeteerExtractText(BaseNode):
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.url:
             raise ValueError("URL is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
@@ -506,7 +498,6 @@ class PuppeteerExtractAttribute(BaseNode):
             raise ValueError("URL is required")
         if not self.selector:
             raise ValueError("Selector is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
@@ -583,7 +574,6 @@ class PuppeteerFillForm(BaseNode):
             raise ValueError("URL is required")
         if not self.fields:
             raise ValueError("At least one field is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
@@ -665,10 +655,8 @@ class PuppeteerPDF(BaseNode):
         if not self.output_file:
             raise ValueError("Output file path is required")
 
-
         host_path = context.resolve_workspace_path(self.output_file)
         os.makedirs(os.path.dirname(host_path) or ".", exist_ok=True)
-
         browser = await pyppeteer.launch(headless=True)
         try:
             page = await browser.newPage()
@@ -733,7 +721,6 @@ class PuppeteerSelect(BaseNode):
             raise ValueError("Selector is required")
         if not self.value:
             raise ValueError("Value is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
@@ -809,7 +796,6 @@ class PuppeteerHover(BaseNode):
         if not self.selector:
             raise ValueError("Selector is required")
 
-
         browser = await pyppeteer.launch(headless=True)
         try:
             page = await browser.newPage()
@@ -868,7 +854,6 @@ class PuppeteerScroll(BaseNode):
     async def process(self, context: ProcessingContext) -> OutputType:
         if not self.url:
             raise ValueError("URL is required")
-
 
         browser = await pyppeteer.launch(headless=True)
         try:
