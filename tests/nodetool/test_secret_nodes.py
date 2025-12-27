@@ -39,8 +39,14 @@ async def context(tmp_path, monkeypatch, mock_keyring):
     """Set up test context with mocked keyring and database."""
     monkeypatch.setenv("HOME", str(tmp_path))
 
-    # Initialize the database table for secrets
-    await Secret.create_table()
+    # Check if we're using Supabase - if so, skip table creation as it's handled via migrations
+    from nodetool.config.environment import Environment
+    supabase_url = Environment.get_supabase_url()
+    supabase_key = Environment.get_supabase_key()
+
+    # Only create table if not using Supabase (Supabase tables are created via migrations)
+    if not (supabase_url and supabase_key):
+        await Secret.create_table()
 
     return ProcessingContext(user_id="test", auth_token="test")
 

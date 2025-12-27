@@ -36,17 +36,6 @@ async def run_list_generator_eval(
     await run_evaluation(runner, models, output_file)
 
 
-async def run_structured_output_generator_eval(
-    models: Optional[List[Tuple[str, str]]] = None,
-    output_file: Optional[str] = None,
-) -> None:
-    """Run StructuredOutputGenerator evaluation."""
-    from eval_structured_output_generator import StructuredOutputGeneratorRunner, run_evaluation
-
-    runner = StructuredOutputGeneratorRunner()
-    await run_evaluation(runner, models, output_file)
-
-
 async def run_svg_generator_eval(
     models: Optional[List[Tuple[str, str]]] = None,
     output_file: Optional[str] = None,
@@ -73,10 +62,6 @@ Examples:
   python run_eval.py list_generator
   python run_eval.py lg --models ollama/gemma3:4b
 
-  # StructuredOutputGenerator
-  python run_eval.py structured_output_generator
-  python run_eval.py sog --output results.json
-
   # SVGGenerator
   python run_eval.py svg_generator
   python run_eval.py svg --models ollama/llama3.2:3b
@@ -84,13 +69,14 @@ Examples:
 Supported evaluations:
   data_generator (aliases: data, dg)              - DataGenerator node
   list_generator (aliases: list, lg)              - ListGenerator node
-  structured_output_generator (aliases: structured, sog) - StructuredOutputGenerator node
   svg_generator (aliases: svg, svgg)              - SVGGenerator node
         """,
     )
 
     # Subcommand for evaluation type
-    subparsers = parser.add_subparsers(dest="eval_type", help="Type of evaluation to run")
+    subparsers = parser.add_subparsers(
+        dest="eval_type", help="Type of evaluation to run"
+    )
 
     # Helper function to add common arguments
     def add_common_args(subparser):
@@ -123,14 +109,6 @@ Supported evaluations:
     )
     add_common_args(list_gen_parser)
 
-    # StructuredOutputGenerator evaluation
-    struct_gen_parser = subparsers.add_parser(
-        "structured_output_generator",
-        help="Evaluate StructuredOutputGenerator node",
-        aliases=["structured", "sog"],
-    )
-    add_common_args(struct_gen_parser)
-
     # SVGGenerator evaluation
     svg_gen_parser = subparsers.add_parser(
         "svg_generator",
@@ -154,7 +132,10 @@ Supported evaluations:
             if len(parts) == 2:
                 models.append((parts[0], parts[1]))
             else:
-                print(f"⚠️  Invalid model format: {model_str}. Use provider/model_id", file=sys.stderr)
+                print(
+                    f"⚠️  Invalid model format: {model_str}. Use provider/model_id",
+                    file=sys.stderr,
+                )
                 sys.exit(1)
 
     # Run the appropriate evaluation
@@ -163,8 +144,6 @@ Supported evaluations:
         eval_func = run_data_generator_eval
     elif args.eval_type in ["list_generator", "list", "lg"]:
         eval_func = run_list_generator_eval
-    elif args.eval_type in ["structured_output_generator", "structured", "sog"]:
-        eval_func = run_structured_output_generator_eval
     elif args.eval_type in ["svg_generator", "svg", "svgg"]:
         eval_func = run_svg_generator_eval
     else:

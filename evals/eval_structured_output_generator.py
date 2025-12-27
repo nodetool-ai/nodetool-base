@@ -2,11 +2,6 @@
 Evaluation script for the StructuredOutputGenerator node.
 
 Tests the StructuredOutputGenerator node for generating structured JSON from prompts.
-
-Usage:
-    python eval_structured_output_generator.py
-    python eval_structured_output_generator.py --models ollama/gemma3:4b
-    python eval_structured_output_generator.py --output results.json
 """
 
 import json
@@ -20,13 +15,26 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.nodetool.generators import StructuredOutputGenerator
 
 try:
-    from .common import EvalCase as BaseEvalCase, EvalResult, EvalRunner, run_evaluation, get_provider
+    from .common import (
+        EvalCase as BaseEvalCase,
+        EvalResult,
+        EvalRunner,
+        run_evaluation,
+        get_provider,
+    )
 except ImportError:
-    from common import EvalCase as BaseEvalCase, EvalResult, EvalRunner, run_evaluation, get_provider
+    from common import (
+        EvalCase as BaseEvalCase,
+        EvalResult,
+        EvalRunner,
+        run_evaluation,
+        get_provider,
+    )
 
 
 class StructuredTask(Enum):
     """Types of structured output tasks."""
+
     PERSON = "person"
     PRODUCT = "product"
     EVENT = "event"
@@ -37,6 +45,7 @@ class StructuredTask(Enum):
 @dataclass
 class EvalCase(BaseEvalCase):
     """StructuredOutputGenerator-specific evaluation case."""
+
     task_type: StructuredTask = StructuredTask.PERSON
     output_schema: Dict[str, str] = field(default_factory=dict)
     output_columns: RecordType = field(default_factory=RecordType)
@@ -49,11 +58,13 @@ def create_person_task() -> EvalCase:
         task_id="person",
         task_type=StructuredTask.PERSON,
         prompt="Generate a realistic person with a name, age, and email",
-        output_columns=RecordType(columns=[
-            ColumnDef(name="name", data_type="string"),
-            ColumnDef(name="age", data_type="int"),
-            ColumnDef(name="email", data_type="string"),
-        ]),
+        output_columns=RecordType(
+            columns=[
+                ColumnDef(name="name", data_type="string"),
+                ColumnDef(name="age", data_type="int"),
+                ColumnDef(name="email", data_type="string"),
+            ]
+        ),
         output_schema={
             "name": "string",
             "age": "int",
@@ -70,11 +81,13 @@ def create_product_task() -> EvalCase:
         task_id="product",
         task_type=StructuredTask.PRODUCT,
         prompt="Generate a product with a name, price, and category",
-        output_columns=RecordType(columns=[
-            ColumnDef(name="name", data_type="string"),
-            ColumnDef(name="price", data_type="float"),
-            ColumnDef(name="category", data_type="string"),
-        ]),
+        output_columns=RecordType(
+            columns=[
+                ColumnDef(name="name", data_type="string"),
+                ColumnDef(name="price", data_type="float"),
+                ColumnDef(name="category", data_type="string"),
+            ]
+        ),
         output_schema={
             "name": "string",
             "price": "float",
@@ -91,11 +104,13 @@ def create_event_task() -> EvalCase:
         task_id="event",
         task_type=StructuredTask.EVENT,
         prompt="Generate an event with a title, date, and location",
-        output_columns=RecordType(columns=[
-            ColumnDef(name="title", data_type="string"),
-            ColumnDef(name="date", data_type="string"),
-            ColumnDef(name="location", data_type="string"),
-        ]),
+        output_columns=RecordType(
+            columns=[
+                ColumnDef(name="title", data_type="string"),
+                ColumnDef(name="date", data_type="string"),
+                ColumnDef(name="location", data_type="string"),
+            ]
+        ),
         output_schema={
             "title": "string",
             "date": "string",
@@ -112,11 +127,13 @@ def create_location_task() -> EvalCase:
         task_id="location",
         task_type=StructuredTask.LOCATION,
         prompt="Generate a location with a city, country, and population",
-        output_columns=RecordType(columns=[
-            ColumnDef(name="city", data_type="string"),
-            ColumnDef(name="country", data_type="string"),
-            ColumnDef(name="population", data_type="int"),
-        ]),
+        output_columns=RecordType(
+            columns=[
+                ColumnDef(name="city", data_type="string"),
+                ColumnDef(name="country", data_type="string"),
+                ColumnDef(name="population", data_type="int"),
+            ]
+        ),
         output_schema={
             "city": "string",
             "country": "string",
@@ -133,11 +150,13 @@ def create_organization_task() -> EvalCase:
         task_id="organization",
         task_type=StructuredTask.ORGANIZATION,
         prompt="Generate an organization with a name, industry, and employee count",
-        output_columns=RecordType(columns=[
-            ColumnDef(name="name", data_type="string"),
-            ColumnDef(name="industry", data_type="string"),
-            ColumnDef(name="employees", data_type="int"),
-        ]),
+        output_columns=RecordType(
+            columns=[
+                ColumnDef(name="name", data_type="string"),
+                ColumnDef(name="industry", data_type="string"),
+                ColumnDef(name="employees", data_type="int"),
+            ]
+        ),
         output_schema={
             "name": "string",
             "industry": "string",
@@ -260,7 +279,10 @@ def validate_event(obj: Any) -> Tuple[bool, str]:
 
     # Check all fields are non-empty strings
     for field_name in ["title", "date", "location"]:
-        if not isinstance(obj.get(field_name), str) or not obj.get(field_name, "").strip():
+        if (
+            not isinstance(obj.get(field_name), str)
+            or not obj.get(field_name, "").strip()
+        ):
             return False, f"{field_name} must be a non-empty string"
 
     return True, "Event object is valid"
@@ -320,6 +342,7 @@ def validate_organization(obj: Any) -> Tuple[bool, str]:
         return False, f"Employees is not a valid integer: {obj['employees']}"
 
     return True, "Organization object is valid"
+
 
 def type_name(data_type: str) -> str:
     if data_type == "int":
@@ -387,8 +410,10 @@ class StructuredOutputGeneratorRunner(EvalRunner):
 
             # Manually add output slots (this is normally done in the UI)
             for col in eval_case.output_columns.columns:
-                
-                node.dynamic_outputs[col.name] = TypeMetadata(type=type_name(col.data_type))
+
+                node.dynamic_outputs[col.name] = TypeMetadata(
+                    type=type_name(col.data_type)
+                )
 
             # Run the generator - it's not async, so we need to handle it differently
             # For now, we'll try to call process()
@@ -408,7 +433,9 @@ class StructuredOutputGeneratorRunner(EvalRunner):
             # Run validators
             validator_scores = []
             for validator_name in eval_case.validators:
-                validator_func = globals().get(f"validate_{validator_name.split('validate_')[1]}")
+                validator_func = globals().get(
+                    f"validate_{validator_name.split('validate_')[1]}"
+                )
                 if validator_func is None:
                     validator_func = globals().get(validator_name)
                 if validator_func:
@@ -418,7 +445,11 @@ class StructuredOutputGeneratorRunner(EvalRunner):
                     validator_scores.append(0.0)
 
             # Calculate accuracy
-            result_accuracy = sum(validator_scores) / len(validator_scores) if validator_scores else 0.0
+            result_accuracy = (
+                sum(validator_scores) / len(validator_scores)
+                if validator_scores
+                else 0.0
+            )
 
         except Exception as e:
             error_msg = str(e)
@@ -453,12 +484,6 @@ def main():
 
     parser = argparse.ArgumentParser(
         description="Evaluate StructuredOutputGenerator node with multiple language models",
-        epilog="""
-Examples:
-  python eval_structured_output_generator.py
-  python eval_structured_output_generator.py --models ollama/gemma3:4b
-  python eval_structured_output_generator.py --output results.json
-        """,
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     parser.add_argument(
