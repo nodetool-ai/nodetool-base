@@ -464,7 +464,8 @@ class ListGenerator(BaseNode):
             role="system",
             content="""You are an assistant that generates lists.
             If the user asks for a specific number of items, generate that many.
-            The output should be a numbered list.
+            The output should be a numbered or bulleted list.
+            
             Example:
             User: Generate 5 movie titles
             Assistant: 
@@ -473,12 +474,28 @@ class ListGenerator(BaseNode):
             3. The Matrix
             4. Interstellar
             5. The Lord of the Rings
+            
+            Example 2:
+            User: Groceries
+            Assistant:
+            - Milk
+            - Eggs
+            - Bread
             """,
         )
 
+        prompt_content = self.prompt
+        if self.input_text:
+            if prompt_content:
+                prompt_content += "\n\n" + self.input_text
+            else:
+                prompt_content = self.input_text
+
+        logger.debug(f"ListGenerator prompt: {prompt_content}")
+
         user_message = Message(
             role="user",
-            content=self.prompt + "\n\n" + self.input_text,
+            content=prompt_content,
         )
         messages = [system_message, user_message]
 
@@ -506,10 +523,11 @@ class ListGenerator(BaseNode):
                     if not line:
                         continue
 
-                    # Check if this line starts a new numbered item
+                    # Check if this line starts a new numbered item or bullet point
                     import re
 
-                    match = re.match(r"^\s*(\d+)\.\s*(.*)", line)
+                    # Match "1. " or "- " or "* " or "• "
+                    match = re.match(r"^\s*(?:(\d+)\.|[-*•])\s*(.*)", line)
 
                     if match:
                         # If we were processing a previous item, yield it
@@ -518,7 +536,11 @@ class ListGenerator(BaseNode):
                             yield {"item": current_item, "index": current_index}
 
                         # Start a new item
-                        current_index = int(match.group(1))
+                        if match.group(1):
+                            current_index = int(match.group(1))
+                        else:
+                            current_index += 1
+                        
                         current_item = match.group(2)
                         in_item = True
                     elif in_item:
@@ -527,7 +549,7 @@ class ListGenerator(BaseNode):
 
         # Process any remaining complete lines in the buffer
         if buffer:
-            match = re.match(r"^\s*(\d+)\.\s*(.*)", buffer.strip())
+            match = re.match(r"^\s*(?:(\d+)\.|[-*•])\s*(.*)", buffer.strip())
             if match:
                 # If we were processing a previous item, yield it
                 if in_item and current_item:
@@ -535,7 +557,11 @@ class ListGenerator(BaseNode):
                     yield {"item": current_item, "index": current_index}
 
                 # Process the final item
-                current_index = int(match.group(1))
+                if match.group(1):
+                    current_index = int(match.group(1))
+                else:
+                    current_index += 1
+
                 current_item = match.group(2)
                 collected_items.append(current_item)
                 yield {"item": current_item, "index": current_index}

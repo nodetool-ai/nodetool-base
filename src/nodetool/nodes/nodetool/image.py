@@ -353,6 +353,27 @@ class BatchToList(BaseNode):
         return [ImageRef(data=data) for data in self.batch.data]
 
 
+class ImagesToList(BaseNode):
+    """
+    Convert all dynamic properties to a list of image references.
+    list, images, processing
+    """
+
+    _is_dynamic = True
+
+    async def process(self, context: ProcessingContext) -> list[ImageRef]:
+        if not self.dynamic_properties:
+            return []
+        
+        results = []
+        for data in self.dynamic_properties.values():
+            if isinstance(data, ImageRef):
+                results.append(data)
+            else:
+                results.append(ImageRef(data=data))
+        return results
+
+
 class Paste(BaseNode):
     """
     Paste one image onto another at specified coordinates.
