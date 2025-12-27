@@ -47,7 +47,10 @@ class KlingTextToVideo(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     class AspectRatio(str, Enum):
         V16_9 = "16:9"
@@ -102,13 +105,23 @@ class KlingImageToVideo(KieVideoBaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text prompt to guide the video generation.",
     )
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Source images for the video generation.",
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
     )
 
     sound: bool = Field(
@@ -127,11 +140,13 @@ class KlingImageToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
         image_urls = []
-        for img in self.image_input:
+        for img in [self.image1, self.image2, self.image3]:
             if img.is_set():
                 url = await self._upload_image(context, img)
                 image_urls.append(url)
@@ -173,7 +188,7 @@ class KlingAIAvatarStandard(KieVideoBaseNode):
     )
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text to guide emotions and expressions.",
     )
 
@@ -244,7 +259,7 @@ class KlingAIAvatarPro(KieVideoBaseNode):
     )
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text to guide emotions and expressions.",
     )
 
@@ -292,7 +307,10 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     class Resolution(str, Enum):
         R720P = "720p"
@@ -319,6 +337,8 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         return {
             "prompt": self.prompt,
             "resolution": self.resolution.value,
@@ -332,11 +352,14 @@ class GrokImagineImageToVideo(KieVideoBaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the animation.",
     )
 
-    image: ImageRef = Field(..., description="The source image to animate.")
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to animate.",
+    )
 
     class Duration(str, Enum):
         SHORT = "short"
@@ -354,6 +377,8 @@ class GrokImagineImageToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
@@ -418,7 +443,10 @@ class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     def _get_model(self) -> str:
         return "seedance/v1-lite-text-to-video"
@@ -426,6 +454,8 @@ class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         params = self._get_common_params()
         params["prompt"] = self.prompt
         return params
@@ -436,7 +466,10 @@ class SeedanceV1ProTextToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     def _get_model(self) -> str:
         return "seedance/v1-pro-text-to-video"
@@ -444,6 +477,8 @@ class SeedanceV1ProTextToVideo(SeedanceBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         params = self._get_common_params()
         params["prompt"] = self.prompt
         return params
@@ -455,13 +490,23 @@ class SeedanceV1LiteImageToVideo(SeedanceBaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
     )
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Source images for the video generation.",
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
     )
 
     def _get_model(self) -> str:
@@ -470,11 +515,13 @@ class SeedanceV1LiteImageToVideo(SeedanceBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
         image_urls = []
-        for img in self.image_input:
+        for img in [self.image1, self.image2, self.image3]:
             if img.is_set():
                 url = await self._upload_image(context, img)
                 image_urls.append(url)
@@ -491,13 +538,23 @@ class SeedanceV1ProImageToVideo(SeedanceBaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
     )
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Source images for the video generation.",
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
     )
 
     def _get_model(self) -> str:
@@ -506,11 +563,13 @@ class SeedanceV1ProImageToVideo(SeedanceBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
         image_urls = []
-        for img in self.image_input:
+        for img in [self.image1, self.image2, self.image3]:
             if img.is_set():
                 url = await self._upload_image(context, img)
                 image_urls.append(url)
@@ -526,9 +585,19 @@ class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Source images for the fast video generation.",
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
     )
 
     def _get_model(self) -> str:
@@ -541,7 +610,7 @@ class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
             raise ValueError("Context is required for image upload")
 
         image_urls = []
-        for img in self.image_input:
+        for img in [self.image1, self.image2, self.image3]:
             if img.is_set():
                 url = await self._upload_image(context, img)
                 image_urls.append(url)
@@ -552,6 +621,162 @@ class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
 
 
 
+
+
+class HailuoTextToVideoPro(KieVideoBaseNode):
+    """Generate videos from text using MiniMax's Hailuo 2.3 Pro model via Kie.ai.
+
+    kie, hailuo, minimax, video generation, ai, text-to-video, pro
+
+    Hailuo 2.3 Pro offers the highest quality text-to-video generation with
+    realistic motion, detailed textures, and cinematic quality.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(default="A cinematic video with smooth motion, natural lighting, and high detail.", description="The text prompt describing the video.")
+
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
+    )
+
+    class Resolution(str, Enum):
+        R768P = "768P"
+        R1080P = "1080P"
+
+    resolution: Resolution = Field(
+        default=Resolution.R768P,
+        description="Video resolution.",
+    )
+
+    def _get_model(self) -> str:
+        return "hailuo/2-3-text-to-video-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
+             raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        return {
+            "prompt": self.prompt,
+            "resolution": self.resolution.value,
+            "duration": self.duration.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        video_bytes = await self._execute_video_task(context)
+        return await context.video_from_bytes(video_bytes)
+
+
+class HailuoTextToVideoStandard(KieVideoBaseNode):
+    """Generate videos from text using MiniMax's Hailuo 2.3 Standard model via Kie.ai.
+
+    kie, hailuo, minimax, video generation, ai, text-to-video, standard, fast
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(default="A cinematic video with smooth motion, natural lighting, and high detail.", description="The text prompt describing the video.")
+
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
+    )
+
+    class Resolution(str, Enum):
+        R768P = "768P"
+        R1080P = "1080P"
+
+    resolution: Resolution = Field(
+        default=Resolution.R768P,
+        description="Video resolution.",
+    )
+
+    def _get_model(self) -> str:
+        return "hailuo/2-3-text-to-video-standard"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
+             raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        return {
+            "prompt": self.prompt,
+            "resolution": self.resolution.value,
+            "duration": self.duration.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        video_bytes = await self._execute_video_task(context)
+        return await context.video_from_bytes(video_bytes)
+
+
+class HailuoTextToVideo(KieVideoBaseNode):
+    """Generate videos from text using MiniMax's Hailuo model via Kie.ai."""
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(default="A cinematic video with smooth motion, natural lighting, and high detail.", description="The text prompt describing the video.")
+
+    class ModelType(str, Enum):
+        PRO = "pro"
+        STANDARD = "standard"
+
+    model_type: ModelType = Field(
+        default=ModelType.PRO,
+        description="The model tier to use.",
+    )
+
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
+    )
+
+    class Resolution(str, Enum):
+        R768P = "768P"
+        R1080P = "1080P"
+
+    resolution: Resolution = Field(
+        default=Resolution.R768P,
+        description="The resolution of the video.",
+    )
+
+    def _get_model(self) -> str:
+        return f"hailuo/2-3-text-to-video-{self.model_type.value}"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        
+        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
+             raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        return {
+            "prompt": self.prompt,
+            "resolution": self.resolution.value,
+            "duration": self.duration.value,
+        }
 class HailuoImageToVideoPro(KieVideoBaseNode):
     """Generate videos from images using MiniMax's Hailuo 2.3 Pro model via Kie.ai.
 
@@ -575,12 +800,22 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
     )
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text to guide the video generation.",
+    )
+
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
     )
 
     class Resolution(str, Enum):
         R768P = "768P"
+        R1080P = "1080P"
 
     resolution: Resolution = Field(
         default=Resolution.R768P,
@@ -593,14 +828,21 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if not self.image.is_set():
             raise ValueError("Image is required")
         if context is None:
             raise ValueError("Context is required for image upload")
         image_url = await self._upload_image(context, self.image)
+        
+        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
+             raise ValueError("10s duration is not supported for 1080p resolution.")
+
         payload: dict[str, Any] = {
             "image_url": image_url,
             "resolution": self.resolution.value,
+            "duration": self.duration.value,
         }
         if self.prompt:
             payload["prompt"] = self.prompt
@@ -634,12 +876,22 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
     )
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text to guide the video generation.",
+    )
+
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
     )
 
     class Resolution(str, Enum):
         R768P = "768P"
+        R1080P = "1080P"
 
     resolution: Resolution = Field(
         default=Resolution.R768P,
@@ -652,14 +904,21 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if not self.image.is_set():
             raise ValueError("Image is required")
         if context is None:
             raise ValueError("Context is required for image upload")
         image_url = await self._upload_image(context, self.image)
+        
+        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
+             raise ValueError("10s duration is not supported for 1080p resolution.")
+
         payload: dict[str, Any] = {
             "image_url": image_url,
             "resolution": self.resolution.value,
+            "duration": self.duration.value,
         }
         if self.prompt:
             payload["prompt"] = self.prompt
@@ -676,11 +935,14 @@ class HailuoImageToVideo(KieVideoBaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text to guide the video generation.",
     )
 
-    image: ImageRef = Field(..., description="The source image to animate.")
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to animate.",
+    )
 
     class ModelType(str, Enum):
         PRO = "pro"
@@ -691,8 +953,18 @@ class HailuoImageToVideo(KieVideoBaseNode):
         description="The model tier to use.",
     )
 
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
+    )
+
     class Resolution(str, Enum):
         R768P = "768P"
+        R1080P = "1080P"
 
     resolution: Resolution = Field(
         default=Resolution.R768P,
@@ -705,14 +977,21 @@ class HailuoImageToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
         image_url = await self._upload_image(context, self.image)
+        
+        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
+             raise ValueError("10s duration is not supported for 1080p resolution.")
+
         return {
             "prompt": self.prompt,
             "image_url": image_url,
             "resolution": self.resolution.value,
+            "duration": self.duration.value,
         }
 
 
@@ -747,7 +1026,10 @@ class Sora2ProTextToVideo(Sora2BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     def _get_model(self) -> str:
         return "sora-2-pro-text-to-video"
@@ -755,6 +1037,8 @@ class Sora2ProTextToVideo(Sora2BaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
@@ -769,11 +1053,14 @@ class Sora2ProImageToVideo(Sora2BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
     )
 
-    image: ImageRef = Field(..., description="The source image to animate.")
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to animate.",
+    )
 
     def _get_model(self) -> str:
         return "sora-2-pro-image-to-video"
@@ -781,6 +1068,8 @@ class Sora2ProImageToVideo(Sora2BaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
@@ -798,11 +1087,24 @@ class Sora2ProStoryboard(Sora2BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Source images for the storyboard animation.",
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
     )
 
     def _get_model(self) -> str:
@@ -811,11 +1113,13 @@ class Sora2ProStoryboard(Sora2BaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
         image_urls = []
-        for img in self.image_input:
+        for img in [self.image1, self.image2, self.image3]:
             if img.is_set():
                 url = await self._upload_image(context, img)
                 image_urls.append(url)
@@ -833,7 +1137,10 @@ class Sora2TextToVideo(Sora2BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     n_frames: int = Field(
         default=10,
@@ -848,6 +1155,8 @@ class Sora2TextToVideo(Sora2BaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
@@ -861,7 +1170,10 @@ class WanMultiShotTextToVideoPro(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     class AspectRatio(str, Enum):
         V16_9 = "16:9"
@@ -904,6 +1216,8 @@ class WanMultiShotTextToVideoPro(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
@@ -918,7 +1232,10 @@ class Wan26TextToVideo(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     class Duration(str, Enum):
         D5 = "5"
@@ -944,6 +1261,8 @@ class Wan26TextToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         return {
             "prompt": self.prompt,
             "duration": self.duration.value,
@@ -956,11 +1275,24 @@ class Wan26ImageToVideo(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Source images for the video generation.",
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
     )
 
     class Duration(str, Enum):
@@ -987,11 +1319,13 @@ class Wan26ImageToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
         image_urls = []
-        for img in self.image_input:
+        for img in [self.image1, self.image2, self.image3]:
             if img.is_set():
                 url = await self._upload_image(context, img)
                 image_urls.append(url)
@@ -1009,11 +1343,24 @@ class Wan26VideoToVideo(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(..., description="The text prompt describing the changes.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the changes.",
+    )
 
-    video_input: list[VideoRef] = Field(
-        default=[],
-        description="Source videos for the video-to-video task.",
+    video1: VideoRef = Field(
+        default=VideoRef(),
+        description="First source video for the video-to-video task.",
+    )
+
+    video2: VideoRef = Field(
+        default=VideoRef(),
+        description="Second source video (optional).",
+    )
+
+    video3: VideoRef = Field(
+        default=VideoRef(),
+        description="Third source video (optional).",
     )
 
     class Duration(str, Enum):
@@ -1040,11 +1387,13 @@ class Wan26VideoToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for video upload")
 
         video_urls = []
-        for vid in self.video_input:
+        for vid in [self.video1, self.video2, self.video3]:
             if vid.is_set():
                 url = await self._upload_video(context, vid)
                 video_urls.append(url)
@@ -1062,7 +1411,10 @@ class TopazVideoUpscale(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    video: VideoRef = Field(..., description="The video to upscale.")
+    video: VideoRef = Field(
+        default=VideoRef(),
+        description="The video to upscale.",
+    )
 
     class Resolution(str, Enum):
         R1080P = "1080p"
@@ -1101,13 +1453,19 @@ class InfinitalkV1(KieVideoBaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
-        default="",
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
     )
 
-    image: ImageRef = Field(..., description="The source image.")
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image.",
+    )
 
-    audio: AudioRef = Field(..., description="The source audio track.")
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="The source audio track.",
+    )
 
     class Resolution(str, Enum):
         R480P = "480p"
@@ -1123,6 +1481,8 @@ class InfinitalkV1(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for media upload")
 

@@ -30911,7 +30911,7 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text guide for the animation."
         },
@@ -30920,10 +30920,14 @@
           "type": {
             "type": "image"
           },
-          "default": null,
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
-          "description": "The source image to animate.",
-          "required": true
+          "description": "The source image to animate."
         },
         {
           "name": "duration",
@@ -30967,10 +30971,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         },
         {
           "name": "resolution",
@@ -31028,7 +31031,7 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text to guide the video generation."
         },
@@ -31037,10 +31040,14 @@
           "type": {
             "type": "image"
           },
-          "default": null,
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
-          "description": "The source image to animate.",
-          "required": true
+          "description": "The source image to animate."
         },
         {
           "name": "model_type",
@@ -31057,11 +31064,26 @@
           "description": "The model tier to use."
         },
         {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "6",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoImageToVideo.Duration"
+          },
+          "default": "6",
+          "title": "Duration",
+          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
+        },
+        {
           "name": "resolution",
           "type": {
             "type": "enum",
             "values": [
-              "768P"
+              "768P",
+              "1080P"
             ],
             "type_name": "nodetool.nodes.kie.video.HailuoImageToVideo.Resolution"
           },
@@ -31082,6 +31104,7 @@
         "prompt",
         "image",
         "model_type",
+        "duration",
         "resolution"
       ],
       "expose_as_tool": true
@@ -31111,16 +31134,31 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "6",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration"
+          },
+          "default": "6",
+          "title": "Duration",
+          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
         },
         {
           "name": "resolution",
           "type": {
             "type": "enum",
             "values": [
-              "768P"
+              "768P",
+              "1080P"
             ],
             "type_name": "nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution"
           },
@@ -31140,6 +31178,7 @@
       "basic_fields": [
         "image",
         "prompt",
+        "duration",
         "resolution"
       ],
       "expose_as_tool": true
@@ -31169,16 +31208,31 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text to guide the video generation."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "6",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration"
+          },
+          "default": "6",
+          "title": "Duration",
+          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
         },
         {
           "name": "resolution",
           "type": {
             "type": "enum",
             "values": [
-              "768P"
+              "768P",
+              "1080P"
             ],
             "type_name": "nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution"
           },
@@ -31198,6 +31252,199 @@
       "basic_fields": [
         "image",
         "prompt",
+        "duration",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Hailuo Text To Video",
+      "description": "Generate videos from text using MiniMax's Hailuo model via Kie.ai.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.HailuoTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the video."
+        },
+        {
+          "name": "model_type",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pro",
+              "standard"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideo.ModelType"
+          },
+          "default": "pro",
+          "title": "Model Type",
+          "description": "The model tier to use."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "6",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideo.Duration"
+          },
+          "default": "6",
+          "title": "Duration",
+          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "768P",
+              "1080P"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideo.Resolution"
+          },
+          "default": "768P",
+          "title": "Resolution",
+          "description": "The resolution of the video."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "model_type",
+        "duration",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Hailuo Text To Video Pro",
+      "description": "Generate videos from text using MiniMax's Hailuo 2.3 Pro model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, text-to-video, pro\n\n    Hailuo 2.3 Pro offers the highest quality text-to-video generation with\n    realistic motion, detailed textures, and cinematic quality.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.HailuoTextToVideoPro",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the video."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "6",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration"
+          },
+          "default": "6",
+          "title": "Duration",
+          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "768P",
+              "1080P"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution"
+          },
+          "default": "768P",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "duration",
+        "resolution"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Hailuo Text To Video Standard",
+      "description": "Generate videos from text using MiniMax's Hailuo 2.3 Standard model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, text-to-video, standard, fast",
+      "namespace": "kie.video",
+      "node_type": "kie.video.HailuoTextToVideoStandard",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the video."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "6",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration"
+          },
+          "default": "6",
+          "title": "Duration",
+          "description": "The duration of the video in seconds. 10s is not supported for 1080p."
+        },
+        {
+          "name": "resolution",
+          "type": {
+            "type": "enum",
+            "values": [
+              "768P",
+              "1080P"
+            ],
+            "type_name": "nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution"
+          },
+          "default": "768P",
+          "title": "Resolution",
+          "description": "Video resolution."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "duration",
         "resolution"
       ],
       "expose_as_tool": true
@@ -31213,7 +31460,7 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text guide for the video generation."
         },
@@ -31222,20 +31469,28 @@
           "type": {
             "type": "image"
           },
-          "default": null,
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
-          "description": "The source image.",
-          "required": true
+          "description": "The source image."
         },
         {
           "name": "audio",
           "type": {
             "type": "audio"
           },
-          "default": null,
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Audio",
-          "description": "The source audio track.",
-          "required": true
+          "description": "The source audio track."
         },
         {
           "name": "resolution",
@@ -31306,7 +31561,7 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text to guide emotions and expressions."
         },
@@ -31380,7 +31635,7 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text to guide emotions and expressions."
         },
@@ -31426,23 +31681,51 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text prompt to guide the video generation."
         },
         {
-          "name": "image_input",
+          "name": "image1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "default": [],
-          "title": "Image Input",
-          "description": "Source images for the video generation."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "First source image for the video generation."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image3",
+          "description": "Third source image (optional)."
         },
         {
           "name": "sound",
@@ -31473,7 +31756,9 @@
       ],
       "basic_fields": [
         "prompt",
-        "image_input",
+        "image1",
+        "image2",
+        "image3",
         "sound",
         "duration"
       ],
@@ -31490,10 +31775,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         },
         {
           "name": "aspect_ratio",
@@ -31627,23 +31911,51 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text guide for the video generation."
         },
         {
-          "name": "image_input",
+          "name": "image1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "default": [],
-          "title": "Image Input",
-          "description": "Source images for the video generation."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "First source image for the video generation."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image3",
+          "description": "Third source image (optional)."
         }
       ],
       "outputs": [
@@ -31660,7 +31972,9 @@
         "duration",
         "remove_watermark",
         "prompt",
-        "image_input"
+        "image1",
+        "image2",
+        "image3"
       ],
       "expose_as_tool": true
     },
@@ -31730,10 +32044,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         }
       ],
       "outputs": [
@@ -31815,18 +32128,46 @@
           "description": "Whether to remove the watermark from the video."
         },
         {
-          "name": "image_input",
+          "name": "image1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "default": [],
-          "title": "Image Input",
-          "description": "Source images for the fast video generation."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "First source image for the video generation."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image3",
+          "description": "Third source image (optional)."
         }
       ],
       "outputs": [
@@ -31842,7 +32183,9 @@
         "resolution",
         "duration",
         "remove_watermark",
-        "image_input"
+        "image1",
+        "image2",
+        "image3"
       ],
       "expose_as_tool": true
     },
@@ -31912,23 +32255,51 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text guide for the video generation."
         },
         {
-          "name": "image_input",
+          "name": "image1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "default": [],
-          "title": "Image Input",
-          "description": "Source images for the video generation."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "First source image for the video generation."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image3",
+          "description": "Third source image (optional)."
         }
       ],
       "outputs": [
@@ -31945,7 +32316,9 @@
         "duration",
         "remove_watermark",
         "prompt",
-        "image_input"
+        "image1",
+        "image2",
+        "image3"
       ],
       "expose_as_tool": true
     },
@@ -32015,10 +32388,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         }
       ],
       "outputs": [
@@ -32084,7 +32456,7 @@
           "type": {
             "type": "str"
           },
-          "default": "",
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
           "description": "Optional text guide for the video generation."
         },
@@ -32093,10 +32465,14 @@
           "type": {
             "type": "image"
           },
-          "default": null,
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
           "title": "Image",
-          "description": "The source image to animate.",
-          "required": true
+          "description": "The source image to animate."
         }
       ],
       "outputs": [
@@ -32162,24 +32538,51 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         },
         {
-          "name": "image_input",
+          "name": "image1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "default": [],
-          "title": "Image Input",
-          "description": "Source images for the storyboard animation."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "First source image for the video generation."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image3",
+          "description": "Third source image (optional)."
         }
       ],
       "outputs": [
@@ -32195,7 +32598,9 @@
         "remove_watermark",
         "n_frames",
         "prompt",
-        "image_input"
+        "image1",
+        "image2",
+        "image3"
       ],
       "expose_as_tool": true
     },
@@ -32245,10 +32650,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         }
       ],
       "outputs": [
@@ -32313,10 +32717,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         }
       ],
       "outputs": [
@@ -32346,10 +32749,16 @@
           "type": {
             "type": "video"
           },
-          "default": null,
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
           "title": "Video",
-          "description": "The video to upscale.",
-          "required": true
+          "description": "The video to upscale."
         },
         {
           "name": "resolution",
@@ -32401,24 +32810,51 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         },
         {
-          "name": "image_input",
+          "name": "image1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "image"
-              }
-            ]
+            "type": "image"
           },
-          "default": [],
-          "title": "Image Input",
-          "description": "Source images for the video generation."
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image1",
+          "description": "First source image for the video generation."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null
+          },
+          "title": "Image3",
+          "description": "Third source image (optional)."
         },
         {
           "name": "duration",
@@ -32459,7 +32895,9 @@
       ],
       "basic_fields": [
         "prompt",
-        "image_input",
+        "image1",
+        "image2",
+        "image3",
         "duration",
         "resolution"
       ],
@@ -32476,10 +32914,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         },
         {
           "name": "duration",
@@ -32536,24 +32973,57 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the changes.",
-          "required": true
+          "description": "The text prompt describing the changes."
         },
         {
-          "name": "video_input",
+          "name": "video1",
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "video"
-              }
-            ]
+            "type": "video"
           },
-          "default": [],
-          "title": "Video Input",
-          "description": "Source videos for the video-to-video task."
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video1",
+          "description": "First source video for the video-to-video task."
+        },
+        {
+          "name": "video2",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video2",
+          "description": "Second source video (optional)."
+        },
+        {
+          "name": "video3",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video3",
+          "description": "Third source video (optional)."
         },
         {
           "name": "duration",
@@ -32594,7 +33064,9 @@
       ],
       "basic_fields": [
         "prompt",
-        "video_input",
+        "video1",
+        "video2",
+        "video3",
         "duration",
         "resolution"
       ],
@@ -32611,10 +33083,9 @@
           "type": {
             "type": "str"
           },
-          "default": null,
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the video.",
-          "required": true
+          "description": "The text prompt describing the video."
         },
         {
           "name": "aspect_ratio",
