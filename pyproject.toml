@@ -21,6 +21,7 @@ dependencies = [
     "langchain-ollama",
     "langchain-anthropic",
     "discord.py>=2.3.2",
+    "pyppeteer>=2.0.0",
 ]
 
 [tool.hatch.metadata]
