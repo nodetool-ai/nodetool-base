@@ -70,8 +70,7 @@ def _require_cv2():
 
 class TextToVideo(BaseNode):
     """
-    Generate videos from text prompts using any supported video provider.
-    Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
+    Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
     video, generation, AI, text-to-video, t2v
 
     Use cases:

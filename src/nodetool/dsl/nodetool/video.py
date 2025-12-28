@@ -1055,8 +1055,7 @@ from nodetool.workflows.base_node import BaseNode
 class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-    Generate videos from text prompts using any supported video provider.
-    Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
+    Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
     video, generation, AI, text-to-video, t2v
 
     Use cases:

@@ -181,8 +181,7 @@ from nodetool.workflows.base_node import BaseNode
 class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Transform images using text prompts with any supported image provider.
-    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+    Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, transformation, AI, image-to-image, i2i
 
     Use cases:
@@ -576,8 +575,7 @@ from nodetool.workflows.base_node import BaseNode
 class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Generate images from text prompts using any supported image provider.
-    Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+    Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, generation, AI, text-to-image, t2i
 
     Use cases:
