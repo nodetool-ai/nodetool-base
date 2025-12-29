@@ -37,7 +37,7 @@ PyMuPDF + Chroma + Ollama = local RAG in minutes.
 - *The Payoff:* Query the collection with `QueryText` — semantic search returns relevant chunks instantly.
 
 ### Implementation Note (The "Opus" Insight)
-This works because `pymupdf4llm.to_markdown()` in `pymupdf.py:229` preserves document structure (headers, lists, tables) which improves semantic chunking quality. The `SplitRecursively` node uses LangChain's `RecursiveCharacterTextSplitter` with customizable separators (`\n\n`, `\n`, `.`), ensuring chunks respect natural text boundaries. Chroma's async client (`get_async_collection`) enables non-blocking indexing for large documents.
+This works because `pymupdf4llm.to_markdown()` in `pymupdf.py:233` preserves document structure (headers, lists, tables) which improves semantic chunking quality. The `SplitRecursively` node uses LangChain's `RecursiveCharacterTextSplitter` with customizable separators (`\n\n`, `\n`, `.`), ensuring chunks respect natural text boundaries. Chroma's async client (`get_async_collection`) enables non-blocking indexing for large documents.
 
 ---
 
@@ -70,7 +70,7 @@ All processing on localhost. No uploads.
 - *The Payoff:* Preview panel shows video with perfectly-timed captions, wrapped text at 80% width.
 
 ### Implementation Note (The "Opus" Insight)
-The `Transcribe` node in `audio.py:229` returns `AudioChunk` objects with `(start, end)` timestamp tuples when `timestamps=True` and `timestamp_granularities=["segment", "word"]`. The `AddSubtitles` node uses OpenCV + PIL for frame-by-frame text rendering (`video.py:1755-1815`), with automatic line wrapping via `wrap_text()` that calculates `draw.textlength()` against 80% of frame width. Audio stream is preserved using ffmpeg's `acodec="copy"`.
+The `Transcribe` node in `audio.py:229` returns `AudioChunk` objects with `(start, end)` timestamp tuples when `timestamps=True` and `timestamp_granularities=["segment", "word"]`. The `AddSubtitles` node uses OpenCV + PIL for frame-by-frame text rendering (`video.py:1754-1815`), with automatic line wrapping via `wrap_text()` (lines 1728-1751) that calculates `draw.textlength()` against 80% of frame width. Audio stream is preserved using ffmpeg's `acodec="copy"`.
 
 ---
 
