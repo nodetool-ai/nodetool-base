@@ -51,6 +51,16 @@ Detailed documentation for each node group lives in the [`docs/`](docs) folder. 
 
 Refer to the individual markdown files for usage details and examples of each node.
 
+## Manifesto Alignment
+
+This project follows the [NodeTool Manifesto](https://github.com/nodetool-ai/nodetool) principles of privacy-first, local-first AI workflows. See [MANIFESTO_EVALUATION.md](MANIFESTO_EVALUATION.md) for a comprehensive evaluation of how the current node offering aligns with these principles.
+
+**Key Stats:**
+- 600+ nodes across 72 modules
+- 35+ AI providers (local and cloud)
+- 70+ workflow examples
+- Overall alignment score: 8/10
+
 ## Running tests
 
 ```bash
