@@ -7,20 +7,22 @@
 
 This document evaluates the current NodeTool base nodes offering against the principles outlined in the NodeTool Manifesto. The analysis assesses alignment across seven key manifesto principles and provides recommendations for improving adherence to the stated vision.
 
-### Overall Alignment Score: 7/10
+### Overall Alignment Score: 8/10
 
 **Strengths:**
-- Strong foundation of local-first capabilities with Ollama integration
-- Comprehensive mix of local and cloud services
-- Rich utility node library for data manipulation
-- Transparent workflow execution model
+- Strong foundation of local-first capabilities with Ollama and ComfyUI integration
+- Comprehensive mix of local and cloud services (35+ providers)
+- Rich utility node library for data manipulation (74+ nodes)
+- Transparent workflow execution model with real-time streaming
+- Excellent "mix your tools" philosophy - seamlessly combine local and cloud AI
 
 **Key Gaps:**
-- Missing local implementations for image/video generation (Flux, SDXL mentioned in manifesto)
-- No local audio transcription (Whisper mentioned but only via OpenAI)
+- Native local image generation nodes (though ComfyUI provides alternative)
+- No native local audio transcription (Whisper mentioned but only via OpenAI)
 - Limited explicit privacy controls in node design
 - Missing batch processing nodes
 - No version control or workflow template nodes
+- No export/deployment infrastructure
 
 ---
 
@@ -160,7 +162,7 @@ async def gen_process(self, context) -> AsyncGenerator[OutputType, None]:
 
 **Strengths:**
 - Unified `LanguageModel` type allows mixing providers in same workflow
-- `Provider` enum supports OpenAI, Anthropic, Google, Gemini, Ollama, LlamaCpp
+- `Provider` enum supports 35+ providers including OpenAI, Anthropic, Gemini, Ollama, LlamaCpp, Replicate, HuggingFace, and many more
 - Agent nodes have `unified_recommended_models()` listing both local and cloud options
 - No vendor lock-in - workflows can switch providers without restructuring
 
@@ -189,7 +191,7 @@ async def gen_process(self, context) -> AsyncGenerator[OutputType, None]:
 6. **No version control** - Manifesto roadmap item missing from nodes
 
 **What Exists:**
-- Examples directory has ~20 workflow examples
+- Examples directory has 70+ workflow examples (JSON and Python DSL)
 - Assets can be saved and loaded via folder references
 - Workflows are JSON (shareable format)
 
@@ -262,7 +264,7 @@ async def gen_process(self, context) -> AsyncGenerator[OutputType, None]:
 
 ### 7. "Own your infrastructure. Run on your hardware. Keep control."
 
-**Status:** ✅ **GOOD ALIGNMENT** (8/10)
+**Status:** ✅ **STRONG ALIGNMENT** (9/10)
 
 **Evidence:**
 
@@ -287,15 +289,15 @@ async def gen_process(self, context) -> AsyncGenerator[OutputType, None]:
 - Self-hosted deployment model
 
 **Gaps (Per Manifesto Claims):**
-1. **Missing local Flux/SDXL** - Manifesto claims "Local models (Flux/SDXL)" but:
-   - Flux only available via Kie.ai cloud API (`kie.image.*`)
-   - No SDXL implementation at all
-   - No local image generation nodes
-2. **Missing local Whisper** - Manifesto claims local Whisper but:
+1. **Missing native local Flux/SDXL nodes** - Manifesto claims "Local models (Flux/SDXL)" but:
+   - Flux only available via Kie.ai cloud API (`kie.image.*`) for direct node usage
+   - **However**, ComfyUI integration exists (`comfy_local`, `comfy_runpod` providers) which CAN run Flux/SDXL locally
+   - Gap: Native Diffusers-based nodes would provide easier local access without ComfyUI setup
+2. **Missing native local Whisper** - Manifesto claims local Whisper but:
    - Whisper only via OpenAI API (`openai.audio.Transcribe`)
-   - No local speech-to-text nodes
+   - No native local speech-to-text nodes
    - No local audio transcription
-3. **Limited local video** - Video generation only via cloud (Gemini, Kie)
+3. **Limited native local video** - Video generation only via cloud (Gemini, Kie)
 4. **No infrastructure management nodes:**
    - No GPU monitoring/management
    - No local model management
@@ -303,9 +305,11 @@ async def gen_process(self, context) -> AsyncGenerator[OutputType, None]:
 
 **Recommendations:**
 1. **Add local image generation:**
-   - Create `LocalImageGeneration` node using Diffusers library
+   - Create native `LocalFluxGeneration` node using Diffusers library
+   - Create native `LocalSDXLGeneration` node using Diffusers library
    - Support Flux.1-dev, SDXL, SD 1.5
    - Allow local LoRA loading
+   - Note: ComfyUI integration already exists as alternative (`comfy_local` provider)
 2. **Add local audio transcription:**
    - Create `LocalWhisper` node using openai-whisper or faster-whisper
    - Support offline transcription
@@ -462,6 +466,7 @@ async def gen_process(self, context) -> AsyncGenerator[OutputType, None]:
 - nodetool.document.* (with Ollama embeddings)
 - vector.chroma (with Ollama embeddings)
 - vector.faiss (local vector search)
+- ComfyUI integration (comfy_local, comfy_runpod providers) for local Stable Diffusion/SDXL/Flux
 
 ### Cloud Services (User Choice) ✅
 
