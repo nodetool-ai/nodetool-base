@@ -5,11 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.io
 from nodetool.workflows.base_node import BaseNode
 
@@ -31,7 +36,9 @@ class SaveArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
         description="The array to save.",
     )
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The folder to save the array in.",
     )
     name: str | OutputHandle[str] = connect_field(

@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
@@ -28,7 +31,9 @@ class AutoFitColumns(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
     workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
-        default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The Excel workbook to format",
     )
     sheet_name: str | OutputHandle[str] = connect_field(
@@ -44,7 +49,10 @@ class AutoFitColumns(SingleOutputGraphNode[Any], GraphNode[Any]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -72,7 +80,10 @@ class CreateWorkbook(SingleOutputGraphNode[types.ExcelRef], GraphNode[types.Exce
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -88,12 +99,19 @@ class DataFrameToExcel(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
     workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
-        default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The Excel workbook to write to",
     )
     dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
-            type="dataframe", uri="", asset_id=None, data=None, columns=None
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
         ),
         description="DataFrame to write",
     )
@@ -116,7 +134,10 @@ class DataFrameToExcel(SingleOutputGraphNode[Any], GraphNode[Any]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -134,7 +155,9 @@ class ExcelToDataFrame(
     """
 
     workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
-        default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The Excel workbook to read from",
     )
     sheet_name: str | OutputHandle[str] = connect_field(
@@ -153,7 +176,10 @@ class ExcelToDataFrame(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -169,7 +195,9 @@ class FormatCells(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
     workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
-        default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The Excel workbook to format",
     )
     sheet_name: str | OutputHandle[str] = connect_field(
@@ -198,7 +226,10 @@ class FormatCells(SingleOutputGraphNode[Any], GraphNode[Any]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.excel
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -214,7 +245,9 @@ class SaveWorkbook(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
     workbook: types.ExcelRef | OutputHandle[types.ExcelRef] = connect_field(
-        default=types.ExcelRef(type="excel", uri="", asset_id=None, data=None),
+        default=types.ExcelRef(
+            type="excel", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The Excel workbook to save",
     )
     folder: types.FilePath | OutputHandle[types.FilePath] = connect_field(

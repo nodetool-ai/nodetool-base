@@ -5,11 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.grid
 from nodetool.workflows.base_node import BaseNode
 
@@ -44,7 +49,10 @@ class CombineImageGrid(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.grid
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -63,7 +71,9 @@ class SliceImageGrid(
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to slice into a grid.",
     )
     columns: int | OutputHandle[int] = connect_field(

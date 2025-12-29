@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
@@ -28,7 +31,9 @@ class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     value: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description=None,
     )
 
@@ -41,7 +46,10 @@ class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -67,7 +75,10 @@ class Bool(SingleOutputGraphNode[bool], GraphNode[bool]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -93,7 +104,9 @@ class Constant(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -112,7 +125,12 @@ class DataFrame(
 
     value: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
-            type="dataframe", uri="", asset_id=None, data=None, columns=None
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
         ),
         description=None,
     )
@@ -127,7 +145,9 @@ class DataFrame(
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -158,7 +178,9 @@ class Date(SingleOutputGraphNode[types.Date], GraphNode[types.Date]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -207,7 +229,9 @@ class DateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime])
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -236,7 +260,9 @@ class Dict(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -247,7 +273,9 @@ class Document(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
     """
 
     value: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description=None,
     )
 
@@ -261,7 +289,9 @@ class Document(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -288,7 +318,9 @@ class Float(SingleOutputGraphNode[float], GraphNode[float]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -304,7 +336,9 @@ class Image(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     value: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description=None,
     )
 
@@ -318,7 +352,9 @@ class Image(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -345,7 +381,9 @@ class Integer(SingleOutputGraphNode[int], GraphNode[int]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -356,7 +394,9 @@ class JSON(SingleOutputGraphNode[types.JSONRef], GraphNode[types.JSONRef]):
     """
 
     value: types.JSONRef | OutputHandle[types.JSONRef] = connect_field(
-        default=types.JSONRef(type="json", uri="", asset_id=None, data=None),
+        default=types.JSONRef(
+            type="json", uri="", asset_id=None, data=None, metadata=None
+        ),
         description=None,
     )
 
@@ -370,7 +410,9 @@ class JSON(SingleOutputGraphNode[types.JSONRef], GraphNode[types.JSONRef]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -399,7 +441,9 @@ class List(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -426,7 +470,9 @@ class String(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -443,7 +489,13 @@ class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     value: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description=None,
     )

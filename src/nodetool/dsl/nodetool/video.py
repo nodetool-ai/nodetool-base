@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
@@ -30,12 +33,20 @@ class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to add audio to.",
     )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to add to the video.",
     )
     volume: float | OutputHandle[float] = connect_field(
@@ -56,7 +67,10 @@ class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -78,7 +92,13 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to add subtitles to.",
     )
@@ -111,7 +131,7 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -130,7 +150,13 @@ class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to apply blur effect.",
     )
@@ -150,7 +176,7 @@ class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -169,7 +195,13 @@ class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to apply chroma key effect.",
     )
@@ -195,7 +227,7 @@ class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -214,7 +246,13 @@ class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to adjust color balance.",
     )
@@ -239,7 +277,7 @@ class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -249,17 +287,35 @@ class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
+
+    Use cases:
+    - Merge multiple video clips into one continuous video
+    - Combine intro, main content, and outro sequences
+    - Join video segments from different sources
+    - Create video compilations and montages
     """
 
     video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The first video to concatenate.",
     )
     video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The second video to concatenate.",
     )
@@ -275,7 +331,7 @@ class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -294,7 +350,13 @@ class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to denoise.",
     )
@@ -314,7 +376,7 @@ class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -322,13 +384,26 @@ from nodetool.workflows.base_node import BaseNode
 class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-    Separate audio from a video file.
-    video, audio, extract, separate
+    Separate and extract audio track from a video file.
+    video, audio, extract, separate, split
+
+    Use cases:
+    - Extract audio for podcasts or music
+    - Create audio-only versions of video content
+    - Analyze or transcribe video audio separately
+    - Reuse audio in different contexts
+    - Convert video soundtracks to audio files
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to separate.",
     )
@@ -344,7 +419,7 @@ class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -363,7 +438,13 @@ class Fps(SingleOutputGraphNode[float], GraphNode[float]):
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to analyze for FPS.",
     )
@@ -379,7 +460,7 @@ class Fps(SingleOutputGraphNode[float], GraphNode[float]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -398,7 +479,13 @@ class FrameIterator(GraphNode[nodetool.nodes.nodetool.video.FrameIterator.Output
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to extract frames from.",
     )
@@ -443,7 +530,7 @@ import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
 
-class FrameToVideo(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+class FrameToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
     Combine a sequence of frames into a single video file.
@@ -456,7 +543,9 @@ class FrameToVideo(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
     frame: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Collect input frames",
     )
     fps: float | OutputHandle[float] = connect_field(
@@ -502,7 +591,9 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     )
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The input image to animate into a video",
     )
     model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
@@ -575,7 +666,9 @@ class LoadVideoAssets(
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to load the video files from.",
     )
 
@@ -646,17 +739,36 @@ class Overlay(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
+
+    Use cases:
+    - Create picture-in-picture effects for commentary videos
+    - Add watermarks or logos to videos
+    - Combine multiple video streams
+    - Create split-screen or multi-view presentations
+    - Layer video effects over main content
     """
 
     main_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The main (background) video.",
     )
     overlay_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The video to overlay on top.",
     )
@@ -704,7 +816,13 @@ class ResizeNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to resize.",
     )
@@ -745,7 +863,13 @@ class Reverse(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to reverse.",
     )
@@ -780,7 +904,13 @@ class Rotate(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to rotate.",
     )
@@ -818,7 +948,13 @@ class Saturation(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to adjust saturation.",
     )
@@ -857,12 +993,20 @@ class SaveVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The video to save.",
     )
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to save the video in.",
     )
     name: str | OutputHandle[str] = connect_field(
@@ -899,7 +1043,13 @@ class SaveVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The video to save",
     )
@@ -941,7 +1091,13 @@ class SetSpeed(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to adjust speed.",
     )
@@ -980,7 +1136,13 @@ class Sharpness(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to sharpen.",
     )
@@ -1023,7 +1185,13 @@ class Stabilize(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to stabilize.",
     )
@@ -1147,13 +1315,25 @@ class Transition(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
 
     video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The first video in the transition.",
     )
     video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The second video in the transition.",
     )
@@ -1195,7 +1375,13 @@ class Trim(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
-            type="video", uri="", asset_id=None, data=None, duration=None, format=None
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
         ),
         description="The input video to trim.",
     )

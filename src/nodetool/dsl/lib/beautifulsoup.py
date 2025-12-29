@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -41,7 +45,10 @@ class BaseUrl(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -84,6 +91,8 @@ class ExtractAudioOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.AudioRef], self["audio"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -130,6 +139,8 @@ class ExtractImagesOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.ImageRef], self["image"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -138,13 +149,15 @@ from nodetool.workflows.base_node import BaseNode
 class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.OutputType]):
     """
 
-    Extract links from HTML content.
-    extract, links, urls
+    Extract all links from HTML content with type classification.
+    extract, links, urls, web scraping, html
 
     Use cases:
-    - Analyze website structure
-    - Discover related content
-    - Build sitemaps
+    - Analyze website structure and navigation
+    - Discover related content and resources
+    - Build sitemaps and link graphs
+    - Find internal and external references
+    - Collect URLs for further processing
     """
 
     html: str | OutputHandle[str] = connect_field(
@@ -182,6 +195,8 @@ class ExtractLinksOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["type"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -232,6 +247,8 @@ class ExtractMetadataOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["keywords"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -278,6 +295,8 @@ class ExtractVideosOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.VideoRef], self["video"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
@@ -309,6 +328,8 @@ class HTMLToText(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode

@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
@@ -46,7 +49,10 @@ class FilterJSON(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -76,7 +82,10 @@ class GetJSONPathBool(SingleOutputGraphNode[bool], GraphNode[bool]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -106,7 +115,10 @@ class GetJSONPathDict(SingleOutputGraphNode[dict], GraphNode[dict]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -136,7 +148,10 @@ class GetJSONPathFloat(SingleOutputGraphNode[float], GraphNode[float]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -166,7 +181,10 @@ class GetJSONPathInt(SingleOutputGraphNode[int], GraphNode[int]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -196,7 +214,10 @@ class GetJSONPathList(SingleOutputGraphNode[list], GraphNode[list]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -226,7 +247,10 @@ class GetJSONPathStr(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -263,7 +287,10 @@ class JSONTemplate(SingleOutputGraphNode[dict], GraphNode[dict]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -275,7 +302,9 @@ class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to load the JSON files from.",
     )
 
@@ -302,6 +331,8 @@ class LoadJSONAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
@@ -332,6 +363,8 @@ class ParseDict(SingleOutputGraphNode[dict], GraphNode[dict]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
@@ -362,6 +395,8 @@ class ParseList(SingleOutputGraphNode[list], GraphNode[list]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
@@ -370,12 +405,14 @@ from nodetool.workflows.base_node import BaseNode
 class StringifyJSON(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Convert a Python object to a JSON string.
-    json, stringify, encode
+    Convert a Python object to a formatted JSON string.
+    json, stringify, encode, serialize
 
     Use cases:
     - Prepare data for API requests
     - Save data in JSON format
+    - Format data for storage or transmission
+    - Create human-readable JSON output
     """
 
     data: Any | OutputHandle[Any] = connect_field(
@@ -394,6 +431,8 @@ class StringifyJSON(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode

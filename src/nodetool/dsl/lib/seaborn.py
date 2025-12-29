@@ -5,11 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
+import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.seaborn
 from nodetool.workflows.base_node import BaseNode
 
@@ -66,7 +71,12 @@ class ChartRenderer(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
     )
     data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
-            type="dataframe", uri="", asset_id=None, data=None, columns=None
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
         ),
         description="The data to visualize as a pandas DataFrame.",
     )

@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import (
     OutputHandle,
     OutputsProxy,
@@ -47,11 +50,15 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
         default="", description="The prompt for the LLM"
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to analyze",
     )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio to analyze",
     )
     history: list[types.Message] | OutputHandle[list[types.Message]] = connect_field(
@@ -117,7 +124,8 @@ class AgentOutputs(DynamicOutputsProxy):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
 
@@ -154,11 +162,15 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
         default="", description="Text to classify"
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Optional image to classify in context",
     )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Optional audio to classify in context",
     )
     categories: list[str] | OutputHandle[list[str]] = connect_field(
@@ -179,7 +191,8 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
 
@@ -222,6 +235,7 @@ class CreateThreadOutputs(OutputsProxy):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import (
     OutputHandle,
     OutputsProxy,
@@ -264,11 +278,15 @@ class Extractor(GraphNode[dict[str, Any]]):
         default="", description="The text to extract data from"
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Optional image to assist extraction",
     )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Optional audio to assist extraction",
     )
     context_window: int | OutputHandle[int] = connect_field(
@@ -310,6 +328,7 @@ class Extractor(GraphNode[dict[str, Any]]):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import (
     OutputHandle,
     OutputsProxy,
@@ -407,6 +426,7 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
 
 
 import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
@@ -444,11 +464,15 @@ class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]
         default="", description="The text to summarize"
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Optional image to condition the summary",
     )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Optional audio to condition the summary",
     )
     context_window: int | OutputHandle[int] = connect_field(

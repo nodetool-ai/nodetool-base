@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -19,8 +22,14 @@ from nodetool.workflows.base_node import BaseNode
 class CircleNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Generate SVG circle element.
+    Generate SVG circle element with customizable position, radius, and styling.
     svg, shape, vector, circle
+
+    Use cases:
+    - Create circular shapes and icons
+    - Design buttons, badges, and indicators
+    - Build data visualizations like pie charts
+    - Create decorative elements and patterns
     """
 
     cx: int | OutputHandle[int] = connect_field(
@@ -49,7 +58,10 @@ class CircleNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEle
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -87,7 +99,10 @@ class ClipPath(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -132,7 +147,9 @@ class Document(SingleOutputGraphNode[types.SVGRef], GraphNode[types.SVGRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -140,8 +157,14 @@ from nodetool.workflows.base_node import BaseNode
 class DropShadow(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Apply drop shadow filter to SVG elements.
+    Apply drop shadow filter effect to SVG elements for depth.
     svg, filter, shadow, effects
+
+    Use cases:
+    - Add depth and elevation to elements
+    - Create realistic shadow effects
+    - Enhance visual hierarchy
+    - Improve element separation and readability
     """
 
     std_deviation: float | OutputHandle[float] = connect_field(
@@ -167,7 +190,9 @@ class DropShadow(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEle
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -175,8 +200,14 @@ from nodetool.workflows.base_node import BaseNode
 class EllipseNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Generate SVG ellipse element.
+    Generate SVG ellipse element with customizable position, radii, and styling.
     svg, shape, vector, ellipse
+
+    Use cases:
+    - Create oval shapes and organic forms
+    - Design speech bubbles and callouts
+    - Build data visualization elements
+    - Create decorative patterns and borders
     """
 
     cx: int | OutputHandle[int] = connect_field(
@@ -206,7 +237,9 @@ class EllipseNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEl
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -216,8 +249,14 @@ class GaussianBlur(
 ):
     """
 
-    Apply Gaussian blur filter to SVG elements.
+    Apply Gaussian blur filter effect to SVG elements.
     svg, filter, blur, effects
+
+    Use cases:
+    - Create soft focus and depth effects
+    - Add subtle shadows and glows
+    - Simulate motion blur
+    - Soften edges in graphics
     """
 
     std_deviation: float | OutputHandle[float] = connect_field(
@@ -233,7 +272,9 @@ class GaussianBlur(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -288,7 +329,7 @@ class Gradient(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -296,8 +337,14 @@ from nodetool.workflows.base_node import BaseNode
 class LineNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Generate SVG line element.
+    Generate SVG line element with customizable endpoints and styling.
     svg, shape, vector, line
+
+    Use cases:
+    - Draw straight lines and connectors
+    - Create dividers and separators
+    - Build diagrams and flowcharts
+    - Design grid patterns and borders
     """
 
     x1: int | OutputHandle[int] = connect_field(
@@ -331,7 +378,7 @@ class LineNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -339,8 +386,14 @@ from nodetool.workflows.base_node import BaseNode
 class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Generate SVG path element.
+    Generate SVG path element using path data commands.
     svg, shape, vector, path
+
+    Use cases:
+    - Create complex curved and custom shapes
+    - Build logos and custom icons
+    - Design intricate patterns and illustrations
+    - Import path data from design tools
     """
 
     path_data: str | OutputHandle[str] = connect_field(
@@ -367,7 +420,7 @@ class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -375,8 +428,14 @@ from nodetool.workflows.base_node import BaseNode
 class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Generate SVG polygon element.
+    Generate SVG polygon element with multiple vertices.
     svg, shape, vector, polygon
+
+    Use cases:
+    - Create multi-sided shapes like triangles, pentagons, stars
+    - Build custom icons and symbols
+    - Design complex geometric patterns
+    - Create irregular shapes and forms
     """
 
     points: str | OutputHandle[str] = connect_field(
@@ -403,7 +462,7 @@ class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEl
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -411,8 +470,14 @@ from nodetool.workflows.base_node import BaseNode
 class RectNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-    Generate SVG rectangle element.
+    Generate SVG rectangle element with customizable position, size, and styling.
     svg, shape, vector, rectangle
+
+    Use cases:
+    - Create rectangular shapes in SVG documents
+    - Design borders, frames, and backgrounds
+    - Build user interface components
+    - Create geometric patterns and layouts
     """
 
     x: int | OutputHandle[int] = connect_field(default=0, description="X coordinate")
@@ -440,7 +505,7 @@ class RectNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGEleme
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -491,7 +556,7 @@ class SVGToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
@@ -540,7 +605,7 @@ class Text(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement])
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 

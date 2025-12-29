@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -29,23 +33,33 @@ class AudioMixer(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
     """
 
     track1: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="First audio track to mix.",
     )
     track2: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Second audio track to mix.",
     )
     track3: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Third audio track to mix.",
     )
     track4: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Fourth audio track to mix.",
     )
     track5: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Fifth audio track to mix.",
     )
     volume1: float | OutputHandle[float] = connect_field(
@@ -73,7 +87,10 @@ class AudioMixer(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -90,7 +107,9 @@ class AudioToNumpy(GraphNode[nodetool.nodes.nodetool.audio.AudioToNumpy.OutputTy
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio to convert to numpy.",
     )
 
@@ -121,6 +140,8 @@ class AudioToNumpyOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["channels"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -138,11 +159,15 @@ class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The first audio file.",
     )
     b: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The second audio file.",
     )
 
@@ -155,6 +180,8 @@ class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -187,6 +214,8 @@ class ConcatList(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -205,7 +234,9 @@ class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArr
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to convert to a tensor.",
     )
 
@@ -218,6 +249,8 @@ class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArr
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -248,6 +281,8 @@ class CreateSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -265,7 +300,9 @@ class FadeIn(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to apply fade-in to.",
     )
     duration: float | OutputHandle[float] = connect_field(
@@ -281,6 +318,8 @@ class FadeIn(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -298,7 +337,9 @@ class FadeOut(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to apply fade-out to.",
     )
     duration: float | OutputHandle[float] = connect_field(
@@ -314,6 +355,8 @@ class FadeOut(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -329,7 +372,9 @@ class LoadAudioAssets(
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to load the audio files from.",
     )
 
@@ -356,6 +401,8 @@ class LoadAudioAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -386,6 +433,8 @@ class LoadAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -439,6 +488,8 @@ class LoadAudioFolderOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["path"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -456,7 +507,9 @@ class MonoToStereo(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The mono audio file to convert.",
     )
 
@@ -469,6 +522,8 @@ class MonoToStereo(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -486,7 +541,9 @@ class Normalize(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to normalize.",
     )
 
@@ -499,6 +556,8 @@ class Normalize(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -536,6 +595,8 @@ class NumpyToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -553,11 +614,15 @@ class OverlayAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
     """
 
     a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The first audio file.",
     )
     b: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The second audio file.",
     )
 
@@ -570,6 +635,8 @@ class OverlayAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -588,7 +655,9 @@ class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to process.",
     )
     min_length: int | OutputHandle[int] = connect_field(
@@ -621,6 +690,8 @@ class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -639,7 +710,9 @@ class Repeat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to loop.",
     )
     loops: int | OutputHandle[int] = connect_field(
@@ -656,6 +729,8 @@ class Repeat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -673,7 +748,9 @@ class Reverse(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to reverse.",
     )
 
@@ -686,6 +763,8 @@ class Reverse(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -704,11 +783,15 @@ class SaveAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description=None,
     )
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to save the audio file to. ",
     )
     name: str | OutputHandle[str] = connect_field(
@@ -725,6 +808,8 @@ class SaveAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -742,7 +827,9 @@ class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio to save",
     )
     folder: str | OutputHandle[str] = connect_field(
@@ -762,6 +849,8 @@ class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -779,7 +868,9 @@ class SliceAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file.",
     )
     start: float | OutputHandle[float] = connect_field(
@@ -798,6 +889,8 @@ class SliceAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -815,7 +908,9 @@ class StereoToMono(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The stereo audio file to convert.",
     )
     method: str | OutputHandle[str] = connect_field(
@@ -832,6 +927,8 @@ class StereoToMono(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -896,6 +993,8 @@ class TextToSpeechOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.Chunk], self["chunk"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
@@ -914,7 +1013,9 @@ class Trim(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to trim.",
     )
     start: float | OutputHandle[float] = connect_field(

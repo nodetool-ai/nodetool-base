@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.draw
 from nodetool.workflows.base_node import BaseNode
 
@@ -44,7 +47,10 @@ class Background(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.draw
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -76,7 +82,10 @@ class GaussianNoise(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.draw
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -125,7 +134,9 @@ class RenderText(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
         description=None,
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to render on.",
     )
 

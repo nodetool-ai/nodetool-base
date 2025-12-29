@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
@@ -21,8 +24,15 @@ class CollectionNode(
 ):
     """
 
-    Get or create a collection.
+    Get or create a named vector database collection for storing embeddings.
     vector, embedding, collection, RAG, get, create, chroma
+
+    Use cases:
+    - Initialize collections for semantic search
+    - Organize embeddings by topic or domain
+    - Set up vector stores for RAG applications
+    - Manage multiple vector databases
+    - Configure embedding models per collection
     """
 
     name: str | OutputHandle[str] = connect_field(
@@ -50,7 +60,10 @@ class CollectionNode(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -75,7 +88,10 @@ class Count(SingleOutputGraphNode[int], GraphNode[int]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -109,7 +125,10 @@ class GetDocuments(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -172,6 +191,8 @@ class HybridSearchOutputs(OutputsProxy):
         return typing.cast(OutputHandle[list[float]], self["scores"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.chroma
 from nodetool.workflows.base_node import BaseNode
@@ -428,7 +449,9 @@ class QueryImage(GraphNode[nodetool.nodes.vector.chroma.QueryImage.OutputType]):
         description="The collection to query",
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to query",
     )
     n_results: int | OutputHandle[int] = connect_field(

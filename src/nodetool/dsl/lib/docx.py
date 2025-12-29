@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
@@ -26,7 +29,9 @@ class AddHeading(
     """
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to add the heading to",
     )
     text: str | OutputHandle[str] = connect_field(
@@ -45,7 +50,10 @@ class AddHeading(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -57,11 +65,15 @@ class AddImage(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
     """
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to add the image to",
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to add",
     )
     width: float | OutputHandle[float] = connect_field(
@@ -80,7 +92,10 @@ class AddImage(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -94,7 +109,9 @@ class AddPageBreak(
     """
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to add the page break to",
     )
 
@@ -107,7 +124,10 @@ class AddPageBreak(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -125,7 +145,9 @@ class AddParagraph(
     )
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to add the paragraph to",
     )
     text: str | OutputHandle[str] = connect_field(
@@ -156,7 +178,7 @@ class AddParagraph(
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
@@ -169,12 +191,19 @@ class AddTable(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
     """
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to add the table to",
     )
     data: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
         default=types.DataframeRef(
-            type="dataframe", uri="", asset_id=None, data=None, columns=None
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
         ),
         description="The data to add to the table",
     )
@@ -190,7 +219,7 @@ class AddTable(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.Documen
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
@@ -215,7 +244,7 @@ class CreateDocument(
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
@@ -244,7 +273,7 @@ class LoadWordDocument(
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
@@ -257,7 +286,9 @@ class SaveDocument(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to write",
     )
     path: types.FilePath | OutputHandle[types.FilePath] = connect_field(
@@ -280,7 +311,7 @@ class SaveDocument(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.docx
 from nodetool.workflows.base_node import BaseNode
 
@@ -295,7 +326,9 @@ class SetDocumentProperties(
     """
 
     document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The document to modify",
     )
     title: str | OutputHandle[str] = connect_field(

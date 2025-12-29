@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.audio
 from nodetool.workflows.base_node import BaseNode
 
@@ -24,6 +27,14 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     This node converts text input into natural-sounding speech audio using Google's
     advanced text-to-speech models with support for multiple voices and speech styles.
+
+    Supported voices:
+    - achernar, achird, algenib, algieba, alnilam
+    - aoede, autonoe, callirrhoe, charon, despina
+    - enceladus, erinome, fenrir, gacrux, iapetus
+    - kore, laomedeia, leda, orus, puck
+    - pulcherrima, rasalgethi, sadachbia, sadaltager, schedar
+    - sulafat, umbriel, vindemiatrix, zephyr, zubenelgenubi
 
     Use cases:
     - Create voiceovers for videos and presentations

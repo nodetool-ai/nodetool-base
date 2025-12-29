@@ -5,11 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -28,7 +32,9 @@ class BatchToList(
     """
 
     batch: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The batch of images to convert.",
     )
 
@@ -41,7 +47,10 @@ class BatchToList(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -57,7 +66,9 @@ class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to crop.",
     )
     left: int | OutputHandle[int] = connect_field(
@@ -82,7 +93,10 @@ class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -98,7 +112,9 @@ class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to fit.",
     )
     width: int | OutputHandle[int] = connect_field(
@@ -117,7 +133,10 @@ class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -134,7 +153,9 @@ class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The input image.",
     )
 
@@ -173,6 +194,8 @@ class GetMetadataOutputs(OutputsProxy):
         return typing.cast(OutputHandle[int], self["channels"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -203,7 +226,9 @@ class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
         description="The image generation model to use",
     )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="Input image to transform",
     )
     prompt: str | OutputHandle[str] = connect_field(
@@ -248,6 +273,54 @@ class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class ImagesToList(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
+    """
+
+        Convert all dynamic properties to a list of image references.
+        list, images, processing
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = ImagesToList(prop1=value1, prop2=value2)
+    """
+
+    def __init__(self, **kwargs: typing.Any) -> None:
+        """
+        Initialize a ImagesToList node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Args:
+            **kwargs: Field values and dynamic properties.
+        """
+
+        super().__init__(**kwargs)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.image.ImagesToList
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -263,7 +336,9 @@ class LoadImageAssets(
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to load the images from.",
     )
 
@@ -290,6 +365,8 @@ class LoadImageAssetsOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["name"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -320,6 +397,8 @@ class LoadImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -376,6 +455,8 @@ class LoadImageFolderOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["path"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -394,11 +475,15 @@ class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to paste into.",
     )
     paste: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to paste.",
     )
     left: int | OutputHandle[int] = connect_field(
@@ -417,6 +502,8 @@ class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -434,7 +521,9 @@ class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to resize.",
     )
     width: int | OutputHandle[int] = connect_field(
@@ -453,6 +542,8 @@ class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -471,11 +562,15 @@ class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to save.",
     )
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(type="folder", uri="", asset_id=None, data=None),
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The asset folder to save the image in.",
     )
     name: str | OutputHandle[str] = connect_field(
@@ -492,6 +587,8 @@ class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -510,7 +607,9 @@ class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to save",
     )
     folder: str | OutputHandle[str] = connect_field(
@@ -534,6 +633,8 @@ class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
@@ -551,7 +652,9 @@ class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to scale.",
     )
     scale: float | OutputHandle[float] = connect_field(
@@ -567,6 +670,8 @@ class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode

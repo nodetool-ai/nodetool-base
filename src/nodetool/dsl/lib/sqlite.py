@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
 from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
@@ -73,6 +76,8 @@ class CreateTableOutputs(OutputsProxy):
         return typing.cast(OutputHandle[types.RecordType], self["columns"])
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
@@ -110,6 +115,8 @@ class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
@@ -146,6 +153,8 @@ class ExecuteSQL(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
@@ -176,6 +185,8 @@ class GetDatabasePath(SingleOutputGraphNode[str], GraphNode[str]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
@@ -213,6 +224,8 @@ class Insert(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
@@ -261,6 +274,8 @@ class Query(
         return cls.get_node_class().get_node_type()
 
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode

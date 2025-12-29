@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
@@ -53,7 +56,7 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
 
@@ -81,7 +84,9 @@ class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
         description="The model to use for transcription.",
     )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to transcribe (max 25 MB).",
     )
     language: nodetool.nodes.openai.audio.Transcribe.Language = Field(
@@ -149,7 +154,9 @@ class Translate(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(type="audio", uri="", asset_id=None, data=None),
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The audio file to translate.",
     )
     temperature: float | OutputHandle[float] = connect_field(

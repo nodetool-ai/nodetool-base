@@ -5,12 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pdfplumber
 from nodetool.workflows.base_node import BaseNode
 
@@ -47,7 +51,9 @@ class ExtractImages(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pdfplumber
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -83,7 +89,9 @@ class ExtractPageMetadata(SingleOutputGraphNode[typing.Any], GraphNode[typing.An
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pdfplumber
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -101,7 +109,9 @@ class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
     pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The PDF document to extract tables from",
     )
     start_page: int | OutputHandle[int] = connect_field(
@@ -139,7 +149,9 @@ class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pdfplumber
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -156,7 +168,9 @@ class ExtractText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(type="document", uri="", asset_id=None, data=None),
+        default=types.DocumentRef(
+            type="document", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The PDF file to extract text from",
     )
     start_page: int | OutputHandle[int] = connect_field(
@@ -176,7 +190,9 @@ class ExtractText(SingleOutputGraphNode[str], GraphNode[str]):
 
 
 import typing
-from nodetool.dsl.handles import OutputHandle, connect_field
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pdfplumber
 from nodetool.workflows.base_node import BaseNode
 
 

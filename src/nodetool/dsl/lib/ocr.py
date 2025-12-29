@@ -5,12 +5,15 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
-from nodetool.dsl.graph import GraphNode
+from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
+import typing
+from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ocr
 from nodetool.workflows.base_node import BaseNode
@@ -32,7 +35,9 @@ class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
     OCRLanguage: typing.ClassVar[type] = nodetool.nodes.lib.ocr.OCRLanguage
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to perform OCR on",
     )
     language: nodetool.nodes.lib.ocr.OCRLanguage = Field(

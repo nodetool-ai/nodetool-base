@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
 from nodetool.workflows.base_node import BaseNode
 
@@ -37,7 +40,9 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     VeoAspectRatio: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoAspectRatio
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to animate into a video",
     )
     prompt: str | OutputHandle[str] = connect_field(
@@ -66,7 +71,7 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
 from nodetool.workflows.base_node import BaseNode
 

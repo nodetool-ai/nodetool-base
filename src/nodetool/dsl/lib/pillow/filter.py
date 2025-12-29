@@ -5,13 +5,16 @@
 # nodetool package scan
 # nodetool codegen
 
-from pydantic import Field
+from pydantic import BaseModel, Field
 import typing
+from typing import Any
 import nodetool.metadata.types
 import nodetool.metadata.types as types
 from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
@@ -28,7 +31,9 @@ class Blur(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to blur.",
     )
     radius: int | OutputHandle[int] = connect_field(
@@ -44,7 +49,10 @@ class Blur(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -60,7 +68,9 @@ class Canny(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to canny.",
     )
     low_threshold: int | OutputHandle[int] = connect_field(
@@ -79,7 +89,10 @@ class Canny(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -95,7 +108,9 @@ class Contour(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to contour.",
     )
 
@@ -108,7 +123,10 @@ class Contour(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -126,7 +144,9 @@ class ConvertToGrayscale(
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to convert.",
     )
 
@@ -139,7 +159,10 @@ class ConvertToGrayscale(
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -155,7 +178,9 @@ class Emboss(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to emboss.",
     )
 
@@ -168,7 +193,10 @@ class Emboss(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -184,7 +212,9 @@ class Expand(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to expand.",
     )
     border: int | OutputHandle[int] = connect_field(
@@ -201,7 +231,10 @@ class Expand(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -217,7 +250,9 @@ class FindEdges(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to find edges.",
     )
 
@@ -230,7 +265,10 @@ class FindEdges(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
         return cls.get_node_class().get_node_type()
 
 
-from nodetool.dsl.handles import OutputHandle, connect_field
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
 
@@ -250,7 +288,9 @@ class GetChannel(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
     )
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to get the channel from.",
     )
     channel: nodetool.nodes.lib.pillow.filter.GetChannel.ChannelEnum = Field(
@@ -269,7 +309,7 @@ class GetChannel(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
@@ -286,7 +326,9 @@ class Invert(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to adjust the brightness for.",
     )
 
@@ -301,7 +343,7 @@ class Invert(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
@@ -318,7 +360,9 @@ class Posterize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to posterize.",
     )
     bits: int | OutputHandle[int] = connect_field(
@@ -336,7 +380,7 @@ class Posterize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
@@ -353,7 +397,9 @@ class Smooth(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to smooth.",
     )
 
@@ -368,7 +414,7 @@ class Smooth(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, connect_field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.filter
 from nodetool.workflows.base_node import BaseNode
 
@@ -385,7 +431,9 @@ class Solarize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef])
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(type="image", uri="", asset_id=None, data=None),
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
         description="The image to solarize.",
     )
     threshold: int | OutputHandle[int] = connect_field(
