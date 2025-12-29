@@ -12,7 +12,7 @@ This document evaluates the current NodeTool base nodes offering against the pri
 **Strengths:**
 - Strong foundation of local-first capabilities with Ollama and ComfyUI integration
 - Comprehensive mix of local and cloud services (35+ providers)
-- Rich utility node library for data manipulation (74+ nodes)
+- Rich utility node library for data manipulation (600+ nodes across 72 modules)
 - Transparent workflow execution model with real-time streaming
 - Excellent "mix your tools" philosophy - seamlessly combine local and cloud AI
 
@@ -34,7 +34,7 @@ This document evaluates the current NodeTool base nodes offering against the pri
 
 **Evidence:**
 - All nodes inherit from `BaseNode` with standardized visual interface
-- 74+ nodes across 10 categories provide comprehensive building blocks
+- 600+ nodes across 72 modules in 10 categories provide comprehensive building blocks
 - Clear input/output typing for visual connections
 - Rich node categories:
   - `nodetool.constant` - Constant values
