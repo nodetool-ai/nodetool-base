@@ -75,7 +75,7 @@
     "nodes": [
       {
         "id": "1",
-        "type": "nodetool.output.VideoOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "animated_clip",
           "description": "AI-generated cinematic video based on the supplied reference frame"

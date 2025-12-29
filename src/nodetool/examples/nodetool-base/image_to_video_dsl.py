@@ -14,7 +14,7 @@ Workflow:
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.workflows.processing_context import AssetOutputMode
 from nodetool.dsl.nodetool.input import StringInput
-from nodetool.dsl.nodetool.output import VideoOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.nodetool.video import ImageToVideo
@@ -96,7 +96,7 @@ animated_video = ImageToVideo(
 )
 
 # --- Output ------------------------------------------------------------------
-video_output = VideoOutput(
+video_output = Output(
     name="animated_clip",
     description="AI-generated cinematic video based on the supplied reference frame",
     value=animated_video.output,

@@ -8,18 +8,18 @@ from nodetool.dsl.nodetool.text import (
     Join,
     Contains,
 )
-from nodetool.dsl.nodetool.output import StringOutput, BooleanOutput
+from nodetool.dsl.nodetool.output import Output
 
 # Example 1: Basic text concatenation
 concat_node = Concat(a="Hello, ", b="World!")
-text_concat = StringOutput(name="text_concat", value=concat_node.output)
+text_concat = Output(name="text_concat", value=concat_node.output)
 
 # Example 2: Template with variable substitution
 template_node = Template(
     string="Hello, {{ name }}! Today is {{ day }}.",
     values={"name": "Alice", "day": "Monday"},
 )
-template_text = StringOutput(
+template_text = Output(
     name="template_text",
     value=template_node.output,
 )
@@ -31,7 +31,7 @@ regex_node = RegexReplace(
     replacement="blue",
     count=1,
 )
-regex_replace = StringOutput(
+regex_replace = Output(
     name="regex_replace",
     value=regex_node.output,
 )
@@ -42,7 +42,7 @@ join_node = Join(
     strings=split_node.output,
     separator=" | ",
 )
-split_join = StringOutput(
+split_join = Output(
     name="split_join",
     value=join_node.output,
 )
@@ -51,7 +51,7 @@ split_join = StringOutput(
 contains_node = Contains(
     text="Python programming is fun", substring="programming", case_sensitive=True
 )
-contains_check = BooleanOutput(
+contains_check = Output(
     name="contains_check",
     value=contains_node.output,
 )

@@ -14,7 +14,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.constant import Audio
 from nodetool.dsl.nodetool.text import AutomaticSpeechRecognition
 from nodetool.dsl.nodetool.agents import Summarizer
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import ASRModel, AudioRef, LanguageModel, Provider
 from nodetool.workflows.processing_context import AssetOutputMode
 
@@ -51,7 +51,7 @@ summary = Summarizer(
 )
 
 # Output the summary
-output = StringOutput(
+output = Output(
     name="summary",
     value=summary.out.text,
 )

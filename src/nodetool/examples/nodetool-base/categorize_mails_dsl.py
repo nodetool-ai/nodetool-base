@@ -14,7 +14,7 @@ from nodetool.dsl.graph import run_graph, create_graph
 from nodetool.dsl.lib.mail import GmailSearch, AddLabel
 from nodetool.dsl.nodetool.text import Template
 from nodetool.dsl.nodetool.agents import Classifier
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -52,7 +52,7 @@ add_label = AddLabel(
 )
 
 # Output the result
-output = StringOutput(
+output = Output(
     name="result",
     value=classifier.output,
 )

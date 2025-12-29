@@ -18,7 +18,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.search.google import GoogleSearch
 from nodetool.metadata.types import LanguageModel, Provider
 
@@ -204,7 +204,7 @@ Comprehensive|  TaskFlow
 )
 
 # Output the analysis
-output = StringOutput(
+output = Output(
     name="competitive_analysis",
     value=competitive_report.output,
 )

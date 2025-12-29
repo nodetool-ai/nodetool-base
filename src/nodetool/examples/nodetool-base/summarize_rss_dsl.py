@@ -14,7 +14,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.lib.rss import FetchRSSFeed
 from nodetool.dsl.nodetool.text import Collect
 from nodetool.dsl.nodetool.agents import Summarizer
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -46,7 +46,7 @@ summary = Summarizer(
 )
 
 # Output the summary
-output = StringOutput(
+output = Output(
     name="summary",
     value=summary.out.text,
 )

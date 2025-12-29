@@ -112,12 +112,11 @@ if __name__ == "__main__":
 - `AutomaticSpeechRecognition` - Speech to text
 
 ### Input/Output Nodes
-- `StringInput` / `StringOutput` - Text data
-- `ImageInput` / `ImageOutput` - Image data
-- `AudioInput` / `AudioOutput` - Audio data
-- `VideoInput` / `VideoOutput` - Video data
-- `DataframeOutput` - Structured data output
-- `ListOutput` - List data output
+- `StringInput` - Text input
+- `ImageInput` - Image input
+- `AudioInput` - Audio input
+- `VideoInput` - Video input
+- `Output` - Generic output for any type (strings, images, audio, video, dataframes, lists, etc.)
 
 ### Data Nodes (`nodetool.data`)
 - `FromList` - Convert list to DataFrame
@@ -162,7 +161,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 # Create nodes at module level
 input_node = StringInput(...)
 process_node = ProcessNode(value=input_node.output)
-output_node = StringOutput(value=process_node.output)
+output_node = Output(value=process_node.output)
 
 # Create graph
 graph = create_graph(output_node)

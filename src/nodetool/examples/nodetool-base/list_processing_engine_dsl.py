@@ -28,7 +28,7 @@ ASCII workflow outline:
      /                              \
  [MapField] -> [Dedupe] -> [Sort]     \
      |                                 \
- [ListOutput]                          [FromList]
+ [Output]                             [FromList]
                                          |
                           ______________________________
                          /                              \
@@ -44,7 +44,7 @@ ASCII workflow outline:
                                     |
              ______________________/ \____________________
             /                                             \
- [DataframeOutput]                             [FormatText -> StringOutput]
+ [Output]                                      [FormatText -> Output]
                                                      |
                                              narrative summary
 """
@@ -68,7 +68,7 @@ from nodetool.dsl.nodetool.data import (
     ToList,
     SortByColumn,
 )
-from nodetool.dsl.nodetool.output import DataframeOutput, StringOutput, ListOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.text import FormatText
 
 
@@ -266,22 +266,22 @@ summary_text = FormatText(
 
 
 # --- Outputs ----------------------------------------------------------------
-regional_output = DataframeOutput(
+regional_output = Output(
     name="regional_summary",
     value=regional_summary.output,
 )
 
-customers_output = DataframeOutput(
+customers_output = Output(
     name="high_value_customers",
     value=detailed_sorted.output,
 )
 
-emails_output = ListOutput(
+emails_output = Output(
     name="campaign_emails",
     value=marketing_emails.output,
 )
 
-summary_output = StringOutput(
+summary_output = Output(
     name="summary_report",
     value=summary_text.output,
 )

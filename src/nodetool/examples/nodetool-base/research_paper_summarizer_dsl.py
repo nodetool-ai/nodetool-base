@@ -16,7 +16,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -126,7 +126,7 @@ Consider reading related work on:
 )
 
 # Output the summary
-output = StringOutput(
+output = Output(
     name="paper_summary",
     value=paper_summary.output,
 )

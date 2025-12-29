@@ -39,7 +39,7 @@
       {
         "id": "97877",
         "parent_id": null,
-        "type": "nodetool.output.ImageOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "enhanced",
           "description": ""

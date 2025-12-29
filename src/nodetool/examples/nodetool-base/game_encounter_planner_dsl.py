@@ -40,7 +40,7 @@ from nodetool.dsl.graph import create_graph, run_graph_sync
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.constant import List as ListConstant
 from nodetool.dsl.nodetool.input import StringInput
-from nodetool.dsl.nodetool.output import ListOutput, StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.lib.json import StringifyJSON, ParseDict, GetJSONPathList, GetJSONPathStr
 from nodetool.metadata.types import LanguageModel, Provider
@@ -291,19 +291,19 @@ briefing_author = Agent(
 
 # --- Outputs -----------------------------------------------------------------
 
-wave_plan_output = ListOutput(
+wave_plan_output = Output(
     name="encounter_waves",
     description="Structured wave composition proposed by the planning agent",
     value=wave_plan.output,
 )
 
-qa_notes_output = StringOutput(
+qa_notes_output = Output(
     name="qa_review_notes",
     description="QA agent assessment of pacing risks and mitigation ideas",
     value=balance_reviewer.out.text,
 )
 
-briefing_output = StringOutput(
+briefing_output = Output(
     name="designer_briefing",
     description="Markdown briefing summarizing the encounter plan and QA guidance",
     value=briefing_author.out.text,

@@ -23,7 +23,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import IntegerInput
 from nodetool.dsl.nodetool.boolean import Compare, LogicalOperator, ConditionalSwitch
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 
 
 # Input: Numeric value to evaluate
@@ -126,7 +126,7 @@ This workflow demonstrates:
 )
 
 # Explicit output node
-output = StringOutput(
+output = Output(
     name="decision_result",
     value=summary_text.output,
 )

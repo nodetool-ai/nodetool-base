@@ -14,7 +14,7 @@ The graph can be executed to generate a product catalog in structured tabular fo
 import asyncio
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
-from nodetool.dsl.nodetool.output import DataframeOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.generators import DataGenerator
 from nodetool.metadata.types import RecordType, ColumnDef, LanguageModel, Provider
 
@@ -69,7 +69,7 @@ def build_catalog_generator():
 
     # --- Output dataframe ---
     # Create an output node to surface the generated catalog
-    out_df = DataframeOutput(
+    out_df = Output(
         name="catalog_dataframe",
         value=generator.out.dataframe,
         description="Generated product catalog ready for CSV export."

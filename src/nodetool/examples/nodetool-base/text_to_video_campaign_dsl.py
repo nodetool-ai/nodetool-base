@@ -15,7 +15,7 @@ from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.video import TextToVideo
-from nodetool.dsl.nodetool.output import VideoOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import Provider, VideoModel, LanguageModel
 from nodetool.workflows.processing_context import AssetOutputMode
 
@@ -118,7 +118,7 @@ video_generator = TextToVideo(
     seed=12345,
 )
 
-video_output = VideoOutput(
+video_output = Output(
     name="product_launch_video",
     description="Generated marketing video for the Aurora Trail watch",
     value=video_generator.output,

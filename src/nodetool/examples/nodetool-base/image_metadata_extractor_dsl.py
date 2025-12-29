@@ -15,7 +15,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import ImageInput
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import ImageRef, LanguageModel, Provider
 
 
@@ -67,7 +67,7 @@ analysis_report = FormatText(
 )
 
 # Output the analysis
-output = StringOutput(
+output = Output(
     name="image_analysis",
     value=analysis_report.output,
 )

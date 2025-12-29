@@ -14,7 +14,7 @@ from nodetool.dsl.lib.pillow.draw import (
     GaussianNoise,
     RenderText,
 )
-from nodetool.dsl.nodetool.output import ImageOutput
+from nodetool.dsl.nodetool.output import Output
 
 # Create a background image
 bg = Background(
@@ -22,7 +22,7 @@ bg = Background(
     height=512,
     color=ColorRef(type="color", value="#E0E0E0"),
 )
-background = ImageOutput(
+background = Output(
     name="background",
     value=bg.output,
 )
@@ -41,7 +41,7 @@ render_text = RenderText(
     align=RenderText.TextAlignment("center"),
     font=FontRef(name="Verdana.ttf"),
 )
-text_on_image = ImageOutput(
+text_on_image = Output(
     name="text_on_image",
     value=render_text.output,
 )
@@ -53,7 +53,7 @@ bg_enhance = Background(
 brightness_node = Brightness(image=bg_enhance.output, factor=1.2)
 contrast_node = Contrast(image=brightness_node.output, factor=1.3)
 sharpen_node = Sharpen(image=contrast_node.output)
-enhanced_image = ImageOutput(
+enhanced_image = Output(
     name="enhanced_image",
     value=sharpen_node.output,
 )
@@ -61,7 +61,7 @@ enhanced_image = ImageOutput(
 # Noise and edge enhancement
 noise = GaussianNoise(width=512, height=512, mean=0.5, stddev=0.1)
 edge_enhance_node = EdgeEnhance(image=noise.output)
-noise_with_edges = ImageOutput(
+noise_with_edges = Output(
     name="noise_with_edges",
     value=edge_enhance_node.output,
 )
@@ -77,7 +77,7 @@ unsharp_node = UnsharpMask(
     percent=150,
     threshold=3,
 )
-advanced_image = ImageOutput(
+advanced_image = Output(
     name="advanced_image",
     value=unsharp_node.output,
 )

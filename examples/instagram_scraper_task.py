@@ -11,7 +11,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import ResearchAgent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 focus_topic = StringInput(
@@ -76,7 +76,7 @@ summary_markdown = FormatText(
     trends=instagram_agent.out.trends,
 )
 
-output = StringOutput(
+output = Output(
     name="instagram_trends_report",
     value=summary_markdown.output,
 )

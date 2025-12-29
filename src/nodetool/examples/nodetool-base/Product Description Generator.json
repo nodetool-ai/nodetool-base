@@ -111,7 +111,7 @@
     "nodes": [
       {
         "id": "1",
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "product_descriptions",
           "description": ""

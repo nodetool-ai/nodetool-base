@@ -11,7 +11,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText, FormatText as MarkdownFormat
 from nodetool.dsl.nodetool.agents import ResearchAgent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 topic = StringInput(
@@ -91,7 +91,7 @@ Resources:
     modules=learning_agent.out.modules,
 )
 
-output = StringOutput(
+output = Output(
     name="learning_path_markdown",
     value=learning_plan_markdown.output,
 )

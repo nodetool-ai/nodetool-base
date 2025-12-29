@@ -9,7 +9,7 @@ Requirements:
 """
 
 from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.output import DictionaryOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.lib.supabase import Upsert
 
 
@@ -23,7 +23,7 @@ upsert = Upsert(
     return_rows=True,
 )
 
-out = DictionaryOutput(name="upsert_result", value=upsert)
+out = Output(name="upsert_result", value=upsert)
 graph = create_graph(out)
 
 

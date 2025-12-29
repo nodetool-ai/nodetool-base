@@ -9,7 +9,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import ResearchAgent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 # Optional user input to tune the query
@@ -72,7 +72,7 @@ reddit_research_agent = ResearchAgent(
 )
 
 # Final output node: just expose the compiled markdown report
-output = StringOutput(
+output = Output(
     name="reddit_ai_workflows_report",
     value=reddit_research_agent.out.report_markdown,
 )

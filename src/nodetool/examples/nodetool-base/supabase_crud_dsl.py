@@ -9,7 +9,7 @@ Note:
 """
 
 from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.output import DictionaryOutput, DataframeOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.lib.supabase import Insert, Update, Delete, Select
 from nodetool.nodes.lib.supabase import FilterOp
 from nodetool.metadata.types import RecordType, ColumnDef
@@ -50,10 +50,10 @@ select = Select(
     to_dataframe=True,
 )
 
-out1 = DictionaryOutput(name="insert_result", value=insert.output)
-out2 = DictionaryOutput(name="update_result", value=update.output)
-out3 = DictionaryOutput(name="delete_result", value=delete.output)
-out4 = DataframeOutput(name="todos_df", value=select.output)
+out1 = Output(name="insert_result", value=insert.output)
+out2 = Output(name="update_result", value=update.output)
+out3 = Output(name="delete_result", value=delete.output)
+out4 = Output(name="todos_df", value=select.output)
 
 graph = create_graph(out1, out2, out3, out4)
 

@@ -8,7 +8,7 @@ from nodetool.dsl.nodetool.dictionary import (
     Update,
     Zip,
 )
-from nodetool.dsl.nodetool.output import StringOutput, IntegerOutput, DictionaryOutput
+from nodetool.dsl.nodetool.output import Output
 
 # Create and manipulate dictionaries
 update_dict = Update(
@@ -20,7 +20,7 @@ get_role = GetValue(
     key="role",
     default="Unknown",
 )
-make_dict = StringOutput(
+make_dict = Output(
     name="make_dict",
     value=get_role.output,
 )
@@ -35,7 +35,7 @@ get_combined = GetValue(
     key="b",
     default=0,
 )
-combined_dict = IntegerOutput(
+combined_dict = Output(
     name="combined_dict",
     value=get_combined.output,
 )
@@ -45,20 +45,20 @@ filter_dict = Filter(
     dictionary={"name": "Bob", "age": 25, "city": "London", "country": "UK"},
     keys=["name", "city"],
 )
-filtered_dict = DictionaryOutput(
+filtered_dict = Output(
     name="filtered_dict",
     value=filter_dict.output,
 )
 
 # Create dictionary from parallel lists
 zip_dicts = Zip(keys=["a", "b", "c"], values=[1, 2, 3])
-zipped_dict = DictionaryOutput(
+zipped_dict = Output(
     name="zipped_dict", value=zip_dicts.output
 )
 
 # Find maximum value in dictionary
 argmax_node = ArgMax(scores={"cat": 0.7, "dog": 0.9, "bird": 0.3})
-argmax_example = StringOutput(
+argmax_example = Output(
     name="argmax_example",
     value=argmax_node.output,
 )

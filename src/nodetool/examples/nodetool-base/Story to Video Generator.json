@@ -141,7 +141,7 @@
       {
         "id": "video_output",
         "parent_id": null,
-        "type": "nodetool.output.VideoOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "generated_video"
         },

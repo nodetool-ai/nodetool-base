@@ -1,12 +1,12 @@
 import pytest
 from nodetool.dsl.graph import graph_result
 from nodetool.dsl.lib.math import Add, Multiply, Divide, MathFunction
-from nodetool.dsl.nodetool.output import FloatOutput
+from nodetool.dsl.nodetool.output import Output
 
 # Example 1: Basic arithmetic (2 + 3) * 4
 add_node = Add(a=2, b=3)
 multiply_node = Multiply(a=add_node.output, b=4)
-basic_arithmetic = FloatOutput(
+basic_arithmetic = Output(
     name="basic_arithmetic",
     value=multiply_node.output,
 )
@@ -17,7 +17,7 @@ square_sine = MathFunction(
     input=sine_node.output,
     operation=MathFunction.Operation.SQUARE,
 )
-trig_calculation = FloatOutput(
+trig_calculation = Output(
     name="trig_calculation",
     value=square_sine.output,
 )
@@ -33,7 +33,7 @@ sqrt_sum = MathFunction(
     input=sum_squares.output,
     operation=MathFunction.Operation.SQUARE_ROOT,
 )
-pythagorean = FloatOutput(
+pythagorean = Output(
     name="pythagorean",
     value=sqrt_sum.output,
 )
@@ -42,7 +42,7 @@ pythagorean = FloatOutput(
 numerator = Add(a=10, b=5)
 denominator = Multiply(a=2, b=3)
 divide_node = Divide(a=numerator.output, b=denominator.output)
-nested_operations = FloatOutput(
+nested_operations = Output(
     name="nested_operations",
     value=divide_node.output,
 )
@@ -58,7 +58,7 @@ add_sin_sqrt = Add(
     a=sin_x_squared.output,
     b=sqrt_x.output,
 )
-combined_operations = FloatOutput(
+combined_operations = Output(
     name="combined_operations",
     value=add_sin_sqrt.output,
 )

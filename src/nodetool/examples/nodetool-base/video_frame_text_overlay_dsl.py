@@ -16,7 +16,7 @@ import os
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.workflows.processing_context import AssetOutputMode
 from nodetool.dsl.nodetool.input import VideoInput, StringInput
-from nodetool.dsl.nodetool.output import ImageOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.video import FrameIterator
 from nodetool.dsl.lib.pillow.draw import RenderText
 from nodetool.dsl.nodetool.text import FormatText
@@ -97,7 +97,7 @@ rendered_frame = RenderText(
 
 # --- Output frames with text overlay ---
 # Preview nodes capture results from iterating operations
-output = ImageOutput(
+output = Output(
     name="frame_with_overlay",
     description="Video frames with text overlay rendered on top",
     value=rendered_frame.output,
