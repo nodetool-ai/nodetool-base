@@ -11,7 +11,7 @@ Features:
 
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.generators import DataGenerator
-from nodetool.dsl.nodetool.output import DataframeOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider, RecordType, ColumnDef
 
 
@@ -38,7 +38,7 @@ data_gen = DataGenerator(
 )
 
 # Output the generated dataframe
-output = DataframeOutput(
+output = Output(
     name="dataframe_output",
     value=data_gen.out.dataframe,
 )

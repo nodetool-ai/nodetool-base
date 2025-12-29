@@ -11,7 +11,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import ResearchAgent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 subreddit = StringInput(
@@ -98,7 +98,7 @@ report = FormatText(
     recommendations=reddit_agent.out.recommendations,
 )
 
-output = StringOutput(
+output = Output(
     name="reddit_research_report",
     value=report.output,
 )

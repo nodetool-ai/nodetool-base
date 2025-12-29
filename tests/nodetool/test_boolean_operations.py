@@ -6,11 +6,11 @@ from nodetool.dsl.nodetool.boolean import (
     ConditionalSwitch,
     IsIn,
 )
-from nodetool.dsl.nodetool.output import BooleanOutput, StringOutput
+from nodetool.dsl.nodetool.output import Output
 
 # Basic comparison
 comparison = Compare(a=5, b=3, comparison=Compare.Comparison(">"))
-basic_comparison = BooleanOutput(
+basic_comparison = Output(
     name="basic_comparison",
     value=comparison.output,
 )
@@ -23,7 +23,7 @@ logical_op = LogicalOperator(
     b=comparison2.output,
     operation=LogicalOperator.BooleanOperation("and"),
 )
-logical_ops = BooleanOutput(
+logical_ops = Output(
     name="logical_ops",
     value=logical_op.output,
 )
@@ -35,14 +35,14 @@ conditional_switch = ConditionalSwitch(
     if_true="Values are equal",
     if_false="Values are different",
 )
-conditional = StringOutput(
+conditional = Output(
     name="conditional",
     value=conditional_switch.output,
 )
 
 # List membership check
 membership_check = IsIn(value=5, options=[1, 3, 5, 7, 9])
-membership = BooleanOutput(
+membership = Output(
     name="membership",
     value=membership_check.output,
 )

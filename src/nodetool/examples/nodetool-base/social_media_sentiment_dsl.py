@@ -15,7 +15,7 @@ from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.agents import Classifier
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -69,7 +69,7 @@ analysis_summary = FormatText(
 )
 
 # Output formatted analysis
-text_output = StringOutput(
+text_output = Output(
     name="analysis",
     value=analysis_summary.output,
 )

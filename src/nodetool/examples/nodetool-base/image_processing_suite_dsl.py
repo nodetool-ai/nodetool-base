@@ -50,9 +50,7 @@ from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.dictionary import MakeDictionary, Combine
 from nodetool.dsl.nodetool.data import JSONToDataframe
 from nodetool.dsl.nodetool.output import (
-    ImageOutput,
-    DataframeOutput,
-    DictionaryOutput,
+    Output,
 )
 from nodetool.metadata.types import ImageRef
 
@@ -205,31 +203,31 @@ image_package = Combine(
 )
 
 # --- Outputs ----------------------------------------------------------------
-package_output = DictionaryOutput(
+package_output = Output(
     name="image_processing_bundle",
     description="Aggregated image variants plus metadata (synchronized via zip_all).",
     value=image_package.output,
 )
 
-metadata_output = DataframeOutput(
+metadata_output = Output(
     name="image_metadata",
     description="Tabular metadata captured from the normalized image.",
     value=metadata_table.output,
 )
 
-thumbnail_output = ImageOutput(
+thumbnail_output = Output(
     name="thumbnail_variant",
     description="320px square thumbnail optimized for previews.",
     value=thumbnail_ready.output,
 )
 
-web_output = ImageOutput(
+web_output = Output(
     name="web_variant",
     description="1280x720 web-friendly variant with boosted vibrancy.",
     value=web_ready.output,
 )
 
-hd_output = ImageOutput(
+hd_output = Output(
     name="hd_variant",
     description="2048x1536 high-detail master asset.",
     value=hd_ready.output,

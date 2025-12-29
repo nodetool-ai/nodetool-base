@@ -10,7 +10,7 @@ from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.vector.chroma import HybridSearch
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Collection, Provider
 
 question = StringInput(
@@ -69,7 +69,7 @@ research_agent = Agent(
     context_window=4096,
 )
 
-output = StringOutput(
+output = Output(
     name="chroma_research_answer",
     value=research_agent.out.text,
 )

@@ -13,7 +13,7 @@ Workflow:
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.lib.mail import GmailSearch, EmailFields
 from nodetool.dsl.nodetool.agents import Summarizer
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -45,7 +45,7 @@ summarizer = Summarizer(
 )
 
 # Output the result
-output = StringOutput(
+output = Output(
     name="summary",
     value=summarizer.out.text,
 )

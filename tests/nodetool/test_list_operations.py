@@ -7,7 +7,7 @@ from nodetool.dsl.nodetool.list import (
     Sort,
     Union,
 )
-from nodetool.dsl.nodetool.output import StringOutput, ListOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.text import Join
 
 # Basic list operations
@@ -20,7 +20,7 @@ join_list = Join(
     strings=sort_list.output,
     separator=", ",
 )
-basic_list_ops = StringOutput(
+basic_list_ops = Output(
     name="basic_list_ops",
     value=join_list.output,
 )
@@ -38,18 +38,18 @@ basic_list_ops = StringOutput(
 
 # List set operations
 union_lists = Union(list1=[1, 2, 3, 4], list2=[3, 4, 5, 6])
-list_sets = ListOutput(
+list_sets = Output(
     name="list_sets", value=union_lists.output
 )
 
 chunk_node = Chunk(values=[1, 2, 3, 4, 5], chunk_size=2)
-chunk_list = ListOutput(
+chunk_list = Output(
     name="chunk_list", value=chunk_node.output
 )
 
 # Complex list manipulation
 flatten_list = Flatten(values=[[1, 2], [3, 4], [5]], max_depth=1)
-complex_list = ListOutput(
+complex_list = Output(
     name="complex_list",
     value=flatten_list.output,
 )

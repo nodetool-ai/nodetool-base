@@ -10,7 +10,7 @@ from typing import List, Dict, Any
 from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import ResearchAgent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Provider
 
 objective = FormatText(
@@ -80,7 +80,7 @@ Top comments:
     posts=hn_agent.out.posts,
 )
 
-output = StringOutput(
+output = Output(
     name="hn_report",
     value=report.output,
 )

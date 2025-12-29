@@ -64,9 +64,9 @@
       {
         "id": "8",
         "parent_id": null,
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
-          "name": "transciption",
+          "name": "transcription",
           "description": ""
         },
         "ui_properties": {

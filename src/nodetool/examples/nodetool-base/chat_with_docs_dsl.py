@@ -17,7 +17,7 @@ from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.vector.chroma import HybridSearch
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
-from nodetool.dsl.nodetool.output import StringOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import LanguageModel, Collection, Provider
 
 
@@ -82,7 +82,7 @@ agent = Agent(
 )
 
 # Output the answer
-output = StringOutput(
+output = Output(
     name="answer",
     value=agent.out.text,
 )

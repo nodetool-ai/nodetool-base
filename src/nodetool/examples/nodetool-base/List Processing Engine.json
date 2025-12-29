@@ -17,7 +17,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "nodetool.output.DataframeOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "regional_summary",
           "value": {
@@ -341,7 +341,7 @@
       {
         "id": "14",
         "parent_id": null,
-        "type": "nodetool.output.DataframeOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "high_value_customers",
           "value": {
@@ -399,7 +399,7 @@
       {
         "id": "17",
         "parent_id": null,
-        "type": "nodetool.output.ListOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "campaign_emails",
           "value": [],
@@ -427,7 +427,7 @@
       {
         "id": "19",
         "parent_id": null,
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "summary_report",
           "value": "",

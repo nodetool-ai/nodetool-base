@@ -76,7 +76,7 @@
     "nodes": [
       {
         "id": "1",
-        "type": "nodetool.output.VideoOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "product_launch_video",
           "description": "Generated marketing video for the Aurora Trail watch"

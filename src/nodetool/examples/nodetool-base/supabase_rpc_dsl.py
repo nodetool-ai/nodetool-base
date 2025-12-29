@@ -9,7 +9,7 @@ Requirements:
 """
 
 from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.output import DataframeOutput
+from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.lib.supabase import RPC
 
 
@@ -20,7 +20,7 @@ search = RPC(
     to_dataframe=True,
 )
 
-out = DataframeOutput(name="rpc_df", value=search.output)
+out = Output(name="rpc_df", value=search.output)
 graph = create_graph(out)
 
 

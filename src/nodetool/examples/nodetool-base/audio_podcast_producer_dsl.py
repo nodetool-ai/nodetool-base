@@ -26,7 +26,7 @@ from nodetool.dsl.nodetool.audio import (
     AudioMixer,
     SaveAudioFile,
 )
-from nodetool.dsl.nodetool.output import AudioOutput
+from nodetool.dsl.nodetool.output import Output
 
 
 # Load voice track (main podcast content)
@@ -88,7 +88,7 @@ saved_podcast = SaveAudioFile(
 )
 
 # Output the final audio file
-audio_output = AudioOutput(
+audio_output = Output(
     name="podcast_episode",
     value=saved_podcast.output,
 )

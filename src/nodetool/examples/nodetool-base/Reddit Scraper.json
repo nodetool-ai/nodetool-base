@@ -18,7 +18,7 @@
       {
         "id": "1",
         "parent_id": null,
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "reddit_research_report",
           "value": "",

@@ -55,7 +55,7 @@
     "nodes": [
       {
         "id": "1",
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "chroma_research_answer",
           "description": ""

@@ -174,7 +174,7 @@
     "nodes": [
       {
         "id": "1",
-        "type": "nodetool.output.ListOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "encounter_waves",
           "description": "Structured wave composition proposed by the planning agent"
@@ -460,7 +460,7 @@
       },
       {
         "id": "11",
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "qa_review_notes",
           "description": "QA agent assessment of pacing risks and mitigation ideas"
@@ -547,7 +547,7 @@
       },
       {
         "id": "14",
-        "type": "nodetool.output.StringOutput",
+        "type": "nodetool.output.Output",
         "data": {
           "name": "designer_briefing",
           "description": "Markdown briefing summarizing the encounter plan and QA guidance"
