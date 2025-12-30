@@ -7,7 +7,7 @@ from nodetool.workflows.run_workflow import run_workflow
 from nodetool.workflows.types import OutputUpdate
 from nodetool.nodes.nodetool.control import ForEach, Collect
 from nodetool.nodes.nodetool.dictionary import FilterDictByValue, FilterDictByNumber
-from nodetool.nodes.nodetool.output import ListOutput
+from nodetool.nodes.nodetool.output import Output
 
 @pytest.fixture
 def context():
@@ -18,7 +18,7 @@ async def run_simple_filter_graph(context, input_list, filter_node_type, filter_
         APINode(id="source", type=ForEach.get_node_type(), data={"input_list": input_list}),
         APINode(id="filter", type=filter_node_type, data=filter_data),
         APINode(id="collect", type=Collect.get_node_type(), data={}),
-        APINode(id="out", type=ListOutput.get_node_type(), data={"name": "result"}),
+        APINode(id="out", type=Output.get_node_type(), data={"name": "result"}),
     ]
     edges = [
         APIEdge(source="source", sourceHandle="output", target="filter", targetHandle="value"),

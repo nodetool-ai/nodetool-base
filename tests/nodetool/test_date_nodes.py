@@ -168,7 +168,7 @@ async def test_datetime_to_date(context: ProcessingContext):
 async def test_relative_time_future_days(context: ProcessingContext):
     node = RelativeTime(amount=3, unit=TimeUnitType.DAYS, direction=TimeDirection.FUTURE)
     result = await node.process(context)
-    expected_date = (datetime.now() + timedelta(days=3)).date()
+    expected_date = (datetime.now(timezone.utc) + timedelta(days=3)).date()
     assert result.to_datetime().date() == expected_date
 
 

@@ -4,7 +4,7 @@ from nodetool.workflows.run_workflow import run_workflow
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.run_job_request import RunJobRequest
 from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
-from nodetool.nodes.nodetool.output import ListOutput, StringOutput, IntegerOutput
+from nodetool.nodes.nodetool.output import Output
 from nodetool.nodes.nodetool.control import If, ForEach, Reroute, Collect
 from nodetool.nodes.nodetool.list import GenerateSequence
 import pytest
@@ -53,12 +53,12 @@ async def test_if_routes_true_and_not_false(context: ProcessingContext):
         ),
         APINode(
             id="out_true",
-            type=StringOutput.get_node_type(),
+            type=Output.get_node_type(),
             data={"name": "true_sink"},
         ),
         APINode(
             id="out_false",
-            type=StringOutput.get_node_type(),
+            type=Output.get_node_type(),
             data={"name": "false_sink"},
         ),
     ]
@@ -94,8 +94,8 @@ async def test_if_routes_true_and_not_false(context: ProcessingContext):
                 assert msg.value == "hello"
             elif msg.node_id == "out_false":
                 found_false = True
-                # Output nodes emit their default value (empty string for StringOutput) when they don't receive input
-                assert msg.value == ""
+                # Output nodes emit None by default when they don't receive input
+                assert msg.value is None
 
     assert found_true, "True branch should emit"
     assert found_false, "False branch should emit default value"
@@ -111,7 +111,7 @@ async def test_if_streams_values_with_static_true_condition(context: ProcessingC
             data={"start": 0, "stop": 3, "step": 1},
         ),
         APINode(id="if", type=If.get_node_type(), data={"condition": True}),
-        APINode(id="out", type=IntegerOutput.get_node_type(), data={"name": "passed"}),
+        APINode(id="out", type=Output.get_node_type(), data={"name": "passed"}),
     ]
     edges = [
         APIEdge(
@@ -199,12 +199,12 @@ async def test_if_toggles_between_branches_with_streaming_condition_and_values(
         APINode(id="if", type=If.get_node_type(), data={}),
         APINode(
             id="out_true",
-            type=StringOutput.get_node_type(),
+            type=Output.get_node_type(),
             data={"name": "true_sink"},
         ),
         APINode(
             id="out_false",
-            type=StringOutput.get_node_type(),
+            type=Output.get_node_type(),
             data={"name": "false_sink"},
         ),
     ]
@@ -286,7 +286,7 @@ async def test_reroute_passes_stream_through(context: ProcessingContext):
             data={"start": 0, "stop": 3, "step": 1},
         ),
         APINode(id="reroute", type=Reroute.get_node_type(), data={}),
-        APINode(id="out", type=IntegerOutput.get_node_type(), data={"name": "sink"}),
+        APINode(id="out", type=Output.get_node_type(), data={"name": "sink"}),
     ]
     edges = [
         APIEdge(
@@ -328,7 +328,7 @@ async def test_collect_node_aggregates_stream(context: ProcessingContext):
             data={"start": 0, "stop": 3, "step": 1},
         ),
         APINode(id="collect", type=Collect.get_node_type(), data={}),
-        APINode(id="out", type=ListOutput.get_node_type(), data={"name": "items"}),
+        APINode(id="out", type=Output.get_node_type(), data={"name": "items"}),
     ]
     edges = [
         APIEdge(
@@ -363,7 +363,7 @@ async def test_collect_node_aggregates_stream(context: ProcessingContext):
 async def test_collect_node_handles_empty_stream(context: ProcessingContext):
     nodes = [
         APINode(id="collect", type=Collect.get_node_type(), data={}),
-        APINode(id="out", type=ListOutput.get_node_type(), data={"name": "items"}),
+        APINode(id="out", type=Output.get_node_type(), data={"name": "items"}),
     ]
     edges = [
         APIEdge(
@@ -400,10 +400,10 @@ async def test_foreach_emits_last_item_and_index_only_in_current_engine(
             data={"input_list": [10, 11, 12]},
         ),
         APINode(
-            id="out_item", type=IntegerOutput.get_node_type(), data={"name": "item"}
+            id="out_item", type=Output.get_node_type(), data={"name": "item"}
         ),
         APINode(
-            id="out_index", type=IntegerOutput.get_node_type(), data={"name": "idx"}
+            id="out_index", type=Output.get_node_type(), data={"name": "idx"}
         ),
     ]
     edges = [
