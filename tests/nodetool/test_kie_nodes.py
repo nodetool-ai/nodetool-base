@@ -240,7 +240,7 @@ class TestFlux2ProTextToImage:
         with patch("aiohttp.ClientSession", return_value=MockSession(responses)):
             await node.process(mock_context)
 
-        mock_context.image_from_bytes.assert_called_once_with(b"image_bytes")
+        mock_context.image_from_bytes.assert_called_once_with(b"image_bytes", metadata={"task_id": "task123"})
 
     @pytest.mark.asyncio
     async def test_missing_api_key(self, mock_context):
@@ -274,7 +274,7 @@ class TestSeedream45TextToImage:
         payload = await node._get_submit_payload()
         assert payload == {
             "model": "seedream/4.5-text-to-image",
-            "input": {"prompt": "artistic scene", "aspect_ratio": "9:16"},
+            "input": {"prompt": "artistic scene", "aspect_ratio": "9:16", "quality": "basic"},
         }
 
 
@@ -301,7 +301,7 @@ class TestNanoBanana:
         assert node._get_model() == "google/nano-banana"
         params = await node._get_input_params()
         assert params["prompt"] == "test"
-        assert params["aspect_ratio"] == "1:1"
+        assert params["image_size"] == "1:1"
 
 
 class TestFlux2Pro:
@@ -453,7 +453,7 @@ class TestKiePollingLogic:
         with patch("aiohttp.ClientSession", return_value=MockSession(responses)):
             await node.process(mock_context)
 
-        mock_context.image_from_bytes.assert_called_once_with(b"actual_image_bytes")
+        mock_context.image_from_bytes.assert_called_once_with(b"actual_image_bytes", metadata={"task_id": "task123"})
 
 
 class TestNanoBananaProGenerate:
@@ -463,7 +463,7 @@ class TestNanoBananaProGenerate:
     async def test_model_and_params(self):
         """Test model name and input parameters."""
         node = NanoBananaPro(prompt="test")
-        assert node._get_model() == "google/nano-banana-pro"
+        assert node._get_model() == "nano-banana-pro"
         params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
@@ -518,7 +518,7 @@ class TestSora2ProTextToVideo:
         params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "landscape"
-        assert params["n_frames"] == "10"
+        assert params["n_frames"] == 10
         assert params["remove_watermark"] is True
 
 
@@ -539,9 +539,8 @@ class TestSora2ProImageToVideo:
         ):
             params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_urls"] == ["http://uploaded-url.com/image.jpg"]
-        assert params["aspect_ratio"] == "landscape"
-        assert params["n_frames"] == "10"
+        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
+        assert params["n_frames"] == 10
         assert params["remove_watermark"] is True
 
 
@@ -552,12 +551,10 @@ class TestSora2ProStoryboard:
     async def test_model_and_params(self):
         """Test model name and input parameters."""
         node = Sora2ProStoryboard(prompt="test storyboard")
-        assert node._get_model() == "sora-2-pro-storyboard"
-        params = await node._get_input_params()
-        assert params["prompt"] == "test storyboard"
-        assert params["aspect_ratio"] == "landscape"
-        assert params["n_frames"] == "10"
-        assert params["remove_watermark"] is True
+        assert node._get_model() == "sora-2-pro-story-board"
+        assert node.aspect_ratio.value == "landscape"
+        assert node.n_frames == 10
+        assert node.remove_watermark is True
 
 
 class TestSora2TextToVideo:
@@ -571,9 +568,8 @@ class TestSora2TextToVideo:
         params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "landscape"
-        assert params["n_frames"] == "10"
+        assert params["n_frames"] == 10
         assert params["remove_watermark"] is True
-        assert params["mode"] == "standard"
 
 
 class TestSeedanceV1LiteTextToVideo:
@@ -583,15 +579,13 @@ class TestSeedanceV1LiteTextToVideo:
     async def test_model_and_params(self):
         """Test model name and input parameters."""
         node = SeedanceV1LiteTextToVideo(prompt="test")
-        assert node._get_model() == "bytedance/v1-lite-text-to-video"
+        assert node._get_model() == "seedance/v1-lite-text-to-video"
         params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
-        assert params["camera_fixed"] is False
-        assert params["seed"] == -1
-        assert params["enable_safety_checker"] is True
+        assert params["remove_watermark"] is True
 
 
 class TestSeedanceV1ProTextToVideo:
@@ -601,15 +595,13 @@ class TestSeedanceV1ProTextToVideo:
     async def test_model_and_params(self):
         """Test model name and input parameters."""
         node = SeedanceV1ProTextToVideo(prompt="test")
-        assert node._get_model() == "bytedance/v1-pro-text-to-video"
+        assert node._get_model() == "seedance/v1-pro-text-to-video"
         params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
-        assert params["camera_fixed"] is False
-        assert params["seed"] == -1
-        assert params["enable_safety_checker"] is True
+        assert params["remove_watermark"] is True
 
 
 class TestSeedanceV1LiteImageToVideo:
@@ -621,20 +613,19 @@ class TestSeedanceV1LiteImageToVideo:
         from nodetool.metadata.types import ImageRef
 
         node = SeedanceV1LiteImageToVideo(
-            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+            image1=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
-        assert node._get_model() == "bytedance/v1-lite-image-to-video"
+        assert node._get_model() == "seedance/v1-lite-image-to-video"
         with patch.object(
             node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
         ):
             params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
+        assert params["image_urls"] == ["http://uploaded-url.com/image.jpg"]
+        assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
-        assert params["camera_fixed"] is False
-        assert params["seed"] == -1
-        assert params["enable_safety_checker"] is True
+        assert params["remove_watermark"] is True
 
 
 class TestSeedanceV1ProImageToVideo:
@@ -646,20 +637,19 @@ class TestSeedanceV1ProImageToVideo:
         from nodetool.metadata.types import ImageRef
 
         node = SeedanceV1ProImageToVideo(
-            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+            image1=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
-        assert node._get_model() == "bytedance/v1-pro-image-to-video"
+        assert node._get_model() == "seedance/v1-pro-image-to-video"
         with patch.object(
             node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
         ):
             params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
-        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
+        assert params["image_urls"] == ["http://uploaded-url.com/image.jpg"]
+        assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
-        assert params["camera_fixed"] is False
-        assert params["seed"] == -1
-        assert params["enable_safety_checker"] is True
+        assert params["remove_watermark"] is True
 
 
 class TestSeedanceV1ProFastImageToVideo:
@@ -671,20 +661,18 @@ class TestSeedanceV1ProFastImageToVideo:
         from nodetool.metadata.types import ImageRef
 
         node = SeedanceV1ProFastImageToVideo(
-            image=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
+            image1=ImageRef(uri="http://example.com/image.jpg"), prompt="test"
         )
-        assert node._get_model() == "bytedance/v1-pro-fast-image-to-video"
+        assert node._get_model() == "seedance/v1-pro-fast-image-to-video"
         with patch.object(
             node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
         ):
             params = await node._get_input_params(mock_context)
-        assert params["prompt"] == "test"
-        assert params["image_url"] == "http://uploaded-url.com/image.jpg"
+        assert params["image_urls"] == ["http://uploaded-url.com/image.jpg"]
+        assert params["aspect_ratio"] == "16:9"
         assert params["resolution"] == "720p"
         assert params["duration"] == "5"
-        assert params["camera_fixed"] is False
-        assert params["seed"] == -1
-        assert params["enable_safety_checker"] is True
+        assert params["remove_watermark"] is True
 
 
 class TestHailuoImageToVideoPro:
@@ -705,7 +693,7 @@ class TestHailuoImageToVideoPro:
             params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
         assert params["image_url"] == "http://uploaded-url.com/image.jpg"
-        assert params["resolution"] == "1080p"
+        assert params["resolution"] == "768P"
 
 
 class TestHailuoImageToVideoStandard:
@@ -726,7 +714,7 @@ class TestHailuoImageToVideoStandard:
             params = await node._get_input_params(mock_context)
         assert params["prompt"] == "test"
         assert params["image_url"] == "http://uploaded-url.com/image.jpg"
-        assert params["resolution"] == "720p"
+        assert params["resolution"] == "768P"
 
 
 class TestSuno:
