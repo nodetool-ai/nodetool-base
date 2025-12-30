@@ -4,41 +4,36 @@ import json
 import re
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
 
-from nodetool.agents.tools.workflow_tool import GraphTool
-from nodetool.types.model import UnifiedModel
-from nodetool.workflows.types import (
-    TaskUpdate,
-    PlanningUpdate,
-    Chunk,
-)
-from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from pydantic import Field
 
 from nodetool.agents.tools.base import Tool
-
-from nodetool.workflows.types import (
-    ToolCallUpdate,
-)
-
-
+from nodetool.agents.tools.workflow_tool import GraphTool
+from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
+    AudioRef,
+    ImageRef,
+    LanguageModel,
     Message,
-    MessageTextContent,
-    MessageImageContent,
     MessageAudioContent,
     MessageContent,
-    ImageRef,
-    ToolName,
+    MessageImageContent,
+    MessageTextContent,
+    Provider,
     ToolCall,
-    AudioRef,
-    LanguageModel,
+    ToolName,
 )
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import EdgeUpdate
-from nodetool.metadata.types import Provider
-from nodetool.config.logging_config import get_logger
 from nodetool.models.thread import Thread as ThreadModel
+from nodetool.types.model import UnifiedModel
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
+from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.types import (
+    Chunk,
+    EdgeUpdate,
+    PlanningUpdate,
+    TaskUpdate,
+    ToolCallUpdate,
+)
 
 log = get_logger(__name__)
 # Log level is controlled by env (DEBUG/NODETOOL_LOG_LEVEL)
@@ -66,7 +61,7 @@ class Summarizer(BaseNode):
 
     system_prompt: str = Field(
         default="""
-        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. 
+        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.
         Follow these guidelines:
         1. Identify and include only the most important information.
         2. Maintain factual accuracy - do not add or modify information.
@@ -222,7 +217,9 @@ class CreateThread(BaseNode):
     async def process(self, context: ProcessingContext) -> OutputType:
         # Reuse an existing thread if the caller supplied an ID they own.
         if self.thread_id:
-            existing = await ThreadModel.find(user_id=context.user_id, id=self.thread_id)
+            existing = await ThreadModel.find(
+                user_id=context.user_id, id=self.thread_id
+            )
             if existing:
                 return {"thread_id": existing.id}
 
@@ -741,13 +738,13 @@ def _parse_or_infer_category(raw: str, categories: list[str]) -> str:
     return categories[0]
 
 
-DEFAULT_SYSTEM_PROMPT = """You are a an AI agent. 
+DEFAULT_SYSTEM_PROMPT = """You are a an AI agent.
 
 Behavior
 - Understand the user's intent and the context of the task.
 - Break down the task into smaller steps.
 - Be precise, concise, and actionable.
-- Use tools to accomplish your goal. 
+- Use tools to accomplish your goal.
 
 Tool preambles
 - Outline the next step(s) you will perform.
@@ -1074,7 +1071,7 @@ class Agent(BaseNode):
         This ensures the provider is fully resolved before use.
         """
         provider = await context.get_provider(self.model.provider)
-        
+
         # Defensive check: if provider is still a coroutine, await it again
         # This handles edge cases where get_provider might return a coroutine
         if inspect.isawaitable(provider):
@@ -1083,8 +1080,8 @@ class Agent(BaseNode):
                 f"type={type(provider)}"
             )
             provider = await provider
-        
-        if not hasattr(provider, 'generate_messages'):
+
+        if not hasattr(provider, "generate_messages"):
             log.error(
                 f"Provider missing generate_messages method. type={type(provider)}, "
                 f"attributes={[x for x in dir(provider) if not x.startswith('_')][:10]}"
@@ -1093,7 +1090,7 @@ class Agent(BaseNode):
                 f"Provider {type(provider)} does not have generate_messages method. "
                 f"Got provider type: {type(provider)}, class: {provider.__class__.__name__}"
             )
-        
+
         return provider
 
     @classmethod
@@ -1714,21 +1711,21 @@ class ResearchAgent(BaseNode):
 
     def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
         """Instantiate Tool objects from tool names."""
+        from nodetool.agents.tools.browser_tools import BrowserTool
         from nodetool.agents.tools.serp_tools import (
-            GoogleSearchTool,
             GoogleFinanceTool,
-            GoogleJobsTool,
-            GoogleNewsTool,
             GoogleImagesTool,
+            GoogleJobsTool,
             GoogleLensTool,
             GoogleMapsTool,
+            GoogleNewsTool,
+            GoogleSearchTool,
             GoogleShoppingTool,
         )
-        from nodetool.agents.tools.browser_tools import BrowserTool
         from nodetool.agents.tools.workspace_tools import (
-            WriteFileTool,
-            ReadFileTool,
             ListDirectoryTool,
+            ReadFileTool,
+            WriteFileTool,
         )
 
         # Always include workspace tools
@@ -1764,6 +1761,7 @@ class ResearchAgent(BaseNode):
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         """Execute research agent and return structured results."""
         import json
+
         from nodetool.agents.agent import Agent as CoreAgent
 
         if self.model.provider == Provider.Empty:

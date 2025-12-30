@@ -15,5 +15,4 @@ class Output(OutputNode):
     - Return media references (images, videos, audio, documents, dataframes)
     """
 
-    async def process(self, context: ProcessingContext) -> Any:
-        return self.value
+    pass

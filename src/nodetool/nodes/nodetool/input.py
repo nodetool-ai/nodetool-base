@@ -1,21 +1,25 @@
 from typing import TypedDict
+
 from pydantic import Field
+
+from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
+    AudioRef,
     ColorRef,
+    DataframeRef,
     DocumentRef,
-    HuggingFaceModel,
-    LanguageModel,
-    ImageModel,
     FolderRef,
+    HuggingFaceModel,
+    ImageModel,
+    ImageRef,
+    LanguageModel,
     Message,
+    Provider,
+    VideoRef,
 )
+from nodetool.workflows.base_node import BaseNode, InputNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk
-from nodetool.metadata.types import AudioRef, DataframeRef
-from nodetool.metadata.types import ImageRef
-from nodetool.workflows.base_node import InputNode
-from nodetool.metadata.types import VideoRef
-from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)
 
@@ -428,7 +432,7 @@ class MessageListInput(InputNode):
         return self.value
 
 
-class MessageDeconstructor(InputNode):
+class MessageDeconstructor(BaseNode):
     """
     Deconstructs a chat message object into its individual fields.
     extract, decompose, message, fields, chat
@@ -451,18 +455,11 @@ class MessageDeconstructor(InputNode):
         content: str
         image: ImageRef | None
         audio: AudioRef | None
-        tools: list[str] | None
-        created_at: str | None
-        provider: str | None
-        model: str | None
-
-    @classmethod
-    def return_type(cls):
-        return cls.OutputType
+        model: LanguageModel | None
 
     async def process(self, context: ProcessingContext) -> OutputType:
         msg = self.value
-
+        model = None
         image = None
         audio = None
         content = ""
@@ -478,6 +475,9 @@ class MessageDeconstructor(InputNode):
                     elif isinstance(item, AudioRef):
                         audio = item
 
+        if msg.provider and msg.model:
+            model = LanguageModel(provider=Provider(msg.provider), id=msg.model)
+
         return {
             "id": msg.id,
             "thread_id": msg.thread_id,
@@ -485,8 +485,5 @@ class MessageDeconstructor(InputNode):
             "content": content,
             "image": image,
             "audio": audio,
-            "tools": msg.tools,
-            "created_at": msg.created_at,
-            "provider": msg.provider,
-            "model": msg.model,
+            "model": model,
         }

@@ -5060,15 +5060,6 @@
       "node_type": "nodetool.input.MessageDeconstructor",
       "properties": [
         {
-          "name": "name",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Name",
-          "description": "The parameter name for the workflow."
-        },
-        {
           "name": "value",
           "type": {
             "type": "message"
@@ -5098,15 +5089,6 @@
           },
           "title": "Value",
           "description": "The message object to deconstruct."
-        },
-        {
-          "name": "description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Description",
-          "description": "The description of the input for the workflow."
         }
       ],
       "outputs": [
@@ -5148,36 +5130,12 @@
         },
         {
           "type": {
-            "type": "list",
-            "type_args": [
-              {
-                "type": "str"
-              }
-            ]
-          },
-          "name": "tools"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "created_at"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "provider"
-        },
-        {
-          "type": {
-            "type": "str"
+            "type": "language_model"
           },
           "name": "model"
         }
       ],
       "basic_fields": [
-        "name",
         "value"
       ]
     },
