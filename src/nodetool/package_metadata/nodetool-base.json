@@ -5054,6 +5054,260 @@
       ]
     },
     {
+      "title": "Message Deconstructor",
+      "description": "Deconstructs a chat message object into its individual fields.\n    extract, decompose, message, fields, chat\n\n    Use cases:\n    - Extract specific fields from a message (e.g., role, content, thread_id).\n    - Access message metadata for workflow logic.\n    - Process different parts of a message separately.",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.MessageDeconstructor",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "message"
+          },
+          "default": {
+            "type": "message",
+            "id": null,
+            "workflow_id": null,
+            "graph": null,
+            "thread_id": null,
+            "tools": null,
+            "tool_call_id": null,
+            "role": "",
+            "name": null,
+            "content": null,
+            "tool_calls": null,
+            "collections": null,
+            "input_files": null,
+            "created_at": null,
+            "provider": null,
+            "model": null,
+            "agent_mode": null,
+            "help_mode": null,
+            "agent_execution_id": null,
+            "execution_event_type": null,
+            "workflow_target": null
+          },
+          "title": "Value",
+          "description": "The message object to deconstruct."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "id"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "thread_id"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "role"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "content"
+        },
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "image"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "name": "tools"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "created_at"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "provider"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "model"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Message Input",
+      "description": "Accepts a chat message object for workflows.\n    input, parameter, message, chat, conversation",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.MessageInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "message"
+          },
+          "default": {
+            "type": "message",
+            "id": null,
+            "workflow_id": null,
+            "graph": null,
+            "thread_id": null,
+            "tools": null,
+            "tool_call_id": null,
+            "role": "",
+            "name": null,
+            "content": null,
+            "tool_calls": null,
+            "collections": null,
+            "input_files": null,
+            "created_at": null,
+            "provider": null,
+            "model": null,
+            "agent_mode": null,
+            "help_mode": null,
+            "agent_execution_id": null,
+            "execution_event_type": null,
+            "workflow_target": null
+          },
+          "title": "Value",
+          "description": "The message object containing role, content, and metadata."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "message"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Message List Input",
+      "description": "Accepts a list of chat message objects for workflows.\n    input, parameter, messages, chat, conversation, history",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.MessageListInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "message"
+              }
+            ]
+          },
+          "default": [],
+          "title": "Value",
+          "description": "The list of message objects representing chat history."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "message"
+              }
+            ]
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Realtime Audio Input",
       "description": "Accepts streaming audio data for workflows.\n    input, parameter, audio, sound, voice, speech, asset",
       "namespace": "nodetool.input",

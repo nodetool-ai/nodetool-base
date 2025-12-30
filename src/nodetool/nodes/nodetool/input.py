@@ -7,6 +7,7 @@ from nodetool.metadata.types import (
     LanguageModel,
     ImageModel,
     FolderRef,
+    Message,
 )
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk
@@ -205,7 +206,9 @@ class DataframeInput(InputNode):
     input, parameter, dataframe, table, data
     """
 
-    value: DataframeRef = Field(DataframeRef(), description="The dataframe to use as input.")
+    value: DataframeRef = Field(
+        DataframeRef(), description="The dataframe to use as input."
+    )
 
     @classmethod
     def return_type(cls):
@@ -385,3 +388,105 @@ class DocumentFileInput(InputNode):
     @classmethod
     def return_type(cls):
         return cls.OutputType
+
+
+class MessageInput(InputNode):
+    """
+    Accepts a chat message object for workflows.
+    input, parameter, message, chat, conversation
+    """
+
+    value: Message = Field(
+        default=Message(),
+        description="The message object containing role, content, and metadata.",
+    )
+
+    @classmethod
+    def return_type(cls):
+        return Message
+
+    async def process(self, context: ProcessingContext) -> Message:
+        return self.value
+
+
+class MessageListInput(InputNode):
+    """
+    Accepts a list of chat message objects for workflows.
+    input, parameter, messages, chat, conversation, history
+    """
+
+    value: list[Message] = Field(
+        default=[],
+        description="The list of message objects representing chat history.",
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[Message]
+
+    async def process(self, context: ProcessingContext) -> list[Message]:
+        return self.value
+
+
+class MessageDeconstructor(InputNode):
+    """
+    Deconstructs a chat message object into its individual fields.
+    extract, decompose, message, fields, chat
+
+    Use cases:
+    - Extract specific fields from a message (e.g., role, content, thread_id).
+    - Access message metadata for workflow logic.
+    - Process different parts of a message separately.
+    """
+
+    value: Message = Field(
+        default=Message(),
+        description="The message object to deconstruct.",
+    )
+
+    class OutputType(TypedDict):
+        id: str | None
+        thread_id: str | None
+        role: str
+        content: str
+        image: ImageRef | None
+        audio: AudioRef | None
+        tools: list[str] | None
+        created_at: str | None
+        provider: str | None
+        model: str | None
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        msg = self.value
+
+        image = None
+        audio = None
+        content = ""
+        if msg.content:
+            if isinstance(msg.content, str):
+                image = None
+                audio = None
+                content = msg.content
+            elif isinstance(msg.content, list):
+                for item in msg.content:
+                    if isinstance(item, ImageRef):
+                        image = item
+                    elif isinstance(item, AudioRef):
+                        audio = item
+
+        return {
+            "id": msg.id,
+            "thread_id": msg.thread_id,
+            "role": msg.role,
+            "content": content,
+            "image": image,
+            "audio": audio,
+            "tools": msg.tools,
+            "created_at": msg.created_at,
+            "provider": msg.provider,
+            "model": msg.model,
+        }

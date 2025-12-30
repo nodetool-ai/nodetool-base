@@ -632,6 +632,208 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class MessageDeconstructor(
+    GraphNode[nodetool.nodes.nodetool.input.MessageDeconstructor.OutputType]
+):
+    """
+
+    Deconstructs a chat message object into its individual fields.
+    extract, decompose, message, fields, chat
+
+    Use cases:
+    - Extract specific fields from a message (e.g., role, content, thread_id).
+    - Access message metadata for workflow logic.
+    - Process different parts of a message separately.
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.Message | OutputHandle[types.Message] = connect_field(
+        default=types.Message(
+            type="message",
+            id=None,
+            workflow_id=None,
+            graph=None,
+            thread_id=None,
+            tools=None,
+            tool_call_id=None,
+            role="",
+            name=None,
+            content=None,
+            tool_calls=None,
+            collections=None,
+            input_files=None,
+            created_at=None,
+            provider=None,
+            model=None,
+            agent_mode=None,
+            help_mode=None,
+            agent_execution_id=None,
+            execution_event_type=None,
+        ),
+        description="The message object to deconstruct.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @property
+    def out(self) -> "MessageDeconstructorOutputs":
+        return MessageDeconstructorOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.MessageDeconstructor
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class MessageDeconstructorOutputs(OutputsProxy):
+    @property
+    def id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["id"])
+
+    @property
+    def thread_id(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["thread_id"])
+
+    @property
+    def role(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["role"])
+
+    @property
+    def content(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["content"])
+
+    @property
+    def image(self) -> OutputHandle[nodetool.metadata.types.ImageRef]:
+        return typing.cast(
+            OutputHandle[nodetool.metadata.types.ImageRef], self["image"]
+        )
+
+    @property
+    def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
+        return typing.cast(
+            OutputHandle[nodetool.metadata.types.AudioRef], self["audio"]
+        )
+
+    @property
+    def tools(self) -> OutputHandle[list[str]]:
+        return typing.cast(OutputHandle[list[str]], self["tools"])
+
+    @property
+    def created_at(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["created_at"])
+
+    @property
+    def provider(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["provider"])
+
+    @property
+    def model(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["model"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
+class MessageInput(SingleOutputGraphNode[types.Message], GraphNode[types.Message]):
+    """
+
+    Accepts a chat message object for workflows.
+    input, parameter, message, chat, conversation
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.Message | OutputHandle[types.Message] = connect_field(
+        default=types.Message(
+            type="message",
+            id=None,
+            workflow_id=None,
+            graph=None,
+            thread_id=None,
+            tools=None,
+            tool_call_id=None,
+            role="",
+            name=None,
+            content=None,
+            tool_calls=None,
+            collections=None,
+            input_files=None,
+            created_at=None,
+            provider=None,
+            model=None,
+            agent_mode=None,
+            help_mode=None,
+            agent_execution_id=None,
+            execution_event_type=None,
+        ),
+        description="The message object containing role, content, and metadata.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.MessageInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
+class MessageListInput(
+    SingleOutputGraphNode[list[types.Message]], GraphNode[list[types.Message]]
+):
+    """
+
+    Accepts a list of chat message objects for workflows.
+    input, parameter, messages, chat, conversation, history
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: list[types.Message] | OutputHandle[list[types.Message]] = connect_field(
+        default=[], description="The list of message objects representing chat history."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.MessageListInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class RealtimeAudioInput(
     GraphNode[nodetool.nodes.nodetool.input.RealtimeAudioInput.OutputType]
 ):
