@@ -2567,7 +2567,7 @@
           "type": {
             "type": "str"
           },
-          "default": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+          "default": "You are a an AI agent.\n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal.\n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
           "title": "System",
           "description": "The system prompt for the LLM"
         },
@@ -3649,7 +3649,7 @@
           "type": {
             "type": "str"
           },
-          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. \n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
+          "default": "\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.\n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
           "title": "System Prompt",
           "description": "The system prompt for the summarizer"
         },
@@ -5114,7 +5114,7 @@
           "type": {
             "type": "str"
           },
-          "name": "content"
+          "name": "text"
         },
         {
           "type": {

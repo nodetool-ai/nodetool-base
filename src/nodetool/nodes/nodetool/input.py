@@ -14,6 +14,9 @@ from nodetool.metadata.types import (
     ImageRef,
     LanguageModel,
     Message,
+    MessageAudioContent,
+    MessageImageContent,
+    MessageTextContent,
     Provider,
     VideoRef,
 )
@@ -452,7 +455,7 @@ class MessageDeconstructor(BaseNode):
         id: str | None
         thread_id: str | None
         role: str
-        content: str
+        text: str
         image: ImageRef | None
         audio: AudioRef | None
         model: LanguageModel | None
@@ -462,18 +465,20 @@ class MessageDeconstructor(BaseNode):
         model = None
         image = None
         audio = None
-        content = ""
+        text = ""
         if msg.content:
             if isinstance(msg.content, str):
                 image = None
                 audio = None
-                content = msg.content
+                text = msg.content
             elif isinstance(msg.content, list):
                 for item in msg.content:
-                    if isinstance(item, ImageRef):
-                        image = item
-                    elif isinstance(item, AudioRef):
-                        audio = item
+                    if isinstance(item, MessageTextContent):
+                        text = item.text
+                    elif isinstance(item, MessageAudioContent):
+                        audio = item.audio
+                    elif isinstance(item, MessageImageContent):
+                        image = item.image
 
         if msg.provider and msg.model:
             model = LanguageModel(provider=Provider(msg.provider), id=msg.model)
@@ -482,7 +487,7 @@ class MessageDeconstructor(BaseNode):
             "id": msg.id,
             "thread_id": msg.thread_id,
             "role": msg.role,
-            "content": content,
+            "text": text,
             "image": image,
             "audio": audio,
             "model": model,

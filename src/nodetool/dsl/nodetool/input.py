@@ -646,9 +646,6 @@ class MessageDeconstructor(
     - Process different parts of a message separately.
     """
 
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="The parameter name for the workflow."
-    )
     value: types.Message | OutputHandle[types.Message] = connect_field(
         default=types.Message(
             type="message",
@@ -671,11 +668,9 @@ class MessageDeconstructor(
             help_mode=None,
             agent_execution_id=None,
             execution_event_type=None,
+            workflow_target=None,
         ),
         description="The message object to deconstruct.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
     )
 
     @property
@@ -705,8 +700,8 @@ class MessageDeconstructorOutputs(OutputsProxy):
         return typing.cast(OutputHandle[str], self["role"])
 
     @property
-    def content(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["content"])
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
 
     @property
     def image(self) -> OutputHandle[nodetool.metadata.types.ImageRef]:
@@ -721,20 +716,10 @@ class MessageDeconstructorOutputs(OutputsProxy):
         )
 
     @property
-    def tools(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self["tools"])
-
-    @property
-    def created_at(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["created_at"])
-
-    @property
-    def provider(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["provider"])
-
-    @property
-    def model(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["model"])
+    def model(self) -> OutputHandle[nodetool.metadata.types.LanguageModel]:
+        return typing.cast(
+            OutputHandle[nodetool.metadata.types.LanguageModel], self["model"]
+        )
 
 
 import typing
@@ -776,6 +761,7 @@ class MessageInput(SingleOutputGraphNode[types.Message], GraphNode[types.Message
             help_mode=None,
             agent_execution_id=None,
             execution_event_type=None,
+            workflow_target=None,
         ),
         description="The message object containing role, content, and metadata.",
     )
