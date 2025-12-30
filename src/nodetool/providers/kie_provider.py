@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import uuid
 from typing import Any, List
 
 import aiohttp
@@ -705,8 +706,6 @@ class KieProvider(BaseProvider):
 
     async def _upload_image(self, image_data: bytes) -> str:
         """Upload an image to Kie.ai and return the download URL."""
-        import uuid
-
         upload_url = "https://kieai.redpandaai.co/api/file-stream-upload"
         filename = f"nodetool-{uuid.uuid4().hex}.png"
 
