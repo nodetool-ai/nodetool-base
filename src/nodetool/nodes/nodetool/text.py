@@ -81,6 +81,7 @@ class AutomaticSpeechRecognition(BaseNode):
         text = await provider.automatic_speech_recognition(
             audio_bytes,
             model=self.model.id,
+            context=context,
         )
         return {"text": text}
 

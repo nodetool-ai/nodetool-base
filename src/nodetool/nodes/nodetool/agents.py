@@ -1330,6 +1330,7 @@ class Agent(BaseNode):
                 tools=tools,
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
+                context=context,
             ):
                 chunk_count += 1
 
