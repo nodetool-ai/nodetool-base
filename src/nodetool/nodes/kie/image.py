@@ -166,7 +166,7 @@ class KieBaseNode(BaseNode):
         self, context: ProcessingContext, image: ImageRef
     ) -> str:
         if image.uri and image.uri.startswith(("http://", "https://")):
-            if not "localhost" in image.uri and not "127.0.0.1" in image.uri:
+            if "localhost" not in image.uri and "127.0.0.1" not in image.uri:
                 return image.uri
             
         return await self._upload_asset(

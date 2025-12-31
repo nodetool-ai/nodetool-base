@@ -17,7 +17,6 @@ from nodetool.nodes.kie.image import (
     NanoBananaPro,
     FluxKontext,
     GrokImagineTextToImage,
-    GrokImagineUpscale,
     TopazImageUpscale,
 )
 from nodetool.nodes.kie.video import (
@@ -35,7 +34,6 @@ from nodetool.nodes.kie.video import (
     KlingTextToVideo,
     KlingImageToVideo,
     KlingAIAvatarStandard,
-    KlingAIAvatarPro,
     TopazVideoUpscale,
     GrokImagineImageToVideo,
     GrokImagineTextToVideo,
