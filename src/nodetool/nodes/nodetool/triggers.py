@@ -282,7 +282,7 @@ class TriggerNode(BaseNode, Generic[T]):
                     # Same thread, same loop - use put_nowait directly
                     if running_loop is self._loop:
                         self._event_queue.put_nowait(event)
-                        log.debug(f"Event pushed directly to queue (same loop)")
+                        log.debug("Event pushed directly to queue (same loop)")
                         return
                 except RuntimeError:
                     # No running loop - check if we're in a different thread
@@ -292,7 +292,7 @@ class TriggerNode(BaseNode, Generic[T]):
                 # Different thread or no running loop - use thread-safe method
                 if self._loop.is_running():
                     self._loop.call_soon_threadsafe(self._event_queue.put_nowait, event)
-                    log.debug(f"Event pushed via call_soon_threadsafe")
+                    log.debug("Event pushed via call_soon_threadsafe")
                     return
 
             # Fallback: direct put (e.g., loop not yet started)

@@ -11,6 +11,7 @@ from nodetool.nodes.lib.math import (
     Cosine,
     Power,
     Sqrt,
+    MathFunction,
 )
 
 
@@ -71,7 +72,6 @@ async def test_sqrt_function(context: ProcessingContext):
 
 
 # Additional tests for MathFunction node
-from nodetool.nodes.lib.math import MathFunction
 
 
 @pytest.mark.asyncio

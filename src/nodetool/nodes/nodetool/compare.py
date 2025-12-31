@@ -2,7 +2,6 @@
 Comparison nodes for visual data comparison.
 """
 
-from typing import Any
 from pydantic import Field
 
 from nodetool.metadata.types import ImageRef

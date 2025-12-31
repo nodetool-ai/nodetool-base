@@ -14,6 +14,32 @@ from nodetool.nodes.nodetool.text import (
     ParseJSON,
     ExtractJSON,
     ToString,
+    ToUppercase,
+    ToLowercase,
+    ToTitlecase,
+    CapitalizeText,
+    Slice,
+    StartsWith,
+    EndsWith,
+    Contains,
+    TrimWhitespace,
+    CollapseWhitespace,
+    IsEmpty,
+    RemovePunctuation,
+    StripAccents,
+    Slugify,
+    HasLength,
+    TruncateText,
+    PadText,
+    Length,
+    IndexOf,
+    SurroundWith,
+    RegexMatch,
+    RegexReplace,
+    RegexSplit,
+    RegexValidate,
+    Compare,
+    Equals,
 )
 
 
@@ -98,37 +124,6 @@ async def test_extract_json(context: ProcessingContext):
     node = ExtractJSON(text='{"a": {"b": {"c": 42}}}', json_path="$.a.b.c")
     result = await node.process(context)
     assert result == 42
-
-
-# Import additional nodes for extended testing
-from nodetool.nodes.nodetool.text import (
-    ToUppercase,
-    ToLowercase,
-    ToTitlecase,
-    CapitalizeText,
-    Slice,
-    StartsWith,
-    EndsWith,
-    Contains,
-    TrimWhitespace,
-    CollapseWhitespace,
-    IsEmpty,
-    RemovePunctuation,
-    StripAccents,
-    Slugify,
-    HasLength,
-    TruncateText,
-    PadText,
-    Length,
-    IndexOf,
-    SurroundWith,
-    RegexMatch,
-    RegexReplace,
-    RegexSplit,
-    RegexValidate,
-    Compare,
-    Equals,
-)
 
 
 @pytest.mark.asyncio
