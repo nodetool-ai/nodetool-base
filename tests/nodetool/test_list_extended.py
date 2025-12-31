@@ -6,7 +6,7 @@ from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIG
 from nodetool.workflows.run_job_request import RunJobRequest
 from nodetool.workflows.run_workflow import run_workflow
 from nodetool.workflows.types import OutputUpdate
-from nodetool.nodes.nodetool.control import ForEach, Collect
+from nodetool.nodes.nodetool.control import Collect
 from nodetool.nodes.nodetool.list import (
     GenerateSequence,
     Randomize,
