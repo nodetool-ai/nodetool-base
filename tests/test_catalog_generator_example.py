@@ -26,7 +26,7 @@ def test_build_catalog_generator():
     expected_types = {
         "nodetool.input.StringInput",
         "nodetool.generators.DataGenerator",
-        "nodetool.output.DataframeOutput",
+        "nodetool.output.Output",
     }
     assert node_types == expected_types
 
@@ -41,15 +41,18 @@ def test_catalog_generator_input_node():
 
     input_node = input_nodes[0]
     assert input_node.data["name"] == "catalog_prompt"
-    assert input_node.data["description"] == "Describe the product domain, e.g. 'outdoor gear, hiking equipment'"
+    assert (
+        input_node.data["description"]
+        == "Describe the product domain, e.g. 'outdoor gear, hiking equipment'"
+    )
 
 
 def test_catalog_generator_output_node():
     """Test that the output node is properly configured."""
     graph = build_catalog_generator()
 
-    # Find the DataframeOutput node
-    output_nodes = [n for n in graph.nodes if n.type == "nodetool.output.DataframeOutput"]
+    # Find the Output node
+    output_nodes = [n for n in graph.nodes if n.type == "nodetool.output.Output"]
     assert len(output_nodes) == 1
 
     output_node = output_nodes[0]
@@ -62,7 +65,9 @@ def test_catalog_generator_data_generator_node():
     graph = build_catalog_generator()
 
     # Find the DataGenerator node
-    generator_nodes = [n for n in graph.nodes if n.type == "nodetool.generators.DataGenerator"]
+    generator_nodes = [
+        n for n in graph.nodes if n.type == "nodetool.generators.DataGenerator"
+    ]
     assert len(generator_nodes) == 1
 
     generator_node = generator_nodes[0]
@@ -72,7 +77,15 @@ def test_catalog_generator_data_generator_node():
     assert columns["type"] == "record_type"
 
     column_names = {col["name"] for col in columns["columns"]}
-    expected_columns = {"sku", "name", "category", "price", "short_description", "long_description", "image_prompt"}
+    expected_columns = {
+        "sku",
+        "name",
+        "category",
+        "price",
+        "short_description",
+        "long_description",
+        "image_prompt",
+    }
     assert column_names == expected_columns
 
     # Verify model configuration
