@@ -1,14 +1,20 @@
+from datetime import date
 from typing import Any
 
 from pydantic import Field
+
+from nodetool.metadata.types import (
+    AudioRef,
+    Datetime,
+    DocumentRef,
+    ImageRef,
+    JSONRef,
+    VideoRef,
+)
+from nodetool.metadata.types import DataframeRef as DataFrameRef
+from nodetool.metadata.types import Date as DateType
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import AudioRef, Datetime, DocumentRef, JSONRef
-from nodetool.metadata.types import Date as DateType
-from nodetool.metadata.types import DataframeRef as DataFrameRef
-from nodetool.metadata.types import ImageRef
-from nodetool.metadata.types import VideoRef
-from datetime import date
 
 
 class Constant(BaseNode):
@@ -21,6 +27,9 @@ class Constant(BaseNode):
     - Hold configuration values
     - Simplify testing with deterministic outputs
     """
+
+    def result_for_client(self, result: dict[str, Any]) -> dict[str, Any]:
+        return {}
 
 
 class Audio(Constant):
@@ -225,7 +234,7 @@ class Date(BaseNode):
         return DateType.from_date(date(self.year, self.month, self.day))  # type: ignore
 
 
-class DateTime(BaseNode):
+class DateTime(Constant):
     """
     Make a datetime object from year, month, day, hour, minute, second.
     datetime, make, create

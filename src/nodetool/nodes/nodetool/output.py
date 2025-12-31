@@ -1,7 +1,6 @@
 from typing import Any
 
 from nodetool.workflows.base_node import OutputNode
-from nodetool.workflows.processing_context import ProcessingContext
 
 
 class Output(OutputNode):
