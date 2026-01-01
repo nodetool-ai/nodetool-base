@@ -21,6 +21,8 @@ dependencies = [
     "langchain-ollama",
     "langchain-anthropic",
     "discord.py>=2.3.2",
+    "trimesh>=4.0.0",
+    "fast-simplification>=0.1.0",
 ]
 
 [tool.hatch.metadata]
