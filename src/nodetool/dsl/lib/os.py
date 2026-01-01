@@ -18,22 +18,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class AbsolutePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Return the absolute path of a file or directory.
-    files, path, absolute
+        Return the absolute path of a file or directory.
+        files, path, absolute
 
-    Use cases:
-    - Convert relative paths to absolute
-    - Get full system path
-    - Resolve path references
+        Use cases:
+        - Convert relative paths to absolute
+        - Get full system path
+        - Resolve path references
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to convert to absolute"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to convert to absolute')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,17 +47,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class AccessedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Get file last accessed timestamp.
-    files, metadata, accessed, time
+        Get file last accessed timestamp.
+        files, metadata, accessed, time
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -77,25 +71,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class Basename(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get the base name component of a file path.
-    files, path, basename
+        Get the base name component of a file path.
+        files, path, basename
 
-    Use cases:
-    - Extract filename from full path
-    - Get file name without directory
-    - Process file names independently
+        Use cases:
+        - Extract filename from full path
+        - Get file name without directory
+        - Process file names independently
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="File path to get basename from"
-    )
-    remove_extension: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Remove file extension from basename"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='File path to get basename from')
+    remove_extension: bool | OutputHandle[bool] = connect_field(default=False, description='Remove file extension from basename')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -112,25 +101,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class CopyFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Copy a file from source to destination path.
-    files, copy, manage
+        Copy a file from source to destination path.
+        files, copy, manage
 
-    Use cases:
-    - Create file backups
-    - Duplicate files for processing
-    - Copy files to new locations
+        Use cases:
+        - Create file backups
+        - Duplicate files for processing
+        - Copy files to new locations
     """
 
-    source_path: str | OutputHandle[str] = connect_field(
-        default="", description="Source file path"
-    )
-    destination_path: str | OutputHandle[str] = connect_field(
-        default="", description="Destination file path"
-    )
+    source_path: str | OutputHandle[str] = connect_field(default='', description='Source file path')
+    destination_path: str | OutputHandle[str] = connect_field(default='', description='Destination file path')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -147,24 +131,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class CreateDirectory(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Create a new directory at specified path.
-    files, directory, create
+        Create a new directory at specified path.
+        files, directory, create
 
-    Use cases:
-    - Set up directory structure for file organization
-    - Create output directories for processed files
+        Use cases:
+        - Set up directory structure for file organization
+        - Create output directories for processed files
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Directory path to create"
-    )
-    exist_ok: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Don't error if directory already exists"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Directory path to create')
+    exist_ok: bool | OutputHandle[bool] = connect_field(default=True, description="Don't error if directory already exists")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -181,17 +160,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class CreatedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Get file creation timestamp.
-    files, metadata, created, time
+        Get file creation timestamp.
+        files, metadata, created, time
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -208,22 +184,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class Dirname(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get the directory name component of a file path.
-    files, path, dirname
+        Get the directory name component of a file path.
+        files, path, dirname
 
-    Use cases:
-    - Extract directory path from full path
-    - Get parent directory
-    - Process directory paths
+        Use cases:
+        - Extract directory path from full path
+        - Get parent directory
+        - Process directory paths
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="File path to get dirname from"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='File path to get dirname from')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -240,21 +213,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class FileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Check if a file or directory exists at the specified path.
-    files, check, exists
+        Check if a file or directory exists at the specified path.
+        files, check, exists
 
-    Use cases:
-    - Validate file presence before processing
-    - Implement conditional logic based on file existence
+        Use cases:
+        - Validate file presence before processing
+        - Implement conditional logic based on file existence
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to check for existence"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to check for existence')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -271,17 +241,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class FileExtension(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get file extension.
-    files, metadata, extension
+        Get file extension.
+        files, metadata, extension
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -298,17 +265,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class FileName(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get file name without path.
-    files, metadata, name
+        Get file name without path.
+        files, metadata, name
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -325,29 +289,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class FileNameMatch(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Match a filename against a pattern using Unix shell-style wildcards.
-    files, pattern, match, filter
+        Match a filename against a pattern using Unix shell-style wildcards.
+        files, pattern, match, filter
 
-    Use cases:
-    - Filter files by name pattern
-    - Validate file naming conventions
-    - Match file extensions
+        Use cases:
+        - Filter files by name pattern
+        - Validate file naming conventions
+        - Match file extensions
     """
 
-    filename: str | OutputHandle[str] = connect_field(
-        default="", description="Filename to check"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="*", description="Pattern to match against (e.g. *.txt, data_*.csv)"
-    )
-    case_sensitive: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Whether the pattern matching should be case-sensitive",
-    )
+    filename: str | OutputHandle[str] = connect_field(default='', description='Filename to check')
+    pattern: str | OutputHandle[str] = connect_field(default='*', description='Pattern to match against (e.g. *.txt, data_*.csv)')
+    case_sensitive: bool | OutputHandle[bool] = connect_field(default=True, description='Whether the pattern matching should be case-sensitive')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -364,29 +320,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class FilterFileNames(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
     """
 
-    Filter a list of filenames using Unix shell-style wildcards.
-    files, pattern, filter, list
+        Filter a list of filenames using Unix shell-style wildcards.
+        files, pattern, filter, list
 
-    Use cases:
-    - Filter multiple files by pattern
-    - Batch process files matching criteria
-    - Select files by extension
+        Use cases:
+        - Filter multiple files by pattern
+        - Batch process files matching criteria
+        - Select files by extension
     """
 
-    filenames: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="list of filenames to filter"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="*", description="Pattern to filter by (e.g. *.txt, data_*.csv)"
-    )
-    case_sensitive: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Whether the pattern matching should be case-sensitive",
-    )
+    filenames: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='list of filenames to filter')
+    pattern: str | OutputHandle[str] = connect_field(default='*', description='Pattern to filter by (e.g. *.txt, data_*.csv)')
+    case_sensitive: bool | OutputHandle[bool] = connect_field(default=True, description='Whether the pattern matching should be case-sensitive')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -403,17 +351,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get directory containing the file.
-    files, metadata, directory
+        Get directory containing the file.
+        files, metadata, directory
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -430,17 +375,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-    Get file size in bytes.
-    files, metadata, size
+        Get file size in bytes.
+        files, metadata, size
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -457,21 +399,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetPathInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-    Gets information about a path.
-    path, info, metadata
+        Gets information about a path.
+        path, info, metadata
 
-    Use cases:
-    - Extract path components
-    - Parse file paths
+        Use cases:
+        - Extract path components
+        - Parse file paths
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to analyze"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to analyze')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -488,17 +427,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class IsDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Check if path is a directory.
-    files, metadata, type
+        Check if path is a directory.
+        files, metadata, type
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to check"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to check')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -515,17 +451,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class IsFile(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Check if path is a file.
-    files, metadata, type
+        Check if path is a file.
+        files, metadata, type
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to check"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to check')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -542,21 +475,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class JoinPaths(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Joins path components.
-    path, join, combine
+        Joins path components.
+        path, join, combine
 
-    Use cases:
-    - Build file paths
-    - Create cross-platform paths
+        Use cases:
+        - Build file paths
+        - Create cross-platform paths
     """
 
-    paths: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description="Path components to join"
-    )
+    paths: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='Path components to join')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -573,27 +503,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class ListFiles(GraphNode[nodetool.nodes.lib.os.ListFiles.OutputType]):
     """
 
-    list files in a directory matching a pattern.
-    files, list, directory
+        list files in a directory matching a pattern.
+        files, list, directory
 
-    Use cases:
-    - Get files for batch processing
-    - Filter files by extension or pattern
+        Use cases:
+        - Get files for batch processing
+        - Filter files by extension or pattern
     """
 
-    folder: str | OutputHandle[str] = connect_field(
-        default="~", description="Directory to scan"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="*", description="File pattern to match (e.g. *.txt)"
-    )
-    include_subdirectories: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Search subdirectories"
-    )
+    folder: str | OutputHandle[str] = connect_field(default='~', description='Directory to scan')
+    pattern: str | OutputHandle[str] = connect_field(default='*', description='File pattern to match (e.g. *.txt)')
+    include_subdirectories: bool | OutputHandle[bool] = connect_field(default=False, description='Search subdirectories')
 
     @property
     def out(self) -> "ListFilesOutputs":
@@ -607,11 +530,10 @@ class ListFiles(GraphNode[nodetool.nodes.lib.os.ListFiles.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class ListFilesOutputs(OutputsProxy):
     @property
     def file(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["file"])
+        return typing.cast(OutputHandle[str], self['file'])
 
 
 import typing
@@ -620,17 +542,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class ModifiedTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime]):
     """
 
-    Get file last modified timestamp.
-    files, metadata, modified, time
+        Get file last modified timestamp.
+        files, metadata, modified, time
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to file"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -647,25 +566,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class MoveFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Move a file from source to destination path.
-    files, move, manage
+        Move a file from source to destination path.
+        files, move, manage
 
-    Use cases:
-    - Organize files into directories
-    - Process and archive files
-    - Relocate completed files
+        Use cases:
+        - Organize files into directories
+        - Process and archive files
+        - Relocate completed files
     """
 
-    source_path: str | OutputHandle[str] = connect_field(
-        default="", description="Source file path"
-    )
-    destination_path: str | OutputHandle[str] = connect_field(
-        default="", description="Destination file path"
-    )
+    source_path: str | OutputHandle[str] = connect_field(default='', description='Source file path')
+    destination_path: str | OutputHandle[str] = connect_field(default='', description='Destination file path')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -682,21 +596,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class NormalizePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Normalizes a path.
-    path, normalize, clean
+        Normalizes a path.
+        path, normalize, clean
 
-    Use cases:
-    - Standardize paths
-    - Remove redundant separators
+        Use cases:
+        - Standardize paths
+        - Remove redundant separators
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to normalize"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to normalize')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -713,12 +624,11 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class OpenWorkspaceDirectory(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
 
-    Open the workspace directory.
-    files, workspace, directory
+        Open the workspace directory.
+        files, workspace, directory
     """
 
     @classmethod
@@ -736,22 +646,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class PathToString(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Convert a FilePath object to a string.
-    files, path, string, convert
+        Convert a FilePath object to a string.
+        files, path, string, convert
 
-    Use cases:
-    - Get raw string path from FilePath object
-    - Convert FilePath for string operations
-    - Extract path string for external use
+        Use cases:
+        - Get raw string path from FilePath object
+        - Convert FilePath for string operations
+        - Extract path string for external use
     """
 
-    file_path: str | OutputHandle[str] = connect_field(
-        default="", description="File path to convert to string"
-    )
+    file_path: str | OutputHandle[str] = connect_field(default='', description='File path to convert to string')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -768,25 +675,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class RelativePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Return a relative path to a target from a start directory.
-    files, path, relative
+        Return a relative path to a target from a start directory.
+        files, path, relative
 
-    Use cases:
-    - Create relative path references
-    - Generate portable paths
-    - Compare file locations
+        Use cases:
+        - Create relative path references
+        - Generate portable paths
+        - Compare file locations
     """
 
-    target_path: str | OutputHandle[str] = connect_field(
-        default="", description="Target path to convert to relative"
-    )
-    start_path: str | OutputHandle[str] = connect_field(
-        default=".", description="Start path for relative conversion"
-    )
+    target_path: str | OutputHandle[str] = connect_field(default='', description='Target path to convert to relative')
+    start_path: str | OutputHandle[str] = connect_field(default='.', description='Start path for relative conversion')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -803,29 +705,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class ShowNotification(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
 
-    Shows a system notification.
-    notification, system, alert
+        Shows a system notification.
+        notification, system, alert
 
-    Use cases:
-    - Alert user of completed tasks
-    - Show process status
-    - Display important messages
+        Use cases:
+        - Alert user of completed tasks
+        - Show process status
+        - Display important messages
     """
 
-    title: str | OutputHandle[str] = connect_field(
-        default="", description="Title of the notification"
-    )
-    message: str | OutputHandle[str] = connect_field(
-        default="", description="Content of the notification"
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=10,
-        description="How long the notification should stay visible (in seconds)",
-    )
+    title: str | OutputHandle[str] = connect_field(default='', description='Title of the notification')
+    message: str | OutputHandle[str] = connect_field(default='', description='Content of the notification')
+    timeout: int | OutputHandle[int] = connect_field(default=10, description='How long the notification should stay visible (in seconds)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -842,22 +736,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class SplitExtension(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-    Split a path into root and extension components.
-    files, path, extension, split
+        Split a path into root and extension components.
+        files, path, extension, split
 
-    Use cases:
-    - Extract file extension
-    - Process filename without extension
-    - Handle file types
+        Use cases:
+        - Extract file extension
+        - Process filename without extension
+        - Handle file types
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to split"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to split')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -874,22 +765,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class SplitPath(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-    Split a path into directory and file components.
-    files, path, split
+        Split a path into directory and file components.
+        files, path, split
 
-    Use cases:
-    - Separate directory from filename
-    - Process path components separately
-    - Extract path parts
+        Use cases:
+        - Separate directory from filename
+        - Process path components separately
+        - Extract path parts
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to split"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to split')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -906,12 +794,11 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.os
 from nodetool.workflows.base_node import BaseNode
 
-
 class WorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get the workspace directory.
-    files, workspace, directory
+        Get the workspace directory.
+        files, workspace, directory
     """
 
     @classmethod
@@ -921,3 +808,5 @@ class WorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

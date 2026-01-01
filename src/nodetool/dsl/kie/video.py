@@ -18,32 +18,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class GrokImagineImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class GrokImagineImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using xAI's Grok Imagine model via Kie.ai.
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text guide for the animation.",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to animate.",
-    )
-    duration: nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration.MEDIUM,
-        description="The duration tier of the video.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text guide for the animation.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to animate.')
+    duration: nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration = Field(default=nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration.MEDIUM, description='The duration tier of the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -60,33 +44,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class GrokImagineTextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class GrokImagineTextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using xAI's Grok Imagine model via Kie.ai.
     """
 
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution
-    )
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration
-    )
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    resolution: nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution.R1080P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration.MEDIUM,
-        description="The duration tier of the video.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    resolution: nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution = Field(default=nodetool.nodes.kie.video.GrokImagineTextToVideo.Resolution.R1080P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration = Field(default=nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration.MEDIUM, description='The duration tier of the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -103,46 +71,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class HailuoImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class HailuoImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using MiniMax's Hailuo model via Kie.ai.
     """
 
-    ModelType: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideo.ModelType
-    )
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideo.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideo.Resolution
-    )
+    ModelType: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideo.ModelType
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideo.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideo.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to animate.",
-    )
-    model_type: nodetool.nodes.kie.video.HailuoImageToVideo.ModelType = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideo.ModelType.PRO,
-        description="The model tier to use.",
-    )
-    duration: nodetool.nodes.kie.video.HailuoImageToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideo.Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-    resolution: nodetool.nodes.kie.video.HailuoImageToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideo.Resolution.R768P,
-        description="The resolution of the video.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text to guide the video generation.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to animate.')
+    model_type: nodetool.nodes.kie.video.HailuoImageToVideo.ModelType = Field(default=nodetool.nodes.kie.video.HailuoImageToVideo.ModelType.PRO, description='The model tier to use.')
+    duration: nodetool.nodes.kie.video.HailuoImageToVideo.Duration = Field(default=nodetool.nodes.kie.video.HailuoImageToVideo.Duration.D6, description='The duration of the video in seconds. 10s is not supported for 1080p.')
+    resolution: nodetool.nodes.kie.video.HailuoImageToVideo.Resolution = Field(default=nodetool.nodes.kie.video.HailuoImageToVideo.Resolution.R768P, description='The resolution of the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -159,10 +101,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class HailuoImageToVideoPro(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class HailuoImageToVideoPro(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using MiniMax's Hailuo 2.3 Pro model via Kie.ai.
 
@@ -178,31 +117,13 @@ class HailuoImageToVideoPro(
         - High-fidelity image animation
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The reference image to animate into a video.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-    duration: nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-    resolution: nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution.R768P,
-        description="Video resolution.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The reference image to animate into a video.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text to guide the video generation.')
+    duration: nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration = Field(default=nodetool.nodes.kie.video.HailuoImageToVideoPro.Duration.D6, description='The duration of the video in seconds. 10s is not supported for 1080p.')
+    resolution: nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution = Field(default=nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution.R768P, description='Video resolution.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -219,10 +140,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class HailuoImageToVideoStandard(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class HailuoImageToVideoStandard(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using MiniMax's Hailuo 2.3 Standard model via Kie.ai.
 
@@ -238,31 +156,13 @@ class HailuoImageToVideoStandard(
         - Practical video content creation
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The reference image to animate into a video.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-    duration: nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-    resolution: nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution.R768P,
-        description="Video resolution.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The reference image to animate into a video.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text to guide the video generation.')
+    duration: nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration = Field(default=nodetool.nodes.kie.video.HailuoImageToVideoStandard.Duration.D6, description='The duration of the video in seconds. 10s is not supported for 1080p.')
+    resolution: nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution = Field(default=nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution.R768P, description='Video resolution.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -279,10 +179,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class HailuoTextToVideoPro(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class HailuoTextToVideoPro(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using MiniMax's Hailuo 2.3 Pro model via Kie.ai.
 
@@ -292,25 +189,12 @@ class HailuoTextToVideoPro(
         realistic motion, detailed textures, and cinematic quality.
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    duration: nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration = Field(
-        default=nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-    resolution: nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution = Field(
-        default=nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution.R768P,
-        description="Video resolution.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    duration: nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration = Field(default=nodetool.nodes.kie.video.HailuoTextToVideoPro.Duration.D6, description='The duration of the video in seconds. 10s is not supported for 1080p.')
+    resolution: nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution = Field(default=nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution.R768P, description='Video resolution.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -327,35 +211,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class HailuoTextToVideoStandard(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class HailuoTextToVideoStandard(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using MiniMax's Hailuo 2.3 Standard model via Kie.ai.
 
         kie, hailuo, minimax, video generation, ai, text-to-video, standard, fast
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    duration: nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration = Field(
-        default=nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-    resolution: nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution = Field(
-        default=nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution.R768P,
-        description="Video resolution.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    duration: nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration = Field(default=nodetool.nodes.kie.video.HailuoTextToVideoStandard.Duration.D6, description='The duration of the video in seconds. 10s is not supported for 1080p.')
+    resolution: nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution = Field(default=nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution.R768P, description='Video resolution.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -372,7 +240,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
 class InfinitalkV1(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos using Infinitalk v1 (image-to-video) via Kie.ai.
@@ -380,26 +247,10 @@ class InfinitalkV1(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.InfinitalkV1.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text guide for the video generation.",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image.",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source audio track.",
-    )
-    resolution: nodetool.nodes.kie.video.InfinitalkV1.Resolution = Field(
-        default=nodetool.nodes.kie.video.InfinitalkV1.Resolution.R480P,
-        description="Video resolution.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text guide for the video generation.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The source audio track.')
+    resolution: nodetool.nodes.kie.video.InfinitalkV1.Resolution = Field(default=nodetool.nodes.kie.video.InfinitalkV1.Resolution.R480P, description='Video resolution.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -416,10 +267,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class KlingAIAvatarPro(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class KlingAIAvatarPro(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.
 
@@ -437,26 +285,10 @@ class KlingAIAvatarPro(
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarPro.Mode
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The face/character image to animate.",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The audio track for lip-syncing.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide emotions and expressions.",
-    )
-    mode: nodetool.nodes.kie.video.KlingAIAvatarPro.Mode = Field(
-        default=nodetool.nodes.kie.video.KlingAIAvatarPro.Mode.STANDARD,
-        description="Generation mode: 'standard' or 'pro' for higher quality.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The face/character image to animate.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio track for lip-syncing.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text to guide emotions and expressions.')
+    mode: nodetool.nodes.kie.video.KlingAIAvatarPro.Mode = Field(default=nodetool.nodes.kie.video.KlingAIAvatarPro.Mode.STANDARD, description="Generation mode: 'standard' or 'pro' for higher quality.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -473,10 +305,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class KlingAIAvatarStandard(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class KlingAIAvatarStandard(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.
 
@@ -494,26 +323,10 @@ class KlingAIAvatarStandard(
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The face/character image to animate.",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The audio track for lip-syncing.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide emotions and expressions.",
-    )
-    mode: nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode = Field(
-        default=nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode.STANDARD,
-        description="Generation mode: 'standard' or 'pro' for higher quality.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The face/character image to animate.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio track for lip-syncing.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text to guide emotions and expressions.')
+    mode: nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode = Field(default=nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode.STANDARD, description="Generation mode: 'standard' or 'pro' for higher quality.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -530,42 +343,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class KlingImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class KlingImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.
     """
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text prompt to guide the video generation.",
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="First source image for the video generation.",
-    )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
-    )
-    sound: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Whether to generate sound for the video."
-    )
-    duration: int | OutputHandle[int] = connect_field(
-        default=5, description="Video duration in seconds."
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text prompt to guide the video generation.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First source image for the video generation.')
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second source image (optional).')
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Third source image (optional).')
+    sound: bool | OutputHandle[bool] = connect_field(default=False, description='Whether to generate sound for the video.')
+    duration: int | OutputHandle[int] = connect_field(default=5, description='Video duration in seconds.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -582,40 +370,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class KlingTextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class KlingTextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.KlingTextToVideo.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingTextToVideo.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    aspect_ratio: nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    duration: int | OutputHandle[int] = connect_field(
-        default=5, description="Video duration in seconds."
-    )
-    resolution: nodetool.nodes.kie.video.KlingTextToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.KlingTextToVideo.Resolution.R768P,
-        description="Video resolution.",
-    )
-    seed: int | OutputHandle[int] = connect_field(
-        default=-1,
-        description="Random seed for reproducible results. Use -1 for random seed.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    aspect_ratio: nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio = Field(default=nodetool.nodes.kie.video.KlingTextToVideo.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    duration: int | OutputHandle[int] = connect_field(default=5, description='Video duration in seconds.')
+    resolution: nodetool.nodes.kie.video.KlingTextToVideo.Resolution = Field(default=nodetool.nodes.kie.video.KlingTextToVideo.Resolution.R768P, description='Video resolution.')
+    seed: int | OutputHandle[int] = connect_field(default=-1, description='Random seed for reproducible results. Use -1 for random seed.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -632,37 +399,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class SeedanceBaseNode(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class SeedanceBaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Base class for Seedance (Bytedance) video generation nodes.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
-    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
+    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -679,59 +428,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class SeedanceV1LiteImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class SeedanceV1LiteImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Bytedance 1.0 - image-to-video-lite via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
-    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text guide for the video generation.",
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="First source image for the video generation.",
-    )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text guide for the video generation.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First source image for the video generation.')
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second source image (optional).')
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Third source image (optional).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -748,41 +461,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class SeedanceV1LiteTextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class SeedanceV1LiteTextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Bytedance 1.0 - text-to-video-lite via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
-    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -799,55 +491,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class SeedanceV1ProFastImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class SeedanceV1ProFastImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Bytedance 1.0 - fast-image-to-video-pro via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
-    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="First source image for the video generation.",
-    )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First source image for the video generation.')
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second source image (optional).')
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Third source image (optional).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -864,59 +523,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class SeedanceV1ProImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class SeedanceV1ProImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Bytedance 1.0 - image-to-video-pro via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
-    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text guide for the video generation.",
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="First source image for the video generation.",
-    )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text guide for the video generation.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First source image for the video generation.')
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second source image (optional).')
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Third source image (optional).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -933,41 +556,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class SeedanceV1ProTextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class SeedanceV1ProTextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Bytedance 1.0 - text-to-video-pro via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Resolution
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
-    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
-        description="The aspect ratio of the generated video.",
-    )
-    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(
-        default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.SeedanceBaseNode.Resolution = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Resolution.R720P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.SeedanceBaseNode.Duration = Field(default=nodetool.nodes.kie.video.SeedanceBaseNode.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -984,26 +586,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
 class Sora2BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Base class for Sora 2 nodes via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
 
-    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
-        description="The aspect ratio of the generated video.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
-    )
+    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE, description='The aspect ratio of the generated video.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    n_frames: int | OutputHandle[int] = connect_field(default=10, description='Number of frames for the video output.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1020,38 +612,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Sora2ProImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Sora2ProImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using Sora 2 Pro via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
 
-    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
-        description="The aspect ratio of the generated video.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text guide for the video generation.",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to animate.",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE, description='The aspect ratio of the generated video.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    n_frames: int | OutputHandle[int] = connect_field(default=10, description='Number of frames for the video output.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='Optional text guide for the video generation.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to animate.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1068,50 +640,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Sora2ProStoryboard(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Sora2ProStoryboard(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from storyboards using Sora 2 Pro via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
 
-    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
-        description="The aspect ratio of the generated video.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="First source image for the video generation.",
-    )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE, description='The aspect ratio of the generated video.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    n_frames: int | OutputHandle[int] = connect_field(default=10, description='Number of frames for the video output.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First source image for the video generation.')
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second source image (optional).')
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Third source image (optional).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1128,32 +670,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Sora2ProTextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Sora2ProTextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using Sora 2 Pro via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
 
-    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
-        description="The aspect ratio of the generated video.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE, description='The aspect ratio of the generated video.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    n_frames: int | OutputHandle[int] = connect_field(default=10, description='Number of frames for the video output.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1170,32 +697,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Sora2TextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Sora2TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using Sora 2 Standard via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
 
-    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
-        default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
-        description="The aspect ratio of the generated video.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
+    aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE, description='The aspect ratio of the generated video.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
+    n_frames: int | OutputHandle[int] = connect_field(default=10, description='Number of frames for the video output.')
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1212,37 +724,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class TopazVideoUpscale(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class TopazVideoUpscale(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Upscale and enhance videos using Topaz Labs AI via Kie.ai.
     """
 
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.TopazVideoUpscale.Resolution
-    )
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.TopazVideoUpscale.Resolution
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
-        default=types.VideoRef(
-            type="video",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            duration=None,
-            format=None,
-        ),
-        description="The video to upscale.",
-    )
-    resolution: nodetool.nodes.kie.video.TopazVideoUpscale.Resolution = Field(
-        default=nodetool.nodes.kie.video.TopazVideoUpscale.Resolution.R1080P,
-        description="Target resolution for upscaling.",
-    )
-    denoise: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Apply denoising to reduce artifacts."
-    )
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The video to upscale.')
+    resolution: nodetool.nodes.kie.video.TopazVideoUpscale.Resolution = Field(default=nodetool.nodes.kie.video.TopazVideoUpscale.Resolution.R1080P, description='Target resolution for upscaling.')
+    denoise: bool | OutputHandle[bool] = connect_field(default=True, description='Apply denoising to reduce artifacts.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1259,51 +750,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Wan26ImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Wan26ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from images using Alibaba's Wan 2.6 model via Kie.ai.
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Wan26ImageToVideo.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26ImageToVideo.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="First source image for the video generation.",
-    )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
-    )
-    duration: nodetool.nodes.kie.video.Wan26ImageToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.Wan26ImageToVideo.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    resolution: nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution.R1080P,
-        description="The resolution of the video.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='First source image for the video generation.')
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Second source image (optional).')
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Third source image (optional).')
+    duration: nodetool.nodes.kie.video.Wan26ImageToVideo.Duration = Field(default=nodetool.nodes.kie.video.Wan26ImageToVideo.Duration.D5, description='The duration of the video in seconds.')
+    resolution: nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution = Field(default=nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution.R1080P, description='The resolution of the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1320,31 +780,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Wan26TextToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Wan26TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.
     """
 
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26TextToVideo.Duration
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Wan26TextToVideo.Resolution
-    )
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26TextToVideo.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    duration: nodetool.nodes.kie.video.Wan26TextToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.Wan26TextToVideo.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    resolution: nodetool.nodes.kie.video.Wan26TextToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.Wan26TextToVideo.Resolution.R1080P,
-        description="The resolution of the video.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    duration: nodetool.nodes.kie.video.Wan26TextToVideo.Duration = Field(default=nodetool.nodes.kie.video.Wan26TextToVideo.Duration.D5, description='The duration of the video in seconds.')
+    resolution: nodetool.nodes.kie.video.Wan26TextToVideo.Resolution = Field(default=nodetool.nodes.kie.video.Wan26TextToVideo.Resolution.R1080P, description='The resolution of the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1361,69 +807,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class Wan26VideoToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class Wan26VideoToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.
     """
 
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Wan26VideoToVideo.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution
-    )
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26VideoToVideo.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the changes.",
-    )
-    video1: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
-        default=types.VideoRef(
-            type="video",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            duration=None,
-            format=None,
-        ),
-        description="First source video for the video-to-video task.",
-    )
-    video2: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
-        default=types.VideoRef(
-            type="video",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            duration=None,
-            format=None,
-        ),
-        description="Second source video (optional).",
-    )
-    video3: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
-        default=types.VideoRef(
-            type="video",
-            uri="",
-            asset_id=None,
-            data=None,
-            metadata=None,
-            duration=None,
-            format=None,
-        ),
-        description="Third source video (optional).",
-    )
-    duration: nodetool.nodes.kie.video.Wan26VideoToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.Wan26VideoToVideo.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    resolution: nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution.R1080P,
-        description="The resolution of the video.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the changes.')
+    video1: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='First source video for the video-to-video task.')
+    video2: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='Second source video (optional).')
+    video3: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='Third source video (optional).')
+    duration: nodetool.nodes.kie.video.Wan26VideoToVideo.Duration = Field(default=nodetool.nodes.kie.video.Wan26VideoToVideo.Duration.D5, description='The duration of the video in seconds.')
+    resolution: nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution = Field(default=nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution.R1080P, description='The resolution of the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1440,45 +837,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
-
-class WanMultiShotTextToVideoPro(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class WanMultiShotTextToVideoPro(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.AspectRatio
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Resolution
-    )
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration
-    )
+    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.AspectRatio
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Resolution
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    aspect_ratio: nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.AspectRatio = (
-        Field(
-            default=nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.AspectRatio.V16_9,
-            description="The aspect ratio of the generated video.",
-        )
-    )
-    resolution: nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Resolution = Field(
-        default=nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Resolution.R1080P,
-        description="The resolution of the video.",
-    )
-    duration: nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration = Field(
-        default=nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration.D5,
-        description="The duration of the video in seconds.",
-    )
-    remove_watermark: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove the watermark from the video."
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='A cinematic video with smooth motion, natural lighting, and high detail.', description='The text prompt describing the video.')
+    aspect_ratio: nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.AspectRatio = Field(default=nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.AspectRatio.V16_9, description='The aspect ratio of the generated video.')
+    resolution: nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Resolution = Field(default=nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Resolution.R1080P, description='The resolution of the video.')
+    duration: nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration = Field(default=nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration.D5, description='The duration of the video in seconds.')
+    remove_watermark: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove the watermark from the video.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1487,3 +859,5 @@ class WanMultiShotTextToVideoPro(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

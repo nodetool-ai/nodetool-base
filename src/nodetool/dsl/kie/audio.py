@@ -18,7 +18,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class Suno(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Generate music using Suno AI via Kie.ai.
@@ -38,28 +37,12 @@ class Suno(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     Style: typing.ClassVar[type] = nodetool.nodes.kie.audio.Suno.Style
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.Suno.Model
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Description of the music to generate (genre, mood, instruments, etc.).",
-    )
-    lyrics: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Optional lyrics for the song. Leave empty for instrumental.",
-    )
-    style: nodetool.nodes.kie.audio.Suno.Style = Field(
-        default=nodetool.nodes.kie.audio.Suno.Style.CUSTOM,
-        description="Music style/genre. Use 'custom' for prompt-based generation.",
-    )
-    instrumental: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Generate instrumental-only (no vocals)."
-    )
-    duration: int | OutputHandle[int] = connect_field(
-        default=60, description="Approximate duration in seconds."
-    )
-    model: nodetool.nodes.kie.audio.Suno.Model = Field(
-        default=nodetool.nodes.kie.audio.Suno.Model.V4_5_PLUS,
-        description="Suno model version to use.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Description of the music to generate (genre, mood, instruments, etc.).')
+    lyrics: str | OutputHandle[str] = connect_field(default='', description='Optional lyrics for the song. Leave empty for instrumental.')
+    style: nodetool.nodes.kie.audio.Suno.Style = Field(default=nodetool.nodes.kie.audio.Suno.Style.CUSTOM, description="Music style/genre. Use 'custom' for prompt-based generation.")
+    instrumental: bool | OutputHandle[bool] = connect_field(default=False, description='Generate instrumental-only (no vocals).')
+    duration: int | OutputHandle[int] = connect_field(default=60, description='Approximate duration in seconds.')
+    model: nodetool.nodes.kie.audio.Suno.Model = Field(default=nodetool.nodes.kie.audio.Suno.Model.V4_5_PLUS, description='Suno model version to use.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -68,3 +51,5 @@ class Suno(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

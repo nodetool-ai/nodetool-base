@@ -18,33 +18,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.io
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Save a numpy array to a file in the specified folder.
-    array, save, file, storage
+        Save a numpy array to a file in the specified folder.
+        array, save, file, storage
 
-    Use cases:
-    - Store processed arrays for later use
-    - Save analysis results
-    - Create checkpoints in processing pipelines
+        Use cases:
+        - Store processed arrays for later use
+        - Save analysis results
+        - Create checkpoints in processing pipelines
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="The array to save.",
-    )
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(
-            type="folder", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The folder to save the array in.",
-    )
-    name: str | OutputHandle[str] = connect_field(
-        default="%Y-%m-%d_%H-%M-%S.npy",
-        description="\n        The name of the asset to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The array to save.')
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The folder to save the array in.')
+    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d_%H-%M-%S.npy', description='\n        The name of the asset to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -53,3 +41,5 @@ class SaveArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
