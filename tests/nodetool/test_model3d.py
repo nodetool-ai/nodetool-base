@@ -2,15 +2,11 @@
 Tests for 3D model nodes.
 """
 
-import io
 import pytest
-from unittest.mock import MagicMock
 
 from nodetool.metadata.types import Model3DRef
 from nodetool.nodes.nodetool.input import Model3DInput
 from nodetool.nodes.nodetool.model3d import (
-    LoadModel3DFile,
-    SaveModel3DFile,
     FormatConverter,
     GetModel3DMetadata,
     Transform3D,
@@ -235,7 +231,6 @@ async def test_recalculate_normals_auto(context, cube_model):
     node = RecalculateNormals(
         model=cube_model,
         mode=ShadingMode.AUTO,
-        angle_threshold=30.0,
     )
     result = await node.process(context)
 

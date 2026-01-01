@@ -515,10 +515,6 @@ class Decimate(BaseNode):
         le=1.0,
         description="Target ratio of faces to keep (0.5 = 50% reduction)",
     )
-    preserve_boundaries: bool = Field(
-        default=True,
-        description="Preserve mesh boundaries and edges",
-    )
 
     async def process(self, context: ProcessingContext) -> Model3DRef:
         if self.model.is_empty():
@@ -651,13 +647,7 @@ class RecalculateNormals(BaseNode):
     )
     mode: ShadingMode = Field(
         default=ShadingMode.AUTO,
-        description="Shading mode: smooth, flat, or auto (based on face angles)",
-    )
-    angle_threshold: float = Field(
-        default=30.0,
-        ge=0,
-        le=180,
-        description="Angle threshold for auto mode (degrees). Faces with angles above this are treated as sharp edges.",
+        description="Shading mode: smooth, flat, or auto (uses mesh default)",
     )
     fix_winding: bool = Field(
         default=True,
@@ -690,19 +680,18 @@ class RecalculateNormals(BaseNode):
 
         # Recalculate normals based on mode
         if self.mode == ShadingMode.FLAT:
-            # Use face normals (flat shading)
-            mesh.face_normals  # This triggers face normal computation
-            # For flat shading, we don't want smooth vertex normals
-            mesh.vertex_normals = None
+            # For flat shading, unmerge vertices so each face has unique vertices
+            # This ensures each face can have its own normal
+            mesh.unmerge_vertices()
+            # Recompute face normals
+            mesh.face_normals
         elif self.mode == ShadingMode.SMOOTH:
-            # Compute smooth vertex normals
-            mesh.vertex_normals  # This triggers vertex normal computation
+            # Compute smooth vertex normals (area-weighted average of face normals)
+            mesh.vertex_normals
         else:
-            # Auto mode: use angle threshold
-            # trimesh automatically handles angle-based normal computation
-            if hasattr(mesh, "vertex_normals"):
-                # Recompute with angle weighting
-                mesh.vertex_normals  # Triggers recomputation
+            # Auto mode: let trimesh handle it with default behavior
+            # This uses area-weighted vertex normals
+            mesh.vertex_normals
 
         # Export
         output_format = self.model.format or "glb"
