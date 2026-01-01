@@ -17,6 +17,7 @@ from nodetool.metadata.types import (
     MessageAudioContent,
     MessageImageContent,
     MessageTextContent,
+    Model3DRef,
     Provider,
     VideoRef,
 )
@@ -306,6 +307,30 @@ class AudioInput(InputNode):
         return AudioRef
 
     async def process(self, context: ProcessingContext) -> AudioRef:
+        return self.value
+
+
+class Model3DInput(InputNode):
+    """
+    Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.
+    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,
+    or conversion by 3D-capable nodes.
+    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset
+
+    Use cases:
+    - Load a 3D model file for processing or visualization.
+    - Provide 3D model input to geometry processing nodes.
+    - Convert between 3D formats (OBJ, GLB, STL, PLY, USDZ).
+    - Process 3D models for decimation, boolean operations, or transforms.
+    """
+
+    value: Model3DRef = Field(Model3DRef(), description="The 3D model to use as input.")
+
+    @classmethod
+    def return_type(cls):
+        return Model3DRef
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
         return self.value
 
 
