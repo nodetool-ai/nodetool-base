@@ -245,6 +245,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+class TriggerNode[DiscordBotTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.triggers.TriggerNode[DiscordBotTriggerOutput]
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.triggers
+from nodetool.workflows.base_node import BaseNode
+
 class TriggerNode[FileWatchTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
 
@@ -287,6 +305,24 @@ class TriggerNode[ManualTriggerOutput](SingleOutputGraphNode[typing.Any], GraphN
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.triggers.TriggerNode[ManualTriggerOutput]
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.triggers
+from nodetool.workflows.base_node import BaseNode
+
+class TriggerNode[TelegramBotTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
+    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.triggers.TriggerNode[TelegramBotTriggerOutput]
 
     @classmethod
     def get_node_type(cls):

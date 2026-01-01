@@ -820,6 +820,57 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class Model3DInput(
+    SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRef]
+):
+    """
+
+    Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.
+    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,
+    or conversion by 3D-capable nodes.
+    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset
+
+    Use cases:
+    - Load a 3D model file for processing or visualization.
+    - Provide 3D model input to geometry processing nodes.
+    - Convert between 3D formats (OBJ, GLB, STL, PLY, USDZ).
+    - Process 3D models for decimation, boolean operations, or transforms.
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.Model3DRef | OutputHandle[types.Model3DRef] = connect_field(
+        default=types.Model3DRef(
+            type="model_3d",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            format=None,
+        ),
+        description="The 3D model to use as input.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.Model3DInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class RealtimeAudioInput(
     GraphNode[nodetool.nodes.nodetool.input.RealtimeAudioInput.OutputType]
 ):
