@@ -6,12 +6,13 @@ This module provides nodes to connect to MCP servers using various transports:
 - SSE: For HTTP Server-Sent Events based servers
 - Streamable HTTP: For HTTP streaming based servers
 
-MCP specification: https://modelcontextprotocol.io/specification/2025-06-18/basic/transports
+MCP specification: https://modelcontextprotocol.io/specification/basic/transports
 """
 
 import sys
+from contextlib import asynccontextmanager
 from enum import Enum
-from typing import Any, TypedDict
+from typing import Any, AsyncIterator, TypedDict
 
 from pydantic import Field
 
@@ -20,6 +21,11 @@ from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
 logger = get_logger(__name__)
+
+
+# =============================================================================
+# Type definitions
+# =============================================================================
 
 
 class MCPTool(TypedDict):
@@ -70,6 +76,168 @@ class MCPPromptMessage(TypedDict):
     content: Any
 
 
+class TransportType(str, Enum):
+    """MCP transport type."""
+
+    STDIO = "stdio"
+    SSE = "sse"
+    HTTP = "http"
+
+
+# =============================================================================
+# Helper functions to reduce code duplication
+# =============================================================================
+
+
+async def _collect_server_info(session: Any) -> tuple[list[MCPTool], list[MCPResource], list[MCPPrompt], str, str]:
+    """
+    Collect server information from an initialized MCP session.
+
+    Returns:
+        Tuple of (tools, resources, prompts, server_name, server_version)
+    """
+    # Initialize the session
+    init_result = await session.initialize()
+
+    # Get server info
+    server_name = init_result.serverInfo.name
+    server_version = init_result.serverInfo.version
+
+    # List tools
+    tools: list[MCPTool] = []
+    try:
+        tools_result = await session.list_tools()
+        for tool in tools_result.tools:
+            tools.append(
+                {
+                    "name": tool.name,
+                    "description": tool.description,
+                    "input_schema": tool.inputSchema,
+                }
+            )
+    except Exception as e:
+        logger.debug(f"Could not list tools: {e}")
+
+    # List resources
+    resources: list[MCPResource] = []
+    try:
+        resources_result = await session.list_resources()
+        for resource in resources_result.resources:
+            resources.append(
+                {
+                    "name": resource.name,
+                    "uri": str(resource.uri),
+                    "description": resource.description,
+                    "mime_type": resource.mimeType,
+                }
+            )
+    except Exception as e:
+        logger.debug(f"Could not list resources: {e}")
+
+    # List prompts
+    prompts: list[MCPPrompt] = []
+    try:
+        prompts_result = await session.list_prompts()
+        for prompt in prompts_result.prompts:
+            args = None
+            if prompt.arguments:
+                args = [
+                    {
+                        "name": arg.name,
+                        "description": arg.description,
+                        "required": arg.required,
+                    }
+                    for arg in prompt.arguments
+                ]
+            prompts.append(
+                {
+                    "name": prompt.name,
+                    "description": prompt.description,
+                    "arguments": args,
+                }
+            )
+    except Exception as e:
+        logger.debug(f"Could not list prompts: {e}")
+
+    return tools, resources, prompts, server_name, server_version
+
+
+@asynccontextmanager
+async def _create_mcp_session(
+    transport: TransportType,
+    command: str = "",
+    args: list[str] | None = None,
+    env: dict[str, str] | None = None,
+    working_directory: str = "",
+    url: str = "",
+    headers: dict[str, str] | None = None,
+    timeout: float = 30.0,
+) -> AsyncIterator[Any]:
+    """
+    Create an MCP client session for the specified transport.
+
+    Args:
+        transport: The transport type to use
+        command: Command for stdio transport
+        args: Arguments for stdio transport
+        env: Environment variables for stdio transport
+        working_directory: Working directory for stdio transport
+        url: URL for SSE/HTTP transports
+        headers: HTTP headers for SSE transport
+        timeout: Connection timeout for SSE transport
+
+    Yields:
+        An initialized ClientSession
+    """
+    from mcp import ClientSession
+
+    if transport == TransportType.STDIO:
+        from mcp.client.stdio import StdioServerParameters, stdio_client
+
+        if not command:
+            raise ValueError("Command is required for stdio transport")
+
+        params = StdioServerParameters(
+            command=command,
+            args=args or [],
+            env=env if env else None,
+            cwd=working_directory if working_directory else None,
+        )
+
+        async with stdio_client(params, errlog=sys.stderr) as (read, write):
+            async with ClientSession(read, write) as session:
+                yield session
+
+    elif transport == TransportType.SSE:
+        from mcp.client.sse import sse_client
+
+        if not url:
+            raise ValueError("URL is required for SSE transport")
+
+        async with sse_client(
+            url=url,
+            headers=headers if headers else None,
+            timeout=timeout,
+        ) as (read, write):
+            async with ClientSession(read, write) as session:
+                yield session
+
+    else:  # HTTP
+        from mcp.client.streamable_http import streamable_http_client
+
+        if not url:
+            raise ValueError("URL is required for HTTP transport")
+
+        async with streamable_http_client(url=url) as (read, write, _):
+            async with ClientSession(read, write) as session:
+                yield session
+
+
+# =============================================================================
+# MCP Client Nodes (one per transport)
+# =============================================================================
+
+
 class MCPStdioClient(BaseNode):
     """
     Connect to an MCP server using stdio transport (subprocess).
@@ -114,91 +282,26 @@ class MCPStdioClient(BaseNode):
         return ["command", "args"]
 
     async def process(self, context: ProcessingContext) -> OutputType:
-        from mcp import ClientSession
-        from mcp.client.stdio import StdioServerParameters, stdio_client
-
         if not self.command:
             raise ValueError("Command is required")
 
-        params = StdioServerParameters(
+        async with _create_mcp_session(
+            transport=TransportType.STDIO,
             command=self.command,
             args=self.args,
-            env=self.env if self.env else None,
-            cwd=self.working_directory if self.working_directory else None,
-        )
-
-        async with stdio_client(params, errlog=sys.stderr) as (read, write):
-            async with ClientSession(read, write) as session:
-                # Initialize the session
-                init_result = await session.initialize()
-
-                # Get server info
-                server_name = init_result.serverInfo.name
-                server_version = init_result.serverInfo.version
-
-                # List tools
-                tools: list[MCPTool] = []
-                try:
-                    tools_result = await session.list_tools()
-                    for tool in tools_result.tools:
-                        tools.append(
-                            {
-                                "name": tool.name,
-                                "description": tool.description,
-                                "input_schema": tool.inputSchema,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list tools: {e}")
-
-                # List resources
-                resources: list[MCPResource] = []
-                try:
-                    resources_result = await session.list_resources()
-                    for resource in resources_result.resources:
-                        resources.append(
-                            {
-                                "name": resource.name,
-                                "uri": str(resource.uri),
-                                "description": resource.description,
-                                "mime_type": resource.mimeType,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list resources: {e}")
-
-                # List prompts
-                prompts: list[MCPPrompt] = []
-                try:
-                    prompts_result = await session.list_prompts()
-                    for prompt in prompts_result.prompts:
-                        args = None
-                        if prompt.arguments:
-                            args = [
-                                {
-                                    "name": arg.name,
-                                    "description": arg.description,
-                                    "required": arg.required,
-                                }
-                                for arg in prompt.arguments
-                            ]
-                        prompts.append(
-                            {
-                                "name": prompt.name,
-                                "description": prompt.description,
-                                "arguments": args,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list prompts: {e}")
-
-                return {
-                    "tools": tools,
-                    "resources": resources,
-                    "prompts": prompts,
-                    "server_name": server_name,
-                    "server_version": server_version,
-                }
+            env=self.env,
+            working_directory=self.working_directory,
+        ) as session:
+            tools, resources, prompts, server_name, server_version = (
+                await _collect_server_info(session)
+            )
+            return {
+                "tools": tools,
+                "resources": resources,
+                "prompts": prompts,
+                "server_name": server_name,
+                "server_version": server_version,
+            }
 
 
 class MCPSSEClient(BaseNode):
@@ -241,88 +344,25 @@ class MCPSSEClient(BaseNode):
         return ["url"]
 
     async def process(self, context: ProcessingContext) -> OutputType:
-        from mcp import ClientSession
-        from mcp.client.sse import sse_client
-
         if not self.url:
             raise ValueError("URL is required")
 
-        async with sse_client(
+        async with _create_mcp_session(
+            transport=TransportType.SSE,
             url=self.url,
-            headers=self.headers if self.headers else None,
+            headers=self.headers,
             timeout=self.timeout,
-        ) as (read, write):
-            async with ClientSession(read, write) as session:
-                # Initialize the session
-                init_result = await session.initialize()
-
-                # Get server info
-                server_name = init_result.serverInfo.name
-                server_version = init_result.serverInfo.version
-
-                # List tools
-                tools: list[MCPTool] = []
-                try:
-                    tools_result = await session.list_tools()
-                    for tool in tools_result.tools:
-                        tools.append(
-                            {
-                                "name": tool.name,
-                                "description": tool.description,
-                                "input_schema": tool.inputSchema,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list tools: {e}")
-
-                # List resources
-                resources: list[MCPResource] = []
-                try:
-                    resources_result = await session.list_resources()
-                    for resource in resources_result.resources:
-                        resources.append(
-                            {
-                                "name": resource.name,
-                                "uri": str(resource.uri),
-                                "description": resource.description,
-                                "mime_type": resource.mimeType,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list resources: {e}")
-
-                # List prompts
-                prompts: list[MCPPrompt] = []
-                try:
-                    prompts_result = await session.list_prompts()
-                    for prompt in prompts_result.prompts:
-                        args = None
-                        if prompt.arguments:
-                            args = [
-                                {
-                                    "name": arg.name,
-                                    "description": arg.description,
-                                    "required": arg.required,
-                                }
-                                for arg in prompt.arguments
-                            ]
-                        prompts.append(
-                            {
-                                "name": prompt.name,
-                                "description": prompt.description,
-                                "arguments": args,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list prompts: {e}")
-
-                return {
-                    "tools": tools,
-                    "resources": resources,
-                    "prompts": prompts,
-                    "server_name": server_name,
-                    "server_version": server_version,
-                }
+        ) as session:
+            tools, resources, prompts, server_name, server_version = (
+                await _collect_server_info(session)
+            )
+            return {
+                "tools": tools,
+                "resources": resources,
+                "prompts": prompts,
+                "server_name": server_name,
+                "server_version": server_version,
+            }
 
 
 class MCPStreamableHTTPClient(BaseNode):
@@ -357,104 +397,32 @@ class MCPStreamableHTTPClient(BaseNode):
         return ["url"]
 
     async def process(self, context: ProcessingContext) -> OutputType:
-        from mcp import ClientSession
-        from mcp.client.streamable_http import streamable_http_client
-
         if not self.url:
             raise ValueError("URL is required")
 
-        async with streamable_http_client(url=self.url) as (read, write, _):
-            async with ClientSession(read, write) as session:
-                # Initialize the session
-                init_result = await session.initialize()
-
-                # Get server info
-                server_name = init_result.serverInfo.name
-                server_version = init_result.serverInfo.version
-
-                # List tools
-                tools: list[MCPTool] = []
-                try:
-                    tools_result = await session.list_tools()
-                    for tool in tools_result.tools:
-                        tools.append(
-                            {
-                                "name": tool.name,
-                                "description": tool.description,
-                                "input_schema": tool.inputSchema,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list tools: {e}")
-
-                # List resources
-                resources: list[MCPResource] = []
-                try:
-                    resources_result = await session.list_resources()
-                    for resource in resources_result.resources:
-                        resources.append(
-                            {
-                                "name": resource.name,
-                                "uri": str(resource.uri),
-                                "description": resource.description,
-                                "mime_type": resource.mimeType,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list resources: {e}")
-
-                # List prompts
-                prompts: list[MCPPrompt] = []
-                try:
-                    prompts_result = await session.list_prompts()
-                    for prompt in prompts_result.prompts:
-                        args = None
-                        if prompt.arguments:
-                            args = [
-                                {
-                                    "name": arg.name,
-                                    "description": arg.description,
-                                    "required": arg.required,
-                                }
-                                for arg in prompt.arguments
-                            ]
-                        prompts.append(
-                            {
-                                "name": prompt.name,
-                                "description": prompt.description,
-                                "arguments": args,
-                            }
-                        )
-                except Exception as e:
-                    logger.debug(f"Could not list prompts: {e}")
-
-                return {
-                    "tools": tools,
-                    "resources": resources,
-                    "prompts": prompts,
-                    "server_name": server_name,
-                    "server_version": server_version,
-                }
+        async with _create_mcp_session(
+            transport=TransportType.HTTP,
+            url=self.url,
+        ) as session:
+            tools, resources, prompts, server_name, server_version = (
+                await _collect_server_info(session)
+            )
+            return {
+                "tools": tools,
+                "resources": resources,
+                "prompts": prompts,
+                "server_name": server_name,
+                "server_version": server_version,
+            }
 
 
-class TransportType(str, Enum):
-    """MCP transport type."""
-
-    STDIO = "stdio"
-    SSE = "sse"
-    HTTP = "http"
+# =============================================================================
+# MCP Operation Nodes (support all transports)
+# =============================================================================
 
 
-class MCPCallTool(BaseNode):
-    """
-    Call a tool on an MCP server.
-    mcp, model context protocol, tool, call, execute, ai
-
-    Use cases:
-    - Execute MCP tools with arguments
-    - Integrate MCP tool capabilities into workflows
-    - Run AI-powered tools from MCP servers
-    """
+class MCPOperationBaseNode(BaseNode):
+    """Base class for MCP operation nodes with common transport fields."""
 
     transport: TransportType = Field(
         default=TransportType.STDIO,
@@ -486,8 +454,37 @@ class MCPCallTool(BaseNode):
     )
     headers: dict[str, str] = Field(
         default={},
-        description="HTTP headers (for SSE transport)",
+        description="HTTP headers (for SSE/HTTP transport)",
     )
+
+    @classmethod
+    def is_visible(cls) -> bool:
+        # Base class should not be visible
+        return cls is not MCPOperationBaseNode
+
+    def _get_session_params(self) -> dict[str, Any]:
+        """Get parameters for _create_mcp_session."""
+        return {
+            "transport": self.transport,
+            "command": self.command,
+            "args": self.args,
+            "env": self.env,
+            "working_directory": self.working_directory,
+            "url": self.url,
+            "headers": self.headers,
+        }
+
+
+class MCPCallTool(MCPOperationBaseNode):
+    """
+    Call a tool on an MCP server.
+    mcp, model context protocol, tool, call, execute, ai
+
+    Use cases:
+    - Execute MCP tools with arguments
+    - Integrate MCP tool capabilities into workflows
+    - Run AI-powered tools from MCP servers
+    """
 
     # Tool parameters
     tool_name: str = Field(
@@ -508,74 +505,21 @@ class MCPCallTool(BaseNode):
         return ["transport", "tool_name", "tool_arguments"]
 
     async def process(self, context: ProcessingContext) -> MCPToolResult:
-        from mcp import ClientSession
-
         if not self.tool_name:
             raise ValueError("Tool name is required")
 
-        if self.transport == TransportType.STDIO:
-            from mcp.client.stdio import StdioServerParameters, stdio_client
-
-            if not self.command:
-                raise ValueError("Command is required for stdio transport")
-
-            params = StdioServerParameters(
-                command=self.command,
-                args=self.args,
-                env=self.env if self.env else None,
-                cwd=self.working_directory if self.working_directory else None,
+        async with _create_mcp_session(**self._get_session_params()) as session:
+            await session.initialize()
+            result = await session.call_tool(
+                self.tool_name, self.tool_arguments or None
             )
-
-            async with stdio_client(params, errlog=sys.stderr) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.call_tool(
-                        self.tool_name, self.tool_arguments or None
-                    )
-                    return {
-                        "content": [c.model_dump() for c in result.content],
-                        "is_error": result.isError,
-                    }
-
-        elif self.transport == TransportType.SSE:
-            from mcp.client.sse import sse_client
-
-            if not self.url:
-                raise ValueError("URL is required for SSE transport")
-
-            async with sse_client(
-                url=self.url,
-                headers=self.headers if self.headers else None,
-            ) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.call_tool(
-                        self.tool_name, self.tool_arguments or None
-                    )
-                    return {
-                        "content": [c.model_dump() for c in result.content],
-                        "is_error": result.isError,
-                    }
-
-        else:  # HTTP
-            from mcp.client.streamable_http import streamable_http_client
-
-            if not self.url:
-                raise ValueError("URL is required for HTTP transport")
-
-            async with streamable_http_client(url=self.url) as (read, write, _):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.call_tool(
-                        self.tool_name, self.tool_arguments or None
-                    )
-                    return {
-                        "content": [c.model_dump() for c in result.content],
-                        "is_error": result.isError,
-                    }
+            return {
+                "content": [c.model_dump() for c in result.content],
+                "is_error": result.isError,
+            }
 
 
-class MCPReadResource(BaseNode):
+class MCPReadResource(MCPOperationBaseNode):
     """
     Read a resource from an MCP server.
     mcp, model context protocol, resource, read, fetch, ai
@@ -585,39 +529,6 @@ class MCPReadResource(BaseNode):
     - Fetch content from MCP servers
     - Access structured data via MCP protocol
     """
-
-    transport: TransportType = Field(
-        default=TransportType.STDIO,
-        description="Transport type to use for connection",
-    )
-
-    # Stdio parameters
-    command: str = Field(
-        default="",
-        description="Command to execute (for stdio transport)",
-    )
-    args: list[str] = Field(
-        default=[],
-        description="Arguments for the command (for stdio transport)",
-    )
-    env: dict[str, str] = Field(
-        default={},
-        description="Environment variables (for stdio transport)",
-    )
-    working_directory: str = Field(
-        default="",
-        description="Working directory (for stdio transport)",
-    )
-
-    # HTTP parameters
-    url: str = Field(
-        default="",
-        description="URL of the MCP server (for SSE/HTTP transport)",
-    )
-    headers: dict[str, str] = Field(
-        default={},
-        description="HTTP headers (for SSE transport)",
-    )
 
     # Resource parameters
     resource_uri: str = Field(
@@ -639,91 +550,28 @@ class MCPReadResource(BaseNode):
     async def process(self, context: ProcessingContext) -> OutputType:
         from pydantic import AnyUrl
 
-        from mcp import ClientSession
-
         if not self.resource_uri:
             raise ValueError("Resource URI is required")
 
         uri = AnyUrl(self.resource_uri)
 
-        if self.transport == TransportType.STDIO:
-            from mcp.client.stdio import StdioServerParameters, stdio_client
-
-            if not self.command:
-                raise ValueError("Command is required for stdio transport")
-
-            params = StdioServerParameters(
-                command=self.command,
-                args=self.args,
-                env=self.env if self.env else None,
-                cwd=self.working_directory if self.working_directory else None,
-            )
-
-            async with stdio_client(params, errlog=sys.stderr) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.read_resource(uri)
-                    contents: list[MCPResourceContent] = []
-                    for content in result.contents:
-                        contents.append(
-                            {
-                                "uri": str(content.uri),
-                                "mime_type": content.mimeType,
-                                "text": getattr(content, "text", None),
-                                "blob": getattr(content, "blob", None),
-                            }
-                        )
-                    return {"contents": contents}
-
-        elif self.transport == TransportType.SSE:
-            from mcp.client.sse import sse_client
-
-            if not self.url:
-                raise ValueError("URL is required for SSE transport")
-
-            async with sse_client(
-                url=self.url,
-                headers=self.headers if self.headers else None,
-            ) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.read_resource(uri)
-                    contents: list[MCPResourceContent] = []
-                    for content in result.contents:
-                        contents.append(
-                            {
-                                "uri": str(content.uri),
-                                "mime_type": content.mimeType,
-                                "text": getattr(content, "text", None),
-                                "blob": getattr(content, "blob", None),
-                            }
-                        )
-                    return {"contents": contents}
-
-        else:  # HTTP
-            from mcp.client.streamable_http import streamable_http_client
-
-            if not self.url:
-                raise ValueError("URL is required for HTTP transport")
-
-            async with streamable_http_client(url=self.url) as (read, write, _):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.read_resource(uri)
-                    contents: list[MCPResourceContent] = []
-                    for content in result.contents:
-                        contents.append(
-                            {
-                                "uri": str(content.uri),
-                                "mime_type": content.mimeType,
-                                "text": getattr(content, "text", None),
-                                "blob": getattr(content, "blob", None),
-                            }
-                        )
-                    return {"contents": contents}
+        async with _create_mcp_session(**self._get_session_params()) as session:
+            await session.initialize()
+            result = await session.read_resource(uri)
+            contents: list[MCPResourceContent] = []
+            for content in result.contents:
+                contents.append(
+                    {
+                        "uri": str(content.uri),
+                        "mime_type": content.mimeType,
+                        "text": getattr(content, "text", None),
+                        "blob": getattr(content, "blob", None),
+                    }
+                )
+            return {"contents": contents}
 
 
-class MCPGetPrompt(BaseNode):
+class MCPGetPrompt(MCPOperationBaseNode):
     """
     Get a prompt from an MCP server.
     mcp, model context protocol, prompt, template, ai
@@ -733,39 +581,6 @@ class MCPGetPrompt(BaseNode):
     - Get structured prompts with arguments
     - Access AI prompt configurations
     """
-
-    transport: TransportType = Field(
-        default=TransportType.STDIO,
-        description="Transport type to use for connection",
-    )
-
-    # Stdio parameters
-    command: str = Field(
-        default="",
-        description="Command to execute (for stdio transport)",
-    )
-    args: list[str] = Field(
-        default=[],
-        description="Arguments for the command (for stdio transport)",
-    )
-    env: dict[str, str] = Field(
-        default={},
-        description="Environment variables (for stdio transport)",
-    )
-    working_directory: str = Field(
-        default="",
-        description="Working directory (for stdio transport)",
-    )
-
-    # HTTP parameters
-    url: str = Field(
-        default="",
-        description="URL of the MCP server (for SSE/HTTP transport)",
-    )
-    headers: dict[str, str] = Field(
-        default={},
-        description="HTTP headers (for SSE transport)",
-    )
 
     # Prompt parameters
     prompt_name: str = Field(
@@ -790,101 +605,26 @@ class MCPGetPrompt(BaseNode):
         return ["transport", "prompt_name", "prompt_arguments"]
 
     async def process(self, context: ProcessingContext) -> OutputType:
-        from mcp import ClientSession
-
         if not self.prompt_name:
             raise ValueError("Prompt name is required")
 
-        if self.transport == TransportType.STDIO:
-            from mcp.client.stdio import StdioServerParameters, stdio_client
-
-            if not self.command:
-                raise ValueError("Command is required for stdio transport")
-
-            params = StdioServerParameters(
-                command=self.command,
-                args=self.args,
-                env=self.env if self.env else None,
-                cwd=self.working_directory if self.working_directory else None,
+        async with _create_mcp_session(**self._get_session_params()) as session:
+            await session.initialize()
+            result = await session.get_prompt(
+                self.prompt_name, self.prompt_arguments or None
             )
-
-            async with stdio_client(params, errlog=sys.stderr) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.get_prompt(
-                        self.prompt_name, self.prompt_arguments or None
-                    )
-                    messages: list[MCPPromptMessage] = []
-                    for msg in result.messages:
-                        content = msg.content
-                        if hasattr(content, "model_dump"):
-                            content = content.model_dump()
-                        messages.append(
-                            {
-                                "role": msg.role,
-                                "content": content,
-                            }
-                        )
-                    return {
-                        "description": result.description,
-                        "messages": messages,
+            messages: list[MCPPromptMessage] = []
+            for msg in result.messages:
+                content = msg.content
+                if hasattr(content, "model_dump"):
+                    content = content.model_dump()
+                messages.append(
+                    {
+                        "role": msg.role,
+                        "content": content,
                     }
-
-        elif self.transport == TransportType.SSE:
-            from mcp.client.sse import sse_client
-
-            if not self.url:
-                raise ValueError("URL is required for SSE transport")
-
-            async with sse_client(
-                url=self.url,
-                headers=self.headers if self.headers else None,
-            ) as (read, write):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.get_prompt(
-                        self.prompt_name, self.prompt_arguments or None
-                    )
-                    messages: list[MCPPromptMessage] = []
-                    for msg in result.messages:
-                        content = msg.content
-                        if hasattr(content, "model_dump"):
-                            content = content.model_dump()
-                        messages.append(
-                            {
-                                "role": msg.role,
-                                "content": content,
-                            }
-                        )
-                    return {
-                        "description": result.description,
-                        "messages": messages,
-                    }
-
-        else:  # HTTP
-            from mcp.client.streamable_http import streamable_http_client
-
-            if not self.url:
-                raise ValueError("URL is required for HTTP transport")
-
-            async with streamable_http_client(url=self.url) as (read, write, _):
-                async with ClientSession(read, write) as session:
-                    await session.initialize()
-                    result = await session.get_prompt(
-                        self.prompt_name, self.prompt_arguments or None
-                    )
-                    messages: list[MCPPromptMessage] = []
-                    for msg in result.messages:
-                        content = msg.content
-                        if hasattr(content, "model_dump"):
-                            content = content.model_dump()
-                        messages.append(
-                            {
-                                "role": msg.role,
-                                "content": content,
-                            }
-                        )
-                    return {
-                        "description": result.description,
-                        "messages": messages,
-                    }
+                )
+            return {
+                "description": result.description,
+                "messages": messages,
+            }
