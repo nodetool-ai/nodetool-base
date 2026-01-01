@@ -14,67 +14,33 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import (
-    OutputHandle,
-    OutputsProxy,
-    DynamicOutputsProxy,
-    connect_field,
-)
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
 import nodetool.nodes.openai.agents
 from nodetool.workflows.base_node import BaseNode
-
 
 class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputType]):
     """
 
-    Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
-    realtime, streaming, openai, audio-input, text-output
+        Stream responses using the official OpenAI Realtime client. Supports optional audio input and streams text chunks.
+        realtime, streaming, openai, audio-input, text-output
 
-    Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
-    - Sends session settings via `session.update`
-    - Adds user input via `conversation.item.create`
-    - Streams back `response.text.delta` events until `response.done`
+        Uses `AsyncOpenAI().beta.realtime.connect(...)` with the events API:
+        - Sends session settings via `session.update`
+        - Adds user input via `conversation.item.create`
+        - Streams back `response.text.delta` events until `response.done`
     """
 
     Model: typing.ClassVar[type] = nodetool.nodes.openai.agents.RealtimeAgent.Model
     Voice: typing.ClassVar[type] = nodetool.nodes.openai.agents.RealtimeAgent.Voice
 
-    model: nodetool.nodes.openai.agents.RealtimeAgent.Model = Field(
-        default=nodetool.nodes.openai.agents.RealtimeAgent.Model.GPT_4O_MINI_REaltime,
-        description=None,
-    )
-    system: str | OutputHandle[str] = connect_field(
-        default="\nYou are an AI assistant interacting in real-time. Follow these rules unless explicitly overridden by the user:\n\n1. Respond promptly — minimize delay. If you do not yet have a complete answer, acknowledge the question and indicate what you are doing to find the answer.\n2. Maintain correctness. Always aim for accuracy; if you’re uncertain, say so and optionally offer to verify.\n3. Be concise but clear. Prioritize key information first, then supporting details if helpful.\n4. Ask clarifying questions when needed. If the user’s request is ambiguous, request clarification rather than guessing.\n5. Be consistent in terminology and definitions. Once you adopt a term or abbreviation, use it consistently in this conversation.\n6. Respect politeness and neutrality. Do not use emotive language unless the conversation tone demands it.\n7. Stay within safe and ethical bounds. Avoid disallowed content; follow OpenAI policies.\n8. Adapt to the user’s style and level. If the user seems technical, use technical detail; if non-technical, explain with simpler language.\n---\nYou are now active. Await the user’s request.\n",
-        description="System instructions for the realtime session",
-    )
-    chunk: types.Chunk | OutputHandle[types.Chunk] = connect_field(
-        default=types.Chunk(
-            type="chunk",
-            node_id=None,
-            content_type="text",
-            content="",
-            content_metadata={},
-            done=False,
-        ),
-        description="The audio chunk to use as input.",
-    )
-    voice: nodetool.nodes.openai.agents.RealtimeAgent.Voice = Field(
-        default=nodetool.nodes.openai.agents.RealtimeAgent.Voice.ALLOY,
-        description="The voice for the audio output",
-    )
-    speed: float | OutputHandle[float] = connect_field(
-        default=1.0, description="The speed of the model's spoken response"
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.8, description="The temperature for the response"
-    )
+    model: nodetool.nodes.openai.agents.RealtimeAgent.Model = Field(default=nodetool.nodes.openai.agents.RealtimeAgent.Model.GPT_4O_MINI_REaltime, description=None)
+    system: str | OutputHandle[str] = connect_field(default='\nYou are an AI assistant interacting in real-time. Follow these rules unless explicitly overridden by the user:\n\n1. Respond promptly — minimize delay. If you do not yet have a complete answer, acknowledge the question and indicate what you are doing to find the answer.\n2. Maintain correctness. Always aim for accuracy; if you’re uncertain, say so and optionally offer to verify.\n3. Be concise but clear. Prioritize key information first, then supporting details if helpful.\n4. Ask clarifying questions when needed. If the user’s request is ambiguous, request clarification rather than guessing.\n5. Be consistent in terminology and definitions. Once you adopt a term or abbreviation, use it consistently in this conversation.\n6. Respect politeness and neutrality. Do not use emotive language unless the conversation tone demands it.\n7. Stay within safe and ethical bounds. Avoid disallowed content; follow OpenAI policies.\n8. Adapt to the user’s style and level. If the user seems technical, use technical detail; if non-technical, explain with simpler language.\n---\nYou are now active. Await the user’s request.\n', description='System instructions for the realtime session')
+    chunk: types.Chunk | OutputHandle[types.Chunk] = connect_field(default=types.Chunk(type='chunk', node_id=None, content_type='text', content='', content_metadata={}, done=False), description='The audio chunk to use as input.')
+    voice: nodetool.nodes.openai.agents.RealtimeAgent.Voice = Field(default=nodetool.nodes.openai.agents.RealtimeAgent.Voice.ALLOY, description='The voice for the audio output')
+    speed: float | OutputHandle[float] = connect_field(default=1.0, description="The speed of the model's spoken response")
+    temperature: float | OutputHandle[float] = connect_field(default=0.8, description='The temperature for the response')
 
-    def __init__(
-        self,
-        *,
-        dynamic_outputs: dict[str, typing.Any] | None = None,
-        **kwargs: typing.Any,
-    ) -> None:
+    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
         """
         Initialize a RealtimeAgent node.
 
@@ -102,21 +68,18 @@ class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class RealtimeAgentOutputs(DynamicOutputsProxy):
     @property
     def chunk(self) -> OutputHandle[types.Chunk]:
-        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
+        return typing.cast(OutputHandle[types.Chunk], self['chunk'])
 
     @property
     def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.AudioRef], self["audio"]
-        )
+        return typing.cast(OutputHandle[nodetool.metadata.types.AudioRef], self['audio'])
 
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
 
 import typing
@@ -125,37 +88,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.agents
 from nodetool.workflows.base_node import BaseNode
 
-
-class RealtimeTranscription(
-    GraphNode[nodetool.nodes.openai.agents.RealtimeTranscription.OutputType]
-):
+class RealtimeTranscription(GraphNode[nodetool.nodes.openai.agents.RealtimeTranscription.OutputType]):
     """
 
-    Stream microphone or audio input to OpenAI Realtime and emit transcription.
+        Stream microphone or audio input to OpenAI Realtime and emit transcription.
 
-    Emits:
-      - `chunk` Chunk(content=..., done=False) for transcript deltas
-      - `chunk` Chunk(content="", done=True) to mark segment end
-      - `text` final aggregated transcript when input ends
+        Emits:
+          - `chunk` Chunk(content=..., done=False) for transcript deltas
+          - `chunk` Chunk(content="", done=True) to mark segment end
+          - `text` final aggregated transcript when input ends
     """
 
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="Model to use",
-    )
-    system: str | OutputHandle[str] = connect_field(
-        default="", description="System instructions (optional)"
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.8, description="Decoding temperature"
-    )
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='Model to use')
+    system: str | OutputHandle[str] = connect_field(default='', description='System instructions (optional)')
+    temperature: float | OutputHandle[float] = connect_field(default=0.8, description='Decoding temperature')
 
     @property
     def out(self) -> "RealtimeTranscriptionOutputs":
@@ -169,12 +115,13 @@ class RealtimeTranscription(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class RealtimeTranscriptionOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def chunk(self) -> OutputHandle[types.Chunk]:
-        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
+        return typing.cast(OutputHandle[types.Chunk], self['chunk'])
+
+

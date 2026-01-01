@@ -18,29 +18,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
 from nodetool.workflows.base_node import BaseNode
 
-
-class AddArray(
-    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
-    GraphNode[int | float | nodetool.metadata.types.NPArray],
-):
+class AddArray(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
     """
 
-    Performs addition on two arrays.
-    math, plus, add, addition, sum, +
+        Performs addition on two arrays.
+        math, plus, add, addition, sum, +
     """
 
-    a: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
-    b: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -57,23 +43,9 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.utils
 from nodetool.workflows.base_node import BaseNode
 
-
-class BinaryOperation(
-    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
-    GraphNode[int | float | nodetool.metadata.types.NPArray],
-):
-    a: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
-    b: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+class BinaryOperation(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
+    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -90,29 +62,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
 from nodetool.workflows.base_node import BaseNode
 
-
-class DivideArray(
-    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
-    GraphNode[int | float | nodetool.metadata.types.NPArray],
-):
+class DivideArray(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
     """
 
-    Divides the first array by the second.
-    math, division, arithmetic, quotient, /
+        Divides the first array by the second.
+        math, division, arithmetic, quotient, /
     """
 
-    a: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
-    b: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -129,34 +87,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
 from nodetool.workflows.base_node import BaseNode
 
-
-class ModulusArray(
-    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
-    GraphNode[int | float | nodetool.metadata.types.NPArray],
-):
+class ModulusArray(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
     """
 
-    Calculates the element-wise remainder of division.
-    math, modulo, remainder, mod, %
+        Calculates the element-wise remainder of division.
+        math, modulo, remainder, mod, %
 
-    Use cases:
-    - Implementing cyclic behaviors
-    - Checking for even/odd numbers
-    - Limiting values to a specific range
+        Use cases:
+        - Implementing cyclic behaviors
+        - Checking for even/odd numbers
+        - Limiting values to a specific range
     """
 
-    a: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
-    b: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -173,29 +117,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
 from nodetool.workflows.base_node import BaseNode
 
-
-class MultiplyArray(
-    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
-    GraphNode[int | float | nodetool.metadata.types.NPArray],
-):
+class MultiplyArray(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
     """
 
-    Multiplies two arrays.
-    math, product, times, *
+        Multiplies two arrays.
+        math, product, times, *
     """
 
-    a: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
-    b: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -212,29 +142,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.arithmetic
 from nodetool.workflows.base_node import BaseNode
 
-
-class SubtractArray(
-    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
-    GraphNode[int | float | nodetool.metadata.types.NPArray],
-):
+class SubtractArray(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
     """
 
-    Subtracts the second array from the first.
-    math, minus, difference, -
+        Subtracts the second array from the first.
+        math, minus, difference, -
     """
 
-    a: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
-    b: (
-        int
-        | float
-        | nodetool.metadata.types.NPArray
-        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
-    ) = connect_field(default=0.0, description=None)
+    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -243,3 +159,5 @@ class SubtractArray(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

@@ -18,47 +18,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
 from nodetool.workflows.base_node import BaseNode
 
-
 class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-    Generate videos from images using Google's Veo models.
-    google, video, generation, image-to-video, veo, ai, animation
+        Generate videos from images using Google's Veo models.
+        google, video, generation, image-to-video, veo, ai, animation
 
-    This node uses Google's Veo models to animate static images into dynamic videos.
-    Supports 720p resolution at 24fps with 8-second duration and native audio generation.
+        This node uses Google's Veo models to animate static images into dynamic videos.
+        Supports 720p resolution at 24fps with 8-second duration and native audio generation.
 
-    Use cases:
-    - Animate still artwork and photographs
-    - Create dynamic social media content from images
-    - Generate product showcase videos from photos
-    - Transform static graphics into engaging animations
-    - Create video presentations from slide images
+        Use cases:
+        - Animate still artwork and photographs
+        - Create dynamic social media content from images
+        - Generate product showcase videos from photos
+        - Transform static graphics into engaging animations
+        - Create video presentations from slide images
     """
 
     VeoModel: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoModel
     VeoAspectRatio: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoAspectRatio
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to animate into a video",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Optional text prompt describing the desired animation"
-    )
-    model: nodetool.nodes.gemini.video.VeoModel = Field(
-        default=nodetool.nodes.gemini.video.VeoModel.VEO_3_PREVIEW,
-        description="The Veo model to use for video generation",
-    )
-    aspect_ratio: nodetool.nodes.gemini.video.VeoAspectRatio = Field(
-        default=nodetool.nodes.gemini.video.VeoAspectRatio.RATIO_16_9,
-        description="The aspect ratio of the generated video",
-    )
-    negative_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Negative prompt to guide what to avoid in the video"
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to animate into a video')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Optional text prompt describing the desired animation')
+    model: nodetool.nodes.gemini.video.VeoModel = Field(default=nodetool.nodes.gemini.video.VeoModel.VEO_3_PREVIEW, description='The Veo model to use for video generation')
+    aspect_ratio: nodetool.nodes.gemini.video.VeoAspectRatio = Field(default=nodetool.nodes.gemini.video.VeoAspectRatio.RATIO_16_9, description='The aspect ratio of the generated video')
+    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Negative prompt to guide what to avoid in the video')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -75,41 +59,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.video
 from nodetool.workflows.base_node import BaseNode
 
-
 class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-    Generate videos from text prompts using Google's Veo models.
-    google, video, generation, text-to-video, veo, ai
+        Generate videos from text prompts using Google's Veo models.
+        google, video, generation, text-to-video, veo, ai
 
-    This node uses Google's Veo models to generate high-quality videos from text descriptions.
-    Supports 720p resolution at 24fps with 8-second duration and native audio generation.
+        This node uses Google's Veo models to generate high-quality videos from text descriptions.
+        Supports 720p resolution at 24fps with 8-second duration and native audio generation.
 
-    Use cases:
-    - Create cinematic clips from text descriptions
-    - Generate social media video content
-    - Produce marketing and promotional videos
-    - Visualize creative concepts and storyboards
-    - Create animated content with accompanying audio
+        Use cases:
+        - Create cinematic clips from text descriptions
+        - Generate social media video content
+        - Produce marketing and promotional videos
+        - Visualize creative concepts and storyboards
+        - Create animated content with accompanying audio
     """
 
     VeoModel: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoModel
     VeoAspectRatio: typing.ClassVar[type] = nodetool.nodes.gemini.video.VeoAspectRatio
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="The text prompt describing the video to generate"
-    )
-    model: nodetool.nodes.gemini.video.VeoModel = Field(
-        default=nodetool.nodes.gemini.video.VeoModel.VEO_3_PREVIEW,
-        description="The Veo model to use for video generation",
-    )
-    aspect_ratio: nodetool.nodes.gemini.video.VeoAspectRatio = Field(
-        default=nodetool.nodes.gemini.video.VeoAspectRatio.RATIO_16_9,
-        description="The aspect ratio of the generated video",
-    )
-    negative_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Negative prompt to guide what to avoid in the video"
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the video to generate')
+    model: nodetool.nodes.gemini.video.VeoModel = Field(default=nodetool.nodes.gemini.video.VeoModel.VEO_3_PREVIEW, description='The Veo model to use for video generation')
+    aspect_ratio: nodetool.nodes.gemini.video.VeoAspectRatio = Field(default=nodetool.nodes.gemini.video.VeoAspectRatio.RATIO_16_9, description='The aspect ratio of the generated video')
+    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Negative prompt to guide what to avoid in the video')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -118,3 +91,5 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
