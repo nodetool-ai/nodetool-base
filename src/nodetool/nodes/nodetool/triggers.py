@@ -232,16 +232,6 @@ class TriggerNode(BaseNode, Generic[T]):
                     log.info(f"Trigger {self.get_title()} received stop signal")
                     break
 
-                # Emit the event
-                if isinstance(event, dict):
-                    event_type_value = (
-                        event.get("event_type") or event.get("event") or "unknown"
-                    )
-                    event_type = str(event_type_value)
-                else:
-                    event_type = getattr(event, "event_type", "unknown")
-                log.debug(f"Trigger {self.get_title()} emitting event: {event_type}")
-
                 yield event
 
                 events_processed += 1
@@ -465,16 +455,14 @@ class FileWatchTrigger(TriggerNode[FileWatchTriggerOutput]):
                 if self._debounce(src_path):
                     return
 
-                event = {
+                log.debug(f"File event: {event_type} - {src_path}")
+                trigger.push_event({
                     "event": event_type,
                     "path": src_path,
                     "dest_path": dest_path,
                     "is_directory": is_directory,
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-
-                log.debug(f"File event: {event_type} - {src_path}")
-                trigger.push_event(event)
+                })
 
             def on_created(self, event):
                 if isinstance(event, (FileCreatedEvent, DirCreatedEvent)):
@@ -730,13 +718,12 @@ class ManualTrigger(TriggerNode[ManualTriggerOutput]):
             data: The data to include in the event.
             event_type: The type of event (default: "manual").
         """
-        event = {
+        self.push_event({
             "data": data,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "source": self.name,
             "event_type": event_type,
-        }
-        self.push_event(event)
+        })
 
 
 class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
@@ -831,8 +818,8 @@ class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
                 log.warning(f"Failed to parse request body: {e}")
                 body = await request.text()
 
-            # Build event
-            event = {
+            # Push to queue
+            self.push_event({
                 "body": body,
                 "headers": dict(request.headers),
                 "query": dict(request.query),
@@ -841,10 +828,7 @@ class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "source": f"{request.remote}",
                 "event_type": "webhook",
-            }
-
-            # Push to queue
-            self.push_event(event)
+            })
 
             return web.Response(
                 status=200,
@@ -922,18 +906,6 @@ class WaitNode(BaseNode):
     The workflow is suspended (not running) while waiting, so it doesn't
     consume resources. State is persisted and the workflow can be resumed
     even after server restarts.
-
-    Example:
-        ```python
-        # In a workflow
-        wait_node = WaitNode(
-            input={"request_id": "REQ-123"},
-            metadata={"task": "approval"}
-        )
-
-        # Workflow suspends here until externally resumed via:
-        # POST /api/runs/{run_id}/resume with body: {"approved": true}
-        ```
     """
 
     timeout_seconds: int = Field(
@@ -942,13 +914,8 @@ class WaitNode(BaseNode):
         ge=0,
     )
 
-    metadata: dict[str, Any] = Field(
-        default_factory=dict,
-        description="Optional metadata to include with the suspension",
-    )
-
-    input: dict[str, Any] = Field(
-        default_factory=dict,
+    input: Any = Field(
+        default="",
         description="Input data to pass through to the output when resumed",
     )
 
@@ -1014,18 +981,11 @@ class WaitNode(BaseNode):
             log.info(f"WaitNode {self._id} resuming after {waited_seconds:.1f}s")
 
             # Merge input with resume_data
-            input_data = saved_state.get("input", {})
-            resume_data = saved_state.get("resume_data", {})
-
-            # If resume_data is a dict, merge it with input; otherwise use resume_data
-            if isinstance(resume_data, dict):
-                merged_data = {**input_data, **resume_data}
-            else:
-                merged_data = resume_data
+            input_data = saved_state.get("input", "")
 
             # Return the resume data along with wait metadata
             return {
-                "data": merged_data,
+                "data": input_data,
                 "resumed_at": resumed_at.isoformat(),
                 "waited_seconds": waited_seconds,
             }
@@ -1043,12 +1003,10 @@ class WaitNode(BaseNode):
                 "suspended_at": self._suspended_at.isoformat(),
                 "input": self.input,
                 "timeout_seconds": self.timeout_seconds,
-                "metadata": self.metadata,
             },
             metadata={
                 "wait_node": True,
                 "timeout_seconds": self.timeout_seconds,
-                **self.metadata,
             },
         )
 
