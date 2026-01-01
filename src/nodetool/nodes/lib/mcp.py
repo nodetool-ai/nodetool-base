@@ -456,6 +456,10 @@ class MCPOperationBaseNode(BaseNode):
         default={},
         description="HTTP headers (for SSE/HTTP transport)",
     )
+    timeout: float = Field(
+        default=30.0,
+        description="Connection timeout in seconds (for SSE transport)",
+    )
 
     @classmethod
     def is_visible(cls) -> bool:
@@ -472,6 +476,7 @@ class MCPOperationBaseNode(BaseNode):
             "working_directory": self.working_directory,
             "url": self.url,
             "headers": self.headers,
+            "timeout": self.timeout,
         }
 
 
