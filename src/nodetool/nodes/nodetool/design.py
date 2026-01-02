@@ -190,24 +190,43 @@ class LayoutCanvas(BaseNode):
         fill_color = hex_to_rgba(props.get("fillColor", "#cccccc"), opacity)
         border_color = hex_to_rgba(props.get("borderColor", "#000000"), opacity)
         border_width = int(props.get("borderWidth", 0))
+        border_radius = int(props.get("borderRadius", 0))
 
-        log.debug(f"Rendering rectangle at ({x}, {y}) size ({w}, {h}), border_width={border_width}")
+        log.debug(f"Rendering rectangle at ({x}, {y}) size ({w}, {h}), border_width={border_width}, border_radius={border_radius}")
 
-        # Draw rectangle with both fill and outline in a single call
-        if border_width > 0:
-            draw.rectangle(
-                [x, y, x + w, y + h],
-                fill=fill_color,
-                outline=border_color,
-                width=border_width
-            )
+        # Use rounded_rectangle if border radius is set, otherwise regular rectangle
+        if border_radius > 0:
+            # Draw rounded rectangle
+            if border_width > 0:
+                draw.rounded_rectangle(
+                    [x, y, x + w, y + h],
+                    radius=border_radius,
+                    fill=fill_color,
+                    outline=border_color,
+                    width=border_width
+                )
+            else:
+                draw.rounded_rectangle(
+                    [x, y, x + w, y + h],
+                    radius=border_radius,
+                    fill=fill_color
+                )
         else:
-            draw.rectangle([x, y, x + w, y + h], fill=fill_color)
+            # Draw regular rectangle
+            if border_width > 0:
+                draw.rectangle(
+                    [x, y, x + w, y + h],
+                    fill=fill_color,
+                    outline=border_color,
+                    width=border_width
+                )
+            else:
+                draw.rectangle([x, y, x + w, y + h], fill=fill_color)
 
     async def _render_text(
         self, img: Image.Image, element: LayoutElement, props: Dict[str, Any]
     ):
-        """Render a text element."""
+        """Render a text element matching Konva's Text behavior."""
         draw = ImageDraw.Draw(img, "RGBA")
         x, y = int(element.x), int(element.y)
         w, h = int(element.width), int(element.height)
@@ -227,11 +246,11 @@ class LayoutCanvas(BaseNode):
                 font = ImageFont.load_default()
 
         # Get text bounding box for alignment calculation
-        bbox = draw.textbbox((0, 0), content, font=font)
+        bbox = draw.multiline_textbbox((0, 0), content, font=font)
         text_width = bbox[2] - bbox[0]
-        text_height = bbox[3] - bbox[1]
 
-        # Calculate x position based on alignment
+        # Calculate x position based on alignment (matching Konva behavior)
+        # Konva Text aligns within the element's width
         if alignment == "center":
             text_x = x + (w - text_width) // 2
         elif alignment == "right":
@@ -239,10 +258,17 @@ class LayoutCanvas(BaseNode):
         else:  # left
             text_x = x
 
-        # Vertically center text within element bounds
-        text_y = y + (h - text_height) // 2
+        # Konva Text is top-aligned by default
+        text_y = y
 
-        draw.text((text_x, text_y), content, fill=color, font=font)
+        # Use multiline_text for proper newline handling
+        draw.multiline_text(
+            (text_x, text_y),
+            content,
+            fill=color,
+            font=font,
+            align=alignment if alignment in ("left", "center", "right") else "left",
+        )
 
     async def _render_image(
         self,
