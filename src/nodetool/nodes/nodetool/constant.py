@@ -1,4 +1,5 @@
 from datetime import date
+import os
 from typing import Any
 
 from pydantic import Field
@@ -9,6 +10,7 @@ from nodetool.metadata.types import (
     DocumentRef,
     ImageRef,
     JSONRef,
+    Model3DRef,
     VideoRef,
 )
 from nodetool.metadata.types import DataframeRef as DataFrameRef
@@ -217,6 +219,43 @@ class Video(Constant):
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         await context.refresh_uri(self.value)
+        return self.value
+
+
+class Model3D(Constant):
+    """Represents a 3D model constant in the workflow.
+    3d, model, mesh, glb, obj, stl
+
+    Use cases:
+    - Provide a fixed 3D model input for processing nodes
+    - Reference a specific 3D model file in the workflow
+    - Set default 3D model for testing or demonstration purposes
+    """
+
+    _expose_as_tool = True
+
+    value: Model3DRef = Model3DRef()
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
+        await context.refresh_uri(self.value)
+
+        if not self.value.format:
+            # If still no format and we have an asset ID, check the asset name
+            if self.value.asset_id:
+                asset = await context.find_asset(self.value.asset_id)
+                if asset and asset.name:
+                    _, ext = os.path.splitext(asset.name)
+                    if ext:
+                        self.value.format = ext.lower().lstrip(".")
+
+            # First try to infer from URI (strip query params first)
+            if not self.value.format and self.value.uri:
+                path = self.value.uri.split("?")[0]
+                _, ext = os.path.splitext(path)
+                if ext:
+                    self.value.format = ext.lower().lstrip(".")
+
+
         return self.value
 
 

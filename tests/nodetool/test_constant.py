@@ -4,6 +4,7 @@ from nodetool.metadata.types import (
     AudioRef,
     DataframeRef,
     ImageRef,
+    Model3DRef,
     VideoRef,
     JSONRef,
     DocumentRef,
@@ -25,6 +26,7 @@ from nodetool.nodes.nodetool.constant import (
     Document,
     Date,
     DateTime,
+    Model3D,
 )
 
 
@@ -51,6 +53,7 @@ def context():
         Document,
         Date,
         DateTime,
+        Model3D,
     ],
 )
 async def test_constant_node(context: ProcessingContext, node_class):
@@ -90,6 +93,8 @@ async def test_constant_node(context: ProcessingContext, node_class):
             assert isinstance(result, DateType)
         elif node_class == DateTime:
             assert isinstance(result, DatetimeType)
+        elif node_class == Model3D:
+            assert isinstance(result, Model3DRef)
 
     except Exception as e:
         pytest.fail(f"Error processing {node_class.__name__}: {str(e)}")
