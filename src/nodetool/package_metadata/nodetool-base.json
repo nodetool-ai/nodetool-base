@@ -24175,7 +24175,7 @@
     },
     {
       "title": "Layout Canvas",
-      "description": "Visual layout editor node for composing designs with text, images, and shapes.\n    design, layout, canvas, image, compose, figma\n\n    Use cases:\n    - Create social media graphics with dynamic text\n    - Design banners and thumbnails\n    - Compose multi-element layouts\n    - Create image templates with replaceable content",
+      "description": "Visual layout editor node for composing designs with text, images, and shapes.\n    Uses Playwright + Konva.js for pixel-perfect rendering that matches the editor.\n    design, layout, canvas, image, compose, figma\n\n    Use cases:\n    - Create social media graphics with dynamic text\n    - Design banners and thumbnails\n    - Compose multi-element layouts\n    - Create image templates with replaceable content",
       "namespace": "nodetool.design",
       "node_type": "nodetool.design.LayoutCanvas",
       "properties": [
@@ -24188,6 +24188,17 @@
           "title": "Canvas",
           "description": "Canvas layout data with elements and settings.",
           "required": true
+        },
+        {
+          "name": "pixel_ratio",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Pixel Ratio",
+          "description": "Pixel ratio for output quality. 2.0 = retina quality.",
+          "min": 0.5,
+          "max": 4.0
         }
       ],
       "outputs": [
@@ -24199,7 +24210,8 @@
         }
       ],
       "basic_fields": [
-        "canvas"
+        "canvas",
+        "pixel_ratio"
       ],
       "is_dynamic": true
     },
