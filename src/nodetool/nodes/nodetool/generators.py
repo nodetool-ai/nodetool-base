@@ -25,7 +25,9 @@ from nodetool.workflows.processing_context import ProcessingContext
 logger = get_logger(__name__)
 
 
-def build_schema_from_slots(slots: list, title: str = "Structured Output Specification") -> dict[str, Any]:
+def build_schema_from_slots(
+    slots: list, title: str = "Structured Output Specification"
+) -> dict[str, Any]:
     if len(slots) == 0:
         raise ValueError("Declare outputs for the fields you want to generate")
 
@@ -43,7 +45,9 @@ def build_schema_from_slots(slots: list, title: str = "Structured Output Specifi
     }
 
 
-def build_schema_from_record_type(record_type: RecordType, title: str = "Item Schema") -> dict[str, Any]:
+def build_schema_from_record_type(
+    record_type: RecordType, title: str = "Item Schema"
+) -> dict[str, Any]:
     if not record_type.columns:
         raise ValueError("Define columns for the stream")
 
@@ -75,7 +79,9 @@ def build_schema_from_record_type(record_type: RecordType, title: str = "Item Sc
     }
 
 
-def format_structured_instructions(schema: dict[str, Any], instructions: str, context_text: str) -> str:
+def format_structured_instructions(
+    schema: dict[str, Any], instructions: str, context_text: str
+) -> str:
     instructions_sections: list[str] = []
     instructions_sections.append(
         "<JSON_SCHEMA>\n" + json.dumps(schema, indent=2) + "\n</JSON_SCHEMA>"
@@ -117,7 +123,6 @@ Generation rules
 Validation
 - Ensure the final JSON validates against <JSON_SCHEMA> exactly.
 """
-
 
 
 class StructuredOutputGenerator(BaseNode):
@@ -177,7 +182,9 @@ class StructuredOutputGenerator(BaseNode):
 
         output_slots = self.get_dynamic_output_slots()
         schema = build_schema_from_slots(output_slots)
-        additional_instructions = format_structured_instructions(schema, self.instructions, self.context)
+        additional_instructions = format_structured_instructions(
+            schema, self.instructions, self.context
+        )
 
         user_content: list[MessageContent] = [
             MessageTextContent(
@@ -350,10 +357,9 @@ class DataGenerator(BaseNode):
         and a final dataframe once all records are ready.
         """
         # Build column descriptions for the prompt
-        column_descriptions = "\n".join([
-            f"- {col.name} ({col.data_type})"
-            for col in self.columns.columns
-        ])
+        column_descriptions = "\n".join(
+            [f"- {col.name} ({col.data_type})" for col in self.columns.columns]
+        )
 
         system_message = Message(
             role="system",
@@ -464,23 +470,22 @@ class ListGenerator(BaseNode):
             role="system",
             content="""You are an assistant that generates lists.
             If the user asks for a specific number of items, generate that many.
-            The output should be a numbered or bulleted list.
-            
+            Wrap each item in <LIST_ITEM> tags. Content inside can span multiple lines.
+
             Example:
-            User: Generate 5 movie titles
+            User: Generate 3 movie titles
             Assistant: 
-            1. The Dark Knight
-            2. Inception
-            3. The Matrix
-            4. Interstellar
-            5. The Lord of the Rings
-            
+            <LIST_ITEM>The Dark Knight</LIST_ITEM>
+            <LIST_ITEM>Inception</LIST_ITEM>
+            <LIST_ITEM>The Matrix</LIST_ITEM>
+
             Example 2:
             User: Groceries
             Assistant:
-            - Milk
-            - Eggs
-            - Bread
+            <LIST_ITEM>Milk
+            Eggs</LIST_ITEM>
+            <LIST_ITEM>Bread</LIST_ITEM>
+            <LIST_ITEM>Butter</LIST_ITEM>
             """,
         )
 
@@ -500,9 +505,6 @@ class ListGenerator(BaseNode):
         messages = [system_message, user_message]
 
         buffer = ""
-        current_item = ""
-        current_index = 0
-        in_item = False
         collected_items: list[str] = []
 
         provider = await context.get_provider(self.model.provider)
@@ -514,71 +516,32 @@ class ListGenerator(BaseNode):
             if isinstance(chunk, Chunk):
                 buffer += chunk.content
 
-                # Process the buffer line by line
-                lines = buffer.split("\n")
-                buffer = lines.pop()  # Keep the last partial line in the buffer
+                while "<LIST_ITEM>" in buffer:
+                    start = buffer.find("<LIST_ITEM>") + len("<LIST_ITEM>")
+                    end = buffer.find("</LIST_ITEM>")
 
-                for line in lines:
-                    line = line.strip()
-                    if not line:
-                        continue
+                    if end == -1:
+                        buffer = buffer[start - len("<LIST_ITEM>") :]
+                        break
 
-                    # Check if this line starts a new numbered item or bullet point
-                    import re
+                    item_content = buffer[start:end].strip()
+                    item_content = re.sub(r"\*\*", "", item_content)
+                    item_content = re.sub(r"\s+", " ", item_content).strip()
+                    collected_items.append(item_content)
 
-                    # Match "1. " or "- " or "* " or "• "
-                    match = re.match(r"^\s*(?:(\d+)\.|[-*•])\s*(.*)", line)
+                    buffer = buffer[end + len("</LIST_ITEM>") :]
 
-                    if match:
-                        # If we were processing a previous item, yield it
-                        if in_item and current_item:
-                            collected_items.append(current_item)
-                            yield {"item": current_item, "index": current_index}
+                if "<LIST_ITEM>" not in buffer and "</LIST_ITEM>" in buffer:
+                    buffer = ""
 
-                        # Start a new item
-                        if match.group(1):
-                            current_index = int(match.group(1))
-                        else:
-                            current_index += 1
-                        
-                        current_item = match.group(2)
-                        in_item = True
-                    elif in_item:
-                        # Continue with the current item
-                        current_item += " " + line
+        if not collected_items:
+            raise ValueError(
+                "ListGenerator did not find any <LIST_ITEM> tags in the response. "
+                "Ensure the output is wrapped in <LIST_ITEM>...</LIST_ITEM> tags."
+            )
 
-        # Process any remaining complete lines in the buffer
-        if buffer:
-            match = re.match(r"^\s*(?:(\d+)\.|[-*•])\s*(.*)", buffer.strip())
-            if match:
-                # If we were processing a previous item, yield it
-                if in_item and current_item:
-                    collected_items.append(current_item)
-                    yield {"item": current_item, "index": current_index}
-
-                # Process the final item
-                if match.group(1):
-                    current_index = int(match.group(1))
-                else:
-                    current_index += 1
-
-                current_item = match.group(2)
-                collected_items.append(current_item)
-                yield {"item": current_item, "index": current_index}
-            elif in_item:
-                # Add to the current item and yield it
-                current_item += " " + buffer.strip()
-                collected_items.append(current_item)
-                yield {"item": current_item, "index": current_index}
-
-        # Flush any final item if not yet emitted
-        if (
-            in_item
-            and current_item
-            and (not collected_items or collected_items[-1] != current_item)
-        ):
-            collected_items.append(current_item)
-            yield {"item": current_item, "index": current_index}
+        for index, item in enumerate(collected_items):
+            yield {"item": item, "index": index}
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -845,7 +808,7 @@ Always return a single JSON object as your primary output, conforming to the sch
         user_message = Message(
             role="user",
             content=f"""Available columns in the dataset:
-{json.dumps([c.model_dump() for c in self.data.columns ], indent=2)}
+{json.dumps([c.model_dump() for c in self.data.columns], indent=2)}
 
 Input data:
 {json.dumps(self.data.data if self.data.data else [], indent=2)}

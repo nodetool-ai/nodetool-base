@@ -98,7 +98,9 @@ async def test_data_generator_gen_process_streaming(context: ProcessingContext):
 | Bob | 25 |"""
 
     # Create a FakeProvider that streams markdown table chunks
-    fake_provider = FakeProvider(text_response=markdown_table, should_stream=True, chunk_size=10)
+    fake_provider = FakeProvider(
+        text_response=markdown_table, should_stream=True, chunk_size=10
+    )
 
     with patch(
         "nodetool.workflows.processing_context.ProcessingContext.get_provider",
@@ -134,12 +136,10 @@ async def test_list_generator_gen_process_streaming(context: ProcessingContext):
         max_tokens=128,
     )
 
-    # Simulate model streaming a numbered list
-    text = """
-1. Alpha
-2. Beta
-3. Gamma
-""".strip()
+    # Simulate model streaming with <LIST_ITEM> tags
+    text = """<LIST_ITEM>Alpha</LIST_ITEM>
+<LIST_ITEM>Beta</LIST_ITEM>
+<LIST_ITEM>Gamma</LIST_ITEM>"""
 
     # Create a FakeProvider that streams the text as chunks
     fake_provider = FakeProvider(text_response=text, should_stream=True, chunk_size=10)
@@ -162,21 +162,23 @@ async def test_list_generator_gen_process_streaming(context: ProcessingContext):
 
         # Assert streamed items and indexes
         assert items == ["Alpha", "Beta", "Gamma"]
-        assert indices == [1, 2, 3]
+        assert indices == [0, 1, 2]
 
 
 def test_build_schema_from_record_type():
     """Test build_schema_from_record_type with various column types."""
-    columns = RecordType(columns=[
-        ColumnDef(name="name", data_type="string"),
-        ColumnDef(name="age", data_type="int"),
-        ColumnDef(name="price", data_type="float"),
-        ColumnDef(name="created_at", data_type="datetime"),
-        ColumnDef(name="metadata", data_type="object"),
-    ])
-    
+    columns = RecordType(
+        columns=[
+            ColumnDef(name="name", data_type="string"),
+            ColumnDef(name="age", data_type="int"),
+            ColumnDef(name="price", data_type="float"),
+            ColumnDef(name="created_at", data_type="datetime"),
+            ColumnDef(name="metadata", data_type="object"),
+        ]
+    )
+
     schema = build_schema_from_record_type(columns, title="Test Schema")
-    
+
     assert schema["type"] == "object"
     assert schema["title"] == "Test Schema"
     assert schema["additionalProperties"] is False
@@ -184,14 +186,17 @@ def test_build_schema_from_record_type():
     assert schema["properties"]["name"] == {"type": "string"}
     assert schema["properties"]["age"] == {"type": "integer"}
     assert schema["properties"]["price"] == {"type": "number"}
-    assert schema["properties"]["created_at"] == {"type": "string", "format": "date-time"}
+    assert schema["properties"]["created_at"] == {
+        "type": "string",
+        "format": "date-time",
+    }
     assert schema["required"] == ["name", "age", "price", "created_at", "metadata"]
 
 
 def test_build_schema_from_record_type_empty_raises():
     """Test build_schema_from_record_type raises error with empty columns."""
     columns = RecordType(columns=[])
-    
+
     with pytest.raises(ValueError, match="Define columns"):
         build_schema_from_record_type(columns)
 
@@ -201,13 +206,13 @@ def test_build_schema_from_slots():
     # Create mock slots with name and type attributes
     mock_type = MagicMock()
     mock_type.get_json_schema.return_value = {"type": "string"}
-    
+
     mock_slot = MagicMock()
     mock_slot.name = "test_field"
     mock_slot.type = mock_type
-    
+
     schema = build_schema_from_slots([mock_slot], title="Test Output")
-    
+
     assert schema["type"] == "object"
     assert schema["title"] == "Test Output"
     assert schema["additionalProperties"] is False
@@ -224,8 +229,10 @@ def test_build_schema_from_slots_empty_raises():
 def test_format_structured_instructions_full():
     """Test format_structured_instructions with all parameters."""
     schema = {"type": "object", "properties": {"name": {"type": "string"}}}
-    result = format_structured_instructions(schema, "Generate a name", "Use formal names")
-    
+    result = format_structured_instructions(
+        schema, "Generate a name", "Use formal names"
+    )
+
     assert "<JSON_SCHEMA>" in result
     assert "</JSON_SCHEMA>" in result
     assert "<INSTRUCTIONS>" in result
@@ -238,7 +245,7 @@ def test_format_structured_instructions_minimal():
     """Test format_structured_instructions with empty instructions and context."""
     schema = {"type": "object"}
     result = format_structured_instructions(schema, "", "")
-    
+
     assert "<JSON_SCHEMA>" in result
     assert "<INSTRUCTIONS>" not in result
     assert "<CONTEXT>" not in result
@@ -246,22 +253,20 @@ def test_format_structured_instructions_minimal():
 
 @pytest.mark.asyncio
 async def test_list_generator_with_bullet_points(context: ProcessingContext):
-    """Test ListGenerator with bullet point list format."""
+    """Test ListGenerator with <LIST_ITEM> tag format."""
     node = ListGenerator(
         model=LanguageModel(provider=Provider.OpenAI, id="gpt-4"),
         prompt="Generate items",
         input_text="",
         max_tokens=128,
     )
-    
-    text = """
-- First item
-- Second item
-- Third item
-""".strip()
-    
+
+    text = """<LIST_ITEM>First item</LIST_ITEM>
+<LIST_ITEM>Second item</LIST_ITEM>
+<LIST_ITEM>Third item</LIST_ITEM>"""
+
     fake_provider = FakeProvider(text_response=text, should_stream=True, chunk_size=10)
-    
+
     with patch(
         "nodetool.workflows.processing_context.ProcessingContext.get_provider",
         return_value=fake_provider,
@@ -270,32 +275,94 @@ async def test_list_generator_with_bullet_points(context: ProcessingContext):
         async for output in node.gen_process(context):
             if "item" in output:
                 items.append(output["item"])
-        
+
         assert len(items) == 3
         assert items == ["First item", "Second item", "Third item"]
 
 
 @pytest.mark.asyncio
+async def test_list_generator_missing_tags_raises(context: ProcessingContext):
+    """Test ListGenerator raises error when <LIST_ITEM> tags are missing."""
+    node = ListGenerator(
+        model=LanguageModel(provider=Provider.OpenAI, id="gpt-4"),
+        prompt="Generate items",
+        input_text="",
+        max_tokens=128,
+    )
+
+    text = """No tags here
+just plain text"""
+
+    fake_provider = FakeProvider(text_response=text, should_stream=True, chunk_size=100)
+
+    with patch(
+        "nodetool.workflows.processing_context.ProcessingContext.get_provider",
+        return_value=fake_provider,
+    ):
+        items = []
+        with pytest.raises(ValueError, match="<LIST_ITEM> tags"):
+            async for output in node.gen_process(context):
+                if "item" in output:
+                    items.append(output["item"])
+
+
+@pytest.mark.asyncio
+async def test_list_generator_with_multiline_items(context: ProcessingContext):
+    """Test ListGenerator with multi-line items using <LIST_ITEM> tags."""
+    node = ListGenerator(
+        model=LanguageModel(provider=Provider.OpenAI, id="gpt-4"),
+        prompt="Generate items",
+        input_text="",
+        max_tokens=128,
+    )
+
+    text = """<LIST_ITEM>First item
+with continuation</LIST_ITEM>
+<LIST_ITEM>Second item</LIST_ITEM>
+<LIST_ITEM>Third item on
+multiple lines
+here</LIST_ITEM>"""
+
+    fake_provider = FakeProvider(text_response=text, should_stream=True, chunk_size=10)
+
+    with patch(
+        "nodetool.workflows.processing_context.ProcessingContext.get_provider",
+        return_value=fake_provider,
+    ):
+        items = []
+        async for output in node.gen_process(context):
+            if "item" in output:
+                items.append(output["item"])
+
+        assert len(items) == 3
+        assert items[0] == "First item with continuation"
+        assert items[1] == "Second item"
+        assert items[2] == "Third item on multiple lines here"
+
+
+@pytest.mark.asyncio
 async def test_data_generator_parse_markdown_table():
     """Test DataGenerator._parse_markdown_table method."""
-    columns = RecordType(columns=[
-        ColumnDef(name="id", data_type="int"),
-        ColumnDef(name="name", data_type="string"),
-    ])
-    
+    columns = RecordType(
+        columns=[
+            ColumnDef(name="id", data_type="int"),
+            ColumnDef(name="name", data_type="string"),
+        ]
+    )
+
     node = DataGenerator(
         model=LanguageModel(provider=Provider.OpenAI, id="gpt-4"),
         columns=columns,
         prompt="",
     )
-    
+
     table_text = """| id | name |
 |-----|------|
 | 1 | Alice |
 | 2 | Bob |"""
-    
+
     rows = node._parse_markdown_table(table_text)
-    
+
     assert len(rows) == 2
     assert rows[0] == {"id": 1, "name": "Alice"}
     assert rows[1] == {"id": 2, "name": "Bob"}
@@ -310,11 +377,11 @@ async def test_data_generator_parse_markdown_table_empty():
         columns=columns,
         prompt="",
     )
-    
+
     # Only header, no data rows
     table_text = """| id |
 |-----|"""
-    
+
     rows = node._parse_markdown_table(table_text)
     assert rows == []
 
@@ -322,30 +389,32 @@ async def test_data_generator_parse_markdown_table_empty():
 @pytest.mark.asyncio
 async def test_data_generator_convert_value():
     """Test DataGenerator._convert_value method."""
-    columns = RecordType(columns=[
-        ColumnDef(name="count", data_type="int"),
-        ColumnDef(name="price", data_type="float"),
-        ColumnDef(name="name", data_type="string"),
-    ])
-    
+    columns = RecordType(
+        columns=[
+            ColumnDef(name="count", data_type="int"),
+            ColumnDef(name="price", data_type="float"),
+            ColumnDef(name="name", data_type="string"),
+        ]
+    )
+
     node = DataGenerator(
         model=LanguageModel(provider=Provider.OpenAI, id="gpt-4"),
         columns=columns,
         prompt="",
     )
-    
+
     # Test int conversion
     assert node._convert_value("count", "42") == 42
-    
+
     # Test float conversion
     assert node._convert_value("price", "19.99") == 19.99
-    
+
     # Test string passthrough
     assert node._convert_value("name", "Alice") == "Alice"
-    
+
     # Test None handling
     assert node._convert_value("count", "None") is None
     assert node._convert_value("count", "") is None
-    
+
     # Test unknown column returns value as-is
     assert node._convert_value("unknown", "test") == "test"
