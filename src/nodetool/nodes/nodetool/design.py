@@ -189,16 +189,20 @@ class LayoutCanvas(BaseNode):
         opacity = props.get("opacity", 1.0)
         fill_color = hex_to_rgba(props.get("fillColor", "#cccccc"), opacity)
         border_color = hex_to_rgba(props.get("borderColor", "#000000"), opacity)
-        border_width = props.get("borderWidth", 0)
+        border_width = int(props.get("borderWidth", 0))
 
-        # Draw filled rectangle
-        draw.rectangle([x, y, x + w, y + h], fill=fill_color)
+        log.debug(f"Rendering rectangle at ({x}, {y}) size ({w}, {h}), border_width={border_width}")
 
-        # Draw border if present
+        # Draw rectangle with both fill and outline in a single call
         if border_width > 0:
             draw.rectangle(
-                [x, y, x + w, y + h], outline=border_color, width=int(border_width)
+                [x, y, x + w, y + h],
+                fill=fill_color,
+                outline=border_color,
+                width=border_width
             )
+        else:
+            draw.rectangle([x, y, x + w, y + h], fill=fill_color)
 
     async def _render_text(
         self, img: Image.Image, element: LayoutElement, props: Dict[str, Any]
@@ -206,9 +210,11 @@ class LayoutCanvas(BaseNode):
         """Render a text element."""
         draw = ImageDraw.Draw(img, "RGBA")
         x, y = int(element.x), int(element.y)
+        w, h = int(element.width), int(element.height)
         content = props.get("content", "")
         font_size = props.get("fontSize", 16)
         color = hex_to_rgba(props.get("color", "#000000"))
+        alignment = props.get("alignment", "left")
 
         # Try to load font, fall back to default
         try:
@@ -220,7 +226,23 @@ class LayoutCanvas(BaseNode):
             except (OSError, IOError):
                 font = ImageFont.load_default()
 
-        draw.text((x, y), content, fill=color, font=font)
+        # Get text bounding box for alignment calculation
+        bbox = draw.textbbox((0, 0), content, font=font)
+        text_width = bbox[2] - bbox[0]
+        text_height = bbox[3] - bbox[1]
+
+        # Calculate x position based on alignment
+        if alignment == "center":
+            text_x = x + (w - text_width) // 2
+        elif alignment == "right":
+            text_x = x + w - text_width
+        else:  # left
+            text_x = x
+
+        # Vertically center text within element bounds
+        text_y = y + (h - text_height) // 2
+
+        draw.text((text_x, text_y), content, fill=color, font=font)
 
     async def _render_image(
         self,
@@ -243,6 +265,10 @@ class LayoutCanvas(BaseNode):
             # Apply fit mode
             fit = props.get("fit", "contain")
             target_w, target_h = int(element.width), int(element.height)
+            x, y = int(element.x), int(element.y)
+            
+            # Offset for centering (used in contain mode)
+            offset_x, offset_y = 0, 0
 
             if fit == "fill":
                 element_img = element_img.resize((target_w, target_h))
@@ -262,6 +288,9 @@ class LayoutCanvas(BaseNode):
                 new_w = int(element_img.width * scale)
                 new_h = int(element_img.height * scale)
                 element_img = element_img.resize((new_w, new_h))
+                # Center the image within the element bounds
+                offset_x = (target_w - new_w) // 2
+                offset_y = (target_h - new_h) // 2
 
             # Apply opacity
             opacity = props.get("opacity", 1.0)
@@ -270,11 +299,13 @@ class LayoutCanvas(BaseNode):
                 alpha = alpha.point(lambda p: int(p * opacity))
                 element_img.putalpha(alpha)
 
-            # Paste onto canvas
-            x, y = int(element.x), int(element.y)
-            img.paste(element_img, (x, y), element_img)
+            # Paste onto canvas (with centering offset for contain mode)
+            paste_x = x + offset_x
+            paste_y = y + offset_y
+            img.paste(element_img, (paste_x, paste_y), element_img)
 
-        except Exception:
+        except Exception as e:
+            log.warning(f"Failed to render image element: {e}")
             # Draw placeholder on error
             draw = ImageDraw.Draw(img, "RGBA")
             x, y = int(element.x), int(element.y)
