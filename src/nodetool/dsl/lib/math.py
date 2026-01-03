@@ -18,21 +18,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Add(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Adds two numbers together.
-        math, add, plus, +, sum
+    Adds two numbers together.
+    math, add, plus, +, sum
 
-        Use cases:
-        - Perform basic arithmetic operations
-        - Calculate totals and sums
-        - Combine numerical values
-        - Increment counters and scores
+    Use cases:
+    - Perform basic arithmetic operations
+    - Calculate totals and sums
+    - Combine numerical values
+    - Increment counters and scores
     """
 
-    a: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    b: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
+    a: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    b: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -49,14 +54,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Cosine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Computes cosine of the given angle in radians.
-        math, cosine, trig
+    Computes cosine of the given angle in radians.
+    math, cosine, trig
     """
 
-    angle_rad: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
+    angle_rad: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -73,21 +81,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Divide(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Divides A by B to calculate the quotient.
-        math, divide, division, quotient, /
+    Divides A by B to calculate the quotient.
+    math, divide, division, quotient, /
 
-        Use cases:
-        - Calculate averages and ratios
-        - Distribute quantities evenly
-        - Determine rates and proportions
-        - Compute per-unit values
+    Use cases:
+    - Calculate averages and ratios
+    - Distribute quantities evenly
+    - Determine rates and proportions
+    - Compute per-unit values
     """
 
-    a: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    b: int | float | OutputHandle[int | float] = connect_field(default=1.0, description=None)
+    a: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    b: int | float | OutputHandle[int | float] = connect_field(
+        default=1.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -104,17 +117,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class MathFunction(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Performs a selected unary math operation on an input.
-        math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log,   -, abs, ^2, ^3, sqrt, cbrt, sin, cos, tan, asin, acos, atan, log
+    Performs a selected unary math operation on an input.
+    math, negate, absolute, square, cube, square_root, cube_root, sine, cosine, tangent, arcsine, arccosine, arctangent, log,   -, abs, ^2, ^3, sqrt, cbrt, sin, cos, tan, asin, acos, atan, log
     """
 
     Operation: typing.ClassVar[type] = nodetool.nodes.lib.math.MathFunction.Operation
 
-    input: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    operation: nodetool.nodes.lib.math.MathFunction.Operation = Field(default=nodetool.nodes.lib.math.MathFunction.Operation.NEGATE, description='Unary operation to perform')
+    input: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    operation: nodetool.nodes.lib.math.MathFunction.Operation = Field(
+        default=nodetool.nodes.lib.math.MathFunction.Operation.NEGATE,
+        description="Unary operation to perform",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -131,21 +150,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Modulus(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Computes A modulo B to find the remainder after division.
-        math, modulus, modulo, remainder, %
+    Computes A modulo B to find the remainder after division.
+    math, modulus, modulo, remainder, %
 
-        Use cases:
-        - Determine if numbers are even or odd
-        - Implement cyclic patterns and rotations
-        - Calculate remainders in division
-        - Build repeating sequences
+    Use cases:
+    - Determine if numbers are even or odd
+    - Implement cyclic patterns and rotations
+    - Calculate remainders in division
+    - Build repeating sequences
     """
 
-    a: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    b: int | float | OutputHandle[int | float] = connect_field(default=1.0, description=None)
+    a: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    b: int | float | OutputHandle[int | float] = connect_field(
+        default=1.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -162,21 +186,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Multiply(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Multiplies two numbers together.
-        math, multiply, product, *, times
+    Multiplies two numbers together.
+    math, multiply, product, *, times
 
-        Use cases:
-        - Calculate products and totals
-        - Scale values by factors
-        - Compute areas and volumes
-        - Apply multipliers and rates
+    Use cases:
+    - Calculate products and totals
+    - Scale values by factors
+    - Compute areas and volumes
+    - Apply multipliers and rates
     """
 
-    a: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    b: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
+    a: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    b: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -193,15 +222,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Power(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Raises base to the given exponent.
-        math, power, exponent, ^
+    Raises base to the given exponent.
+    math, power, exponent, ^
     """
 
-    base: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    exponent: int | float | OutputHandle[int | float] = connect_field(default=1.0, description=None)
+    base: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    exponent: int | float | OutputHandle[int | float] = connect_field(
+        default=1.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -218,14 +252,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Sine(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Computes sine of the given angle in radians.
-        math, sine, trig
+    Computes sine of the given angle in radians.
+    math, sine, trig
     """
 
-    angle_rad: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
+    angle_rad: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -242,14 +279,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Sqrt(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Computes square root of x.
-        math, sqrt, square_root
+    Computes square root of x.
+    math, sqrt, square_root
     """
 
-    x: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
+    x: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -266,21 +306,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.math
 from nodetool.workflows.base_node import BaseNode
 
+
 class Subtract(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     """
 
-        Subtracts B from A.
-        math, subtract, minus, -, difference
+    Subtracts B from A.
+    math, subtract, minus, -, difference
 
-        Use cases:
-        - Calculate differences between values
-        - Determine remaining amounts
-        - Compute offsets and deltas
-        - Track decrements and reductions
+    Use cases:
+    - Calculate differences between values
+    - Determine remaining amounts
+    - Compute offsets and deltas
+    - Track decrements and reductions
     """
 
-    a: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
-    b: int | float | OutputHandle[int | float] = connect_field(default=0.0, description=None)
+    a: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
+    b: int | float | OutputHandle[int | float] = connect_field(
+        default=0.0, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -289,5 +334,3 @@ class Subtract(SingleOutputGraphNode[int | float], GraphNode[int | float]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

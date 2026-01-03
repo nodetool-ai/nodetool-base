@@ -18,29 +18,65 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class AudioMixer(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Mix up to 5 audio tracks together with individual volume controls.
-        audio, mix, volume, combine, blend, layer, add, overlay
+    Mix up to 5 audio tracks together with individual volume controls.
+    audio, mix, volume, combine, blend, layer, add, overlay
 
-        Use cases:
-        - Mix multiple audio tracks into a single output
-        - Create layered soundscapes
-        - Combine music, voice, and sound effects
-        - Adjust individual track volumes
+    Use cases:
+    - Mix multiple audio tracks into a single output
+    - Create layered soundscapes
+    - Combine music, voice, and sound effects
+    - Adjust individual track volumes
     """
 
-    track1: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='First audio track to mix.')
-    track2: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Second audio track to mix.')
-    track3: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Third audio track to mix.')
-    track4: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Fourth audio track to mix.')
-    track5: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Fifth audio track to mix.')
-    volume1: float | OutputHandle[float] = connect_field(default=1.0, description='Volume for track 1. 1.0 is original volume.')
-    volume2: float | OutputHandle[float] = connect_field(default=1.0, description='Volume for track 2. 1.0 is original volume.')
-    volume3: float | OutputHandle[float] = connect_field(default=1.0, description='Volume for track 3. 1.0 is original volume.')
-    volume4: float | OutputHandle[float] = connect_field(default=1.0, description='Volume for track 4. 1.0 is original volume.')
-    volume5: float | OutputHandle[float] = connect_field(default=1.0, description='Volume for track 5. 1.0 is original volume.')
+    track1: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First audio track to mix.",
+    )
+    track2: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second audio track to mix.",
+    )
+    track3: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Third audio track to mix.",
+    )
+    track4: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Fourth audio track to mix.",
+    )
+    track5: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Fifth audio track to mix.",
+    )
+    volume1: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Volume for track 1. 1.0 is original volume."
+    )
+    volume2: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Volume for track 2. 1.0 is original volume."
+    )
+    volume3: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Volume for track 3. 1.0 is original volume."
+    )
+    volume4: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Volume for track 4. 1.0 is original volume."
+    )
+    volume5: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Volume for track 5. 1.0 is original volume."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -57,19 +93,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class AudioToNumpy(GraphNode[nodetool.nodes.nodetool.audio.AudioToNumpy.OutputType]):
     """
 
-        Convert audio to numpy array for processing.
-        audio, numpy, convert, array
+    Convert audio to numpy array for processing.
+    audio, numpy, convert, array
 
-        Use cases:
-        - Prepare audio for custom processing
-        - Convert audio for machine learning models
-        - Extract raw audio data for analysis
+    Use cases:
+    - Prepare audio for custom processing
+    - Convert audio for machine learning models
+    - Extract raw audio data for analysis
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio to convert to numpy.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio to convert to numpy.",
+    )
 
     @property
     def out(self) -> "AudioToNumpyOutputs":
@@ -83,18 +125,19 @@ class AudioToNumpy(GraphNode[nodetool.nodes.nodetool.audio.AudioToNumpy.OutputTy
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class AudioToNumpyOutputs(OutputsProxy):
     @property
     def array(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self['array'])
+        return typing.cast(OutputHandle[types.NPArray], self["array"])
 
     @property
     def sample_rate(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self['sample_rate'])
+        return typing.cast(OutputHandle[int], self["sample_rate"])
 
     @property
     def channels(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self['channels'])
+        return typing.cast(OutputHandle[int], self["channels"])
 
 
 import typing
@@ -103,19 +146,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Concatenates two audio files together.
-        audio, edit, join, +
+    Concatenates two audio files together.
+    audio, edit, join, +
 
-        Use cases:
-        - Combine multiple audio clips into a single file
-        - Create longer audio tracks from shorter segments
+    Use cases:
+    - Combine multiple audio clips into a single file
+    - Create longer audio tracks from shorter segments
     """
 
-    a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The first audio file.')
-    b: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The second audio file.')
+    a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The first audio file.",
+    )
+    b: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The second audio file.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -132,19 +186,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class ConcatList(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Concatenates multiple audio files together in sequence.
-        audio, edit, join, multiple, +
+    Concatenates multiple audio files together in sequence.
+    audio, edit, join, multiple, +
 
-        Use cases:
-        - Combine multiple audio clips into a single file
-        - Create longer audio tracks from multiple segments
-        - Chain multiple audio files in order
+    Use cases:
+    - Combine multiple audio clips into a single file
+    - Create longer audio tracks from multiple segments
+    - Chain multiple audio files in order
     """
 
-    audio_files: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(default=[], description='List of audio files to concatenate in sequence.')
+    audio_files: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = (
+        connect_field(
+            default=[], description="List of audio files to concatenate in sequence."
+        )
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -161,19 +220,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-        Converts an audio file to a Array for further processing.
-        audio, conversion, tensor
+    Converts an audio file to a Array for further processing.
+    audio, conversion, tensor
 
-        Use cases:
-        - Prepare audio data for machine learning models
-        - Enable signal processing operations on audio
-        - Convert audio to a format suitable for spectral analysisr
+    Use cases:
+    - Prepare audio data for machine learning models
+    - Enable signal processing operations on audio
+    - Convert audio to a format suitable for spectral analysisr
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to convert to a tensor.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to convert to a tensor.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -190,19 +255,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class CreateSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Creates a silent audio file with a specified duration.
-        audio, silence, empty
+    Creates a silent audio file with a specified duration.
+    audio, silence, empty
 
-        Use cases:
-        - Generate placeholder audio files
-        - Create audio segments for padding or spacing
-        - Add silence to the beginning or end of audio files
+    Use cases:
+    - Generate placeholder audio files
+    - Create audio segments for padding or spacing
+    - Add silence to the beginning or end of audio files
     """
 
-    duration: float | OutputHandle[float] = connect_field(default=1.0, description='The duration of the silence in seconds.')
+    duration: float | OutputHandle[float] = connect_field(
+        default=1.0, description="The duration of the silence in seconds."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -219,19 +287,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class FadeIn(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Applies a fade-in effect to the beginning of an audio file.
-        audio, edit, transition
+    Applies a fade-in effect to the beginning of an audio file.
+    audio, edit, transition
 
-        Use cases:
-        - Create smooth introductions to audio tracks
-        - Gradually increase volume at the start of a clip
+    Use cases:
+    - Create smooth introductions to audio tracks
+    - Gradually increase volume at the start of a clip
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to apply fade-in to.')
-    duration: float | OutputHandle[float] = connect_field(default=1.0, description='Duration of the fade-in effect in seconds.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to apply fade-in to.",
+    )
+    duration: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Duration of the fade-in effect in seconds."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -248,19 +324,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class FadeOut(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Applies a fade-out effect to the end of an audio file.
-        audio, edit, transition
+    Applies a fade-out effect to the end of an audio file.
+    audio, edit, transition
 
-        Use cases:
-        - Create smooth endings to audio tracks
-        - Gradually decrease volume at the end of a clip
+    Use cases:
+    - Create smooth endings to audio tracks
+    - Gradually decrease volume at the end of a clip
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to apply fade-out to.')
-    duration: float | OutputHandle[float] = connect_field(default=1.0, description='Duration of the fade-out effect in seconds.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to apply fade-out to.",
+    )
+    duration: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Duration of the fade-out effect in seconds."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -277,14 +361,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
-class LoadAudioAssets(GraphNode[nodetool.nodes.nodetool.audio.LoadAudioAssets.OutputType]):
+
+class LoadAudioAssets(
+    GraphNode[nodetool.nodes.nodetool.audio.LoadAudioAssets.OutputType]
+):
     """
 
-        Load audio files from an asset folder.
-        load, audio, file, import
+    Load audio files from an asset folder.
+    load, audio, file, import
     """
 
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to load the audio files from.')
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The asset folder to load the audio files from.",
+    )
 
     @property
     def out(self) -> "LoadAudioAssetsOutputs":
@@ -298,14 +390,15 @@ class LoadAudioAssets(GraphNode[nodetool.nodes.nodetool.audio.LoadAudioAssets.Ou
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class LoadAudioAssetsOutputs(OutputsProxy):
     @property
     def audio(self) -> OutputHandle[types.AudioRef]:
-        return typing.cast(OutputHandle[types.AudioRef], self['audio'])
+        return typing.cast(OutputHandle[types.AudioRef], self["audio"])
 
     @property
     def name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['name'])
+        return typing.cast(OutputHandle[str], self["name"])
 
 
 import typing
@@ -314,19 +407,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class LoadAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Read an audio file from disk.
-        audio, input, load, file
+    Read an audio file from disk.
+    audio, input, load, file
 
-        Use cases:
-        - Load audio for processing
-        - Import sound files for editing
-        - Read audio assets for a workflow
+    Use cases:
+    - Load audio for processing
+    - Import sound files for editing
+    - Read audio assets for a workflow
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the audio file to read')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the audio file to read"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -343,21 +439,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
-class LoadAudioFolder(GraphNode[nodetool.nodes.nodetool.audio.LoadAudioFolder.OutputType]):
+
+class LoadAudioFolder(
+    GraphNode[nodetool.nodes.nodetool.audio.LoadAudioFolder.OutputType]
+):
     """
 
-        Load all audio files from a folder, optionally including subfolders.
-        audio, load, folder, files
+    Load all audio files from a folder, optionally including subfolders.
+    audio, load, folder, files
 
-        Use cases:
-        - Batch import audio for processing
-        - Build datasets from a directory tree
-        - Iterate over audio collections
+    Use cases:
+    - Batch import audio for processing
+    - Build datasets from a directory tree
+    - Iterate over audio collections
     """
 
-    folder: str | OutputHandle[str] = connect_field(default='', description='Folder to scan for audio files')
-    include_subdirectories: bool | OutputHandle[bool] = connect_field(default=False, description='Include audio in subfolders')
-    extensions: list[str] | OutputHandle[list[str]] = connect_field(default=['.mp3', '.wav', '.flac', '.ogg', '.m4a', '.aac'], description='Audio file extensions to include')
+    folder: str | OutputHandle[str] = connect_field(
+        default="", description="Folder to scan for audio files"
+    )
+    include_subdirectories: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Include audio in subfolders"
+    )
+    extensions: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[".mp3", ".wav", ".flac", ".ogg", ".m4a", ".aac"],
+        description="Audio file extensions to include",
+    )
 
     @property
     def out(self) -> "LoadAudioFolderOutputs":
@@ -371,14 +477,15 @@ class LoadAudioFolder(GraphNode[nodetool.nodes.nodetool.audio.LoadAudioFolder.Ou
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class LoadAudioFolderOutputs(OutputsProxy):
     @property
     def audio(self) -> OutputHandle[types.AudioRef]:
-        return typing.cast(OutputHandle[types.AudioRef], self['audio'])
+        return typing.cast(OutputHandle[types.AudioRef], self["audio"])
 
     @property
     def path(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['path'])
+        return typing.cast(OutputHandle[str], self["path"])
 
 
 import typing
@@ -387,18 +494,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class MonoToStereo(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Converts a mono audio signal to stereo.
-        audio, convert, channels
+    Converts a mono audio signal to stereo.
+    audio, convert, channels
 
-        Use cases:
-        - Expand mono recordings for stereo playback systems
-        - Prepare audio for further stereo processing
+    Use cases:
+    - Expand mono recordings for stereo playback systems
+    - Prepare audio for further stereo processing
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The mono audio file to convert.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The mono audio file to convert.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -415,18 +528,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Normalize(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Normalizes the volume of an audio file.
-        audio, fix, dynamics, volume
+    Normalizes the volume of an audio file.
+    audio, fix, dynamics, volume
 
-        Use cases:
-        - Ensure consistent volume across multiple audio files
-        - Adjust overall volume level before further processing
+    Use cases:
+    - Ensure consistent volume across multiple audio files
+    - Adjust overall volume level before further processing
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to normalize.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to normalize.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -443,21 +562,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class NumpyToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Convert numpy array to audio.
-        audio, numpy, convert
+    Convert numpy array to audio.
+    audio, numpy, convert
 
-        Use cases:
-        - Convert processed audio data back to audio format
-        - Create audio from machine learning model outputs
-        - Generate audio from synthesized waveforms
+    Use cases:
+    - Convert processed audio data back to audio format
+    - Create audio from machine learning model outputs
+    - Generate audio from synthesized waveforms
     """
 
-    array: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='The numpy array to convert to audio.')
-    sample_rate: int | OutputHandle[int] = connect_field(default=44100, description='Sample rate in Hz.')
-    channels: int | OutputHandle[int] = connect_field(default=1, description='Number of audio channels (1 or 2).')
+    array: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="The numpy array to convert to audio.",
+    )
+    sample_rate: int | OutputHandle[int] = connect_field(
+        default=44100, description="Sample rate in Hz."
+    )
+    channels: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of audio channels (1 or 2)."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -474,19 +601,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class OverlayAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Overlays two audio files together.
-        audio, edit, transform
+    Overlays two audio files together.
+    audio, edit, transform
 
-        Use cases:
-        - Mix background music with voice recording
-        - Layer sound effects over an existing audio track
+    Use cases:
+    - Mix background music with voice recording
+    - Layer sound effects over an existing audio track
     """
 
-    a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The first audio file.')
-    b: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The second audio file.')
+    a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The first audio file.",
+    )
+    b: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The second audio file.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -503,24 +641,45 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Removes or shortens silence in an audio file with smooth transitions.
-        audio, edit, clean
+    Removes or shortens silence in an audio file with smooth transitions.
+    audio, edit, clean
 
-        Use cases:
-        - Trim silent parts from beginning/end of recordings
-        - Remove or shorten long pauses between speech segments
-        - Apply crossfade for smooth transitions
+    Use cases:
+    - Trim silent parts from beginning/end of recordings
+    - Remove or shorten long pauses between speech segments
+    - Apply crossfade for smooth transitions
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to process.')
-    min_length: int | OutputHandle[int] = connect_field(default=200, description='Minimum length of silence to be processed (in milliseconds).')
-    threshold: int | OutputHandle[int] = connect_field(default=-40, description='Silence threshold in dB (relative to full scale). Higher values detect more silence.')
-    reduction_factor: float | OutputHandle[float] = connect_field(default=1.0, description='Factor to reduce silent parts (0.0 to 1.0). 0.0 keeps silence as is, 1.0 removes it completely.')
-    crossfade: int | OutputHandle[int] = connect_field(default=10, description='Duration of crossfade in milliseconds to apply between segments for smooth transitions.')
-    min_silence_between_parts: int | OutputHandle[int] = connect_field(default=100, description='Minimum silence duration in milliseconds to maintain between non-silent segments')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to process.",
+    )
+    min_length: int | OutputHandle[int] = connect_field(
+        default=200,
+        description="Minimum length of silence to be processed (in milliseconds).",
+    )
+    threshold: int | OutputHandle[int] = connect_field(
+        default=-40,
+        description="Silence threshold in dB (relative to full scale). Higher values detect more silence.",
+    )
+    reduction_factor: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="Factor to reduce silent parts (0.0 to 1.0). 0.0 keeps silence as is, 1.0 removes it completely.",
+    )
+    crossfade: int | OutputHandle[int] = connect_field(
+        default=10,
+        description="Duration of crossfade in milliseconds to apply between segments for smooth transitions.",
+    )
+    min_silence_between_parts: int | OutputHandle[int] = connect_field(
+        default=100,
+        description="Minimum silence duration in milliseconds to maintain between non-silent segments",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -537,20 +696,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Repeat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Loops an audio file a specified number of times.
-        audio, edit, repeat
+    Loops an audio file a specified number of times.
+    audio, edit, repeat
 
-        Use cases:
-        - Create repeating background sounds or music
-        - Extend short audio clips to fill longer durations
-        - Generate rhythmic patterns from short samples
+    Use cases:
+    - Create repeating background sounds or music
+    - Extend short audio clips to fill longer durations
+    - Generate rhythmic patterns from short samples
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to loop.')
-    loops: int | OutputHandle[int] = connect_field(default=2, description='Number of times to loop the audio. Minimum 1 (plays once), maximum 100.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to loop.",
+    )
+    loops: int | OutputHandle[int] = connect_field(
+        default=2,
+        description="Number of times to loop the audio. Minimum 1 (plays once), maximum 100.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -567,18 +735,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Reverse(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Reverses an audio file.
-        audio, edit, transform
+    Reverses an audio file.
+    audio, edit, transform
 
-        Use cases:
-        - Create reverse audio effects
-        - Generate backwards speech or music
+    Use cases:
+    - Create reverse audio effects
+    - Generate backwards speech or music
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to reverse.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to reverse.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -595,21 +769,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Save an audio file to a specified asset folder.
-        audio, folder, name
+    Save an audio file to a specified asset folder.
+    audio, folder, name
 
-        Use cases:
-        - Save generated audio files with timestamps
-        - Organize outputs into specific folders
-        - Create backups of generated audio
+    Use cases:
+    - Save generated audio files with timestamps
+    - Organize outputs into specific folders
+    - Create backups of generated audio
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description=None)
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to save the audio file to. ')
-    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d-%H-%M-%S.opus', description='\n        The name of the audio file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description=None,
+    )
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The asset folder to save the audio file to. ",
+    )
+    name: str | OutputHandle[str] = connect_field(
+        default="%Y-%m-%d-%H-%M-%S.opus",
+        description="\n        The name of the audio file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -626,20 +814,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Write an audio file to disk.
-        audio, output, save, file
+    Write an audio file to disk.
+    audio, output, save, file
 
-        The filename can include time and date variables:
-        %Y - Year, %m - Month, %d - Day
-        %H - Hour, %M - Minute, %S - Second
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio to save')
-    folder: str | OutputHandle[str] = connect_field(default='', description='Folder where the file will be saved')
-    filename: str | OutputHandle[str] = connect_field(default='', description='\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio to save",
+    )
+    folder: str | OutputHandle[str] = connect_field(
+        default="", description="Folder where the file will be saved"
+    )
+    filename: str | OutputHandle[str] = connect_field(
+        default="",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -656,20 +855,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class SliceAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Extracts a section of an audio file.
-        audio, edit, trim
+    Extracts a section of an audio file.
+    audio, edit, trim
 
-        Use cases:
-        - Cut out a specific clip from a longer audio file
-        - Remove unwanted portions from beginning or end
+    Use cases:
+    - Cut out a specific clip from a longer audio file
+    - Remove unwanted portions from beginning or end
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file.')
-    start: float | OutputHandle[float] = connect_field(default=0.0, description='The start time in seconds.')
-    end: float | OutputHandle[float] = connect_field(default=1.0, description='The end time in seconds.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file.",
+    )
+    start: float | OutputHandle[float] = connect_field(
+        default=0.0, description="The start time in seconds."
+    )
+    end: float | OutputHandle[float] = connect_field(
+        default=1.0, description="The end time in seconds."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -686,19 +895,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class StereoToMono(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Converts a stereo audio signal to mono.
-        audio, convert, channels
+    Converts a stereo audio signal to mono.
+    audio, convert, channels
 
-        Use cases:
-        - Reduce file size for mono-only applications
-        - Simplify audio for certain processing tasks
+    Use cases:
+    - Reduce file size for mono-only applications
+    - Simplify audio for certain processing tasks
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The stereo audio file to convert.')
-    method: str | OutputHandle[str] = connect_field(default='average', description="Method to use for conversion: 'average', 'left', or 'right'.")
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The stereo audio file to convert.",
+    )
+    method: str | OutputHandle[str] = connect_field(
+        default="average",
+        description="Method to use for conversion: 'average', 'left', or 'right'.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -715,23 +933,40 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class TextToSpeech(GraphNode[nodetool.nodes.nodetool.audio.TextToSpeech.OutputType]):
     """
 
-        Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
-        audio, generation, AI, text-to-speech, tts, voice
+    Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
+    audio, generation, AI, text-to-speech, tts, voice
 
-        Use cases:
-        - Create voiceovers for videos and presentations
-        - Generate natural-sounding narration for content
-        - Build voice assistants and chatbots
-        - Convert written content to audio format
-        - Create accessible audio versions of text
+    Use cases:
+    - Create voiceovers for videos and presentations
+    - Generate natural-sounding narration for content
+    - Build voice assistants and chatbots
+    - Convert written content to audio format
+    - Create accessible audio versions of text
     """
 
-    model: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(default=types.TTSModel(type='tts_model', provider=nodetool.metadata.types.Provider.OpenAI, id='tts-1', name='TTS 1', path=None, voices=['alloy', 'echo', 'fable', 'onyx', 'nova', 'shimmer'], selected_voice=''), description='The text-to-speech model to use')
-    text: str | OutputHandle[str] = connect_field(default='Hello! This is a text-to-speech demonstration.', description='Text to convert to speech')
-    speed: float | OutputHandle[float] = connect_field(default=1.0, description='Speech speed multiplier (0.25 to 4.0)')
+    model: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(
+        default=types.TTSModel(
+            type="tts_model",
+            provider=nodetool.metadata.types.Provider.OpenAI,
+            id="tts-1",
+            name="TTS 1",
+            path=None,
+            voices=["alloy", "echo", "fable", "onyx", "nova", "shimmer"],
+            selected_voice="",
+        ),
+        description="The text-to-speech model to use",
+    )
+    text: str | OutputHandle[str] = connect_field(
+        default="Hello! This is a text-to-speech demonstration.",
+        description="Text to convert to speech",
+    )
+    speed: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Speech speed multiplier (0.25 to 4.0)"
+    )
 
     @property
     def out(self) -> "TextToSpeechOutputs":
@@ -745,14 +980,17 @@ class TextToSpeech(GraphNode[nodetool.nodes.nodetool.audio.TextToSpeech.OutputTy
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class TextToSpeechOutputs(OutputsProxy):
     @property
     def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
-        return typing.cast(OutputHandle[nodetool.metadata.types.AudioRef], self['audio'])
+        return typing.cast(
+            OutputHandle[nodetool.metadata.types.AudioRef], self["audio"]
+        )
 
     @property
     def chunk(self) -> OutputHandle[types.Chunk]:
-        return typing.cast(OutputHandle[types.Chunk], self['chunk'])
+        return typing.cast(OutputHandle[types.Chunk], self["chunk"])
 
 
 import typing
@@ -761,21 +999,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Trim(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Trim an audio file to a specified duration.
-        audio, trim, cut
+    Trim an audio file to a specified duration.
+    audio, trim, cut
 
-        Use cases:
-        - Remove silence from the beginning or end of audio files
-        - Extract specific segments from audio files
-        - Prepare audio data for machine learning models
+    Use cases:
+    - Remove silence from the beginning or end of audio files
+    - Extract specific segments from audio files
+    - Prepare audio data for machine learning models
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to trim.')
-    start: float | OutputHandle[float] = connect_field(default=0.0, description='The start time of the trimmed audio in seconds.')
-    end: float | OutputHandle[float] = connect_field(default=0.0, description='The end time of the trimmed audio in seconds.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to trim.",
+    )
+    start: float | OutputHandle[float] = connect_field(
+        default=0.0, description="The start time of the trimmed audio in seconds."
+    )
+    end: float | OutputHandle[float] = connect_field(
+        default=0.0, description="The end time of the trimmed audio in seconds."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -784,5 +1032,3 @@ class Trim(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

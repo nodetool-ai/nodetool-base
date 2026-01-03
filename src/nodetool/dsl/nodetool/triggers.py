@@ -353,6 +353,62 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+class WaitNode(GraphNode[WaitOutput]):
+    """
+
+        Node that suspends workflow execution until externally resumed.
+
+        This node pauses the workflow at this point and waits for an external
+        signal (via API call) to continue. When resumed, it outputs the input
+        data merged with any data provided during the resume call.
+
+        Use cases:
+        - Human-in-the-loop workflows requiring approval
+        - Waiting for external processes to complete
+        - Pausing workflows for manual data entry
+        - Synchronization points in multi-step processes
+        - Interactive chatbot-style workflows
+
+        The workflow is suspended (not running) while waiting, so it doesn't
+        consume resources. State is persisted and the workflow can be resumed
+        even after server restarts.
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(default=0, description='Optional timeout in seconds (0 = wait indefinitely)')
+    input: Any | OutputHandle[Any] = connect_field(default='', description='Input data to pass through to the output when resumed')
+
+    @property
+    def out(self) -> "WaitNodeOutputs":
+        return WaitNodeOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.triggers.WaitNode
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+class WaitNodeOutputs(OutputsProxy):
+    @property
+    def data(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self['data'])
+
+    @property
+    def resumed_at(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self['resumed_at'])
+
+    @property
+    def waited_seconds(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self['waited_seconds'])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.triggers
+from nodetool.workflows.base_node import BaseNode
+
 class WebhookTrigger(GraphNode[WebhookTriggerOutput]):
     """
 

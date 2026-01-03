@@ -18,20 +18,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class CopyWorkspaceFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Copy a file within the workspace.
-        workspace, file, copy, duplicate
+    Copy a file within the workspace.
+    workspace, file, copy, duplicate
 
-        Use cases:
-        - Create file backups in workspace
-        - Duplicate files for different processing
-        - Copy files to subdirectories
+    Use cases:
+    - Create file backups in workspace
+    - Duplicate files for different processing
+    - Copy files to subdirectories
     """
 
-    source: str | OutputHandle[str] = connect_field(default='', description='Relative source path within workspace')
-    destination: str | OutputHandle[str] = connect_field(default='', description='Relative destination path within workspace')
+    source: str | OutputHandle[str] = connect_field(
+        default="", description="Relative source path within workspace"
+    )
+    destination: str | OutputHandle[str] = connect_field(
+        default="", description="Relative destination path within workspace"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,19 +53,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class CreateWorkspaceDirectory(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Create a directory in the workspace.
-        workspace, directory, create, folder
+    Create a directory in the workspace.
+    workspace, directory, create, folder
 
-        Use cases:
-        - Organize workspace files into directories
-        - Create output directories for generated files
-        - Set up workspace structure
+    Use cases:
+    - Organize workspace files into directories
+    - Create output directories for generated files
+    - Set up workspace structure
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to directory within workspace')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to directory within workspace"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -77,20 +85,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class DeleteWorkspaceFile(SingleOutputGraphNode[NoneType], GraphNode[NoneType]):
     """
 
-        Delete a file or directory from the workspace.
-        workspace, file, delete, remove
+    Delete a file or directory from the workspace.
+    workspace, file, delete, remove
 
-        Use cases:
-        - Clean up temporary files
-        - Remove processed files
-        - Clear workspace data
+    Use cases:
+    - Clean up temporary files
+    - Remove processed files
+    - Clear workspace data
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file or directory within workspace')
-    recursive: bool | OutputHandle[bool] = connect_field(default=False, description='Delete directories recursively')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file or directory within workspace"
+    )
+    recursive: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Delete directories recursively"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -107,16 +120,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetWorkspaceDir(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Get the current workspace directory path.
-        workspace, directory, path
+    Get the current workspace directory path.
+    workspace, directory, path
 
-        Use cases:
-        - Get the workspace path for reference
-        - Display workspace location
-        - Pass workspace path to other nodes
+    Use cases:
+    - Get the workspace path for reference
+    - Display workspace location
+    - Pass workspace path to other nodes
     """
 
     @classmethod
@@ -134,19 +148,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetWorkspaceFileInfo(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Get information about a file in the workspace.
-        workspace, file, info, metadata
+    Get information about a file in the workspace.
+    workspace, file, info, metadata
 
-        Use cases:
-        - Get file size and timestamps
-        - Check file type (file vs directory)
-        - Inspect file metadata
+    Use cases:
+    - Get file size and timestamps
+    - Check file type (file vs directory)
+    - Inspect file metadata
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file within workspace')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file within workspace"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -163,19 +180,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetWorkspaceFileSize(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-        Get file size in bytes for a workspace file.
-        workspace, file, size, bytes
+    Get file size in bytes for a workspace file.
+    workspace, file, size, bytes
 
-        Use cases:
-        - Check file size before processing
-        - Monitor generated file sizes
-        - Validate file completeness
+    Use cases:
+    - Check file size before processing
+    - Monitor generated file sizes
+    - Validate file completeness
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file within workspace')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file within workspace"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -192,19 +212,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class IsWorkspaceDirectory(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-        Check if a path in the workspace is a directory.
-        workspace, directory, check, type
+    Check if a path in the workspace is a directory.
+    workspace, directory, check, type
 
-        Use cases:
-        - Distinguish directories from files
-        - Validate directory paths
-        - Filter paths by type
+    Use cases:
+    - Distinguish directories from files
+    - Validate directory paths
+    - Filter paths by type
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path within workspace to check')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path within workspace to check"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -221,19 +244,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class IsWorkspaceFile(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-        Check if a path in the workspace is a file.
-        workspace, file, check, type
+    Check if a path in the workspace is a file.
+    workspace, file, check, type
 
-        Use cases:
-        - Distinguish files from directories
-        - Validate file types
-        - Filter paths by type
+    Use cases:
+    - Distinguish files from directories
+    - Validate file types
+    - Filter paths by type
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path within workspace to check')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path within workspace to check"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -250,19 +276,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class JoinWorkspacePaths(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Join path components relative to workspace.
-        workspace, path, join, combine
+    Join path components relative to workspace.
+    workspace, path, join, combine
 
-        Use cases:
-        - Build file paths within workspace
-        - Construct nested paths
-        - Create organized file structures
+    Use cases:
+    - Build file paths within workspace
+    - Construct nested paths
+    - Create organized file structures
     """
 
-    paths: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='Path components to join (relative to workspace)')
+    paths: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="Path components to join (relative to workspace)"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -279,21 +308,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
-class ListWorkspaceFiles(GraphNode[nodetool.nodes.nodetool.workspace.ListWorkspaceFiles.OutputType]):
+
+class ListWorkspaceFiles(
+    GraphNode[nodetool.nodes.nodetool.workspace.ListWorkspaceFiles.OutputType]
+):
     """
 
-        List files in the workspace directory matching a pattern.
-        workspace, files, list, directory
+    List files in the workspace directory matching a pattern.
+    workspace, files, list, directory
 
-        Use cases:
-        - Get files for batch processing within workspace
-        - Filter workspace files by extension or pattern
-        - Discover generated files in workspace
+    Use cases:
+    - Get files for batch processing within workspace
+    - Filter workspace files by extension or pattern
+    - Discover generated files in workspace
     """
 
-    path: str | OutputHandle[str] = connect_field(default='.', description='Relative path within workspace (use . for workspace root)')
-    pattern: str | OutputHandle[str] = connect_field(default='*', description='File pattern to match (e.g. *.txt, *.json)')
-    recursive: bool | OutputHandle[bool] = connect_field(default=False, description='Search subdirectories recursively')
+    path: str | OutputHandle[str] = connect_field(
+        default=".",
+        description="Relative path within workspace (use . for workspace root)",
+    )
+    pattern: str | OutputHandle[str] = connect_field(
+        default="*", description="File pattern to match (e.g. *.txt, *.json)"
+    )
+    recursive: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Search subdirectories recursively"
+    )
 
     @property
     def out(self) -> "ListWorkspaceFilesOutputs":
@@ -307,10 +346,11 @@ class ListWorkspaceFiles(GraphNode[nodetool.nodes.nodetool.workspace.ListWorkspa
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ListWorkspaceFilesOutputs(OutputsProxy):
     @property
     def file(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['file'])
+        return typing.cast(OutputHandle[str], self["file"])
 
 
 import typing
@@ -319,20 +359,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class MoveWorkspaceFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Move or rename a file within the workspace.
-        workspace, file, move, rename
+    Move or rename a file within the workspace.
+    workspace, file, move, rename
 
-        Use cases:
-        - Rename files in workspace
-        - Move files to subdirectories
-        - Reorganize workspace files
+    Use cases:
+    - Rename files in workspace
+    - Move files to subdirectories
+    - Reorganize workspace files
     """
 
-    source: str | OutputHandle[str] = connect_field(default='', description='Relative source path within workspace')
-    destination: str | OutputHandle[str] = connect_field(default='', description='Relative destination path within workspace')
+    source: str | OutputHandle[str] = connect_field(
+        default="", description="Relative source path within workspace"
+    )
+    destination: str | OutputHandle[str] = connect_field(
+        default="", description="Relative destination path within workspace"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -349,19 +394,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class ReadBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Read a binary file from the workspace as base64-encoded string.
-        workspace, file, read, binary
+    Read a binary file from the workspace as base64-encoded string.
+    workspace, file, read, binary
 
-        Use cases:
-        - Read generated binary data
-        - Load binary files for processing
-        - Access non-text files
+    Use cases:
+    - Read generated binary data
+    - Load binary files for processing
+    - Access non-text files
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file within workspace')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file within workspace"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -378,20 +426,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class ReadTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Read a text file from the workspace.
-        workspace, file, read, text
+    Read a text file from the workspace.
+    workspace, file, read, text
 
-        Use cases:
-        - Read configuration files
-        - Load text data generated by previous nodes
-        - Process text files in workspace
+    Use cases:
+    - Read configuration files
+    - Load text data generated by previous nodes
+    - Process text files in workspace
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file within workspace')
-    encoding: str | OutputHandle[str] = connect_field(default='utf-8', description='Text encoding (utf-8, ascii, etc.)')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file within workspace"
+    )
+    encoding: str | OutputHandle[str] = connect_field(
+        default="utf-8", description="Text encoding (utf-8, ascii, etc.)"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -408,22 +461,37 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Save an image to a file in the workspace.
-        workspace, image, save, file, output
+    Save an image to a file in the workspace.
+    workspace, image, save, file, output
 
-        Use cases:
-        - Save processed images to workspace
-        - Export edited photos
-        - Archive image results
+    Use cases:
+    - Save processed images to workspace
+    - Export edited photos
+    - Archive image results
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to save')
-    folder: str | OutputHandle[str] = connect_field(default='.', description='Relative folder path within workspace (use . for workspace root)')
-    filename: str | OutputHandle[str] = connect_field(default='image.png', description='\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
-    overwrite: bool | OutputHandle[bool] = connect_field(default=False, description='Overwrite the file if it already exists, otherwise file will be renamed')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to save",
+    )
+    folder: str | OutputHandle[str] = connect_field(
+        default=".",
+        description="Relative folder path within workspace (use . for workspace root)",
+    )
+    filename: str | OutputHandle[str] = connect_field(
+        default="image.png",
+        description="\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+    overwrite: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Overwrite the file if it already exists, otherwise file will be renamed",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -440,26 +508,47 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Save a video file to the workspace.
-        workspace, video, save, file, output
+    Save a video file to the workspace.
+    workspace, video, save, file, output
 
-        Use cases:
-        - Save processed videos to workspace
-        - Export video results
-        - Archive video content
+    Use cases:
+    - Save processed videos to workspace
+    - Export video results
+    - Archive video content
 
-        The filename can include time and date variables:
-        %Y - Year, %m - Month, %d - Day
-        %H - Hour, %M - Minute, %S - Second
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The video to save')
-    folder: str | OutputHandle[str] = connect_field(default='.', description='Relative folder path within workspace (use . for workspace root)')
-    filename: str | OutputHandle[str] = connect_field(default='video.mp4', description='\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
-    overwrite: bool | OutputHandle[bool] = connect_field(default=False, description='Overwrite the file if it already exists, otherwise file will be renamed')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The video to save",
+    )
+    folder: str | OutputHandle[str] = connect_field(
+        default=".",
+        description="Relative folder path within workspace (use . for workspace root)",
+    )
+    filename: str | OutputHandle[str] = connect_field(
+        default="video.mp4",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+    overwrite: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Overwrite the file if it already exists, otherwise file will be renamed",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -476,19 +565,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class WorkspaceFileExists(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-        Check if a file or directory exists in the workspace.
-        workspace, file, exists, check
+    Check if a file or directory exists in the workspace.
+    workspace, file, exists, check
 
-        Use cases:
-        - Validate file presence before processing
-        - Implement conditional logic based on file existence
-        - Check for generated files
+    Use cases:
+    - Validate file presence before processing
+    - Implement conditional logic based on file existence
+    - Check for generated files
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path within workspace to check')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path within workspace to check"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -505,20 +597,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class WriteBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Write binary data (base64-encoded) to a file in the workspace.
-        workspace, file, write, binary, save
+    Write binary data (base64-encoded) to a file in the workspace.
+    workspace, file, write, binary, save
 
-        Use cases:
-        - Save binary data to workspace
-        - Write decoded base64 data
-        - Export binary results
+    Use cases:
+    - Save binary data to workspace
+    - Write decoded base64 data
+    - Export binary results
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file within workspace')
-    content: str | OutputHandle[str] = connect_field(default='', description='Base64-encoded binary content to write')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file within workspace"
+    )
+    content: str | OutputHandle[str] = connect_field(
+        default="", description="Base64-encoded binary content to write"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -535,22 +632,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.workspace
 from nodetool.workflows.base_node import BaseNode
 
+
 class WriteTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Write text to a file in the workspace.
-        workspace, file, write, text, save
+    Write text to a file in the workspace.
+    workspace, file, write, text, save
 
-        Use cases:
-        - Save generated text to workspace
-        - Create configuration files
-        - Export processed text data
+    Use cases:
+    - Save generated text to workspace
+    - Create configuration files
+    - Export processed text data
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Relative path to file within workspace')
-    content: str | OutputHandle[str] = connect_field(default='', description='Text content to write')
-    encoding: str | OutputHandle[str] = connect_field(default='utf-8', description='Text encoding (utf-8, ascii, etc.)')
-    append: bool | OutputHandle[bool] = connect_field(default=False, description='Append to file instead of overwriting')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Relative path to file within workspace"
+    )
+    content: str | OutputHandle[str] = connect_field(
+        default="", description="Text content to write"
+    )
+    encoding: str | OutputHandle[str] = connect_field(
+        default="utf-8", description="Text encoding (utf-8, ascii, etc.)"
+    )
+    append: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Append to file instead of overwriting"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -559,5 +665,3 @@ class WriteTextFile(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

@@ -18,19 +18,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.messaging.discord
 from nodetool.workflows.base_node import BaseNode
 
+
 class DiscordBotTrigger(GraphNode[DiscordBotTriggerOutput]):
     """
 
-        Trigger node that listens for Discord messages from a bot account.
+    Trigger node that listens for Discord messages from a bot account.
 
-        This trigger connects to Discord using a bot token and emits events
-        for incoming messages.
+    This trigger connects to Discord using a bot token and emits events
+    for incoming messages.
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-    token: str | OutputHandle[str] = connect_field(default='', description='Discord bot token')
-    channel_id: str | OutputHandle[str] | None = connect_field(default=None, description='Optional channel ID to filter messages')
-    allow_bot_messages: bool | OutputHandle[bool] = connect_field(default=False, description='Include messages authored by bots')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
+    token: str | OutputHandle[str] = connect_field(
+        default="", description="Discord bot token"
+    )
+    channel_id: str | OutputHandle[str] | None = connect_field(
+        default=None, description="Optional channel ID to filter messages"
+    )
+    allow_bot_messages: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Include messages authored by bots"
+    )
 
     @property
     def out(self) -> "DiscordBotTriggerOutputs":
@@ -44,42 +53,43 @@ class DiscordBotTrigger(GraphNode[DiscordBotTriggerOutput]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class DiscordBotTriggerOutputs(OutputsProxy):
     @property
     def message_id(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['message_id'])
+        return typing.cast(OutputHandle[typing.Any], self["message_id"])
 
     @property
     def content(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['content'])
+        return typing.cast(OutputHandle[typing.Any], self["content"])
 
     @property
     def author(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['author'])
+        return typing.cast(OutputHandle[typing.Any], self["author"])
 
     @property
     def channel(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['channel'])
+        return typing.cast(OutputHandle[typing.Any], self["channel"])
 
     @property
     def guild(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['guild'])
+        return typing.cast(OutputHandle[typing.Any], self["guild"])
 
     @property
     def attachments(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['attachments'])
+        return typing.cast(OutputHandle[typing.Any], self["attachments"])
 
     @property
     def timestamp(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['timestamp'])
+        return typing.cast(OutputHandle[typing.Any], self["timestamp"])
 
     @property
     def source(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['source'])
+        return typing.cast(OutputHandle[typing.Any], self["source"])
 
     @property
     def event_type(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['event_type'])
+        return typing.cast(OutputHandle[typing.Any], self["event_type"])
 
 
 import typing
@@ -88,17 +98,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.messaging.discord
 from nodetool.workflows.base_node import BaseNode
 
-class DiscordSendMessage(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
+
+class DiscordSendMessage(
+    SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]
+):
     """
 
-        Node that sends a message to a Discord channel using a bot token.
+    Node that sends a message to a Discord channel using a bot token.
     """
 
-    token: str | OutputHandle[str] = connect_field(default='', description='Discord bot token')
-    channel_id: str | OutputHandle[str] = connect_field(default='', description='Target channel ID')
-    content: str | OutputHandle[str] = connect_field(default='', description='Message content')
-    tts: bool | OutputHandle[bool] = connect_field(default=False, description='Send as text-to-speech')
-    embeds: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = connect_field(default=PydanticUndefined, description='Embeds as Discord embed dictionaries')
+    token: str | OutputHandle[str] = connect_field(
+        default="", description="Discord bot token"
+    )
+    channel_id: str | OutputHandle[str] = connect_field(
+        default="", description="Target channel ID"
+    )
+    content: str | OutputHandle[str] = connect_field(
+        default="", description="Message content"
+    )
+    tts: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Send as text-to-speech"
+    )
+    embeds: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = connect_field(
+        default=PydanticUndefined, description="Embeds as Discord embed dictionaries"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -115,28 +138,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+
 class TriggerNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-        Base class for trigger nodes that enable infinite-running workflows.
+    Base class for trigger nodes that enable infinite-running workflows.
 
-        Trigger nodes are special streaming nodes that:
-        1. Wait for external events (webhooks, file changes, timers, etc.)
-        2. Emit event data when triggered
-        3. Loop back to wait for the next event
-        4. Only terminate when the workflow is explicitly stopped
+    Trigger nodes are special streaming nodes that:
+    1. Wait for external events (webhooks, file changes, timers, etc.)
+    2. Emit event data when triggered
+    3. Loop back to wait for the next event
+    4. Only terminate when the workflow is explicitly stopped
 
-        Subclasses must implement:
-        - setup_trigger(): Initialize the event source
-        - wait_for_event(): Block until an event occurs and return event data
-        - cleanup_trigger(): Clean up the event source
+    Subclasses must implement:
+    - setup_trigger(): Initialize the event source
+    - wait_for_event(): Block until an event occurs and return event data
+    - cleanup_trigger(): Clean up the event source
 
-        Attributes:
-            _is_running: Flag to control the trigger loop
-            _event_queue: Queue for receiving events from external sources
+    Attributes:
+        _is_running: Flag to control the trigger loop
+        _event_queue: Queue for receiving events from external sources
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -145,5 +171,3 @@ class TriggerNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

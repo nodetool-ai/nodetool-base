@@ -18,26 +18,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.text
 from nodetool.workflows.base_node import BaseNode
 
+
 class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputType]):
     """
 
-        Search the web using Google's Gemini API with grounding capabilities.
-        google, search, grounded, web, gemini, ai
+    Search the web using Google's Gemini API with grounding capabilities.
+    google, search, grounded, web, gemini, ai
 
-        This node uses Google's Gemini API to perform web searches and return structured results
-        with source information. Requires a Gemini API key.
+    This node uses Google's Gemini API to perform web searches and return structured results
+    with source information. Requires a Gemini API key.
 
-        Use cases:
-        - Research current events and latest information
-        - Find reliable sources for fact-checking
-        - Gather web-based information with citations
-        - Get up-to-date information beyond the model's training data
+    Use cases:
+    - Research current events and latest information
+    - Find reliable sources for fact-checking
+    - Gather web-based information with citations
+    - Get up-to-date information beyond the model's training data
     """
 
     GeminiModel: typing.ClassVar[type] = nodetool.nodes.gemini.text.GeminiModel
 
-    query: str | OutputHandle[str] = connect_field(default='', description='The search query to execute')
-    model: nodetool.nodes.gemini.text.GeminiModel = Field(default=nodetool.nodes.gemini.text.GeminiModel.GEMINI_2_0_FLASH, description='The Gemini model to use for search')
+    query: str | OutputHandle[str] = connect_field(
+        default="", description="The search query to execute"
+    )
+    model: nodetool.nodes.gemini.text.GeminiModel = Field(
+        default=nodetool.nodes.gemini.text.GeminiModel.GEMINI_2_0_FLASH,
+        description="The Gemini model to use for search",
+    )
 
     @property
     def out(self) -> "GroundedSearchOutputs":
@@ -51,13 +57,12 @@ class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class GroundedSearchOutputs(OutputsProxy):
     @property
     def results(self) -> OutputHandle[list[str]]:
-        return typing.cast(OutputHandle[list[str]], self['results'])
+        return typing.cast(OutputHandle[list[str]], self["results"])
 
     @property
     def sources(self) -> OutputHandle[list[types.Source]]:
-        return typing.cast(OutputHandle[list[types.Source]], self['sources'])
-
-
+        return typing.cast(OutputHandle[list[types.Source]], self["sources"])

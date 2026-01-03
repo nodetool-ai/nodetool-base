@@ -18,15 +18,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.secret
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetSecret(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     """
 
-        Get a secret value from configuration.
-        secrets, credentials, configuration
+    Get a secret value from configuration.
+    secrets, credentials, configuration
     """
 
-    name: str | OutputHandle[str] = connect_field(default='', description='Secret key name')
-    default: str | OutputHandle[str] = connect_field(default='', description='Default value if not found')
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="Secret key name"
+    )
+    default: str | OutputHandle[str] = connect_field(
+        default="", description="Default value if not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -35,5 +40,3 @@ class GetSecret(SingleOutputGraphNode[str | None], GraphNode[str | None]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

@@ -18,20 +18,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class FilterJSON(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
 
-        Filter JSON array based on a key-value condition.
-        json, filter, array
+    Filter JSON array based on a key-value condition.
+    json, filter, array
 
-        Use cases:
-        - Filter arrays of objects
-        - Search JSON data
+    Use cases:
+    - Filter arrays of objects
+    - Search JSON data
     """
 
-    array: list[dict] | OutputHandle[list[dict]] = connect_field(default=[], description='Array of JSON objects to filter')
-    key: str | OutputHandle[str] = connect_field(default='', description='Key to filter on')
-    value: Any | OutputHandle[Any] = connect_field(default={}, description='Value to match')
+    array: list[dict] | OutputHandle[list[dict]] = connect_field(
+        default=[], description="Array of JSON objects to filter"
+    )
+    key: str | OutputHandle[str] = connect_field(
+        default="", description="Key to filter on"
+    )
+    value: Any | OutputHandle[Any] = connect_field(
+        default={}, description="Value to match"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,16 +55,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetJSONPathBool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-        Extract a boolean value from a JSON path
-        json, path, extract, boolean
+    Extract a boolean value from a JSON path
+    json, path, extract, boolean
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON object to extract from')
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the desired value (dot notation)')
-    default: bool | OutputHandle[bool] = connect_field(default=False, description='Default value to return if path is not found')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON object to extract from"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Default value to return if path is not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -74,16 +88,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetJSONPathDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Extract a dictionary value from a JSON path
-        json, path, extract, object
+    Extract a dictionary value from a JSON path
+    json, path, extract, object
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON object to extract from')
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the desired value (dot notation)')
-    default: dict | OutputHandle[dict] = connect_field(default={}, description='Default value to return if path is not found')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON object to extract from"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: dict | OutputHandle[dict] = connect_field(
+        default={}, description="Default value to return if path is not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -100,16 +121,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetJSONPathFloat(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Extract a float value from a JSON path
-        json, path, extract, number
+    Extract a float value from a JSON path
+    json, path, extract, number
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON object to extract from')
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the desired value (dot notation)')
-    default: float | OutputHandle[float] = connect_field(default=0.0, description='Default value to return if path is not found')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON object to extract from"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: float | OutputHandle[float] = connect_field(
+        default=0.0, description="Default value to return if path is not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -126,16 +154,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetJSONPathInt(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-        Extract an integer value from a JSON path
-        json, path, extract, number
+    Extract an integer value from a JSON path
+    json, path, extract, number
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON object to extract from')
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the desired value (dot notation)')
-    default: int | OutputHandle[int] = connect_field(default=0, description='Default value to return if path is not found')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON object to extract from"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: int | OutputHandle[int] = connect_field(
+        default=0, description="Default value to return if path is not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -152,16 +187,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetJSONPathList(SingleOutputGraphNode[list], GraphNode[list]):
     """
 
-        Extract a list value from a JSON path
-        json, path, extract, array
+    Extract a list value from a JSON path
+    json, path, extract, array
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON object to extract from')
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the desired value (dot notation)')
-    default: list | OutputHandle[list] = connect_field(default=[], description='Default value to return if path is not found')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON object to extract from"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: list | OutputHandle[list] = connect_field(
+        default=[], description="Default value to return if path is not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -178,16 +220,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetJSONPathStr(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Extract a string value from a JSON path
-        json, path, extract, string
+    Extract a string value from a JSON path
+    json, path, extract, string
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON object to extract from')
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the desired value (dot notation)')
-    default: str | OutputHandle[str] = connect_field(default='', description='Default value to return if path is not found')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON object to extract from"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the desired value (dot notation)"
+    )
+    default: str | OutputHandle[str] = connect_field(
+        default="", description="Default value to return if path is not found"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -204,25 +253,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class JSONTemplate(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Template JSON strings with variable substitution.
-        json, template, substitute, variables
+    Template JSON strings with variable substitution.
+    json, template, substitute, variables
 
-        Example:
-        template: '{"name": "$user", "age": $age}'
-        values: {"user": "John", "age": 30}
-        result: '{"name": "John", "age": 30}'
+    Example:
+    template: '{"name": "$user", "age": $age}'
+    values: {"user": "John", "age": 30}
+    result: '{"name": "John", "age": 30}'
 
-        Use cases:
-        - Create dynamic JSON payloads
-        - Generate JSON with variable data
-        - Build API request templates
+    Use cases:
+    - Create dynamic JSON payloads
+    - Generate JSON with variable data
+    - Build API request templates
     """
 
-    template: str | OutputHandle[str] = connect_field(default='', description='JSON template string with $variable placeholders')
-    values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description='Dictionary of values to substitute into the template')
+    template: str | OutputHandle[str] = connect_field(
+        default="", description="JSON template string with $variable placeholders"
+    )
+    values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
+        default={}, description="Dictionary of values to substitute into the template"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -239,14 +293,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType]):
     """
 
-        Load JSON files from an asset folder.
-        load, json, file, import
+    Load JSON files from an asset folder.
+    load, json, file, import
     """
 
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to load the JSON files from.')
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The asset folder to load the JSON files from.",
+    )
 
     @property
     def out(self) -> "LoadJSONAssetsOutputs":
@@ -260,14 +320,15 @@ class LoadJSONAssets(GraphNode[nodetool.nodes.lib.json.LoadJSONAssets.OutputType
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class LoadJSONAssetsOutputs(OutputsProxy):
     @property
     def json(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self['json'])
+        return typing.cast(OutputHandle[dict], self["json"])
 
     @property
     def name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['name'])
+        return typing.cast(OutputHandle[str], self["name"])
 
 
 import typing
@@ -276,19 +337,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class ParseDict(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
 
-        Parse a JSON string into a Python dictionary.
-        json, parse, decode, dictionary
+    Parse a JSON string into a Python dictionary.
+    json, parse, decode, dictionary
 
-        Use cases:
-        - Convert JSON API responses to Python dictionaries
-        - Process JSON configuration files
-        - Parse object-like JSON data
+    Use cases:
+    - Convert JSON API responses to Python dictionaries
+    - Process JSON configuration files
+    - Parse object-like JSON data
     """
 
-    json_string: str | OutputHandle[str] = connect_field(default='', description='JSON string to parse into a dictionary')
+    json_string: str | OutputHandle[str] = connect_field(
+        default="", description="JSON string to parse into a dictionary"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -305,19 +369,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class ParseList(SingleOutputGraphNode[list], GraphNode[list]):
     """
 
-        Parse a JSON string into a Python list.
-        json, parse, decode, array, list
+    Parse a JSON string into a Python list.
+    json, parse, decode, array, list
 
-        Use cases:
-        - Convert JSON array responses to Python lists
-        - Process JSON data collections
-        - Parse array-like JSON data
+    Use cases:
+    - Convert JSON array responses to Python lists
+    - Process JSON data collections
+    - Parse array-like JSON data
     """
 
-    json_string: str | OutputHandle[str] = connect_field(default='', description='JSON string to parse into a list')
+    json_string: str | OutputHandle[str] = connect_field(
+        default="", description="JSON string to parse into a list"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -334,21 +401,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class StringifyJSON(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Convert a Python object to a formatted JSON string.
-        json, stringify, encode, serialize
+    Convert a Python object to a formatted JSON string.
+    json, stringify, encode, serialize
 
-        Use cases:
-        - Prepare data for API requests
-        - Save data in JSON format
-        - Format data for storage or transmission
-        - Create human-readable JSON output
+    Use cases:
+    - Prepare data for API requests
+    - Save data in JSON format
+    - Format data for storage or transmission
+    - Create human-readable JSON output
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='Data to convert to JSON')
-    indent: int | OutputHandle[int] = connect_field(default=2, description='Number of spaces for indentation')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="Data to convert to JSON"
+    )
+    indent: int | OutputHandle[int] = connect_field(
+        default=2, description="Number of spaces for indentation"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -365,19 +437,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.json
 from nodetool.workflows.base_node import BaseNode
 
+
 class ValidateJSON(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-        Validate JSON data against a schema.
-        json, validate, schema
+    Validate JSON data against a schema.
+    json, validate, schema
 
-        Use cases:
-        - Ensure API payloads match specifications
-        - Validate configuration files
+    Use cases:
+    - Ensure API payloads match specifications
+    - Validate configuration files
     """
 
-    data: Any | OutputHandle[Any] = connect_field(default={}, description='JSON data to validate')
-    json_schema: dict | OutputHandle[dict] = connect_field(default={}, description='JSON schema for validation')
+    data: Any | OutputHandle[Any] = connect_field(
+        default={}, description="JSON data to validate"
+    )
+    json_schema: dict | OutputHandle[dict] = connect_field(
+        default={}, description="JSON schema for validation"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -386,5 +463,3 @@ class ValidateJSON(SingleOutputGraphNode[bool], GraphNode[bool]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-
