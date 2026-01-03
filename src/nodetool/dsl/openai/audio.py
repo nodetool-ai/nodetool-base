@@ -18,25 +18,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Converts text to speech using OpenAI TTS models.
-        audio, tts, text-to-speech, voice, synthesis
+    Converts text to speech using OpenAI TTS models.
+    audio, tts, text-to-speech, voice, synthesis
 
-        Use cases:
-        - Generate spoken content for videos or podcasts
-        - Create voice-overs for presentations
-        - Assist visually impaired users with text reading
-        - Produce audio versions of written content
+    Use cases:
+    - Generate spoken content for videos or podcasts
+    - Create voice-overs for presentations
+    - Assist visually impaired users with text reading
+    - Produce audio versions of written content
     """
 
     TtsModel: typing.ClassVar[type] = nodetool.nodes.openai.audio.TextToSpeech.TtsModel
     Voice: typing.ClassVar[type] = nodetool.nodes.openai.audio.TextToSpeech.Voice
 
-    model: nodetool.nodes.openai.audio.TextToSpeech.TtsModel = Field(default=nodetool.nodes.openai.audio.TextToSpeech.TtsModel.tts_1, description=None)
-    voice: nodetool.nodes.openai.audio.TextToSpeech.Voice = Field(default=nodetool.nodes.openai.audio.TextToSpeech.Voice.ALLOY, description=None)
-    input: str | OutputHandle[str] = connect_field(default='', description=None)
+    model: nodetool.nodes.openai.audio.TextToSpeech.TtsModel = Field(
+        default=nodetool.nodes.openai.audio.TextToSpeech.TtsModel.tts_1,
+        description=None,
+    )
+    voice: nodetool.nodes.openai.audio.TextToSpeech.Voice = Field(
+        default=nodetool.nodes.openai.audio.TextToSpeech.Voice.ALLOY, description=None
+    )
+    input: str | OutputHandle[str] = connect_field(default="", description=None)
     speed: float | OutputHandle[float] = connect_field(default=1.0, description=None)
 
     @classmethod
@@ -54,28 +60,51 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
     """
 
-        Converts speech to text using OpenAI's speech-to-text API.
-        audio, transcription, speech-to-text, stt, whisper
+    Converts speech to text using OpenAI's speech-to-text API.
+    audio, transcription, speech-to-text, stt, whisper
 
-        Use cases:
-        - Generate accurate transcriptions of audio content
-        - Create searchable text from audio recordings
-        - Support multiple languages for transcription
-        - Enable automated subtitling and captioning
+    Use cases:
+    - Generate accurate transcriptions of audio content
+    - Create searchable text from audio recordings
+    - Support multiple languages for transcription
+    - Enable automated subtitling and captioning
     """
 
-    TranscriptionModel: typing.ClassVar[type] = nodetool.nodes.openai.audio.Transcribe.TranscriptionModel
+    TranscriptionModel: typing.ClassVar[type] = (
+        nodetool.nodes.openai.audio.Transcribe.TranscriptionModel
+    )
     Language: typing.ClassVar[type] = nodetool.nodes.openai.audio.Transcribe.Language
 
-    model: nodetool.nodes.openai.audio.Transcribe.TranscriptionModel = Field(default=nodetool.nodes.openai.audio.Transcribe.TranscriptionModel.WHISPER_1, description='The model to use for transcription.')
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to transcribe (max 25 MB).')
-    language: nodetool.nodes.openai.audio.Transcribe.Language = Field(default=nodetool.nodes.openai.audio.Transcribe.Language.NONE, description='The language of the input audio')
-    timestamps: bool | OutputHandle[bool] = connect_field(default=False, description='Whether to return timestamps for the generated text.')
-    prompt: str | OutputHandle[str] = connect_field(default='', description="Optional text to guide the model's style or continue a previous audio segment.")
-    temperature: float | OutputHandle[float] = connect_field(default=0, description='The sampling temperature between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.')
+    model: nodetool.nodes.openai.audio.Transcribe.TranscriptionModel = Field(
+        default=nodetool.nodes.openai.audio.Transcribe.TranscriptionModel.WHISPER_1,
+        description="The model to use for transcription.",
+    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to transcribe (max 25 MB).",
+    )
+    language: nodetool.nodes.openai.audio.Transcribe.Language = Field(
+        default=nodetool.nodes.openai.audio.Transcribe.Language.NONE,
+        description="The language of the input audio",
+    )
+    timestamps: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Whether to return timestamps for the generated text.",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Optional text to guide the model's style or continue a previous audio segment.",
+    )
+    temperature: float | OutputHandle[float] = connect_field(
+        default=0,
+        description="The sampling temperature between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+    )
 
     @property
     def out(self) -> "TranscribeOutputs":
@@ -89,18 +118,19 @@ class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class TranscribeOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['text'])
+        return typing.cast(OutputHandle[str], self["text"])
 
     @property
     def words(self) -> OutputHandle[list[types.AudioChunk]]:
-        return typing.cast(OutputHandle[list[types.AudioChunk]], self['words'])
+        return typing.cast(OutputHandle[list[types.AudioChunk]], self["words"])
 
     @property
     def segments(self) -> OutputHandle[list[types.AudioChunk]]:
-        return typing.cast(OutputHandle[list[types.AudioChunk]], self['segments'])
+        return typing.cast(OutputHandle[list[types.AudioChunk]], self["segments"])
 
 
 import typing
@@ -109,21 +139,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class Translate(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Translates speech in audio to English text.
-        audio, translation, speech-to-text, localization
+    Translates speech in audio to English text.
+    audio, translation, speech-to-text, localization
 
-        Use cases:
-        - Translate foreign language audio content to English
-        - Create English transcripts of multilingual recordings
-        - Assist non-English speakers in understanding audio content
-        - Enable cross-language communication in audio formats
+    Use cases:
+    - Translate foreign language audio content to English
+    - Create English transcripts of multilingual recordings
+    - Assist non-English speakers in understanding audio content
+    - Enable cross-language communication in audio formats
     """
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to translate.')
-    temperature: float | OutputHandle[float] = connect_field(default=0.0, description='The temperature to use for the translation.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to translate.",
+    )
+    temperature: float | OutputHandle[float] = connect_field(
+        default=0.0, description="The temperature to use for the translation."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -132,5 +170,3 @@ class Translate(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

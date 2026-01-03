@@ -18,19 +18,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
 from nodetool.workflows.base_node import BaseNode
 
+
 class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
     """
 
-        Collect items until the end of the stream and return them as a list.
-        collector, aggregate, list, stream
+    Collect items until the end of the stream and return them as a list.
+    collector, aggregate, list, stream
 
-        Use cases:
-        - Gather results from multiple processing steps
-        - Collect streaming data into batches
-        - Aggregate outputs from parallel operations
+    Use cases:
+    - Gather results from multiple processing steps
+    - Collect streaming data into batches
+    - Aggregate outputs from parallel operations
     """
 
-    input_item: Any | OutputHandle[Any] = connect_field(default=(), description='The input item to collect.')
+    input_item: Any | OutputHandle[Any] = connect_field(
+        default=(), description="The input item to collect."
+    )
 
     @property
     def out(self) -> "CollectOutputs":
@@ -44,10 +47,11 @@ class Collect(GraphNode[nodetool.nodes.nodetool.control.Collect.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class CollectOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[list[Any]]:
-        return typing.cast(OutputHandle[list[Any]], self['output'])
+        return typing.cast(OutputHandle[list[Any]], self["output"])
 
 
 import typing
@@ -56,18 +60,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
 from nodetool.workflows.base_node import BaseNode
 
+
 class ForEach(GraphNode[nodetool.nodes.nodetool.control.ForEach.OutputType]):
     """
 
-        Iterate over a list and emit each item sequentially.
-        iterator, loop, list, sequence
+    Iterate over a list and emit each item sequentially.
+    iterator, loop, list, sequence
 
-        Use cases:
-        - Process each item of a collection in order
-        - Drive downstream nodes with individual elements
+    Use cases:
+    - Process each item of a collection in order
+    - Drive downstream nodes with individual elements
     """
 
-    input_list: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description='The list of items to iterate over.')
+    input_list: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description="The list of items to iterate over."
+    )
 
     @property
     def out(self) -> "ForEachOutputs":
@@ -81,14 +88,15 @@ class ForEach(GraphNode[nodetool.nodes.nodetool.control.ForEach.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ForEachOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self['output'])
+        return typing.cast(OutputHandle[Any], self["output"])
 
     @property
     def index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self['index'])
+        return typing.cast(OutputHandle[int], self["index"])
 
 
 import typing
@@ -97,20 +105,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
 from nodetool.workflows.base_node import BaseNode
 
+
 class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
     """
 
-        Conditionally executes one of two branches based on a condition.
-        control, flow, condition, logic, else, true, false, switch, toggle, flow-control
+    Conditionally executes one of two branches based on a condition.
+    control, flow, condition, logic, else, true, false, switch, toggle, flow-control
 
-        Use cases:
-        - Branch workflow based on conditions
-        - Handle different cases in data processing
-        - Implement decision logic
+    Use cases:
+    - Branch workflow based on conditions
+    - Handle different cases in data processing
+    - Implement decision logic
     """
 
-    condition: bool | OutputHandle[bool] = connect_field(default=False, description='The condition to evaluate')
-    value: Any | OutputHandle[Any] = connect_field(default=(), description='The value to pass to the next node')
+    condition: bool | OutputHandle[bool] = connect_field(
+        default=False, description="The condition to evaluate"
+    )
+    value: Any | OutputHandle[Any] = connect_field(
+        default=(), description="The value to pass to the next node"
+    )
 
     @property
     def out(self) -> "IfOutputs":
@@ -124,14 +137,15 @@ class If(GraphNode[nodetool.nodes.nodetool.control.If.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class IfOutputs(OutputsProxy):
     @property
     def if_true(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self['if_true'])
+        return typing.cast(OutputHandle[Any], self["if_true"])
 
     @property
     def if_false(self) -> OutputHandle[Any]:
-        return typing.cast(OutputHandle[Any], self['if_false'])
+        return typing.cast(OutputHandle[Any], self["if_false"])
 
 
 import typing
@@ -140,19 +154,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.control
 from nodetool.workflows.base_node import BaseNode
 
+
 class Reroute(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-        Pass data through unchanged for tidier workflow layouts.
-        reroute, passthrough, organize, tidy, flow, connection, redirect
+    Pass data through unchanged for tidier workflow layouts.
+    reroute, passthrough, organize, tidy, flow, connection, redirect
 
-        Use cases:
-        - Organize complex workflows by routing connections
-        - Create cleaner visual layouts
-        - Redirect data flow without modification
+    Use cases:
+    - Organize complex workflows by routing connections
+    - Create cleaner visual layouts
+    - Redirect data flow without modification
     """
 
-    input_value: Any | OutputHandle[Any] = connect_field(default=(), description='Value to pass through unchanged')
+    input_value: Any | OutputHandle[Any] = connect_field(
+        default=(), description="Value to pass through unchanged"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -161,5 +178,3 @@ class Reroute(SingleOutputGraphNode[Any], GraphNode[Any]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

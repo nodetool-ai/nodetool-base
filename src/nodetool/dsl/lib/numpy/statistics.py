@@ -18,20 +18,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
 from nodetool.workflows.base_node import BaseNode
 
-class ArgMaxArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | int], GraphNode[nodetool.metadata.types.NPArray | int]):
+
+class ArgMaxArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | int],
+    GraphNode[nodetool.metadata.types.NPArray | int],
+):
     """
 
-        Find indices of maximum values along a specified axis of a array.
-        array, argmax, index, maximum
+    Find indices of maximum values along a specified axis of a array.
+    array, argmax, index, maximum
 
-        Use cases:
-        - Determine winning classes in classification tasks
-        - Find peaks in signal processing
-        - Locate best-performing items in datasets
+    Use cases:
+    - Determine winning classes in classification tasks
+    - Find peaks in signal processing
+    - Locate best-performing items in datasets
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
-    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to find maximum indices')
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Input array",
+    )
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to find maximum indices"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,20 +57,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
 from nodetool.workflows.base_node import BaseNode
 
-class ArgMinArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | int], GraphNode[nodetool.metadata.types.NPArray | int]):
+
+class ArgMinArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | int],
+    GraphNode[nodetool.metadata.types.NPArray | int],
+):
     """
 
-        Find indices of minimum values along a specified axis of a array.
-        array, argmin, index, minimum
+    Find indices of minimum values along a specified axis of a array.
+    array, argmin, index, minimum
 
-        Use cases:
-        - Locate lowest-performing items in datasets
-        - Find troughs in signal processing
-        - Determine least likely classes in classification tasks
+    Use cases:
+    - Locate lowest-performing items in datasets
+    - Find troughs in signal processing
+    - Determine least likely classes in classification tasks
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
-    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to find minimum indices')
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Input array",
+    )
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to find minimum indices"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -78,20 +96,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
 from nodetool.workflows.base_node import BaseNode
 
-class MaxArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int], GraphNode[nodetool.metadata.types.NPArray | float | int]):
+
+class MaxArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
 
-        Compute the maximum value along a specified axis of a array.
-        array, maximum, reduction, statistics
+    Compute the maximum value along a specified axis of a array.
+    array, maximum, reduction, statistics
 
-        Use cases:
-        - Find peak values in time series data
-        - Implement max pooling in neural networks
-        - Determine highest scores across multiple categories
+    Use cases:
+    - Find peak values in time series data
+    - Implement max pooling in neural networks
+    - Determine highest scores across multiple categories
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
-    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to compute maximum')
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Input array",
+    )
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute maximum"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -108,20 +135,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
 from nodetool.workflows.base_node import BaseNode
 
-class MeanArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int], GraphNode[nodetool.metadata.types.NPArray | float | int]):
+
+class MeanArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
 
-        Compute the mean value along a specified axis of a array.
-        array, average, reduction, statistics
+    Compute the mean value along a specified axis of a array.
+    array, average, reduction, statistics
 
-        Use cases:
-        - Calculate average values in datasets
-        - Implement mean pooling in neural networks
-        - Compute centroids in clustering algorithms
+    Use cases:
+    - Calculate average values in datasets
+    - Implement mean pooling in neural networks
+    - Compute centroids in clustering algorithms
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
-    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to compute mean')
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Input array",
+    )
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute mean"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -138,20 +174,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
 from nodetool.workflows.base_node import BaseNode
 
-class MinArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int], GraphNode[nodetool.metadata.types.NPArray | float | int]):
+
+class MinArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
 
-        Calculate the minimum value along a specified axis of a array.
-        array, minimum, reduction, statistics
+    Calculate the minimum value along a specified axis of a array.
+    array, minimum, reduction, statistics
 
-        Use cases:
-        - Find lowest values in datasets
-        - Implement min pooling in neural networks
-        - Determine minimum thresholds across categories
+    Use cases:
+    - Find lowest values in datasets
+    - Implement min pooling in neural networks
+    - Determine minimum thresholds across categories
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
-    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to compute minimum')
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Input array",
+    )
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute minimum"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -168,20 +213,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.statistics
 from nodetool.workflows.base_node import BaseNode
 
-class SumArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int], GraphNode[nodetool.metadata.types.NPArray | float | int]):
+
+class SumArray(
+    SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | int],
+    GraphNode[nodetool.metadata.types.NPArray | float | int],
+):
     """
 
-        Calculate the sum of values along a specified axis of a array.
-        array, summation, reduction, statistics
+    Calculate the sum of values along a specified axis of a array.
+    array, summation, reduction, statistics
 
-        Use cases:
-        - Compute total values across categories
-        - Implement sum pooling in neural networks
-        - Calculate cumulative metrics in time series data
+    Use cases:
+    - Compute total values across categories
+    - Implement sum pooling in neural networks
+    - Calculate cumulative metrics in time series data
     """
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Input array')
-    axis: int | OutputHandle[int] = connect_field(default=0, description='Axis along which to compute sum')
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
+        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
+        description="Input array",
+    )
+    axis: int | OutputHandle[int] = connect_field(
+        default=0, description="Axis along which to compute sum"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -190,5 +244,3 @@ class SumArray(SingleOutputGraphNode[nodetool.metadata.types.NPArray | float | i
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

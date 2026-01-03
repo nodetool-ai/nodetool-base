@@ -18,22 +18,45 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Add an audio track to a video, replacing or mixing with existing audio.
-        video, audio, soundtrack, merge
+    Add an audio track to a video, replacing or mixing with existing audio.
+    video, audio, soundtrack, merge
 
-        Use cases:
-        1. Add background music or narration to a silent video
-        2. Replace original audio with a new soundtrack
-        3. Mix new audio with existing video sound
+    Use cases:
+    1. Add background music or narration to a silent video
+    2. Replace original audio with a new soundtrack
+    3. Mix new audio with existing video sound
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to add audio to.')
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio file to add to the video.')
-    volume: float | OutputHandle[float] = connect_field(default=1.0, description='Volume adjustment for the added audio. 1.0 is original volume.')
-    mix: bool | OutputHandle[bool] = connect_field(default=False, description='If True, mix new audio with existing. If False, replace existing audio.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to add audio to.",
+    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to add to the video.",
+    )
+    volume: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="Volume adjustment for the added audio. 1.0 is original volume.",
+    )
+    mix: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="If True, mix new audio with existing. If False, replace existing audio.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,26 +73,52 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Add subtitles to a video.
-        video, subtitles, text, caption
+    Add subtitles to a video.
+    video, subtitles, text, caption
 
-        Use cases:
-        1. Add translations or closed captions to videos
-        2. Include explanatory text or commentary in educational videos
-        3. Create lyric videos for music content
+    Use cases:
+    1. Add translations or closed captions to videos
+    2. Include explanatory text or commentary in educational videos
+    3. Create lyric videos for music content
     """
 
-    SubtitleTextAlignment: typing.ClassVar[type] = nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
+    SubtitleTextAlignment: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment
+    )
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to add subtitles to.')
-    chunks: list[types.AudioChunk] | OutputHandle[list[types.AudioChunk]] = connect_field(default=[], description='Audio chunks to add as subtitles.')
-    font: types.FontRef | OutputHandle[types.FontRef] = connect_field(default=types.FontRef(type='font', name=''), description='The font to use.')
-    align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM, description='Vertical alignment of subtitles.')
-    font_size: int | OutputHandle[int] = connect_field(default=24, description='The font size.')
-    font_color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#FFFFFF'), description='The font color.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to add subtitles to.",
+    )
+    chunks: list[types.AudioChunk] | OutputHandle[list[types.AudioChunk]] = (
+        connect_field(default=[], description="Audio chunks to add as subtitles.")
+    )
+    font: types.FontRef | OutputHandle[types.FontRef] = connect_field(
+        default=types.FontRef(type="font", name=""), description="The font to use."
+    )
+    align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(
+        default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM,
+        description="Vertical alignment of subtitles.",
+    )
+    font_size: int | OutputHandle[int] = connect_field(
+        default=24, description="The font size."
+    )
+    font_color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#FFFFFF"),
+        description="The font color.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -86,20 +135,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Apply a blur effect to a video.
-        video, blur, smooth, soften
+    Apply a blur effect to a video.
+    video, blur, smooth, soften
 
-        Use cases:
-        1. Create a dreamy or soft focus effect
-        2. Obscure or censor specific areas of the video
-        3. Reduce noise or grain in low-quality footage
+    Use cases:
+    1. Create a dreamy or soft focus effect
+    2. Obscure or censor specific areas of the video
+    3. Reduce noise or grain in low-quality footage
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to apply blur effect.')
-    strength: float | OutputHandle[float] = connect_field(default=5.0, description='The strength of the blur effect. Higher values create a stronger blur.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to apply blur effect.",
+    )
+    strength: float | OutputHandle[float] = connect_field(
+        default=5.0,
+        description="The strength of the blur effect. Higher values create a stronger blur.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -116,22 +180,41 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Apply chroma key (green screen) effect to a video.
-        video, chroma key, green screen, compositing
+    Apply chroma key (green screen) effect to a video.
+    video, chroma key, green screen, compositing
 
-        Use cases:
-        1. Remove green or blue background from video footage
-        2. Create special effects by compositing video onto new backgrounds
-        3. Produce professional-looking videos for presentations or marketing
+    Use cases:
+    1. Remove green or blue background from video footage
+    2. Create special effects by compositing video onto new backgrounds
+    3. Produce professional-looking videos for presentations or marketing
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to apply chroma key effect.')
-    key_color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#00FF00'), description="The color to key out (e.g., '#00FF00' for green).")
-    similarity: float | OutputHandle[float] = connect_field(default=0.3, description='Similarity threshold for the key color.')
-    blend: float | OutputHandle[float] = connect_field(default=0.1, description='Blending of the keyed area edges.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to apply chroma key effect.",
+    )
+    key_color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#00FF00"),
+        description="The color to key out (e.g., '#00FF00' for green).",
+    )
+    similarity: float | OutputHandle[float] = connect_field(
+        default=0.3, description="Similarity threshold for the key color."
+    )
+    blend: float | OutputHandle[float] = connect_field(
+        default=0.1, description="Blending of the keyed area edges."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -148,22 +231,40 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Adjust the color balance of a video.
-        video, color, balance, adjustment
+    Adjust the color balance of a video.
+    video, color, balance, adjustment
 
-        Use cases:
-        1. Correct color casts in video footage
-        2. Enhance specific color tones for artistic effect
-        3. Normalize color balance across multiple video clips
+    Use cases:
+    1. Correct color casts in video footage
+    2. Enhance specific color tones for artistic effect
+    3. Normalize color balance across multiple video clips
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to adjust color balance.')
-    red_adjust: float | OutputHandle[float] = connect_field(default=1.0, description='Red channel adjustment factor.')
-    green_adjust: float | OutputHandle[float] = connect_field(default=1.0, description='Green channel adjustment factor.')
-    blue_adjust: float | OutputHandle[float] = connect_field(default=1.0, description='Blue channel adjustment factor.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to adjust color balance.",
+    )
+    red_adjust: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Red channel adjustment factor."
+    )
+    green_adjust: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Green channel adjustment factor."
+    )
+    blue_adjust: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Blue channel adjustment factor."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -180,21 +281,44 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Concatenate multiple video files into a single video, including audio when available.
-        video, concat, merge, combine, audio, +
+    Concatenate multiple video files into a single video, including audio when available.
+    video, concat, merge, combine, audio, +
 
-        Use cases:
-        - Merge multiple video clips into one continuous video
-        - Combine intro, main content, and outro sequences
-        - Join video segments from different sources
-        - Create video compilations and montages
+    Use cases:
+    - Merge multiple video clips into one continuous video
+    - Combine intro, main content, and outro sequences
+    - Join video segments from different sources
+    - Create video compilations and montages
     """
 
-    video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The first video to concatenate.')
-    video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The second video to concatenate.')
+    video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The first video to concatenate.",
+    )
+    video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The second video to concatenate.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -211,20 +335,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Apply noise reduction to a video.
-        video, denoise, clean, enhance
+    Apply noise reduction to a video.
+    video, denoise, clean, enhance
 
-        Use cases:
-        1. Improve video quality by reducing unwanted noise
-        2. Enhance low-light footage
-        3. Prepare video for further processing or compression
+    Use cases:
+    1. Improve video quality by reducing unwanted noise
+    2. Enhance low-light footage
+    3. Prepare video for further processing or compression
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to denoise.')
-    strength: float | OutputHandle[float] = connect_field(default=5.0, description='Strength of the denoising effect. Higher values mean more denoising.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to denoise.",
+    )
+    strength: float | OutputHandle[float] = connect_field(
+        default=5.0,
+        description="Strength of the denoising effect. Higher values mean more denoising.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -241,21 +380,33 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Separate and extract audio track from a video file.
-        video, audio, extract, separate, split
+    Separate and extract audio track from a video file.
+    video, audio, extract, separate, split
 
-        Use cases:
-        - Extract audio for podcasts or music
-        - Create audio-only versions of video content
-        - Analyze or transcribe video audio separately
-        - Reuse audio in different contexts
-        - Convert video soundtracks to audio files
+    Use cases:
+    - Extract audio for podcasts or music
+    - Create audio-only versions of video content
+    - Analyze or transcribe video audio separately
+    - Reuse audio in different contexts
+    - Convert video soundtracks to audio files
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to separate.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to separate.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -272,19 +423,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Fps(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Get the frames per second (FPS) of a video file.
-        video, analysis, frames, fps
+    Get the frames per second (FPS) of a video file.
+    video, analysis, frames, fps
 
-        Use cases:
-        1. Analyze video properties for quality assessment
-        2. Determine appropriate playback speed for video editing
-        3. Ensure compatibility with target display systems
+    Use cases:
+    1. Analyze video properties for quality assessment
+    2. Determine appropriate playback speed for video editing
+    3. Ensure compatibility with target display systems
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to analyze for FPS.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to analyze for FPS.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -301,21 +464,37 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class FrameIterator(GraphNode[nodetool.nodes.nodetool.video.FrameIterator.OutputType]):
     """
 
-        Extract frames from a video file using OpenCV.
-        video, frames, extract, sequence
+    Extract frames from a video file using OpenCV.
+    video, frames, extract, sequence
 
-        Use cases:
-        1. Generate image sequences for further processing
-        2. Extract specific frame ranges from a video
-        3. Create thumbnails or previews from video content
+    Use cases:
+    1. Generate image sequences for further processing
+    2. Extract specific frame ranges from a video
+    3. Create thumbnails or previews from video content
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to extract frames from.')
-    start: int | OutputHandle[int] = connect_field(default=0, description='The frame to start extracting from.')
-    end: int | OutputHandle[int] = connect_field(default=-1, description='The frame to stop extracting from.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to extract frames from.",
+    )
+    start: int | OutputHandle[int] = connect_field(
+        default=0, description="The frame to start extracting from."
+    )
+    end: int | OutputHandle[int] = connect_field(
+        default=-1, description="The frame to stop extracting from."
+    )
 
     @property
     def out(self) -> "FrameIteratorOutputs":
@@ -329,18 +508,19 @@ class FrameIterator(GraphNode[nodetool.nodes.nodetool.video.FrameIterator.Output
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class FrameIteratorOutputs(OutputsProxy):
     @property
     def frame(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self['frame'])
+        return typing.cast(OutputHandle[types.ImageRef], self["frame"])
 
     @property
     def index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self['index'])
+        return typing.cast(OutputHandle[int], self["index"])
 
     @property
     def fps(self) -> OutputHandle[float]:
-        return typing.cast(OutputHandle[float], self['fps'])
+        return typing.cast(OutputHandle[float], self["fps"])
 
 
 import typing
@@ -349,20 +529,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class FrameToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Combine a sequence of frames into a single video file.
-        video, frames, combine, sequence
+    Combine a sequence of frames into a single video file.
+    video, frames, combine, sequence
 
-        Use cases:
-        1. Create time-lapse videos from image sequences
-        2. Compile processed frames back into a video
-        3. Generate animations from individual images
+    Use cases:
+    1. Create time-lapse videos from image sequences
+    2. Compile processed frames back into a video
+    3. Generate animations from individual images
     """
 
-    frame: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Collect input frames')
-    fps: float | OutputHandle[float] = connect_field(default=30, description='The FPS of the output video.')
+    frame: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Collect input frames",
+    )
+    fps: float | OutputHandle[float] = connect_field(
+        default=30, description="The FPS of the output video."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -379,34 +567,73 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Generate videos from input images using any supported video provider.
-        Animates static images into dynamic video content with AI-powered motion.
-        video, image-to-video, i2v, animation, AI, generation, sora, veo
+    Generate videos from input images using any supported video provider.
+    Animates static images into dynamic video content with AI-powered motion.
+    video, image-to-video, i2v, animation, AI, generation, sora, veo
 
-        Use cases:
-        - Animate static images into video sequences
-        - Create dynamic content from still photographs
-        - Generate video variations from reference images
-        - Produce animated visual effects from static artwork
-        - Convert product photos into engaging video ads
+    Use cases:
+    - Animate static images into video sequences
+    - Create dynamic content from still photographs
+    - Generate video variations from reference images
+    - Produce animated visual effects from static artwork
+    - Convert product photos into engaging video ads
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.nodetool.video.ImageToVideo.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.ImageToVideo.Resolution
+    )
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The input image to animate into a video')
-    model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(default=types.VideoModel(type='video_model', provider=nodetool.metadata.types.Provider.Gemini, id='veo-3.0-fast-generate-001', name='Veo 3.0 Fast', path=None, supported_tasks=[]), description='The video generation model to use')
-    prompt: str | OutputHandle[str] = connect_field(default='', description='Optional text prompt to guide the video animation')
-    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Text prompt describing what to avoid in the video')
-    aspect_ratio: nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio = Field(default=nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio.RATIO_16_9, description='Aspect ratio for the video')
-    resolution: nodetool.nodes.nodetool.video.ImageToVideo.Resolution = Field(default=nodetool.nodes.nodetool.video.ImageToVideo.Resolution.HD, description='Video resolution')
-    num_frames: int | OutputHandle[int] = connect_field(default=60, description='Number of frames to generate (provider-specific)')
-    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Classifier-free guidance scale (higher = closer to prompt)')
-    num_inference_steps: int | OutputHandle[int] = connect_field(default=30, description='Number of denoising steps')
-    seed: int | OutputHandle[int] = connect_field(default=-1, description='Random seed for reproducibility (-1 for random)')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The input image to animate into a video",
+    )
+    model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
+        default=types.VideoModel(
+            type="video_model",
+            provider=nodetool.metadata.types.Provider.Gemini,
+            id="veo-3.0-fast-generate-001",
+            name="Veo 3.0 Fast",
+            path=None,
+            supported_tasks=[],
+        ),
+        description="The video generation model to use",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Optional text prompt to guide the video animation"
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text prompt describing what to avoid in the video"
+    )
+    aspect_ratio: nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio = Field(
+        default=nodetool.nodes.nodetool.video.ImageToVideo.AspectRatio.RATIO_16_9,
+        description="Aspect ratio for the video",
+    )
+    resolution: nodetool.nodes.nodetool.video.ImageToVideo.Resolution = Field(
+        default=nodetool.nodes.nodetool.video.ImageToVideo.Resolution.HD,
+        description="Video resolution",
+    )
+    num_frames: int | OutputHandle[int] = connect_field(
+        default=60, description="Number of frames to generate (provider-specific)"
+    )
+    guidance_scale: float | OutputHandle[float] = connect_field(
+        default=7.5,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int | OutputHandle[int] = connect_field(
+        default=30, description="Number of denoising steps"
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -423,7 +650,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
-class LoadVideoAssets(GraphNode[nodetool.nodes.nodetool.video.LoadVideoAssets.OutputType]):
+
+class LoadVideoAssets(
+    GraphNode[nodetool.nodes.nodetool.video.LoadVideoAssets.OutputType]
+):
     """
     Load video files from an asset folder.
 
@@ -435,7 +665,12 @@ class LoadVideoAssets(GraphNode[nodetool.nodes.nodetool.video.LoadVideoAssets.Ou
         - Prepare clips for editing or analysis
     """
 
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to load the video files from.')
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The asset folder to load the video files from.",
+    )
 
     @property
     def out(self) -> "LoadVideoAssetsOutputs":
@@ -449,14 +684,15 @@ class LoadVideoAssets(GraphNode[nodetool.nodes.nodetool.video.LoadVideoAssets.Ou
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class LoadVideoAssetsOutputs(OutputsProxy):
     @property
     def video(self) -> OutputHandle[types.VideoRef]:
-        return typing.cast(OutputHandle[types.VideoRef], self['video'])
+        return typing.cast(OutputHandle[types.VideoRef], self["video"])
 
     @property
     def name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['name'])
+        return typing.cast(OutputHandle[str], self["name"])
 
 
 import typing
@@ -465,19 +701,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class LoadVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Read a video file from disk.
-        video, input, load, file
+    Read a video file from disk.
+    video, input, load, file
 
-        Use cases:
-        - Load videos for processing
-        - Import video files for editing
-        - Read video assets for a workflow
+    Use cases:
+    - Load videos for processing
+    - Import video files for editing
+    - Read video assets for a workflow
     """
 
-    path: str | OutputHandle[str] = connect_field(default='', description='Path to the video file to read')
+    path: str | OutputHandle[str] = connect_field(
+        default="", description="Path to the video file to read"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -494,26 +733,58 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Overlay(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Overlay one video on top of another, including audio overlay when available.
-        video, overlay, composite, picture-in-picture, audio
+    Overlay one video on top of another, including audio overlay when available.
+    video, overlay, composite, picture-in-picture, audio
 
-        Use cases:
-        - Create picture-in-picture effects for commentary videos
-        - Add watermarks or logos to videos
-        - Combine multiple video streams
-        - Create split-screen or multi-view presentations
-        - Layer video effects over main content
+    Use cases:
+    - Create picture-in-picture effects for commentary videos
+    - Add watermarks or logos to videos
+    - Combine multiple video streams
+    - Create split-screen or multi-view presentations
+    - Layer video effects over main content
     """
 
-    main_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The main (background) video.')
-    overlay_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The video to overlay on top.')
-    x: int | OutputHandle[int] = connect_field(default=0, description='X-coordinate for overlay placement.')
-    y: int | OutputHandle[int] = connect_field(default=0, description='Y-coordinate for overlay placement.')
-    scale: float | OutputHandle[float] = connect_field(default=1.0, description='Scale factor for the overlay video.')
-    overlay_audio_volume: float | OutputHandle[float] = connect_field(default=0.5, description='Volume of the overlay audio relative to the main audio.')
+    main_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The main (background) video.",
+    )
+    overlay_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The video to overlay on top.",
+    )
+    x: int | OutputHandle[int] = connect_field(
+        default=0, description="X-coordinate for overlay placement."
+    )
+    y: int | OutputHandle[int] = connect_field(
+        default=0, description="Y-coordinate for overlay placement."
+    )
+    scale: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Scale factor for the overlay video."
+    )
+    overlay_audio_volume: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="Volume of the overlay audio relative to the main audio.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -530,21 +801,37 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class ResizeNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Resize a video to a specific width and height.
-        video, resize, scale, dimensions
+    Resize a video to a specific width and height.
+    video, resize, scale, dimensions
 
-        Use cases:
-        1. Adjust video resolution for different display requirements
-        2. Reduce file size by downscaling video
-        3. Prepare videos for specific platforms with size constraints
+    Use cases:
+    1. Adjust video resolution for different display requirements
+    2. Reduce file size by downscaling video
+    3. Prepare videos for specific platforms with size constraints
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to resize.')
-    width: int | OutputHandle[int] = connect_field(default=-1, description='The target width. Use -1 to maintain aspect ratio.')
-    height: int | OutputHandle[int] = connect_field(default=-1, description='The target height. Use -1 to maintain aspect ratio.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to resize.",
+    )
+    width: int | OutputHandle[int] = connect_field(
+        default=-1, description="The target width. Use -1 to maintain aspect ratio."
+    )
+    height: int | OutputHandle[int] = connect_field(
+        default=-1, description="The target height. Use -1 to maintain aspect ratio."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -561,19 +848,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Reverse(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Reverse the playback of a video.
-        video, reverse, backwards, effect
+    Reverse the playback of a video.
+    video, reverse, backwards, effect
 
-        Use cases:
-        1. Create artistic effects by playing video in reverse
-        2. Analyze motion or events in reverse order
-        3. Generate unique transitions or intros for video projects
+    Use cases:
+    1. Create artistic effects by playing video in reverse
+    2. Analyze motion or events in reverse order
+    3. Generate unique transitions or intros for video projects
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to reverse.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to reverse.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -590,20 +889,34 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Rotate(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Rotate a video by a specified angle.
-        video, rotate, orientation, transform
+    Rotate a video by a specified angle.
+    video, rotate, orientation, transform
 
-        Use cases:
-        1. Correct orientation of videos taken with a rotated camera
-        2. Create artistic effects by rotating video content
-        3. Adjust video for different display orientations
+    Use cases:
+    1. Correct orientation of videos taken with a rotated camera
+    2. Create artistic effects by rotating video content
+    3. Adjust video for different display orientations
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to rotate.')
-    angle: float | OutputHandle[float] = connect_field(default=0.0, description='The angle of rotation in degrees.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to rotate.",
+    )
+    angle: float | OutputHandle[float] = connect_field(
+        default=0.0, description="The angle of rotation in degrees."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -620,20 +933,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Saturation(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Adjust the color saturation of a video.
-        video, saturation, color, enhance
+    Adjust the color saturation of a video.
+    video, saturation, color, enhance
 
-        Use cases:
-        1. Enhance color vibrancy in dull or flat-looking footage
-        2. Create stylistic effects by over-saturating or desaturating video
-        3. Correct oversaturated footage from certain cameras
+    Use cases:
+    1. Enhance color vibrancy in dull or flat-looking footage
+    2. Create stylistic effects by over-saturating or desaturating video
+    3. Correct oversaturated footage from certain cameras
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to adjust saturation.')
-    saturation: float | OutputHandle[float] = connect_field(default=1.0, description='Saturation level. 1.0 is original, <1 decreases saturation, >1 increases saturation.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to adjust saturation.",
+    )
+    saturation: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="Saturation level. 1.0 is original, <1 decreases saturation, >1 increases saturation.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -650,21 +978,41 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Save a video to an asset folder.
-        video, save, file, output
+    Save a video to an asset folder.
+    video, save, file, output
 
-        Use cases:
-        1. Export processed video to a specific asset folder
-        2. Save video with a custom name
-        3. Create a copy of a video in a different location
+    Use cases:
+    1. Export processed video to a specific asset folder
+    2. Save video with a custom name
+    3. Create a copy of a video in a different location
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The video to save.')
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to save the video in.')
-    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d-%H-%M-%S.mp4', description='\n        Name of the output video.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The video to save.",
+    )
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
+        default=types.FolderRef(
+            type="folder", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The asset folder to save the video in.",
+    )
+    name: str | OutputHandle[str] = connect_field(
+        default="%Y-%m-%d-%H-%M-%S.mp4",
+        description="\n        Name of the output video.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -681,20 +1029,37 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Write a video file to disk.
-        video, output, save, file
+    Write a video file to disk.
+    video, output, save, file
 
-        The filename can include time and date variables:
-        %Y - Year, %m - Month, %d - Day
-        %H - Hour, %M - Minute, %S - Second
+    The filename can include time and date variables:
+    %Y - Year, %m - Month, %d - Day
+    %H - Hour, %M - Minute, %S - Second
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The video to save')
-    folder: str | OutputHandle[str] = connect_field(default='', description='Folder where the file will be saved')
-    filename: str | OutputHandle[str] = connect_field(default='', description='\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The video to save",
+    )
+    folder: str | OutputHandle[str] = connect_field(
+        default="", description="Folder where the file will be saved"
+    )
+    filename: str | OutputHandle[str] = connect_field(
+        default="",
+        description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -711,20 +1076,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class SetSpeed(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Adjust the playback speed of a video.
-        video, speed, tempo, time
+    Adjust the playback speed of a video.
+    video, speed, tempo, time
 
-        Use cases:
-        1. Create slow-motion effects by decreasing video speed
-        2. Generate time-lapse videos by increasing playback speed
-        3. Synchronize video duration with audio or other timing requirements
+    Use cases:
+    1. Create slow-motion effects by decreasing video speed
+    2. Generate time-lapse videos by increasing playback speed
+    3. Synchronize video duration with audio or other timing requirements
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to adjust speed.')
-    speed_factor: float | OutputHandle[float] = connect_field(default=1.0, description='The speed adjustment factor. Values > 1 speed up, < 1 slow down.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to adjust speed.",
+    )
+    speed_factor: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="The speed adjustment factor. Values > 1 speed up, < 1 slow down.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -741,21 +1121,39 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Sharpness(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Adjust the sharpness of a video.
-        video, sharpen, enhance, detail
+    Adjust the sharpness of a video.
+    video, sharpen, enhance, detail
 
-        Use cases:
-        1. Enhance detail in slightly out-of-focus footage
-        2. Correct softness introduced by video compression
-        3. Create stylistic effects by over-sharpening
+    Use cases:
+    1. Enhance detail in slightly out-of-focus footage
+    2. Correct softness introduced by video compression
+    3. Create stylistic effects by over-sharpening
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to sharpen.')
-    luma_amount: float | OutputHandle[float] = connect_field(default=1.0, description='Amount of sharpening to apply to luma (brightness) channel.')
-    chroma_amount: float | OutputHandle[float] = connect_field(default=0.5, description='Amount of sharpening to apply to chroma (color) channels.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to sharpen.",
+    )
+    luma_amount: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="Amount of sharpening to apply to luma (brightness) channel.",
+    )
+    chroma_amount: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="Amount of sharpening to apply to chroma (color) channels.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -772,21 +1170,39 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Stabilize(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Apply video stabilization to reduce camera shake and jitter.
-        video, stabilize, smooth, shake-reduction
+    Apply video stabilization to reduce camera shake and jitter.
+    video, stabilize, smooth, shake-reduction
 
-        Use cases:
-        1. Improve quality of handheld or action camera footage
-        2. Smooth out panning and tracking shots
-        3. Enhance viewer experience by reducing motion sickness
+    Use cases:
+    1. Improve quality of handheld or action camera footage
+    2. Smooth out panning and tracking shots
+    3. Enhance viewer experience by reducing motion sickness
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to stabilize.')
-    smoothing: float | OutputHandle[float] = connect_field(default=10.0, description='Smoothing strength. Higher values result in smoother but potentially more cropped video.')
-    crop_black: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to crop black borders that may appear after stabilization.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to stabilize.",
+    )
+    smoothing: float | OutputHandle[float] = connect_field(
+        default=10.0,
+        description="Smoothing strength. Higher values result in smoother but potentially more cropped video.",
+    )
+    crop_black: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Whether to crop black borders that may appear after stabilization.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -803,31 +1219,66 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
-        video, generation, AI, text-to-video, t2v
+    Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
+    video, generation, AI, text-to-video, t2v
 
-        Use cases:
-        - Create videos from text descriptions
-        - Generate video content from prompts
-        - Produce short video clips with AI
-        - Switch between providers without changing workflows
+    Use cases:
+    - Create videos from text descriptions
+    - Generate video content from prompts
+    - Produce short video clips with AI
+    - Switch between providers without changing workflows
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.nodetool.video.TextToVideo.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.nodetool.video.TextToVideo.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.TextToVideo.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.TextToVideo.Resolution
+    )
 
-    model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(default=types.VideoModel(type='video_model', provider=nodetool.metadata.types.Provider.Gemini, id='veo-3.0-fast-generate-001', name='Veo 3.0 Fast', path=None, supported_tasks=[]), description='The video generation model to use')
-    prompt: str | OutputHandle[str] = connect_field(default='A cat playing with a ball of yarn', description='Text prompt describing the desired video')
-    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Text prompt describing what to avoid in the video')
-    aspect_ratio: nodetool.nodes.nodetool.video.TextToVideo.AspectRatio = Field(default=nodetool.nodes.nodetool.video.TextToVideo.AspectRatio.RATIO_16_9, description='Aspect ratio for the video')
-    resolution: nodetool.nodes.nodetool.video.TextToVideo.Resolution = Field(default=nodetool.nodes.nodetool.video.TextToVideo.Resolution.HD, description='Video resolution')
-    num_frames: int | OutputHandle[int] = connect_field(default=60, description='Number of frames to generate (provider-specific)')
-    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Classifier-free guidance scale (higher = closer to prompt)')
-    num_inference_steps: int | OutputHandle[int] = connect_field(default=30, description='Number of denoising steps')
-    seed: int | OutputHandle[int] = connect_field(default=-1, description='Random seed for reproducibility (-1 for random)')
+    model: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
+        default=types.VideoModel(
+            type="video_model",
+            provider=nodetool.metadata.types.Provider.Gemini,
+            id="veo-3.0-fast-generate-001",
+            name="Veo 3.0 Fast",
+            path=None,
+            supported_tasks=[],
+        ),
+        description="The video generation model to use",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cat playing with a ball of yarn",
+        description="Text prompt describing the desired video",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text prompt describing what to avoid in the video"
+    )
+    aspect_ratio: nodetool.nodes.nodetool.video.TextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.nodetool.video.TextToVideo.AspectRatio.RATIO_16_9,
+        description="Aspect ratio for the video",
+    )
+    resolution: nodetool.nodes.nodetool.video.TextToVideo.Resolution = Field(
+        default=nodetool.nodes.nodetool.video.TextToVideo.Resolution.HD,
+        description="Video resolution",
+    )
+    num_frames: int | OutputHandle[int] = connect_field(
+        default=60, description="Number of frames to generate (provider-specific)"
+    )
+    guidance_scale: float | OutputHandle[float] = connect_field(
+        default=7.5,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int | OutputHandle[int] = connect_field(
+        default=30, description="Number of denoising steps"
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -844,25 +1295,55 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Transition(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Create a transition effect between two videos, including audio transition when available.
-        video, transition, effect, merge, audio
+    Create a transition effect between two videos, including audio transition when available.
+    video, transition, effect, merge, audio
 
-        Use cases:
-        1. Create smooth transitions between video clips in a montage
-        2. Add professional-looking effects to video projects
-        3. Blend scenes together for creative storytelling
-        4. Smoothly transition between audio tracks of different video clips
+    Use cases:
+    1. Create smooth transitions between video clips in a montage
+    2. Add professional-looking effects to video projects
+    3. Blend scenes together for creative storytelling
+    4. Smoothly transition between audio tracks of different video clips
     """
 
-    TransitionType: typing.ClassVar[type] = nodetool.nodes.nodetool.video.Transition.TransitionType
+    TransitionType: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.video.Transition.TransitionType
+    )
 
-    video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The first video in the transition.')
-    video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The second video in the transition.')
-    transition_type: nodetool.nodes.nodetool.video.Transition.TransitionType = Field(default=nodetool.nodes.nodetool.video.Transition.TransitionType.fade, description='Type of transition effect')
-    duration: float | OutputHandle[float] = connect_field(default=1.0, description='Duration of the transition effect in seconds.')
+    video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The first video in the transition.",
+    )
+    video_b: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The second video in the transition.",
+    )
+    transition_type: nodetool.nodes.nodetool.video.Transition.TransitionType = Field(
+        default=nodetool.nodes.nodetool.video.Transition.TransitionType.fade,
+        description="Type of transition effect",
+    )
+    duration: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Duration of the transition effect in seconds."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -879,21 +1360,38 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
+
 class Trim(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
-        Trim a video to a specific start and end time.
-        video, trim, cut, segment
+    Trim a video to a specific start and end time.
+    video, trim, cut, segment
 
-        Use cases:
-        1. Extract specific segments from a longer video
-        2. Remove unwanted parts from the beginning or end of a video
-        3. Create shorter clips from a full-length video
+    Use cases:
+    1. Extract specific segments from a longer video
+    2. Remove unwanted parts from the beginning or end of a video
+    3. Create shorter clips from a full-length video
     """
 
-    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(default=types.VideoRef(type='video', uri='', asset_id=None, data=None, metadata=None, duration=None, format=None), description='The input video to trim.')
-    start_time: float | OutputHandle[float] = connect_field(default=0.0, description='The start time in seconds for the trimmed video.')
-    end_time: float | OutputHandle[float] = connect_field(default=-1.0, description='The end time in seconds for the trimmed video. Use -1 for the end of the video.')
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to trim.",
+    )
+    start_time: float | OutputHandle[float] = connect_field(
+        default=0.0, description="The start time in seconds for the trimmed video."
+    )
+    end_time: float | OutputHandle[float] = connect_field(
+        default=-1.0,
+        description="The end time in seconds for the trimmed video. Use -1 for the end of the video.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -902,5 +1400,3 @@ class Trim(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

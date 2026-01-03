@@ -18,22 +18,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
+
 class GoogleFinance(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-        Retrieve financial market data and stock information from Google Finance.
-        google, finance, stocks, market, serp, trading
+    Retrieve financial market data and stock information from Google Finance.
+    google, finance, stocks, market, serp, trading
 
-        Use cases:
-        - Track stock prices and market performance
-        - Monitor financial instruments and indices
-        - Gather historical market data
-        - Build financial analysis workflows
-        - Research investment opportunities
+    Use cases:
+    - Track stock prices and market performance
+    - Monitor financial instruments and indices
+    - Gather historical market data
+    - Build financial analysis workflows
+    - Research investment opportunities
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Stock symbol or company name to search for')
-    window: str | OutputHandle[str] = connect_field(default='', description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')")
+    query: str | OutputHandle[str] = connect_field(
+        default="", description="Stock symbol or company name to search for"
+    )
+    window: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Time window for financial data (e.g., '1d', '5d', '1m', '3m', '6m', '1y', '5y')",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,23 +56,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleImages(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
+
+class GoogleImages(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
     """
 
-        Search Google Images to find visual content or perform reverse image search.
-        google, images, serp, visual, reverse, search
+    Search Google Images to find visual content or perform reverse image search.
+    google, images, serp, visual, reverse, search
 
-        Use cases:
-        - Find images related to a topic or keyword
-        - Perform reverse image searches to find sources
-        - Gather visual assets for projects
-        - Identify similar or related images
-        - Research visual trends and styles
+    Use cases:
+    - Find images related to a topic or keyword
+    - Perform reverse image searches to find sources
+    - Gather visual assets for projects
+    - Identify similar or related images
+    - Research visual trends and styles
     """
 
-    keyword: str | OutputHandle[str] = connect_field(default='', description='Search query or keyword for images')
-    image_url: str | OutputHandle[str] = connect_field(default='', description='URL of image for reverse image search')
-    num_results: int | OutputHandle[int] = connect_field(default=20, description='Maximum number of image results to return')
+    keyword: str | OutputHandle[str] = connect_field(
+        default="", description="Search query or keyword for images"
+    )
+    image_url: str | OutputHandle[str] = connect_field(
+        default="", description="URL of image for reverse image search"
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=20, description="Maximum number of image results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -83,23 +98,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleJobs(SingleOutputGraphNode[list[types.JobResult]], GraphNode[list[types.JobResult]]):
+
+class GoogleJobs(
+    SingleOutputGraphNode[list[types.JobResult]], GraphNode[list[types.JobResult]]
+):
     """
 
-        Search Google Jobs for employment opportunities and job listings.
-        google, jobs, employment, careers, serp, hiring
+    Search Google Jobs for employment opportunities and job listings.
+    google, jobs, employment, careers, serp, hiring
 
-        Use cases:
-        - Find job opportunities matching specific criteria
-        - Monitor job market trends
-        - Aggregate job listings for career sites
-        - Research salary ranges and requirements
-        - Track hiring patterns in industries
+    Use cases:
+    - Find job opportunities matching specific criteria
+    - Monitor job market trends
+    - Aggregate job listings for career sites
+    - Research salary ranges and requirements
+    - Track hiring patterns in industries
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Job title, skills, or company name to search for')
-    location: str | OutputHandle[str] = connect_field(default='', description='Geographic location for job search')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of job results to return')
+    query: str | OutputHandle[str] = connect_field(
+        default="", description="Job title, skills, or company name to search for"
+    )
+    location: str | OutputHandle[str] = connect_field(
+        default="", description="Geographic location for job search"
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of job results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -116,22 +140,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
+
 class GoogleLens(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-        Analyze images using Google Lens to find visual matches and related content.
-        google, lens, visual, image, search, serp, identify
+    Analyze images using Google Lens to find visual matches and related content.
+    google, lens, visual, image, search, serp, identify
 
-        Use cases:
-        - Identify objects, products, or landmarks in images
-        - Find visually similar images
-        - Discover where images appear online
-        - Get information about items shown in photos
-        - Research products and shopping options
+    Use cases:
+    - Identify objects, products, or landmarks in images
+    - Find visually similar images
+    - Discover where images appear online
+    - Get information about items shown in photos
+    - Research products and shopping options
     """
 
-    image_url: str | OutputHandle[str] = connect_field(default='', description='URL of the image to analyze with Google Lens')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of visual search results to return')
+    image_url: str | OutputHandle[str] = connect_field(
+        default="", description="URL of the image to analyze with Google Lens"
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of visual search results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -148,22 +177,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleMaps(SingleOutputGraphNode[list[types.LocalResult]], GraphNode[list[types.LocalResult]]):
+
+class GoogleMaps(
+    SingleOutputGraphNode[list[types.LocalResult]], GraphNode[list[types.LocalResult]]
+):
     """
 
-        Search Google Maps for places, businesses, and get location details.
-        google, maps, places, locations, serp, geography
+    Search Google Maps for places, businesses, and get location details.
+    google, maps, places, locations, serp, geography
 
-        Use cases:
-        - Find businesses and points of interest
-        - Get location information and addresses
-        - Research geographic areas and neighborhoods
-        - Build location-based applications
-        - Gather place reviews and ratings
+    Use cases:
+    - Find businesses and points of interest
+    - Get location information and addresses
+    - Research geographic areas and neighborhoods
+    - Build location-based applications
+    - Gather place reviews and ratings
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Place name, address, or location query')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of map results to return')
+    query: str | OutputHandle[str] = connect_field(
+        default="", description="Place name, address, or location query"
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of map results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -180,22 +216,29 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleNews(SingleOutputGraphNode[list[types.NewsResult]], GraphNode[list[types.NewsResult]]):
+
+class GoogleNews(
+    SingleOutputGraphNode[list[types.NewsResult]], GraphNode[list[types.NewsResult]]
+):
     """
 
-        Search Google News to retrieve current news articles and headlines.
-        google, news, serp, articles, journalism
+    Search Google News to retrieve current news articles and headlines.
+    google, news, serp, articles, journalism
 
-        Use cases:
-        - Monitor breaking news and current events
-        - Track news coverage on specific topics
-        - Gather articles for research and analysis
-        - Build news aggregation workflows
-        - Monitor brand mentions in media
+    Use cases:
+    - Monitor breaking news and current events
+    - Track news coverage on specific topics
+    - Gather articles for research and analysis
+    - Build news aggregation workflows
+    - Monitor brand mentions in media
     """
 
-    keyword: str | OutputHandle[str] = connect_field(default='', description='Search query or keyword for news articles')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of news results to return')
+    keyword: str | OutputHandle[str] = connect_field(
+        default="", description="Search query or keyword for news articles"
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of news results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -212,22 +255,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleSearch(SingleOutputGraphNode[list[types.OrganicResult]], GraphNode[list[types.OrganicResult]]):
+
+class GoogleSearch(
+    SingleOutputGraphNode[list[types.OrganicResult]],
+    GraphNode[list[types.OrganicResult]],
+):
     """
 
-        Search Google to retrieve organic search results from the web.
-        google, search, serp, web, query
+    Search Google to retrieve organic search results from the web.
+    google, search, serp, web, query
 
-        Use cases:
-        - Find relevant websites and pages on any topic
-        - Research information and gather sources
-        - Discover recent content and trending topics
-        - Gather search engine optimization (SEO) insights
-        - Automate web research workflows
+    Use cases:
+    - Find relevant websites and pages on any topic
+    - Research information and gather sources
+    - Discover recent content and trending topics
+    - Gather search engine optimization (SEO) insights
+    - Automate web research workflows
     """
 
-    keyword: str | OutputHandle[str] = connect_field(default='', description='Search query or keyword to search for')
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of results to return')
+    keyword: str | OutputHandle[str] = connect_field(
+        default="", description="Search query or keyword to search for"
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -244,27 +295,48 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.search.google
 from nodetool.workflows.base_node import BaseNode
 
-class GoogleShopping(SingleOutputGraphNode[list[types.ShoppingResult]], GraphNode[list[types.ShoppingResult]]):
+
+class GoogleShopping(
+    SingleOutputGraphNode[list[types.ShoppingResult]],
+    GraphNode[list[types.ShoppingResult]],
+):
     """
 
-        Search Google Shopping for products with filters and pricing information.
-        google, shopping, products, ecommerce, serp, prices
+    Search Google Shopping for products with filters and pricing information.
+    google, shopping, products, ecommerce, serp, prices
 
-        Use cases:
-        - Find products and compare prices
-        - Research product availability and options
-        - Monitor pricing trends
-        - Build price comparison tools
-        - Gather product information for e-commerce
+    Use cases:
+    - Find products and compare prices
+    - Research product availability and options
+    - Monitor pricing trends
+    - Build price comparison tools
+    - Gather product information for e-commerce
     """
 
-    query: str | OutputHandle[str] = connect_field(default='', description='Product name or description to search for')
-    country: str | OutputHandle[str] = connect_field(default='us', description="Country code for shopping search (e.g., 'us', 'uk', 'ca')")
-    min_price: int | OutputHandle[int] = connect_field(default=0, description='Minimum price filter for products')
-    max_price: int | OutputHandle[int] = connect_field(default=0, description='Maximum price filter for products')
-    condition: str | OutputHandle[str] = connect_field(default='', description="Product condition filter (e.g., 'new', 'used', 'refurbished')")
-    sort_by: str | OutputHandle[str] = connect_field(default='', description="Sort order for results (e.g., 'price_low_to_high', 'price_high_to_low', 'review_score')")
-    num_results: int | OutputHandle[int] = connect_field(default=10, description='Maximum number of shopping results to return')
+    query: str | OutputHandle[str] = connect_field(
+        default="", description="Product name or description to search for"
+    )
+    country: str | OutputHandle[str] = connect_field(
+        default="us",
+        description="Country code for shopping search (e.g., 'us', 'uk', 'ca')",
+    )
+    min_price: int | OutputHandle[int] = connect_field(
+        default=0, description="Minimum price filter for products"
+    )
+    max_price: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum price filter for products"
+    )
+    condition: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Product condition filter (e.g., 'new', 'used', 'refurbished')",
+    )
+    sort_by: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Sort order for results (e.g., 'price_low_to_high', 'price_high_to_low', 'review_score')",
+    )
+    num_results: int | OutputHandle[int] = connect_field(
+        default=10, description="Maximum number of shopping results to return"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -273,5 +345,3 @@ class GoogleShopping(SingleOutputGraphNode[list[types.ShoppingResult]], GraphNod
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

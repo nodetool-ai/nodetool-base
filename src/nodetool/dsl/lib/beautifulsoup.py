@@ -18,20 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
+
 class BaseUrl(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Extract the base URL from a given URL.
-        url parsing, domain extraction, web utilities
+    Extract the base URL from a given URL.
+    url parsing, domain extraction, web utilities
 
-        Use cases:
-        - Get domain name from full URLs
-        - Clean up URLs for comparison
-        - Extract root website addresses
-        - Standardize URL formats
+    Use cases:
+    - Get domain name from full URLs
+    - Clean up URLs for comparison
+    - Extract root website addresses
+    - Standardize URL formats
     """
 
-    url: str | OutputHandle[str] = connect_field(default='', description='The URL to extract the base from')
+    url: str | OutputHandle[str] = connect_field(
+        default="", description="The URL to extract the base from"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,20 +51,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
+
 class ExtractAudio(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractAudio.OutputType]):
     """
 
-        Extract audio elements from HTML content.
-        extract, audio, src
+    Extract audio elements from HTML content.
+    extract, audio, src
 
-        Use cases:
-        - Collect audio sources from web pages
-        - Analyze audio usage on websites
-        - Create audio playlists
+    Use cases:
+    - Collect audio sources from web pages
+    - Analyze audio usage on websites
+    - Create audio playlists
     """
 
-    html: str | OutputHandle[str] = connect_field(default='', description='The HTML content to extract audio from.')
-    base_url: str | OutputHandle[str] = connect_field(default='', description='The base URL of the page, used to resolve relative audio URLs.')
+    html: str | OutputHandle[str] = connect_field(
+        default="", description="The HTML content to extract audio from."
+    )
+    base_url: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The base URL of the page, used to resolve relative audio URLs.",
+    )
 
     @property
     def out(self) -> "ExtractAudioOutputs":
@@ -75,10 +84,11 @@ class ExtractAudio(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractAudio.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExtractAudioOutputs(OutputsProxy):
     @property
     def audio(self) -> OutputHandle[types.AudioRef]:
-        return typing.cast(OutputHandle[types.AudioRef], self['audio'])
+        return typing.cast(OutputHandle[types.AudioRef], self["audio"])
 
 
 import typing
@@ -87,20 +97,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
-class ExtractImages(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractImages.OutputType]):
+
+class ExtractImages(
+    GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractImages.OutputType]
+):
     """
 
-        Extract images from HTML content.
-        extract, images, src
+    Extract images from HTML content.
+    extract, images, src
 
-        Use cases:
-        - Collect images from web pages
-        - Analyze image usage on websites
-        - Create image galleries
+    Use cases:
+    - Collect images from web pages
+    - Analyze image usage on websites
+    - Create image galleries
     """
 
-    html: str | OutputHandle[str] = connect_field(default='', description='The HTML content to extract images from.')
-    base_url: str | OutputHandle[str] = connect_field(default='', description='The base URL of the page, used to resolve relative image URLs.')
+    html: str | OutputHandle[str] = connect_field(
+        default="", description="The HTML content to extract images from."
+    )
+    base_url: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The base URL of the page, used to resolve relative image URLs.",
+    )
 
     @property
     def out(self) -> "ExtractImagesOutputs":
@@ -114,10 +132,11 @@ class ExtractImages(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractImages.Out
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExtractImagesOutputs(OutputsProxy):
     @property
     def image(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self['image'])
+        return typing.cast(OutputHandle[types.ImageRef], self["image"])
 
 
 import typing
@@ -126,22 +145,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
+
 class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.OutputType]):
     """
 
-        Extract all links from HTML content with type classification.
-        extract, links, urls, web scraping, html
+    Extract all links from HTML content with type classification.
+    extract, links, urls, web scraping, html
 
-        Use cases:
-        - Analyze website structure and navigation
-        - Discover related content and resources
-        - Build sitemaps and link graphs
-        - Find internal and external references
-        - Collect URLs for further processing
+    Use cases:
+    - Analyze website structure and navigation
+    - Discover related content and resources
+    - Build sitemaps and link graphs
+    - Find internal and external references
+    - Collect URLs for further processing
     """
 
-    html: str | OutputHandle[str] = connect_field(default='', description='The HTML content to extract links from.')
-    base_url: str | OutputHandle[str] = connect_field(default='', description='The base URL of the page, used to determine internal/external links.')
+    html: str | OutputHandle[str] = connect_field(
+        default="", description="The HTML content to extract links from."
+    )
+    base_url: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The base URL of the page, used to determine internal/external links.",
+    )
 
     @property
     def out(self) -> "ExtractLinksOutputs":
@@ -155,18 +180,19 @@ class ExtractLinks(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractLinks.Outpu
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExtractLinksOutputs(OutputsProxy):
     @property
     def href(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['href'])
+        return typing.cast(OutputHandle[str], self["href"])
 
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['text'])
+        return typing.cast(OutputHandle[str], self["text"])
 
     @property
     def type(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['type'])
+        return typing.cast(OutputHandle[str], self["type"])
 
 
 import typing
@@ -175,19 +201,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
-class ExtractMetadata(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractMetadata.OutputType]):
+
+class ExtractMetadata(
+    GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractMetadata.OutputType]
+):
     """
 
-        Extract metadata from HTML content.
-        extract, metadata, seo
+    Extract metadata from HTML content.
+    extract, metadata, seo
 
-        Use cases:
-        - Analyze SEO elements
-        - Gather page information
-        - Extract structured data
+    Use cases:
+    - Analyze SEO elements
+    - Gather page information
+    - Extract structured data
     """
 
-    html: str | OutputHandle[str] = connect_field(default='', description='The HTML content to extract metadata from.')
+    html: str | OutputHandle[str] = connect_field(
+        default="", description="The HTML content to extract metadata from."
+    )
 
     @property
     def out(self) -> "ExtractMetadataOutputs":
@@ -201,18 +232,19 @@ class ExtractMetadata(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractMetadata
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExtractMetadataOutputs(OutputsProxy):
     @property
     def title(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['title'])
+        return typing.cast(OutputHandle[str], self["title"])
 
     @property
     def description(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['description'])
+        return typing.cast(OutputHandle[str], self["description"])
 
     @property
     def keywords(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self['keywords'])
+        return typing.cast(OutputHandle[str], self["keywords"])
 
 
 import typing
@@ -221,20 +253,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
-class ExtractVideos(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractVideos.OutputType]):
+
+class ExtractVideos(
+    GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractVideos.OutputType]
+):
     """
 
-        Extract videos from HTML content.
-        extract, videos, src
+    Extract videos from HTML content.
+    extract, videos, src
 
-        Use cases:
-        - Collect video sources from web pages
-        - Analyze video usage on websites
-        - Create video playlists
+    Use cases:
+    - Collect video sources from web pages
+    - Analyze video usage on websites
+    - Create video playlists
     """
 
-    html: str | OutputHandle[str] = connect_field(default='', description='The HTML content to extract videos from.')
-    base_url: str | OutputHandle[str] = connect_field(default='', description='The base URL of the page, used to resolve relative video URLs.')
+    html: str | OutputHandle[str] = connect_field(
+        default="", description="The HTML content to extract videos from."
+    )
+    base_url: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The base URL of the page, used to resolve relative video URLs.",
+    )
 
     @property
     def out(self) -> "ExtractVideosOutputs":
@@ -248,10 +288,11 @@ class ExtractVideos(GraphNode[nodetool.nodes.lib.beautifulsoup.ExtractVideos.Out
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ExtractVideosOutputs(OutputsProxy):
     @property
     def video(self) -> OutputHandle[types.VideoRef]:
-        return typing.cast(OutputHandle[types.VideoRef], self['video'])
+        return typing.cast(OutputHandle[types.VideoRef], self["video"])
 
 
 import typing
@@ -260,20 +301,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
+
 class HTMLToText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Converts HTML to plain text by removing tags and decoding entities using BeautifulSoup.
-        html, text, convert
+    Converts HTML to plain text by removing tags and decoding entities using BeautifulSoup.
+    html, text, convert
 
-        Use cases:
-        - Cleaning HTML content for text analysis
-        - Extracting readable content from web pages
-        - Preparing HTML data for natural language processing
+    Use cases:
+    - Cleaning HTML content for text analysis
+    - Extracting readable content from web pages
+    - Preparing HTML data for natural language processing
     """
 
-    text: str | OutputHandle[str] = connect_field(default='', description=None)
-    preserve_linebreaks: bool | OutputHandle[bool] = connect_field(default=True, description='Convert block-level elements to newlines')
+    text: str | OutputHandle[str] = connect_field(default="", description=None)
+    preserve_linebreaks: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Convert block-level elements to newlines"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -290,19 +334,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.beautifulsoup
 from nodetool.workflows.base_node import BaseNode
 
+
 class WebsiteContentExtractor(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-        Extract main content from a website, removing navigation, ads, and other non-essential elements.
-        scrape, web scraping, content extraction, text analysis
+    Extract main content from a website, removing navigation, ads, and other non-essential elements.
+    scrape, web scraping, content extraction, text analysis
 
-        Use cases:
-        - Clean web content for further analysis
-        - Extract article text from news websites
-        - Prepare web content for summarization
+    Use cases:
+    - Clean web content for further analysis
+    - Extract article text from news websites
+    - Prepare web content for summarization
     """
 
-    html_content: str | OutputHandle[str] = connect_field(default='', description='The raw HTML content of the website.')
+    html_content: str | OutputHandle[str] = connect_field(
+        default="", description="The raw HTML content of the website."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -311,5 +358,3 @@ class WebsiteContentExtractor(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

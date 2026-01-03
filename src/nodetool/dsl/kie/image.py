@@ -18,7 +18,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class Flux2FlexImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class Flux2FlexImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Generate images using Black Forest Labs' Flux 2 Flex Image-to-Image model via Kie.ai.
 
@@ -31,15 +34,38 @@ class Flux2FlexImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[typ
         - Enhance and modify images
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing how to transform the image.')
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to transform.')
-    aspect_ratio: nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    resolution: nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution = Field(default=nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution.RES_1K, description='Output image resolution.')
-    steps: int | OutputHandle[int] = connect_field(default=25, description='Number of inference steps. Higher values may produce better quality but take longer.')
-    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Guidance scale for the generation. Higher values adhere more closely to the prompt.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to transform the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to transform.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    resolution: nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution = Field(
+        default=nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution.RES_1K,
+        description="Output image resolution.",
+    )
+    steps: int | OutputHandle[int] = connect_field(
+        default=25,
+        description="Number of inference steps. Higher values may produce better quality but take longer.",
+    )
+    guidance_scale: float | OutputHandle[float] = connect_field(
+        default=7.5,
+        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -56,7 +82,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class Flux2FlexTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class Flux2FlexTextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Generate images using Black Forest Labs' Flux 2 Flex Text-to-Image model via Kie.ai.
 
@@ -68,14 +97,32 @@ class Flux2FlexTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[type
         - Generate images with fine detail and artistic style
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    resolution: nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution = Field(default=nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution.RES_1K, description='Output image resolution.')
-    steps: int | OutputHandle[int] = connect_field(default=25, description='Number of inference steps. Higher values may produce better quality but take longer.')
-    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Guidance scale for the generation. Higher values adhere more closely to the prompt.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    resolution: nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution = Field(
+        default=nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution.RES_1K,
+        description="Output image resolution.",
+    )
+    steps: int | OutputHandle[int] = connect_field(
+        default=25,
+        description="Number of inference steps. Higher values may produce better quality but take longer.",
+    )
+    guidance_scale: float | OutputHandle[float] = connect_field(
+        default=7.5,
+        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -92,7 +139,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class Flux2ProImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class Flux2ProImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Generate images using Black Forest Labs' Flux 2 Pro Image-to-Image model via Kie.ai.
 
@@ -105,15 +155,38 @@ class Flux2ProImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[type
         - Enhance and modify images
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing how to transform the image.')
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to transform.')
-    aspect_ratio: nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    resolution: nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution = Field(default=nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution.RES_1K, description='Output image resolution.')
-    steps: int | OutputHandle[int] = connect_field(default=25, description='Number of inference steps. Higher values may produce better quality but take longer.')
-    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Guidance scale for the generation. Higher values adhere more closely to the prompt.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to transform the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to transform.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    resolution: nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution = Field(
+        default=nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution.RES_1K,
+        description="Output image resolution.",
+    )
+    steps: int | OutputHandle[int] = connect_field(
+        default=25,
+        description="Number of inference steps. Higher values may produce better quality but take longer.",
+    )
+    guidance_scale: float | OutputHandle[float] = connect_field(
+        default=7.5,
+        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -130,7 +203,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class Flux2ProTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class Flux2ProTextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Generate images using Black Forest Labs' Flux 2 Pro Text-to-Image model via Kie.ai.
 
@@ -142,14 +218,32 @@ class Flux2ProTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types
         - Generate images with fine detail and artistic style
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    resolution: nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution = Field(default=nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution.RES_1K, description='Output image resolution.')
-    steps: int | OutputHandle[int] = connect_field(default=25, description='Number of inference steps. Higher values may produce better quality but take longer.')
-    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Guidance scale for the generation. Higher values adhere more closely to the prompt.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    resolution: nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution = Field(
+        default=nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution.RES_1K,
+        description="Output image resolution.",
+    )
+    steps: int | OutputHandle[int] = connect_field(
+        default=25,
+        description="Number of inference steps. Higher values may produce better quality but take longer.",
+    )
+    guidance_scale: float | OutputHandle[float] = connect_field(
+        default=7.5,
+        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -165,6 +259,7 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
+
 
 class FluxKontext(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
@@ -182,12 +277,22 @@ class FluxKontext(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
         - Generate images with fine detail and artistic style
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.FluxKontext.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.FluxKontext.AspectRatio
+    )
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.image.FluxKontext.Mode
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.FluxKontext.AspectRatio = Field(default=nodetool.nodes.kie.image.FluxKontext.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    mode: nodetool.nodes.kie.image.FluxKontext.Mode = Field(default=nodetool.nodes.kie.image.FluxKontext.Mode.PRO, description="Generation mode: 'pro' for speed, 'max' for quality.")
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.FluxKontext.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.FluxKontext.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    mode: nodetool.nodes.kie.image.FluxKontext.Mode = Field(
+        default=nodetool.nodes.kie.image.FluxKontext.Mode.PRO,
+        description="Generation mode: 'pro' for speed, 'max' for quality.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -204,7 +309,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class GrokImagineTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class GrokImagineTextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Generate images using xAI's Grok Imagine Text-to-Image model via Kie.ai.
 
@@ -218,10 +326,17 @@ class GrokImagineTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[ty
         - Create visual content with AI
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.GrokImagineTextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -238,7 +353,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class GrokImagineUpscale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class GrokImagineUpscale(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Upscale images using xAI's Grok Imagine Upscale model via Kie.ai.
 
@@ -251,7 +369,12 @@ class GrokImagineUpscale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.
         - Only images generated by Kie AI models (via Grok Imagine) are supported for upscaling.
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to upscale. Must be an image previously generated by a Kie.ai node.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to upscale. Must be an image previously generated by a Kie.ai node.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -268,7 +391,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class IdeogramCharacterRemix(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class IdeogramCharacterRemix(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Remix characters in images using Ideogram via Kie.ai.
 
@@ -278,21 +404,57 @@ class IdeogramCharacterRemix(SingleOutputGraphNode[types.ImageRef], GraphNode[ty
         using reference images and text prompts.
     """
 
-    RenderingSpeed: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramCharacterRemix.RenderingSpeed
+    RenderingSpeed: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramCharacterRemix.RenderingSpeed
+    )
     Style: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramCharacterRemix.Style
-    ImageSize: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramCharacterRemix.ImageSize
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramCharacterRemix.ImageSize
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='Text description for remixing.')
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Base image to remix.')
-    reference_images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=[], description='Reference images for character guidance.')
-    rendering_speed: nodetool.nodes.kie.image.IdeogramCharacterRemix.RenderingSpeed = Field(default=nodetool.nodes.kie.image.IdeogramCharacterRemix.RenderingSpeed.BALANCED, description='Rendering speed preference.')
-    style: nodetool.nodes.kie.image.IdeogramCharacterRemix.Style = Field(default=nodetool.nodes.kie.image.IdeogramCharacterRemix.Style.AUTO, description='Generation style.')
-    expand_prompt: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to expand/augment the prompt.')
-    image_size: nodetool.nodes.kie.image.IdeogramCharacterRemix.ImageSize = Field(default=nodetool.nodes.kie.image.IdeogramCharacterRemix.ImageSize.SQUARE_HD, description='The size of the output image.')
-    strength: float | OutputHandle[float] = connect_field(default=0.8, description='How strongly to apply the remix (0.0 to 1.0).')
-    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Undesired elements to exclude from the image.')
-    additional_images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=[], description='Additional image inputs.')
-    reference_mask_urls: str | OutputHandle[str] = connect_field(default='', description='URL(s) to masks for references (comma-separated).')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text description for remixing."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Base image to remix.",
+    )
+    reference_images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = (
+        connect_field(
+            default=[], description="Reference images for character guidance."
+        )
+    )
+    rendering_speed: nodetool.nodes.kie.image.IdeogramCharacterRemix.RenderingSpeed = (
+        Field(
+            default=nodetool.nodes.kie.image.IdeogramCharacterRemix.RenderingSpeed.BALANCED,
+            description="Rendering speed preference.",
+        )
+    )
+    style: nodetool.nodes.kie.image.IdeogramCharacterRemix.Style = Field(
+        default=nodetool.nodes.kie.image.IdeogramCharacterRemix.Style.AUTO,
+        description="Generation style.",
+    )
+    expand_prompt: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Whether to expand/augment the prompt."
+    )
+    image_size: nodetool.nodes.kie.image.IdeogramCharacterRemix.ImageSize = Field(
+        default=nodetool.nodes.kie.image.IdeogramCharacterRemix.ImageSize.SQUARE_HD,
+        description="The size of the output image.",
+    )
+    strength: float | OutputHandle[float] = connect_field(
+        default=0.8, description="How strongly to apply the remix (0.0 to 1.0)."
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Undesired elements to exclude from the image."
+    )
+    additional_images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = (
+        connect_field(default=[], description="Additional image inputs.")
+    )
+    reference_mask_urls: str | OutputHandle[str] = connect_field(
+        default="", description="URL(s) to masks for references (comma-separated)."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -309,7 +471,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class IdeogramV3Reframe(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class IdeogramV3Reframe(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Reframe images using Ideogram v3 via Kie.ai.
 
@@ -320,15 +485,33 @@ class IdeogramV3Reframe(SingleOutputGraphNode[types.ImageRef], GraphNode[types.I
         - Change aspect ratio of images while maintaining quality
     """
 
-    ImageSize: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3Reframe.ImageSize
-    RenderingSpeed: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3Reframe.RenderingSpeed
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3Reframe.ImageSize
+    )
+    RenderingSpeed: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3Reframe.RenderingSpeed
+    )
     Style: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3Reframe.Style
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='URL of the image to reframe.')
-    image_size: nodetool.nodes.kie.image.IdeogramV3Reframe.ImageSize = Field(default=nodetool.nodes.kie.image.IdeogramV3Reframe.ImageSize.SQUARE_HD, description='Output resolution preset.')
-    rendering_speed: nodetool.nodes.kie.image.IdeogramV3Reframe.RenderingSpeed = Field(default=nodetool.nodes.kie.image.IdeogramV3Reframe.RenderingSpeed.BALANCED, description='Rendering speed preference.')
-    style: nodetool.nodes.kie.image.IdeogramV3Reframe.Style = Field(default=nodetool.nodes.kie.image.IdeogramV3Reframe.Style.AUTO, description='Generation style.')
-    seed: int | OutputHandle[int] = connect_field(default=0, description='RNG seed.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="URL of the image to reframe.",
+    )
+    image_size: nodetool.nodes.kie.image.IdeogramV3Reframe.ImageSize = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3Reframe.ImageSize.SQUARE_HD,
+        description="Output resolution preset.",
+    )
+    rendering_speed: nodetool.nodes.kie.image.IdeogramV3Reframe.RenderingSpeed = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3Reframe.RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+    style: nodetool.nodes.kie.image.IdeogramV3Reframe.Style = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3Reframe.Style.AUTO,
+        description="Generation style.",
+    )
+    seed: int | OutputHandle[int] = connect_field(default=0, description="RNG seed.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -345,6 +528,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class Imagen4(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images using Google's Imagen 4 model via Kie.ai.
@@ -354,10 +538,17 @@ class Imagen4(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Imagen4.AspectRatio
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Undesired elements to exclude.')
-    aspect_ratio: nodetool.nodes.kie.image.Imagen4.AspectRatio = Field(default=nodetool.nodes.kie.image.Imagen4.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    seed: int | OutputHandle[int] = connect_field(default=0, description='RNG seed.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Undesired elements to exclude."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Imagen4.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Imagen4.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    seed: int | OutputHandle[int] = connect_field(default=0, description="RNG seed.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -374,6 +565,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class Imagen4Fast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images using Google's Imagen 4 Fast model via Kie.ai.
@@ -381,11 +573,20 @@ class Imagen4Fast(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
         kie, google, imagen, imagen4, fast, image generation, ai
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Imagen4Fast.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Imagen4Fast.AspectRatio
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Undesired elements to exclude.')
-    aspect_ratio: nodetool.nodes.kie.image.Imagen4Fast.AspectRatio = Field(default=nodetool.nodes.kie.image.Imagen4Fast.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Undesired elements to exclude."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Imagen4Fast.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Imagen4Fast.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -402,6 +603,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class Imagen4Ultra(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images using Google's Imagen 4 Ultra model via Kie.ai.
@@ -409,12 +611,21 @@ class Imagen4Ultra(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
         kie, google, imagen, imagen4, ultra, image generation, ai
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Imagen4Ultra.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Imagen4Ultra.AspectRatio
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Undesired elements to exclude.')
-    aspect_ratio: nodetool.nodes.kie.image.Imagen4Ultra.AspectRatio = Field(default=nodetool.nodes.kie.image.Imagen4Ultra.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    seed: int | OutputHandle[int] = connect_field(default=0, description='RNG seed.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Undesired elements to exclude."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Imagen4Ultra.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Imagen4Ultra.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    seed: int | OutputHandle[int] = connect_field(default=0, description="RNG seed.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -431,6 +642,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class NanoBanana(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images using Google's Nano Banana model (Gemini 2.5) via Kie.ai.
@@ -440,8 +652,13 @@ class NanoBanana(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
 
     ImageSize: typing.ClassVar[type] = nodetool.nodes.kie.image.NanoBanana.ImageSize
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    image_size: nodetool.nodes.kie.image.NanoBanana.ImageSize = Field(default=nodetool.nodes.kie.image.NanoBanana.ImageSize.SQUARE, description='The size of the output image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    image_size: nodetool.nodes.kie.image.NanoBanana.ImageSize = Field(
+        default=nodetool.nodes.kie.image.NanoBanana.ImageSize.SQUARE,
+        description="The size of the output image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -458,6 +675,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class NanoBananaEdit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Edit images using Google's Nano Banana model via Kie.ai.
@@ -467,9 +685,16 @@ class NanoBananaEdit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Imag
 
     ImageSize: typing.ClassVar[type] = nodetool.nodes.kie.image.NanoBananaEdit.ImageSize
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='Text description of the changes to make.')
-    image_input: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=[], description='Images to edit.')
-    image_size: nodetool.nodes.kie.image.NanoBananaEdit.ImageSize = Field(default=nodetool.nodes.kie.image.NanoBananaEdit.ImageSize.SQUARE, description='The size of the output image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text description of the changes to make."
+    )
+    image_input: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = (
+        connect_field(default=[], description="Images to edit.")
+    )
+    image_size: nodetool.nodes.kie.image.NanoBananaEdit.ImageSize = Field(
+        default=nodetool.nodes.kie.image.NanoBananaEdit.ImageSize.SQUARE,
+        description="The size of the output image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -486,6 +711,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class NanoBananaPro(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images using Google's Nano Banana Pro model (Gemini 3.0) via Kie.ai.
@@ -493,13 +719,29 @@ class NanoBananaPro(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
         kie, nano-banana-pro, google, gemini, image generation, ai, text-to-image, 4k, high-fidelity
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.NanoBananaPro.AspectRatio
-    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.image.NanoBananaPro.Resolution
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.NanoBananaPro.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.NanoBananaPro.Resolution
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    image_input: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(default=[], description='Optional image inputs for multimodal generation.')
-    aspect_ratio: nodetool.nodes.kie.image.NanoBananaPro.AspectRatio = Field(default=nodetool.nodes.kie.image.NanoBananaPro.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    resolution: nodetool.nodes.kie.image.NanoBananaPro.Resolution = Field(default=nodetool.nodes.kie.image.NanoBananaPro.Resolution.RES_2K, description='Output image resolution.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    image_input: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = (
+        connect_field(
+            default=[], description="Optional image inputs for multimodal generation."
+        )
+    )
+    aspect_ratio: nodetool.nodes.kie.image.NanoBananaPro.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.NanoBananaPro.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    resolution: nodetool.nodes.kie.image.NanoBananaPro.Resolution = Field(
+        default=nodetool.nodes.kie.image.NanoBananaPro.Resolution.RES_2K,
+        description="Output image resolution.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -516,7 +758,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class QwenImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class QwenImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Transform images using Qwen's Image-to-Image model via Kie.ai.
 
@@ -531,11 +776,23 @@ class QwenImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Im
         - Enhance or modify image content
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.QwenImageToImage.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.QwenImageToImage.AspectRatio
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing how to transform the image.')
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to transform.')
-    aspect_ratio: nodetool.nodes.kie.image.QwenImageToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.QwenImageToImage.AspectRatio.SQUARE, description='The aspect ratio of the output image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to transform the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to transform.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.QwenImageToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.QwenImageToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -552,6 +809,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
+
 class QwenTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Generate images using Qwen's Text-to-Image model via Kie.ai.
@@ -566,10 +824,17 @@ class QwenTextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Ima
         - Generate illustrations and artwork
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.QwenTextToImage.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.QwenTextToImage.AspectRatio
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.QwenTextToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.QwenTextToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.QwenTextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.QwenTextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -586,14 +851,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class RecraftCrispUpscale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class RecraftCrispUpscale(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Upscale images using Recraft's Crisp Upscale model via Kie.ai.
 
         kie, recraft, crisp-upscale, upscale, ai
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to upscale.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to upscale.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -610,7 +883,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class RecraftRemoveBackground(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class RecraftRemoveBackground(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Remove background from images using Recraft's model via Kie.ai.
 
@@ -622,7 +898,12 @@ class RecraftRemoveBackground(SingleOutputGraphNode[types.ImageRef], GraphNode[t
         - Isolate subjects in images
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to remove the background from.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to remove the background from.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -638,6 +919,7 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
+
 
 class Seedream45Edit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
@@ -655,13 +937,28 @@ class Seedream45Edit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Imag
         - Improve image quality and resolution
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Seedream45Edit.AspectRatio
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream45Edit.AspectRatio
+    )
     Quality: typing.ClassVar[type] = nodetool.nodes.kie.image.Seedream45Edit.Quality
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing how to edit the image.')
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The source image to edit.')
-    aspect_ratio: nodetool.nodes.kie.image.Seedream45Edit.AspectRatio = Field(default=nodetool.nodes.kie.image.Seedream45Edit.AspectRatio.SQUARE, description='The aspect ratio of the output image.')
-    quality: nodetool.nodes.kie.image.Seedream45Edit.Quality = Field(default=nodetool.nodes.kie.image.Seedream45Edit.Quality.BASIC, description='Basic outputs 2K images, while High outputs 4K images.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to edit the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to edit.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Seedream45Edit.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Seedream45Edit.AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+    quality: nodetool.nodes.kie.image.Seedream45Edit.Quality = Field(
+        default=nodetool.nodes.kie.image.Seedream45Edit.Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -678,7 +975,10 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class Seedream45TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class Seedream45TextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Generate images using ByteDance's Seedream 4.5 Text-to-Image model via Kie.ai.
 
@@ -693,12 +993,24 @@ class Seedream45TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[typ
         - Generate illustrations with unique styles
     """
 
-    AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio
-    Quality: typing.ClassVar[type] = nodetool.nodes.kie.image.Seedream45TextToImage.Quality
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream45TextToImage.Quality
+    )
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio = Field(default=nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
-    quality: nodetool.nodes.kie.image.Seedream45TextToImage.Quality = Field(default=nodetool.nodes.kie.image.Seedream45TextToImage.Quality.BASIC, description='Basic outputs 2K images, while High outputs 4K images.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Seedream45TextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    quality: nodetool.nodes.kie.image.Seedream45TextToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.Seedream45TextToImage.Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -715,17 +1027,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
-class TopazImageUpscale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+
+class TopazImageUpscale(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
     """
     Upscale and enhance images using Topaz Labs AI via Kie.ai.
 
         kie, topaz, upscale, enhance, image, ai, super-resolution
     """
 
-    UpscaleFactor: typing.ClassVar[type] = nodetool.nodes.kie.image.TopazImageUpscale.UpscaleFactor
+    UpscaleFactor: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.TopazImageUpscale.UpscaleFactor
+    )
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to upscale.')
-    upscale_factor: nodetool.nodes.kie.image.TopazImageUpscale.UpscaleFactor = Field(default=nodetool.nodes.kie.image.TopazImageUpscale.UpscaleFactor.X2, description='The upscaling factor (2x or 4x).')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to upscale.",
+    )
+    upscale_factor: nodetool.nodes.kie.image.TopazImageUpscale.UpscaleFactor = Field(
+        default=nodetool.nodes.kie.image.TopazImageUpscale.UpscaleFactor.X2,
+        description="The upscaling factor (2x or 4x).",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -741,6 +1066,7 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
+
 
 class ZImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
@@ -760,8 +1086,13 @@ class ZImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     AspectRatio: typing.ClassVar[type] = nodetool.nodes.kie.image.ZImage.AspectRatio
 
-    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
-    aspect_ratio: nodetool.nodes.kie.image.ZImage.AspectRatio = Field(default=nodetool.nodes.kie.image.ZImage.AspectRatio.SQUARE, description='The aspect ratio of the generated image.')
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.ZImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.ZImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -770,5 +1101,3 @@ class ZImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

@@ -18,25 +18,36 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class CircleNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Generate SVG circle element with customizable position, radius, and styling.
-        svg, shape, vector, circle
+    Generate SVG circle element with customizable position, radius, and styling.
+    svg, shape, vector, circle
 
-        Use cases:
-        - Create circular shapes and icons
-        - Design buttons, badges, and indicators
-        - Build data visualizations like pie charts
-        - Create decorative elements and patterns
+    Use cases:
+    - Create circular shapes and icons
+    - Design buttons, badges, and indicators
+    - Build data visualizations like pie charts
+    - Create decorative elements and patterns
     """
 
-    cx: int | OutputHandle[int] = connect_field(default=0, description='Center X coordinate')
-    cy: int | OutputHandle[int] = connect_field(default=0, description='Center Y coordinate')
-    radius: int | OutputHandle[int] = connect_field(default=50, description='Radius')
-    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Fill color')
-    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='none'), description='Stroke color')
-    stroke_width: int | OutputHandle[int] = connect_field(default=1, description='Stroke width')
+    cx: int | OutputHandle[int] = connect_field(
+        default=0, description="Center X coordinate"
+    )
+    cy: int | OutputHandle[int] = connect_field(
+        default=0, description="Center Y coordinate"
+    )
+    radius: int | OutputHandle[int] = connect_field(default=50, description="Radius")
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"), description="Fill color"
+    )
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="none"), description="Stroke color"
+    )
+    stroke_width: int | OutputHandle[int] = connect_field(
+        default=1, description="Stroke width"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -53,20 +64,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class ClipPath(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Create clipping paths for SVG elements.
-        svg, clip, mask
+    Create clipping paths for SVG elements.
+    svg, clip, mask
 
-        Use cases:
-        - Mask parts of elements
-        - Create complex shapes through clipping
-        - Apply visual effects using masks
+    Use cases:
+    - Mask parts of elements
+    - Create complex shapes through clipping
+    - Apply visual effects using masks
     """
 
-    clip_content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(default=types.SVGElement(type='svg_element', name='', attributes={}, content=None, children=[]), description='SVG element to use as clip path')
-    content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(default=types.SVGElement(type='svg_element', name='', attributes={}, content=None, children=[]), description='SVG element to clip')
+    clip_content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
+        default=types.SVGElement(
+            type="svg_element", name="", attributes={}, content=None, children=[]
+        ),
+        description="SVG element to use as clip path",
+    )
+    content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
+        default=types.SVGElement(
+            type="svg_element", name="", attributes={}, content=None, children=[]
+        ),
+        description="SVG element to clip",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -83,22 +105,38 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class Document(SingleOutputGraphNode[types.SVGRef], GraphNode[types.SVGRef]):
     """
 
-        Combine SVG elements into a complete SVG document.
-        svg, document, combine
+    Combine SVG elements into a complete SVG document.
+    svg, document, combine
 
-        Use cases:
-        - Combine multiple SVG elements into a single document
-        - Set document-level properties like viewBox and dimensions
-        - Export complete SVG documents
+    Use cases:
+    - Combine multiple SVG elements into a single document
+    - Set document-level properties like viewBox and dimensions
+    - Export complete SVG documents
     """
 
-    content: str | nodetool.metadata.types.SVGElement | list[nodetool.metadata.types.SVGElement] | OutputHandle[str | nodetool.metadata.types.SVGElement | list[nodetool.metadata.types.SVGElement]] = connect_field(default=[], description='SVG content')
-    width: int | OutputHandle[int] = connect_field(default=800, description='Document width')
-    height: int | OutputHandle[int] = connect_field(default=600, description='Document height')
-    viewBox: str | OutputHandle[str] = connect_field(default='0 0 800 600', description='SVG viewBox attribute')
+    content: (
+        str
+        | nodetool.metadata.types.SVGElement
+        | list[nodetool.metadata.types.SVGElement]
+        | OutputHandle[
+            str
+            | nodetool.metadata.types.SVGElement
+            | list[nodetool.metadata.types.SVGElement]
+        ]
+    ) = connect_field(default=[], description="SVG content")
+    width: int | OutputHandle[int] = connect_field(
+        default=800, description="Document width"
+    )
+    height: int | OutputHandle[int] = connect_field(
+        default=600, description="Document height"
+    )
+    viewBox: str | OutputHandle[str] = connect_field(
+        default="0 0 800 600", description="SVG viewBox attribute"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -115,23 +153,33 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class DropShadow(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Apply drop shadow filter effect to SVG elements for depth.
-        svg, filter, shadow, effects
+    Apply drop shadow filter effect to SVG elements for depth.
+    svg, filter, shadow, effects
 
-        Use cases:
-        - Add depth and elevation to elements
-        - Create realistic shadow effects
-        - Enhance visual hierarchy
-        - Improve element separation and readability
+    Use cases:
+    - Add depth and elevation to elements
+    - Create realistic shadow effects
+    - Enhance visual hierarchy
+    - Improve element separation and readability
     """
 
-    std_deviation: float | OutputHandle[float] = connect_field(default=3.0, description='Standard deviation for blur')
-    dx: int | OutputHandle[int] = connect_field(default=2, description='X offset for shadow')
-    dy: int | OutputHandle[int] = connect_field(default=2, description='Y offset for shadow')
-    color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Color for shadow')
+    std_deviation: float | OutputHandle[float] = connect_field(
+        default=3.0, description="Standard deviation for blur"
+    )
+    dx: int | OutputHandle[int] = connect_field(
+        default=2, description="X offset for shadow"
+    )
+    dy: int | OutputHandle[int] = connect_field(
+        default=2, description="Y offset for shadow"
+    )
+    color: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"),
+        description="Color for shadow",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -148,26 +196,37 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class EllipseNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Generate SVG ellipse element with customizable position, radii, and styling.
-        svg, shape, vector, ellipse
+    Generate SVG ellipse element with customizable position, radii, and styling.
+    svg, shape, vector, ellipse
 
-        Use cases:
-        - Create oval shapes and organic forms
-        - Design speech bubbles and callouts
-        - Build data visualization elements
-        - Create decorative patterns and borders
+    Use cases:
+    - Create oval shapes and organic forms
+    - Design speech bubbles and callouts
+    - Build data visualization elements
+    - Create decorative patterns and borders
     """
 
-    cx: int | OutputHandle[int] = connect_field(default=0, description='Center X coordinate')
-    cy: int | OutputHandle[int] = connect_field(default=0, description='Center Y coordinate')
-    rx: int | OutputHandle[int] = connect_field(default=100, description='X radius')
-    ry: int | OutputHandle[int] = connect_field(default=50, description='Y radius')
-    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Fill color')
-    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='none'), description='Stroke color')
-    stroke_width: int | OutputHandle[int] = connect_field(default=1, description='Stroke width')
+    cx: int | OutputHandle[int] = connect_field(
+        default=0, description="Center X coordinate"
+    )
+    cy: int | OutputHandle[int] = connect_field(
+        default=0, description="Center Y coordinate"
+    )
+    rx: int | OutputHandle[int] = connect_field(default=100, description="X radius")
+    ry: int | OutputHandle[int] = connect_field(default=50, description="Y radius")
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"), description="Fill color"
+    )
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="none"), description="Stroke color"
+    )
+    stroke_width: int | OutputHandle[int] = connect_field(
+        default=1, description="Stroke width"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -184,20 +243,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
-class GaussianBlur(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
+
+class GaussianBlur(
+    SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]
+):
     """
 
-        Apply Gaussian blur filter effect to SVG elements.
-        svg, filter, blur, effects
+    Apply Gaussian blur filter effect to SVG elements.
+    svg, filter, blur, effects
 
-        Use cases:
-        - Create soft focus and depth effects
-        - Add subtle shadows and glows
-        - Simulate motion blur
-        - Soften edges in graphics
+    Use cases:
+    - Create soft focus and depth effects
+    - Add subtle shadows and glows
+    - Simulate motion blur
+    - Soften edges in graphics
     """
 
-    std_deviation: float | OutputHandle[float] = connect_field(default=3.0, description='Standard deviation for blur')
+    std_deviation: float | OutputHandle[float] = connect_field(
+        default=3.0, description="Standard deviation for blur"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -214,27 +278,45 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class Gradient(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Create linear or radial gradients for SVG elements.
-        svg, gradient, color
+    Create linear or radial gradients for SVG elements.
+    svg, gradient, color
 
-        Use cases:
-        - Add smooth color transitions
-        - Create complex color effects
-        - Define reusable gradient definitions
+    Use cases:
+    - Add smooth color transitions
+    - Create complex color effects
+    - Define reusable gradient definitions
     """
 
     GradientType: typing.ClassVar[type] = nodetool.nodes.lib.svg.Gradient.GradientType
 
-    gradient_type: nodetool.nodes.lib.svg.Gradient.GradientType = Field(default=nodetool.nodes.lib.svg.Gradient.GradientType.LINEAR, description='Type of gradient')
-    x1: float | OutputHandle[float] = connect_field(default=0, description='Start X position (linear) or center X (radial)')
-    y1: float | OutputHandle[float] = connect_field(default=0, description='Start Y position (linear) or center Y (radial)')
-    x2: float | OutputHandle[float] = connect_field(default=100, description='End X position (linear) or radius X (radial)')
-    y2: float | OutputHandle[float] = connect_field(default=100, description='End Y position (linear) or radius Y (radial)')
-    color1: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Start color of gradient')
-    color2: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#FFFFFF'), description='End color of gradient')
+    gradient_type: nodetool.nodes.lib.svg.Gradient.GradientType = Field(
+        default=nodetool.nodes.lib.svg.Gradient.GradientType.LINEAR,
+        description="Type of gradient",
+    )
+    x1: float | OutputHandle[float] = connect_field(
+        default=0, description="Start X position (linear) or center X (radial)"
+    )
+    y1: float | OutputHandle[float] = connect_field(
+        default=0, description="Start Y position (linear) or center Y (radial)"
+    )
+    x2: float | OutputHandle[float] = connect_field(
+        default=100, description="End X position (linear) or radius X (radial)"
+    )
+    y2: float | OutputHandle[float] = connect_field(
+        default=100, description="End Y position (linear) or radius Y (radial)"
+    )
+    color1: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"),
+        description="Start color of gradient",
+    )
+    color2: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#FFFFFF"),
+        description="End color of gradient",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -251,25 +333,39 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class LineNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Generate SVG line element with customizable endpoints and styling.
-        svg, shape, vector, line
+    Generate SVG line element with customizable endpoints and styling.
+    svg, shape, vector, line
 
-        Use cases:
-        - Draw straight lines and connectors
-        - Create dividers and separators
-        - Build diagrams and flowcharts
-        - Design grid patterns and borders
+    Use cases:
+    - Draw straight lines and connectors
+    - Create dividers and separators
+    - Build diagrams and flowcharts
+    - Design grid patterns and borders
     """
 
-    x1: int | OutputHandle[int] = connect_field(default=0, description='Start X coordinate')
-    y1: int | OutputHandle[int] = connect_field(default=0, description='Start Y coordinate')
-    x2: int | OutputHandle[int] = connect_field(default=100, description='End X coordinate')
-    y2: int | OutputHandle[int] = connect_field(default=100, description='End Y coordinate')
-    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Stroke color')
-    stroke_width: int | OutputHandle[int] = connect_field(default=1, description='Stroke width')
+    x1: int | OutputHandle[int] = connect_field(
+        default=0, description="Start X coordinate"
+    )
+    y1: int | OutputHandle[int] = connect_field(
+        default=0, description="Start Y coordinate"
+    )
+    x2: int | OutputHandle[int] = connect_field(
+        default=100, description="End X coordinate"
+    )
+    y2: int | OutputHandle[int] = connect_field(
+        default=100, description="End Y coordinate"
+    )
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"),
+        description="Stroke color",
+    )
+    stroke_width: int | OutputHandle[int] = connect_field(
+        default=1, description="Stroke width"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -286,23 +382,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class PathNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Generate SVG path element using path data commands.
-        svg, shape, vector, path
+    Generate SVG path element using path data commands.
+    svg, shape, vector, path
 
-        Use cases:
-        - Create complex curved and custom shapes
-        - Build logos and custom icons
-        - Design intricate patterns and illustrations
-        - Import path data from design tools
+    Use cases:
+    - Create complex curved and custom shapes
+    - Build logos and custom icons
+    - Design intricate patterns and illustrations
+    - Import path data from design tools
     """
 
-    path_data: str | OutputHandle[str] = connect_field(default='', description='SVG path data (d attribute)')
-    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Fill color')
-    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='none'), description='Stroke color')
-    stroke_width: int | OutputHandle[int] = connect_field(default=1, description='Stroke width')
+    path_data: str | OutputHandle[str] = connect_field(
+        default="", description="SVG path data (d attribute)"
+    )
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"), description="Fill color"
+    )
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="none"), description="Stroke color"
+    )
+    stroke_width: int | OutputHandle[int] = connect_field(
+        default=1, description="Stroke width"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -319,23 +424,32 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class PolygonNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Generate SVG polygon element with multiple vertices.
-        svg, shape, vector, polygon
+    Generate SVG polygon element with multiple vertices.
+    svg, shape, vector, polygon
 
-        Use cases:
-        - Create multi-sided shapes like triangles, pentagons, stars
-        - Build custom icons and symbols
-        - Design complex geometric patterns
-        - Create irregular shapes and forms
+    Use cases:
+    - Create multi-sided shapes like triangles, pentagons, stars
+    - Build custom icons and symbols
+    - Design complex geometric patterns
+    - Create irregular shapes and forms
     """
 
-    points: str | OutputHandle[str] = connect_field(default='', description="Points in format 'x1,y1 x2,y2 x3,y3...'")
-    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Fill color')
-    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='none'), description='Stroke color')
-    stroke_width: int | OutputHandle[int] = connect_field(default=1, description='Stroke width')
+    points: str | OutputHandle[str] = connect_field(
+        default="", description="Points in format 'x1,y1 x2,y2 x3,y3...'"
+    )
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"), description="Fill color"
+    )
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="none"), description="Stroke color"
+    )
+    stroke_width: int | OutputHandle[int] = connect_field(
+        default=1, description="Stroke width"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -352,26 +466,33 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class RectNode(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Generate SVG rectangle element with customizable position, size, and styling.
-        svg, shape, vector, rectangle
+    Generate SVG rectangle element with customizable position, size, and styling.
+    svg, shape, vector, rectangle
 
-        Use cases:
-        - Create rectangular shapes in SVG documents
-        - Design borders, frames, and backgrounds
-        - Build user interface components
-        - Create geometric patterns and layouts
+    Use cases:
+    - Create rectangular shapes in SVG documents
+    - Design borders, frames, and backgrounds
+    - Build user interface components
+    - Create geometric patterns and layouts
     """
 
-    x: int | OutputHandle[int] = connect_field(default=0, description='X coordinate')
-    y: int | OutputHandle[int] = connect_field(default=0, description='Y coordinate')
-    width: int | OutputHandle[int] = connect_field(default=100, description='Width')
-    height: int | OutputHandle[int] = connect_field(default=100, description='Height')
-    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Fill color')
-    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='none'), description='Stroke color')
-    stroke_width: int | OutputHandle[int] = connect_field(default=1, description='Stroke width')
+    x: int | OutputHandle[int] = connect_field(default=0, description="X coordinate")
+    y: int | OutputHandle[int] = connect_field(default=0, description="Y coordinate")
+    width: int | OutputHandle[int] = connect_field(default=100, description="Width")
+    height: int | OutputHandle[int] = connect_field(default=100, description="Height")
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"), description="Fill color"
+    )
+    stroke: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="none"), description="Stroke color"
+    )
+    stroke_width: int | OutputHandle[int] = connect_field(
+        default=1, description="Stroke width"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -388,23 +509,41 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class SVGToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-        Create an SVG document and convert it to a raster image in one step.
-        svg, document, raster, convert
+    Create an SVG document and convert it to a raster image in one step.
+    svg, document, raster, convert
 
-        Use cases:
-        - Create and rasterize SVG documents in a single operation
-        - Generate image files from SVG elements
-        - Convert vector graphics to bitmap format with custom dimensions
+    Use cases:
+    - Create and rasterize SVG documents in a single operation
+    - Generate image files from SVG elements
+    - Convert vector graphics to bitmap format with custom dimensions
     """
 
-    content: str | nodetool.metadata.types.SVGElement | list[nodetool.metadata.types.SVGElement] | OutputHandle[str | nodetool.metadata.types.SVGElement | list[nodetool.metadata.types.SVGElement]] = connect_field(default=[], description='SVG content')
-    width: int | OutputHandle[int] = connect_field(default=800, description='Document width')
-    height: int | OutputHandle[int] = connect_field(default=600, description='Document height')
-    viewBox: str | OutputHandle[str] = connect_field(default='0 0 800 600', description='SVG viewBox attribute')
-    scale: int | OutputHandle[int] = connect_field(default=1, description='Scale factor for rasterization')
+    content: (
+        str
+        | nodetool.metadata.types.SVGElement
+        | list[nodetool.metadata.types.SVGElement]
+        | OutputHandle[
+            str
+            | nodetool.metadata.types.SVGElement
+            | list[nodetool.metadata.types.SVGElement]
+        ]
+    ) = connect_field(default=[], description="SVG content")
+    width: int | OutputHandle[int] = connect_field(
+        default=800, description="Document width"
+    )
+    height: int | OutputHandle[int] = connect_field(
+        default=600, description="Document height"
+    )
+    viewBox: str | OutputHandle[str] = connect_field(
+        default="0 0 800 600", description="SVG viewBox attribute"
+    )
+    scale: int | OutputHandle[int] = connect_field(
+        default=1, description="Scale factor for rasterization"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -421,27 +560,39 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class Text(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Add text elements to SVG.
-        svg, text, typography
+    Add text elements to SVG.
+    svg, text, typography
 
-        Use cases:
-        - Add labels to vector graphics
-        - Create text-based logos
-        - Generate dynamic text content in SVGs
+    Use cases:
+    - Add labels to vector graphics
+    - Create text-based logos
+    - Generate dynamic text content in SVGs
     """
 
     SVGTextAnchor: typing.ClassVar[type] = nodetool.nodes.lib.svg.SVGTextAnchor
 
-    text: str | OutputHandle[str] = connect_field(default='', description='Text content')
-    x: int | OutputHandle[int] = connect_field(default=0, description='X coordinate')
-    y: int | OutputHandle[int] = connect_field(default=0, description='Y coordinate')
-    font_family: str | OutputHandle[str] = connect_field(default='Arial', description='Font family')
-    font_size: int | OutputHandle[int] = connect_field(default=16, description='Font size')
-    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(default=types.ColorRef(type='color', value='#000000'), description='Text color')
-    text_anchor: nodetool.nodes.lib.svg.SVGTextAnchor = Field(default=nodetool.nodes.lib.svg.SVGTextAnchor.START, description='Text anchor position')
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="Text content"
+    )
+    x: int | OutputHandle[int] = connect_field(default=0, description="X coordinate")
+    y: int | OutputHandle[int] = connect_field(default=0, description="Y coordinate")
+    font_family: str | OutputHandle[str] = connect_field(
+        default="Arial", description="Font family"
+    )
+    font_size: int | OutputHandle[int] = connect_field(
+        default=16, description="Font size"
+    )
+    fill: types.ColorRef | OutputHandle[types.ColorRef] = connect_field(
+        default=types.ColorRef(type="color", value="#000000"), description="Text color"
+    )
+    text_anchor: nodetool.nodes.lib.svg.SVGTextAnchor = Field(
+        default=nodetool.nodes.lib.svg.SVGTextAnchor.START,
+        description="Text anchor position",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -458,24 +609,40 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.svg
 from nodetool.workflows.base_node import BaseNode
 
+
 class Transform(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElement]):
     """
 
-        Apply transformations to SVG elements.
-        svg, transform, animation
+    Apply transformations to SVG elements.
+    svg, transform, animation
 
-        Use cases:
-        - Rotate, scale, or translate elements
-        - Create complex transformations
-        - Prepare elements for animation
+    Use cases:
+    - Rotate, scale, or translate elements
+    - Create complex transformations
+    - Prepare elements for animation
     """
 
-    content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(default=types.SVGElement(type='svg_element', name='', attributes={}, content=None, children=[]), description='SVG element to transform')
-    translate_x: float | OutputHandle[float] = connect_field(default=0, description='X translation')
-    translate_y: float | OutputHandle[float] = connect_field(default=0, description='Y translation')
-    rotate: float | OutputHandle[float] = connect_field(default=0, description='Rotation angle in degrees')
-    scale_x: float | OutputHandle[float] = connect_field(default=1, description='X scale factor')
-    scale_y: float | OutputHandle[float] = connect_field(default=1, description='Y scale factor')
+    content: types.SVGElement | OutputHandle[types.SVGElement] = connect_field(
+        default=types.SVGElement(
+            type="svg_element", name="", attributes={}, content=None, children=[]
+        ),
+        description="SVG element to transform",
+    )
+    translate_x: float | OutputHandle[float] = connect_field(
+        default=0, description="X translation"
+    )
+    translate_y: float | OutputHandle[float] = connect_field(
+        default=0, description="Y translation"
+    )
+    rotate: float | OutputHandle[float] = connect_field(
+        default=0, description="Rotation angle in degrees"
+    )
+    scale_x: float | OutputHandle[float] = connect_field(
+        default=1, description="X scale factor"
+    )
+    scale_y: float | OutputHandle[float] = connect_field(
+        default=1, description="Y scale factor"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -484,5 +651,3 @@ class Transform(SingleOutputGraphNode[types.SVGElement], GraphNode[types.SVGElem
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

@@ -18,9 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.utils
 from nodetool.workflows.base_node import BaseNode
 
-class BinaryOperation(SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray], GraphNode[int | float | nodetool.metadata.types.NPArray]):
-    a: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
-    b: int | float | nodetool.metadata.types.NPArray | OutputHandle[int | float | nodetool.metadata.types.NPArray] = connect_field(default=0.0, description=None)
+
+class BinaryOperation(
+    SingleOutputGraphNode[int | float | nodetool.metadata.types.NPArray],
+    GraphNode[int | float | nodetool.metadata.types.NPArray],
+):
+    a: (
+        int
+        | float
+        | nodetool.metadata.types.NPArray
+        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
+    ) = connect_field(default=0.0, description=None)
+    b: (
+        int
+        | float
+        | nodetool.metadata.types.NPArray
+        | OutputHandle[int | float | nodetool.metadata.types.NPArray]
+    ) = connect_field(default=0.0, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -29,5 +43,3 @@ class BinaryOperation(SingleOutputGraphNode[int | float | nodetool.metadata.type
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

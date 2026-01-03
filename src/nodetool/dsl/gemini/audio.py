@@ -18,38 +18,50 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.audio
 from nodetool.workflows.base_node import BaseNode
 
+
 class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
-        Generate speech audio from text using Google's Gemini text-to-speech models.
-        google, text-to-speech, tts, audio, speech, voice, ai
+    Generate speech audio from text using Google's Gemini text-to-speech models.
+    google, text-to-speech, tts, audio, speech, voice, ai
 
-        This node converts text input into natural-sounding speech audio using Google's
-        advanced text-to-speech models with support for multiple voices and speech styles.
+    This node converts text input into natural-sounding speech audio using Google's
+    advanced text-to-speech models with support for multiple voices and speech styles.
 
-        Supported voices:
-        - achernar, achird, algenib, algieba, alnilam
-        - aoede, autonoe, callirrhoe, charon, despina
-        - enceladus, erinome, fenrir, gacrux, iapetus
-        - kore, laomedeia, leda, orus, puck
-        - pulcherrima, rasalgethi, sadachbia, sadaltager, schedar
-        - sulafat, umbriel, vindemiatrix, zephyr, zubenelgenubi
+    Supported voices:
+    - achernar, achird, algenib, algieba, alnilam
+    - aoede, autonoe, callirrhoe, charon, despina
+    - enceladus, erinome, fenrir, gacrux, iapetus
+    - kore, laomedeia, leda, orus, puck
+    - pulcherrima, rasalgethi, sadachbia, sadaltager, schedar
+    - sulafat, umbriel, vindemiatrix, zephyr, zubenelgenubi
 
-        Use cases:
-        - Create voiceovers for videos and presentations
-        - Generate audio content for podcasts and audiobooks
-        - Add voice narration to applications
-        - Create accessibility features with speech output
-        - Generate multilingual audio content
+    Use cases:
+    - Create voiceovers for videos and presentations
+    - Generate audio content for podcasts and audiobooks
+    - Add voice narration to applications
+    - Create accessibility features with speech output
+    - Generate multilingual audio content
     """
 
     TTSModel: typing.ClassVar[type] = nodetool.nodes.gemini.audio.TTSModel
     VoiceName: typing.ClassVar[type] = nodetool.nodes.gemini.audio.VoiceName
 
-    text: str | OutputHandle[str] = connect_field(default='', description='The text to convert to speech.')
-    model: nodetool.nodes.gemini.audio.TTSModel = Field(default=nodetool.nodes.gemini.audio.TTSModel.GEMINI_2_5_FLASH_PREVIEW_TTS, description='The text-to-speech model to use')
-    voice_name: nodetool.nodes.gemini.audio.VoiceName = Field(default=nodetool.nodes.gemini.audio.VoiceName.KORE, description='The voice to use for speech generation')
-    style_prompt: str | OutputHandle[str] = connect_field(default='', description="Optional style prompt to control speech characteristics (e.g., 'Say cheerfully', 'Speak with excitement')")
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="The text to convert to speech."
+    )
+    model: nodetool.nodes.gemini.audio.TTSModel = Field(
+        default=nodetool.nodes.gemini.audio.TTSModel.GEMINI_2_5_FLASH_PREVIEW_TTS,
+        description="The text-to-speech model to use",
+    )
+    voice_name: nodetool.nodes.gemini.audio.VoiceName = Field(
+        default=nodetool.nodes.gemini.audio.VoiceName.KORE,
+        description="The voice to use for speech generation",
+    )
+    style_prompt: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Optional style prompt to control speech characteristics (e.g., 'Say cheerfully', 'Speak with excitement')",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -58,5 +70,3 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-

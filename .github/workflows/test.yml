@@ -25,7 +25,7 @@ jobs:
         run: |
           uv sync \
             --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/
-          uv pip install -r requirements-dev.txt
+          uv sync --extra dev
 
       - name: Run tests
         run: pytest

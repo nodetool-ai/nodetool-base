@@ -18,20 +18,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Append(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Adds a value to the end of a list.
-        list, add, insert, extend
+    Adds a value to the end of a list.
+    list, add, insert, extend
 
-        Use cases:
-        - Grow a list dynamically
-        - Add new elements to an existing list
-        - Implement a stack-like structure
+    Use cases:
+    - Grow a list dynamically
+    - Add new elements to an existing list
+    - Implement a stack-like structure
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    value: Any | OutputHandle[Any] = connect_field(default=(), description='The value to append to the list.')
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    value: Any | OutputHandle[Any] = connect_field(
+        default=(), description="The value to append to the list."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,18 +53,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Average(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Calculates the arithmetic mean of a list of numbers.
-        list, average, mean, aggregate, math
+    Calculates the arithmetic mean of a list of numbers.
+    list, average, mean, aggregate, math
 
-        Use cases:
-        - Find average value
-        - Calculate mean of numeric data
+    Use cases:
+    - Find average value
+    - Calculate mean of numeric data
     """
 
-    values: list[float] | OutputHandle[list[float]] = connect_field(default=[], description=None)
+    values: list[float] | OutputHandle[list[float]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -76,19 +84,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Chunk(SingleOutputGraphNode[list[list[Any]]], GraphNode[list[list[Any]]]):
     """
 
-        Splits a list into smaller chunks of specified size.
-        list, chunk, split, group
+    Splits a list into smaller chunks of specified size.
+    list, chunk, split, group
 
-        Use cases:
-        - Batch processing
-        - Pagination
-        - Creating sublists of fixed size
+    Use cases:
+    - Batch processing
+    - Pagination
+    - Creating sublists of fixed size
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
     chunk_size: int | OutputHandle[int] = connect_field(default=1, description=None)
 
     @classmethod
@@ -106,19 +117,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Dedupe(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Removes duplicate elements from a list, ensuring uniqueness.
-        list, unique, distinct, deduplicate
+    Removes duplicate elements from a list, ensuring uniqueness.
+    list, unique, distinct, deduplicate
 
-        Use cases:
-        - Remove redundant entries
-        - Create a set-like structure
-        - Ensure list elements are unique
+    Use cases:
+    - Remove redundant entries
+    - Create a set-like structure
+    - Ensure list elements are unique
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -135,20 +149,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Difference(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Finds elements that exist in first list but not in second list.
-        list, set, difference, subtract
+    Finds elements that exist in first list but not in second list.
+    list, set, difference, subtract
 
-        Use cases:
-        - Find unique elements in one list
-        - Remove items present in another list
-        - Identify distinct elements
+    Use cases:
+    - Find unique elements in one list
+    - Remove items present in another list
+    - Identify distinct elements
     """
 
-    list1: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    list2: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    list1: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    list2: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -165,19 +184,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Extend(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Merges one list into another, extending the original list.
-        list, merge, concatenate, combine
+    Merges one list into another, extending the original list.
+    list, merge, concatenate, combine
 
-        Use cases:
-        - Combine multiple lists
-        - Add all elements from one list to another
+    Use cases:
+    - Combine multiple lists
+    - Add all elements from one list to another
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    other_values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    other_values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -194,23 +218,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Flatten(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Flattens a nested list structure into a single flat list.
-        list, flatten, nested, structure
+    Flattens a nested list structure into a single flat list.
+    list, flatten, nested, structure
 
-        Use cases:
-        - Convert nested lists into a single flat list
-        - Simplify complex list structures
-        - Process hierarchical data as a sequence
+    Use cases:
+    - Convert nested lists into a single flat list
+    - Simplify complex list structures
+    - Process hierarchical data as a sequence
 
-        Examples:
-        [[1, 2], [3, 4]] -> [1, 2, 3, 4]
-        [[1, [2, 3]], [4, [5, 6]]] -> [1, 2, 3, 4, 5, 6]
+    Examples:
+    [[1, 2], [3, 4]] -> [1, 2, 3, 4]
+    [[1, [2, 3]], [4, [5, 6]]] -> [1, 2, 3, 4, 5, 6]
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
     max_depth: int | OutputHandle[int] = connect_field(default=-1, description=None)
 
     @classmethod
@@ -228,11 +255,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
-class GenerateSequence(GraphNode[nodetool.nodes.nodetool.list.GenerateSequence.OutputType]):
+
+class GenerateSequence(
+    GraphNode[nodetool.nodes.nodetool.list.GenerateSequence.OutputType]
+):
     """
 
-        Iterates over a sequence of numbers.
-        list, range, sequence, numbers
+    Iterates over a sequence of numbers.
+    list, range, sequence, numbers
     """
 
     start: int | OutputHandle[int] = connect_field(default=0, description=None)
@@ -251,10 +281,11 @@ class GenerateSequence(GraphNode[nodetool.nodes.nodetool.list.GenerateSequence.O
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class GenerateSequenceOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self['output'])
+        return typing.cast(OutputHandle[int], self["output"])
 
 
 import typing
@@ -263,19 +294,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class GetElement(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-        Retrieves a single value from a list at a specific index.
-        list, get, extract, value
+    Retrieves a single value from a list at a specific index.
+    list, get, extract, value
 
-        Use cases:
-        - Access a specific element by position
-        - Implement array-like indexing
-        - Extract the first or last element
+    Use cases:
+    - Access a specific element by position
+    - Implement array-like indexing
+    - Extract the first or last element
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
     index: int | OutputHandle[int] = connect_field(default=0, description=None)
 
     @classmethod
@@ -293,20 +327,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Intersection(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Finds common elements between two lists.
-        list, set, intersection, common
+    Finds common elements between two lists.
+    list, set, intersection, common
 
-        Use cases:
-        - Find elements present in both lists
-        - Identify shared items between collections
-        - Filter for matching elements
+    Use cases:
+    - Find elements present in both lists
+    - Identify shared items between collections
+    - Filter for matching elements
     """
 
-    list1: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    list2: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    list1: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    list2: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -323,19 +362,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Length(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
-        Calculates the length of a list.
-        list, count, size
+    Calculates the length of a list.
+    list, count, size
 
-        Use cases:
-        - Determine the number of elements in a list
-        - Check if a list is empty
-        - Validate list size constraints
+    Use cases:
+    - Determine the number of elements in a list
+    - Check if a list is empty
+    - Validate list size constraints
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -352,16 +394,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class ListRange(SingleOutputGraphNode[list[int]], GraphNode[list[int]]):
     """
 
-        Generates a list of integers within a specified range.
-        list, range, sequence, numbers
+    Generates a list of integers within a specified range.
+    list, range, sequence, numbers
 
-        Use cases:
-        - Create numbered lists
-        - Generate index sequences
-        - Produce arithmetic progressions
+    Use cases:
+    - Create numbered lists
+    - Generate index sequences
+    - Produce arithmetic progressions
     """
 
     start: int | OutputHandle[int] = connect_field(default=0, description=None)
@@ -383,18 +426,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Maximum(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Finds the largest value in a list of numbers.
-        list, max, maximum, aggregate, math
+    Finds the largest value in a list of numbers.
+    list, max, maximum, aggregate, math
 
-        Use cases:
-        - Find highest value
-        - Get largest number in dataset
+    Use cases:
+    - Find highest value
+    - Get largest number in dataset
     """
 
-    values: list[float] | OutputHandle[list[float]] = connect_field(default=[], description=None)
+    values: list[float] | OutputHandle[list[float]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -411,18 +457,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Minimum(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Finds the smallest value in a list of numbers.
-        list, min, minimum, aggregate, math
+    Finds the smallest value in a list of numbers.
+    list, min, minimum, aggregate, math
 
-        Use cases:
-        - Find lowest value
-        - Get smallest number in dataset
+    Use cases:
+    - Find lowest value
+    - Get smallest number in dataset
     """
 
-    values: list[float] | OutputHandle[list[float]] = connect_field(default=[], description=None)
+    values: list[float] | OutputHandle[list[float]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -439,18 +488,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Product(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Calculates the product of all numbers in a list.
-        list, product, multiply, aggregate, math
+    Calculates the product of all numbers in a list.
+    list, product, multiply, aggregate, math
 
-        Use cases:
-        - Multiply all numbers together
-        - Calculate compound values
+    Use cases:
+    - Multiply all numbers together
+    - Calculate compound values
     """
 
-    values: list[float] | OutputHandle[list[float]] = connect_field(default=[], description=None)
+    values: list[float] | OutputHandle[list[float]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -467,19 +519,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Randomize(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Randomly shuffles the elements of a list.
-        list, shuffle, random, order
+    Randomly shuffles the elements of a list.
+    list, shuffle, random, order
 
-        Use cases:
-        - Randomize the order of items in a playlist
-        - Implement random sampling without replacement
-        - Create randomized data sets for testing
+    Use cases:
+    - Randomize the order of items in a playlist
+    - Implement random sampling without replacement
+    - Create randomized data sets for testing
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -496,17 +551,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Reverse(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Inverts the order of elements in a list.
-        list, reverse, invert, flip
+    Inverts the order of elements in a list.
+    list, reverse, invert, flip
 
-        Use cases:
-        - Reverse the order of a sequence
+    Use cases:
+    - Reverse the order of a sequence
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -523,20 +581,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class SaveList(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
 
-        Saves a list to a text file, placing each element on a new line.
-        list, save, file, serialize
+    Saves a list to a text file, placing each element on a new line.
+    list, save, file, serialize
 
-        Use cases:
-        - Export list data to a file
-        - Create a simple text-based database
-        - Generate line-separated output
+    Use cases:
+    - Export list data to a file
+    - Create a simple text-based database
+    - Generate line-separated output
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    name: str | OutputHandle[str] = connect_field(default='text.txt', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    name: str | OutputHandle[str] = connect_field(
+        default="text.txt",
+        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -553,20 +617,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class SelectElements(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Selects specific values from a list using index positions.
-        list, select, index, extract
+    Selects specific values from a list using index positions.
+    list, select, index, extract
 
-        Use cases:
-        - Pick specific elements by their positions
-        - Rearrange list elements
-        - Create a new list from selected indices
+    Use cases:
+    - Pick specific elements by their positions
+    - Rearrange list elements
+    - Create a new list from selected indices
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    indices: list[int] | OutputHandle[list[int]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    indices: list[int] | OutputHandle[list[int]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -583,19 +652,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Slice(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Extracts a subset from a list using start, stop, and step indices.
-        list, slice, subset, extract
+    Extracts a subset from a list using start, stop, and step indices.
+    list, slice, subset, extract
 
-        Use cases:
-        - Get a portion of a list
-        - Implement pagination
-        - Extract every nth element
+    Use cases:
+    - Get a portion of a list
+    - Implement pagination
+    - Extract every nth element
     """
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
     start: int | OutputHandle[int] = connect_field(default=0, description=None)
     stop: int | OutputHandle[int] = connect_field(default=0, description=None)
     step: int | OutputHandle[int] = connect_field(default=1, description=None)
@@ -615,22 +687,27 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Sort(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Sorts the elements of a list in ascending or descending order.
-        list, sort, order, arrange
+    Sorts the elements of a list in ascending or descending order.
+    list, sort, order, arrange
 
-        Use cases:
-        - Organize data in a specific order
-        - Prepare data for binary search or other algorithms
-        - Rank items based on their values
+    Use cases:
+    - Organize data in a specific order
+    - Prepare data for binary search or other algorithms
+    - Rank items based on their values
     """
 
     SortOrder: typing.ClassVar[type] = nodetool.nodes.nodetool.list.Sort.SortOrder
 
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    order: nodetool.nodes.nodetool.list.Sort.SortOrder = Field(default=nodetool.nodes.nodetool.list.Sort.SortOrder.ASCENDING, description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    order: nodetool.nodes.nodetool.list.Sort.SortOrder = Field(
+        default=nodetool.nodes.nodetool.list.Sort.SortOrder.ASCENDING, description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -647,18 +724,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Sum(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
-        Calculates the sum of a list of numbers.
-        list, sum, aggregate, math
+    Calculates the sum of a list of numbers.
+    list, sum, aggregate, math
 
-        Use cases:
-        - Calculate total of numeric values
-        - Add up all elements in a list
+    Use cases:
+    - Calculate total of numeric values
+    - Add up all elements in a list
     """
 
-    values: list[float] | OutputHandle[list[float]] = connect_field(default=[], description=None)
+    values: list[float] | OutputHandle[list[float]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -675,20 +755,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.list
 from nodetool.workflows.base_node import BaseNode
 
+
 class Union(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-        Combines unique elements from two lists.
-        list, set, union, combine
+    Combines unique elements from two lists.
+    list, set, union, combine
 
-        Use cases:
-        - Merge lists while removing duplicates
-        - Combine collections uniquely
-        - Create comprehensive set of items
+    Use cases:
+    - Merge lists while removing duplicates
+    - Combine collections uniquely
+    - Create comprehensive set of items
     """
 
-    list1: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
-    list2: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    list1: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
+    list2: list[Any] | OutputHandle[list[Any]] = connect_field(
+        default=[], description=None
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -697,5 +782,3 @@ class Union(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
-
