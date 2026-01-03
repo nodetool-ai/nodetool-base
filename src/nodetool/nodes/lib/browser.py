@@ -695,7 +695,7 @@ class SpiderCrawl(BaseNode):
         title: Optional[str]
         status_code: int
 
-    def get_timeout_seconds(self) -> float | None:  # type: ignore[override]
+    def get_timeout_seconds(self) -> float | None:  # type: ignore[override] # Returns timeout for spider crawl task based on max pages
         """Return overall timeout for spider crawl.
 
         Based on max pages and delays to prevent long-running crawls.
@@ -745,6 +745,7 @@ class SpiderCrawl(BaseNode):
                 from urllib.robotparser import RobotFileParser
                 robot_parser = RobotFileParser()
                 robots_url = urljoin(start_domain, "/robots.txt")
+                robot_parser.set_url(robots_url)
                 async with aiohttp.ClientSession() as session:
                     try:
                         async with session.get(robots_url, timeout=aiohttp.ClientTimeout(total=10)) as resp:
@@ -821,13 +822,19 @@ class SpiderCrawl(BaseNode):
 
                         # Extract links if not at max depth
                         if depth < self.max_depth:
-                            links = await page.evaluate("""
-                                () => {
+                            # Extract all href attributes from anchor tags, filtering out non-http links
+                            links = await page.evaluate(
+                                """() => {
                                     return Array.from(document.querySelectorAll('a[href]'))
                                         .map(a => a.href)
-                                        .filter(href => href && !href.startsWith('javascript:') && !href.startsWith('mailto:') && !href.startsWith('tel:'));
-                                }
-                            """)
+                                        .filter(href => 
+                                            href && 
+                                            !href.startsWith('javascript:') && 
+                                            !href.startsWith('mailto:') && 
+                                            !href.startsWith('tel:')
+                                        );
+                                }"""
+                            )
 
                             # Process discovered links
                             for link in links:
