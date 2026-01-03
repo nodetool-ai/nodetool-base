@@ -29,10 +29,10 @@ jobs:
           uv pip install -r requirements-dev.txt
 
       - name: Run package scan
-        run: nodetool package scan
+        run: uv run nodetool package scan
 
       - name: Run codegen
-        run: nodetool codegen
+        run: uv run nodetool codegen
 
       - name: Check for changes
         id: check_changes
