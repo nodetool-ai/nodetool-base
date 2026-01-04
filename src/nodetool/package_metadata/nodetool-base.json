@@ -19770,6 +19770,147 @@
       ]
     },
     {
+      "title": "YouTube Downloader",
+      "description": "Download media from URLs using yt-dlp.\n    download, video, audio, youtube, media, yt-dlp, metadata, subtitles\n\n    Use cases:\n    - Download videos from YouTube and other platforms\n    - Extract audio from video URLs\n    - Retrieve video/audio metadata without downloading\n    - Download subtitles and thumbnails",
+      "namespace": "lib.ytdlp",
+      "node_type": "lib.ytdlp.YtDlpDownload",
+      "properties": [
+        {
+          "name": "url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Url",
+          "description": "URL of the media to download"
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "video",
+              "audio",
+              "metadata"
+            ],
+            "type_name": "nodetool.nodes.lib.ytdlp.DownloadMode"
+          },
+          "default": "video",
+          "title": "Mode",
+          "description": "Download mode: video, audio, or metadata only"
+        },
+        {
+          "name": "format_selector",
+          "type": {
+            "type": "str"
+          },
+          "default": "best",
+          "title": "Format Selector",
+          "description": "yt-dlp format selector (e.g., 'best', 'bestvideo+bestaudio')"
+        },
+        {
+          "name": "container",
+          "type": {
+            "type": "str"
+          },
+          "default": "auto",
+          "title": "Container",
+          "description": "Output container format (e.g., 'mp4', 'webm', 'auto')"
+        },
+        {
+          "name": "subtitles",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Subtitles",
+          "description": "Download subtitles if available"
+        },
+        {
+          "name": "thumbnail",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Thumbnail",
+          "description": "Download thumbnail if available"
+        },
+        {
+          "name": "overwrite",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Overwrite",
+          "description": "Overwrite existing files"
+        },
+        {
+          "name": "rate_limit_kbps",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Rate Limit Kbps",
+          "description": "Rate limit in KB/s (0 = unlimited)",
+          "min": 0.0
+        },
+        {
+          "name": "timeout",
+          "type": {
+            "type": "int"
+          },
+          "default": 600,
+          "title": "Timeout",
+          "description": "Timeout in seconds",
+          "min": 1.0,
+          "max": 3600.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "video"
+        },
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        },
+        {
+          "type": {
+            "type": "dict"
+          },
+          "name": "metadata"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "subtitles"
+        },
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "thumbnail"
+        }
+      ],
+      "basic_fields": [
+        "url",
+        "mode",
+        "format_selector",
+        "container",
+        "subtitles",
+        "thumbnail",
+        "overwrite",
+        "rate_limit_kbps",
+        "timeout"
+      ]
+    },
+    {
       "title": "Absolute Path",
       "description": "Return the absolute path of a file or directory.\n    files, path, absolute\n\n    Use cases:\n    - Convert relative paths to absolute\n    - Get full system path\n    - Resolve path references",
       "namespace": "lib.os",
