@@ -12,6 +12,7 @@ from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk, SaveUpdate
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
@@ -1184,3 +1185,79 @@ class TextToSpeech(BaseNode):
 #         if final_text:
 #             log.info(f"Emitting final transcript: {len(final_text)} characters")
 #             await outputs.emit("text", final_text)
+
+class ChunkToAudio(BaseNode):
+    """
+    Aggregates audio chunks from an input stream into AudioRef objects.
+    audio, stream, chunk, aggregate, collect, batch
+
+    Use cases:
+    - Collect streaming audio chunks into larger files for processing
+    - buffer realtime audio streams
+    """
+
+    chunk: Chunk = Field(default=Chunk(), description="Stream of audio chunks")
+    batch_size: int = Field(
+        default=50, description="Number of chunks to aggregate per output"
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
+    class OutputType(TypedDict):
+        audio: AudioRef
+
+    async def run(
+        self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
+    ) -> None:
+        buffer = AudioSegment.empty()
+        count = 0
+
+        async for chunk in inputs.stream("chunk"):
+            log.info(f"ChunkToAudio received chunk: content_type={chunk.content_type}, metadata={chunk.content_metadata}")
+            if chunk.content_type == "audio" and chunk.content:
+                try:
+                    # Check if content is base64 encoded string
+                    if not chunk.content:
+                        continue
+
+                    data = base64.b64decode(chunk.content)
+                    # Create AudioSegment from bytes
+                    # Use metadata if available to handle raw PCM
+                    meta = chunk.content_metadata or {}
+                    fmt = meta.get("format")
+                    
+                    if fmt == "pcm16le" or meta.get("encoding") == "pcm16le":
+                        segment = AudioSegment(
+                            data=data,
+                            sample_width=2, # 16-bit
+                            frame_rate=meta.get("sample_rate", 44100),
+                            channels=meta.get("channels", 1)
+                        )
+                    else:
+                        # Fallback for container formats (mp3, wav, etc.) or unknown
+                        segment = AudioSegment.from_file(io.BytesIO(data))
+                        
+                    buffer += segment
+                    count += 1
+                except Exception as e:
+                    log.error(f"Error decoding chunk: {e}")
+                    continue
+
+            if count >= self.batch_size:
+                # Flush
+                if len(buffer) > 0:
+                    audio = await context.audio_from_segment(buffer)
+                    await outputs.emit("audio", audio)
+
+                # Reset
+                buffer = AudioSegment.empty()
+                count = 0
+
+        # Flush remaining
+        if count > 0 and len(buffer) > 0:
+            audio = await context.audio_from_segment(buffer)
+            await outputs.emit("audio", audio)
+
+
