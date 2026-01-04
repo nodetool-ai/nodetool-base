@@ -9,8 +9,9 @@ import os
 import re
 import shutil
 import tempfile
+from enum import Enum
 from io import BytesIO
-from typing import ClassVar, Literal, TypedDict
+from typing import ClassVar, TypedDict
 
 import PIL.Image
 from pydantic import Field
@@ -24,6 +25,12 @@ class DownloadError(Exception):
     """Raised when media download fails."""
 
     pass
+
+
+class DownloadMode(str, Enum):
+    VIDEO = "video"
+    AUDIO = "audio"
+    METADATA = "metadata"
 
 
 class YtDlpDownload(BaseNode):
@@ -45,8 +52,8 @@ class YtDlpDownload(BaseNode):
     THUMBNAIL_EXTENSIONS: ClassVar[list[str]] = ["jpg", "jpeg", "png", "webp"]
 
     url: str = Field(default="", description="URL of the media to download")
-    mode: Literal["video", "audio", "metadata"] = Field(
-        default="video",
+    mode: DownloadMode = Field(
+        default=DownloadMode.VIDEO,
         description="Download mode: video, audio, or metadata only",
     )
     format_selector: str = Field(
@@ -63,9 +70,7 @@ class YtDlpDownload(BaseNode):
     thumbnail: bool = Field(
         default=False, description="Download thumbnail if available"
     )
-    overwrite: bool = Field(
-        default=False, description="Overwrite existing files"
-    )
+    overwrite: bool = Field(default=False, description="Overwrite existing files")
     rate_limit_kbps: int = Field(
         default=0,
         ge=0,
@@ -77,6 +82,10 @@ class YtDlpDownload(BaseNode):
         le=3600,
         description="Timeout in seconds",
     )
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "YouTube Downloader"
 
     class OutputType(TypedDict):
         video: VideoRef
@@ -121,11 +130,11 @@ class YtDlpDownload(BaseNode):
             result["metadata"] = self._extract_metadata(info_dict)
 
             # Handle media based on mode
-            if self.mode == "video":
+            if self.mode == DownloadMode.VIDEO:
                 result["video"] = await self._process_video(
                     context, temp_dir, info_dict
                 )
-            elif self.mode == "audio":
+            elif self.mode == DownloadMode.AUDIO:
                 result["audio"] = await self._process_audio(
                     context, temp_dir, info_dict
                 )
@@ -133,9 +142,7 @@ class YtDlpDownload(BaseNode):
 
             # Handle subtitles if requested
             if self.subtitles:
-                result["subtitles"] = await self._process_subtitles(
-                    temp_dir, info_dict
-                )
+                result["subtitles"] = await self._process_subtitles(temp_dir, info_dict)
 
             # Handle thumbnail if requested
             if self.thumbnail:
@@ -190,9 +197,9 @@ class YtDlpDownload(BaseNode):
             opts["ratelimit"] = self.rate_limit_kbps * 1024  # Convert to bytes/sec
 
         # Handle mode-specific options
-        if self.mode == "metadata":
+        if self.mode == DownloadMode.METADATA:
             opts["skip_download"] = True
-        elif self.mode == "audio":
+        elif self.mode == DownloadMode.AUDIO:
             opts["format"] = "bestaudio/best"
             opts["postprocessors"] = [
                 {
@@ -335,9 +342,7 @@ class YtDlpDownload(BaseNode):
         video_id = info_dict.get("id", "audio")
 
         # Find the downloaded audio file using class constant
-        audio_path = self._find_media_file(
-            temp_dir, video_id, self.AUDIO_EXTENSIONS
-        )
+        audio_path = self._find_media_file(temp_dir, video_id, self.AUDIO_EXTENSIONS)
         if not audio_path:
             raise DownloadError("Audio file not found after download")
 
