@@ -3847,6 +3847,7 @@ dependencies = [
     { name = "selenium" },
     { name = "trafilatura" },
     { name = "trimesh" },
+    { name = "yt-dlp" },
 ]
 
 [package.optional-dependencies]
@@ -3889,6 +3890,7 @@ requires-dist = [
     { name = "selenium", specifier = ">=4.26.1" },
     { name = "trafilatura", specifier = ">=2.0.0" },
     { name = "trimesh", specifier = ">=4.0.0" },
+    { name = "yt-dlp", specifier = ">=2024.7.1" },
 ]
 provides-extras = ["dev"]
 
@@ -7826,6 +7828,15 @@ dependencies = [
 sdist = { url = "https://files.pythonhosted.org/packages/8f/f8/5e12d3d0c7001c3b3078697b9918241022bdb1ae12715e9debb00a83e16e/youtube_transcript_api-1.2.2.tar.gz", hash = "sha256:5f67cfaff3621d969778817a3d7b2172c16784855f45fcaed4f0529632e2fef4", size = 469634, upload-time = "2025-08-04T12:22:52.158Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/41/92/3d1a580f0efcad926f45876cf6cb92b2c260e84ae75dae5463bbf38f92e7/youtube_transcript_api-1.2.2-py3-none-any.whl", hash = "sha256:feca8c7f7c9d65188ef6377fc0e01cf466e6b68f1b3e648019646ab342f994d2", size = 485047, upload-time = "2025-08-04T12:22:50.836Z" },
+]
+
+[[package]]
+name = "yt-dlp"
+version = "2025.12.8"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/14/77/db924ebbd99d0b2b571c184cb08ed232cf4906c6f9b76eed763cd2c84170/yt_dlp-2025.12.8.tar.gz", hash = "sha256:b773c81bb6b71cb2c111cfb859f453c7a71cf2ef44eff234ff155877184c3e4f", size = 3088947, upload-time = "2025-12-08T00:16:01.649Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6e/2f/98c3596ad923f8efd32c90dca62e241e8ad9efcebf20831173c357042ba0/yt_dlp-2025.12.8-py3-none-any.whl", hash = "sha256:36e2584342e409cfbfa0b5e61448a1c5189e345cf4564294456ee509e7d3e065", size = 3291464, upload-time = "2025-12-08T00:15:58.556Z" },
 ]
 
 [[package]]
