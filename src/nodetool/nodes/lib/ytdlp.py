@@ -10,7 +10,7 @@ import re
 import shutil
 import tempfile
 from io import BytesIO
-from typing import Literal, TypedDict
+from typing import ClassVar, Literal, TypedDict
 
 import PIL.Image
 from pydantic import Field
@@ -37,6 +37,12 @@ class YtDlpDownload(BaseNode):
     - Retrieve video/audio metadata without downloading
     - Download subtitles and thumbnails
     """
+
+    # File extension constants for media type detection
+    VIDEO_EXTENSIONS: ClassVar[list[str]] = ["mp4", "webm", "mkv", "avi", "mov", "flv"]
+    AUDIO_EXTENSIONS: ClassVar[list[str]] = ["mp3", "m4a", "opus", "ogg", "wav", "webm"]
+    SUBTITLE_EXTENSIONS: ClassVar[list[str]] = ["srt", "vtt", "ass", "ssa"]
+    THUMBNAIL_EXTENSIONS: ClassVar[list[str]] = ["jpg", "jpeg", "png", "webp"]
 
     url: str = Field(default="", description="URL of the media to download")
     mode: Literal["video", "audio", "metadata"] = Field(
@@ -290,9 +296,14 @@ class YtDlpDownload(BaseNode):
         for key in safe_keys:
             if key in info_dict and info_dict[key] is not None:
                 value = info_dict[key]
-                # Only include JSON-serializable values
-                if isinstance(value, (str, int, float, bool, list)):
+                # Only include JSON-serializable primitive values
+                # Exclude dicts and complex nested structures
+                if isinstance(value, (str, int, float, bool)):
                     metadata[key] = value
+                elif isinstance(value, list):
+                    # Only include lists of primitives
+                    if all(isinstance(item, (str, int, float, bool)) for item in value):
+                        metadata[key] = value
 
         return metadata
 
@@ -303,8 +314,11 @@ class YtDlpDownload(BaseNode):
         video_id = info_dict.get("id", "video")
         ext = info_dict.get("ext", "mp4")
 
-        # Find the downloaded video file
-        video_path = self._find_media_file(temp_dir, video_id, ["mp4", "webm", "mkv", ext])
+        # Find the downloaded video file using class constant
+        extensions = list(self.VIDEO_EXTENSIONS)
+        if ext not in extensions:
+            extensions.append(ext)
+        video_path = self._find_media_file(temp_dir, video_id, extensions)
         if not video_path:
             raise DownloadError("Video file not found after download")
 
@@ -320,9 +334,9 @@ class YtDlpDownload(BaseNode):
         """Process downloaded audio file."""
         video_id = info_dict.get("id", "audio")
 
-        # Find the downloaded audio file
+        # Find the downloaded audio file using class constant
         audio_path = self._find_media_file(
-            temp_dir, video_id, ["mp3", "m4a", "opus", "ogg", "wav", "webm"]
+            temp_dir, video_id, self.AUDIO_EXTENSIONS
         )
         if not audio_path:
             raise DownloadError("Audio file not found after download")
@@ -335,8 +349,6 @@ class YtDlpDownload(BaseNode):
 
     async def _process_subtitles(self, temp_dir: str, info_dict: dict) -> str:
         """Process downloaded subtitles."""
-        # Find subtitle files
-        subtitle_extensions = ["srt", "vtt", "ass", "ssa"]
         subtitle_content = ""
 
         for filename in os.listdir(temp_dir):
@@ -348,7 +360,7 @@ class YtDlpDownload(BaseNode):
             _, ext = os.path.splitext(filename)
             ext = ext.lower().lstrip(".")
 
-            if ext in subtitle_extensions:
+            if ext in self.SUBTITLE_EXTENSIONS:
                 try:
                     # Read as UTF-8
                     with open(filepath, "r", encoding="utf-8", errors="replace") as f:
@@ -366,9 +378,6 @@ class YtDlpDownload(BaseNode):
         self, context: ProcessingContext, temp_dir: str, info_dict: dict
     ) -> ImageRef | None:
         """Process downloaded thumbnail."""
-        # Find thumbnail file
-        thumbnail_extensions = ["jpg", "jpeg", "png", "webp"]
-
         for filename in os.listdir(temp_dir):
             filepath = os.path.join(temp_dir, filename)
             if not os.path.isfile(filepath):
@@ -377,7 +386,7 @@ class YtDlpDownload(BaseNode):
             _, ext = os.path.splitext(filename)
             ext = ext.lower().lstrip(".")
 
-            if ext in thumbnail_extensions:
+            if ext in self.THUMBNAIL_EXTENSIONS:
                 try:
                     # Load and normalize to PNG
                     with PIL.Image.open(filepath) as img:
