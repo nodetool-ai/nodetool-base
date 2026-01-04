@@ -9373,6 +9373,51 @@
       ]
     },
     {
+      "title": "Chunk To Audio",
+      "description": "Aggregates audio chunks from an input stream into AudioRef objects.\n    audio, stream, chunk, aggregate, collect, batch\n\n    Use cases:\n    - Collect streaming audio chunks into larger files for processing\n    - buffer realtime audio streams",
+      "namespace": "nodetool.audio",
+      "node_type": "nodetool.audio.ChunkToAudio",
+      "properties": [
+        {
+          "name": "chunk",
+          "type": {
+            "type": "chunk"
+          },
+          "default": {
+            "type": "chunk",
+            "node_id": null,
+            "content_type": "text",
+            "content": "",
+            "content_metadata": {},
+            "done": false
+          },
+          "title": "Chunk",
+          "description": "Stream of audio chunks"
+        },
+        {
+          "name": "batch_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 50,
+          "title": "Batch Size",
+          "description": "Number of chunks to aggregate per output"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "audio"
+        }
+      ],
+      "basic_fields": [
+        "chunk",
+        "batch_size"
+      ]
+    },
+    {
       "title": "Concat",
       "description": "Concatenates two audio files together.\n    audio, edit, join, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from shorter segments",
       "namespace": "nodetool.audio",
