@@ -74,7 +74,7 @@ class KieBaseNode(BaseNode):
     def _check_response_status(self, response_data: dict) -> None:
         """Check response status code and raise nicer error."""
         try:
-            status = int(response_data.get("code"))
+            status = int(response_data.get("code")) # type: ignore
         except (ValueError, TypeError):
             pass
 

@@ -33,12 +33,14 @@ class KieVideoBaseNode(KieBaseNode):
     def is_visible(cls) -> bool:
         return cls is not KieVideoBaseNode
 
-    async def _execute_video_task(self, context: ProcessingContext) -> bytes:
+    async def _execute_video_task(
+        self, context: ProcessingContext
+    ) -> tuple[bytes, str]:
         """Execute the full task workflow for video: submit, poll, download."""
         return await self._execute_task(context)
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -159,7 +161,6 @@ class KlingImageToVideo(KieVideoBaseNode):
         }
 
 
-
 class KlingAIAvatarStandard(KieVideoBaseNode):
     """Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.
 
@@ -227,7 +228,7 @@ class KlingAIAvatarStandard(KieVideoBaseNode):
         return payload
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -298,7 +299,7 @@ class KlingAIAvatarPro(KieVideoBaseNode):
         return payload
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -620,9 +621,6 @@ class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
         return params
 
 
-
-
-
 class HailuoTextToVideoPro(KieVideoBaseNode):
     """Generate videos from text using MiniMax's Hailuo 2.3 Pro model via Kie.ai.
 
@@ -634,7 +632,10 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(default="A cinematic video with smooth motion, natural lighting, and high detail.", description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     class Duration(str, Enum):
         D6 = "6"
@@ -662,8 +663,11 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
-        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
-             raise ValueError("10s duration is not supported for 1080p resolution.")
+        if (
+            self.resolution == self.Resolution.R1080P
+            and self.duration == self.Duration.D10
+        ):
+            raise ValueError("10s duration is not supported for 1080p resolution.")
 
         return {
             "prompt": self.prompt,
@@ -672,7 +676,7 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
         }
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -684,7 +688,10 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    prompt: str = Field(default="A cinematic video with smooth motion, natural lighting, and high detail.", description="The text prompt describing the video.")
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
 
     class Duration(str, Enum):
         D6 = "6"
@@ -712,8 +719,11 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
-        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
-             raise ValueError("10s duration is not supported for 1080p resolution.")
+        if (
+            self.resolution == self.Resolution.R1080P
+            and self.duration == self.Duration.D10
+        ):
+            raise ValueError("10s duration is not supported for 1080p resolution.")
 
         return {
             "prompt": self.prompt,
@@ -722,7 +732,7 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
         }
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -784,9 +794,12 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
         if context is None:
             raise ValueError("Context is required for image upload")
         image_url = await self._upload_image(context, self.image)
-        
-        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
-             raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        if (
+            self.resolution == self.Resolution.R1080P
+            and self.duration == self.Duration.D10
+        ):
+            raise ValueError("10s duration is not supported for 1080p resolution.")
 
         payload: dict[str, Any] = {
             "image_url": image_url,
@@ -798,7 +811,7 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
         return payload
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -860,9 +873,12 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
         if context is None:
             raise ValueError("Context is required for image upload")
         image_url = await self._upload_image(context, self.image)
-        
-        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
-             raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        if (
+            self.resolution == self.Resolution.R1080P
+            and self.duration == self.Duration.D10
+        ):
+            raise ValueError("10s duration is not supported for 1080p resolution.")
 
         payload: dict[str, Any] = {
             "image_url": image_url,
@@ -874,7 +890,7 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
         return payload
 
     async def process(self, context: ProcessingContext) -> VideoRef:
-        video_bytes = await self._execute_video_task(context)
+        video_bytes, task_id = await self._execute_video_task(context)
         return await context.video_from_bytes(video_bytes)
 
 
@@ -932,9 +948,12 @@ class HailuoImageToVideo(KieVideoBaseNode):
             raise ValueError("Context is required for image upload")
 
         image_url = await self._upload_image(context, self.image)
-        
-        if self.resolution == self.Resolution.R1080P and self.duration == self.Duration.D10:
-             raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        if (
+            self.resolution == self.Resolution.R1080P
+            and self.duration == self.Duration.D10
+        ):
+            raise ValueError("10s duration is not supported for 1080p resolution.")
 
         return {
             "prompt": self.prompt,
@@ -942,6 +961,159 @@ class HailuoImageToVideo(KieVideoBaseNode):
             "resolution": self.resolution.value,
             "duration": self.duration.value,
         }
+
+
+class Kling25TurboTextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, text-to-video, turbo
+
+    Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
+    consistent artistic styles, and realistic physics simulation.
+
+    Use cases:
+    - Create cinematic quality videos from text
+    - Generate complex narratives and action scenes
+    - Produce artistic animations with smooth motion
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated video.",
+    )
+
+    cfg_scale: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="The CFG scale for prompt adherence. Lower values allow more creativity.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-5-turbo-text-to-video-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "aspect_ratio": self.aspect_ratio.value,
+            "cfg_scale": self.cfg_scale,
+        }
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+        return payload
+
+
+class Kling25TurboImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, image-to-video, turbo
+
+    Transforms a static image into a dynamic video while preserving
+    visual style, colors, lighting, and texture.
+
+    Use cases:
+    - Animate static images with realistic motion
+    - Create smooth camera transitions and scene depth
+    - Generate dynamic scenes from reference images
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description to guide the video generation.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to animate.",
+    )
+
+    tail_image: ImageRef = Field(
+        default=ImageRef(),
+        description="Tail frame image for the video (optional).",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the video.",
+    )
+
+    cfg_scale: float = Field(
+        default=0.5,
+        ge=0.0,
+        le=1.0,
+        description="The CFG scale for prompt adherence. Lower values allow more creativity.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-5-turbo-image-to-video-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "cfg_scale": self.cfg_scale,
+        }
+        if self.tail_image.is_set():
+            tail_image_url = await self._upload_image(context, self.tail_image)
+            payload["tail_image_url"] = tail_image_url
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+        return payload
 
 
 class Sora2BaseNode(KieVideoBaseNode):
