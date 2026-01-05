@@ -417,6 +417,131 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class Kling25TurboImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, turbo
+
+        Transforms a static image into a dynamic video while preserving
+        visual style, colors, lighting, and texture.
+
+        Use cases:
+        - Animate static images with realistic motion
+        - Create smooth camera transitions and scene depth
+        - Generate dynamic scenes from reference images
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description to guide the video generation.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to animate.",
+    )
+    tail_image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Tail frame image for the video (optional).",
+    )
+    duration: nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Elements to avoid in the video."
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="The CFG scale for prompt adherence. Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Kling25TurboImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Kling25TurboTextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, text-to-video, turbo
+
+        Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
+        consistent artistic styles, and realistic physics simulation.
+
+        Use cases:
+        - Create cinematic quality videos from text
+        - Generate complex narratives and action scenes
+        - Produce artistic animations with smooth motion
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration
+    )
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    duration: nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Things to avoid in the generated video."
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="The CFG scale for prompt adherence. Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Kling25TurboTextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class KlingAIAvatarPro(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
