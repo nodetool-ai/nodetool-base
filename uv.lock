@@ -3832,7 +3832,7 @@ wheels = [
 
 [[package]]
 name = "nodetool-base"
-version = "0.6.2rc19"
+version = "0.6.2rc20"
 source = { editable = "." }
 dependencies = [
     { name = "browser-use" },
@@ -3880,7 +3880,7 @@ requires-dist = [
     { name = "langchain-openai" },
     { name = "moto", marker = "extra == 'dev'", specifier = ">=5.0.3" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.9.0" },
-    { name = "nodetool-core", specifier = "==0.6.2rc19" },
+    { name = "nodetool-core", specifier = "==0.6.2rc20" },
     { name = "plyer", specifier = "==2.1.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.5" },
@@ -3896,7 +3896,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "nodetool-core"
-version = "0.6.2rc19"
+version = "0.6.2rc20"
 source = { registry = "https://nodetool-ai.github.io/nodetool-registry/simple/" }
 dependencies = [
     { name = "aioconsole" },
@@ -3998,7 +3998,7 @@ dependencies = [
     { name = "websockets" },
 ]
 wheels = [
-    { url = "https://github.com/nodetool-ai/nodetool-core/releases/download/v0.6.2-rc.19/nodetool_core-0.6.2rc19-py3-none-any.whl" },
+    { url = "https://github.com/nodetool-ai/nodetool-core/releases/download/v0.6.2-rc.20/nodetool_core-0.6.2rc20-py3-none-any.whl" },
 ]
 
 [[package]]
