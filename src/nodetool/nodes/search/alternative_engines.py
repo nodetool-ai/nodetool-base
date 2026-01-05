@@ -11,25 +11,45 @@ from typing import Any, Dict, ClassVar
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
-# Import the extended provider - it's in the nodetool-base package
-try:
-    from nodetool.providers.extended_serp_provider import ExtendedSerpApiProvider
-except ImportError:
-    # Fallback for development
-    import sys
-    from pathlib import Path
-    sys.path.insert(0, str(Path(__file__).parent.parent.parent))
-    from providers.extended_serp_provider import ExtendedSerpApiProvider
 
-
-async def _get_extended_serp_provider(context: ProcessingContext) -> ExtendedSerpApiProvider:
-    """Get an instance of the Extended SERPAPIProvider with credentials from context."""
+async def _call_serp_engine(
+    context: ProcessingContext, 
+    engine: str, 
+    params: Dict[str, Any]
+) -> Dict[str, Any]:
+    """
+    Helper function to call a SerpApi engine with the given parameters.
+    
+    Args:
+        context: Processing context
+        engine: SerpApi engine name
+        params: Additional parameters for the API call
+        
+    Returns:
+        Dict with API response or raises ValueError on error
+    """
+    from nodetool.agents.serp_providers.serp_api_provider import SerpApiProvider
+    
     serpapi_key = await context.get_secret("SERPAPI_API_KEY")
     if not serpapi_key:
         raise ValueError(
             "SERPAPI_API_KEY not found. Please configure your SerpApi credentials."
         )
-    return ExtendedSerpApiProvider(api_key=serpapi_key)
+    
+    provider = SerpApiProvider(api_key=serpapi_key)
+    async with provider:
+        all_params = {"engine": engine, **params}
+        result = await provider._make_request(all_params)
+        
+        if "error" in result and not isinstance(result.get("search_metadata"), dict):
+            raise ValueError(result.get("error", "SerpApi request failed"))
+            
+        serpapi_error_status = result.get("search_metadata", {}).get("status") == "Error"
+        serpapi_error_message = isinstance(result.get("error"), str)
+        if serpapi_error_status or serpapi_error_message:
+            raise ValueError(result.get("error", f"SerpApi returned an error: {result}"))
+    
+    return result
 
 
 # ========== Alternative Search Engines ==========
@@ -59,10 +79,11 @@ class BingSearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_bing(q=self.query, num_results=self.num_results)
-
+        result = await _call_serp_engine(
+            context,
+            "bing",
+            {"q": self.query, "count": self.num_results, "cc": "us", "mkt": "en-us"}
+        )
         return result
 
 
@@ -90,12 +111,11 @@ class BingImages(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_bing_images(
-                q=self.query, num_results=self.num_results
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "bing_images",
+            {"q": self.query, "count": self.num_results, "cc": "us"}
+        )
         return result
 
 
@@ -120,10 +140,11 @@ class DuckDuckGoSearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_duckduckgo(q=self.query)
-
+        result = await _call_serp_engine(
+            context,
+            "duckduckgo",
+            {"q": self.query, "kl": "us-en"}
+        )
         return result
 
 
@@ -151,10 +172,11 @@ class YahooSearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_yahoo(q=self.query, num_results=self.num_results)
-
+        result = await _call_serp_engine(
+            context,
+            "yahoo",
+            {"p": self.query, "b": 1}
+        )
         return result
 
 
@@ -185,12 +207,11 @@ class YouTubeSearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_youtube(
-                search_query=self.query, num_results=self.num_results
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "youtube",
+            {"search_query": self.query, "hl": "en", "gl": "us"}
+        )
         return result
 
 
@@ -218,12 +239,11 @@ class AmazonSearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_amazon(
-                query=self.query, num_results=self.num_results
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "amazon",
+            {"query": self.query, "amazon_domain": "amazon.com"}
+        )
         return result
 
 
@@ -248,10 +268,11 @@ class WalmartSearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_walmart(query=self.query)
-
+        result = await _call_serp_engine(
+            context,
+            "walmart",
+            {"query": self.query}
+        )
         return result
 
 
@@ -276,8 +297,9 @@ class EbaySearch(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_ebay(query=self.query)
-
+        result = await _call_serp_engine(
+            context,
+            "ebay",
+            {"_nkw": self.query, "ebay_domain": "ebay.com"}
+        )
         return result

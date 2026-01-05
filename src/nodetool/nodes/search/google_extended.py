@@ -122,16 +122,19 @@ class GoogleTrendsInterestOverTime(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_trends(
-                q=self.query,
-                data_type="TIMESERIES",
-                geo=self.geo if self.geo else None,
-                date=self.date_range,
-                category=self.category if self.category > 0 else None,
-            )
+        params = {
+            "q": self.query,
+            "data_type": "TIMESERIES",
+            "hl": "en",
+        }
+        if self.geo:
+            params["geo"] = self.geo
+        if self.date_range:
+            params["date"] = self.date_range
+        if self.category > 0:
+            params["cat"] = self.category
 
+        result = await _call_serp_engine(context, "google_trends", params)
         return result
 
 
@@ -163,16 +166,19 @@ class GoogleTrendsInterestByRegion(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_trends(
-                q=self.query,
-                data_type="GEO_MAP",
-                geo=self.geo if self.geo else None,
-                date=self.date_range,
-                category=self.category if self.category > 0 else None,
-            )
+        params = {
+            "q": self.query,
+            "data_type": "GEO_MAP",
+            "hl": "en",
+        }
+        if self.geo:
+            params["geo"] = self.geo
+        if self.date_range:
+            params["date"] = self.date_range
+        if self.category > 0:
+            params["cat"] = self.category
 
+        result = await _call_serp_engine(context, "google_trends", params)
         return result
 
 
@@ -200,16 +206,19 @@ class GoogleTrendsRelatedQueries(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_trends(
-                q=self.query,
-                data_type="RELATED_QUERIES",
-                geo=self.geo if self.geo else None,
-                date=self.date_range,
-                category=self.category if self.category > 0 else None,
-            )
+        params = {
+            "q": self.query,
+            "data_type": "RELATED_QUERIES",
+            "hl": "en",
+        }
+        if self.geo:
+            params["geo"] = self.geo
+        if self.date_range:
+            params["date"] = self.date_range
+        if self.category > 0:
+            params["cat"] = self.category
 
+        result = await _call_serp_engine(context, "google_trends", params)
         return result
 
 
@@ -237,16 +246,19 @@ class GoogleTrendsRelatedTopics(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_trends(
-                q=self.query,
-                data_type="RELATED_TOPICS",
-                geo=self.geo if self.geo else None,
-                date=self.date_range,
-                category=self.category if self.category > 0 else None,
-            )
+        params = {
+            "q": self.query,
+            "data_type": "RELATED_TOPICS",
+            "hl": "en",
+        }
+        if self.geo:
+            params["geo"] = self.geo
+        if self.date_range:
+            params["date"] = self.date_range
+        if self.category > 0:
+            params["cat"] = self.category
 
+        result = await _call_serp_engine(context, "google_trends", params)
         return result
 
 
@@ -277,14 +289,16 @@ class GoogleTrendsTrendingNow(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_trends_trending_now(
-                geo=self.geo,
-                frequency=self.frequency,
-                hours=self.hours if self.frequency == "realtime" else None,
-            )
+        params = {
+            "frequency": self.frequency,
+            "hl": "en",
+        }
+        if self.geo:
+            params["geo"] = self.geo
+        if self.frequency == "realtime" and self.hours:
+            params["hours"] = self.hours
 
+        result = await _call_serp_engine(context, "google_trends_trending_now", params)
         return result
 
 
@@ -320,20 +334,22 @@ class GoogleVideos(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        filters = {}
+        params = {
+            "q": self.query,
+            "num": self.num_results,
+            "hl": "en",
+            "gl": "us",
+        }
+        
+        tbs_parts = []
         if self.duration:
-            filters["duration"] = self.duration
+            tbs_parts.append(f"dur:{self.duration}")
         if self.upload_date:
-            filters["upload_date"] = self.upload_date
+            tbs_parts.append(f"qdr:{self.upload_date}")
+        if tbs_parts:
+            params["tbs"] = ",".join(tbs_parts)
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_videos(
-                q=self.query,
-                num_results=self.num_results,
-                filters=filters if filters else None,
-            )
-
+        result = await _call_serp_engine(context, "google_videos", params)
         return result
 
 
@@ -371,17 +387,20 @@ class GoogleFlights(BaseNode):
         if not self.departure or not self.arrival or not self.outbound_date:
             raise ValueError("Departure, arrival, and outbound_date are required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_flights(
-                departure_id=self.departure,
-                arrival_id=self.arrival,
-                outbound_date=self.outbound_date,
-                return_date=self.return_date if self.return_date else None,
-                adults=self.adults,
-                currency=self.currency if self.currency else None,
-            )
+        params = {
+            "departure_id": self.departure,
+            "arrival_id": self.arrival,
+            "outbound_date": self.outbound_date,
+            "adults": self.adults,
+            "hl": "en",
+            "gl": "us",
+        }
+        if self.return_date:
+            params["return_date"] = self.return_date
+        if self.currency:
+            params["currency"] = self.currency
 
+        result = await _call_serp_engine(context, "google_flights", params)
         return result
 
 
@@ -408,10 +427,11 @@ class GoogleFlightsAutocomplete(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_flights_autocomplete(q=self.query)
-
+        result = await _call_serp_engine(
+            context,
+            "google_flights_autocomplete",
+            {"q": self.query, "hl": "en"}
+        )
         return result
 
 
@@ -447,17 +467,19 @@ class GoogleHotels(BaseNode):
         if not self.query or not self.check_in or not self.check_out:
             raise ValueError("Query, check_in, and check_out are required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_hotels(
-                q=self.query,
-                check_in_date=self.check_in,
-                check_out_date=self.check_out,
-                adults=self.adults,
-                children=self.children,
-                currency=self.currency if self.currency else None,
-            )
+        params = {
+            "q": self.query,
+            "check_in_date": self.check_in,
+            "check_out_date": self.check_out,
+            "adults": self.adults,
+            "children": self.children,
+            "hl": "en",
+            "gl": "us",
+        }
+        if self.currency:
+            params["currency"] = self.currency
 
+        result = await _call_serp_engine(context, "google_hotels", params)
         return result
 
 
@@ -484,10 +506,11 @@ class GoogleHotelsAutocomplete(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_hotels_autocomplete(q=self.query)
-
+        result = await _call_serp_engine(
+            context,
+            "google_hotels_autocomplete",
+            {"q": self.query, "hl": "en"}
+        )
         return result
 
 
@@ -514,10 +537,11 @@ class GoogleMapsAutocomplete(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_maps_autocomplete(q=self.query)
-
+        result = await _call_serp_engine(
+            context,
+            "google_maps_autocomplete",
+            {"q": self.query, "hl": "en", "gl": "us"}
+        )
         return result
 
 
@@ -551,12 +575,17 @@ class GoogleMapsDirections(BaseNode):
         if not self.origin or not self.destination:
             raise ValueError("Origin and destination are required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_maps_directions(
-                origin=self.origin, destination=self.destination, mode=self.mode
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_maps_directions",
+            {
+                "origin": self.origin,
+                "destination": self.destination,
+                "mode": self.mode,
+                "hl": "en",
+                "gl": "us",
+            }
+        )
         return result
 
 
@@ -586,12 +615,11 @@ class GoogleMapsPlacePhotos(BaseNode):
         if not self.place_id:
             raise ValueError("Place ID (data_id) is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_maps_photos(
-                data_id=self.place_id, num_results=self.num_results
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_maps_photos",
+            {"data_id": self.place_id, "num": self.num_results, "hl": "en"}
+        )
         return result
 
 
@@ -625,12 +653,16 @@ class GoogleMapsPlaceReviews(BaseNode):
         if not self.place_id:
             raise ValueError("Place ID (data_id) is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_maps_reviews(
-                data_id=self.place_id, num_results=self.num_results, sort_by=self.sort_by
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_maps_reviews",
+            {
+                "data_id": self.place_id,
+                "num": self.num_results,
+                "hl": "en",
+                "sort_by": self.sort_by,
+            }
+        )
         return result
 
 
@@ -658,12 +690,11 @@ class GoogleFinanceMarkets(BaseNode):
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> Dict[str, Any]:
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_finance_markets(
-                trend=self.trend, hl=self.language
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_finance_markets",
+            {"trend": self.trend, "hl": self.language, "gl": "us"}
+        )
         return result
 
 
@@ -693,12 +724,11 @@ class GooglePatents(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_patents(
-                q=self.query, num_results=self.num_results
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_patents",
+            {"q": self.query, "num": self.num_results, "hl": "en"}
+        )
         return result
 
 
@@ -731,12 +761,17 @@ class GooglePlay(BaseNode):
         if not self.query:
             raise ValueError("Query is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.search_play(
-                q=self.query, store=self.store, num_results=self.num_results
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_play",
+            {
+                "q": self.query,
+                "store": self.store,
+                "num": self.num_results,
+                "hl": "en",
+                "gl": "us",
+            }
+        )
         return result
 
 
@@ -766,10 +801,9 @@ class GooglePlayProduct(BaseNode):
         if not self.product_id:
             raise ValueError("Product ID is required")
 
-        provider = await _get_extended_serp_provider(context)
-        async with provider:
-            result = await provider.get_play_product(
-                product_id=self.product_id, store=self.store
-            )
-
+        result = await _call_serp_engine(
+            context,
+            "google_play_product",
+            {"product_id": self.product_id, "store": self.store, "hl": "en", "gl": "us"}
+        )
         return result
