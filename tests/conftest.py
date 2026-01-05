@@ -108,6 +108,11 @@ async def _resource_scope(tmp_path, monkeypatch):
     async with ResourceScope():
         yield
 
+    # Clean up SQLite pools to avoid too many open files
+    from nodetool.runtime.db_sqlite import shutdown_all_sqlite_pools
+
+    await shutdown_all_sqlite_pools()
+
 
 # The workflow Property builder in nodetool-core treats `default=None` as missing.
 # For tests we allow None defaults; only truly required fields should fail.
