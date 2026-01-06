@@ -14,7 +14,6 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 
 import asyncio
 import os
-import uuid
 from urllib.parse import urlparse
 from abc import abstractmethod
 from enum import Enum
@@ -74,7 +73,7 @@ class KieBaseNode(BaseNode):
     def _check_response_status(self, response_data: dict) -> None:
         """Check response status code and raise nicer error."""
         try:
-            status = int(response_data.get("code")) # type: ignore
+            status = int(response_data.get("code"))  # type: ignore
         except (ValueError, TypeError):
             pass
 
@@ -147,7 +146,7 @@ class KieBaseNode(BaseNode):
                     response_data = await response.json()
                     if "code" in response_data:
                         self._check_response_status(response_data)
-                    
+
                     if response.status != 200 or not response_data.get("success"):
                         raise ValueError(
                             f"Failed to upload file: {response.status} - {response_data}"
@@ -162,20 +161,19 @@ class KieBaseNode(BaseNode):
             raise ValueError(f"No downloadUrl in upload response: {response_data}")
         return download_url
 
-    async def _upload_image(
-        self, context: ProcessingContext, image: ImageRef
-    ) -> str:
+    async def _upload_image(self, context: ProcessingContext, image: ImageRef) -> str:
         if image.uri and image.uri.startswith(("http://", "https://")):
             if "localhost" not in image.uri and "127.0.0.1" not in image.uri:
                 return image.uri
-            
+
         return await self._upload_asset(
-            context, asset=image, upload_path="images/user-uploads", default_extension=".png"
+            context,
+            asset=image,
+            upload_path="images/user-uploads",
+            default_extension=".png",
         )
 
-    async def _upload_audio(
-        self, context: ProcessingContext, audio: Any
-    ) -> str:
+    async def _upload_audio(self, context: ProcessingContext, audio: Any) -> str:
         """Upload audio to Kie.ai after converting to MP3 format."""
         from io import BytesIO
         from nodetool.metadata.types import AudioRef
@@ -192,14 +190,18 @@ class KieBaseNode(BaseNode):
         mp3_audio = AudioRef(data=mp3_buffer.read())
 
         return await self._upload_asset(
-            context, asset=mp3_audio, upload_path="audio/user-uploads", default_extension=".mp3"
+            context,
+            asset=mp3_audio,
+            upload_path="audio/user-uploads",
+            default_extension=".mp3",
         )
 
-    async def _upload_video(
-        self, context: ProcessingContext, video: Any
-    ) -> str:
+    async def _upload_video(self, context: ProcessingContext, video: Any) -> str:
         return await self._upload_asset(
-            context, asset=video, upload_path="videos/user-uploads", default_extension=".mp4"
+            context,
+            asset=video,
+            upload_path="videos/user-uploads",
+            default_extension=".mp4",
         )
 
     @abstractmethod
@@ -299,9 +301,7 @@ class KieBaseNode(BaseNode):
         url = f"{KIE_API_BASE_URL}/api/v1/jobs/createTask"
         payload = await self._get_submit_payload(context)
         headers = self._get_headers(api_key)
-        print(payload)
-        log.debug(f"Submitting task to {url}")
-        log.debug(f"Payload: {payload}")
+        log.info(f"Submitting task to {url} with payload: {payload}")
         async with session.post(url, json=payload, headers=headers) as response:
             response_data = await response.json()
             if "code" in response_data:
@@ -485,7 +485,9 @@ class Flux2ProTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Flux2ProImageToImage(KieBaseNode):
@@ -575,7 +577,9 @@ class Flux2ProImageToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Flux2FlexTextToImage(KieBaseNode):
@@ -651,7 +655,9 @@ class Flux2FlexTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Flux2FlexImageToImage(KieBaseNode):
@@ -741,7 +747,9 @@ class Flux2FlexImageToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Seedream45TextToImage(KieBaseNode):
@@ -804,7 +812,9 @@ class Seedream45TextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Seedream45Edit(KieBaseNode):
@@ -881,7 +891,9 @@ class Seedream45Edit(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class ZImage(KieBaseNode):
@@ -935,7 +947,9 @@ class ZImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class NanoBanana(KieBaseNode):
@@ -987,7 +1001,9 @@ class NanoBanana(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class NanoBananaPro(KieBaseNode):
@@ -1058,7 +1074,9 @@ class NanoBananaPro(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class FluxKontext(KieBaseNode):
@@ -1122,7 +1140,9 @@ class FluxKontext(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class GrokImagineTextToImage(KieBaseNode):
@@ -1174,7 +1194,9 @@ class GrokImagineTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class GrokImagineUpscale(KieBaseNode):
@@ -1206,21 +1228,23 @@ class GrokImagineUpscale(KieBaseNode):
     ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
-        
+
         task_id = self.image.metadata.get("task_id")
         if not task_id:
             raise ValueError(
                 "Image metadata does not contain a 'task_id'. "
                 "The image must be generated by a Kie.ai node to be upscaled."
             )
-            
+
         return {
             "task_id": task_id,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class QwenTextToImage(KieBaseNode):
@@ -1272,7 +1296,9 @@ class QwenTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class QwenImageToImage(KieBaseNode):
@@ -1336,7 +1362,9 @@ class QwenImageToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class TopazImageUpscale(KieBaseNode):
@@ -1381,7 +1409,9 @@ class TopazImageUpscale(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class RecraftRemoveBackground(KieBaseNode):
@@ -1421,7 +1451,9 @@ class RecraftRemoveBackground(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class IdeogramCharacterRemix(KieBaseNode):
@@ -1556,7 +1588,9 @@ class IdeogramCharacterRemix(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class IdeogramV3Reframe(KieBaseNode):
@@ -1639,7 +1673,9 @@ class IdeogramV3Reframe(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class RecraftCrispUpscale(KieBaseNode):
@@ -1674,8 +1710,9 @@ class RecraftCrispUpscale(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
-
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Imagen4Fast(KieBaseNode):
@@ -1722,12 +1759,14 @@ class Imagen4Fast(KieBaseNode):
             "prompt": self.prompt,
             "negative_prompt": self.negative_prompt,
             "aspect_ratio": self.aspect_ratio.value,
-            "num_images": "1"
+            "num_images": "1",
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Imagen4Ultra(KieBaseNode):
@@ -1784,7 +1823,9 @@ class Imagen4Ultra(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Imagen4(KieBaseNode):
@@ -1842,7 +1883,9 @@ class Imagen4(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class NanoBananaEdit(KieBaseNode):
@@ -1908,4 +1951,6 @@ class NanoBananaEdit(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )

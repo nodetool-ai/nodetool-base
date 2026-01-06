@@ -9,9 +9,7 @@ from pydantic import Field
 
 
 class VeoModel(str, Enum):
-    VEO_3_PREVIEW = "veo-3.0-generate-preview"
-    VEO_3_FAST_PREVIEW = "veo-3.0-fast-generate-preview"
-    VEO_2 = "veo-2.0-generate-001"
+    VEO_3_PREVIEW = "veo-3.1-generate-preview"
 
 
 class VeoAspectRatio(str, Enum):

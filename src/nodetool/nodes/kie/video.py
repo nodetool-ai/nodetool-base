@@ -1115,6 +1115,10 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
             payload["negative_prompt"] = self.negative_prompt
         return payload
 
+class Sora2Frames(str, Enum):
+    _10s = "10"
+    _15s = "15"
+    
 
 class Sora2BaseNode(KieVideoBaseNode):
     """Base class for Sora 2 nodes via Kie.ai."""
@@ -1134,11 +1138,9 @@ class Sora2BaseNode(KieVideoBaseNode):
         description="Whether to remove the watermark from the video.",
     )
 
-    n_frames: int = Field(
-        default=10,
+    n_frames: Sora2Frames = Field(
+        default=Sora2Frames._10s,
         description="Number of frames for the video output.",
-        ge=1,
-        le=60,
     )
 
 
@@ -1163,7 +1165,7 @@ class Sora2ProTextToVideo(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
@@ -1198,7 +1200,7 @@ class Sora2ProImageToVideo(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "image_url": image_url,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
@@ -1248,7 +1250,7 @@ class Sora2ProStoryboard(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "image_urls": image_urls,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
@@ -1263,13 +1265,6 @@ class Sora2TextToVideo(Sora2BaseNode):
         description="The text prompt describing the video.",
     )
 
-    n_frames: int = Field(
-        default=10,
-        description="Number of frames for the video output.",
-        ge=1,
-        le=60,
-    )
-
     def _get_model(self) -> str:
         return "sora-2-text-to-video"
 
@@ -1281,7 +1276,7 @@ class Sora2TextToVideo(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
@@ -1359,7 +1354,7 @@ class Wan26TextToVideo(KieVideoBaseNode):
     )
 
     class Duration(str, Enum):
-        D5 = "5"
+        D5 = "5s"
         D10 = "10"
 
     duration: Duration = Field(

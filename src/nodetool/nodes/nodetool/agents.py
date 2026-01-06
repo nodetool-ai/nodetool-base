@@ -738,26 +738,7 @@ def _parse_or_infer_category(raw: str, categories: list[str]) -> str:
     return categories[0]
 
 
-DEFAULT_SYSTEM_PROMPT = """You are a an AI agent.
-
-Behavior
-- Understand the user's intent and the context of the task.
-- Break down the task into smaller steps.
-- Be precise, concise, and actionable.
-- Use tools to accomplish your goal.
-
-Tool preambles
-- Outline the next step(s) you will perform.
-- After acting, summarize the outcome.
-
-Rendering
-- Use Markdown to display media assets.
-- Display images, audio, and video assets using the appropriate Markdown.
-
-File handling
-- Inputs and outputs are files in the /workspace directory.
-- Write outputs of code execution to the /workspace directory.
-"""
+DEFAULT_SYSTEM_PROMPT = """You are a friendly assistant"""
 
 
 def serialize_tool_result(tool_result: Any) -> Any:

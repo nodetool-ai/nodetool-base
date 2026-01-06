@@ -53,6 +53,20 @@ allow-direct-references = true
 "evals/eval_runner.py" = ["E402"]
 "examples/generate_json_examples.py" = ["E402"]
 
+# Basedpyright configuration for type checking
+[tool.basedpyright]
+typeCheckingMode = "standard"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownParameterType = "none"
+reportUnknownLambdaType = "none"
+reportMissingTypeStubs = "none"
+reportUnusedImport = "none"
+reportUnusedVariable = "none"
+reportUnusedFunction = "none"
+reportUnusedClass = "none"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/nodetool"]
 artifacts = [

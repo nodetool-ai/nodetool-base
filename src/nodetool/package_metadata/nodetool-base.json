@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.19",
+  "version": "0.6.2-rc.20",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -3353,7 +3353,7 @@
           "type": {
             "type": "str"
           },
-          "default": "You are a an AI agent.\n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal.\n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+          "default": "You are a friendly assistant",
           "title": "System",
           "description": "The system prompt for the LLM"
         },
@@ -9386,6 +9386,8 @@
           "default": {
             "type": "chunk",
             "node_id": null,
+            "thread_id": null,
+            "workflow_id": null,
             "content_type": "text",
             "content": "",
             "content_metadata": {},
@@ -17012,13 +17014,11 @@
           "type": {
             "type": "enum",
             "values": [
-              "veo-3.0-generate-preview",
-              "veo-3.0-fast-generate-preview",
-              "veo-2.0-generate-001"
+              "veo-3.1-generate-preview"
             ],
             "type_name": "nodetool.nodes.gemini.video.VeoModel"
           },
-          "default": "veo-3.0-generate-preview",
+          "default": "veo-3.1-generate-preview",
           "title": "Model",
           "description": "The Veo model to use for video generation"
         },
@@ -17083,13 +17083,11 @@
           "type": {
             "type": "enum",
             "values": [
-              "veo-3.0-generate-preview",
-              "veo-3.0-fast-generate-preview",
-              "veo-2.0-generate-001"
+              "veo-3.1-generate-preview"
             ],
             "type_name": "nodetool.nodes.gemini.video.VeoModel"
           },
-          "default": "veo-3.0-generate-preview",
+          "default": "veo-3.1-generate-preview",
           "title": "Model",
           "description": "The Veo model to use for video generation"
         },
@@ -32437,6 +32435,186 @@
       "expose_as_tool": true
     },
     {
+      "title": "Kling 25 Turbo Image To Video",
+      "description": "Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, turbo\n\n    Transforms a static image into a dynamic video while preserving\n    visual style, colors, lighting, and texture.\n\n    Use cases:\n    - Animate static images with realistic motion\n    - Create smooth camera transitions and scene depth\n    - Generate dynamic scenes from reference images",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Kling25TurboImageToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "Text description to guide the video generation."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "The source image to animate."
+        },
+        {
+          "name": "tail_image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Tail Image",
+          "description": "Tail frame image for the video (optional)."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "5",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration"
+          },
+          "default": "5",
+          "title": "Duration",
+          "description": "Video duration in seconds."
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Elements to avoid in the video."
+        },
+        {
+          "name": "cfg_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Cfg Scale",
+          "description": "The CFG scale for prompt adherence. Lower values allow more creativity.",
+          "min": 0.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "tail_image",
+        "duration",
+        "negative_prompt",
+        "cfg_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling 25 Turbo Text To Video",
+      "description": "Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, turbo\n\n    Kling 2.5 Turbo offers improved prompt adherence, fluid motion,\n    consistent artistic styles, and realistic physics simulation.\n\n    Use cases:\n    - Create cinematic quality videos from text\n    - Generate complex narratives and action scenes\n    - Produce artistic animations with smooth motion",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Kling25TurboTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the video."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "5",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration"
+          },
+          "default": "5",
+          "title": "Duration",
+          "description": "Video duration in seconds."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video."
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Things to avoid in the generated video."
+        },
+        {
+          "name": "cfg_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Cfg Scale",
+          "description": "The CFG scale for prompt adherence. Lower values allow more creativity.",
+          "min": 0.0,
+          "max": 1.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "duration",
+        "aspect_ratio",
+        "negative_prompt",
+        "cfg_scale"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Kling AIAvatar Pro",
       "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
       "namespace": "kie.video",
@@ -33373,13 +33551,16 @@
         {
           "name": "n_frames",
           "type": {
-            "type": "int"
+            "type": "enum",
+            "values": [
+              "10",
+              "15"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2Frames"
           },
-          "default": 10,
+          "default": "10",
           "title": "N Frames",
-          "description": "Number of frames for the video output.",
-          "min": 1.0,
-          "max": 60.0
+          "description": "Number of frames for the video output."
         },
         {
           "name": "prompt",
@@ -33456,13 +33637,16 @@
         {
           "name": "n_frames",
           "type": {
-            "type": "int"
+            "type": "enum",
+            "values": [
+              "10",
+              "15"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2Frames"
           },
-          "default": 10,
+          "default": "10",
           "title": "N Frames",
-          "description": "Number of frames for the video output.",
-          "min": 1.0,
-          "max": 60.0
+          "description": "Number of frames for the video output."
         },
         {
           "name": "prompt",
@@ -33571,13 +33755,16 @@
         {
           "name": "n_frames",
           "type": {
-            "type": "int"
+            "type": "enum",
+            "values": [
+              "10",
+              "15"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2Frames"
           },
-          "default": 10,
+          "default": "10",
           "title": "N Frames",
-          "description": "Number of frames for the video output.",
-          "min": 1.0,
-          "max": 60.0
+          "description": "Number of frames for the video output."
         },
         {
           "name": "prompt",
@@ -33638,13 +33825,16 @@
         {
           "name": "n_frames",
           "type": {
-            "type": "int"
+            "type": "enum",
+            "values": [
+              "10",
+              "15"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Sora2Frames"
           },
-          "default": 10,
+          "default": "10",
           "title": "N Frames",
-          "description": "Number of frames for the video output.",
-          "min": 1.0,
-          "max": 60.0
+          "description": "Number of frames for the video output."
         },
         {
           "name": "prompt",
@@ -33861,12 +34051,12 @@
           "type": {
             "type": "enum",
             "values": [
-              "5",
+              "5s",
               "10"
             ],
             "type_name": "nodetool.nodes.kie.video.Wan26TextToVideo.Duration"
           },
-          "default": "5",
+          "default": "5s",
           "title": "Duration",
           "description": "The duration of the video in seconds."
         },
@@ -37495,6 +37685,8 @@
           "default": {
             "type": "chunk",
             "node_id": null,
+            "thread_id": null,
+            "workflow_id": null,
             "content_type": "text",
             "content": "",
             "content_metadata": {},
