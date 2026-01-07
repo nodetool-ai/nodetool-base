@@ -37,6 +37,9 @@ from nodetool.nodes.kie.video import (
     TopazVideoUpscale,
     GrokImagineImageToVideo,
     GrokImagineTextToVideo,
+    Veo31TextToVideo,
+    Veo31ImageToVideo,
+    Veo31ReferenceToVideo,
 )
 from nodetool.nodes.kie.audio import Suno
 
@@ -238,7 +241,9 @@ class TestFlux2ProTextToImage:
         with patch("aiohttp.ClientSession", return_value=MockSession(responses)):
             await node.process(mock_context)
 
-        mock_context.image_from_bytes.assert_called_once_with(b"image_bytes", metadata={"task_id": "task123"})
+        mock_context.image_from_bytes.assert_called_once_with(
+            b"image_bytes", metadata={"task_id": "task123"}
+        )
 
     @pytest.mark.asyncio
     async def test_missing_api_key(self, mock_context):
@@ -272,7 +277,11 @@ class TestSeedream45TextToImage:
         payload = await node._get_submit_payload()
         assert payload == {
             "model": "seedream/4.5-text-to-image",
-            "input": {"prompt": "artistic scene", "aspect_ratio": "9:16", "quality": "basic"},
+            "input": {
+                "prompt": "artistic scene",
+                "aspect_ratio": "9:16",
+                "quality": "basic",
+            },
         }
 
 
@@ -451,7 +460,9 @@ class TestKiePollingLogic:
         with patch("aiohttp.ClientSession", return_value=MockSession(responses)):
             await node.process(mock_context)
 
-        mock_context.image_from_bytes.assert_called_once_with(b"actual_image_bytes", metadata={"task_id": "task123"})
+        mock_context.image_from_bytes.assert_called_once_with(
+            b"actual_image_bytes", metadata={"task_id": "task123"}
+        )
 
 
 class TestNanoBananaProGenerate:
@@ -746,3 +757,228 @@ class TestSuno:
         assert payload["input"]["instrumental"] is True
         assert payload["input"]["duration"] == 120
         assert payload["input"]["model"] == "v4.5+"
+
+
+class TestVeo31TextToVideo:
+    """Tests for Veo31TextToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_name_veo3(self):
+        """Test model name for veo3."""
+        node = Veo31TextToVideo(prompt="test", model=Veo31TextToVideo.Model.VEO3)
+        assert node._get_model() == "google/veo3"
+
+    @pytest.mark.asyncio
+    async def test_model_name_veo3_fast(self):
+        """Test model name for veo3_fast."""
+        node = Veo31TextToVideo(prompt="test", model=Veo31TextToVideo.Model.VEO3_FAST)
+        assert node._get_model() == "google/veo3_fast"
+
+    @pytest.mark.asyncio
+    async def test_input_params_basic(self):
+        """Test input parameters for text-to-video."""
+        node = Veo31TextToVideo(prompt="A dog playing in a park")
+        params = await node._get_input_params()
+        assert params["prompt"] == "A dog playing in a park"
+        assert params["model"] == "veo3_fast"
+        assert params["generationType"] == "TEXT_2_VIDEO"
+        assert params["aspectRatio"] == "16:9"
+        assert params["enableTranslation"] is True
+
+    @pytest.mark.asyncio
+    async def test_input_params_with_seed(self):
+        """Test input parameters with custom seed."""
+        node = Veo31TextToVideo(prompt="test", seed=12345)
+        params = await node._get_input_params()
+        assert params["seeds"] == 12345
+
+    @pytest.mark.asyncio
+    async def test_input_params_with_watermark(self):
+        """Test input parameters with watermark."""
+        node = Veo31TextToVideo(prompt="test", watermark="MyBrand")
+        params = await node._get_input_params()
+        assert params["watermark"] == "MyBrand"
+
+    @pytest.mark.asyncio
+    async def test_input_params_aspect_ratio(self):
+        """Test input parameters with different aspect ratios."""
+        node = Veo31TextToVideo(
+            prompt="test", aspect_ratio=Veo31TextToVideo.AspectRatio.RATIO_9_16
+        )
+        params = await node._get_input_params()
+        assert params["aspectRatio"] == "9:16"
+
+    @pytest.mark.asyncio
+    async def test_disabled_translation(self):
+        """Test input parameters with translation disabled."""
+        node = Veo31TextToVideo(prompt="test", enable_translation=False)
+        params = await node._get_input_params()
+        assert params["enableTranslation"] is False
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = Veo31TextToVideo(prompt="")
+        with pytest.raises(ValueError, match="Prompt is required"):
+            await node._get_input_params()
+
+
+class TestVeo31ImageToVideo:
+    """Tests for Veo31ImageToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_name(self):
+        """Test model name."""
+        node = Veo31ImageToVideo(prompt="test")
+        assert node._get_model() == "google/veo3_fast"
+
+    @pytest.mark.asyncio
+    async def test_input_params_single_image(self, mock_context):
+        """Test input parameters with single image."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ImageToVideo(
+            prompt="Animate this image",
+            image1=ImageRef(uri="http://example.com/image1.jpg"),
+        )
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image1.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
+        assert params["prompt"] == "Animate this image"
+        assert params["imageUrls"] == ["http://uploaded-url.com/image1.jpg"]
+        assert params["model"] == "veo3_fast"
+        assert params["generationType"] == "FIRST_AND_LAST_FRAMES_2_VIDEO"
+        assert params["aspectRatio"] == "16:9"
+
+    @pytest.mark.asyncio
+    async def test_input_params_two_images(self, mock_context):
+        """Test input parameters with two images (first and last frame)."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ImageToVideo(
+            prompt="Transition between images",
+            image1=ImageRef(uri="http://example.com/image1.jpg"),
+            image2=ImageRef(uri="http://example.com/image2.jpg"),
+        )
+
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
+        assert len(params["imageUrls"]) == 2
+
+    @pytest.mark.asyncio
+    async def test_requires_at_least_one_image(self, mock_context):
+        """Test that at least one image is required."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ImageToVideo(prompt="test", image1=ImageRef())
+        with pytest.raises(ValueError, match="At least one image is required"):
+            await node._get_input_params(mock_context)
+
+
+class TestVeo31ReferenceToVideo:
+    """Tests for Veo31ReferenceToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_name(self):
+        """Test model name is always veo3_fast."""
+        node = Veo31ReferenceToVideo(prompt="test")
+        assert node._get_model() == "google/veo3_fast"
+
+    @pytest.mark.asyncio
+    async def test_input_params_single_image(self, mock_context):
+        """Test input parameters with single reference image."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ReferenceToVideo(
+            prompt="Generate video from material",
+            image1=ImageRef(uri="http://example.com/material1.jpg"),
+        )
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/material1.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
+        assert params["prompt"] == "Generate video from material"
+        assert params["imageUrls"] == ["http://uploaded-url.com/material1.jpg"]
+        assert params["model"] == "veo3_fast"
+        assert params["generationType"] == "REFERENCE_2_VIDEO"
+        assert params["aspectRatio"] == "16:9"
+
+    @pytest.mark.asyncio
+    async def test_input_params_multiple_images(self, mock_context):
+        """Test input parameters with multiple reference images."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ReferenceToVideo(
+            prompt="Generate video from multiple materials",
+            image1=ImageRef(uri="http://example.com/material1.jpg"),
+            image2=ImageRef(uri="http://example.com/material2.jpg"),
+            image3=ImageRef(uri="http://example.com/material3.jpg"),
+        )
+
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/material.jpg"
+        ):
+            params = await node._get_input_params(mock_context)
+        assert len(params["imageUrls"]) == 3
+
+    @pytest.mark.asyncio
+    async def test_requires_at_least_one_image(self, mock_context):
+        """Test that at least one reference image is required."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ReferenceToVideo(prompt="test", image1=ImageRef())
+        with pytest.raises(
+            ValueError, match="At least one reference image is required"
+        ):
+            await node._get_input_params(mock_context)
+
+    @pytest.mark.asyncio
+    async def test_requires_16_9_aspect_ratio(self, mock_context):
+        """Test that only 16:9 aspect ratio is supported."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ReferenceToVideo(
+            prompt="test",
+            image1=ImageRef(uri="http://example.com/image.jpg"),
+            aspect_ratio=Veo31ReferenceToVideo.AspectRatio.RATIO_9_16,
+        )
+        with pytest.raises(
+            ValueError, match="REFERENCE_2_VIDEO mode only supports 16:9 aspect ratio"
+        ):
+            await node._get_input_params(mock_context)
+
+    @pytest.mark.asyncio
+    async def test_max_three_images(self, mock_context):
+        """Test that maximum 3 reference images are allowed."""
+        from nodetool.metadata.types import ImageRef
+
+        node = Veo31ReferenceToVideo(prompt="test")
+        node.image1 = ImageRef(uri="http://example.com/1.jpg")
+        node.image2 = ImageRef(uri="http://example.com/2.jpg")
+        node.image3 = ImageRef(uri="http://example.com/3.jpg")
+
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            # Should not raise - exactly 3 images is valid
+            params = await node._get_input_params(mock_context)
+            assert len(params["imageUrls"]) == 3
+
+
+class TestVeo31Visibility:
+    """Tests for Veo 3.1 node visibility."""
+
+    def test_veo31_text_to_video_visible(self):
+        """Veo31TextToVideo should be visible in UI."""
+        assert Veo31TextToVideo.is_visible()
+
+    def test_veo31_image_to_video_visible(self):
+        """Veo31ImageToVideo should be visible in UI."""
+        assert Veo31ImageToVideo.is_visible()
+
+    def test_veo31_reference_to_video_visible(self):
+        """Veo31ReferenceToVideo should be visible in UI."""
+        assert Veo31ReferenceToVideo.is_visible()

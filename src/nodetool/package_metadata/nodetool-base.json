@@ -31890,7 +31890,7 @@
       "is_streaming_output": true
     },
     {
-      "title": "Suno",
+      "title": "Suno Music Generator",
       "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals up to around 8 minutes long.\n    Supports the latest Suno V4.5+ model with improved vocal quality and composition.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
       "namespace": "kie.audio",
       "node_type": "kie.audio.Suno",
@@ -31992,7 +31992,7 @@
     },
     {
       "title": "Grok Imagine Image To Video",
-      "description": "Generate videos from images using xAI's Grok Imagine model via Kie.ai.",
+      "description": "Generate videos from images using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, image-to-video, multimodal\n\n    Grok Imagine transforms images into videos using xAI's\n    multimodal generation capabilities.\n\n    Use cases:\n    - Animate images into videos\n    - Create dynamic content from static images\n    - Generate video animations from reference images",
       "namespace": "kie.video",
       "node_type": "kie.video.GrokImagineImageToVideo",
       "properties": [
@@ -32053,7 +32053,7 @@
     },
     {
       "title": "Grok Imagine Text To Video",
-      "description": "Generate videos from text using xAI's Grok Imagine model via Kie.ai.",
+      "description": "Generate videos from text using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, text-to-video, multimodal\n\n    Grok Imagine generates videos from text prompts using xAI's\n    multimodal generation capabilities.\n\n    Use cases:\n    - Generate videos from text descriptions\n    - Create AI-powered visual content\n    - Produce creative video content",
       "namespace": "kie.video",
       "node_type": "kie.video.GrokImagineTextToVideo",
       "properties": [
@@ -32112,7 +32112,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Hailuo Image To Video Pro",
+      "title": "Hailuo 2.3 Pro Image To Video",
       "description": "Generate videos from images using MiniMax's Hailuo 2.3 Pro model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, pro\n\n    Hailuo 2.3 Pro offers the highest quality image-to-video generation with\n    realistic motion, detailed textures, and cinematic quality.\n\n    Use cases:\n    - Generate high-quality cinematic videos from images\n    - Create realistic motion and physics\n    - Professional video production\n    - High-fidelity image animation",
       "namespace": "kie.video",
       "node_type": "kie.video.HailuoImageToVideoPro",
@@ -32187,7 +32187,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Hailuo Image To Video Standard",
+      "title": "Hailuo 2.3 Standard Image To Video",
       "description": "Generate videos from images using MiniMax's Hailuo 2.3 Standard model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, standard, fast\n\n    Hailuo 2.3 Standard offers efficient image-to-video generation with good quality\n    and faster processing times for practical use cases.\n\n    Use cases:\n    - Generate quality videos from images efficiently\n    - Quick image animation with realistic motion\n    - Fast image-to-video prototyping\n    - Practical video content creation",
       "namespace": "kie.video",
       "node_type": "kie.video.HailuoImageToVideoStandard",
@@ -32262,7 +32262,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Hailuo Text To Video Pro",
+      "title": "Hailuo 2.3 Pro Text To Video",
       "description": "Generate videos from text using MiniMax's Hailuo 2.3 Pro model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, text-to-video, pro\n\n    Hailuo 2.3 Pro offers the highest quality text-to-video generation with\n    realistic motion, detailed textures, and cinematic quality.",
       "namespace": "kie.video",
       "node_type": "kie.video.HailuoTextToVideoPro",
@@ -32321,7 +32321,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Hailuo Text To Video Standard",
+      "title": "Hailuo 2.3 Standard Text To Video",
       "description": "Generate videos from text using MiniMax's Hailuo 2.3 Standard model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, text-to-video, standard, fast",
       "namespace": "kie.video",
       "node_type": "kie.video.HailuoTextToVideoStandard",
@@ -32455,7 +32455,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Kling 25 Turbo Image To Video",
+      "title": "Kling 2.5 Turbo Image To Video",
       "description": "Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, turbo\n\n    Transforms a static image into a dynamic video while preserving\n    visual style, colors, lighting, and texture.\n\n    Use cases:\n    - Animate static images with realistic motion\n    - Create smooth camera transitions and scene depth\n    - Generate dynamic scenes from reference images",
       "namespace": "kie.video",
       "node_type": "kie.video.Kling25TurboImageToVideo",
@@ -32553,7 +32553,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Kling 25 Turbo Text To Video",
+      "title": "Kling 2.5 Turbo Text To Video",
       "description": "Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, turbo\n\n    Kling 2.5 Turbo offers improved prompt adherence, fluid motion,\n    consistent artistic styles, and realistic physics simulation.\n\n    Use cases:\n    - Create cinematic quality videos from text\n    - Generate complex narratives and action scenes\n    - Produce artistic animations with smooth motion",
       "namespace": "kie.video",
       "node_type": "kie.video.Kling25TurboTextToVideo",
@@ -32787,8 +32787,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Kling Image To Video",
-      "description": "Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.",
+      "title": "Kling 2.6 Image To Video",
+      "description": "Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, 2.6\n\n    Transforms static images into dynamic videos with realistic motion\n    and temporal consistency while preserving the original visual style.\n\n    Use cases:\n    - Animate static images into videos\n    - Create smooth camera movements from photos\n    - Generate dynamic content from reference images",
       "namespace": "kie.video",
       "node_type": "kie.video.KlingImageToVideo",
       "properties": [
@@ -32884,8 +32884,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Kling Text To Video",
-      "description": "Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.",
+      "title": "Kling 2.6 Text To Video",
+      "description": "Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, 2.6\n\n    Kling 2.6 produces high-quality videos from text descriptions with\n    realistic motion, natural lighting, and cinematic detail.\n\n    Use cases:\n    - Create cinematic videos from text descriptions\n    - Generate complex scenes and action sequences\n    - Produce marketing and promotional content",
       "namespace": "kie.video",
       "node_type": "kie.video.KlingTextToVideo",
       "properties": [
@@ -32965,7 +32965,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedance V 1 Lite Image To Video",
+      "title": "Seedance V1 Lite Image To Video",
       "description": "Bytedance 1.0 - image-to-video-lite via Kie.ai.",
       "namespace": "kie.video",
       "node_type": "kie.video.SeedanceV1LiteImageToVideo",
@@ -33101,8 +33101,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedance V 1 Lite Text To Video",
-      "description": "Bytedance 1.0 - text-to-video-lite via Kie.ai.",
+      "title": "Seedance V1 Lite Text To Video",
+      "description": "Bytedance 1.0 - text-to-video-lite via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, text-to-video, lite\n\n    Seedance V1 Lite offers efficient text-to-video generation\n    with good quality and faster processing times.\n\n    Use cases:\n    - Quick video generation from text\n    - Prototype video content creation\n    - Generate creative videos efficiently",
       "namespace": "kie.video",
       "node_type": "kie.video.SeedanceV1LiteTextToVideo",
       "properties": [
@@ -33189,7 +33189,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedance V 1 Pro Fast Image To Video",
+      "title": "Seedance V1 Pro Fast Image To Video",
       "description": "Bytedance 1.0 - fast-image-to-video-pro via Kie.ai.",
       "namespace": "kie.video",
       "node_type": "kie.video.SeedanceV1ProFastImageToVideo",
@@ -33315,7 +33315,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedance V 1 Pro Image To Video",
+      "title": "Seedance V1 Pro Image To Video",
       "description": "Bytedance 1.0 - image-to-video-pro via Kie.ai.",
       "namespace": "kie.video",
       "node_type": "kie.video.SeedanceV1ProImageToVideo",
@@ -33451,7 +33451,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedance V 1 Pro Text To Video",
+      "title": "Seedance V1 Pro Text To Video",
       "description": "Bytedance 1.0 - text-to-video-pro via Kie.ai.",
       "namespace": "kie.video",
       "node_type": "kie.video.SeedanceV1ProTextToVideo",
@@ -33540,7 +33540,7 @@
     },
     {
       "title": "Sora 2 Pro Image To Video",
-      "description": "Generate videos from images using Sora 2 Pro via Kie.ai.",
+      "description": "Generate videos from images using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, image-to-video, pro\n\n    Sora 2 Pro transforms images into high-quality videos with\n    realistic motion and temporal consistency.\n\n    Use cases:\n    - Animate images into videos\n    - Create dynamic content from still images\n    - Generate professional video from references",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2ProImageToVideo",
       "properties": [
@@ -33626,7 +33626,7 @@
     },
     {
       "title": "Sora 2 Pro Storyboard",
-      "description": "Generate videos from storyboards using Sora 2 Pro via Kie.ai.",
+      "description": "Generate videos from storyboards using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, storyboard, pro\n\n    Sora 2 Pro creates videos from storyboard sequences with\n    consistent characters and scenes across frames.\n\n    Use cases:\n    - Create videos from storyboard sequences\n    - Generate consistent multi-shot videos\n    - Produce narrative-driven video content",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2ProStoryboard",
       "properties": [
@@ -33744,7 +33744,7 @@
     },
     {
       "title": "Sora 2 Pro Text To Video",
-      "description": "Generate videos from text using Sora 2 Pro via Kie.ai.",
+      "description": "Generate videos from text using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, pro\n\n    Sora 2 Pro generates high-quality videos from text descriptions\n    with advanced motion and temporal consistency.\n\n    Use cases:\n    - Create cinematic videos from text\n    - Generate complex scene compositions\n    - Produce professional video content",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2ProTextToVideo",
       "properties": [
@@ -33814,7 +33814,7 @@
     },
     {
       "title": "Sora 2 Text To Video",
-      "description": "Generate videos from text using Sora 2 Standard via Kie.ai.",
+      "description": "Generate videos from text using Sora 2 Standard via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, standard\n\n    Sora 2 Standard generates quality videos from text descriptions\n    with efficient processing and good visual quality.\n\n    Use cases:\n    - Create videos from text descriptions\n    - Generate content efficiently\n    - Produce quality video output",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2TextToVideo",
       "properties": [
@@ -33945,7 +33945,363 @@
       "expose_as_tool": true
     },
     {
-      "title": "Wan 26 Image To Video",
+      "title": "Veo 31 Image To Video",
+      "description": "Generate videos from images using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v\n\n    Supports single image (image comes alive) or two images (first and last frames transition).\n    For two images, the first image serves as the video's first frame and the second as the last frame.\n\n    Use cases:\n    - Animate static images into dynamic video\n    - Create smooth transitions between two reference images\n    - Generate cinematic motion from still photographs",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Veo31ImageToVideo",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "veo3",
+              "veo3_fast"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.Model"
+          },
+          "default": "veo3_fast",
+          "title": "Model",
+          "description": "The model to use for video generation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "Auto"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use 0 for random seed.",
+          "min": 0.0,
+          "max": 99999.0
+        },
+        {
+          "name": "enable_translation",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Translation",
+          "description": "Enable automatic translation of prompts to English for better results."
+        },
+        {
+          "name": "watermark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Watermark",
+          "description": "Optional watermark text to add to the generated video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "Optional text prompt describing how the image should come alive."
+        },
+        {
+          "name": "image1",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image1",
+          "description": "First source image. Required. Serves as the video's first frame."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image2",
+          "description": "Second source image (optional). If provided, serves as the video's last frame."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "aspect_ratio",
+        "seed",
+        "enable_translation",
+        "watermark",
+        "prompt",
+        "image1",
+        "image2"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Veo 31 Reference To Video",
+      "description": "Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video\n\n    Material-to-video generation based on reference images. Only supports veo3_fast model\n    and 16:9 aspect ratio. Requires 1-3 reference images.\n\n    Use cases:\n    - Generate videos based on material/reference images\n    - Create product showcase videos\n    - Produce content from design references",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Veo31ReferenceToVideo",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "veo3",
+              "veo3_fast"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.Model"
+          },
+          "default": "veo3_fast",
+          "title": "Model",
+          "description": "The model to use for video generation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "Auto"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use 0 for random seed.",
+          "min": 0.0,
+          "max": 99999.0
+        },
+        {
+          "name": "enable_translation",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Translation",
+          "description": "Enable automatic translation of prompts to English for better results."
+        },
+        {
+          "name": "watermark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Watermark",
+          "description": "Optional watermark text to add to the generated video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "Text prompt describing the desired video content."
+        },
+        {
+          "name": "image1",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image1",
+          "description": "First reference image. Required. Minimum 1, maximum 3 images."
+        },
+        {
+          "name": "image2",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image2",
+          "description": "Second reference image (optional)."
+        },
+        {
+          "name": "image3",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image3",
+          "description": "Third reference image (optional)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "aspect_ratio",
+        "seed",
+        "enable_translation",
+        "watermark",
+        "prompt",
+        "image1",
+        "image2",
+        "image3"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Veo 31 Text To Video",
+      "description": "Generate videos from text using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v\n\n    Use cases:\n    - Create videos from text descriptions\n    - Generate cinematic quality video clips\n    - Produce content for social media and marketing",
+      "namespace": "kie.video",
+      "node_type": "kie.video.Veo31TextToVideo",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "veo3",
+              "veo3_fast"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.Model"
+          },
+          "default": "veo3_fast",
+          "title": "Model",
+          "description": "The model to use for video generation."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "Auto"
+            ],
+            "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images."
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Seed",
+          "description": "Random seed for reproducible results. Use 0 for random seed.",
+          "min": 0.0,
+          "max": 99999.0
+        },
+        {
+          "name": "enable_translation",
+          "type": {
+            "type": "bool"
+          },
+          "default": true,
+          "title": "Enable Translation",
+          "description": "Enable automatic translation of prompts to English for better results."
+        },
+        {
+          "name": "watermark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Watermark",
+          "description": "Optional watermark text to add to the generated video."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the desired video content."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "aspect_ratio",
+        "seed",
+        "enable_translation",
+        "watermark",
+        "prompt"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Wan 2.6 Image To Video",
       "description": "Generate videos from images using Alibaba's Wan 2.6 model via Kie.ai.",
       "namespace": "kie.video",
       "node_type": "kie.video.Wan26ImageToVideo",
@@ -34052,8 +34408,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Wan 26 Text To Video",
-      "description": "Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.",
+      "title": "Wan 2.6 Text To Video",
+      "description": "Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, 2.6\n\n    Wan 2.6 generates high-quality videos from text descriptions\n    with advanced motion and visual fidelity.\n\n    Use cases:\n    - Create cinematic videos from text\n    - Generate high-fidelity video content\n    - Produce professional video output",
       "namespace": "kie.video",
       "node_type": "kie.video.Wan26TextToVideo",
       "properties": [
@@ -34111,8 +34467,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Wan 26 Video To Video",
-      "description": "Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.",
+      "title": "Wan 2.6 Video To Video",
+      "description": "Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, video-to-video, 2.6\n\n    Wan 2.6 transforms and enhances existing videos with AI-powered\n    editing and style transfer capabilities.\n\n    Use cases:\n    - Transform video style and content\n    - Enhance video quality\n    - Create video variations and edits",
       "namespace": "kie.video",
       "node_type": "kie.video.Wan26VideoToVideo",
       "properties": [
@@ -34224,8 +34580,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Wan Multi Shot Text To Video Pro",
-      "description": "Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.",
+      "title": "Wan 2.1 Multi-Shot Text To Video",
+      "description": "Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1\n\n    Wan 2.1 Multi-Shot generates complex videos with multiple shots\n    and scene transitions from text descriptions.\n\n    Use cases:\n    - Create multi-shot videos from text\n    - Generate narrative video content\n    - Produce complex scene compositions",
       "namespace": "kie.video",
       "node_type": "kie.video.WanMultiShotTextToVideoPro",
       "properties": [
@@ -35488,7 +35844,7 @@
     },
     {
       "title": "Qwen Image To Image",
-      "description": "Transform images using Qwen's Image-to-Image model via Kie.ai.\n\n    kie, qwen, alibaba, image transformation, ai, image-to-image\n\n    Qwen's image-to-image model transforms existing images based on text prompts.\n\n    Use cases:\n    - Transform and edit existing images\n    - Apply styles and effects to photos\n    - Create variations of images\n    - Enhance or modify image content",
+      "description": "Transform images using Qwen's Image-to-Image model via Kie.ai.\n\n    kie, qwen, alibaba, image transformation, ai, image-to-image\n\n    Qwen's image-to-image model transforms images based on text prompts\n    while preserving the overall structure and style.\n\n    Use cases:\n    - Transform images with text guidance\n    - Apply artistic styles to photos\n    - Create variations of existing images",
       "namespace": "kie.image",
       "node_type": "kie.image.QwenImageToImage",
       "properties": [
@@ -35667,7 +36023,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedream 45 Edit",
+      "title": "Seedream 4.5 Edit",
       "description": "Edit images using ByteDance's Seedream 4.5 Edit model via Kie.ai.\n\n    kie, seedream, bytedance, image editing, ai, image-to-image, 4k\n\n    Seedream 4.5 Edit allows you to modify existing images while maintaining\n    high quality and detail fidelity up to 4K resolution.\n\n    Use cases:\n    - Edit and enhance existing images\n    - Apply style changes to photos\n    - Modify specific regions of images\n    - Improve image quality and resolution",
       "namespace": "kie.image",
       "node_type": "kie.image.Seedream45Edit",
@@ -35745,7 +36101,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Seedream 45 Text To Image",
+      "title": "Seedream 4.5 Text To Image",
       "description": "Generate images using ByteDance's Seedream 4.5 Text-to-Image model via Kie.ai.\n\n    kie, seedream, bytedance, image generation, ai, text-to-image, 4k\n\n    Seedream 4.5 generates high-quality visuals up to 4K resolution with\n    improved detail fidelity, multi-image blending, and sharp text/face rendering.\n\n    Use cases:\n    - Generate creative and artistic images from text\n    - Create diverse visual content up to 4K\n    - Generate illustrations with unique styles",
       "namespace": "kie.image",
       "node_type": "kie.image.Seedream45TextToImage",
@@ -35808,7 +36164,7 @@
     },
     {
       "title": "Topaz Image Upscale",
-      "description": "Upscale and enhance images using Topaz Labs AI via Kie.ai.\n\n    kie, topaz, upscale, enhance, image, ai, super-resolution",
+      "description": "Upscale and enhance images using Topaz Labs AI via Kie.ai.\n\n    kie, topaz, upscale, enhance, image, ai, super-resolution\n\n    Topaz Image Upscale uses advanced AI models to enlarge images\n    while preserving and enhancing detail.\n\n    Use cases:\n    - Upscale low-resolution images\n    - Enhance image quality and detail\n    - Enlarge images for print or display",
       "namespace": "kie.image",
       "node_type": "kie.image.TopazImageUpscale",
       "properties": [
@@ -35857,7 +36213,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "ZImage",
+      "title": "Z-Image Turbo",
       "description": "Generate images using Alibaba's Z-Image Turbo model via Kie.ai.\n\n    kie, z-image, zimage, alibaba, image generation, ai, text-to-image, photorealistic\n\n    Z-Image Turbo produces realistic, detail-rich images with very low latency.\n    It supports bilingual text (English/Chinese) in images with sharp text rendering.\n\n    Use cases:\n    - Generate high-quality photorealistic images quickly\n    - Create images with embedded text (English/Chinese)\n    - Generate detailed illustrations with low latency\n    - Product visualizations",
       "namespace": "kie.image",
       "node_type": "kie.image.ZImage",
