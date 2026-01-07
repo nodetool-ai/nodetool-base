@@ -162,8 +162,6 @@ class ChunkToAudio(GraphNode[nodetool.nodes.nodetool.audio.ChunkToAudio.OutputTy
         default=types.Chunk(
             type="chunk",
             node_id=None,
-            thread_id=None,
-            workflow_id=None,
             content_type="text",
             content="",
             content_metadata={},
@@ -467,11 +465,6 @@ class LoadAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
 
     Read an audio file from disk.
     audio, input, load, file
-
-    Use cases:
-    - Load audio for processing
-    - Import sound files for editing
-    - Read audio assets for a workflow
     """
 
     path: str | OutputHandle[str] = connect_field(
@@ -501,11 +494,6 @@ class LoadAudioFolder(
 
     Load all audio files from a folder, optionally including subfolders.
     audio, load, folder, files
-
-    Use cases:
-    - Batch import audio for processing
-    - Build datasets from a directory tree
-    - Iterate over audio collections
     """
 
     folder: str | OutputHandle[str] = connect_field(
@@ -829,11 +817,6 @@ class SaveAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
 
     Save an audio file to a specified asset folder.
     audio, folder, name
-
-    Use cases:
-    - Save generated audio files with timestamps
-    - Organize outputs into specific folders
-    - Create backups of generated audio
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(

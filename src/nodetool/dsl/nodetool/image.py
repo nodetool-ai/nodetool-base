@@ -145,11 +145,6 @@ class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType
 
     Get metadata about the input image.
     metadata, properties, analysis, information
-
-    Use cases:
-    - Use width and height for layout calculations
-    - Analyze image properties for processing decisions
-    - Gather information for image cataloging or organization
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -377,11 +372,6 @@ class LoadImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
 
     Read an image file from disk.
     image, input, load, file
-
-    Use cases:
-    - Load images for processing
-    - Import photos for editing
-    - Read image assets for a workflow
     """
 
     path: str | OutputHandle[str] = connect_field(
@@ -411,11 +401,6 @@ class LoadImageFolder(
 
     Load all images from a folder, optionally including subfolders.
     image, load, folder, files
-
-    Use cases:
-    - Batch import images for processing
-    - Build datasets from a directory tree
-    - Iterate over photo collections
     """
 
     folder: str | OutputHandle[str] = connect_field(
@@ -554,11 +539,6 @@ class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 
     Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
-
-    Use cases:
-    - Save generated images with timestamps
-    - Organize outputs into specific folders
-    - Create backups of processed images
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -599,11 +579,6 @@ class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Image
 
     Write an image to disk.
     image, output, save, file
-
-    Use cases:
-    - Save processed images
-    - Export edited photos
-    - Archive image results
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
