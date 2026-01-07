@@ -7,13 +7,14 @@ import asyncio
 from enum import Enum
 from typing import Any, ClassVar
 
+import aiohttp
 from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import AudioRef, ImageRef, VideoRef
 from nodetool.workflows.processing_context import ProcessingContext
 
-from .image import KieBaseNode
+from .image import KieBaseNode, KIE_API_BASE_URL
 
 log = get_logger(__name__)
 
@@ -1551,3 +1552,366 @@ class InfinitalkV1(KieVideoBaseNode):
             "audio_url": audio_url,
             "resolution": self.resolution.value,
         }
+
+
+class Veo31BaseNode(KieVideoBaseNode):
+    """Base class for Google Veo 3.1 video generation nodes via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, image-to-video
+
+    Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
+    and significant cost savings (25% of Google's direct API pricing).
+    """
+
+    _poll_interval: float = 8.0
+    _max_poll_attempts: int = 240
+
+    class Model(str, Enum):
+        VEO3 = "veo3"
+        VEO3_FAST = "veo3_fast"
+
+    model: Model = Field(
+        default=Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        AUTO = "Auto"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+        ge=0,
+        le=99999,
+    )
+
+    enable_translation: bool = Field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+
+    watermark: str = Field(
+        default="",
+        description="Optional watermark text to add to the generated video.",
+    )
+
+    def _get_headers(self, api_key: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+
+
+class Veo31TextToVideo(Veo31BaseNode):
+    """Generate videos from text using Google's Veo 3.1 model via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
+
+    Use cases:
+    - Create videos from text descriptions
+    - Generate cinematic quality video clips
+    - Produce content for social media and marketing
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the desired video content.",
+    )
+
+    def _get_model(self) -> str:
+        return f"google/{self.model.value}"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "model": self.model.value,
+            "generationType": "TEXT_2_VIDEO",
+            "aspectRatio": self.aspect_ratio.value,
+            "enableTranslation": self.enable_translation,
+        }
+
+        if self.seed > 0:
+            payload["seeds"] = self.seed
+
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+            result_json_str = status_data.get("data", {}).get("resultJson", "")
+
+            if not result_json_str:
+                raise ValueError("No resultJson in response")
+
+            import json
+
+            result_data = json.loads(result_json_str)
+            result_urls = result_data.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in resultJson")
+
+            result_url = result_urls[0]
+            log.debug(f"Downloading result from {result_url}")
+
+            async with session.get(result_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(
+                        f"Failed to download result from URL: {result_url}"
+                    )
+                return await video_response.read()
+
+
+class Veo31ImageToVideo(Veo31BaseNode):
+    """Generate videos from images using Google's Veo 3.1 model via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v
+
+    Supports single image (image comes alive) or two images (first and last frames transition).
+    For two images, the first image serves as the video's first frame and the second as the last frame.
+
+    Use cases:
+    - Animate static images into dynamic video
+    - Create smooth transitions between two reference images
+    - Generate cinematic motion from still photographs
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text prompt describing how the image should come alive.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image. Required. Serves as the video's first frame.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional). If provided, serves as the video's last frame.",
+    )
+
+    def _get_model(self) -> str:
+        return f"google/{self.model.value}"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
+
+        image_urls = []
+        image_url1 = await self._upload_image(context, self.image1)
+        image_urls.append(image_url1)
+
+        if self.image2.is_set():
+            image_url2 = await self._upload_image(context, self.image2)
+            image_urls.append(image_url2)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "imageUrls": image_urls,
+            "model": self.model.value,
+            "generationType": "FIRST_AND_LAST_FRAMES_2_VIDEO",
+            "aspectRatio": self.aspect_ratio.value,
+            "enableTranslation": self.enable_translation,
+        }
+
+        if self.seed > 0:
+            payload["seeds"] = self.seed
+
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+            result_json_str = status_data.get("data", {}).get("resultJson", "")
+
+            if not result_json_str:
+                raise ValueError("No resultJson in response")
+
+            import json
+
+            result_data = json.loads(result_json_str)
+            result_urls = result_data.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in resultJson")
+
+            result_url = result_urls[0]
+            log.debug(f"Downloading result from {result_url}")
+
+            async with session.get(result_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(
+                        f"Failed to download result from URL: {result_url}"
+                    )
+                return await video_response.read()
+
+
+class Veo31ReferenceToVideo(Veo31BaseNode):
+    """Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video
+
+    Material-to-video generation based on reference images. Only supports veo3_fast model
+    and 16:9 aspect ratio. Requires 1-3 reference images.
+
+    Use cases:
+    - Generate videos based on material/reference images
+    - Create product showcase videos
+    - Produce content from design references
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text prompt describing the desired video content.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First reference image. Required. Minimum 1, maximum 3 images.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second reference image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third reference image (optional).",
+    )
+
+    def _get_model(self) -> str:
+        return "google/veo3_fast"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.image1.is_set():
+            raise ValueError("At least one reference image is required")
+
+        if self.aspect_ratio != self.AspectRatio.RATIO_16_9:
+            raise ValueError("REFERENCE_2_VIDEO mode only supports 16:9 aspect ratio")
+
+        image_urls = []
+        for img in [self.image1, self.image2, self.image3]:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                image_urls.append(url)
+
+        if len(image_urls) > 3:
+            raise ValueError("Maximum 3 reference images allowed")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "imageUrls": image_urls,
+            "model": "veo3_fast",
+            "generationType": "REFERENCE_2_VIDEO",
+            "aspectRatio": "16:9",
+            "enableTranslation": self.enable_translation,
+        }
+
+        if self.seed > 0:
+            payload["seeds"] = self.seed
+
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+            result_json_str = status_data.get("data", {}).get("resultJson", "")
+
+            if not result_json_str:
+                raise ValueError("No resultJson in response")
+
+            import json
+
+            result_data = json.loads(result_json_str)
+            result_urls = result_data.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in resultJson")
+
+            result_url = result_urls[0]
+            log.debug(f"Downloading result from {result_url}")
+
+            async with session.get(result_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(
+                        f"Failed to download result from URL: {result_url}"
+                    )
+                return await video_response.read()
