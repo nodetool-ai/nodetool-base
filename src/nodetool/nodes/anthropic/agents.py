@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import ClassVar, TypedDict
+from typing import ClassVar, TypedDict, List
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode
@@ -7,16 +7,20 @@ from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import LogUpdate, Chunk
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.config.logging_config import get_logger
+from nodetool.metadata.types import LanguageModel
 
-from claude_agent_sdk import ClaudeSDKClient
-from claude_agent_sdk.types import (
-    ClaudeAgentOptions,
-    SandboxSettings,
-    AssistantMessage,
-    TextBlock,
-)
+from claude_agent_sdk import query, ClaudeAgentOptions, AssistantMessage, TextBlock
 
 log = get_logger(__name__)
+
+
+class PermissionMode(str, Enum):
+    """Permission modes for Claude Agent tool usage."""
+
+    DEFAULT = "default"
+    ACCEPT_EDITS = "acceptEdits"
+    PLAN = "plan"
+    BYPASS_PERMISSIONS = "bypassPermissions"
 
 
 class ClaudeAgent(BaseNode):
@@ -37,21 +41,15 @@ class ClaudeAgent(BaseNode):
 
     _is_dynamic: ClassVar[bool] = False
     _supports_dynamic_outputs: ClassVar[bool] = False
-    _client: ClaudeSDKClient | None = None
-
-    class Model(str, Enum):
-        CLAUDE_3_5_SONNET = "claude-3-5-sonnet-20241022"
-        CLAUDE_3_5_HAIKU = "claude-3-5-haiku-20241022"
-        CLAUDE_3_OPUS = "claude-3-opus-20240229"
 
     prompt: str = Field(
         default="",
         description="The task or question for the Claude agent to work on.",
     )
 
-    model: Model = Field(
-        default=Model.CLAUDE_3_5_SONNET,
-        description="The Claude model to use for the agent.",
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="The Claude compatible model to use for the agent.",
     )
 
     system_prompt: str = Field(
@@ -66,19 +64,14 @@ class ClaudeAgent(BaseNode):
         description="Maximum number of turns the agent can take.",
     )
 
-    enable_sandbox: bool = Field(
-        default=True,
-        description="Enable bash command sandboxing for security.",
+    allowed_tools: list[str] = Field(
+        default=["Read", "Write", "Bash"],
+        description="List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash').",
     )
 
-    auto_allow_bash: bool = Field(
-        default=True,
-        description="Automatically approve bash commands when sandboxed.",
-    )
-
-    api_key: str = Field(
-        default="",
-        description="Anthropic API key. If not provided, uses ANTHROPIC_API_KEY environment variable.",
+    permission_mode: PermissionMode = Field(
+        default=PermissionMode.ACCEPT_EDITS,
+        description="Permission mode for tool usage.",
     )
 
     @classmethod
@@ -106,41 +99,30 @@ class ClaudeAgent(BaseNode):
         # Get workspace path for the agent
         workspace_path = context.resolve_workspace_path("")
 
-        # Configure sandbox settings
-        sandbox_settings: SandboxSettings = {
-            "enabled": self.enable_sandbox,
-            "autoAllowBashIfSandboxed": self.auto_allow_bash,
-        }
+        # Get Anthropic API key from nodetool settings
+        api_key = await context.get_secret("ANTHROPIC_API_KEY")
+        if not api_key:
+            raise ValueError(
+                "Anthropic API key not configured in NodeTool settings."
+            )
 
-        # Configure agent options
+        # Configure agent options using official SDK parameters
         options = ClaudeAgentOptions(
-            model=self.model.value,
+            model=self.model.id,
             system_prompt=self.system_prompt if self.system_prompt else None,
             max_turns=self.max_turns,
-            sandbox=sandbox_settings,
             cwd=str(workspace_path) if workspace_path else None,
-            permission_mode="acceptEdits",  # Auto-approve edit operations
+            allowed_tools=self.allowed_tools,
+            permission_mode=self.permission_mode.value,  # type: ignore[arg-type]
+            env={"ANTHROPIC_API_KEY": api_key},  # Pass API key to the SDK
         )
 
-        # Set API key if provided
-        if self.api_key:
-            import os
-
-            os.environ["ANTHROPIC_API_KEY"] = self.api_key
-
         try:
-            # Create client and connect
-            self._client = ClaudeSDKClient(options=options)
-            await self._client.connect()
-
-            # Send the prompt
-            await self._client.query(self.prompt)
-
             # Collect the full response text
             full_text = ""
 
-            # Stream the response messages
-            async for message in self._client.receive_response():
+            # Use the query() async iterator - the official SDK pattern
+            async for message in query(prompt=self.prompt, options=options):
                 if isinstance(message, AssistantMessage):
                     # Extract text content from the message
                     for content in message.content:
@@ -149,7 +131,7 @@ class ClaudeAgent(BaseNode):
                             full_text += text_chunk
 
                             # Emit as chunk for streaming
-                            chunk = Chunk(chunk=text_chunk)
+                            chunk = Chunk(node_id=self.id, content=text_chunk)
                             await outputs.emit("chunk", chunk)
 
                             # Also log the progress
@@ -177,18 +159,3 @@ class ClaudeAgent(BaseNode):
                 )
             )
             raise RuntimeError(error_msg) from e
-        finally:
-            # Disconnect the client
-            if self._client:
-                try:
-                    await self._client.disconnect()
-                except Exception as e:
-                    log.debug(f"Error disconnecting Claude Agent: {e}")
-
-    async def finalize(self, context: ProcessingContext) -> None:  # type: ignore[override]
-        """Clean up the Claude Agent client."""
-        if self._client:
-            try:
-                await self._client.disconnect()
-            except Exception as e:
-                log.debug(f"ClaudeAgent finalize: {e}")

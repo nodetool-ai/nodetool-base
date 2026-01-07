@@ -43,7 +43,7 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
         description="Model to use for execution",
     )
     system: str | OutputHandle[str] = connect_field(
-        default="You are a an AI agent.\n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal.\n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
+        default="You are a friendly assistant",
         description="The system prompt for the LLM",
     )
     prompt: str | OutputHandle[str] = connect_field(

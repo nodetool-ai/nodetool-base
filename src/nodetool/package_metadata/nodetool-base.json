@@ -31780,6 +31780,116 @@
       ]
     },
     {
+      "title": "Claude Agent",
+      "description": "Run Claude as an agent in a sandboxed environment with tool use capabilities.\n    claude, agent, ai, anthropic, sandbox, assistant\n\n    Uses the Claude Agent SDK to run Claude with access to tools in a secure sandbox.\n    The agent can execute commands, read/write files, and use various tools while\n    maintaining security through sandbox isolation.\n\n    Use cases:\n    - Automated coding and debugging tasks\n    - File manipulation and analysis\n    - Complex multi-step workflows\n    - Research and data gathering",
+      "namespace": "anthropic.agents",
+      "node_type": "anthropic.agents.ClaudeAgent",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The task or question for the Claude agent to work on."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "title": "Model",
+          "description": "The Claude compatible model to use for the agent."
+        },
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "System Prompt",
+          "description": "Optional system prompt to guide the agent's behavior."
+        },
+        {
+          "name": "max_turns",
+          "type": {
+            "type": "int"
+          },
+          "default": 20,
+          "title": "Max Turns",
+          "description": "Maximum number of turns the agent can take.",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "allowed_tools",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            "Read",
+            "Write",
+            "Bash"
+          ],
+          "title": "Allowed Tools",
+          "description": "List of tools the agent is allowed to use (e.g., 'Read', 'Write', 'Bash')."
+        },
+        {
+          "name": "permission_mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "default",
+              "acceptEdits",
+              "plan",
+              "bypassPermissions"
+            ],
+            "type_name": "nodetool.nodes.anthropic.agents.PermissionMode"
+          },
+          "default": "acceptEdits",
+          "title": "Permission Mode",
+          "description": "Permission mode for tool usage."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "chunk"
+          },
+          "name": "chunk"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "model",
+        "system_prompt",
+        "max_turns",
+        "allowed_tools",
+        "permission_mode"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "Suno",
       "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals up to around 8 minutes long.\n    Supports the latest Suno V4.5+ model with improved vocal quality and composition.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
       "namespace": "kie.audio",
