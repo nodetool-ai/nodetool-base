@@ -1339,6 +1339,270 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class Veo31BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
+    """
+    Base class for Google Veo 3.1 video generation nodes via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, image-to-video
+
+        Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
+        and significant cost savings (25% of Google's direct API pricing).
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31BaseNode
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31ImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Google's Veo 3.1 model via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v
+
+        Supports single image (image comes alive) or two images (first and last frames transition).
+        For two images, the first image serves as the video's first frame and the second as the last frame.
+
+        Use cases:
+        - Animate static images into dynamic video
+        - Create smooth transitions between two reference images
+        - Generate cinematic motion from still photographs
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text prompt describing how the image should come alive.",
+    )
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First source image. Required. Serves as the video's first frame.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second source image (optional). If provided, serves as the video's last frame.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31ImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31ReferenceToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video
+
+        Material-to-video generation based on reference images. Only supports veo3_fast model
+        and 16:9 aspect ratio. Requires 1-3 reference images.
+
+        Use cases:
+        - Generate videos based on material/reference images
+        - Create product showcase videos
+        - Produce content from design references
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text prompt describing the desired video content.",
+    )
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First reference image. Required. Minimum 1, maximum 3 images.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second reference image (optional).",
+    )
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Third reference image (optional).",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31ReferenceToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31TextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Google's Veo 3.1 model via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
+
+        Use cases:
+        - Create videos from text descriptions
+        - Generate cinematic quality video clips
+        - Produce content for social media and marketing
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the desired video content.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31TextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class Wan26ImageToVideo(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
