@@ -147,6 +147,60 @@ import nodetool.nodes.nodetool.audio
 from nodetool.workflows.base_node import BaseNode
 
 
+class ChunkToAudio(GraphNode[nodetool.nodes.nodetool.audio.ChunkToAudio.OutputType]):
+    """
+
+    Aggregates audio chunks from an input stream into AudioRef objects.
+    audio, stream, chunk, aggregate, collect, batch
+
+    Use cases:
+    - Collect streaming audio chunks into larger files for processing
+    - buffer realtime audio streams
+    """
+
+    chunk: types.Chunk | OutputHandle[types.Chunk] = connect_field(
+        default=types.Chunk(
+            type="chunk",
+            node_id=None,
+            thread_id=None,
+            workflow_id=None,
+            content_type="text",
+            content="",
+            content_metadata={},
+            done=False,
+        ),
+        description="Stream of audio chunks",
+    )
+    batch_size: int | OutputHandle[int] = connect_field(
+        default=50, description="Number of chunks to aggregate per output"
+    )
+
+    @property
+    def out(self) -> "ChunkToAudioOutputs":
+        return ChunkToAudioOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.audio.ChunkToAudio
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class ChunkToAudioOutputs(OutputsProxy):
+    @property
+    def audio(self) -> OutputHandle[types.AudioRef]:
+        return typing.cast(OutputHandle[types.AudioRef], self["audio"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.audio
+from nodetool.workflows.base_node import BaseNode
+
+
 class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
 
