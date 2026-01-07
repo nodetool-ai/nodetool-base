@@ -10,7 +10,7 @@ from typing import Any, ClassVar
 from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
-from nodetool.metadata.types import ImageRef, VideoRef, AudioRef
+from nodetool.metadata.types import AudioRef, ImageRef, VideoRef
 from nodetool.workflows.processing_context import ProcessingContext
 
 from .image import KieBaseNode
@@ -894,75 +894,6 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
         return await context.video_from_bytes(video_bytes)
 
 
-class HailuoImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using MiniMax's Hailuo model via Kie.ai."""
-
-    _expose_as_tool: ClassVar[bool] = True
-
-    prompt: str = Field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to animate.",
-    )
-
-    class ModelType(str, Enum):
-        PRO = "pro"
-        STANDARD = "standard"
-
-    model_type: ModelType = Field(
-        default=ModelType.PRO,
-        description="The model tier to use.",
-    )
-
-    class Duration(str, Enum):
-        D6 = "6"
-        D10 = "10"
-
-    duration: Duration = Field(
-        default=Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-
-    class Resolution(str, Enum):
-        R768P = "768P"
-        R1080P = "1080P"
-
-    resolution: Resolution = Field(
-        default=Resolution.R768P,
-        description="The resolution of the video.",
-    )
-
-    def _get_model(self) -> str:
-        return f"hailuo/2-3-image-to-video-{self.model_type.value}"
-
-    async def _get_input_params(
-        self, context: ProcessingContext | None = None
-    ) -> dict[str, Any]:
-        if not self.prompt:
-            raise ValueError("Prompt is required")
-        if context is None:
-            raise ValueError("Context is required for image upload")
-
-        image_url = await self._upload_image(context, self.image)
-
-        if (
-            self.resolution == self.Resolution.R1080P
-            and self.duration == self.Duration.D10
-        ):
-            raise ValueError("10s duration is not supported for 1080p resolution.")
-
-        return {
-            "prompt": self.prompt,
-            "image_url": image_url,
-            "resolution": self.resolution.value,
-            "duration": self.duration.value,
-        }
-
-
 class Kling25TurboTextToVideo(KieVideoBaseNode):
     """Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
 
@@ -1115,10 +1046,11 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
             payload["negative_prompt"] = self.negative_prompt
         return payload
 
+
 class Sora2Frames(str, Enum):
     _10s = "10"
     _15s = "15"
-    
+
 
 class Sora2BaseNode(KieVideoBaseNode):
     """Base class for Sora 2 nodes via Kie.ai."""
