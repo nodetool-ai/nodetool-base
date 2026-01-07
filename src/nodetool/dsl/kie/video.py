@@ -24,6 +24,16 @@ class GrokImagineImageToVideo(
 ):
     """
     Generate videos from images using xAI's Grok Imagine model via Kie.ai.
+
+        kie, grok, xai, video generation, ai, image-to-video, multimodal
+
+        Grok Imagine transforms images into videos using xAI's
+        multimodal generation capabilities.
+
+        Use cases:
+        - Animate images into videos
+        - Create dynamic content from static images
+        - Generate video animations from reference images
     """
 
     Duration: typing.ClassVar[type] = (
@@ -66,6 +76,16 @@ class GrokImagineTextToVideo(
 ):
     """
     Generate videos from text using xAI's Grok Imagine model via Kie.ai.
+
+        kie, grok, xai, video generation, ai, text-to-video, multimodal
+
+        Grok Imagine generates videos from text prompts using xAI's
+        multimodal generation capabilities.
+
+        Use cases:
+        - Generate videos from text descriptions
+        - Create AI-powered visual content
+        - Produce creative video content
     """
 
     Resolution: typing.ClassVar[type] = (
@@ -605,6 +625,16 @@ class KlingImageToVideo(
 ):
     """
     Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, 2.6
+
+        Transforms static images into dynamic videos with realistic motion
+        and temporal consistency while preserving the original visual style.
+
+        Use cases:
+        - Animate static images into videos
+        - Create smooth camera movements from photos
+        - Generate dynamic content from reference images
     """
 
     prompt: str | OutputHandle[str] = connect_field(
@@ -657,6 +687,16 @@ class KlingTextToVideo(
 ):
     """
     Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, text-to-video, 2.6
+
+        Kling 2.6 produces high-quality videos from text descriptions with
+        realistic motion, natural lighting, and cinematic detail.
+
+        Use cases:
+        - Create cinematic videos from text descriptions
+        - Generate complex scenes and action sequences
+        - Produce marketing and promotional content
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -823,6 +863,16 @@ class SeedanceV1LiteTextToVideo(
 ):
     """
     Bytedance 1.0 - text-to-video-lite via Kie.ai.
+
+        kie, seedance, bytedance, video generation, ai, text-to-video, lite
+
+        Seedance V1 Lite offers efficient text-to-video generation
+        with good quality and faster processing times.
+
+        Use cases:
+        - Quick video generation from text
+        - Prototype video content creation
+        - Generate creative videos efficiently
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1097,6 +1147,16 @@ class Sora2ProImageToVideo(
 ):
     """
     Generate videos from images using Sora 2 Pro via Kie.ai.
+
+        kie, sora, openai, video generation, ai, image-to-video, pro
+
+        Sora 2 Pro transforms images into high-quality videos with
+        realistic motion and temporal consistency.
+
+        Use cases:
+        - Animate images into videos
+        - Create dynamic content from still images
+        - Generate professional video from references
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1147,6 +1207,16 @@ class Sora2ProStoryboard(
 ):
     """
     Generate videos from storyboards using Sora 2 Pro via Kie.ai.
+
+        kie, sora, openai, video generation, ai, storyboard, pro
+
+        Sora 2 Pro creates videos from storyboard sequences with
+        consistent characters and scenes across frames.
+
+        Use cases:
+        - Create videos from storyboard sequences
+        - Generate consistent multi-shot videos
+        - Produce narrative-driven video content
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1209,6 +1279,16 @@ class Sora2ProTextToVideo(
 ):
     """
     Generate videos from text using Sora 2 Pro via Kie.ai.
+
+        kie, sora, openai, video generation, ai, text-to-video, pro
+
+        Sora 2 Pro generates high-quality videos from text descriptions
+        with advanced motion and temporal consistency.
+
+        Use cases:
+        - Create cinematic videos from text
+        - Generate complex scene compositions
+        - Produce professional video content
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1253,6 +1333,16 @@ class Sora2TextToVideo(
 ):
     """
     Generate videos from text using Sora 2 Standard via Kie.ai.
+
+        kie, sora, openai, video generation, ai, text-to-video, standard
+
+        Sora 2 Standard generates quality videos from text descriptions
+        with efficient processing and good visual quality.
+
+        Use cases:
+        - Create videos from text descriptions
+        - Generate content efficiently
+        - Produce quality video output
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1669,6 +1759,16 @@ class Wan26TextToVideo(
 ):
     """
     Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, text-to-video, 2.6
+
+        Wan 2.6 generates high-quality videos from text descriptions
+        with advanced motion and visual fidelity.
+
+        Use cases:
+        - Create cinematic videos from text
+        - Generate high-fidelity video content
+        - Produce professional video output
     """
 
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26TextToVideo.Duration
@@ -1710,6 +1810,16 @@ class Wan26VideoToVideo(
 ):
     """
     Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, video-to-video, 2.6
+
+        Wan 2.6 transforms and enhances existing videos with AI-powered
+        editing and style transfer capabilities.
+
+        Use cases:
+        - Transform video style and content
+        - Enhance video quality
+        - Create video variations and edits
     """
 
     Duration: typing.ClassVar[type] = (
@@ -1789,6 +1899,16 @@ class WanMultiShotTextToVideoPro(
 ):
     """
     Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1
+
+        Wan 2.1 Multi-Shot generates complex videos with multiple shots
+        and scene transitions from text descriptions.
+
+        Use cases:
+        - Create multi-shot videos from text
+        - Generate narrative video content
+        - Produce complex scene compositions
     """
 
     AspectRatio: typing.ClassVar[type] = (

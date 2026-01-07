@@ -46,9 +46,24 @@ class KieVideoBaseNode(KieBaseNode):
 
 
 class KlingTextToVideo(KieVideoBaseNode):
-    """Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai."""
+    """Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, text-to-video, 2.6
+
+    Kling 2.6 produces high-quality videos from text descriptions with
+    realistic motion, natural lighting, and cinematic detail.
+
+    Use cases:
+    - Create cinematic videos from text descriptions
+    - Generate complex scenes and action sequences
+    - Produce marketing and promotional content
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.6 Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -103,9 +118,24 @@ class KlingTextToVideo(KieVideoBaseNode):
 
 
 class KlingImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai."""
+    """Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, image-to-video, 2.6
+
+    Transforms static images into dynamic videos with realistic motion
+    and temporal consistency while preserving the original visual style.
+
+    Use cases:
+    - Animate static images into videos
+    - Create smooth camera movements from photos
+    - Generate dynamic content from reference images
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.6 Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -305,9 +335,24 @@ class KlingAIAvatarPro(KieVideoBaseNode):
 
 
 class GrokImagineTextToVideo(KieVideoBaseNode):
-    """Generate videos from text using xAI's Grok Imagine model via Kie.ai."""
+    """Generate videos from text using xAI's Grok Imagine model via Kie.ai.
+
+    kie, grok, xai, video generation, ai, text-to-video, multimodal
+
+    Grok Imagine generates videos from text prompts using xAI's
+    multimodal generation capabilities.
+
+    Use cases:
+    - Generate videos from text descriptions
+    - Create AI-powered visual content
+    - Produce creative video content
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Grok Imagine Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -349,9 +394,24 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
 
 
 class GrokImagineImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using xAI's Grok Imagine model via Kie.ai."""
+    """Generate videos from images using xAI's Grok Imagine model via Kie.ai.
+
+    kie, grok, xai, video generation, ai, image-to-video, multimodal
+
+    Grok Imagine transforms images into videos using xAI's
+    multimodal generation capabilities.
+
+    Use cases:
+    - Animate images into videos
+    - Create dynamic content from static images
+    - Generate video animations from reference images
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Grok Imagine Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -441,9 +501,24 @@ class SeedanceBaseNode(KieVideoBaseNode):
 
 
 class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
-    """Bytedance 1.0 - text-to-video-lite via Kie.ai."""
+    """Bytedance 1.0 - text-to-video-lite via Kie.ai.
+
+    kie, seedance, bytedance, video generation, ai, text-to-video, lite
+
+    Seedance V1 Lite offers efficient text-to-video generation
+    with good quality and faster processing times.
+
+    Use cases:
+    - Quick video generation from text
+    - Prototype video content creation
+    - Generate creative videos efficiently
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Lite Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -468,6 +543,10 @@ class SeedanceV1ProTextToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Pro Text To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -490,6 +569,10 @@ class SeedanceV1LiteImageToVideo(SeedanceBaseNode):
     """Bytedance 1.0 - image-to-video-lite via Kie.ai."""
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Lite Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -539,6 +622,10 @@ class SeedanceV1ProImageToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Pro Image To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
@@ -587,6 +674,10 @@ class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Pro Fast Image To Video"
+
     image1: ImageRef = Field(
         default=ImageRef(),
         description="First source image for the video generation.",
@@ -632,6 +723,10 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Pro Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -688,6 +783,10 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Standard Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -753,6 +852,10 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Pro Image To Video"
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -833,6 +936,10 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Standard Image To Video"
+
     image: ImageRef = Field(
         default=ImageRef(),
         description="The reference image to animate into a video.",
@@ -911,6 +1018,10 @@ class Kling25TurboTextToVideo(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.5 Turbo Text To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -982,6 +1093,10 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.5 Turbo Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1078,9 +1193,24 @@ class Sora2BaseNode(KieVideoBaseNode):
 
 
 class Sora2ProTextToVideo(Sora2BaseNode):
-    """Generate videos from text using Sora 2 Pro via Kie.ai."""
+    """Generate videos from text using Sora 2 Pro via Kie.ai.
+
+    kie, sora, openai, video generation, ai, text-to-video, pro
+
+    Sora 2 Pro generates high-quality videos from text descriptions
+    with advanced motion and temporal consistency.
+
+    Use cases:
+    - Create cinematic videos from text
+    - Generate complex scene compositions
+    - Produce professional video content
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Pro Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1104,9 +1234,24 @@ class Sora2ProTextToVideo(Sora2BaseNode):
 
 
 class Sora2ProImageToVideo(Sora2BaseNode):
-    """Generate videos from images using Sora 2 Pro via Kie.ai."""
+    """Generate videos from images using Sora 2 Pro via Kie.ai.
+
+    kie, sora, openai, video generation, ai, image-to-video, pro
+
+    Sora 2 Pro transforms images into high-quality videos with
+    realistic motion and temporal consistency.
+
+    Use cases:
+    - Animate images into videos
+    - Create dynamic content from still images
+    - Generate professional video from references
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Pro Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1139,9 +1284,24 @@ class Sora2ProImageToVideo(Sora2BaseNode):
 
 
 class Sora2ProStoryboard(Sora2BaseNode):
-    """Generate videos from storyboards using Sora 2 Pro via Kie.ai."""
+    """Generate videos from storyboards using Sora 2 Pro via Kie.ai.
+
+    kie, sora, openai, video generation, ai, storyboard, pro
+
+    Sora 2 Pro creates videos from storyboard sequences with
+    consistent characters and scenes across frames.
+
+    Use cases:
+    - Create videos from storyboard sequences
+    - Generate consistent multi-shot videos
+    - Produce narrative-driven video content
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Pro Storyboard"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1189,9 +1349,24 @@ class Sora2ProStoryboard(Sora2BaseNode):
 
 
 class Sora2TextToVideo(Sora2BaseNode):
-    """Generate videos from text using Sora 2 Standard via Kie.ai."""
+    """Generate videos from text using Sora 2 Standard via Kie.ai.
+
+    kie, sora, openai, video generation, ai, text-to-video, standard
+
+    Sora 2 Standard generates quality videos from text descriptions
+    with efficient processing and good visual quality.
+
+    Use cases:
+    - Create videos from text descriptions
+    - Generate content efficiently
+    - Produce quality video output
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1215,9 +1390,24 @@ class Sora2TextToVideo(Sora2BaseNode):
 
 
 class WanMultiShotTextToVideoPro(KieVideoBaseNode):
-    """Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai."""
+    """Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1
+
+    Wan 2.1 Multi-Shot generates complex videos with multiple shots
+    and scene transitions from text descriptions.
+
+    Use cases:
+    - Create multi-shot videos from text
+    - Generate narrative video content
+    - Produce complex scene compositions
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.1 Multi-Shot Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1277,9 +1467,24 @@ class WanMultiShotTextToVideoPro(KieVideoBaseNode):
 
 
 class Wan26TextToVideo(KieVideoBaseNode):
-    """Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai."""
+    """Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, 2.6
+
+    Wan 2.6 generates high-quality videos from text descriptions
+    with advanced motion and visual fidelity.
+
+    Use cases:
+    - Create cinematic videos from text
+    - Generate high-fidelity video content
+    - Produce professional video output
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.6 Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1321,6 +1526,10 @@ class Wan26TextToVideo(KieVideoBaseNode):
 
 class Wan26ImageToVideo(KieVideoBaseNode):
     """Generate videos from images using Alibaba's Wan 2.6 model via Kie.ai."""
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.6 Image To Video"
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1388,9 +1597,24 @@ class Wan26ImageToVideo(KieVideoBaseNode):
 
 
 class Wan26VideoToVideo(KieVideoBaseNode):
-    """Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai."""
+    """Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, video-to-video, 2.6
+
+    Wan 2.6 transforms and enhances existing videos with AI-powered
+    editing and style transfer capabilities.
+
+    Use cases:
+    - Transform video style and content
+    - Enhance video quality
+    - Create video variations and edits
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.6 Video To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",

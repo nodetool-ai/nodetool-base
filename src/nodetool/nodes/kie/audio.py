@@ -90,6 +90,10 @@ class Suno(KieBaseNode):
     def _get_model(self) -> str:
         return "suno"
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Suno Music Generator"
+
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
