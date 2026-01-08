@@ -24,12 +24,6 @@ class AudioMixer(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
 
     Mix up to 5 audio tracks together with individual volume controls.
     audio, mix, volume, combine, blend, layer, add, overlay
-
-    Use cases:
-    - Mix multiple audio tracks into a single output
-    - Create layered soundscapes
-    - Combine music, voice, and sound effects
-    - Adjust individual track volumes
     """
 
     track1: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -99,11 +93,6 @@ class AudioToNumpy(GraphNode[nodetool.nodes.nodetool.audio.AudioToNumpy.OutputTy
 
     Convert audio to numpy array for processing.
     audio, numpy, convert, array
-
-    Use cases:
-    - Prepare audio for custom processing
-    - Convert audio for machine learning models
-    - Extract raw audio data for analysis
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -152,10 +141,6 @@ class ChunkToAudio(GraphNode[nodetool.nodes.nodetool.audio.ChunkToAudio.OutputTy
 
     Aggregates audio chunks from an input stream into AudioRef objects.
     audio, stream, chunk, aggregate, collect, batch
-
-    Use cases:
-    - Collect streaming audio chunks into larger files for processing
-    - buffer realtime audio streams
     """
 
     chunk: types.Chunk | OutputHandle[types.Chunk] = connect_field(
@@ -204,10 +189,6 @@ class Concat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
 
     Concatenates two audio files together.
     audio, edit, join, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from shorter segments
     """
 
     a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -244,11 +225,6 @@ class ConcatList(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
 
     Concatenates multiple audio files together in sequence.
     audio, edit, join, multiple, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from multiple segments
-    - Chain multiple audio files in order
     """
 
     audio_files: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = (
@@ -278,11 +254,6 @@ class ConvertToArray(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArr
 
     Converts an audio file to a Array for further processing.
     audio, conversion, tensor
-
-    Use cases:
-    - Prepare audio data for machine learning models
-    - Enable signal processing operations on audio
-    - Convert audio to a format suitable for spectral analysisr
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -313,11 +284,6 @@ class CreateSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
 
     Creates a silent audio file with a specified duration.
     audio, silence, empty
-
-    Use cases:
-    - Generate placeholder audio files
-    - Create audio segments for padding or spacing
-    - Add silence to the beginning or end of audio files
     """
 
     duration: float | OutputHandle[float] = connect_field(
@@ -345,10 +311,6 @@ class FadeIn(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
 
     Applies a fade-in effect to the beginning of an audio file.
     audio, edit, transition
-
-    Use cases:
-    - Create smooth introductions to audio tracks
-    - Gradually increase volume at the start of a clip
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -382,10 +344,6 @@ class FadeOut(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
 
     Applies a fade-out effect to the end of an audio file.
     audio, edit, transition
-
-    Use cases:
-    - Create smooth endings to audio tracks
-    - Gradually decrease volume at the end of a clip
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -542,10 +500,6 @@ class MonoToStereo(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     Converts a mono audio signal to stereo.
     audio, convert, channels
-
-    Use cases:
-    - Expand mono recordings for stereo playback systems
-    - Prepare audio for further stereo processing
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -576,10 +530,6 @@ class Normalize(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
 
     Normalizes the volume of an audio file.
     audio, fix, dynamics, volume
-
-    Use cases:
-    - Ensure consistent volume across multiple audio files
-    - Adjust overall volume level before further processing
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -610,11 +560,6 @@ class NumpyToAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     Convert numpy array to audio.
     audio, numpy, convert
-
-    Use cases:
-    - Convert processed audio data back to audio format
-    - Create audio from machine learning model outputs
-    - Generate audio from synthesized waveforms
     """
 
     array: types.NPArray | OutputHandle[types.NPArray] = connect_field(
@@ -649,10 +594,6 @@ class OverlayAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     Overlays two audio files together.
     audio, edit, transform
-
-    Use cases:
-    - Mix background music with voice recording
-    - Layer sound effects over an existing audio track
     """
 
     a: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -689,11 +630,6 @@ class RemoveSilence(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
 
     Removes or shortens silence in an audio file with smooth transitions.
     audio, edit, clean
-
-    Use cases:
-    - Trim silent parts from beginning/end of recordings
-    - Remove or shorten long pauses between speech segments
-    - Apply crossfade for smooth transitions
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -744,11 +680,6 @@ class Repeat(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
 
     Loops an audio file a specified number of times.
     audio, edit, repeat
-
-    Use cases:
-    - Create repeating background sounds or music
-    - Extend short audio clips to fill longer durations
-    - Generate rhythmic patterns from short samples
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -783,10 +714,6 @@ class Reverse(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
 
     Reverses an audio file.
     audio, edit, transform
-
-    Use cases:
-    - Create reverse audio effects
-    - Generate backwards speech or music
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -898,10 +825,6 @@ class SliceAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
 
     Extracts a section of an audio file.
     audio, edit, trim
-
-    Use cases:
-    - Cut out a specific clip from a longer audio file
-    - Remove unwanted portions from beginning or end
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -938,10 +861,6 @@ class StereoToMono(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     Converts a stereo audio signal to mono.
     audio, convert, channels
-
-    Use cases:
-    - Reduce file size for mono-only applications
-    - Simplify audio for certain processing tasks
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -976,13 +895,6 @@ class TextToSpeech(GraphNode[nodetool.nodes.nodetool.audio.TextToSpeech.OutputTy
 
     Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
     audio, generation, AI, text-to-speech, tts, voice
-
-    Use cases:
-    - Create voiceovers for videos and presentations
-    - Generate natural-sounding narration for content
-    - Build voice assistants and chatbots
-    - Convert written content to audio format
-    - Create accessible audio versions of text
     """
 
     model: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(
@@ -1042,11 +954,6 @@ class Trim(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
 
     Trim an audio file to a specified duration.
     audio, trim, cut
-
-    Use cases:
-    - Remove silence from the beginning or end of audio files
-    - Extract specific segments from audio files
-    - Prepare audio data for machine learning models
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(

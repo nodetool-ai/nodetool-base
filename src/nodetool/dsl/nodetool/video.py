@@ -74,11 +74,6 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     Add subtitles to a video.
     video, subtitles, text, caption
-
-    Use cases:
-    1. Add translations or closed captions to videos
-    2. Include explanatory text or commentary in educational videos
-    3. Create lyric videos for music content
     """
 
     SubtitleTextAlignment: typing.ClassVar[type] = (
@@ -521,13 +516,6 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     Generate videos from input images using any supported video provider.
     Animates static images into dynamic video content with AI-powered motion.
     video, image-to-video, i2v, animation, AI, generation, sora, veo
-
-    Use cases:
-    - Animate static images into video sequences
-    - Create dynamic content from still photographs
-    - Generate video variations from reference images
-    - Produce animated visual effects from static artwork
-    - Convert product photos into engaging video ads
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1115,9 +1103,6 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
 
     Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
     video, generation, AI, text-to-video, t2v
-
-    Use cases:
-    - Switch between providers without changing workflows
     """
 
     AspectRatio: typing.ClassVar[type] = (

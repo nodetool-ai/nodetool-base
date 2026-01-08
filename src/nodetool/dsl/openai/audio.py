@@ -24,12 +24,6 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     Converts text to speech using OpenAI TTS models.
     audio, tts, text-to-speech, voice, synthesis
-
-    Use cases:
-    - Generate spoken content for videos or podcasts
-    - Create voice-overs for presentations
-    - Assist visually impaired users with text reading
-    - Produce audio versions of written content
     """
 
     TtsModel: typing.ClassVar[type] = nodetool.nodes.openai.audio.TextToSpeech.TtsModel
@@ -66,12 +60,6 @@ class Transcribe(GraphNode[nodetool.nodes.openai.audio.Transcribe.OutputType]):
 
     Converts speech to text using OpenAI's speech-to-text API.
     audio, transcription, speech-to-text, stt, whisper
-
-    Use cases:
-    - Generate accurate transcriptions of audio content
-    - Create searchable text from audio recordings
-    - Support multiple languages for transcription
-    - Enable automated subtitling and captioning
     """
 
     TranscriptionModel: typing.ClassVar[type] = (
@@ -145,12 +133,6 @@ class Translate(SingleOutputGraphNode[str], GraphNode[str]):
 
     Translates speech in audio to English text.
     audio, translation, speech-to-text, localization
-
-    Use cases:
-    - Translate foreign language audio content to English
-    - Create English transcripts of multilingual recordings
-    - Assist non-English speakers in understanding audio content
-    - Enable cross-language communication in audio formats
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(

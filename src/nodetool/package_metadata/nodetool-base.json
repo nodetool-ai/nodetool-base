@@ -106,7 +106,7 @@
     },
     {
       "title": "Image To Video",
-      "description": "Generate videos from images using Google's Veo models.\n    google, video, generation, image-to-video, veo, ai, animation\n\n    This node uses Google's Veo models to animate static images into dynamic videos.\n    Supports 720p resolution at 24fps with 8-second duration and native audio generation.\n\n    Use cases:\n    - Animate still artwork and photographs\n    - Create dynamic social media content from images\n    - Generate product showcase videos from photos\n    - Transform static graphics into engaging animations\n    - Create video presentations from slide images",
+      "description": "Generate videos from images using Google's Veo models.\n    google, video, generation, image-to-video, veo, ai, animation\n\n    This node uses Google's Veo models to animate static images into dynamic videos.\n    Supports 720p resolution at 24fps with 8-second duration and native audio generation.",
       "namespace": "gemini.video",
       "node_type": "gemini.video.ImageToVideo",
       "properties": [
@@ -190,7 +190,7 @@
     },
     {
       "title": "Text To Video",
-      "description": "Generate videos from text prompts using Google's Veo models.\n    google, video, generation, text-to-video, veo, ai\n\n    This node uses Google's Veo models to generate high-quality videos from text descriptions.\n    Supports 720p resolution at 24fps with 8-second duration and native audio generation.\n\n    Use cases:\n    - Create cinematic clips from text descriptions\n    - Generate social media video content\n    - Produce marketing and promotional videos\n    - Visualize creative concepts and storyboards\n    - Create animated content with accompanying audio",
+      "description": "Generate videos from text prompts using Google's Veo models.\n    google, video, generation, text-to-video, veo, ai\n\n    This node uses Google's Veo models to generate high-quality videos from text descriptions.\n    Supports 720p resolution at 24fps with 8-second duration and native audio generation.",
       "namespace": "gemini.video",
       "node_type": "gemini.video.TextToVideo",
       "properties": [
@@ -597,7 +597,7 @@
     },
     {
       "title": "Grok Imagine Image To Video",
-      "description": "Generate videos from images using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, image-to-video, multimodal\n\n    Grok Imagine transforms images into videos using xAI's\n    multimodal generation capabilities.\n\n    Use cases:\n    - Animate images into videos\n    - Create dynamic content from static images\n    - Generate video animations from reference images",
+      "description": "Generate videos from images using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, image-to-video, multimodal\n\n    Grok Imagine transforms images into videos using xAI's\n    multimodal generation capabilities.",
       "namespace": "kie.video",
       "node_type": "kie.video.GrokImagineImageToVideo",
       "properties": [
@@ -658,7 +658,7 @@
     },
     {
       "title": "Grok Imagine Text To Video",
-      "description": "Generate videos from text using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, text-to-video, multimodal\n\n    Grok Imagine generates videos from text prompts using xAI's\n    multimodal generation capabilities.\n\n    Use cases:\n    - Generate videos from text descriptions\n    - Create AI-powered visual content\n    - Produce creative video content",
+      "description": "Generate videos from text using xAI's Grok Imagine model via Kie.ai.\n\n    kie, grok, xai, video generation, ai, text-to-video, multimodal\n\n    Grok Imagine generates videos from text prompts using xAI's\n    multimodal generation capabilities.",
       "namespace": "kie.video",
       "node_type": "kie.video.GrokImagineTextToVideo",
       "properties": [
@@ -718,7 +718,7 @@
     },
     {
       "title": "Hailuo 2.3 Pro Image To Video",
-      "description": "Generate videos from images using MiniMax's Hailuo 2.3 Pro model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, pro\n\n    Hailuo 2.3 Pro offers the highest quality image-to-video generation with\n    realistic motion, detailed textures, and cinematic quality.\n\n    Use cases:\n    - Generate high-quality cinematic videos from images\n    - Create realistic motion and physics\n    - Professional video production\n    - High-fidelity image animation",
+      "description": "Generate videos from images using MiniMax's Hailuo 2.3 Pro model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, pro\n\n    Hailuo 2.3 Pro offers the highest quality image-to-video generation with\n    realistic motion, detailed textures, and cinematic quality.",
       "namespace": "kie.video",
       "node_type": "kie.video.HailuoImageToVideoPro",
       "properties": [
@@ -793,7 +793,7 @@
     },
     {
       "title": "Hailuo 2.3 Standard Image To Video",
-      "description": "Generate videos from images using MiniMax's Hailuo 2.3 Standard model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, standard, fast\n\n    Hailuo 2.3 Standard offers efficient image-to-video generation with good quality\n    and faster processing times for practical use cases.\n\n    Use cases:\n    - Generate quality videos from images efficiently\n    - Quick image animation with realistic motion\n    - Fast image-to-video prototyping\n    - Practical video content creation",
+      "description": "Generate videos from images using MiniMax's Hailuo 2.3 Standard model via Kie.ai.\n\n    kie, hailuo, minimax, video generation, ai, image-to-video, standard, fast\n\n    Hailuo 2.3 Standard offers efficient image-to-video generation with good quality\n    and faster processing times for practical use cases.",
       "namespace": "kie.video",
       "node_type": "kie.video.HailuoImageToVideoStandard",
       "properties": [
@@ -1061,7 +1061,7 @@
     },
     {
       "title": "Kling 2.5 Turbo Image To Video",
-      "description": "Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, turbo\n\n    Transforms a static image into a dynamic video while preserving\n    visual style, colors, lighting, and texture.\n\n    Use cases:\n    - Animate static images with realistic motion\n    - Create smooth camera transitions and scene depth\n    - Generate dynamic scenes from reference images",
+      "description": "Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, turbo\n\n    Transforms a static image into a dynamic video while preserving\n    visual style, colors, lighting, and texture.",
       "namespace": "kie.video",
       "node_type": "kie.video.Kling25TurboImageToVideo",
       "properties": [
@@ -1159,7 +1159,7 @@
     },
     {
       "title": "Kling 2.5 Turbo Text To Video",
-      "description": "Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, turbo\n\n    Kling 2.5 Turbo offers improved prompt adherence, fluid motion,\n    consistent artistic styles, and realistic physics simulation.\n\n    Use cases:\n    - Create cinematic quality videos from text\n    - Generate complex narratives and action scenes\n    - Produce artistic animations with smooth motion",
+      "description": "Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, turbo\n\n    Kling 2.5 Turbo offers improved prompt adherence, fluid motion,\n    consistent artistic styles, and realistic physics simulation.",
       "namespace": "kie.video",
       "node_type": "kie.video.Kling25TurboTextToVideo",
       "properties": [
@@ -1241,7 +1241,7 @@
     },
     {
       "title": "Kling AIAvatar Pro",
-      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
+      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.",
       "namespace": "kie.video",
       "node_type": "kie.video.KlingAIAvatarPro",
       "properties": [
@@ -1317,7 +1317,7 @@
     },
     {
       "title": "Kling AIAvatar Standard",
-      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.\n\n    Use cases:\n    - Create virtual influencer content\n    - Generate educational presenters\n    - Lip-synced avatar videos\n    - Virtual spokesperson creation",
+      "description": "Generate talking avatar videos using Kuaishou's Kling AI via Kie.ai.\n\n    kie, kling, kuaishou, avatar, video generation, ai, talking-head, lip-sync\n\n    Transforms a photo plus audio track into a lip-synced talking avatar video\n    with natural-looking speech animation and consistent identity.",
       "namespace": "kie.video",
       "node_type": "kie.video.KlingAIAvatarStandard",
       "properties": [
@@ -1393,7 +1393,7 @@
     },
     {
       "title": "Kling 2.6 Image To Video",
-      "description": "Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, 2.6\n\n    Transforms static images into dynamic videos with realistic motion\n    and temporal consistency while preserving the original visual style.\n\n    Use cases:\n    - Animate static images into videos\n    - Create smooth camera movements from photos\n    - Generate dynamic content from reference images",
+      "description": "Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, image-to-video, 2.6\n\n    Transforms static images into dynamic videos with realistic motion\n    and temporal consistency while preserving the original visual style.",
       "namespace": "kie.video",
       "node_type": "kie.video.KlingImageToVideo",
       "properties": [
@@ -1490,7 +1490,7 @@
     },
     {
       "title": "Kling 2.6 Text To Video",
-      "description": "Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, 2.6\n\n    Kling 2.6 produces high-quality videos from text descriptions with\n    realistic motion, natural lighting, and cinematic detail.\n\n    Use cases:\n    - Create cinematic videos from text descriptions\n    - Generate complex scenes and action sequences\n    - Produce marketing and promotional content",
+      "description": "Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, text-to-video, 2.6\n\n    Kling 2.6 produces high-quality videos from text descriptions with\n    realistic motion, natural lighting, and cinematic detail.",
       "namespace": "kie.video",
       "node_type": "kie.video.KlingTextToVideo",
       "properties": [
@@ -1707,7 +1707,7 @@
     },
     {
       "title": "Seedance V1 Lite Text To Video",
-      "description": "Bytedance 1.0 - text-to-video-lite via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, text-to-video, lite\n\n    Seedance V1 Lite offers efficient text-to-video generation\n    with good quality and faster processing times.\n\n    Use cases:\n    - Quick video generation from text\n    - Prototype video content creation\n    - Generate creative videos efficiently",
+      "description": "Bytedance 1.0 - text-to-video-lite via Kie.ai.\n\n    kie, seedance, bytedance, video generation, ai, text-to-video, lite\n\n    Seedance V1 Lite offers efficient text-to-video generation\n    with good quality and faster processing times.",
       "namespace": "kie.video",
       "node_type": "kie.video.SeedanceV1LiteTextToVideo",
       "properties": [
@@ -2145,7 +2145,7 @@
     },
     {
       "title": "Sora 2 Pro Image To Video",
-      "description": "Generate videos from images using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, image-to-video, pro\n\n    Sora 2 Pro transforms images into high-quality videos with\n    realistic motion and temporal consistency.\n\n    Use cases:\n    - Animate images into videos\n    - Create dynamic content from still images\n    - Generate professional video from references",
+      "description": "Generate videos from images using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, image-to-video, pro\n\n    Sora 2 Pro transforms images into high-quality videos with\n    realistic motion and temporal consistency.",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2ProImageToVideo",
       "properties": [
@@ -2231,7 +2231,7 @@
     },
     {
       "title": "Sora 2 Pro Storyboard",
-      "description": "Generate videos from storyboards using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, storyboard, pro\n\n    Sora 2 Pro creates videos from storyboard sequences with\n    consistent characters and scenes across frames.\n\n    Use cases:\n    - Create videos from storyboard sequences\n    - Generate consistent multi-shot videos\n    - Produce narrative-driven video content",
+      "description": "Generate videos from storyboards using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, storyboard, pro\n\n    Sora 2 Pro creates videos from storyboard sequences with\n    consistent characters and scenes across frames.",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2ProStoryboard",
       "properties": [
@@ -2349,7 +2349,7 @@
     },
     {
       "title": "Sora 2 Pro Text To Video",
-      "description": "Generate videos from text using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, pro\n\n    Sora 2 Pro generates high-quality videos from text descriptions\n    with advanced motion and temporal consistency.\n\n    Use cases:\n    - Create cinematic videos from text\n    - Generate complex scene compositions\n    - Produce professional video content",
+      "description": "Generate videos from text using Sora 2 Pro via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, pro\n\n    Sora 2 Pro generates high-quality videos from text descriptions\n    with advanced motion and temporal consistency.",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2ProTextToVideo",
       "properties": [
@@ -2419,7 +2419,7 @@
     },
     {
       "title": "Sora 2 Text To Video",
-      "description": "Generate videos from text using Sora 2 Standard via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, standard\n\n    Sora 2 Standard generates quality videos from text descriptions\n    with efficient processing and good visual quality.\n\n    Use cases:\n    - Create videos from text descriptions\n    - Generate content efficiently\n    - Produce quality video output",
+      "description": "Generate videos from text using Sora 2 Standard via Kie.ai.\n\n    kie, sora, openai, video generation, ai, text-to-video, standard\n\n    Sora 2 Standard generates quality videos from text descriptions\n    with efficient processing and good visual quality.",
       "namespace": "kie.video",
       "node_type": "kie.video.Sora2TextToVideo",
       "properties": [
@@ -2551,7 +2551,7 @@
     },
     {
       "title": "Veo 31 Image To Video",
-      "description": "Generate videos from images using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v\n\n    Supports single image (image comes alive) or two images (first and last frames transition).\n    For two images, the first image serves as the video's first frame and the second as the last frame.\n\n    Use cases:\n    - Animate static images into dynamic video\n    - Create smooth transitions between two reference images\n    - Generate cinematic motion from still photographs",
+      "description": "Generate videos from images using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v\n\n    Supports single image (image comes alive) or two images (first and last frames transition).\n    For two images, the first image serves as the video's first frame and the second as the last frame.",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31ImageToVideo",
       "properties": [
@@ -2675,7 +2675,7 @@
     },
     {
       "title": "Veo 31 Reference To Video",
-      "description": "Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video\n\n    Material-to-video generation based on reference images. Only supports veo3_fast model\n    and 16:9 aspect ratio. Requires 1-3 reference images.\n\n    Use cases:\n    - Generate videos based on material/reference images\n    - Create product showcase videos\n    - Produce content from design references",
+      "description": "Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video\n\n    Material-to-video generation based on reference images. Only supports veo3_fast model\n    and 16:9 aspect ratio. Requires 1-3 reference images.",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31ReferenceToVideo",
       "properties": [
@@ -2815,7 +2815,7 @@
     },
     {
       "title": "Veo 31 Text To Video",
-      "description": "Generate videos from text using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v\n\n    Use cases:\n    - Create videos from text descriptions\n    - Generate cinematic quality video clips\n    - Produce content for social media and marketing",
+      "description": "Generate videos from text using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31TextToVideo",
       "properties": [
@@ -3014,7 +3014,7 @@
     },
     {
       "title": "Wan 2.6 Text To Video",
-      "description": "Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, 2.6\n\n    Wan 2.6 generates high-quality videos from text descriptions\n    with advanced motion and visual fidelity.\n\n    Use cases:\n    - Create cinematic videos from text\n    - Generate high-fidelity video content\n    - Produce professional video output",
+      "description": "Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, 2.6\n\n    Wan 2.6 generates high-quality videos from text descriptions\n    with advanced motion and visual fidelity.",
       "namespace": "kie.video",
       "node_type": "kie.video.Wan26TextToVideo",
       "properties": [
@@ -3073,7 +3073,7 @@
     },
     {
       "title": "Wan 2.6 Video To Video",
-      "description": "Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, video-to-video, 2.6\n\n    Wan 2.6 transforms and enhances existing videos with AI-powered\n    editing and style transfer capabilities.\n\n    Use cases:\n    - Transform video style and content\n    - Enhance video quality\n    - Create video variations and edits",
+      "description": "Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, video-to-video, 2.6\n\n    Wan 2.6 transforms and enhances existing videos with AI-powered\n    editing and style transfer capabilities.",
       "namespace": "kie.video",
       "node_type": "kie.video.Wan26VideoToVideo",
       "properties": [
@@ -3186,7 +3186,7 @@
     },
     {
       "title": "Wan 2.1 Multi-Shot Text To Video",
-      "description": "Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1\n\n    Wan 2.1 Multi-Shot generates complex videos with multiple shots\n    and scene transitions from text descriptions.\n\n    Use cases:\n    - Create multi-shot videos from text\n    - Generate narrative video content\n    - Produce complex scene compositions",
+      "description": "Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.\n\n    kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1\n\n    Wan 2.1 Multi-Shot generates complex videos with multiple shots\n    and scene transitions from text descriptions.",
       "namespace": "kie.video",
       "node_type": "kie.video.WanMultiShotTextToVideoPro",
       "properties": [
@@ -19037,7 +19037,7 @@
     },
     {
       "title": "Collection",
-      "description": "Get or create a named vector database collection for storing embeddings.\n    vector, embedding, collection, RAG, get, create, chroma\n\n    Use cases:\n    - Initialize collections for semantic search\n    - Organize embeddings by topic or domain\n    - Set up vector stores for RAG applications\n    - Manage multiple vector databases\n    - Configure embedding models per collection",
+      "description": "Get or create a named vector database collection for storing embeddings.\n    vector, embedding, collection, RAG, get, create, chroma",
       "namespace": "vector.chroma",
       "node_type": "vector.chroma.Collection",
       "properties": [
@@ -19532,7 +19532,7 @@
     },
     {
       "title": "Index String",
-      "description": "Index a string with a Document ID to a collection.\n    vector, embedding, collection, RAG, index, text, string, chroma\n\n    Use cases:\n    - Index documents for a vector search",
+      "description": "Index a string with a Document ID to a collection.\n    vector, embedding, collection, RAG, index, text, string, chroma",
       "namespace": "vector.chroma",
       "node_type": "vector.chroma.IndexString",
       "properties": [
@@ -20266,7 +20266,7 @@
     },
     {
       "title": "Text To Speech",
-      "description": "Converts text to speech using OpenAI TTS models.\n    audio, tts, text-to-speech, voice, synthesis\n\n    Use cases:\n    - Generate spoken content for videos or podcasts\n    - Create voice-overs for presentations\n    - Assist visually impaired users with text reading\n    - Produce audio versions of written content",
+      "description": "Converts text to speech using OpenAI TTS models.\n    audio, tts, text-to-speech, voice, synthesis",
       "namespace": "openai.audio",
       "node_type": "openai.audio.TextToSpeech",
       "properties": [
@@ -20342,7 +20342,7 @@
     },
     {
       "title": "Transcribe",
-      "description": "Converts speech to text using OpenAI's speech-to-text API.\n    audio, transcription, speech-to-text, stt, whisper\n\n    Use cases:\n    - Generate accurate transcriptions of audio content\n    - Create searchable text from audio recordings\n    - Support multiple languages for transcription\n    - Enable automated subtitling and captioning",
+      "description": "Converts speech to text using OpenAI's speech-to-text API.\n    audio, transcription, speech-to-text, stt, whisper",
       "namespace": "openai.audio",
       "node_type": "openai.audio.Transcribe",
       "properties": [
@@ -20519,7 +20519,7 @@
     },
     {
       "title": "Translate",
-      "description": "Translates speech in audio to English text.\n    audio, translation, speech-to-text, localization\n\n    Use cases:\n    - Translate foreign language audio content to English\n    - Create English transcripts of multilingual recordings\n    - Assist non-English speakers in understanding audio content\n    - Enable cross-language communication in audio formats",
+      "description": "Translates speech in audio to English text.\n    audio, translation, speech-to-text, localization",
       "namespace": "openai.audio",
       "node_type": "openai.audio.Translate",
       "properties": [
@@ -20746,7 +20746,7 @@
     },
     {
       "title": "Create Image",
-      "description": "Generates images from textual descriptions.\n    image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration\n\n    Use cases:\n    1. Create custom illustrations for articles or presentations\n    2. Generate concept art for creative projects\n    3. Produce visual aids for educational content\n    4. Design unique marketing visuals or product mockups\n    5. Explore artistic ideas and styles programmatically",
+      "description": "Generates images from textual descriptions.\n    image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration",
       "namespace": "openai.image",
       "node_type": "openai.image.CreateImage",
       "properties": [
@@ -21453,7 +21453,7 @@
     },
     {
       "title": "Google Finance",
-      "description": "Retrieve financial market data and stock information from Google Finance.\n    google, finance, stocks, market, serp, trading\n\n    Use cases:\n    - Track stock prices and market performance\n    - Monitor financial instruments and indices\n    - Gather historical market data\n    - Build financial analysis workflows\n    - Research investment opportunities",
+      "description": "Retrieve financial market data and stock information from Google Finance.\n    google, finance, stocks, market, serp, trading",
       "namespace": "search.google",
       "node_type": "search.google.GoogleFinance",
       "properties": [
@@ -21500,7 +21500,7 @@
     },
     {
       "title": "Google Images",
-      "description": "Search Google Images to find visual content or perform reverse image search.\n    google, images, serp, visual, reverse, search\n\n    Use cases:\n    - Find images related to a topic or keyword\n    - Perform reverse image searches to find sources\n    - Gather visual assets for projects\n    - Identify similar or related images\n    - Research visual trends and styles",
+      "description": "Search Google Images to find visual content or perform reverse image search.\n    google, images, serp, visual, reverse, search",
       "namespace": "search.google",
       "node_type": "search.google.GoogleImages",
       "properties": [
@@ -21554,7 +21554,7 @@
     },
     {
       "title": "Google Jobs",
-      "description": "Search Google Jobs for employment opportunities and job listings.\n    google, jobs, employment, careers, serp, hiring\n\n    Use cases:\n    - Find job opportunities matching specific criteria\n    - Monitor job market trends\n    - Aggregate job listings for career sites\n    - Research salary ranges and requirements\n    - Track hiring patterns in industries",
+      "description": "Search Google Jobs for employment opportunities and job listings.\n    google, jobs, employment, careers, serp, hiring",
       "namespace": "search.google",
       "node_type": "search.google.GoogleJobs",
       "properties": [
@@ -21608,7 +21608,7 @@
     },
     {
       "title": "Google Lens",
-      "description": "Analyze images using Google Lens to find visual matches and related content.\n    google, lens, visual, image, search, serp, identify\n\n    Use cases:\n    - Identify objects, products, or landmarks in images\n    - Find visually similar images\n    - Discover where images appear online\n    - Get information about items shown in photos\n    - Research products and shopping options",
+      "description": "Analyze images using Google Lens to find visual matches and related content.\n    google, lens, visual, image, search, serp, identify",
       "namespace": "search.google",
       "node_type": "search.google.GoogleLens",
       "properties": [
@@ -21639,7 +21639,7 @@
     },
     {
       "title": "Google Maps",
-      "description": "Search Google Maps for places, businesses, and get location details.\n    google, maps, places, locations, serp, geography\n\n    Use cases:\n    - Find businesses and points of interest\n    - Get location information and addresses\n    - Research geographic areas and neighborhoods\n    - Build location-based applications\n    - Gather place reviews and ratings",
+      "description": "Search Google Maps for places, businesses, and get location details.\n    google, maps, places, locations, serp, geography",
       "namespace": "search.google",
       "node_type": "search.google.GoogleMaps",
       "properties": [
@@ -21683,7 +21683,7 @@
     },
     {
       "title": "Google News",
-      "description": "Search Google News to retrieve current news articles and headlines.\n    google, news, serp, articles, journalism\n\n    Use cases:\n    - Monitor breaking news and current events\n    - Track news coverage on specific topics\n    - Gather articles for research and analysis\n    - Build news aggregation workflows\n    - Monitor brand mentions in media",
+      "description": "Search Google News to retrieve current news articles and headlines.\n    google, news, serp, articles, journalism",
       "namespace": "search.google",
       "node_type": "search.google.GoogleNews",
       "properties": [
@@ -21727,7 +21727,7 @@
     },
     {
       "title": "Google Search",
-      "description": "Search Google to retrieve organic search results from the web.\n    google, search, serp, web, query\n\n    Use cases:\n    - Find relevant websites and pages on any topic\n    - Research information and gather sources\n    - Discover recent content and trending topics\n    - Gather search engine optimization (SEO) insights\n    - Automate web research workflows",
+      "description": "Search Google to retrieve organic search results from the web.\n    google, search, serp, web, query",
       "namespace": "search.google",
       "node_type": "search.google.GoogleSearch",
       "properties": [
@@ -21771,7 +21771,7 @@
     },
     {
       "title": "Google Shopping",
-      "description": "Search Google Shopping for products with filters and pricing information.\n    google, shopping, products, ecommerce, serp, prices\n\n    Use cases:\n    - Find products and compare prices\n    - Research product availability and options\n    - Monitor pricing trends\n    - Build price comparison tools\n    - Gather product information for e-commerce",
+      "description": "Search Google Shopping for products with filters and pricing information.\n    google, shopping, products, ecommerce, serp, prices",
       "namespace": "search.google",
       "node_type": "search.google.GoogleShopping",
       "properties": [
@@ -24573,7 +24573,7 @@
     },
     {
       "title": "Audio Mixer",
-      "description": "Mix up to 5 audio tracks together with individual volume controls.\n    audio, mix, volume, combine, blend, layer, add, overlay\n\n    Use cases:\n    - Mix multiple audio tracks into a single output\n    - Create layered soundscapes\n    - Combine music, voice, and sound effects\n    - Adjust individual track volumes",
+      "description": "Mix up to 5 audio tracks together with individual volume controls.\n    audio, mix, volume, combine, blend, layer, add, overlay",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.AudioMixer",
       "properties": [
@@ -24731,7 +24731,7 @@
     },
     {
       "title": "Audio To Numpy",
-      "description": "Convert audio to numpy array for processing.\n    audio, numpy, convert, array\n\n    Use cases:\n    - Prepare audio for custom processing\n    - Convert audio for machine learning models\n    - Extract raw audio data for analysis",
+      "description": "Convert audio to numpy array for processing.\n    audio, numpy, convert, array",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.AudioToNumpy",
       "properties": [
@@ -24777,7 +24777,7 @@
     },
     {
       "title": "Chunk To Audio",
-      "description": "Aggregates audio chunks from an input stream into AudioRef objects.\n    audio, stream, chunk, aggregate, collect, batch\n\n    Use cases:\n    - Collect streaming audio chunks into larger files for processing\n    - buffer realtime audio streams",
+      "description": "Aggregates audio chunks from an input stream into AudioRef objects.\n    audio, stream, chunk, aggregate, collect, batch",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.ChunkToAudio",
       "properties": [
@@ -24822,7 +24822,7 @@
     },
     {
       "title": "Concat",
-      "description": "Concatenates two audio files together.\n    audio, edit, join, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from shorter segments",
+      "description": "Concatenates two audio files together.\n    audio, edit, join, +",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.Concat",
       "properties": [
@@ -24873,7 +24873,7 @@
     },
     {
       "title": "Concat List",
-      "description": "Concatenates multiple audio files together in sequence.\n    audio, edit, join, multiple, +\n\n    Use cases:\n    - Combine multiple audio clips into a single file\n    - Create longer audio tracks from multiple segments\n    - Chain multiple audio files in order",
+      "description": "Concatenates multiple audio files together in sequence.\n    audio, edit, join, multiple, +",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.ConcatList",
       "properties": [
@@ -24907,7 +24907,7 @@
     },
     {
       "title": "Convert To Array",
-      "description": "Converts an audio file to a Array for further processing.\n    audio, conversion, tensor\n\n    Use cases:\n    - Prepare audio data for machine learning models\n    - Enable signal processing operations on audio\n    - Convert audio to a format suitable for spectral analysisr",
+      "description": "Converts an audio file to a Array for further processing.\n    audio, conversion, tensor",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.ConvertToArray",
       "properties": [
@@ -24941,7 +24941,7 @@
     },
     {
       "title": "Create Silence",
-      "description": "Creates a silent audio file with a specified duration.\n    audio, silence, empty\n\n    Use cases:\n    - Generate placeholder audio files\n    - Create audio segments for padding or spacing\n    - Add silence to the beginning or end of audio files",
+      "description": "Creates a silent audio file with a specified duration.\n    audio, silence, empty",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.CreateSilence",
       "properties": [
@@ -24970,7 +24970,7 @@
     },
     {
       "title": "Fade In",
-      "description": "Applies a fade-in effect to the beginning of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth introductions to audio tracks\n    - Gradually increase volume at the start of a clip",
+      "description": "Applies a fade-in effect to the beginning of an audio file.\n    audio, edit, transition",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.FadeIn",
       "properties": [
@@ -25016,7 +25016,7 @@
     },
     {
       "title": "Fade Out",
-      "description": "Applies a fade-out effect to the end of an audio file.\n    audio, edit, transition\n\n    Use cases:\n    - Create smooth endings to audio tracks\n    - Gradually decrease volume at the end of a clip",
+      "description": "Applies a fade-out effect to the end of an audio file.\n    audio, edit, transition",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.FadeOut",
       "properties": [
@@ -25198,7 +25198,7 @@
     },
     {
       "title": "Mono To Stereo",
-      "description": "Converts a mono audio signal to stereo.\n    audio, convert, channels\n\n    Use cases:\n    - Expand mono recordings for stereo playback systems\n    - Prepare audio for further stereo processing",
+      "description": "Converts a mono audio signal to stereo.\n    audio, convert, channels",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.MonoToStereo",
       "properties": [
@@ -25233,7 +25233,7 @@
     },
     {
       "title": "Normalize",
-      "description": "Normalizes the volume of an audio file.\n    audio, fix, dynamics, volume\n\n    Use cases:\n    - Ensure consistent volume across multiple audio files\n    - Adjust overall volume level before further processing",
+      "description": "Normalizes the volume of an audio file.\n    audio, fix, dynamics, volume",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.Normalize",
       "properties": [
@@ -25268,7 +25268,7 @@
     },
     {
       "title": "Numpy To Audio",
-      "description": "Convert numpy array to audio.\n    audio, numpy, convert\n\n    Use cases:\n    - Convert processed audio data back to audio format\n    - Create audio from machine learning model outputs\n    - Generate audio from synthesized waveforms",
+      "description": "Convert numpy array to audio.\n    audio, numpy, convert",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.NumpyToAudio",
       "properties": [
@@ -25323,7 +25323,7 @@
     },
     {
       "title": "Overlay Audio",
-      "description": "Overlays two audio files together.\n    audio, edit, transform\n\n    Use cases:\n    - Mix background music with voice recording\n    - Layer sound effects over an existing audio track",
+      "description": "Overlays two audio files together.\n    audio, edit, transform",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.OverlayAudio",
       "properties": [
@@ -25374,7 +25374,7 @@
     },
     {
       "title": "Remove Silence",
-      "description": "Removes or shortens silence in an audio file with smooth transitions.\n    audio, edit, clean\n\n    Use cases:\n    - Trim silent parts from beginning/end of recordings\n    - Remove or shorten long pauses between speech segments\n    - Apply crossfade for smooth transitions",
+      "description": "Removes or shortens silence in an audio file with smooth transitions.\n    audio, edit, clean",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.RemoveSilence",
       "properties": [
@@ -25469,7 +25469,7 @@
     },
     {
       "title": "Repeat",
-      "description": "Loops an audio file a specified number of times.\n    audio, edit, repeat\n\n    Use cases:\n    - Create repeating background sounds or music\n    - Extend short audio clips to fill longer durations\n    - Generate rhythmic patterns from short samples",
+      "description": "Loops an audio file a specified number of times.\n    audio, edit, repeat",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.Repeat",
       "properties": [
@@ -25516,7 +25516,7 @@
     },
     {
       "title": "Reverse",
-      "description": "Reverses an audio file.\n    audio, edit, transform\n\n    Use cases:\n    - Create reverse audio effects\n    - Generate backwards speech or music",
+      "description": "Reverses an audio file.\n    audio, edit, transform",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.Reverse",
       "properties": [
@@ -25665,7 +25665,7 @@
     },
     {
       "title": "Slice Audio",
-      "description": "Extracts a section of an audio file.\n    audio, edit, trim\n\n    Use cases:\n    - Cut out a specific clip from a longer audio file\n    - Remove unwanted portions from beginning or end",
+      "description": "Extracts a section of an audio file.\n    audio, edit, trim",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.SliceAudio",
       "properties": [
@@ -25722,7 +25722,7 @@
     },
     {
       "title": "Stereo To Mono",
-      "description": "Converts a stereo audio signal to mono.\n    audio, convert, channels\n\n    Use cases:\n    - Reduce file size for mono-only applications\n    - Simplify audio for certain processing tasks",
+      "description": "Converts a stereo audio signal to mono.\n    audio, convert, channels",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.StereoToMono",
       "properties": [
@@ -25767,7 +25767,7 @@
     },
     {
       "title": "Text To Speech",
-      "description": "Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).\n    audio, generation, AI, text-to-speech, tts, voice\n\n    Use cases:\n    - Create voiceovers for videos and presentations\n    - Generate natural-sounding narration for content\n    - Build voice assistants and chatbots\n    - Convert written content to audio format\n    - Create accessible audio versions of text",
+      "description": "Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).\n    audio, generation, AI, text-to-speech, tts, voice",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.TextToSpeech",
       "properties": [
@@ -25841,7 +25841,7 @@
     },
     {
       "title": "Trim",
-      "description": "Trim an audio file to a specified duration.\n    audio, trim, cut\n\n    Use cases:\n    - Remove silence from the beginning or end of audio files\n    - Extract specific segments from audio files\n    - Prepare audio data for machine learning models",
+      "description": "Trim an audio file to a specified duration.\n    audio, trim, cut",
       "namespace": "nodetool.audio",
       "node_type": "nodetool.audio.Trim",
       "properties": [
@@ -25898,7 +25898,7 @@
     },
     {
       "title": "Output",
-      "description": "Generic output node for any type.\n    output, result, sink, return\n\n    Use cases:\n    - Output any type of result from a workflow\n    - Return strings, integers, floats, booleans, lists, dictionaries\n    - Return media references (images, videos, audio, documents, dataframes)",
+      "description": "Generic output node for any type.\n    output, result, sink, return",
       "namespace": "nodetool.output",
       "node_type": "nodetool.output.Output",
       "properties": [
@@ -27075,7 +27075,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 47986,
+          "downloads": 47634,
           "likes": 116
         },
         {
@@ -27126,7 +27126,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23852,
+          "downloads": 23739,
           "likes": 47
         },
         {
@@ -27177,7 +27177,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 15862,
+          "downloads": 15885,
           "likes": 30
         },
         {
@@ -27197,8 +27197,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1656,
-          "likes": 25
+          "downloads": 1636,
+          "likes": 26
         },
         {
           "id": "ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF:qwen3-coder-30b-a3b-instruct-q8_0.gguf",
@@ -27223,7 +27223,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 5113,
+          "downloads": 5177,
           "likes": 7
         },
         {
@@ -27244,7 +27244,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 38510,
+          "downloads": 37989,
           "likes": 12
         },
         {
@@ -27263,7 +27263,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 912,
+          "downloads": 900,
           "likes": 19
         },
         {
@@ -27314,7 +27314,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1855,
+          "downloads": 1863,
           "likes": 23
         }
       ],
@@ -27527,7 +27527,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23852,
+          "downloads": 23739,
           "likes": 47
         }
       ],
@@ -27756,7 +27756,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23852,
+          "downloads": 23739,
           "likes": 47
         }
       ],
@@ -27886,7 +27886,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 47986,
+          "downloads": 47634,
           "likes": 116
         },
         {
@@ -27937,7 +27937,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 15862,
+          "downloads": 15885,
           "likes": 30
         }
       ],
@@ -28140,7 +28140,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23852,
+          "downloads": 23739,
           "likes": 47
         }
       ],
@@ -29778,7 +29778,7 @@
     },
     {
       "title": "Add Subtitles",
-      "description": "Add subtitles to a video.\n    video, subtitles, text, caption\n\n    Use cases:\n    1. Add translations or closed captions to videos\n    2. Include explanatory text or commentary in educational videos\n    3. Create lyric videos for music content",
+      "description": "Add subtitles to a video.\n    video, subtitles, text, caption",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.AddSubtitles",
       "properties": [
@@ -30363,7 +30363,7 @@
     },
     {
       "title": "Image To Video",
-      "description": "Generate videos from input images using any supported video provider.\n    Animates static images into dynamic video content with AI-powered motion.\n    video, image-to-video, i2v, animation, AI, generation, sora, veo\n\n    Use cases:\n    - Animate static images into video sequences\n    - Create dynamic content from still photographs\n    - Generate video variations from reference images\n    - Produce animated visual effects from static artwork\n    - Convert product photos into engaging video ads",
+      "description": "Generate videos from input images using any supported video provider.\n    Animates static images into dynamic video content with AI-powered motion.\n    video, image-to-video, i2v, animation, AI, generation, sora, veo",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.ImageToVideo",
       "properties": [
@@ -31147,7 +31147,7 @@
     },
     {
       "title": "Text To Video",
-      "description": "Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).\n    video, generation, AI, text-to-video, t2v\n\n    Use cases:\n    - Switch between providers without changing workflows",
+      "description": "Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).\n    video, generation, AI, text-to-video, t2v",
       "namespace": "nodetool.video",
       "node_type": "nodetool.video.TextToVideo",
       "properties": [
@@ -31473,7 +31473,7 @@
     },
     {
       "title": "Batch To List",
-      "description": "Convert an image batch to a list of image references.\n    batch, list, images, processing\n\n    Use cases:\n    - Convert comfy batch outputs to list format",
+      "description": "Convert an image batch to a list of image references.\n    batch, list, images, processing",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.BatchToList",
       "properties": [
@@ -31512,7 +31512,7 @@
     },
     {
       "title": "Crop",
-      "description": "Crop an image to specified coordinates.\n    image, crop\n\n    - Remove unwanted borders from images\n    - Focus on particular subjects within an image\n    - Simplify images by removing distractions",
+      "description": "Crop an image to specified coordinates.\n    image, crop",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.Crop",
       "properties": [
@@ -31594,7 +31594,7 @@
     },
     {
       "title": "Fit",
-      "description": "Resize an image to fit within specified dimensions while preserving aspect ratio.\n    image, resize, fit\n\n    - Resize images for online publishing requirements\n    - Preprocess images to uniform sizes for machine learning\n    - Control image display sizes for web development",
+      "description": "Resize an image to fit within specified dimensions while preserving aspect ratio.\n    image, resize, fit",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.Fit",
       "properties": [
@@ -31710,7 +31710,7 @@
     },
     {
       "title": "Image To Image",
-      "description": "Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).\n    image, transformation, AI, image-to-image, i2i\n\n    Use cases:\n    - Modify existing images with text instructions\n    - Style transfer and artistic modifications\n    - Image enhancement and refinement\n    - Creative image edits guided by prompts",
+      "description": "Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).\n    image, transformation, AI, image-to-image, i2i",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.ImageToImage",
       "properties": [
@@ -32033,7 +32033,7 @@
     },
     {
       "title": "Paste",
-      "description": "Paste one image onto another at specified coordinates.\n    paste, composite, positioning, overlay\n\n    Use cases:\n    - Add watermarks or logos to images\n    - Combine multiple image elements\n    - Create collages or montages",
+      "description": "Paste one image onto another at specified coordinates.\n    paste, composite, positioning, overlay",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.Paste",
       "properties": [
@@ -32107,7 +32107,7 @@
     },
     {
       "title": "Resize",
-      "description": "Change image dimensions to specified width and height.\n    image, resize\n\n    - Preprocess images for machine learning model inputs\n    - Optimize images for faster web page loading\n    - Create uniform image sizes for layouts",
+      "description": "Change image dimensions to specified width and height.\n    image, resize",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.Resize",
       "properties": [
@@ -32289,7 +32289,7 @@
     },
     {
       "title": "Scale",
-      "description": "Enlarge or shrink an image by a scale factor.\n    image, resize, scale\n\n    - Adjust image dimensions for display galleries\n    - Standardize image sizes for machine learning datasets\n    - Create thumbnail versions of images",
+      "description": "Enlarge or shrink an image by a scale factor.\n    image, resize, scale",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.Scale",
       "properties": [
@@ -32335,7 +32335,7 @@
     },
     {
       "title": "Text To Image",
-      "description": "Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).\n    image, generation, AI, text-to-image, t2i\n\n    Use cases:\n    - Create images from text descriptions\n    - Switch between providers without changing workflows\n    - Generate images with different AI models\n    - Cost-optimize by choosing different providers",
+      "description": "Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).\n    image, generation, AI, text-to-image, t2i",
       "namespace": "nodetool.image",
       "node_type": "nodetool.image.TextToImage",
       "properties": [
@@ -32509,7 +32509,7 @@
     },
     {
       "title": "Audio Input",
-      "description": "Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.\n    input, parameter, audio, sound, voice, speech, asset\n\n    Use cases:\n    - Load an audio file for speech-to-text transcription.\n    - Analyze sound for specific events or characteristics.\n    - Provide audio input to models for tasks like voice recognition or music generation.\n    - Process audio for enhancement or feature extraction.",
+      "description": "Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.\n    input, parameter, audio, sound, voice, speech, asset",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.AudioInput",
       "properties": [
@@ -32562,7 +32562,7 @@
     },
     {
       "title": "Boolean Input",
-      "description": "Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.\n    input, parameter, boolean, bool, toggle, switch, flag\n\n    Use cases:\n    - Toggle features or settings on or off.\n    - Set binary flags to control workflow behavior.\n    - Make conditional choices within a workflow (e.g., proceed if true).",
+      "description": "Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.\n    input, parameter, boolean, bool, toggle, switch, flag",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.BooleanInput",
       "properties": [
@@ -32712,7 +32712,7 @@
     },
     {
       "title": "Document File Input",
-      "description": "Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.\n    input, parameter, document, file, path, local_file, load\n\n    Use cases:\n    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.\n    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.\n    - Useful for development or workflows that have legitimate access to the local filesystem.\n    - To provide an existing 'DocumentRef', use 'DocumentInput'.",
+      "description": "Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.\n    input, parameter, document, file, path, local_file, load",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.DocumentFileInput",
       "properties": [
@@ -32821,7 +32821,7 @@
     },
     {
       "title": "File Path Input",
-      "description": "Accepts a local filesystem path (to a file or directory) as input for workflows.\n    input, parameter, path, filepath, directory, local_file, filesystem\n\n    Use cases:\n    - Provide a local path to a specific file or directory for processing.\n    - Specify an input or output location on the local filesystem for a development task.\n    - Load local datasets or configuration files not managed as assets.\n    - Not available in production: raises an error if used in a production environment.",
+      "description": "Accepts a local filesystem path (to a file or directory) as input for workflows.\n    input, parameter, path, filepath, directory, local_file, filesystem",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.FilePathInput",
       "properties": [
@@ -32871,7 +32871,7 @@
     },
     {
       "title": "Float Input",
-      "description": "Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.\n    input, parameter, float, number, decimal, range\n\n    Use cases:\n    - Specify a numeric value within a defined range (e.g., 0.0 to 1.0).\n    - Set thresholds, confidence scores, or scaling factors.\n    - Configure continuous parameters like opacity, volume, or temperature.",
+      "description": "Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.\n    input, parameter, float, number, decimal, range",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.FloatInput",
       "properties": [
@@ -33037,7 +33037,7 @@
     },
     {
       "title": "Image Input",
-      "description": "Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.\n    input, parameter, image, picture, graphic, visual, asset\n\n    Use cases:\n    - Load an image for visual processing or analysis.\n    - Provide an image as input to computer vision models (e.g., object detection, image classification).\n    - Select an image for manipulation, enhancement, or inclusion in a document.\n    - Display an image within a workflow interface.",
+      "description": "Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.\n    input, parameter, image, picture, graphic, visual, asset",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.ImageInput",
       "properties": [
@@ -33144,7 +33144,7 @@
     },
     {
       "title": "Integer Input",
-      "description": "Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.\n    input, parameter, integer, number, count, index, whole_number\n\n    Use cases:\n    - Specify counts or quantities (e.g., number of items, iterations).\n    - Set index values for accessing elements in a list or array.\n    - Configure discrete numeric parameters like age, steps, or quantity.",
+      "description": "Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.\n    input, parameter, integer, number, count, index, whole_number",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.IntegerInput",
       "properties": [
@@ -33472,7 +33472,7 @@
     },
     {
       "title": "Model 3 DInput",
-      "description": "Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.\n    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,\n    or conversion by 3D-capable nodes.\n    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset\n\n    Use cases:\n    - Load a 3D model file for processing or visualization.\n    - Provide 3D model input to geometry processing nodes.\n    - Convert between 3D formats (OBJ, GLB, STL, PLY, USDZ).\n    - Process 3D models for decimation, boolean operations, or transforms.",
+      "description": "Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.\n    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,\n    or conversion by 3D-capable nodes.\n    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.Model3DInput",
       "properties": [
@@ -33684,7 +33684,7 @@
     },
     {
       "title": "Video Input",
-      "description": "Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.\n    input, parameter, video, movie, clip, visual, asset\n\n    Use cases:\n    - Load a video file for processing or content analysis.\n    - Analyze video content for events, objects, or speech.\n    - Extract frames or audio tracks from a video.\n    - Provide video input to models that understand video data.",
+      "description": "Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.\n    input, parameter, video, movie, clip, visual, asset",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.VideoInput",
       "properties": [
@@ -34954,7 +34954,7 @@
     },
     {
       "title": "Filter String",
-      "description": "Filters a stream of strings based on various criteria.\n    filter, strings, text, stream\n\n    Use cases:\n    - Filter strings by length\n    - Filter strings containing specific text\n    - Filter strings by prefix/suffix",
+      "description": "Filters a stream of strings based on various criteria.\n    filter, strings, text, stream",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.FilterString",
       "properties": [
@@ -35163,7 +35163,7 @@
     },
     {
       "title": "HTML to Text",
-      "description": "Converts HTML content to plain text using html2text.\n    html, convert, text, parse, extract\n\n    Use cases:\n    - Converting HTML documents to readable plain text\n    - Extracting text content from web pages\n    - Cleaning HTML markup from text data\n    - Processing HTML emails or documents",
+      "description": "Converts HTML content to plain text using html2text.\n    html, convert, text, parse, extract",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.HtmlToText",
       "properties": [
@@ -35231,7 +35231,7 @@
     },
     {
       "title": "Index Of",
-      "description": "Finds the position of a substring in text.\n    text, search, find, substring\n\n    Use cases:\n    - Locating markers to drive downstream slices\n    - Building quick validations before parsing\n    - Detecting repeated terms by scanning from the end",
+      "description": "Finds the position of a substring in text.\n    text, search, find, substring",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.IndexOf",
       "properties": [
@@ -35307,7 +35307,7 @@
     },
     {
       "title": "Is Empty",
-      "description": "Checks if text is empty or contains only whitespace.\n    text, check, empty, compare, validate, whitespace, string\n\n    Use cases:\n    - Validating required text fields\n    - Filtering out empty content\n    - Checking for meaningful input",
+      "description": "Checks if text is empty or contains only whitespace.\n    text, check, empty, compare, validate, whitespace, string",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.IsEmpty",
       "properties": [
@@ -35384,7 +35384,7 @@
     },
     {
       "title": "Measure Length",
-      "description": "Measures text length as characters, words, or lines.\n    text, analyze, length, count\n\n    Use cases:\n    - Quickly gating prompts by size before LLM calls\n    - Showing word or line counts in mini apps\n    - Tracking character budgets for UI copy",
+      "description": "Measures text length as characters, words, or lines.\n    text, analyze, length, count",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Length",
       "properties": [
@@ -35437,7 +35437,7 @@
     },
     {
       "title": "Load Text Assets",
-      "description": "Load text files from an asset folder.\n    load, text, file, import\n\n    Use cases:\n    - Loading multiple text files for batch processing\n    - Importing text content from a directory\n    - Processing collections of text documents",
+      "description": "Load text files from an asset folder.\n    load, text, file, import",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.LoadTextAssets",
       "properties": [
@@ -35478,7 +35478,7 @@
     },
     {
       "title": "Pad Text",
-      "description": "Pads text to a target length.\n    text, pad, length, format\n\n    Use cases:\n    - Aligning tabular text outputs\n    - Creating fixed-width fields for legacy systems\n    - Left-padding numbers with zeros",
+      "description": "Pads text to a target length.\n    text, pad, length, format",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.PadText",
       "properties": [
@@ -35770,7 +35770,7 @@
     },
     {
       "title": "Remove Punctuation",
-      "description": "Removes punctuation characters from text.\n    text, cleanup, punctuation, normalize\n\n    Use cases:\n    - Cleaning transcripts before keyword search\n    - Preparing identifiers for filesystem safe names\n    - Simplifying comparisons by stripping symbols",
+      "description": "Removes punctuation characters from text.\n    text, cleanup, punctuation, normalize",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.RemovePunctuation",
       "properties": [
@@ -36148,7 +36148,7 @@
     },
     {
       "title": "Strip Accents",
-      "description": "Removes accent marks while keeping base characters.\n    text, cleanup, accents, normalize\n\n    Use cases:\n    - Creating ASCII-only identifiers from user input\n    - Normalizing prompts that mix accented and plain characters\n    - Simplifying comparisons against datasets lacking accents",
+      "description": "Removes accent marks while keeping base characters.\n    text, cleanup, accents, normalize",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.StripAccents",
       "properties": [
@@ -37202,7 +37202,7 @@
     },
     {
       "title": "Is Workspace File",
-      "description": "Check if a path in the workspace is a file.\n    workspace, file, check, type\n\n    Use cases:\n    - Distinguish files from directories\n    - Validate file types\n    - Filter paths by type",
+      "description": "Check if a path in the workspace is a file.\n    workspace, file, check, type",
       "namespace": "nodetool.workspace",
       "node_type": "nodetool.workspace.IsWorkspaceFile",
       "properties": [
@@ -37574,7 +37574,7 @@
     },
     {
       "title": "Write Binary File",
-      "description": "Write binary data (base64-encoded) to a file in the workspace.\n    workspace, file, write, binary, save\n\n    Use cases:\n    - Save binary data to workspace\n    - Write decoded base64 data\n    - Export binary results",
+      "description": "Write binary data (base64-encoded) to a file in the workspace.\n    workspace, file, write, binary, save",
       "namespace": "nodetool.workspace",
       "node_type": "nodetool.workspace.WriteBinaryFile",
       "properties": [
