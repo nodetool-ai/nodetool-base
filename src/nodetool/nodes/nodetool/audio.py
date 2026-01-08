@@ -66,11 +66,6 @@ class LoadAudioFile(BaseNode):
     """
     Read an audio file from disk.
     audio, input, load, file
-
-    Use cases:
-    - Load audio for processing
-    - Import sound files for editing
-    - Read audio assets for a workflow
     """
 
     path: str = Field(default="", description="Path to the audio file to read")
@@ -96,11 +91,6 @@ class LoadAudioFolder(BaseNode):
     """
     Load all audio files from a folder, optionally including subfolders.
     audio, load, folder, files
-
-    Use cases:
-    - Batch import audio for processing
-    - Build datasets from a directory tree
-    - Iterate over audio collections
     """
 
     folder: str = Field(default="", description="Folder to scan for audio files")
@@ -163,11 +153,6 @@ class SaveAudio(BaseNode):
     """
     Save an audio file to a specified asset folder.
     audio, folder, name
-
-    Use cases:
-    - Save generated audio files with timestamps
-    - Organize outputs into specific folders
-    - Create backups of generated audio
     """
 
     _expose_as_tool = True
@@ -207,12 +192,9 @@ class SaveAudio(BaseNode):
         result = await context.audio_from_segment(audio, name, parent_id=parent_id)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=name,
-            value=result,
-            output_type="audio"
-        ))
+        context.post_message(
+            SaveUpdate(node_id=self.id, name=name, value=result, output_type="audio")
+        )
 
         return result
 
@@ -266,12 +248,11 @@ class SaveAudioFile(BaseNode):
         result = AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="audio"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="audio"
+            )
+        )
 
         return result
 
@@ -635,7 +616,6 @@ class AudioMixer(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> AudioRef:
-
         # Initialize mixed track
         mixed_track = None
 
@@ -928,9 +908,7 @@ class TextToSpeech(BaseNode):
             audio_chunks.append(audio_chunk_array)
 
             # Yield audio chunk as base64-encoded int16 data
-            audio_base64 = base64.b64encode(audio_chunk_array.tobytes()).decode(
-                "utf-8"
-            )
+            audio_base64 = base64.b64encode(audio_chunk_array.tobytes()).decode("utf-8")
             chunk = Chunk(
                 content=audio_base64,
                 content_type="audio",
@@ -948,7 +926,9 @@ class TextToSpeech(BaseNode):
             raise ValueError("No audio data generated")
 
         # Concatenate all int16 numpy arrays
-        combined_array = np.concatenate(audio_chunks) if len(audio_chunks) > 1 else audio_chunks[0]
+        combined_array = (
+            np.concatenate(audio_chunks) if len(audio_chunks) > 1 else audio_chunks[0]
+        )
 
         # Yield final audio using audio_from_numpy at 24kHz
         yield {
@@ -1186,6 +1166,7 @@ class TextToSpeech(BaseNode):
 #             log.info(f"Emitting final transcript: {len(final_text)} characters")
 #             await outputs.emit("text", final_text)
 
+
 class ChunkToAudio(BaseNode):
     """
     Aggregates audio chunks from an input stream into AudioRef objects.
@@ -1215,7 +1196,9 @@ class ChunkToAudio(BaseNode):
         count = 0
 
         async for chunk in inputs.stream("chunk"):
-            log.info(f"ChunkToAudio received chunk: content_type={chunk.content_type}, metadata={chunk.content_metadata}")
+            log.info(
+                f"ChunkToAudio received chunk: content_type={chunk.content_type}, metadata={chunk.content_metadata}"
+            )
             if chunk.content_type == "audio" and chunk.content:
                 try:
                     # Check if content is base64 encoded string
@@ -1227,18 +1210,18 @@ class ChunkToAudio(BaseNode):
                     # Use metadata if available to handle raw PCM
                     meta = chunk.content_metadata or {}
                     fmt = meta.get("format")
-                    
+
                     if fmt == "pcm16le" or meta.get("encoding") == "pcm16le":
                         segment = AudioSegment(
                             data=data,
-                            sample_width=2, # 16-bit
+                            sample_width=2,  # 16-bit
                             frame_rate=meta.get("sample_rate", 44100),
-                            channels=meta.get("channels", 1)
+                            channels=meta.get("channels", 1),
                         )
                     else:
                         # Fallback for container formats (mp3, wav, etc.) or unknown
                         segment = AudioSegment.from_file(io.BytesIO(data))
-                        
+
                     buffer += segment
                     count += 1
                 except Exception as e:
@@ -1259,5 +1242,3 @@ class ChunkToAudio(BaseNode):
         if count > 0 and len(buffer) > 0:
             audio = await context.audio_from_segment(buffer)
             await outputs.emit("audio", audio)
-
-

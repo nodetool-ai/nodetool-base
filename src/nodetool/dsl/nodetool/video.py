@@ -24,11 +24,6 @@ class AddAudio(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
 
     Add an audio track to a video, replacing or mixing with existing audio.
     video, audio, soundtrack, merge
-
-    Use cases:
-    1. Add background music or narration to a silent video
-    2. Replace original audio with a new soundtrack
-    3. Mix new audio with existing video sound
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -141,11 +136,6 @@ class Blur(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Apply a blur effect to a video.
     video, blur, smooth, soften
-
-    Use cases:
-    1. Create a dreamy or soft focus effect
-    2. Obscure or censor specific areas of the video
-    3. Reduce noise or grain in low-quality footage
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -186,11 +176,6 @@ class ChromaKey(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     Apply chroma key (green screen) effect to a video.
     video, chroma key, green screen, compositing
-
-    Use cases:
-    1. Remove green or blue background from video footage
-    2. Create special effects by compositing video onto new backgrounds
-    3. Produce professional-looking videos for presentations or marketing
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -237,11 +222,6 @@ class ColorBalance(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     Adjust the color balance of a video.
     video, color, balance, adjustment
-
-    Use cases:
-    1. Correct color casts in video footage
-    2. Enhance specific color tones for artistic effect
-    3. Normalize color balance across multiple video clips
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -287,12 +267,6 @@ class Concat(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
-
-    Use cases:
-    - Merge multiple video clips into one continuous video
-    - Combine intro, main content, and outro sequences
-    - Join video segments from different sources
-    - Create video compilations and montages
     """
 
     video_a: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -341,11 +315,6 @@ class Denoise(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Apply noise reduction to a video.
     video, denoise, clean, enhance
-
-    Use cases:
-    1. Improve video quality by reducing unwanted noise
-    2. Enhance low-light footage
-    3. Prepare video for further processing or compression
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -386,13 +355,6 @@ class ExtractAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
 
     Separate and extract audio track from a video file.
     video, audio, extract, separate, split
-
-    Use cases:
-    - Extract audio for podcasts or music
-    - Create audio-only versions of video content
-    - Analyze or transcribe video audio separately
-    - Reuse audio in different contexts
-    - Convert video soundtracks to audio files
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -429,11 +391,6 @@ class Fps(SingleOutputGraphNode[float], GraphNode[float]):
 
     Get the frames per second (FPS) of a video file.
     video, analysis, frames, fps
-
-    Use cases:
-    1. Analyze video properties for quality assessment
-    2. Determine appropriate playback speed for video editing
-    3. Ensure compatibility with target display systems
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -470,11 +427,6 @@ class FrameIterator(GraphNode[nodetool.nodes.nodetool.video.FrameIterator.Output
 
     Extract frames from a video file using OpenCV.
     video, frames, extract, sequence
-
-    Use cases:
-    1. Generate image sequences for further processing
-    2. Extract specific frame ranges from a video
-    3. Create thumbnails or previews from video content
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -535,11 +487,6 @@ class FrameToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
-
-    Use cases:
-    1. Create time-lapse videos from image sequences
-    2. Compile processed frames back into a video
-    3. Generate animations from individual images
     """
 
     frame: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -658,11 +605,6 @@ class LoadVideoAssets(
     Load video files from an asset folder.
 
         video, assets, load
-
-        Use cases:
-        - Provide videos for batch processing
-        - Iterate over stored video assets
-        - Prepare clips for editing or analysis
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
@@ -707,11 +649,6 @@ class LoadVideoFile(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
 
     Read a video file from disk.
     video, input, load, file
-
-    Use cases:
-    - Load videos for processing
-    - Import video files for editing
-    - Read video assets for a workflow
     """
 
     path: str | OutputHandle[str] = connect_field(
@@ -739,13 +676,6 @@ class Overlay(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
-
-    Use cases:
-    - Create picture-in-picture effects for commentary videos
-    - Add watermarks or logos to videos
-    - Combine multiple video streams
-    - Create split-screen or multi-view presentations
-    - Layer video effects over main content
     """
 
     main_video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -807,11 +737,6 @@ class ResizeNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
 
     Resize a video to a specific width and height.
     video, resize, scale, dimensions
-
-    Use cases:
-    1. Adjust video resolution for different display requirements
-    2. Reduce file size by downscaling video
-    3. Prepare videos for specific platforms with size constraints
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -854,11 +779,6 @@ class Reverse(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Reverse the playback of a video.
     video, reverse, backwards, effect
-
-    Use cases:
-    1. Create artistic effects by playing video in reverse
-    2. Analyze motion or events in reverse order
-    3. Generate unique transitions or intros for video projects
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -895,11 +815,6 @@ class Rotate(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Rotate a video by a specified angle.
     video, rotate, orientation, transform
-
-    Use cases:
-    1. Correct orientation of videos taken with a rotated camera
-    2. Create artistic effects by rotating video content
-    3. Adjust video for different display orientations
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -939,11 +854,6 @@ class Saturation(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
 
     Adjust the color saturation of a video.
     video, saturation, color, enhance
-
-    Use cases:
-    1. Enhance color vibrancy in dull or flat-looking footage
-    2. Create stylistic effects by over-saturating or desaturating video
-    3. Correct oversaturated footage from certain cameras
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -984,11 +894,6 @@ class SaveVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     Save a video to an asset folder.
     video, save, file, output
-
-    Use cases:
-    1. Export processed video to a specific asset folder
-    2. Save video with a custom name
-    3. Create a copy of a video in a different location
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -1082,11 +987,6 @@ class SetSpeed(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef])
 
     Adjust the playback speed of a video.
     video, speed, tempo, time
-
-    Use cases:
-    1. Create slow-motion effects by decreasing video speed
-    2. Generate time-lapse videos by increasing playback speed
-    3. Synchronize video duration with audio or other timing requirements
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -1127,11 +1027,6 @@ class Sharpness(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     Adjust the sharpness of a video.
     video, sharpen, enhance, detail
-
-    Use cases:
-    1. Enhance detail in slightly out-of-focus footage
-    2. Correct softness introduced by video compression
-    3. Create stylistic effects by over-sharpening
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -1176,11 +1071,6 @@ class Stabilize(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 
     Apply video stabilization to reduce camera shake and jitter.
     video, stabilize, smooth, shake-reduction
-
-    Use cases:
-    1. Improve quality of handheld or action camera footage
-    2. Smooth out panning and tracking shots
-    3. Enhance viewer experience by reducing motion sickness
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
@@ -1227,9 +1117,6 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
     video, generation, AI, text-to-video, t2v
 
     Use cases:
-    - Create videos from text descriptions
-    - Generate video content from prompts
-    - Produce short video clips with AI
     - Switch between providers without changing workflows
     """
 
@@ -1301,12 +1188,6 @@ class Transition(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
 
     Create a transition effect between two videos, including audio transition when available.
     video, transition, effect, merge, audio
-
-    Use cases:
-    1. Create smooth transitions between video clips in a montage
-    2. Add professional-looking effects to video projects
-    3. Blend scenes together for creative storytelling
-    4. Smoothly transition between audio tracks of different video clips
     """
 
     TransitionType: typing.ClassVar[type] = (
@@ -1366,11 +1247,6 @@ class Trim(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
 
     Trim a video to a specific start and end time.
     video, trim, cut, segment
-
-    Use cases:
-    1. Extract specific segments from a longer video
-    2. Remove unwanted parts from the beginning or end of a video
-    3. Create shorter clips from a full-length video
     """
 
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(

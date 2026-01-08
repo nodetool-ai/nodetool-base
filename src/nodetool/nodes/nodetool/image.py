@@ -19,11 +19,6 @@ class LoadImageFile(BaseNode):
     """
     Read an image file from disk.
     image, input, load, file
-
-    Use cases:
-    - Load images for processing
-    - Import photos for editing
-    - Read image assets for a workflow
     """
 
     path: str = Field(default="", description="Path to the image file to read")
@@ -50,11 +45,6 @@ class LoadImageFolder(BaseNode):
     """
     Load all images from a folder, optionally including subfolders.
     image, load, folder, files
-
-    Use cases:
-    - Batch import images for processing
-    - Build datasets from a directory tree
-    - Iterate over photo collections
     """
 
     folder: str = Field(default="", description="Folder to scan for images")
@@ -120,11 +110,6 @@ class SaveImageFile(BaseNode):
     """
     Write an image to disk.
     image, output, save, file
-
-    Use cases:
-    - Save processed images
-    - Export edited photos
-    - Archive image results
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to save")
@@ -176,12 +161,11 @@ class SaveImageFile(BaseNode):
         result = ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="image"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="image"
+            )
+        )
 
         return result
 
@@ -230,11 +214,6 @@ class SaveImage(BaseNode):
     """
     Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
-
-    Use cases:
-    - Save generated images with timestamps
-    - Organize outputs into specific folders
-    - Create backups of processed images
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to save.")
@@ -275,12 +254,11 @@ class SaveImage(BaseNode):
         )
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="image"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="image"
+            )
+        )
 
         return result
 
@@ -292,11 +270,6 @@ class GetMetadata(BaseNode):
     """
     Get metadata about the input image.
     metadata, properties, analysis, information
-
-    Use cases:
-    - Use width and height for layout calculations
-    - Analyze image properties for processing decisions
-    - Gather information for image cataloging or organization
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The input image.")
@@ -364,7 +337,7 @@ class ImagesToList(BaseNode):
     async def process(self, context: ProcessingContext) -> list[ImageRef]:
         if not self.dynamic_properties:
             return []
-        
+
         results = []
         for data in self.dynamic_properties.values():
             if isinstance(data, ImageRef):
@@ -568,7 +541,9 @@ class TextToImage(BaseNode):
         )
 
         # Generate image
-        image_bytes = await provider_instance.text_to_image(params, context=context, node_id=self.id)
+        image_bytes = await provider_instance.text_to_image(
+            params, context=context, node_id=self.id
+        )
 
         # Convert to ImageRef
         return await context.image_from_bytes(image_bytes)
@@ -576,8 +551,6 @@ class TextToImage(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "prompt", "width", "height", "seed"]
-
-    
 
 
 class ImageToImage(BaseNode):
@@ -691,5 +664,3 @@ class ImageToImage(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "image", "prompt", "strength", "seed"]
-
-    
