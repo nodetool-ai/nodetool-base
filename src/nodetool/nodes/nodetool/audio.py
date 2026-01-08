@@ -261,10 +261,6 @@ class Normalize(BaseNode):
     """
     Normalizes the volume of an audio file.
     audio, fix, dynamics, volume
-
-    Use cases:
-    - Ensure consistent volume across multiple audio files
-    - Adjust overall volume level before further processing
     """
 
     _expose_as_tool = True
@@ -283,10 +279,6 @@ class OverlayAudio(BaseNode):
     """
     Overlays two audio files together.
     audio, edit, transform
-
-    Use cases:
-    - Mix background music with voice recording
-    - Layer sound effects over an existing audio track
     """
 
     _expose_as_tool = True
@@ -305,11 +297,6 @@ class RemoveSilence(BaseNode):
     """
     Removes or shortens silence in an audio file with smooth transitions.
     audio, edit, clean
-
-    Use cases:
-    - Trim silent parts from beginning/end of recordings
-    - Remove or shorten long pauses between speech segments
-    - Apply crossfade for smooth transitions
     """
 
     _expose_as_tool = True
@@ -365,10 +352,6 @@ class SliceAudio(BaseNode):
     """
     Extracts a section of an audio file.
     audio, edit, trim
-
-    Use cases:
-    - Cut out a specific clip from a longer audio file
-    - Remove unwanted portions from beginning or end
     """
 
     _expose_as_tool = True
@@ -390,10 +373,6 @@ class MonoToStereo(BaseNode):
     """
     Converts a mono audio signal to stereo.
     audio, convert, channels
-
-    Use cases:
-    - Expand mono recordings for stereo playback systems
-    - Prepare audio for further stereo processing
     """
 
     _expose_as_tool = True
@@ -418,10 +397,6 @@ class StereoToMono(BaseNode):
     """
     Converts a stereo audio signal to mono.
     audio, convert, channels
-
-    Use cases:
-    - Reduce file size for mono-only applications
-    - Simplify audio for certain processing tasks
     """
 
     _expose_as_tool = True
@@ -459,10 +434,6 @@ class Reverse(BaseNode):
     """
     Reverses an audio file.
     audio, edit, transform
-
-    Use cases:
-    - Create reverse audio effects
-    - Generate backwards speech or music
     """
 
     _expose_as_tool = True
@@ -481,10 +452,6 @@ class FadeIn(BaseNode):
     """
     Applies a fade-in effect to the beginning of an audio file.
     audio, edit, transition
-
-    Use cases:
-    - Create smooth introductions to audio tracks
-    - Gradually increase volume at the start of a clip
     """
 
     _expose_as_tool = True
@@ -506,10 +473,6 @@ class FadeOut(BaseNode):
     """
     Applies a fade-out effect to the end of an audio file.
     audio, edit, transition
-
-    Use cases:
-    - Create smooth endings to audio tracks
-    - Gradually decrease volume at the end of a clip
     """
 
     _expose_as_tool = True
@@ -531,11 +494,6 @@ class Repeat(BaseNode):
     """
     Loops an audio file a specified number of times.
     audio, edit, repeat
-
-    Use cases:
-    - Create repeating background sounds or music
-    - Extend short audio clips to fill longer durations
-    - Generate rhythmic patterns from short samples
     """
 
     _expose_as_tool = True
@@ -561,12 +519,6 @@ class AudioMixer(BaseNode):
     """
     Mix up to 5 audio tracks together with individual volume controls.
     audio, mix, volume, combine, blend, layer, add, overlay
-
-    Use cases:
-    - Mix multiple audio tracks into a single output
-    - Create layered soundscapes
-    - Combine music, voice, and sound effects
-    - Adjust individual track volumes
     """
 
     track1: AudioRef = Field(
@@ -654,11 +606,6 @@ class AudioToNumpy(BaseNode):
     """
     Convert audio to numpy array for processing.
     audio, numpy, convert, array
-
-    Use cases:
-    - Prepare audio for custom processing
-    - Convert audio for machine learning models
-    - Extract raw audio data for analysis
     """
 
     audio: AudioRef = Field(
@@ -683,11 +630,6 @@ class NumpyToAudio(BaseNode):
     """
     Convert numpy array to audio.
     audio, numpy, convert
-
-    Use cases:
-    - Convert processed audio data back to audio format
-    - Create audio from machine learning model outputs
-    - Generate audio from synthesized waveforms
     """
 
     array: NPArray = Field(
@@ -719,11 +661,6 @@ class Trim(BaseNode):
     """
     Trim an audio file to a specified duration.
     audio, trim, cut
-
-    Use cases:
-    - Remove silence from the beginning or end of audio files
-    - Extract specific segments from audio files
-    - Prepare audio data for machine learning models
     """
 
     _expose_as_tool = True
@@ -748,11 +685,6 @@ class ConvertToArray(BaseNode):
     """
     Converts an audio file to a Array for further processing.
     audio, conversion, tensor
-
-    Use cases:
-    - Prepare audio data for machine learning models
-    - Enable signal processing operations on audio
-    - Convert audio to a format suitable for spectral analysisr
     """
 
     audio: AudioRef = Field(
@@ -769,11 +701,6 @@ class CreateSilence(BaseNode):
     """
     Creates a silent audio file with a specified duration.
     audio, silence, empty
-
-    Use cases:
-    - Generate placeholder audio files
-    - Create audio segments for padding or spacing
-    - Add silence to the beginning or end of audio files
     """
 
     duration: float = Field(
@@ -789,10 +716,6 @@ class Concat(BaseNode):
     """
     Concatenates two audio files together.
     audio, edit, join, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from shorter segments
     """
 
     _expose_as_tool = True
@@ -811,11 +734,6 @@ class ConcatList(BaseNode):
     """
     Concatenates multiple audio files together in sequence.
     audio, edit, join, multiple, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from multiple segments
-    - Chain multiple audio files in order
     """
 
     _expose_as_tool = True
@@ -849,13 +767,6 @@ class TextToSpeech(BaseNode):
     """
     Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
     audio, generation, AI, text-to-speech, tts, voice
-
-    Use cases:
-    - Create voiceovers for videos and presentations
-    - Generate natural-sounding narration for content
-    - Build voice assistants and chatbots
-    - Convert written content to audio format
-    - Create accessible audio versions of text
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1171,10 +1082,6 @@ class ChunkToAudio(BaseNode):
     """
     Aggregates audio chunks from an input stream into AudioRef objects.
     audio, stream, chunk, aggregate, collect, batch
-
-    Use cases:
-    - Collect streaming audio chunks into larger files for processing
-    - buffer realtime audio streams
     """
 
     chunk: Chunk = Field(default=Chunk(), description="Stream of audio chunks")

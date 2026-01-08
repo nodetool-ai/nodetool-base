@@ -52,11 +52,6 @@ class KlingTextToVideo(KieVideoBaseNode):
 
     Kling 2.6 produces high-quality videos from text descriptions with
     realistic motion, natural lighting, and cinematic detail.
-
-    Use cases:
-    - Create cinematic videos from text descriptions
-    - Generate complex scenes and action sequences
-    - Produce marketing and promotional content
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -124,11 +119,6 @@ class KlingImageToVideo(KieVideoBaseNode):
 
     Transforms static images into dynamic videos with realistic motion
     and temporal consistency while preserving the original visual style.
-
-    Use cases:
-    - Animate static images into videos
-    - Create smooth camera movements from photos
-    - Generate dynamic content from reference images
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -199,12 +189,6 @@ class KlingAIAvatarStandard(KieVideoBaseNode):
 
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
-
-    Use cases:
-    - Create virtual influencer content
-    - Generate educational presenters
-    - Lip-synced avatar videos
-    - Virtual spokesperson creation
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -270,12 +254,6 @@ class KlingAIAvatarPro(KieVideoBaseNode):
 
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
-
-    Use cases:
-    - Create virtual influencer content
-    - Generate educational presenters
-    - Lip-synced avatar videos
-    - Virtual spokesperson creation
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -341,11 +319,6 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
 
     Grok Imagine generates videos from text prompts using xAI's
     multimodal generation capabilities.
-
-    Use cases:
-    - Generate videos from text descriptions
-    - Create AI-powered visual content
-    - Produce creative video content
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -400,11 +373,6 @@ class GrokImagineImageToVideo(KieVideoBaseNode):
 
     Grok Imagine transforms images into videos using xAI's
     multimodal generation capabilities.
-
-    Use cases:
-    - Animate images into videos
-    - Create dynamic content from static images
-    - Generate video animations from reference images
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -507,11 +475,6 @@ class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
 
     Seedance V1 Lite offers efficient text-to-video generation
     with good quality and faster processing times.
-
-    Use cases:
-    - Quick video generation from text
-    - Prototype video content creation
-    - Generate creative videos efficiently
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -843,12 +806,6 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
 
     Hailuo 2.3 Pro offers the highest quality image-to-video generation with
     realistic motion, detailed textures, and cinematic quality.
-
-    Use cases:
-    - Generate high-quality cinematic videos from images
-    - Create realistic motion and physics
-    - Professional video production
-    - High-fidelity image animation
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -926,12 +883,6 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
 
     Hailuo 2.3 Standard offers efficient image-to-video generation with good quality
     and faster processing times for practical use cases.
-
-    Use cases:
-    - Generate quality videos from images efficiently
-    - Quick image animation with realistic motion
-    - Fast image-to-video prototyping
-    - Practical video content creation
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1009,11 +960,6 @@ class Kling25TurboTextToVideo(KieVideoBaseNode):
 
     Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
     consistent artistic styles, and realistic physics simulation.
-
-    Use cases:
-    - Create cinematic quality videos from text
-    - Generate complex narratives and action scenes
-    - Produce artistic animations with smooth motion
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1085,11 +1031,6 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
 
     Transforms a static image into a dynamic video while preserving
     visual style, colors, lighting, and texture.
-
-    Use cases:
-    - Animate static images with realistic motion
-    - Create smooth camera transitions and scene depth
-    - Generate dynamic scenes from reference images
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1199,11 +1140,6 @@ class Sora2ProTextToVideo(Sora2BaseNode):
 
     Sora 2 Pro generates high-quality videos from text descriptions
     with advanced motion and temporal consistency.
-
-    Use cases:
-    - Create cinematic videos from text
-    - Generate complex scene compositions
-    - Produce professional video content
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1240,11 +1176,6 @@ class Sora2ProImageToVideo(Sora2BaseNode):
 
     Sora 2 Pro transforms images into high-quality videos with
     realistic motion and temporal consistency.
-
-    Use cases:
-    - Animate images into videos
-    - Create dynamic content from still images
-    - Generate professional video from references
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1290,11 +1221,6 @@ class Sora2ProStoryboard(Sora2BaseNode):
 
     Sora 2 Pro creates videos from storyboard sequences with
     consistent characters and scenes across frames.
-
-    Use cases:
-    - Create videos from storyboard sequences
-    - Generate consistent multi-shot videos
-    - Produce narrative-driven video content
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1355,11 +1281,6 @@ class Sora2TextToVideo(Sora2BaseNode):
 
     Sora 2 Standard generates quality videos from text descriptions
     with efficient processing and good visual quality.
-
-    Use cases:
-    - Create videos from text descriptions
-    - Generate content efficiently
-    - Produce quality video output
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1396,11 +1317,6 @@ class WanMultiShotTextToVideoPro(KieVideoBaseNode):
 
     Wan 2.1 Multi-Shot generates complex videos with multiple shots
     and scene transitions from text descriptions.
-
-    Use cases:
-    - Create multi-shot videos from text
-    - Generate narrative video content
-    - Produce complex scene compositions
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1473,11 +1389,6 @@ class Wan26TextToVideo(KieVideoBaseNode):
 
     Wan 2.6 generates high-quality videos from text descriptions
     with advanced motion and visual fidelity.
-
-    Use cases:
-    - Create cinematic videos from text
-    - Generate high-fidelity video content
-    - Produce professional video output
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1603,11 +1514,6 @@ class Wan26VideoToVideo(KieVideoBaseNode):
 
     Wan 2.6 transforms and enhances existing videos with AI-powered
     editing and style transfer capabilities.
-
-    Use cases:
-    - Transform video style and content
-    - Enhance video quality
-    - Create video variations and edits
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1837,11 +1743,6 @@ class Veo31TextToVideo(Veo31BaseNode):
     """Generate videos from text using Google's Veo 3.1 model via Kie.ai.
 
     kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
-
-    Use cases:
-    - Create videos from text descriptions
-    - Generate cinematic quality video clips
-    - Produce content for social media and marketing
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1923,11 +1824,6 @@ class Veo31ImageToVideo(Veo31BaseNode):
 
     Supports single image (image comes alive) or two images (first and last frames transition).
     For two images, the first image serves as the video's first frame and the second as the last frame.
-
-    Use cases:
-    - Animate static images into dynamic video
-    - Create smooth transitions between two reference images
-    - Generate cinematic motion from still photographs
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -2031,11 +1927,6 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
 
     Material-to-video generation based on reference images. Only supports veo3_fast model
     and 16:9 aspect ratio. Requires 1-3 reference images.
-
-    Use cases:
-    - Generate videos based on material/reference images
-    - Create product showcase videos
-    - Produce content from design references
     """
 
     _expose_as_tool: ClassVar[bool] = True

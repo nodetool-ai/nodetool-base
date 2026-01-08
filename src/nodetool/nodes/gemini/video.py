@@ -24,13 +24,6 @@ class TextToVideo(BaseNode):
 
     This node uses Google's Veo models to generate high-quality videos from text descriptions.
     Supports 720p resolution at 24fps with 8-second duration and native audio generation.
-
-    Use cases:
-    - Create cinematic clips from text descriptions
-    - Generate social media video content
-    - Produce marketing and promotional videos
-    - Visualize creative concepts and storyboards
-    - Create animated content with accompanying audio
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -103,13 +96,6 @@ class ImageToVideo(BaseNode):
 
     This node uses Google's Veo models to animate static images into dynamic videos.
     Supports 720p resolution at 24fps with 8-second duration and native audio generation.
-
-    Use cases:
-    - Animate still artwork and photographs
-    - Create dynamic social media content from images
-    - Generate product showcase videos from photos
-    - Transform static graphics into engaging animations
-    - Create video presentations from slide images
     """
 
     _expose_as_tool: ClassVar[bool] = True
