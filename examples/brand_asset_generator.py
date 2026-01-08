@@ -16,14 +16,11 @@ The workflow pattern:
 Perfect for graphic designers maintaining brand consistency across platforms.
 """
 
-from typing import List, Dict, Any
-
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, ColorInput
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.generators import ListGenerator
-from nodetool.dsl.nodetool.image import TextToImage, Resize
+from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.lib.pillow.draw import RenderText
 from nodetool.dsl.nodetool.control import ForEach, Collect
 from nodetool.dsl.nodetool.output import Output

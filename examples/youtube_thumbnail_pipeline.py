@@ -17,14 +17,11 @@ The workflow pattern:
 Ideal for video creators optimizing click-through rates.
 """
 
-from typing import List
-
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.generators import ListGenerator
-from nodetool.dsl.nodetool.image import TextToImage, Resize
+from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.lib.pillow.draw import RenderText
 from nodetool.dsl.lib.pillow.enhance import Contrast, Brightness
 from nodetool.dsl.nodetool.control import ForEach, Collect

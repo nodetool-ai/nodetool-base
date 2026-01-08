@@ -16,14 +16,12 @@ The workflow pattern:
 Empowers designers to create product photography without physical shoots.
 """
 
-from typing import List
-
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import ImageInput, StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.generators import ListGenerator
-from nodetool.dsl.nodetool.image import ImageToImage, TextToImage, Resize
+from nodetool.dsl.nodetool.image import ImageToImage, TextToImage
 from nodetool.dsl.lib.pillow.enhance import Brightness, Contrast
 from nodetool.dsl.nodetool.control import ForEach, Collect
 from nodetool.dsl.nodetool.output import Output

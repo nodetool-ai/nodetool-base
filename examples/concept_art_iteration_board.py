@@ -17,14 +17,12 @@ The workflow pattern:
 Excellent for illustrators and concept artists in rapid ideation.
 """
 
-from typing import List, Dict, Any
-
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
-from nodetool.dsl.nodetool.agents import Agent, ResearchAgent
+from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.generators import ListGenerator
-from nodetool.dsl.nodetool.image import TextToImage, Resize
+from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.lib.grid import CombineImageGrid
 from nodetool.dsl.nodetool.control import ForEach, Collect
 from nodetool.dsl.nodetool.output import Output

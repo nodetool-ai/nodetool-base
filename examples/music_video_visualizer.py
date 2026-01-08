@@ -16,12 +16,10 @@ The workflow pattern:
 Perfect for music producers creating promotional clips.
 """
 
-from typing import List, Dict, Any
-
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import AudioInput, StringInput
 from nodetool.dsl.nodetool.text import FormatText, AutomaticSpeechRecognition
-from nodetool.dsl.nodetool.agents import Agent, Extractor
+from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.nodetool.video import FrameToVideo, AddAudio
 from nodetool.dsl.nodetool.generators import ListGenerator

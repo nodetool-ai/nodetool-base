@@ -16,32 +16,24 @@ The workflow pattern:
 Tailored for photographers processing shoots efficiently.
 """
 
-from typing import List
-
-from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.input import StringInput, FolderPathInput, FloatInput
+from nodetool.dsl.graph import create_graph
+from nodetool.dsl.nodetool.input import FolderPathInput, FloatInput
 from nodetool.dsl.nodetool.image import (
     LoadImageFolder,
     ImageToImage,
-    Resize,
-    SaveImage,
 )
 from nodetool.dsl.lib.pillow.enhance import (
     AutoContrast,
     Sharpen,
     Color,
     Brightness,
-    Contrast,
     UnsharpMask,
 )
-from nodetool.dsl.lib.pillow.filter import Smooth
-from nodetool.dsl.nodetool.control import ForEach, Collect
+from nodetool.dsl.nodetool.control import Collect
 from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import (
-    LanguageModel,
     Provider,
     ImageModel,
-    FolderRef,
 )
 
 
@@ -66,25 +58,11 @@ def build_photo_enhancement_suite():
         value="./photos",
     )
 
-    enhancement_style = StringInput(
-        name="enhancement_style",
-        description="Style for AI enhancement (cinematic, vintage, natural, vivid)",
-        value="cinematic",
-    )
-
     color_boost = FloatInput(
         name="color_boost",
         description="Color saturation boost factor (1.0 = no change)",
         value=1.2,
         min=0.5,
-        max=2.0,
-    )
-
-    sharpness_factor = FloatInput(
-        name="sharpness_factor",
-        description="Sharpening intensity (1.0 = no change)",
-        value=1.3,
-        min=1.0,
         max=2.0,
     )
 
@@ -137,11 +115,6 @@ def build_photo_enhancement_suite():
     )
 
     # Step 6: AI-based style enhancement
-    style_prompt = StringInput(
-        name="style_prompt_internal",
-        value="",
-    )
-
     # Create dynamic prompt based on style
     ai_enhanced = ImageToImage(
         model=ImageModel(

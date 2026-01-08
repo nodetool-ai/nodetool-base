@@ -17,21 +17,15 @@ The workflow pattern:
 Accelerates editing for video creators and filmmakers.
 """
 
-from typing import List
-
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import VideoInput, StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
 from nodetool.dsl.nodetool.generators import ListGenerator
 from nodetool.dsl.nodetool.image import TextToImage
 from nodetool.dsl.nodetool.video import (
-    FrameIterator,
     FrameToVideo,
-    Concat,
     Transition,
-    ExtractAudio,
-    AddAudio,
 )
 from nodetool.dsl.lib.pillow.enhance import Contrast
 from nodetool.dsl.nodetool.control import ForEach, Collect
@@ -85,17 +79,10 @@ def build_video_broll_automation():
         max=10,
     )
 
-    # --- Extract frames from main video for analysis ---
-    frame_extractor = FrameIterator(
-        video=main_video.output,
-        start=0,
-        end=10,  # Extract first 10 frames for analysis
-    )
-
-    # --- Extract audio for later ---
-    original_audio = ExtractAudio(
-        video=main_video.output,
-    )
+    # Note: In a full implementation, you would also extract frames for analysis:
+    # frame_extractor = FrameIterator(video=main_video.output, start=0, end=10)
+    # And extract audio to add back later:
+    # original_audio = ExtractAudio(video=main_video.output)
 
     # --- Analyze video content ---
     analysis_prompt = FormatText(
