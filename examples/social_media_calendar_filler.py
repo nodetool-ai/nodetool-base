@@ -90,7 +90,7 @@ Target Audience: {{ audience }}
 Voice: {{ voice }}
 Posts per Week: {{ frequency }}
 
-Create a 4-week content calendar with {{ frequency }} posts per week ({{ total }} posts total).
+Create a 4-week content calendar with {{ frequency }} posts per week.
 
 For each post, provide:
 1. Post type (image, carousel, reel concept, story)
@@ -107,7 +107,6 @@ Format: PostType|Topic|KeyMessage|SuggestedDay|Pillar
         audience=target_audience.output,
         voice=brand_voice.output,
         frequency=posts_per_week.output,
-        total="16",  # 4 posts/week * 4 weeks
     )
 
     content_plan = Agent(

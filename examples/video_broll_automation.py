@@ -4,15 +4,21 @@ Example: Video B-Roll Automation DSL Workflow
 This workflow generates complementary B-roll footage from a main video. It demonstrates:
 
 1. Feed a main video clip
-2. Extract frames and analyze content
-3. Generate complementary B-roll (transitions, overlays, effects)
+2. Analyze video content using LLM
+3. Generate complementary B-roll frames (transitions, overlays, effects)
 4. Apply consistent visual styles
-5. Compile seamlessly with the main footage
+5. Compile frames into video clips
 
 The workflow pattern:
-    [VideoInput] -> [FrameIterator] -> [Agent] (analyze content)
+    [VideoInput] -> [Agent] (analyze content)
                         -> [ListGenerator] (B-roll concepts) -> [ForEach] -> [TextToImage]
                             -> [FrameToVideo] -> [Transition] -> [Output]
+
+NOTE: This is a simplified demonstration. In a production workflow, you would:
+- Extract frames from the main video for visual analysis
+- Extract and preserve the original audio track
+- Interpolate or duplicate frames to create proper video clips
+- Use more sophisticated video assembly techniques
 
 Accelerates editing for video creators and filmmakers.
 """
@@ -193,8 +199,10 @@ Output format: One detailed prompt per line, no numbering.
     )
 
     # --- Convert frames to video clips ---
-    # Note: In a full implementation, each frame would be
-    # duplicated or interpolated to create short clips
+    # Note: FrameToVideo here demonstrates the pattern. In production, you would:
+    # - Duplicate frames to create longer clips (e.g., 3-5 seconds per frame)
+    # - Use frame interpolation for smooth motion
+    # - Apply panning/zooming effects for more dynamic clips
     broll_video = FrameToVideo(
         frame=enhanced_frame.output,
         fps=30.0,

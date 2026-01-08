@@ -6,12 +6,20 @@ This workflow creates reactive visuals from an audio track. It demonstrates:
 1. Upload audio track
 2. Transcribe with speech recognition (Whisper)
 3. Analyze audio for mood/energy using LLM
-4. Generate reactive visuals matching the audio mood
-5. Create style transfers for genre-specific aesthetics
+4. Generate mood-matching visual frames
+5. Compile into video with original audio
 
 The workflow pattern:
     [AudioInput] -> [AutomaticSpeechRecognition] -> [Agent] (analyze mood)
-                                                       -> [TextToImage] -> [FrameToVideo] -> [AddAudio] -> [Output]
+                                                       -> [ListGenerator] (frame prompts)
+                                                           -> [ForEach] -> [TextToImage]
+                                                               -> [FrameToVideo] -> [AddAudio] -> [Output]
+
+NOTE: This is a simplified demonstration. For true audio-reactive visuals, you would:
+- Analyze audio waveforms and BPM for timing synchronization
+- Generate many more frames for smooth video (24-30fps)
+- Use frame interpolation between generated keyframes
+- Apply beat-synced effects and transitions
 
 Perfect for music producers creating promotional clips.
 """
