@@ -29,11 +29,6 @@ class GrokImagineImageToVideo(
 
         Grok Imagine transforms images into videos using xAI's
         multimodal generation capabilities.
-
-        Use cases:
-        - Animate images into videos
-        - Create dynamic content from static images
-        - Generate video animations from reference images
     """
 
     Duration: typing.ClassVar[type] = (
@@ -81,11 +76,6 @@ class GrokImagineTextToVideo(
 
         Grok Imagine generates videos from text prompts using xAI's
         multimodal generation capabilities.
-
-        Use cases:
-        - Generate videos from text descriptions
-        - Create AI-powered visual content
-        - Produce creative video content
     """
 
     Resolution: typing.ClassVar[type] = (
@@ -134,12 +124,6 @@ class HailuoImageToVideoPro(
 
         Hailuo 2.3 Pro offers the highest quality image-to-video generation with
         realistic motion, detailed textures, and cinematic quality.
-
-        Use cases:
-        - Generate high-quality cinematic videos from images
-        - Create realistic motion and physics
-        - Professional video production
-        - High-fidelity image animation
     """
 
     Duration: typing.ClassVar[type] = (
@@ -194,12 +178,6 @@ class HailuoImageToVideoStandard(
 
         Hailuo 2.3 Standard offers efficient image-to-video generation with good quality
         and faster processing times for practical use cases.
-
-        Use cases:
-        - Generate quality videos from images efficiently
-        - Quick image animation with realistic motion
-        - Fast image-to-video prototyping
-        - Practical video content creation
     """
 
     Duration: typing.ClassVar[type] = (
@@ -391,11 +369,6 @@ class Kling25TurboImageToVideo(
 
         Transforms a static image into a dynamic video while preserving
         visual style, colors, lighting, and texture.
-
-        Use cases:
-        - Animate static images with realistic motion
-        - Create smooth camera transitions and scene depth
-        - Generate dynamic scenes from reference images
     """
 
     Duration: typing.ClassVar[type] = (
@@ -456,11 +429,6 @@ class Kling25TurboTextToVideo(
 
         Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
         consistent artistic styles, and realistic physics simulation.
-
-        Use cases:
-        - Create cinematic quality videos from text
-        - Generate complex narratives and action scenes
-        - Produce artistic animations with smooth motion
     """
 
     Duration: typing.ClassVar[type] = (
@@ -516,12 +484,6 @@ class KlingAIAvatarPro(
 
         Transforms a photo plus audio track into a lip-synced talking avatar video
         with natural-looking speech animation and consistent identity.
-
-        Use cases:
-        - Create virtual influencer content
-        - Generate educational presenters
-        - Lip-synced avatar videos
-        - Virtual spokesperson creation
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarPro.Mode
@@ -573,12 +535,6 @@ class KlingAIAvatarStandard(
 
         Transforms a photo plus audio track into a lip-synced talking avatar video
         with natural-looking speech animation and consistent identity.
-
-        Use cases:
-        - Create virtual influencer content
-        - Generate educational presenters
-        - Lip-synced avatar videos
-        - Virtual spokesperson creation
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode
@@ -630,11 +586,6 @@ class KlingImageToVideo(
 
         Transforms static images into dynamic videos with realistic motion
         and temporal consistency while preserving the original visual style.
-
-        Use cases:
-        - Animate static images into videos
-        - Create smooth camera movements from photos
-        - Generate dynamic content from reference images
     """
 
     prompt: str | OutputHandle[str] = connect_field(
@@ -692,11 +643,6 @@ class KlingTextToVideo(
 
         Kling 2.6 produces high-quality videos from text descriptions with
         realistic motion, natural lighting, and cinematic detail.
-
-        Use cases:
-        - Create cinematic videos from text descriptions
-        - Generate complex scenes and action sequences
-        - Produce marketing and promotional content
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -868,11 +814,6 @@ class SeedanceV1LiteTextToVideo(
 
         Seedance V1 Lite offers efficient text-to-video generation
         with good quality and faster processing times.
-
-        Use cases:
-        - Quick video generation from text
-        - Prototype video content creation
-        - Generate creative videos efficiently
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1152,11 +1093,6 @@ class Sora2ProImageToVideo(
 
         Sora 2 Pro transforms images into high-quality videos with
         realistic motion and temporal consistency.
-
-        Use cases:
-        - Animate images into videos
-        - Create dynamic content from still images
-        - Generate professional video from references
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1212,11 +1148,6 @@ class Sora2ProStoryboard(
 
         Sora 2 Pro creates videos from storyboard sequences with
         consistent characters and scenes across frames.
-
-        Use cases:
-        - Create videos from storyboard sequences
-        - Generate consistent multi-shot videos
-        - Produce narrative-driven video content
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1284,11 +1215,6 @@ class Sora2ProTextToVideo(
 
         Sora 2 Pro generates high-quality videos from text descriptions
         with advanced motion and temporal consistency.
-
-        Use cases:
-        - Create cinematic videos from text
-        - Generate complex scene compositions
-        - Produce professional video content
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1338,11 +1264,6 @@ class Sora2TextToVideo(
 
         Sora 2 Standard generates quality videos from text descriptions
         with efficient processing and good visual quality.
-
-        Use cases:
-        - Create videos from text descriptions
-        - Generate content efficiently
-        - Produce quality video output
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1490,11 +1411,6 @@ class Veo31ImageToVideo(
 
         Supports single image (image comes alive) or two images (first and last frames transition).
         For two images, the first image serves as the video's first frame and the second as the last frame.
-
-        Use cases:
-        - Animate static images into dynamic video
-        - Create smooth transitions between two reference images
-        - Generate cinematic motion from still photographs
     """
 
     Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
@@ -1564,11 +1480,6 @@ class Veo31ReferenceToVideo(
 
         Material-to-video generation based on reference images. Only supports veo3_fast model
         and 16:9 aspect ratio. Requires 1-3 reference images.
-
-        Use cases:
-        - Generate videos based on material/reference images
-        - Create product showcase videos
-        - Produce content from design references
     """
 
     Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
@@ -1641,11 +1552,6 @@ class Veo31TextToVideo(
     Generate videos from text using Google's Veo 3.1 model via Kie.ai.
 
         kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
-
-        Use cases:
-        - Create videos from text descriptions
-        - Generate cinematic quality video clips
-        - Produce content for social media and marketing
     """
 
     Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
@@ -1764,11 +1670,6 @@ class Wan26TextToVideo(
 
         Wan 2.6 generates high-quality videos from text descriptions
         with advanced motion and visual fidelity.
-
-        Use cases:
-        - Create cinematic videos from text
-        - Generate high-fidelity video content
-        - Produce professional video output
     """
 
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26TextToVideo.Duration
@@ -1815,11 +1716,6 @@ class Wan26VideoToVideo(
 
         Wan 2.6 transforms and enhances existing videos with AI-powered
         editing and style transfer capabilities.
-
-        Use cases:
-        - Transform video style and content
-        - Enhance video quality
-        - Create video variations and edits
     """
 
     Duration: typing.ClassVar[type] = (
@@ -1904,11 +1800,6 @@ class WanMultiShotTextToVideoPro(
 
         Wan 2.1 Multi-Shot generates complex videos with multiple shots
         and scene transitions from text descriptions.
-
-        Use cases:
-        - Create multi-shot videos from text
-        - Generate narrative video content
-        - Produce complex scene compositions
     """
 
     AspectRatio: typing.ClassVar[type] = (

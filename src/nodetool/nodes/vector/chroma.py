@@ -41,11 +41,6 @@ class ChromaNode(BaseNode):
     """Base class for vector database nodes.
 
     vector, base, database, chroma, faiss
-
-    Use cases:
-    - Provide shared helpers for vector indexing and queries
-    - Disable caching for subclasses
-    - Convert result IDs into asset references
     """
 
     @classmethod
@@ -79,13 +74,6 @@ class CollectionNode(ChromaNode):
     """
     Get or create a named vector database collection for storing embeddings.
     vector, embedding, collection, RAG, get, create, chroma
-
-    Use cases:
-    - Initialize collections for semantic search
-    - Organize embeddings by topic or domain
-    - Set up vector stores for RAG applications
-    - Manage multiple vector databases
-    - Configure embedding models per collection
     """
 
     name: str = Field(default="", description="The name of the collection to create")
@@ -374,9 +362,6 @@ class IndexString(ChromaNode):
     """
     Index a string with a Document ID to a collection.
     vector, embedding, collection, RAG, index, text, string, chroma
-
-    Use cases:
-    - Index documents for a vector search
     """
 
     collection: Collection = Field(

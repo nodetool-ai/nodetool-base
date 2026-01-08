@@ -306,9 +306,6 @@ class BatchToList(BaseNode):
     """
     Convert an image batch to a list of image references.
     batch, list, images, processing
-
-    Use cases:
-    - Convert comfy batch outputs to list format
     """
 
     batch: ImageRef = Field(
@@ -351,11 +348,6 @@ class Paste(BaseNode):
     """
     Paste one image onto another at specified coordinates.
     paste, composite, positioning, overlay
-
-    Use cases:
-    - Add watermarks or logos to images
-    - Combine multiple image elements
-    - Create collages or montages
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to paste into.")
@@ -379,10 +371,6 @@ class Scale(BaseNode):
     """
     Enlarge or shrink an image by a scale factor.
     image, resize, scale
-
-    - Adjust image dimensions for display galleries
-    - Standardize image sizes for machine learning datasets
-    - Create thumbnail versions of images
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to scale.")
@@ -400,10 +388,6 @@ class Resize(BaseNode):
     """
     Change image dimensions to specified width and height.
     image, resize
-
-    - Preprocess images for machine learning model inputs
-    - Optimize images for faster web page loading
-    - Create uniform image sizes for layouts
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to resize.")
@@ -420,10 +404,6 @@ class Crop(BaseNode):
     """
     Crop an image to specified coordinates.
     image, crop
-
-    - Remove unwanted borders from images
-    - Focus on particular subjects within an image
-    - Simplify images by removing distractions
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to crop.")
@@ -444,10 +424,6 @@ class Fit(BaseNode):
     """
     Resize an image to fit within specified dimensions while preserving aspect ratio.
     image, resize, fit
-
-    - Resize images for online publishing requirements
-    - Preprocess images to uniform sizes for machine learning
-    - Control image display sizes for web development
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to fit.")
@@ -464,12 +440,6 @@ class TextToImage(BaseNode):
     """
     Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, generation, AI, text-to-image, t2i
-
-    Use cases:
-    - Create images from text descriptions
-    - Switch between providers without changing workflows
-    - Generate images with different AI models
-    - Cost-optimize by choosing different providers
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -557,12 +527,6 @@ class ImageToImage(BaseNode):
     """
     Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, transformation, AI, image-to-image, i2i
-
-    Use cases:
-    - Modify existing images with text instructions
-    - Style transfer and artistic modifications
-    - Image enhancement and refinement
-    - Creative image edits guided by prompts
     """
 
     _expose_as_tool: ClassVar[bool] = True

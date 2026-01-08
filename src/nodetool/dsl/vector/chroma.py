@@ -26,13 +26,6 @@ class CollectionNode(
 
     Get or create a named vector database collection for storing embeddings.
     vector, embedding, collection, RAG, get, create, chroma
-
-    Use cases:
-    - Initialize collections for semantic search
-    - Organize embeddings by topic or domain
-    - Set up vector stores for RAG applications
-    - Manage multiple vector databases
-    - Configure embedding models per collection
     """
 
     name: str | OutputHandle[str] = connect_field(
@@ -334,9 +327,6 @@ class IndexString(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
     Index a string with a Document ID to a collection.
     vector, embedding, collection, RAG, index, text, string, chroma
-
-    Use cases:
-    - Index documents for a vector search
     """
 
     collection: types.Collection | OutputHandle[types.Collection] = connect_field(

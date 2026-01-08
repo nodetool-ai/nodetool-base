@@ -26,9 +26,6 @@ class BatchToList(
 
     Convert an image batch to a list of image references.
     batch, list, images, processing
-
-    Use cases:
-    - Convert comfy batch outputs to list format
     """
 
     batch: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -59,10 +56,6 @@ class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     Crop an image to specified coordinates.
     image, crop
-
-    - Remove unwanted borders from images
-    - Focus on particular subjects within an image
-    - Simplify images by removing distractions
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -105,10 +98,6 @@ class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     Resize an image to fit within specified dimensions while preserving aspect ratio.
     image, resize, fit
-
-    - Resize images for online publishing requirements
-    - Preprocess images to uniform sizes for machine learning
-    - Control image display sizes for web development
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -201,12 +190,6 @@ class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
 
     Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, transformation, AI, image-to-image, i2i
-
-    Use cases:
-    - Modify existing images with text instructions
-    - Style transfer and artistic modifications
-    - Image enhancement and refinement
-    - Creative image edits guided by prompts
     """
 
     model: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
@@ -452,11 +435,6 @@ class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     Paste one image onto another at specified coordinates.
     paste, composite, positioning, overlay
-
-    Use cases:
-    - Add watermarks or logos to images
-    - Combine multiple image elements
-    - Create collages or montages
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -499,10 +477,6 @@ class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     Change image dimensions to specified width and height.
     image, resize
-
-    - Preprocess images for machine learning model inputs
-    - Optimize images for faster web page loading
-    - Create uniform image sizes for layouts
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -620,10 +594,6 @@ class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
 
     Enlarge or shrink an image by a scale factor.
     image, resize, scale
-
-    - Adjust image dimensions for display galleries
-    - Standardize image sizes for machine learning datasets
-    - Create thumbnail versions of images
     """
 
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
@@ -657,12 +627,6 @@ class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
 
     Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, generation, AI, text-to-image, t2i
-
-    Use cases:
-    - Create images from text descriptions
-    - Switch between providers without changing workflows
-    - Generate images with different AI models
-    - Cost-optimize by choosing different providers
     """
 
     model: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(

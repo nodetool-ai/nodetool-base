@@ -215,11 +215,6 @@ class IsWorkspaceFile(SingleOutputGraphNode[bool], GraphNode[bool]):
 
     Check if a path in the workspace is a file.
     workspace, file, check, type
-
-    Use cases:
-    - Distinguish files from directories
-    - Validate file types
-    - Filter paths by type
     """
 
     path: str | OutputHandle[str] = connect_field(
@@ -528,11 +523,6 @@ class WriteBinaryFile(SingleOutputGraphNode[str], GraphNode[str]):
 
     Write binary data (base64-encoded) to a file in the workspace.
     workspace, file, write, binary, save
-
-    Use cases:
-    - Save binary data to workspace
-    - Write decoded base64 data
-    - Export binary results
     """
 
     path: str | OutputHandle[str] = connect_field(

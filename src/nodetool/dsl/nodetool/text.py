@@ -540,11 +540,6 @@ class FilterString(GraphNode[nodetool.nodes.nodetool.text.FilterString.OutputTyp
 
     Filters a stream of strings based on various criteria.
     filter, strings, text, stream
-
-    Use cases:
-    - Filter strings by length
-    - Filter strings containing specific text
-    - Filter strings by prefix/suffix
     """
 
     FilterType: typing.ClassVar[type] = (
@@ -730,12 +725,6 @@ class HtmlToText(SingleOutputGraphNode[str], GraphNode[str]):
 
     Converts HTML content to plain text using html2text.
     html, convert, text, parse, extract
-
-    Use cases:
-    - Converting HTML documents to readable plain text
-    - Extracting text content from web pages
-    - Cleaning HTML markup from text data
-    - Processing HTML emails or documents
     """
 
     html: str | OutputHandle[str] = connect_field(
@@ -775,11 +764,6 @@ class IndexOf(SingleOutputGraphNode[int], GraphNode[int]):
 
     Finds the position of a substring in text.
     text, search, find, substring
-
-    Use cases:
-    - Locating markers to drive downstream slices
-    - Building quick validations before parsing
-    - Detecting repeated terms by scanning from the end
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -818,11 +802,6 @@ class IsEmpty(SingleOutputGraphNode[bool], GraphNode[bool]):
 
     Checks if text is empty or contains only whitespace.
     text, check, empty, compare, validate, whitespace, string
-
-    Use cases:
-    - Validating required text fields
-    - Filtering out empty content
-    - Checking for meaningful input
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -879,11 +858,6 @@ class Length(SingleOutputGraphNode[int], GraphNode[int]):
 
     Measures text length as characters, words, or lines.
     text, analyze, length, count
-
-    Use cases:
-    - Quickly gating prompts by size before LLM calls
-    - Showing word or line counts in mini apps
-    - Tracking character budgets for UI copy
     """
 
     Measure: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Length.Measure
@@ -918,11 +892,6 @@ class LoadTextAssets(GraphNode[nodetool.nodes.nodetool.text.LoadTextAssets.Outpu
 
     Load text files from an asset folder.
     load, text, file, import
-
-    Use cases:
-    - Loading multiple text files for batch processing
-    - Importing text content from a directory
-    - Processing collections of text documents
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
@@ -967,11 +936,6 @@ class PadText(SingleOutputGraphNode[str], GraphNode[str]):
 
     Pads text to a target length.
     text, pad, length, format
-
-    Use cases:
-    - Aligning tabular text outputs
-    - Creating fixed-width fields for legacy systems
-    - Left-padding numbers with zeros
     """
 
     PadDirection: typing.ClassVar[type] = (
@@ -1186,11 +1150,6 @@ class RemovePunctuation(SingleOutputGraphNode[str], GraphNode[str]):
 
     Removes punctuation characters from text.
     text, cleanup, punctuation, normalize
-
-    Use cases:
-    - Cleaning transcripts before keyword search
-    - Preparing identifiers for filesystem safe names
-    - Simplifying comparisons by stripping symbols
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1453,11 +1412,6 @@ class StripAccents(SingleOutputGraphNode[str], GraphNode[str]):
 
     Removes accent marks while keeping base characters.
     text, cleanup, accents, normalize
-
-    Use cases:
-    - Creating ASCII-only identifiers from user input
-    - Normalizing prompts that mix accented and plain characters
-    - Simplifying comparisons against datasets lacking accents
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)

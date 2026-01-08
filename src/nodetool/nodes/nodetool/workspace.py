@@ -178,11 +178,6 @@ class WriteBinaryFile(BaseNode):
     """
     Write binary data (base64-encoded) to a file in the workspace.
     workspace, file, write, binary, save
-
-    Use cases:
-    - Save binary data to workspace
-    - Write decoded base64 data
-    - Export binary results
     """
 
     path: str = Field(default="", description="Relative path to file within workspace")
@@ -391,11 +386,6 @@ class IsWorkspaceFile(BaseNode):
     """
     Check if a path in the workspace is a file.
     workspace, file, check, type
-
-    Use cases:
-    - Distinguish files from directories
-    - Validate file types
-    - Filter paths by type
     """
 
     @classmethod
