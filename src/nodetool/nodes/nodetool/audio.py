@@ -225,6 +225,8 @@ class SaveAudioFile(BaseNode):
     The filename can include time and date variables:
     %Y - Year, %m - Month, %d - Day
     %H - Hour, %M - Minute, %S - Second
+
+    Supported formats: mp3, wav, ogg, flac, aac, m4a
     """
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio to save")
@@ -243,6 +245,16 @@ class SaveAudioFile(BaseNode):
         """,
     )
 
+    # Mapping of file extensions to pydub export format names
+    FORMAT_MAP: dict[str, str] = {
+        ".mp3": "mp3",
+        ".wav": "wav",
+        ".ogg": "ogg",
+        ".flac": "flac",
+        ".aac": "adts",  # AAC in ADTS container
+        ".m4a": "ipod",  # M4A uses 'ipod' format in pydub/ffmpeg
+    }
+
     async def process(self, context: ProcessingContext) -> AudioRef:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
@@ -259,10 +271,25 @@ class SaveAudioFile(BaseNode):
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
 
-        audio_io = await context.asset_to_io(self.audio)
-        audio_data = audio_io.read()
+        # Determine export format from file extension
+        _, ext = os.path.splitext(filename)
+        ext_lower = ext.lower()
+        if ext_lower not in self.FORMAT_MAP:
+            raise ValueError(
+                f"Unsupported audio format: {ext}. "
+                f"Supported formats: {', '.join(self.FORMAT_MAP.keys())}"
+            )
+        export_format = self.FORMAT_MAP[ext_lower]
+
+        # Load audio as AudioSegment and export with proper encoding
+        audio_segment = await context.audio_to_audio_segment(self.audio)
         with open(expanded_path, "wb") as f:
-            f.write(audio_data)
+            audio_segment.export(f, format=export_format)
+
+        # Read back the exported data for the AudioRef
+        with open(expanded_path, "rb") as f:
+            audio_data = f.read()
+
         result = AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
 
         # Emit SaveUpdate event
