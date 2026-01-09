@@ -7,13 +7,14 @@ import asyncio
 from enum import Enum
 from typing import Any, ClassVar
 
+import aiohttp
 from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
-from nodetool.metadata.types import ImageRef, VideoRef, AudioRef
+from nodetool.metadata.types import AudioRef, ImageRef, VideoRef
 from nodetool.workflows.processing_context import ProcessingContext
 
-from .image import KieBaseNode
+from .image import KieBaseNode, KIE_API_BASE_URL
 
 log = get_logger(__name__)
 
@@ -45,9 +46,19 @@ class KieVideoBaseNode(KieBaseNode):
 
 
 class KlingTextToVideo(KieVideoBaseNode):
-    """Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai."""
+    """Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, text-to-video, 2.6
+
+    Kling 2.6 produces high-quality videos from text descriptions with
+    realistic motion, natural lighting, and cinematic detail.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.6 Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -102,9 +113,19 @@ class KlingTextToVideo(KieVideoBaseNode):
 
 
 class KlingImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai."""
+    """Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, image-to-video, 2.6
+
+    Transforms static images into dynamic videos with realistic motion
+    and temporal consistency while preserving the original visual style.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.6 Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -168,12 +189,6 @@ class KlingAIAvatarStandard(KieVideoBaseNode):
 
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
-
-    Use cases:
-    - Create virtual influencer content
-    - Generate educational presenters
-    - Lip-synced avatar videos
-    - Virtual spokesperson creation
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -239,12 +254,6 @@ class KlingAIAvatarPro(KieVideoBaseNode):
 
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
-
-    Use cases:
-    - Create virtual influencer content
-    - Generate educational presenters
-    - Lip-synced avatar videos
-    - Virtual spokesperson creation
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -304,9 +313,19 @@ class KlingAIAvatarPro(KieVideoBaseNode):
 
 
 class GrokImagineTextToVideo(KieVideoBaseNode):
-    """Generate videos from text using xAI's Grok Imagine model via Kie.ai."""
+    """Generate videos from text using xAI's Grok Imagine model via Kie.ai.
+
+    kie, grok, xai, video generation, ai, text-to-video, multimodal
+
+    Grok Imagine generates videos from text prompts using xAI's
+    multimodal generation capabilities.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Grok Imagine Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -348,9 +367,19 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
 
 
 class GrokImagineImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using xAI's Grok Imagine model via Kie.ai."""
+    """Generate videos from images using xAI's Grok Imagine model via Kie.ai.
+
+    kie, grok, xai, video generation, ai, image-to-video, multimodal
+
+    Grok Imagine transforms images into videos using xAI's
+    multimodal generation capabilities.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Grok Imagine Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -440,9 +469,19 @@ class SeedanceBaseNode(KieVideoBaseNode):
 
 
 class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
-    """Bytedance 1.0 - text-to-video-lite via Kie.ai."""
+    """Bytedance 1.0 - text-to-video-lite via Kie.ai.
+
+    kie, seedance, bytedance, video generation, ai, text-to-video, lite
+
+    Seedance V1 Lite offers efficient text-to-video generation
+    with good quality and faster processing times.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Lite Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -467,6 +506,10 @@ class SeedanceV1ProTextToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Pro Text To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -489,6 +532,10 @@ class SeedanceV1LiteImageToVideo(SeedanceBaseNode):
     """Bytedance 1.0 - image-to-video-lite via Kie.ai."""
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Lite Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -538,6 +585,10 @@ class SeedanceV1ProImageToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Pro Image To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
@@ -586,6 +637,10 @@ class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V1 Pro Fast Image To Video"
+
     image1: ImageRef = Field(
         default=ImageRef(),
         description="First source image for the video generation.",
@@ -631,6 +686,10 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Pro Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -688,6 +747,10 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Standard Text To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -743,15 +806,13 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
 
     Hailuo 2.3 Pro offers the highest quality image-to-video generation with
     realistic motion, detailed textures, and cinematic quality.
-
-    Use cases:
-    - Generate high-quality cinematic videos from images
-    - Create realistic motion and physics
-    - Professional video production
-    - High-fidelity image animation
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Pro Image To Video"
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -822,15 +883,13 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
 
     Hailuo 2.3 Standard offers efficient image-to-video generation with good quality
     and faster processing times for practical use cases.
-
-    Use cases:
-    - Generate quality videos from images efficiently
-    - Quick image animation with realistic motion
-    - Fast image-to-video prototyping
-    - Practical video content creation
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.3 Standard Image To Video"
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -894,75 +953,6 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
         return await context.video_from_bytes(video_bytes)
 
 
-class HailuoImageToVideo(KieVideoBaseNode):
-    """Generate videos from images using MiniMax's Hailuo model via Kie.ai."""
-
-    _expose_as_tool: ClassVar[bool] = True
-
-    prompt: str = Field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to animate.",
-    )
-
-    class ModelType(str, Enum):
-        PRO = "pro"
-        STANDARD = "standard"
-
-    model_type: ModelType = Field(
-        default=ModelType.PRO,
-        description="The model tier to use.",
-    )
-
-    class Duration(str, Enum):
-        D6 = "6"
-        D10 = "10"
-
-    duration: Duration = Field(
-        default=Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-
-    class Resolution(str, Enum):
-        R768P = "768P"
-        R1080P = "1080P"
-
-    resolution: Resolution = Field(
-        default=Resolution.R768P,
-        description="The resolution of the video.",
-    )
-
-    def _get_model(self) -> str:
-        return f"hailuo/2-3-image-to-video-{self.model_type.value}"
-
-    async def _get_input_params(
-        self, context: ProcessingContext | None = None
-    ) -> dict[str, Any]:
-        if not self.prompt:
-            raise ValueError("Prompt is required")
-        if context is None:
-            raise ValueError("Context is required for image upload")
-
-        image_url = await self._upload_image(context, self.image)
-
-        if (
-            self.resolution == self.Resolution.R1080P
-            and self.duration == self.Duration.D10
-        ):
-            raise ValueError("10s duration is not supported for 1080p resolution.")
-
-        return {
-            "prompt": self.prompt,
-            "image_url": image_url,
-            "resolution": self.resolution.value,
-            "duration": self.duration.value,
-        }
-
-
 class Kling25TurboTextToVideo(KieVideoBaseNode):
     """Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
 
@@ -970,14 +960,13 @@ class Kling25TurboTextToVideo(KieVideoBaseNode):
 
     Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
     consistent artistic styles, and realistic physics simulation.
-
-    Use cases:
-    - Create cinematic quality videos from text
-    - Generate complex narratives and action scenes
-    - Produce artistic animations with smooth motion
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.5 Turbo Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1042,14 +1031,13 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
 
     Transforms a static image into a dynamic video while preserving
     visual style, colors, lighting, and texture.
-
-    Use cases:
-    - Animate static images with realistic motion
-    - Create smooth camera transitions and scene depth
-    - Generate dynamic scenes from reference images
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.5 Turbo Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1116,6 +1104,11 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
         return payload
 
 
+class Sora2Frames(str, Enum):
+    _10s = "10"
+    _15s = "15"
+
+
 class Sora2BaseNode(KieVideoBaseNode):
     """Base class for Sora 2 nodes via Kie.ai."""
 
@@ -1134,18 +1127,26 @@ class Sora2BaseNode(KieVideoBaseNode):
         description="Whether to remove the watermark from the video.",
     )
 
-    n_frames: int = Field(
-        default=10,
+    n_frames: Sora2Frames = Field(
+        default=Sora2Frames._10s,
         description="Number of frames for the video output.",
-        ge=1,
-        le=60,
     )
 
 
 class Sora2ProTextToVideo(Sora2BaseNode):
-    """Generate videos from text using Sora 2 Pro via Kie.ai."""
+    """Generate videos from text using Sora 2 Pro via Kie.ai.
+
+    kie, sora, openai, video generation, ai, text-to-video, pro
+
+    Sora 2 Pro generates high-quality videos from text descriptions
+    with advanced motion and temporal consistency.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Pro Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1163,15 +1164,25 @@ class Sora2ProTextToVideo(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
 
 class Sora2ProImageToVideo(Sora2BaseNode):
-    """Generate videos from images using Sora 2 Pro via Kie.ai."""
+    """Generate videos from images using Sora 2 Pro via Kie.ai.
+
+    kie, sora, openai, video generation, ai, image-to-video, pro
+
+    Sora 2 Pro transforms images into high-quality videos with
+    realistic motion and temporal consistency.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Pro Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1198,15 +1209,25 @@ class Sora2ProImageToVideo(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "image_url": image_url,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
 
 class Sora2ProStoryboard(Sora2BaseNode):
-    """Generate videos from storyboards using Sora 2 Pro via Kie.ai."""
+    """Generate videos from storyboards using Sora 2 Pro via Kie.ai.
+
+    kie, sora, openai, video generation, ai, storyboard, pro
+
+    Sora 2 Pro creates videos from storyboard sequences with
+    consistent characters and scenes across frames.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Pro Storyboard"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1248,26 +1269,29 @@ class Sora2ProStoryboard(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "image_urls": image_urls,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
 
 class Sora2TextToVideo(Sora2BaseNode):
-    """Generate videos from text using Sora 2 Standard via Kie.ai."""
+    """Generate videos from text using Sora 2 Standard via Kie.ai.
+
+    kie, sora, openai, video generation, ai, text-to-video, standard
+
+    Sora 2 Standard generates quality videos from text descriptions
+    with efficient processing and good visual quality.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
-    )
-
-    n_frames: int = Field(
-        default=10,
-        description="Number of frames for the video output.",
-        ge=1,
-        le=60,
     )
 
     def _get_model(self) -> str:
@@ -1281,15 +1305,25 @@ class Sora2TextToVideo(Sora2BaseNode):
         return {
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
-            "n_frames": self.n_frames,
+            "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
         }
 
 
 class WanMultiShotTextToVideoPro(KieVideoBaseNode):
-    """Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai."""
+    """Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1
+
+    Wan 2.1 Multi-Shot generates complex videos with multiple shots
+    and scene transitions from text descriptions.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.1 Multi-Shot Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1349,9 +1383,19 @@ class WanMultiShotTextToVideoPro(KieVideoBaseNode):
 
 
 class Wan26TextToVideo(KieVideoBaseNode):
-    """Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai."""
+    """Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, 2.6
+
+    Wan 2.6 generates high-quality videos from text descriptions
+    with advanced motion and visual fidelity.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.6 Text To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1359,7 +1403,7 @@ class Wan26TextToVideo(KieVideoBaseNode):
     )
 
     class Duration(str, Enum):
-        D5 = "5"
+        D5 = "5s"
         D10 = "10"
 
     duration: Duration = Field(
@@ -1393,6 +1437,10 @@ class Wan26TextToVideo(KieVideoBaseNode):
 
 class Wan26ImageToVideo(KieVideoBaseNode):
     """Generate videos from images using Alibaba's Wan 2.6 model via Kie.ai."""
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.6 Image To Video"
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1460,9 +1508,19 @@ class Wan26ImageToVideo(KieVideoBaseNode):
 
 
 class Wan26VideoToVideo(KieVideoBaseNode):
-    """Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai."""
+    """Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, video-to-video, 2.6
+
+    Wan 2.6 transforms and enhances existing videos with AI-powered
+    editing and style transfer capabilities.
+    """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.6 Video To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1624,3 +1682,351 @@ class InfinitalkV1(KieVideoBaseNode):
             "audio_url": audio_url,
             "resolution": self.resolution.value,
         }
+
+
+class Veo31BaseNode(KieVideoBaseNode):
+    """Base class for Google Veo 3.1 video generation nodes via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, image-to-video
+
+    Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
+    and significant cost savings (25% of Google's direct API pricing).
+    """
+
+    _poll_interval: float = 8.0
+    _max_poll_attempts: int = 240
+
+    class Model(str, Enum):
+        VEO3 = "veo3"
+        VEO3_FAST = "veo3_fast"
+
+    model: Model = Field(
+        default=Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        AUTO = "Auto"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+        ge=0,
+        le=99999,
+    )
+
+    enable_translation: bool = Field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+
+    watermark: str = Field(
+        default="",
+        description="Optional watermark text to add to the generated video.",
+    )
+
+    def _get_headers(self, api_key: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+
+
+class Veo31TextToVideo(Veo31BaseNode):
+    """Generate videos from text using Google's Veo 3.1 model via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the desired video content.",
+    )
+
+    def _get_model(self) -> str:
+        return f"google/{self.model.value}"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "model": self.model.value,
+            "generationType": "TEXT_2_VIDEO",
+            "aspectRatio": self.aspect_ratio.value,
+            "enableTranslation": self.enable_translation,
+        }
+
+        if self.seed > 0:
+            payload["seeds"] = self.seed
+
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+            result_json_str = status_data.get("data", {}).get("resultJson", "")
+
+            if not result_json_str:
+                raise ValueError("No resultJson in response")
+
+            import json
+
+            result_data = json.loads(result_json_str)
+            result_urls = result_data.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in resultJson")
+
+            result_url = result_urls[0]
+            log.debug(f"Downloading result from {result_url}")
+
+            async with session.get(result_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(
+                        f"Failed to download result from URL: {result_url}"
+                    )
+                return await video_response.read()
+
+
+class Veo31ImageToVideo(Veo31BaseNode):
+    """Generate videos from images using Google's Veo 3.1 model via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v
+
+    Supports single image (image comes alive) or two images (first and last frames transition).
+    For two images, the first image serves as the video's first frame and the second as the last frame.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text prompt describing how the image should come alive.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image. Required. Serves as the video's first frame.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional). If provided, serves as the video's last frame.",
+    )
+
+    def _get_model(self) -> str:
+        return f"google/{self.model.value}"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
+
+        image_urls = []
+        image_url1 = await self._upload_image(context, self.image1)
+        image_urls.append(image_url1)
+
+        if self.image2.is_set():
+            image_url2 = await self._upload_image(context, self.image2)
+            image_urls.append(image_url2)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "imageUrls": image_urls,
+            "model": self.model.value,
+            "generationType": "FIRST_AND_LAST_FRAMES_2_VIDEO",
+            "aspectRatio": self.aspect_ratio.value,
+            "enableTranslation": self.enable_translation,
+        }
+
+        if self.seed > 0:
+            payload["seeds"] = self.seed
+
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+            result_json_str = status_data.get("data", {}).get("resultJson", "")
+
+            if not result_json_str:
+                raise ValueError("No resultJson in response")
+
+            import json
+
+            result_data = json.loads(result_json_str)
+            result_urls = result_data.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in resultJson")
+
+            result_url = result_urls[0]
+            log.debug(f"Downloading result from {result_url}")
+
+            async with session.get(result_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(
+                        f"Failed to download result from URL: {result_url}"
+                    )
+                return await video_response.read()
+
+
+class Veo31ReferenceToVideo(Veo31BaseNode):
+    """Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.
+
+    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video
+
+    Material-to-video generation based on reference images. Only supports veo3_fast model
+    and 16:9 aspect ratio. Requires 1-3 reference images.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text prompt describing the desired video content.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First reference image. Required. Minimum 1, maximum 3 images.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second reference image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third reference image (optional).",
+    )
+
+    def _get_model(self) -> str:
+        return "google/veo3_fast"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.image1.is_set():
+            raise ValueError("At least one reference image is required")
+
+        if self.aspect_ratio != self.AspectRatio.RATIO_16_9:
+            raise ValueError("REFERENCE_2_VIDEO mode only supports 16:9 aspect ratio")
+
+        image_urls = []
+        for img in [self.image1, self.image2, self.image3]:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                image_urls.append(url)
+
+        if len(image_urls) > 3:
+            raise ValueError("Maximum 3 reference images allowed")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "imageUrls": image_urls,
+            "model": "veo3_fast",
+            "generationType": "REFERENCE_2_VIDEO",
+            "aspectRatio": "16:9",
+            "enableTranslation": self.enable_translation,
+        }
+
+        if self.seed > 0:
+            payload["seeds"] = self.seed
+
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+            result_json_str = status_data.get("data", {}).get("resultJson", "")
+
+            if not result_json_str:
+                raise ValueError("No resultJson in response")
+
+            import json
+
+            result_data = json.loads(result_json_str)
+            result_urls = result_data.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in resultJson")
+
+            result_url = result_urls[0]
+            log.debug(f"Downloading result from {result_url}")
+
+            async with session.get(result_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(
+                        f"Failed to download result from URL: {result_url}"
+                    )
+                return await video_response.read()

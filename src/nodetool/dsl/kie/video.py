@@ -24,6 +24,11 @@ class GrokImagineImageToVideo(
 ):
     """
     Generate videos from images using xAI's Grok Imagine model via Kie.ai.
+
+        kie, grok, xai, video generation, ai, image-to-video, multimodal
+
+        Grok Imagine transforms images into videos using xAI's
+        multimodal generation capabilities.
     """
 
     Duration: typing.ClassVar[type] = (
@@ -66,6 +71,11 @@ class GrokImagineTextToVideo(
 ):
     """
     Generate videos from text using xAI's Grok Imagine model via Kie.ai.
+
+        kie, grok, xai, video generation, ai, text-to-video, multimodal
+
+        Grok Imagine generates videos from text prompts using xAI's
+        multimodal generation capabilities.
     """
 
     Resolution: typing.ClassVar[type] = (
@@ -104,62 +114,6 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
-class HailuoImageToVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
-    """
-    Generate videos from images using MiniMax's Hailuo model via Kie.ai.
-    """
-
-    ModelType: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideo.ModelType
-    )
-    Duration: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideo.Duration
-    )
-    Resolution: typing.ClassVar[type] = (
-        nodetool.nodes.kie.video.HailuoImageToVideo.Resolution
-    )
-
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to animate.",
-    )
-    model_type: nodetool.nodes.kie.video.HailuoImageToVideo.ModelType = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideo.ModelType.PRO,
-        description="The model tier to use.",
-    )
-    duration: nodetool.nodes.kie.video.HailuoImageToVideo.Duration = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideo.Duration.D6,
-        description="The duration of the video in seconds. 10s is not supported for 1080p.",
-    )
-    resolution: nodetool.nodes.kie.video.HailuoImageToVideo.Resolution = Field(
-        default=nodetool.nodes.kie.video.HailuoImageToVideo.Resolution.R768P,
-        description="The resolution of the video.",
-    )
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.kie.video.HailuoImageToVideo
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.kie.video
-from nodetool.workflows.base_node import BaseNode
-
-
 class HailuoImageToVideoPro(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -170,12 +124,6 @@ class HailuoImageToVideoPro(
 
         Hailuo 2.3 Pro offers the highest quality image-to-video generation with
         realistic motion, detailed textures, and cinematic quality.
-
-        Use cases:
-        - Generate high-quality cinematic videos from images
-        - Create realistic motion and physics
-        - Professional video production
-        - High-fidelity image animation
     """
 
     Duration: typing.ClassVar[type] = (
@@ -230,12 +178,6 @@ class HailuoImageToVideoStandard(
 
         Hailuo 2.3 Standard offers efficient image-to-video generation with good quality
         and faster processing times for practical use cases.
-
-        Use cases:
-        - Generate quality videos from images efficiently
-        - Quick image animation with realistic motion
-        - Fast image-to-video prototyping
-        - Practical video content creation
     """
 
     Duration: typing.ClassVar[type] = (
@@ -417,6 +359,121 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class Kling25TurboImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, turbo
+
+        Transforms a static image into a dynamic video while preserving
+        visual style, colors, lighting, and texture.
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description to guide the video generation.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to animate.",
+    )
+    tail_image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Tail frame image for the video (optional).",
+    )
+    duration: nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Elements to avoid in the video."
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="The CFG scale for prompt adherence. Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Kling25TurboImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Kling25TurboTextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Kuaishou's Kling 2.5 Turbo model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, text-to-video, turbo
+
+        Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
+        consistent artistic styles, and realistic physics simulation.
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration
+    )
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    duration: nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Kling25TurboTextToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Things to avoid in the generated video."
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="The CFG scale for prompt adherence. Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Kling25TurboTextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class KlingAIAvatarPro(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -427,12 +484,6 @@ class KlingAIAvatarPro(
 
         Transforms a photo plus audio track into a lip-synced talking avatar video
         with natural-looking speech animation and consistent identity.
-
-        Use cases:
-        - Create virtual influencer content
-        - Generate educational presenters
-        - Lip-synced avatar videos
-        - Virtual spokesperson creation
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarPro.Mode
@@ -484,12 +535,6 @@ class KlingAIAvatarStandard(
 
         Transforms a photo plus audio track into a lip-synced talking avatar video
         with natural-looking speech animation and consistent identity.
-
-        Use cases:
-        - Create virtual influencer content
-        - Generate educational presenters
-        - Lip-synced avatar videos
-        - Virtual spokesperson creation
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode
@@ -536,6 +581,11 @@ class KlingImageToVideo(
 ):
     """
     Generate videos from images using Kuaishou's Kling 2.6 model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, 2.6
+
+        Transforms static images into dynamic videos with realistic motion
+        and temporal consistency while preserving the original visual style.
     """
 
     prompt: str | OutputHandle[str] = connect_field(
@@ -588,6 +638,11 @@ class KlingTextToVideo(
 ):
     """
     Generate videos from text using Kuaishou's Kling 2.6 model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, text-to-video, 2.6
+
+        Kling 2.6 produces high-quality videos from text descriptions with
+        realistic motion, natural lighting, and cinematic detail.
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -754,6 +809,11 @@ class SeedanceV1LiteTextToVideo(
 ):
     """
     Bytedance 1.0 - text-to-video-lite via Kie.ai.
+
+        kie, seedance, bytedance, video generation, ai, text-to-video, lite
+
+        Seedance V1 Lite offers efficient text-to-video generation
+        with good quality and faster processing times.
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -993,6 +1053,7 @@ class Sora2BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
+    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
@@ -1001,8 +1062,9 @@ class Sora2BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
     )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
+    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
+        default=nodetool.nodes.kie.video.Sora2Frames._10s,
+        description="Number of frames for the video output.",
     )
 
     @classmethod
@@ -1026,11 +1088,17 @@ class Sora2ProImageToVideo(
 ):
     """
     Generate videos from images using Sora 2 Pro via Kie.ai.
+
+        kie, sora, openai, video generation, ai, image-to-video, pro
+
+        Sora 2 Pro transforms images into high-quality videos with
+        realistic motion and temporal consistency.
     """
 
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
+    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
@@ -1039,8 +1107,9 @@ class Sora2ProImageToVideo(
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
     )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
+    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
+        default=nodetool.nodes.kie.video.Sora2Frames._10s,
+        description="Number of frames for the video output.",
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1074,11 +1143,17 @@ class Sora2ProStoryboard(
 ):
     """
     Generate videos from storyboards using Sora 2 Pro via Kie.ai.
+
+        kie, sora, openai, video generation, ai, storyboard, pro
+
+        Sora 2 Pro creates videos from storyboard sequences with
+        consistent characters and scenes across frames.
     """
 
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
+    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
@@ -1087,8 +1162,9 @@ class Sora2ProStoryboard(
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
     )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
+    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
+        default=nodetool.nodes.kie.video.Sora2Frames._10s,
+        description="Number of frames for the video output.",
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1134,11 +1210,17 @@ class Sora2ProTextToVideo(
 ):
     """
     Generate videos from text using Sora 2 Pro via Kie.ai.
+
+        kie, sora, openai, video generation, ai, text-to-video, pro
+
+        Sora 2 Pro generates high-quality videos from text descriptions
+        with advanced motion and temporal consistency.
     """
 
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
+    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
@@ -1147,8 +1229,9 @@ class Sora2ProTextToVideo(
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
     )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
+    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
+        default=nodetool.nodes.kie.video.Sora2Frames._10s,
+        description="Number of frames for the video output.",
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1176,11 +1259,17 @@ class Sora2TextToVideo(
 ):
     """
     Generate videos from text using Sora 2 Standard via Kie.ai.
+
+        kie, sora, openai, video generation, ai, text-to-video, standard
+
+        Sora 2 Standard generates quality videos from text descriptions
+        with efficient processing and good visual quality.
     """
 
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
+    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
@@ -1189,8 +1278,9 @@ class Sora2TextToVideo(
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
     )
-    n_frames: int | OutputHandle[int] = connect_field(
-        default=10, description="Number of frames for the video output."
+    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
+        default=nodetool.nodes.kie.video.Sora2Frames._10s,
+        description="Number of frames for the video output.",
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1247,6 +1337,255 @@ class TopazVideoUpscale(
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.kie.video.TopazVideoUpscale
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
+    """
+    Base class for Google Veo 3.1 video generation nodes via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, image-to-video
+
+        Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
+        and significant cost savings (25% of Google's direct API pricing).
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31BaseNode
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31ImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Google's Veo 3.1 model via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v
+
+        Supports single image (image comes alive) or two images (first and last frames transition).
+        For two images, the first image serves as the video's first frame and the second as the last frame.
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text prompt describing how the image should come alive.",
+    )
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First source image. Required. Serves as the video's first frame.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second source image (optional). If provided, serves as the video's last frame.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31ImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31ReferenceToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video
+
+        Material-to-video generation based on reference images. Only supports veo3_fast model
+        and 16:9 aspect ratio. Requires 1-3 reference images.
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text prompt describing the desired video content.",
+    )
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First reference image. Required. Minimum 1, maximum 3 images.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second reference image (optional).",
+    )
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Third reference image (optional).",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31ReferenceToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Veo31TextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Google's Veo 3.1 model via Kie.ai.
+
+        kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
+    )
+
+    model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
+        description="The model to use for video generation.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
+        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random seed.",
+    )
+    enable_translation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Enable automatic translation of prompts to English for better results.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to add to the generated video."
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the desired video content.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Veo31TextToVideo
 
     @classmethod
     def get_node_type(cls):
@@ -1326,6 +1665,11 @@ class Wan26TextToVideo(
 ):
     """
     Generate videos from text using Alibaba's Wan 2.6 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, text-to-video, 2.6
+
+        Wan 2.6 generates high-quality videos from text descriptions
+        with advanced motion and visual fidelity.
     """
 
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan26TextToVideo.Duration
@@ -1367,6 +1711,11 @@ class Wan26VideoToVideo(
 ):
     """
     Generate videos from videos using Alibaba's Wan 2.6 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, video-to-video, 2.6
+
+        Wan 2.6 transforms and enhances existing videos with AI-powered
+        editing and style transfer capabilities.
     """
 
     Duration: typing.ClassVar[type] = (
@@ -1446,6 +1795,11 @@ class WanMultiShotTextToVideoPro(
 ):
     """
     Generate videos from text using Alibaba's Wan 2.1 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, text-to-video, multi-shot, 2.1
+
+        Wan 2.1 Multi-Shot generates complex videos with multiple shots
+        and scene transitions from text descriptions.
     """
 
     AspectRatio: typing.ClassVar[type] = (

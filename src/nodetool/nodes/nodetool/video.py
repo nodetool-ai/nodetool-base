@@ -72,12 +72,6 @@ class TextToVideo(BaseNode):
     """
     Generate videos from text prompts using any supported video provider. Automatically routes to the appropriate backend (Gemini Veo, HuggingFace).
     video, generation, AI, text-to-video, t2v
-
-    Use cases:
-    - Create videos from text descriptions
-    - Generate video content from prompts
-    - Produce short video clips with AI
-    - Switch between providers without changing workflows
     """
 
     class AspectRatio(str, enum.Enum):
@@ -176,13 +170,6 @@ class ImageToVideo(BaseNode):
     Generate videos from input images using any supported video provider.
     Animates static images into dynamic video content with AI-powered motion.
     video, image-to-video, i2v, animation, AI, generation, sora, veo
-
-    Use cases:
-    - Animate static images into video sequences
-    - Create dynamic content from still photographs
-    - Generate video variations from reference images
-    - Produce animated visual effects from static artwork
-    - Convert product photos into engaging video ads
     """
 
     class AspectRatio(str, enum.Enum):
@@ -293,11 +280,6 @@ class LoadVideoFile(BaseNode):
     """
     Read a video file from disk.
     video, input, load, file
-
-    Use cases:
-    - Load videos for processing
-    - Import video files for editing
-    - Read video assets for a workflow
     """
 
     path: str = Field(default="", description="Path to the video file to read")
@@ -380,11 +362,6 @@ class LoadVideoAssets(BaseNode):
     """Load video files from an asset folder.
 
     video, assets, load
-
-    Use cases:
-    - Provide videos for batch processing
-    - Iterate over stored video assets
-    - Prepare clips for editing or analysis
     """
 
     folder: FolderRef = Field(
@@ -428,11 +405,6 @@ class SaveVideo(BaseNode):
     """
     Save a video to an asset folder.
     video, save, file, output
-
-    Use cases:
-    1. Export processed video to a specific asset folder
-    2. Save video with a custom name
-    3. Create a copy of a video in a different location
     """
 
     video: VideoRef = Field(default=VideoRef(), description="The video to save.")
@@ -483,11 +455,6 @@ class FrameIterator(BaseNode):
     """
     Extract frames from a video file using OpenCV.
     video, frames, extract, sequence
-
-    Use cases:
-    1. Generate image sequences for further processing
-    2. Extract specific frame ranges from a video
-    3. Create thumbnails or previews from video content
     """
 
     video: VideoRef = Field(
@@ -558,11 +525,6 @@ class Fps(BaseNode):
     """
     Get the frames per second (FPS) of a video file.
     video, analysis, frames, fps
-
-    Use cases:
-    1. Analyze video properties for quality assessment
-    2. Determine appropriate playback speed for video editing
-    3. Ensure compatibility with target display systems
     """
 
     video: VideoRef = Field(
@@ -581,11 +543,6 @@ class FrameToVideo(BaseNode):
     """
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
-
-    Use cases:
-    1. Create time-lapse videos from image sequences
-    2. Compile processed frames back into a video
-    3. Generate animations from individual images
     """
 
     frame: ImageRef = Field(default=ImageRef(), description="Collect input frames")
@@ -660,12 +617,6 @@ class Concat(BaseNode):
     """
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
-
-    Use cases:
-    - Merge multiple video clips into one continuous video
-    - Combine intro, main content, and outro sequences
-    - Join video segments from different sources
-    - Create video compilations and montages
     """
 
     video_a: VideoRef = Field(
@@ -747,11 +698,6 @@ class Trim(BaseNode):
     """
     Trim a video to a specific start and end time.
     video, trim, cut, segment
-
-    Use cases:
-    1. Extract specific segments from a longer video
-    2. Remove unwanted parts from the beginning or end of a video
-    3. Create shorter clips from a full-length video
     """
 
     video: VideoRef = Field(default=VideoRef(), description="The input video to trim.")
@@ -831,11 +777,6 @@ class ResizeNode(BaseNode):
     """
     Resize a video to a specific width and height.
     video, resize, scale, dimensions
-
-    Use cases:
-    1. Adjust video resolution for different display requirements
-    2. Reduce file size by downscaling video
-    3. Prepare videos for specific platforms with size constraints
     """
 
     video: VideoRef = Field(
@@ -900,11 +841,6 @@ class Rotate(BaseNode):
     """
     Rotate a video by a specified angle.
     video, rotate, orientation, transform
-
-    Use cases:
-    1. Correct orientation of videos taken with a rotated camera
-    2. Create artistic effects by rotating video content
-    3. Adjust video for different display orientations
     """
 
     video: VideoRef = Field(
@@ -967,11 +903,6 @@ class SetSpeed(BaseNode):
     """
     Adjust the playback speed of a video.
     video, speed, tempo, time
-
-    Use cases:
-    1. Create slow-motion effects by decreasing video speed
-    2. Generate time-lapse videos by increasing playback speed
-    3. Synchronize video duration with audio or other timing requirements
     """
 
     video: VideoRef = Field(
@@ -1010,7 +941,7 @@ class SetSpeed(BaseNode):
 
                 # Apply speed adjustment to video
                 adjusted_video = input_stream.filter(
-                    "setpts", f"{1/self.speed_factor}*PTS"
+                    "setpts", f"{1 / self.speed_factor}*PTS"
                 )
 
                 if has_audio:
@@ -1052,13 +983,6 @@ class Overlay(BaseNode):
     """
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
-
-    Use cases:
-    - Create picture-in-picture effects for commentary videos
-    - Add watermarks or logos to videos
-    - Combine multiple video streams
-    - Create split-screen or multi-view presentations
-    - Layer video effects over main content
     """
 
     main_video: VideoRef = Field(
@@ -1172,11 +1096,6 @@ class ColorBalance(BaseNode):
     """
     Adjust the color balance of a video.
     video, color, balance, adjustment
-
-    Use cases:
-    1. Correct color casts in video footage
-    2. Enhance specific color tones for artistic effect
-    3. Normalize color balance across multiple video clips
     """
 
     video: VideoRef = Field(
@@ -1205,7 +1124,6 @@ class ColorBalance(BaseNode):
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
         ):
-
             # Write input video to temporary file
             temp_input.write(video_file.read())
             temp_input.close()
@@ -1266,11 +1184,6 @@ class Denoise(BaseNode):
     """
     Apply noise reduction to a video.
     video, denoise, clean, enhance
-
-    Use cases:
-    1. Improve video quality by reducing unwanted noise
-    2. Enhance low-light footage
-    3. Prepare video for further processing or compression
     """
 
     video: VideoRef = Field(
@@ -1296,7 +1209,6 @@ class Denoise(BaseNode):
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
         ):
-
             # Write input video to temporary file
             temp_input.write(video_file.read())
             temp_input.close()
@@ -1344,11 +1256,6 @@ class Stabilize(BaseNode):
     """
     Apply video stabilization to reduce camera shake and jitter.
     video, stabilize, smooth, shake-reduction
-
-    Use cases:
-    1. Improve quality of handheld or action camera footage
-    2. Smooth out panning and tracking shots
-    3. Enhance viewer experience by reducing motion sickness
     """
 
     video: VideoRef = Field(
@@ -1378,7 +1285,6 @@ class Stabilize(BaseNode):
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
         ):
-
             # Write input video to temporary file
             temp_input.write(video_file.read())
             temp_input.close()
@@ -1425,11 +1331,6 @@ class Sharpness(BaseNode):
     """
     Adjust the sharpness of a video.
     video, sharpen, enhance, detail
-
-    Use cases:
-    1. Enhance detail in slightly out-of-focus footage
-    2. Correct softness introduced by video compression
-    3. Create stylistic effects by over-sharpening
     """
 
     video: VideoRef = Field(
@@ -1461,7 +1362,6 @@ class Sharpness(BaseNode):
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
         ):
-
             # Write input video to temporary file
             temp_input.write(video_file.read())
             temp_input.close()
@@ -1514,11 +1414,6 @@ class Blur(BaseNode):
     """
     Apply a blur effect to a video.
     video, blur, smooth, soften
-
-    Use cases:
-    1. Create a dreamy or soft focus effect
-    2. Obscure or censor specific areas of the video
-    3. Reduce noise or grain in low-quality footage
     """
 
     video: VideoRef = Field(
@@ -1544,7 +1439,6 @@ class Blur(BaseNode):
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
         ):
-
             # Write input video to temporary file
             temp_input.write(video_file.read())
             temp_input.close()
@@ -1591,11 +1485,6 @@ class Saturation(BaseNode):
     """
     Adjust the color saturation of a video.
     video, saturation, color, enhance
-
-    Use cases:
-    1. Enhance color vibrancy in dull or flat-looking footage
-    2. Create stylistic effects by over-saturating or desaturating video
-    3. Correct oversaturated footage from certain cameras
     """
 
     video: VideoRef = Field(
@@ -1621,7 +1510,6 @@ class Saturation(BaseNode):
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
             tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_output,
         ):
-
             # Write input video to temporary file
             temp_input.write(video_file.read())
             temp_input.close()
@@ -1666,11 +1554,6 @@ class AddSubtitles(BaseNode):
     """
     Add subtitles to a video.
     video, subtitles, text, caption
-
-    Use cases:
-    1. Add translations or closed captions to videos
-    2. Include explanatory text or commentary in educational videos
-    3. Create lyric videos for music content
     """
 
     class SubtitleTextAlignment(str, enum.Enum):
@@ -1852,11 +1735,6 @@ class Reverse(BaseNode):
     """
     Reverse the playback of a video.
     video, reverse, backwards, effect
-
-    Use cases:
-    1. Create artistic effects by playing video in reverse
-    2. Analyze motion or events in reverse order
-    3. Generate unique transitions or intros for video projects
     """
 
     video: VideoRef = Field(
@@ -1903,12 +1781,6 @@ class Transition(BaseNode):
     """
     Create a transition effect between two videos, including audio transition when available.
     video, transition, effect, merge, audio
-
-    Use cases:
-    1. Create smooth transitions between video clips in a montage
-    2. Add professional-looking effects to video projects
-    3. Blend scenes together for creative storytelling
-    4. Smoothly transition between audio tracks of different video clips
     """
 
     class TransitionType(str, enum.Enum):
@@ -2067,11 +1939,6 @@ class AddAudio(BaseNode):
     """
     Add an audio track to a video, replacing or mixing with existing audio.
     video, audio, soundtrack, merge
-
-    Use cases:
-    1. Add background music or narration to a silent video
-    2. Replace original audio with a new soundtrack
-    3. Mix new audio with existing video sound
     """
 
     video: VideoRef = Field(
@@ -2152,11 +2019,6 @@ class ChromaKey(BaseNode):
     """
     Apply chroma key (green screen) effect to a video.
     video, chroma key, green screen, compositing
-
-    Use cases:
-    1. Remove green or blue background from video footage
-    2. Create special effects by compositing video onto new backgrounds
-    3. Produce professional-looking videos for presentations or marketing
     """
 
     video: VideoRef = Field(
@@ -2227,13 +2089,6 @@ class ExtractAudio(BaseNode):
     """
     Separate and extract audio track from a video file.
     video, audio, extract, separate, split
-
-    Use cases:
-    - Extract audio for podcasts or music
-    - Create audio-only versions of video content
-    - Analyze or transcribe video audio separately
-    - Reuse audio in different contexts
-    - Convert video soundtracks to audio files
     """
 
     video: VideoRef = Field(

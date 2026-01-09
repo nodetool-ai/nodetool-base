@@ -26,13 +26,6 @@ class AutomaticSpeechRecognition(
 
     Transcribe audio to text using automatic speech recognition models.
     audio, speech, recognition, transcription, ASR, whisper
-
-    Use cases:
-    - Transcribe recorded audio to text
-    - Generate subtitles from video audio
-    - Convert voice notes to written text
-    - Process meeting recordings
-    - Enable voice-based data entry
     """
 
     model: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
@@ -113,11 +106,6 @@ class Chunk(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
 
     Splits text into chunks of specified word length.
     text, chunk, split
-
-    Use cases:
-    - Preparing text for processing by models with input length limits
-    - Creating manageable text segments for parallel processing
-    - Generating summaries of text sections
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -146,11 +134,6 @@ class CollapseWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
 
     Collapses consecutive whitespace into single separators.
     text, whitespace, normalize, clean, remove
-
-    Use cases:
-    - Normalizing pasted text from PDFs or chat logs
-    - Cleaning prompts with erratic spacing
-    - Converting multi-line input into succinct sentences
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -185,12 +168,6 @@ class Collect(GraphNode[nodetool.nodes.nodetool.text.Collect.OutputType]):
 
     Collects a stream of text inputs into a single concatenated string.
     text, collect, list, stream, aggregate
-
-    Use cases:
-    - Combine multiple streaming text outputs
-    - Accumulate results from iterative processes
-    - Build composite text from multiple sources
-    - Aggregate log messages or status updates
     """
 
     input_item: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -264,11 +241,6 @@ class Concat(SingleOutputGraphNode[str], GraphNode[str]):
 
     Concatenates two text inputs into a single output.
     text, concatenation, combine, +
-
-    Use cases:
-    - Joining outputs from multiple text processing nodes
-    - Combining parts of sentences or paragraphs
-    - Merging text data from different sources
     """
 
     a: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -295,11 +267,6 @@ class Contains(SingleOutputGraphNode[bool], GraphNode[bool]):
 
     Checks if text contains a specified substring.
     text, compare, validate, substring, string
-
-    Use cases:
-    - Ensuring safety or guard phrases appear
-    - Rejecting inputs when banned terms exist
-    - Matching multiple keywords with any/all logic
     """
 
     MatchMode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Contains.MatchMode
@@ -338,11 +305,6 @@ class CountTokens(SingleOutputGraphNode[int], GraphNode[int]):
 
     Counts the number of tokens in text using tiktoken.
     text, tokens, count, encoding
-
-    Use cases:
-    - Checking text length for LLM input limits
-    - Estimating API costs
-    - Managing token budgets in text processing
     """
 
     TiktokenEncoding: typing.ClassVar[type] = (
@@ -407,11 +369,6 @@ class Equals(SingleOutputGraphNode[bool], GraphNode[bool]):
 
     Checks if two text inputs are equal.
     text, compare, equals, match, =
-
-    Use cases:
-    - Branching workflows when user input matches an expected value
-    - Guarding against duplicates before saving assets
-    - Quickly comparing normalized prompts or identifiers
     """
 
     text_a: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -445,11 +402,6 @@ class Extract(SingleOutputGraphNode[str], GraphNode[str]):
 
     Extracts a substring from input text.
     text, extract, substring
-
-    Use cases:
-    - Extracting specific portions of text for analysis
-    - Trimming unwanted parts from text data
-    - Focusing on relevant sections of longer documents
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -477,11 +429,6 @@ class ExtractJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
 
     Extracts data from JSON using JSONPath expressions.
     json, extract, jsonpath
-
-    Use cases:
-    - Retrieving specific fields from complex JSON structures
-    - Filtering and transforming JSON data for analysis
-    - Extracting nested data from API responses or configurations
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -549,10 +496,6 @@ class FilterRegexString(
 
     Filters a stream of strings using regular expressions.
     filter, regex, pattern, text, stream
-
-    Use cases:
-    - Filter strings using complex patterns
-    - Extract strings matching specific formats (emails, dates, etc.)
     """
 
     value: str | OutputHandle[str] = connect_field(
@@ -597,11 +540,6 @@ class FilterString(GraphNode[nodetool.nodes.nodetool.text.FilterString.OutputTyp
 
     Filters a stream of strings based on various criteria.
     filter, strings, text, stream
-
-    Use cases:
-    - Filter strings by length
-    - Filter strings containing specific text
-    - Filter strings by prefix/suffix
     """
 
     FilterType: typing.ClassVar[type] = (
@@ -651,11 +589,6 @@ class FindAllRegex(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
 
     Finds all regex matches in text as separate substrings.
     text, regex, find
-
-    Use cases:
-    - Identifying all occurrences of a pattern in text
-    - Extracting multiple instances of structured data
-    - Analyzing frequency and distribution of specific text patterns
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -764,11 +697,6 @@ class HasLength(SingleOutputGraphNode[bool], GraphNode[bool]):
 
     Checks if text length meets specified conditions.
     text, check, length, compare, validate, whitespace, string
-
-    Use cases:
-    - Validating input length requirements
-    - Filtering text by length
-    - Checking content size constraints
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -797,12 +725,6 @@ class HtmlToText(SingleOutputGraphNode[str], GraphNode[str]):
 
     Converts HTML content to plain text using html2text.
     html, convert, text, parse, extract
-
-    Use cases:
-    - Converting HTML documents to readable plain text
-    - Extracting text content from web pages
-    - Cleaning HTML markup from text data
-    - Processing HTML emails or documents
     """
 
     html: str | OutputHandle[str] = connect_field(
@@ -842,11 +764,6 @@ class IndexOf(SingleOutputGraphNode[int], GraphNode[int]):
 
     Finds the position of a substring in text.
     text, search, find, substring
-
-    Use cases:
-    - Locating markers to drive downstream slices
-    - Building quick validations before parsing
-    - Detecting repeated terms by scanning from the end
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -885,11 +802,6 @@ class IsEmpty(SingleOutputGraphNode[bool], GraphNode[bool]):
 
     Checks if text is empty or contains only whitespace.
     text, check, empty, compare, validate, whitespace, string
-
-    Use cases:
-    - Validating required text fields
-    - Filtering out empty content
-    - Checking for meaningful input
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -918,11 +830,6 @@ class Join(SingleOutputGraphNode[str], GraphNode[str]):
 
     Joins a list of strings into a single string using a specified separator.
     text, join, combine, +, add, concatenate
-
-    Use cases:
-    - Combining multiple text elements with a consistent delimiter
-    - Creating comma-separated lists from individual items
-    - Assembling formatted text from array elements
     """
 
     strings: list[Any] | OutputHandle[list[Any]] = connect_field(
@@ -951,11 +858,6 @@ class Length(SingleOutputGraphNode[int], GraphNode[int]):
 
     Measures text length as characters, words, or lines.
     text, analyze, length, count
-
-    Use cases:
-    - Quickly gating prompts by size before LLM calls
-    - Showing word or line counts in mini apps
-    - Tracking character budgets for UI copy
     """
 
     Measure: typing.ClassVar[type] = nodetool.nodes.nodetool.text.Length.Measure
@@ -990,11 +892,6 @@ class LoadTextAssets(GraphNode[nodetool.nodes.nodetool.text.LoadTextAssets.Outpu
 
     Load text files from an asset folder.
     load, text, file, import
-
-    Use cases:
-    - Loading multiple text files for batch processing
-    - Importing text content from a directory
-    - Processing collections of text documents
     """
 
     folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
@@ -1039,11 +936,6 @@ class PadText(SingleOutputGraphNode[str], GraphNode[str]):
 
     Pads text to a target length.
     text, pad, length, format
-
-    Use cases:
-    - Aligning tabular text outputs
-    - Creating fixed-width fields for legacy systems
-    - Left-padding numbers with zeros
     """
 
     PadDirection: typing.ClassVar[type] = (
@@ -1081,11 +973,6 @@ class ParseJSON(SingleOutputGraphNode[Any], GraphNode[Any]):
 
     Parses a JSON string into a Python object.
     json, parse, convert
-
-    Use cases:
-    - Converting JSON API responses for further processing
-    - Preparing structured data for analysis or storage
-    - Extracting configuration or settings from JSON files
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1263,11 +1150,6 @@ class RemovePunctuation(SingleOutputGraphNode[str], GraphNode[str]):
 
     Removes punctuation characters from text.
     text, cleanup, punctuation, normalize
-
-    Use cases:
-    - Cleaning transcripts before keyword search
-    - Preparing identifiers for filesystem safe names
-    - Simplifying comparisons by stripping symbols
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1443,11 +1325,6 @@ class Slugify(SingleOutputGraphNode[str], GraphNode[str]):
 
     Converts text into a slug suitable for URLs or IDs.
     text, slug, normalize, id
-
-    Use cases:
-    - Generating workflow IDs from titles
-    - Creating asset filenames from prompts
-    - Producing URL-safe paths for mini apps
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1478,11 +1355,6 @@ class Split(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
 
     Separates text into a list of strings based on a specified delimiter.
     text, split, tokenize
-
-    Use cases:
-    - Parsing CSV or similar delimited data
-    - Breaking down sentences into words or phrases
-    - Extracting specific elements from structured text
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1540,11 +1412,6 @@ class StripAccents(SingleOutputGraphNode[str], GraphNode[str]):
 
     Removes accent marks while keeping base characters.
     text, cleanup, accents, normalize
-
-    Use cases:
-    - Creating ASCII-only identifiers from user input
-    - Normalizing prompts that mix accented and plain characters
-    - Simplifying comparisons against datasets lacking accents
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1573,11 +1440,6 @@ class SurroundWith(SingleOutputGraphNode[str], GraphNode[str]):
 
     Wraps text with the provided prefix and suffix.
     text, format, surround, decorate
-
-    Use cases:
-    - Adding quotes or brackets before exporting values
-    - Ensuring prompts include guard rails or markup tokens
-    - Building template strings without using Format nodes
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1685,11 +1547,6 @@ class ToLowercase(SingleOutputGraphNode[str], GraphNode[str]):
 
     Converts text to lowercase.
     text, transform, lowercase, format
-
-    Use cases:
-    - Preparing data for case-insensitive comparisons
-    - Generating lowercase filenames or IDs
-    - Normalizing prompts before hashing
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1715,12 +1572,6 @@ class ToString(SingleOutputGraphNode[str], GraphNode[str]):
 
     Converts any input value to its string representation.
     text, string, convert, repr, str, cast
-
-    Use cases:
-    - Convert numbers, objects, or complex types to strings
-    - Prepare data for text output or logging
-    - Debug values by viewing their representations
-    - Standardize data types in text workflows
     """
 
     Mode: typing.ClassVar[type] = nodetool.nodes.nodetool.text.ToString.Mode
@@ -1782,11 +1633,6 @@ class ToUppercase(SingleOutputGraphNode[str], GraphNode[str]):
 
     Converts text to uppercase.
     text, transform, uppercase, format
-
-    Use cases:
-    - Normalizing identifiers before comparison
-    - Preparing titles that must display in all caps
-    - Converting prompts to a consistent casing convention
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1812,11 +1658,6 @@ class TrimWhitespace(SingleOutputGraphNode[str], GraphNode[str]):
 
     Trims whitespace from the start and/or end of text.
     text, whitespace, clean, remove
-
-    Use cases:
-    - Cleaning user input before validation
-    - Removing accidental spaces after concatenation
-    - Prepping prompts for exact comparisons
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -1846,11 +1687,6 @@ class TruncateText(SingleOutputGraphNode[str], GraphNode[str]):
 
     Truncates text to a maximum length.
     text, truncate, length, clip
-
-    Use cases:
-    - Enforcing LLM input limits before sending prompts
-    - Creating previews in UI cards
-    - Guarding downstream systems that expect short strings
     """
 
     text: str | OutputHandle[str] = connect_field(default="", description=None)

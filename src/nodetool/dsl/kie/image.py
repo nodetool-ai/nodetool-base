@@ -767,13 +767,13 @@ class QwenImageToImage(
 
         kie, qwen, alibaba, image transformation, ai, image-to-image
 
-        Qwen's image-to-image model transforms existing images based on text prompts.
+        Qwen's image-to-image model transforms images based on text prompts
+        while preserving the overall structure and style.
 
         Use cases:
-        - Transform and edit existing images
-        - Apply styles and effects to photos
-        - Create variations of images
-        - Enhance or modify image content
+        - Transform images with text guidance
+        - Apply artistic styles to photos
+        - Create variations of existing images
     """
 
     AspectRatio: typing.ClassVar[type] = (
@@ -1035,6 +1035,14 @@ class TopazImageUpscale(
     Upscale and enhance images using Topaz Labs AI via Kie.ai.
 
         kie, topaz, upscale, enhance, image, ai, super-resolution
+
+        Topaz Image Upscale uses advanced AI models to enlarge images
+        while preserving and enhancing detail.
+
+        Use cases:
+        - Upscale low-resolution images
+        - Enhance image quality and detail
+        - Enlarge images for print or display
     """
 
     UpscaleFactor: typing.ClassVar[type] = (

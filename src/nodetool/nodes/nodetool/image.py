@@ -19,11 +19,6 @@ class LoadImageFile(BaseNode):
     """
     Read an image file from disk.
     image, input, load, file
-
-    Use cases:
-    - Load images for processing
-    - Import photos for editing
-    - Read image assets for a workflow
     """
 
     path: str = Field(default="", description="Path to the image file to read")
@@ -50,11 +45,6 @@ class LoadImageFolder(BaseNode):
     """
     Load all images from a folder, optionally including subfolders.
     image, load, folder, files
-
-    Use cases:
-    - Batch import images for processing
-    - Build datasets from a directory tree
-    - Iterate over photo collections
     """
 
     folder: str = Field(default="", description="Folder to scan for images")
@@ -120,11 +110,6 @@ class SaveImageFile(BaseNode):
     """
     Write an image to disk.
     image, output, save, file
-
-    Use cases:
-    - Save processed images
-    - Export edited photos
-    - Archive image results
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to save")
@@ -176,12 +161,11 @@ class SaveImageFile(BaseNode):
         result = ImageRef(uri=create_file_uri(expanded_path), data=image.tobytes())
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="image"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="image"
+            )
+        )
 
         return result
 
@@ -230,11 +214,6 @@ class SaveImage(BaseNode):
     """
     Save an image to specified asset folder with customizable name format.
     save, image, folder, naming
-
-    Use cases:
-    - Save generated images with timestamps
-    - Organize outputs into specific folders
-    - Create backups of processed images
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to save.")
@@ -275,12 +254,11 @@ class SaveImage(BaseNode):
         )
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="image"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="image"
+            )
+        )
 
         return result
 
@@ -292,11 +270,6 @@ class GetMetadata(BaseNode):
     """
     Get metadata about the input image.
     metadata, properties, analysis, information
-
-    Use cases:
-    - Use width and height for layout calculations
-    - Analyze image properties for processing decisions
-    - Gather information for image cataloging or organization
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The input image.")
@@ -333,9 +306,6 @@ class BatchToList(BaseNode):
     """
     Convert an image batch to a list of image references.
     batch, list, images, processing
-
-    Use cases:
-    - Convert comfy batch outputs to list format
     """
 
     batch: ImageRef = Field(
@@ -364,7 +334,7 @@ class ImagesToList(BaseNode):
     async def process(self, context: ProcessingContext) -> list[ImageRef]:
         if not self.dynamic_properties:
             return []
-        
+
         results = []
         for data in self.dynamic_properties.values():
             if isinstance(data, ImageRef):
@@ -378,11 +348,6 @@ class Paste(BaseNode):
     """
     Paste one image onto another at specified coordinates.
     paste, composite, positioning, overlay
-
-    Use cases:
-    - Add watermarks or logos to images
-    - Combine multiple image elements
-    - Create collages or montages
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to paste into.")
@@ -406,10 +371,6 @@ class Scale(BaseNode):
     """
     Enlarge or shrink an image by a scale factor.
     image, resize, scale
-
-    - Adjust image dimensions for display galleries
-    - Standardize image sizes for machine learning datasets
-    - Create thumbnail versions of images
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to scale.")
@@ -427,10 +388,6 @@ class Resize(BaseNode):
     """
     Change image dimensions to specified width and height.
     image, resize
-
-    - Preprocess images for machine learning model inputs
-    - Optimize images for faster web page loading
-    - Create uniform image sizes for layouts
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to resize.")
@@ -447,10 +404,6 @@ class Crop(BaseNode):
     """
     Crop an image to specified coordinates.
     image, crop
-
-    - Remove unwanted borders from images
-    - Focus on particular subjects within an image
-    - Simplify images by removing distractions
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to crop.")
@@ -471,10 +424,6 @@ class Fit(BaseNode):
     """
     Resize an image to fit within specified dimensions while preserving aspect ratio.
     image, resize, fit
-
-    - Resize images for online publishing requirements
-    - Preprocess images to uniform sizes for machine learning
-    - Control image display sizes for web development
     """
 
     image: ImageRef = Field(default=ImageRef(), description="The image to fit.")
@@ -491,12 +440,6 @@ class TextToImage(BaseNode):
     """
     Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, generation, AI, text-to-image, t2i
-
-    Use cases:
-    - Create images from text descriptions
-    - Switch between providers without changing workflows
-    - Generate images with different AI models
-    - Cost-optimize by choosing different providers
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -568,7 +511,9 @@ class TextToImage(BaseNode):
         )
 
         # Generate image
-        image_bytes = await provider_instance.text_to_image(params, context=context, node_id=self.id)
+        image_bytes = await provider_instance.text_to_image(
+            params, context=context, node_id=self.id
+        )
 
         # Convert to ImageRef
         return await context.image_from_bytes(image_bytes)
@@ -577,19 +522,11 @@ class TextToImage(BaseNode):
     def get_basic_fields(cls):
         return ["model", "prompt", "width", "height", "seed"]
 
-    
-
 
 class ImageToImage(BaseNode):
     """
     Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
     image, transformation, AI, image-to-image, i2i
-
-    Use cases:
-    - Modify existing images with text instructions
-    - Style transfer and artistic modifications
-    - Image enhancement and refinement
-    - Creative image edits guided by prompts
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -691,5 +628,3 @@ class ImageToImage(BaseNode):
     @classmethod
     def get_basic_fields(cls):
         return ["model", "image", "prompt", "strength", "seed"]
-
-    
