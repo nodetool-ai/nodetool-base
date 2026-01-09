@@ -120,11 +120,19 @@ class LoadModel3DFile(BaseNode):
         with open(expanded_path, "rb") as f:
             model_data = f.read()
 
-        return Model3DRef(
-            uri=create_file_uri(expanded_path),
-            data=model_data,
-            format=SUPPORTED_FORMATS[ext_lower],
+        # IMPORTANT:
+        # Returning large `data` blobs will be serialized into websocket updates and can
+        # crash the browser tab. Instead, materialize the model as an asset so the UI
+        # can stream it via URL (and downstream nodes can still fetch bytes via asset_id).
+        filename = os.path.basename(expanded_path)
+        model_format = SUPPORTED_FORMATS[ext_lower]
+        result = await context.model3d_from_bytes(
+            model_data,
+            name=filename,
+            format=model_format,
+            metadata={"source_uri": create_file_uri(expanded_path)},
         )
+        return result
 
 
 class SaveModel3DFile(BaseNode):
