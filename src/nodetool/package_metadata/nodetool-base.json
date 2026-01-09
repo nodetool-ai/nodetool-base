@@ -38828,6 +38828,17 @@
   ],
   "examples": [
     {
+      "id": "music_video_visualizer_001",
+      "name": "Music Video Visualizer",
+      "description": "Create reactive visuals from audio tracks with mood-matched imagery. Transcribes audio, analyzes mood/energy, and generates visual frames synced to the music.",
+      "tags": [
+        "video",
+        "audio",
+        "music",
+        "visualization"
+      ]
+    },
+    {
       "id": "",
       "name": "Product Description Generator",
       "description": "Automatically generate marketing copy and product descriptions from product data.",
@@ -38999,6 +39010,17 @@
       ]
     },
     {
+      "id": "concept_art_iteration_board_001",
+      "name": "Concept Art Iteration Board",
+      "description": "Generate concept art from creative briefs with rapid iteration. Creates mood boards, generates variations, and provides AI feedback for refinement.",
+      "tags": [
+        "image",
+        "concept art",
+        "illustration",
+        "design"
+      ]
+    },
+    {
       "id": "data_visualization_pipeline",
       "name": "Data Visualization Pipeline",
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
@@ -39033,12 +39055,34 @@
       ]
     },
     {
+      "id": "album_cover_creator_001",
+      "name": "Album Cover Creator",
+      "description": "Create album covers that visually represent music mood and energy. Analyzes audio for mood, generates matching artwork with artist/title overlays.",
+      "tags": [
+        "image",
+        "music",
+        "album art",
+        "audio"
+      ]
+    },
+    {
       "id": "social_media_sentiment_analysis",
       "name": "Social Media Sentiment Analysis",
       "description": "Analyze sentiment and emotions in social media posts or user-provided text.",
       "tags": [
         "data",
         "nlp"
+      ]
+    },
+    {
+      "id": "youtube_thumbnail_pipeline_001",
+      "name": "YouTube Thumbnail Pipeline",
+      "description": "Generate multiple eye-catching YouTube thumbnail variations from video scripts. Creates bold text overlays, dramatic styling, and batch processes variations for A/B testing.",
+      "tags": [
+        "image",
+        "youtube",
+        "content creation",
+        "thumbnails"
       ]
     },
     {
@@ -39049,6 +39093,17 @@
         "image",
         "video",
         "example"
+      ]
+    },
+    {
+      "id": "social_media_calendar_filler_001",
+      "name": "Social Media Calendar Filler",
+      "description": "Generate a month's worth of social media content with images, captions, and hashtags. Plans content based on monthly themes and brand guidelines.",
+      "tags": [
+        "content",
+        "social media",
+        "marketing",
+        "planning"
       ]
     },
     {
@@ -39110,6 +39165,17 @@
       ]
     },
     {
+      "id": "movie_poster_designer_001",
+      "name": "Movie Poster Designer",
+      "description": "Create cinematic movie poster variations from film synopses. Generates dramatic compositions with typography integration and print-ready upscaling.",
+      "tags": [
+        "image",
+        "movie poster",
+        "design",
+        "cinematic"
+      ]
+    },
+    {
       "id": "1302ffe8a2f911f0b74c000014916b9c",
       "name": "Categorize Mails",
       "description": "Automatically categorize and organize emails using AI, showing the reasoning.",
@@ -39168,12 +39234,34 @@
       ]
     },
     {
+      "id": "brand_asset_generator_001",
+      "name": "Brand Asset Generator",
+      "description": "Generate consistent brand assets across multiple platforms from brand guidelines. Creates social media posts, banners, and product mocks with automatic resizing and text overlays.",
+      "tags": [
+        "image",
+        "branding",
+        "social media",
+        "design"
+      ]
+    },
+    {
       "id": "310d885a341811f0942e0000191c0ba5",
       "name": "Color Boost Video",
       "description": "",
       "tags": [
         "video",
         "start"
+      ]
+    },
+    {
+      "id": "product_mockup_generator_001",
+      "name": "Product Mockup Generator",
+      "description": "Generate product mockups in diverse scenes without physical photography. Places products in lifestyle, studio, and outdoor settings with realistic lighting.",
+      "tags": [
+        "image",
+        "product",
+        "e-commerce",
+        "mockup"
       ]
     },
     {
@@ -39209,6 +39297,17 @@
       ]
     },
     {
+      "id": "video_broll_automation_001",
+      "name": "Video B-Roll Automation",
+      "description": "Generate complementary B-roll footage for video editing. Analyzes main video content and creates matching overlays, transitions, and effects.",
+      "tags": [
+        "video",
+        "b-roll",
+        "editing",
+        "effects"
+      ]
+    },
+    {
       "id": "aa95586e-a2cd-4075-a51e-a2e6fc464ada",
       "name": "AI Workflows on Reddit",
       "description": "Find examples of AI workflows on Reddit and compile a markdown report.",
@@ -39216,6 +39315,16 @@
         "reddit",
         "research",
         "ai"
+      ]
+    },
+    {
+      "id": "004a7fd2-4492-485d-8bdb-ea1ba61f7bdf",
+      "name": "Photo Enhancement Suite",
+      "description": "Batch enhance photos with AI-powered improvements including color correction and upscaling.",
+      "tags": [
+        "image",
+        "photo",
+        "batch processing"
       ]
     }
   ]
