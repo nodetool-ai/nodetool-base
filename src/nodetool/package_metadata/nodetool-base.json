@@ -16207,7 +16207,7 @@
     },
     {
       "title": "Render Text",
-      "description": "This node allows you to add text to images.\n    text, font, label, title, watermark, caption, image, overlay\n    This node takes text, font updates, coordinates (where to place the text), and an image to work with. A user can use the Render Text Node to add a label or title to an image, watermark an image, or place a caption directly on an image.\n\n    The Render Text Node offers customizable options, including the ability to choose the text's font, size, color, and alignment (left, center, or right). Text placement can also be defined, providing flexibility to place the text wherever you see fit.\n\n    #### Applications\n    - Labeling images in a image gallery or database.\n    - Watermarking images for copyright protection.\n    - Adding custom captions to photographs.\n    - Creating instructional images to guide the reader's view.",
+      "description": "This node allows you to add text to images using system fonts or web fonts.\n    text, font, label, title, watermark, caption, image, overlay, google fonts\n\n    This node takes text, font updates, coordinates (where to place the text), and an image to work with.\n    A user can use the Render Text Node to add a label or title to an image, watermark an image,\n    or place a caption directly on an image.\n\n    The Render Text Node offers customizable options, including the ability to choose the text's font,\n    size, color, and alignment (left, center, or right). Text placement can also be defined,\n    providing flexibility to place the text wherever you see fit.\n\n    ### Font Sources\n\n    The node supports three font sources:\n\n    1. **System Fonts** (default): Use fonts installed on the system\n       - `FontRef(name=\"Arial\")` - Uses local Arial font\n\n    2. **Google Fonts**: Automatically download and cache fonts from Google Fonts\n       - `FontRef(name=\"Roboto\", source=FontSource.GOOGLE_FONTS)`\n       - `FontRef(name=\"Open Sans\", source=FontSource.GOOGLE_FONTS, weight=\"bold\")`\n       - Supports 50+ popular fonts including Roboto, Open Sans, Lato, Montserrat, Poppins, etc.\n\n    3. **Custom URL**: Download fonts from any URL\n       - `FontRef(name=\"CustomFont\", source=FontSource.URL, url=\"https://example.com/font.ttf\")`\n\n    #### Applications\n    - Labeling images in an image gallery or database.\n    - Watermarking images for copyright protection.\n    - Adding custom captions to photographs.\n    - Creating instructional images to guide the reader's view.\n    - Using premium Google Fonts for professional typography.",
       "namespace": "lib.pillow.draw",
       "node_type": "lib.pillow.draw.RenderText",
       "properties": [
@@ -16230,7 +16230,7 @@
             "name": "DejaVuSans"
           },
           "title": "Font",
-          "description": "The font to use."
+          "description": "The font to use. Supports system fonts, Google Fonts, and custom URLs."
         },
         {
           "name": "x",
@@ -27075,7 +27075,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 47634,
+          "downloads": 44984,
           "likes": 116
         },
         {
@@ -27126,7 +27126,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23739,
+          "downloads": 23448,
           "likes": 47
         },
         {
@@ -27177,7 +27177,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 15885,
+          "downloads": 15816,
           "likes": 30
         },
         {
@@ -27197,7 +27197,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1636,
+          "downloads": 1625,
           "likes": 26
         },
         {
@@ -27223,7 +27223,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 5177,
+          "downloads": 5165,
           "likes": 7
         },
         {
@@ -27244,7 +27244,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 37989,
+          "downloads": 37590,
           "likes": 12
         },
         {
@@ -27263,7 +27263,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 900,
+          "downloads": 881,
           "likes": 19
         },
         {
@@ -27314,7 +27314,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1863,
+          "downloads": 1806,
           "likes": 23
         }
       ],
@@ -27527,7 +27527,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23739,
+          "downloads": 23448,
           "likes": 47
         }
       ],
@@ -27756,7 +27756,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23739,
+          "downloads": 23448,
           "likes": 47
         }
       ],
@@ -27886,7 +27886,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 47634,
+          "downloads": 44984,
           "likes": 116
         },
         {
@@ -27937,7 +27937,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 15885,
+          "downloads": 15816,
           "likes": 30
         }
       ],
@@ -28140,7 +28140,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23739,
+          "downloads": 23448,
           "likes": 47
         }
       ],
@@ -38828,6 +38828,17 @@
   ],
   "examples": [
     {
+      "id": "music_video_visualizer_001",
+      "name": "Music Video Visualizer",
+      "description": "Create reactive visuals from audio tracks with mood-matched imagery. Transcribes audio, analyzes mood/energy, and generates visual frames synced to the music.",
+      "tags": [
+        "video",
+        "audio",
+        "music",
+        "visualization"
+      ]
+    },
+    {
       "id": "",
       "name": "Product Description Generator",
       "description": "Automatically generate marketing copy and product descriptions from product data.",
@@ -38999,6 +39010,17 @@
       ]
     },
     {
+      "id": "concept_art_iteration_board_001",
+      "name": "Concept Art Iteration Board",
+      "description": "Generate concept art from creative briefs with rapid iteration. Creates mood boards, generates variations, and provides AI feedback for refinement.",
+      "tags": [
+        "image",
+        "concept art",
+        "illustration",
+        "design"
+      ]
+    },
+    {
       "id": "data_visualization_pipeline",
       "name": "Data Visualization Pipeline",
       "description": "Transform natural language descriptions into data visualizations with AI-powered data and chart generation. This workflow demonstrates how to create customized charts from text prompts without manual data preparation.",
@@ -39033,12 +39055,34 @@
       ]
     },
     {
+      "id": "album_cover_creator_001",
+      "name": "Album Cover Creator",
+      "description": "Create album covers that visually represent music mood and energy. Analyzes audio for mood, generates matching artwork with artist/title overlays.",
+      "tags": [
+        "image",
+        "music",
+        "album art",
+        "audio"
+      ]
+    },
+    {
       "id": "social_media_sentiment_analysis",
       "name": "Social Media Sentiment Analysis",
       "description": "Analyze sentiment and emotions in social media posts or user-provided text.",
       "tags": [
         "data",
         "nlp"
+      ]
+    },
+    {
+      "id": "youtube_thumbnail_pipeline_001",
+      "name": "YouTube Thumbnail Pipeline",
+      "description": "Generate multiple eye-catching YouTube thumbnail variations from video scripts. Creates bold text overlays, dramatic styling, and batch processes variations for A/B testing.",
+      "tags": [
+        "image",
+        "youtube",
+        "content creation",
+        "thumbnails"
       ]
     },
     {
@@ -39049,6 +39093,17 @@
         "image",
         "video",
         "example"
+      ]
+    },
+    {
+      "id": "social_media_calendar_filler_001",
+      "name": "Social Media Calendar Filler",
+      "description": "Generate a month's worth of social media content with images, captions, and hashtags. Plans content based on monthly themes and brand guidelines.",
+      "tags": [
+        "content",
+        "social media",
+        "marketing",
+        "planning"
       ]
     },
     {
@@ -39110,6 +39165,17 @@
       ]
     },
     {
+      "id": "movie_poster_designer_001",
+      "name": "Movie Poster Designer",
+      "description": "Create cinematic movie poster variations from film synopses. Generates dramatic compositions with typography integration and print-ready upscaling.",
+      "tags": [
+        "image",
+        "movie poster",
+        "design",
+        "cinematic"
+      ]
+    },
+    {
       "id": "1302ffe8a2f911f0b74c000014916b9c",
       "name": "Categorize Mails",
       "description": "Automatically categorize and organize emails using AI, showing the reasoning.",
@@ -39168,12 +39234,34 @@
       ]
     },
     {
+      "id": "brand_asset_generator_001",
+      "name": "Brand Asset Generator",
+      "description": "Generate consistent brand assets across multiple platforms from brand guidelines. Creates social media posts, banners, and product mocks with automatic resizing and text overlays.",
+      "tags": [
+        "image",
+        "branding",
+        "social media",
+        "design"
+      ]
+    },
+    {
       "id": "310d885a341811f0942e0000191c0ba5",
       "name": "Color Boost Video",
       "description": "",
       "tags": [
         "video",
         "start"
+      ]
+    },
+    {
+      "id": "product_mockup_generator_001",
+      "name": "Product Mockup Generator",
+      "description": "Generate product mockups in diverse scenes without physical photography. Places products in lifestyle, studio, and outdoor settings with realistic lighting.",
+      "tags": [
+        "image",
+        "product",
+        "e-commerce",
+        "mockup"
       ]
     },
     {
@@ -39209,6 +39297,17 @@
       ]
     },
     {
+      "id": "video_broll_automation_001",
+      "name": "Video B-Roll Automation",
+      "description": "Generate complementary B-roll footage for video editing. Analyzes main video content and creates matching overlays, transitions, and effects.",
+      "tags": [
+        "video",
+        "b-roll",
+        "editing",
+        "effects"
+      ]
+    },
+    {
       "id": "aa95586e-a2cd-4075-a51e-a2e6fc464ada",
       "name": "AI Workflows on Reddit",
       "description": "Find examples of AI workflows on Reddit and compile a markdown report.",
@@ -39216,6 +39315,16 @@
         "reddit",
         "research",
         "ai"
+      ]
+    },
+    {
+      "id": "004a7fd2-4492-485d-8bdb-ea1ba61f7bdf",
+      "name": "Photo Enhancement Suite",
+      "description": "Batch enhance photos with AI-powered improvements including color correction and upscaling.",
+      "tags": [
+        "image",
+        "photo",
+        "batch processing"
       ]
     }
   ]

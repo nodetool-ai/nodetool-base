@@ -17,7 +17,7 @@ from nodetool.metadata.types import (
     OrganicResult,
     ShoppingResult,
 )
-from nodetool.agents.serp_providers.types import (
+from nodetool.agents.serp_providers.serp_types import (
     GoogleJobsResponse,
     GoogleLensResponse,
     GoogleSearchResponse,

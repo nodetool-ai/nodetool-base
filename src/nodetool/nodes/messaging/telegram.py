@@ -31,7 +31,7 @@ TelegramBotTriggerOutput = TypedDict(
         "caption": str,
         "entities": list[dict[str, Any]],
         "chat": dict[str, Any],
-        "from": dict[str, Any],
+        "from_user": dict[str, Any],
         "attachments": list[dict[str, Any]],
         "timestamp": str,
         "source": str,
@@ -233,7 +233,7 @@ class TelegramBotTrigger(TriggerNode[TelegramBotTriggerOutput]):
                 "title": chat.get("title"),
                 "username": chat.get("username"),
             },
-            "from": {
+            "from_user": {
                 "id": sender.get("id"),
                 "username": sender.get("username"),
                 "first_name": sender.get("first_name"),

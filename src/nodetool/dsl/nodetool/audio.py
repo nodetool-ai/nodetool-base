@@ -147,6 +147,8 @@ class ChunkToAudio(GraphNode[nodetool.nodes.nodetool.audio.ChunkToAudio.OutputTy
         default=types.Chunk(
             type="chunk",
             node_id=None,
+            thread_id=None,
+            workflow_id=None,
             content_type="text",
             content="",
             content_metadata={},
