@@ -16,7 +16,7 @@ The workflow pattern:
 Perfect for graphic designers maintaining brand consistency across platforms.
 """
 
-from nodetool.dsl.graph import create_graph
+from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput, ColorInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.generators import ListGenerator
@@ -98,30 +98,21 @@ Include prompts for: Instagram square post, LinkedIn banner, Twitter header, and
         model=LanguageModel(
             type="language_model",
             provider=Provider.OpenAI,
-            id="gpt-4o-mini",
+            id="gpt-5-mini",
         ),
         prompt=prompt_generator_instruction.output,
         max_tokens=2048,
     )
 
-    # --- Iterate over prompts and generate images ---
-    prompt_iterator = ForEach(
-        input_list=prompt_list.out.item,
-    )
-
     # --- Generate base image ---
     base_image = TextToImage(
         model=ImageModel(
-            type="image_model",
-            provider=Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/schnell",
-            name="FLUX.1 Schnell",
+            provider=Provider.OpenAI,
+            id="gpt-image-1"
         ),
-        prompt=prompt_iterator.out.output,
+        prompt=prompt_list.out.item,
         width=1024,
         height=1024,
-        guidance_scale=7.5,
-        num_inference_steps=30,
     )
 
     # --- Add brand text overlay ---
@@ -132,7 +123,7 @@ Include prompts for: Instagram square post, LinkedIn banner, Twitter header, and
         y=900,
         size=72,
         color=primary_color.output,
-        font=FontRef(type="font", name="DejaVuSans"),
+        font=FontRef(type="font", name="Arial"),
     )
 
     # --- Add tagline ---
@@ -143,18 +134,13 @@ Include prompts for: Instagram square post, LinkedIn banner, Twitter header, and
         y=980,
         size=32,
         color=ColorRef(type="color", value="#FFFFFF"),
-        font=FontRef(type="font", name="DejaVuSans"),
-    )
-
-    # --- Collect all generated images ---
-    collected_images = Collect(
-        input_item=final_image.output,
+        font=FontRef(type="font", name="Arial"),
     )
 
     # --- Output ---
     output = Output(
         name="brand_assets",
-        value=collected_images.out.output,
+        value=final_image.output,
         description="Generated brand assets ready for social media platforms",
     )
 
@@ -195,6 +181,5 @@ if __name__ == "__main__":
     print()
 
     # Uncomment to run:
-    # import asyncio
-    # result = asyncio.run(run_graph(graph, user_id="example_user", auth_token="token"))
-    # print(f"Generated {len(result['brand_assets'])} brand assets")
+    result = run_graph(graph)
+    print(result)
