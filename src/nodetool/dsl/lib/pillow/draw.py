@@ -134,7 +134,13 @@ class RenderText(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
         default="", description="The text to render."
     )
     font: types.FontRef | OutputHandle[types.FontRef] = connect_field(
-        default=types.FontRef(type="font", name="DejaVuSans"),
+        default=types.FontRef(
+            type="font",
+            name="DejaVuSans",
+            source=nodetool.metadata.types.FontSource.SYSTEM,
+            url="",
+            weight="regular",
+        ),
         description="The font to use. Supports system fonts, Google Fonts, and custom URLs.",
     )
     x: int | OutputHandle[int] = connect_field(

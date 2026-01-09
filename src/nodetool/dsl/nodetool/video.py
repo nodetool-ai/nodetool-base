@@ -96,7 +96,14 @@ class AddSubtitles(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
         connect_field(default=[], description="Audio chunks to add as subtitles.")
     )
     font: types.FontRef | OutputHandle[types.FontRef] = connect_field(
-        default=types.FontRef(type="font", name=""), description="The font to use."
+        default=types.FontRef(
+            type="font",
+            name="",
+            source=nodetool.metadata.types.FontSource.SYSTEM,
+            url="",
+            weight="regular",
+        ),
+        description="The font to use.",
     )
     align: nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment = Field(
         default=nodetool.nodes.nodetool.video.AddSubtitles.SubtitleTextAlignment.BOTTOM,
