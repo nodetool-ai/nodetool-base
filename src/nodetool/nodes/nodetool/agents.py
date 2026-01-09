@@ -1414,6 +1414,7 @@ class Agent(BaseNode):
                             for e in initial_edges:
                                 context.post_message(
                                     EdgeUpdate(
+                                        workflow_id=context.workflow_id,
                                         edge_id=e.id or "",
                                         status="message_sent",
                                     )
@@ -1487,7 +1488,11 @@ class Agent(BaseNode):
                     )
                     for e in initial_edges:
                         context.post_message(
-                            EdgeUpdate(edge_id=e.id or "", status="drained")
+                            EdgeUpdate(
+                                workflow_id=context.workflow_id,
+                                edge_id=e.id or "",
+                                status="drained",
+                            )
                         )
                     tool_message = Message(
                         role="tool",
