@@ -16,7 +16,7 @@ The workflow pattern:
 Empowers designers to create product photography without physical shoots.
 """
 
-from nodetool.dsl.graph import create_graph
+from nodetool.dsl.graph import create_graph, run_graph, AssetOutputMode
 from nodetool.dsl.nodetool.input import ImageInput, StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
@@ -157,30 +157,19 @@ Make each prompt suitable for high-quality product photography.
         max_tokens=2048,
     )
 
-    # --- Generate mockup images ---
-    prompt_iterator = ForEach(
-        input_list=image_prompts.out.item,
-    )
-
-    # Use ImageToImage to transform product in context
-    # When reference image is available, use it
     mockup_image = ImageToImage(
         model=ImageModel(
             type="image_model",
-            provider=Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/dev",
-            name="FLUX.1 Dev",
+            provider=Provider.OpenAI,
+            id="gpt-image-1.5",
         ),
         image=product_image.output,
-        prompt=prompt_iterator.out.output,
-        strength=0.65,  # Balance between reference and new scene
-        guidance_scale=7.5,
-        num_inference_steps=30,
+        prompt=image_prompts.out.item,
+        strength=0.65,
         target_width=1200,
         target_height=1200,
     )
 
-    # --- Enhance for e-commerce ---
     enhanced = Brightness(
         image=mockup_image.output,
         factor=1.05,
@@ -191,45 +180,29 @@ Make each prompt suitable for high-quality product photography.
         factor=1.1,
     )
 
-    # --- Collect all mockups ---
-    collected_mockups = Collect(
-        input_item=polished.output,
-    )
-
-    # --- Generate text-only scenes for products without reference ---
-    # Alternative: Generate pure scenes when no product image provided
-    alt_prompt_iterator = ForEach(
-        input_list=image_prompts.out.item,
-    )
-
     alt_mockup = TextToImage(
         model=ImageModel(
             type="image_model",
-            provider=Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/schnell",
-            name="FLUX.1 Schnell",
+            provider=Provider.OpenAI,
+            id="gpt-image-1.5",
         ),
-        prompt=alt_prompt_iterator.out.output,
+        prompt=image_prompts.out.item,
         width=1200,
         height=1200,
         guidance_scale=7.0,
         num_inference_steps=25,
     )
 
-    collected_alt = Collect(
-        input_item=alt_mockup.output,
-    )
-
     # --- Outputs ---
     mockups_out = Output(
         name="product_mockups",
-        value=collected_mockups.out.output,
+        value=polished.output,
         description="Product mockups in various scenes (image-to-image)",
     )
 
     text_mockups_out = Output(
         name="generated_scenes",
-        value=collected_alt.out.output,
+        value=alt_mockup.output,
         description="Generated product scenes (text-to-image)",
     )
 
@@ -284,6 +257,5 @@ if __name__ == "__main__":
     print()
 
     # Uncomment to run:
-    # import asyncio
-    # result = asyncio.run(run_graph(graph, user_id="example_user", auth_token="token"))
-    # print(f"Generated {len(result['product_mockups'])} mockups")
+    result = run_graph(graph, asset_output_mode=AssetOutputMode.WORKSPACE)
+    print(result)

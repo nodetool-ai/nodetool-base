@@ -17,7 +17,7 @@ The workflow pattern:
 Ideal for video creators optimizing click-through rates.
 """
 
-from nodetool.dsl.graph import create_graph
+from nodetool.dsl.graph import create_graph, run_graph
 from nodetool.dsl.nodetool.input import StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.generators import ListGenerator
@@ -27,6 +27,7 @@ from nodetool.dsl.lib.pillow.enhance import Contrast, Brightness
 from nodetool.dsl.nodetool.control import ForEach, Collect
 from nodetool.dsl.nodetool.output import Output
 from nodetool.metadata.types import (
+    FontSource,
     LanguageModel,
     Provider,
     ImageModel,
@@ -105,30 +106,22 @@ Each prompt should be a detailed text-to-image prompt.
         model=LanguageModel(
             type="language_model",
             provider=Provider.OpenAI,
-            id="gpt-4o-mini",
+            id="gpt-5-mini",
         ),
         prompt=concept_generator.output,
         max_tokens=2048,
-    )
-
-    # --- Iterate and generate images ---
-    prompt_iterator = ForEach(
-        input_list=thumbnail_prompts.out.item,
     )
 
     # --- Generate base thumbnail ---
     base_thumbnail = TextToImage(
         model=ImageModel(
             type="image_model",
-            provider=Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/schnell",
-            name="FLUX.1 Schnell",
+            provider=Provider.OpenAI,
+            id="gpt-image-1.5",
         ),
-        prompt=prompt_iterator.out.output,
+        prompt=thumbnail_prompts.out.item,
         width=1280,
         height=720,
-        guidance_scale=8.0,
-        num_inference_steps=35,
     )
 
     # --- Enhance for YouTube style ---
@@ -151,7 +144,7 @@ Each prompt should be a detailed text-to-image prompt.
         y=100,
         size=96,
         color=ColorRef(type="color", value="#FFFF00"),  # Yellow for visibility
-        font=FontRef(type="font", name="DejaVuSans-Bold"),
+        font=FontRef(name="Open Sans", source=FontSource.GOOGLE_FONTS, weight="bold"),
     )
 
     # Subtitle/call to action
@@ -162,18 +155,13 @@ Each prompt should be a detailed text-to-image prompt.
         y=620,
         size=48,
         color=ColorRef(type="color", value="#FFFFFF"),
-        font=FontRef(type="font", name="DejaVuSans"),
-    )
-
-    # --- Collect all variations ---
-    collected_thumbnails = Collect(
-        input_item=final_thumbnail.output,
+        font=FontRef(name="Open Sans", source=FontSource.GOOGLE_FONTS, weight="bold"),
     )
 
     # --- Output ---
     output = Output(
         name="thumbnail_variations",
-        value=collected_thumbnails.out.output,
+        value=final_thumbnail.output,
         description="Collection of YouTube thumbnail variations for A/B testing",
     )
 
@@ -188,7 +176,7 @@ if __name__ == "__main__":
     """
     To run this example:
 
-    1. Ensure you have API keys configured for OpenAI and FAL AI
+    1. Ensure you have API keys configured for OpenAI
     2. Run:
 
         python examples/youtube_thumbnail_pipeline.py
@@ -205,8 +193,7 @@ if __name__ == "__main__":
     print("  [Video Title/Topic Inputs]")
     print("      -> [FormatText] (thumbnail concept prompt)")
     print("          -> [ListGenerator] (generate multiple concepts)")
-    print("              -> [ForEach] (iterate concepts)")
-    print("                  -> [TextToImage] (generate thumbnails)")
+    print("              -> [TextToImage] (generate thumbnails)")
     print("                      -> [Contrast/Brightness] (enhance)")
     print("                          -> [RenderText] (add text overlays)")
     print("                              -> [Collect]")
@@ -214,6 +201,5 @@ if __name__ == "__main__":
     print()
 
     # Uncomment to run:
-    # import asyncio
-    # result = asyncio.run(run_graph(graph, user_id="example_user", auth_token="token"))
-    # print(f"Generated {len(result['thumbnail_variations'])} thumbnail variations")
+    result = run_graph(graph)
+    print(result)

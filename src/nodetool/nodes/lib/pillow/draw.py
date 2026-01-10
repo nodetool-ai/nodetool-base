@@ -81,8 +81,8 @@ class RenderText(BaseNode):
         default=FontRef(name="DejaVuSans"),
         description="The font to use. Supports system fonts, Google Fonts, and custom URLs.",
     )
-    x: int = Field(default=0, ge=0, description="The x coordinate.")
-    y: int = Field(default=0, ge=0, description="The y coordinate.")
+    x: int = Field(default=0, description="The x coordinate.")
+    y: int = Field(default=0, description="The y coordinate.")
     size: int = Field(default=12, ge=1, le=512, description="The font size.")
     color: ColorRef = Field(
         default=ColorRef(value="#000000"), description="The font color."

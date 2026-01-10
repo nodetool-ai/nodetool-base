@@ -180,19 +180,12 @@ Make each variation distinct but thematically cohesive.
         max_tokens=2048,
     )
 
-    # --- Generate cover images ---
-    prompt_iterator = ForEach(
-        input_list=cover_prompts.out.item,
-    )
-
     base_cover = TextToImage(
         model=ImageModel(
-            type="image_model",
-            provider=Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/dev",
-            name="FLUX.1 Dev",
+            provider=Provider.OpenAI,
+            id="gpt-image-1.5"
         ),
-        prompt=prompt_iterator.out.output,
+        prompt=cover_prompts.out.item,
         width=1400,  # High-res square for album covers
         height=1400,
         guidance_scale=7.5,
