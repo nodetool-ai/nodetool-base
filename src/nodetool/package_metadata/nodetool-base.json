@@ -15909,7 +15909,7 @@
       ]
     },
     {
-      "title": "Reshape 1 D",
+      "title": "Reshape 1D",
       "description": "Reshape an array to a 1D shape without changing its data.\n    array, reshape, vector, flatten\n\n    Use cases:\n    - Flatten multi-dimensional data for certain algorithms\n    - Convert images to vector form for machine learning\n    - Prepare data for 1D operations",
       "namespace": "lib.numpy.reshaping",
       "node_type": "lib.numpy.reshaping.Reshape1D",
@@ -15954,7 +15954,7 @@
       ]
     },
     {
-      "title": "Reshape 2 D",
+      "title": "Reshape 2D",
       "description": "Reshape an array to a new shape without changing its data.\n    array, reshape, dimensions, structure\n\n    Use cases:\n    - Convert between different dimensional representations\n    - Prepare data for specific model architectures\n    - Flatten or unflatten arrays",
       "namespace": "lib.numpy.reshaping",
       "node_type": "lib.numpy.reshaping.Reshape2D",
@@ -16009,7 +16009,7 @@
       ]
     },
     {
-      "title": "Reshape 3 D",
+      "title": "Reshape 3D",
       "description": "Reshape an array to a 3D shape without changing its data.\n    array, reshape, dimensions, volume\n\n    Use cases:\n    - Convert data for 3D visualization\n    - Prepare image data with channels\n    - Structure data for 3D convolutions",
       "namespace": "lib.numpy.reshaping",
       "node_type": "lib.numpy.reshaping.Reshape3D",
@@ -16074,7 +16074,7 @@
       ]
     },
     {
-      "title": "Reshape 4 D",
+      "title": "Reshape 4D",
       "description": "Reshape an array to a 4D shape without changing its data.\n    array, reshape, dimensions, batch\n\n    Use cases:\n    - Prepare batch data for neural networks\n    - Structure spatiotemporal data\n    - Format data for 3D image processing with channels",
       "namespace": "lib.numpy.reshaping",
       "node_type": "lib.numpy.reshaping.Reshape4D",
@@ -23610,7 +23610,7 @@
       ]
     },
     {
-      "title": "Model 3 D",
+      "title": "Model 3D",
       "description": "Represents a 3D model constant in the workflow.\n    3d, model, mesh, glb, obj, stl\n\n    Use cases:\n    - Provide a fixed 3D model input for processing nodes\n    - Reference a specific 3D model file in the workflow\n    - Set default 3D model for testing or demonstration purposes",
       "namespace": "nodetool.constant",
       "node_type": "nodetool.constant.Model3D",
@@ -29021,7 +29021,7 @@
       ]
     },
     {
-      "title": "Model 3 DInput",
+      "title": "Model 3D Input",
       "description": "Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.\n    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,\n    or conversion by 3D-capable nodes.\n    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset",
       "namespace": "nodetool.input",
       "node_type": "nodetool.input.Model3DInput",
@@ -30533,7 +30533,7 @@
       ]
     },
     {
-      "title": "Get Model 3 DMetadata",
+      "title": "Get Model 3D Metadata",
       "description": "Get metadata about a 3D model.\n    3d, mesh, model, metadata, info, properties\n\n    Use cases:\n    - Get vertex and face counts for processing decisions\n    - Analyze model properties\n    - Gather information for model cataloging",
       "namespace": "nodetool.model3d",
       "node_type": "nodetool.model3d.GetModel3DMetadata",
@@ -30631,7 +30631,7 @@
       ]
     },
     {
-      "title": "Load Model 3 DFile",
+      "title": "Load Model 3D File",
       "description": "Load a 3D model file from disk.\n    3d, mesh, model, input, load, file, obj, glb, stl, ply\n\n    Use cases:\n    - Load 3D models for processing\n    - Import meshes from CAD software\n    - Read 3D assets for a workflow",
       "namespace": "nodetool.model3d",
       "node_type": "nodetool.model3d.LoadModel3DFile",
@@ -30814,7 +30814,7 @@
       ]
     },
     {
-      "title": "Save Model 3 DFile",
+      "title": "Save Model 3D File",
       "description": "Save a 3D model to disk.\n    3d, mesh, model, output, save, file, export\n\n    Use cases:\n    - Save processed 3D models\n    - Export meshes to different formats\n    - Archive 3D model results",
       "namespace": "nodetool.model3d",
       "node_type": "nodetool.model3d.SaveModel3DFile",
