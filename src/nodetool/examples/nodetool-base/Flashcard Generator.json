@@ -33,7 +33,7 @@
             "y": 171
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -74,11 +74,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 536,
+            "x": 696,
             "y": 522
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -95,11 +95,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 306,
+            "x": 386,
             "y": 167
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {
@@ -140,11 +140,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 536,
+            "x": 776,
             "y": 65
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -159,11 +159,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 806,
+            "x": 1126,
             "y": 220
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -182,11 +182,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 806,
+            "x": 1206,
             "y": 630
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -203,11 +203,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 1036,
+            "x": 1516,
             "y": 614
           },
           "zIndex": 0,
-          "width": 700,
+          "width": 280,
           "height": 485,
           "selectable": true
         },
@@ -227,7 +227,7 @@
             "y": 0
           },
           "zIndex": 0,
-          "width": 580,
+          "width": 280,
           "height": 1184,
           "selectable": true
         },

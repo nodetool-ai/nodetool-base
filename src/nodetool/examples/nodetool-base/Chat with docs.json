@@ -24,11 +24,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 523,
+            "x": 683,
             "y": 312
           },
           "zIndex": 0,
-          "width": 336,
+          "width": 280,
           "title": "Construct comprehensive prompt with retrieved context and query",
           "selectable": true
         },
@@ -55,11 +55,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 263,
+            "x": 343,
             "y": 409
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -82,7 +82,7 @@
             "y": 333
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -121,11 +121,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 889,
+            "x": 1049,
             "y": 225
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -140,11 +140,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 1119,
+            "x": 1359,
             "y": 26
           },
           "zIndex": 0,
-          "width": 886,
+          "width": 280,
           "height": 1003,
           "selectable": true
         },

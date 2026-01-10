@@ -21,11 +21,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 330,
+            "x": 410,
             "y": 55
           },
           "zIndex": 0,
-          "width": 289,
+          "width": 280,
           "height": 378,
           "selectable": true
         },
@@ -67,7 +67,7 @@
             "y": 71
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -128,7 +128,7 @@
             "y": -164
           },
           "zIndex": 0,
-          "width": 337,
+          "width": 280,
           "height": 135,
           "selectable": true
         },

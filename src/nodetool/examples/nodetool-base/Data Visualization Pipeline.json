@@ -21,11 +21,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 770,
+            "x": 1010,
             "y": 50
           },
           "zIndex": 0,
-          "width": 227,
+          "width": 280,
           "height": 228,
           "title": "Preview of the rendered chart image output. Displays the final visualization created by the workflow.",
           "selectable": true
@@ -96,7 +96,7 @@
             "y": -212
           },
           "zIndex": 0,
-          "width": 553,
+          "width": 280,
           "height": 149,
           "selectable": true
         },
@@ -115,7 +115,7 @@
             "y": 125
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -127,11 +127,11 @@
         "data": {},
         "ui_properties": {
           "position": {
-            "x": 280,
+            "x": 360,
             "y": 146
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -145,11 +145,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 510,
+            "x": 670,
             "y": 112
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -170,11 +170,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 783.5,
+            "x": 1076.5,
             "y": 328
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -188,11 +188,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 1027,
+            "x": 1400,
             "y": 135
           },
           "zIndex": 0,
-          "width": 1032,
+          "width": 280,
           "height": 465,
           "selectable": true
         },

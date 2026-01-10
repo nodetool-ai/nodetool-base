@@ -346,7 +346,7 @@
         "id": "9",
         "type": "nodetool.text.FormatText",
         "data": {
-          "template": "🔴 HIGH VALUE: {{ value }} is greater than 100. Priority processing engaged."
+          "template": "\ud83d\udd34 HIGH VALUE: {{ value }} is greater than 100. Priority processing engaged."
         },
         "ui_properties": {
           "position": {
@@ -408,7 +408,7 @@
         "id": "12",
         "type": "nodetool.text.FormatText",
         "data": {
-          "template": "🔵 LOW VALUE: {{ value }} is less than 50. Standard processing applied."
+          "template": "\ud83d\udd35 LOW VALUE: {{ value }} is less than 50. Standard processing applied."
         },
         "ui_properties": {
           "position": {
@@ -430,7 +430,7 @@
         "id": "13",
         "type": "nodetool.text.FormatText",
         "data": {
-          "template": "🟡 MEDIUM VALUE: {{ value }} is between 50 and 100. Balanced processing selected."
+          "template": "\ud83d\udfe1 MEDIUM VALUE: {{ value }} is between 50 and 100. Balanced processing selected."
         },
         "ui_properties": {
           "position": {

@@ -5,7 +5,10 @@
   "updated_at": "2025-08-10T19:44:26.840102",
   "name": "Index PDFs",
   "description": "Workflow to index PDFs in a folder into a Chroma collection",
-  "tags": ["rag","start"],
+  "tags": [
+    "rag",
+    "start"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
@@ -28,7 +31,7 @@
             "y": 265
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -46,11 +49,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 808,
+            "x": 1128,
             "y": 54
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -62,11 +65,11 @@
         "data": {},
         "ui_properties": {
           "position": {
-            "x": 318,
+            "x": 398,
             "y": 341
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -81,11 +84,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 548,
+            "x": 708,
             "y": 313
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -97,11 +100,11 @@
         "data": {},
         "ui_properties": {
           "position": {
-            "x": 1068,
+            "x": 1548,
             "y": 101
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -117,11 +120,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 808,
+            "x": 1208,
             "y": 266
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -133,11 +136,11 @@
         "data": {},
         "ui_properties": {
           "position": {
-            "x": 548,
+            "x": 788,
             "y": 157
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {}
@@ -501,7 +504,7 @@
             "y": -384
           },
           "zIndex": 0,
-          "width": 719,
+          "width": 280,
           "height": 342,
           "selectable": true
         },

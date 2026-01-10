@@ -82,11 +82,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 750,
+            "x": 1310,
             "y": 271
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -114,11 +114,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 520,
+            "x": 1000,
             "y": 165
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -147,11 +147,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 260,
+            "x": 500,
             "y": 510
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -172,7 +172,7 @@
             "y": 483
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -187,11 +187,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 260,
+            "x": 580,
             "y": 228
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {
@@ -212,11 +212,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 0,
+            "x": 80,
             "y": 255
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -233,11 +233,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 0,
+            "x": 160,
             "y": 39
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -254,11 +254,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 260,
+            "x": 660,
             "y": 0
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
