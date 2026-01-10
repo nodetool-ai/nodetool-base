@@ -141,29 +141,10 @@ class FormatText(BaseNode):
 
     This node is dynamic and can be used to format text with dynamic properties.
 
-    Use cases:
-    - Generating personalized messages with dynamic content
-    - Creating parameterized queries or commands
-    - Formatting and filtering text output based on variable inputs
-
     Examples:
     - text: "Hello, {{ name }}!"
     - text: "Title: {{ title|truncate(20) }}"
     - text: "Name: {{ name|upper }}"
-
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
     """
 
     _is_dynamic: ClassVar[bool] = True
@@ -171,24 +152,9 @@ class FormatText(BaseNode):
     template: str = Field(
         default="",
         description="""
-    Examples:
-    - text: "Hello, {{ name }}!"
-    - text: "Title: {{ title|truncate(20) }}"
-    - text: "Name: {{ name|upper }}" 
+    Example: Hello, {{ name }} or {{ title|truncate(20) }}
 
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
+    Available filters: truncate, upper, lower, title, trim, replace, default, first, last, length, sort, join
 """,
     )
 

@@ -17,7 +17,7 @@ The workflow pattern:
 Excellent for illustrators and concept artists in rapid ideation.
 """
 
-from nodetool.dsl.graph import create_graph
+from nodetool.dsl.graph import create_graph, run_graph, AssetOutputMode
 from nodetool.dsl.nodetool.input import StringInput, IntegerInput
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
@@ -99,9 +99,8 @@ Be specific and actionable for a concept artist.
 
     expanded_direction = Agent(
         model=LanguageModel(
-            type="language_model",
             provider=Provider.OpenAI,
-            id="gpt-4o-mini",
+            id="gpt-5-mini",
         ),
         system="You are an experienced concept art director. Provide detailed, inspiring art direction.",
         prompt=brief_expansion.output,
@@ -131,42 +130,32 @@ Output format: One prompt per line, no numbering or bullets.
 
     variation_prompts = ListGenerator(
         model=LanguageModel(
-            type="language_model",
             provider=Provider.OpenAI,
-            id="gpt-4o-mini",
+            id="gpt-5-mini",
         ),
         prompt=variation_generator.output,
         max_tokens=2048,
     )
 
-    # --- Generate concept images ---
-    prompt_iterator = ForEach(
-        input_list=variation_prompts.out.item,
-    )
-
     concept_image = TextToImage(
         model=ImageModel(
-            type="image_model",
-            provider=Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/dev",
-            name="FLUX.1 Dev",
+            provider=Provider.OpenAI,
+            id="gpt-image-1.5",
         ),
-        prompt=prompt_iterator.out.output,
+        prompt=variation_prompts.out.item,
         width=1024,
         height=1024,
         guidance_scale=7.5,
         num_inference_steps=30,
     )
 
-    # --- Collect all concept images ---
     collected_concepts = Collect(
         input_item=concept_image.output,
     )
 
-    # --- Create mood board grid ---
     mood_board = CombineImageGrid(
         tiles=collected_concepts.out.output,
-        columns=3,  # 3 columns for 6 images = 2 rows
+        columns=3,
     )
 
     # --- Generate feedback and iteration suggestions ---
@@ -273,8 +262,6 @@ if __name__ == "__main__":
     print("  - iteration_feedback: Suggestions for next round")
     print()
 
-    # Uncomment to run:
-    # import asyncio
-    # result = asyncio.run(run_graph(graph, user_id="example_user", auth_token="token"))
-    # print("Mood board generated!")
-    # print(f"Feedback: {result['iteration_feedback'][:200]}...")
+    result = run_graph(graph, asset_output_mode=AssetOutputMode.WORKSPACE)
+    print("Mood board generatekpd!")
+    print(result)

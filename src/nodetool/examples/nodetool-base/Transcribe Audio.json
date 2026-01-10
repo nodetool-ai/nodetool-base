@@ -44,8 +44,7 @@
         "data": {
           "name": "audio",
           "description": "",
-          "value": {
-          }
+          "value": {}
         },
         "ui_properties": {
           "selected": false,
