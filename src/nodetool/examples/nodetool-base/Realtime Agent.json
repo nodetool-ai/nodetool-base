@@ -6,7 +6,10 @@
   "name": "Realtime Agent",
   "tool_name": null,
   "description": "",
-  "tags": ["openai", "agent"],
+  "tags": [
+    "openai",
+    "agent"
+  ],
   "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
@@ -27,7 +30,7 @@
             "y": 146
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -41,11 +44,11 @@
         "data": {},
         "ui_properties": {
           "position": {
-            "x": 524,
+            "x": 684,
             "y": 130
           },
           "zIndex": 0,
-          "width": 268,
+          "width": 280,
           "height": 287,
           "selectable": true
         },
@@ -66,11 +69,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 294,
+            "x": 374,
             "y": 58
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -186,11 +189,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 64,
+            "x": 144,
             "y": -193
           },
           "zIndex": 0,
-          "width": 539,
+          "width": 280,
           "height": 160,
           "selectable": true
         },

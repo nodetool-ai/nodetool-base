@@ -31,7 +31,7 @@
             "y": 301
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -47,11 +47,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 330,
+            "x": 410,
             "y": 300
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {
@@ -75,11 +75,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 560,
+            "x": 800,
             "y": 185
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -106,11 +106,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 925.5,
+            "x": 1245.5,
             "y": 664
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -126,11 +126,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 820,
+            "x": 1140,
             "y": 50
           },
           "zIndex": 0,
-          "width": 411,
+          "width": 280,
           "height": 564,
           "selectable": true
         },
@@ -147,11 +147,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 1261,
+            "x": 1661,
             "y": 771
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -1072,7 +1072,7 @@
             "y": 33
           },
           "zIndex": 0,
-          "width": 443,
+          "width": 280,
           "height": 982,
           "selectable": true
         },
@@ -1094,11 +1094,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 439,
+            "x": 599,
             "y": 838
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},

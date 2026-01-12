@@ -83,11 +83,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 990,
+            "x": 1630,
             "y": 109
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -115,11 +115,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 760,
+            "x": 1320,
             "y": 0
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -138,7 +138,7 @@
             "path": null,
             "supported_tasks": []
           },
-          "system": "You are a senior video prompt engineer for OpenAI Sora. Follow Sora best practices: describe the shot like a storyboard—subject, setting, action beats, and camera. Be specific about camera framing and movement (e.g., wide establishing, eye level, 50mm, slow push-in), depth cues, composition (rule of thirds, leading lines), lighting and color anchors (name 3–5 colors), and atmosphere/texture (mist, rain on asphalt). Keep motion simple and grounded with one clear camera move and one primary subject action. Support continuity and realism (plausible physics, natural motion, environmental interaction). Do not mention size/resolution or clip length; those are set via API, not prose. Use present tense and avoid abstract phrasing and meta commentary. If dialogue adds clarity, include a short 'Dialogue:' block; otherwise omit. End with constraints: no on-screen text, no logos, no watermarks, no glitches, no distorted anatomy.",
+          "system": "You are a senior video prompt engineer for OpenAI Sora. Follow Sora best practices: describe the shot like a storyboard\u2014subject, setting, action beats, and camera. Be specific about camera framing and movement (e.g., wide establishing, eye level, 50mm, slow push-in), depth cues, composition (rule of thirds, leading lines), lighting and color anchors (name 3\u20135 colors), and atmosphere/texture (mist, rain on asphalt). Keep motion simple and grounded with one clear camera move and one primary subject action. Support continuity and realism (plausible physics, natural motion, environmental interaction). Do not mention size/resolution or clip length; those are set via API, not prose. Use present tense and avoid abstract phrasing and meta commentary. If dialogue adds clarity, include a short 'Dialogue:' block; otherwise omit. End with constraints: no on-screen text, no logos, no watermarks, no glitches, no distorted anatomy.",
           "image": {
             "type": "image",
             "uri": "",
@@ -158,11 +158,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 500,
+            "x": 900,
             "y": 252
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -173,15 +173,15 @@
         "id": "4",
         "type": "nodetool.text.FormatText",
         "data": {
-          "template": "Using the marketing inputs, write an OpenAI Sora prompt for a single 16:9 product launch shot.\n\nRules:\n- Do not specify resolution or duration in text (those are API parameters).\n- Present tense, visually concrete; one clear camera move and one primary subject action.\n- Include: subject, setting, time-of-day, camera language (framing, angle, lens, movement), composition cues, lighting, 3–5 color anchors, atmosphere/texture, and realistic motion cues.\n- Emphasize the product and key features naturally within the scene for the target audience and tone.\n- If useful, end with an optional Dialogue: block (short, natural lines) and/or Background Sound: line; otherwise omit.\n- Finish with constraints: no on-screen text, no logos, no watermarks, no glitches, no distorted anatomy.\n\nInputs:\n- Campaign brief: {{ brief }}\n- Target audience: {{ audience }}\n- Desired tone: {{ tone }}\n- Key features: {{ features }}"
+          "template": "Using the marketing inputs, write an OpenAI Sora prompt for a single 16:9 product launch shot.\n\nRules:\n- Do not specify resolution or duration in text (those are API parameters).\n- Present tense, visually concrete; one clear camera move and one primary subject action.\n- Include: subject, setting, time-of-day, camera language (framing, angle, lens, movement), composition cues, lighting, 3\u20135 color anchors, atmosphere/texture, and realistic motion cues.\n- Emphasize the product and key features naturally within the scene for the target audience and tone.\n- If useful, end with an optional Dialogue: block (short, natural lines) and/or Background Sound: line; otherwise omit.\n- Finish with constraints: no on-screen text, no logos, no watermarks, no glitches, no distorted anatomy.\n\nInputs:\n- Campaign brief: {{ brief }}\n- Target audience: {{ audience }}\n- Desired tone: {{ tone }}\n- Key features: {{ features }}"
         },
         "ui_properties": {
           "position": {
-            "x": 270,
+            "x": 590,
             "y": 348
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {
@@ -207,7 +207,7 @@
             "y": 362
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -224,11 +224,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 0,
+            "x": 80,
             "y": 590
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -245,11 +245,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 0,
+            "x": 160,
             "y": 818
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -266,11 +266,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 0,
+            "x": 240,
             "y": 134
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -285,11 +285,11 @@
         },
         "ui_properties": {
           "position": {
-            "x": 500,
+            "x": 980,
             "y": 40
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},

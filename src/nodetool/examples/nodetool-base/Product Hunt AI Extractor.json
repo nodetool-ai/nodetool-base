@@ -92,7 +92,7 @@
             "y": 0
           },
           "zIndex": 0,
-          "width": 600,
+          "width": 280,
           "selectable": true,
           "bypassed": false
         },
@@ -121,7 +121,7 @@
             "y": 0
           },
           "zIndex": 0,
-          "width": 375,
+          "width": 280,
           "selectable": true,
           "bypassed": false
         },
