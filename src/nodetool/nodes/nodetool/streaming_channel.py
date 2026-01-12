@@ -136,9 +136,10 @@ class Channel:
                 try:
                     await q.put(_STOP_SIGNAL)
                 except asyncio.QueueFull:
-                    # Queue is full; subscriber will see closed flag on next iteration
+                    # Queue is full; stop signal will be sent when space is available
+                    # or subscriber will terminate when it next tries to get an item
                     log.debug(
-                        f"Queue full when closing channel {self.name}, subscriber will exit on next poll"
+                        f"Queue full when closing channel {self.name}, stop signal pending"
                     )
                 except RuntimeError as e:
                     # Queue might be closed or event loop issues

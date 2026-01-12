@@ -41,6 +41,19 @@ async def reset_channel_manager() -> None:
         _channel_manager = None
 
 
+def _generate_subscriber_id(node_id: str) -> str:
+    """Generate a unique subscriber ID for a receive node.
+    
+    Args:
+        node_id: The node's ID.
+        
+    Returns:
+        A unique subscriber ID combining the node ID and a random suffix.
+    """
+    safe_id = node_id if node_id else "unknown"
+    return f"{safe_id}_{uuid.uuid4().hex[:8]}"
+
+
 # =============================================================================
 # Send Nodes - Publish typed values to named channels
 # =============================================================================
@@ -190,7 +203,7 @@ class ReceiveInteger(BaseNode):
         if not self.channel:
             raise ValueError("Channel name is required")
         manager = get_channel_manager()
-        subscriber_id = f"{self._id}_{uuid.uuid4().hex[:8]}"
+        subscriber_id = _generate_subscriber_id(self.id)
         async for item in manager.subscribe(self.channel, subscriber_id):
             if isinstance(item, int):
                 yield {"value": item}
@@ -226,7 +239,7 @@ class ReceiveFloat(BaseNode):
         if not self.channel:
             raise ValueError("Channel name is required")
         manager = get_channel_manager()
-        subscriber_id = f"{self._id}_{uuid.uuid4().hex[:8]}"
+        subscriber_id = _generate_subscriber_id(self.id)
         async for item in manager.subscribe(self.channel, subscriber_id):
             if isinstance(item, float | int):
                 yield {"value": float(item)}
@@ -262,7 +275,7 @@ class ReceiveString(BaseNode):
         if not self.channel:
             raise ValueError("Channel name is required")
         manager = get_channel_manager()
-        subscriber_id = f"{self._id}_{uuid.uuid4().hex[:8]}"
+        subscriber_id = _generate_subscriber_id(self.id)
         async for item in manager.subscribe(self.channel, subscriber_id):
             yield {"value": str(item)}
 
@@ -291,7 +304,7 @@ class ReceiveBoolean(BaseNode):
         if not self.channel:
             raise ValueError("Channel name is required")
         manager = get_channel_manager()
-        subscriber_id = f"{self._id}_{uuid.uuid4().hex[:8]}"
+        subscriber_id = _generate_subscriber_id(self.id)
         async for item in manager.subscribe(self.channel, subscriber_id):
             if isinstance(item, bool):
                 yield {"value": item}
@@ -324,7 +337,7 @@ class ReceiveAny(BaseNode):
         if not self.channel:
             raise ValueError("Channel name is required")
         manager = get_channel_manager()
-        subscriber_id = f"{self._id}_{uuid.uuid4().hex[:8]}"
+        subscriber_id = _generate_subscriber_id(self.id)
         async for item in manager.subscribe(self.channel, subscriber_id):
             yield {"value": item}
 
