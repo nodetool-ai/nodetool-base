@@ -1,0 +1,101 @@
+name: Kie Model Sync
+
+on:
+  schedule:
+    - cron: "45 */6 * * *" # Every 6 hours at minute 45
+  workflow_dispatch:
+
+jobs:
+  opencode:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+      pull-requests: write
+      issues: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Install dependencies
+        run: |
+          uv sync \
+            --extra-index-url https://nodetool-ai.github.io/nodetool-registry/simple/ \
+            --index-strategy unsafe-best-match
+          uv sync --extra dev --index-strategy unsafe-best-match
+
+      - name: Run OpenCode
+        uses: anomalyco/opencode/github@latest
+        env:
+          KIE_API_KEY: ${{ secrets.KIE_API_KEY }}
+          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+        with:
+          model: minimax/MiniMax-M2.1
+          prompt: |
+            # Kie Model Sync (Scheduled)
+
+            You are an autonomous agent that adds new Kie.ai models to the **nodetool-base** repository.
+
+            ## Step 0: Avoid Duplicate Work
+            1. Run `git branch -a` to check existing branches
+            2. If there's an open PR for similar work, continue on that branch instead of duplicating
+
+            ## Step 1: Read Memory (Required)
+            - `.github/opencode-memory/README.md`
+            - `.github/opencode-memory/repository-context.md`
+            - `.github/opencode-memory/node-creation-guide.md`
+            - `.github/opencode-memory/features.md`
+
+            ## Step 2: Discover New Models
+            1. Browse https://kie.ai/market for new or featured models
+            2. Focus on models released in the last 30 days or trending providers
+            3. Check `src/nodetool/nodes/kie/image.py`, `video.py`, and `audio.py` for existing nodes
+            4. Pick 1-3 new models that are not already in the codebase
+
+            ## Step 3: Gather API Docs
+            1. Open the model page and then load the Markdown docs (append `.md`)
+            2. Example: https://kie.ai/model/seedream/4.5-text-to-image.md
+            3. Capture the `model` identifier and required input parameters
+
+            ## Step 4: Add New Nodes
+            1. Add the node to the correct module in `src/nodetool/nodes/kie/`
+            2. Use `KieBaseNode` for image/audio and `KieVideoBaseNode` for video
+            3. Implement `_get_model`, `_get_input_params`, and `process`
+            4. Upload file inputs with `_upload_image`, `_upload_audio`, `_upload_video`
+            5. Add a concise docstring with tags and use enums for constrained inputs
+
+            ## Step 5: Regenerate Metadata + DSL
+            ```bash
+            nodetool package scan
+            nodetool codegen
+            ```
+
+            ## Step 6: Quality Checks
+            ```bash
+            ruff check .
+            black --check .
+            # Fix issues if needed
+            black .
+            ```
+
+            ## Step 7: Update Memory
+            Add entries to `.github/opencode-memory/features.md` documenting what was added.
+
+            ## Guidelines
+            - Add only 1-3 models per run to keep PRs focused
+            - Prefer models with complete API docs and stable versions
+            - Skip models that require unsupported inputs or endpoints
+            - If a model fails to implement, move to the next model
