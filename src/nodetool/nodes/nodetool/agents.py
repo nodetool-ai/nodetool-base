@@ -821,6 +821,70 @@ def serialize_tool_result(tool_result: Any) -> Any:
 GB = 1024 * 1024 * 1024
 
 
+def instantiate_tools_from_names(tool_names: list[ToolName]) -> list[Tool]:
+    """
+    Instantiate Tool objects from a list of ToolName objects.
+
+    This helper function maps tool names to their corresponding Tool classes
+    and instantiates them. It's shared between Agent and ResearchAgent.
+
+    Args:
+        tool_names: List of ToolName objects specifying which tools to enable.
+
+    Returns:
+        List of instantiated Tool objects.
+    """
+    from nodetool.agents.tools.browser_tools import BrowserTool
+    from nodetool.agents.tools.serp_tools import (
+        GoogleFinanceTool,
+        GoogleImagesTool,
+        GoogleJobsTool,
+        GoogleLensTool,
+        GoogleMapsTool,
+        GoogleNewsTool,
+        GoogleSearchTool,
+        GoogleShoppingTool,
+    )
+    from nodetool.agents.tools.workspace_tools import (
+        ListDirectoryTool,
+        ReadFileTool,
+        WriteFileTool,
+    )
+
+    # Map of tool names to their Tool classes
+    tool_map: dict[str, Tool] = {
+        "read_file": ReadFileTool(),
+        "write_file": WriteFileTool(),
+        "list_directory": ListDirectoryTool(),
+        "browser": BrowserTool(),
+        "google_search": GoogleSearchTool(),
+        "google_finance": GoogleFinanceTool(),
+        "google_jobs": GoogleJobsTool(),
+        "google_news": GoogleNewsTool(),
+        "google_images": GoogleImagesTool(),
+        "google_lens": GoogleLensTool(),
+        "google_maps": GoogleMapsTool(),
+        "google_shopping": GoogleShoppingTool(),
+    }
+
+    selected_tools: list[Tool] = []
+    added_tool_names: set[str] = set()
+
+    # Add requested tools (skip duplicates)
+    for tool_name in tool_names:
+        if tool_name.name in added_tool_names:
+            continue  # Skip duplicate
+        tool_instance = tool_map.get(tool_name.name)
+        if tool_instance:
+            selected_tools.append(tool_instance)
+            added_tool_names.add(tool_name.name)
+        else:
+            log.warning(f"Unknown tool requested: {tool_name.name}")
+
+    return selected_tools
+
+
+
 class Agent(BaseNode):
     """
     Generate natural language responses using LLM providers and streams output.
@@ -840,6 +904,11 @@ class Agent(BaseNode):
         title="Prompt",
         default="",
         description="The prompt for the LLM",
+    )
+    tools: list[ToolName] = Field(
+        title="Tools",
+        default=[ToolName(name="google_search"), ToolName(name="browser")],
+        description="Tools to enable for the agent. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
     image: ImageRef = Field(
         title="Image",
@@ -1035,7 +1104,39 @@ class Agent(BaseNode):
         audio: AudioRef | None
 
     def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
-        tools = []
+        """Resolve tools from tool names and dynamic outputs.
+
+        This method instantiates Tool objects from the configured tool names
+        and also creates GraphTools from any dynamic outputs that have
+        downstream node connections.
+
+        Args:
+            context: The processing context containing the workflow graph.
+
+        Returns:
+            List of Tool objects available for the agent to use.
+
+        Raises:
+            ValueError: If workspace tools are requested but no workspace is configured.
+        """
+        # Check if workspace tools are being requested
+        workspace_tool_names = {"read_file", "write_file", "list_directory"}
+        requested_workspace_tools = [
+            t.name for t in self.tools if t.name in workspace_tool_names
+        ]
+
+        # Validate workspace is set if workspace tools are requested
+        if requested_workspace_tools and not context.workspace_dir:
+            raise ValueError(
+                f"Workspace tools ({', '.join(requested_workspace_tools)}) require a workspace directory. "
+                "Please configure a workspace in your workflow settings before using file operations."
+            )
+
+        # Instantiate tools from tool names (without auto-including workspace tools)
+        # Only include workspace tools if the user explicitly selected them
+        tools = instantiate_tools_from_names(self.tools)
+
+        # Add GraphTools for dynamic outputs with downstream connections
         for name, type_meta in self._dynamic_outputs.items():
             initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
             initial_nodes = [find_node(graph, edge.target) for edge in initial_edges]
@@ -1079,6 +1180,7 @@ class Agent(BaseNode):
         return [
             "prompt",
             "model",
+            "tools",
             "image",
             "audio",
         ]
@@ -1639,7 +1741,7 @@ class ResearchAgent(BaseNode):
 
     tools: list[ToolName] = Field(
         default=[ToolName(name="google_search"), ToolName(name="browser")],
-        description="Additional research tools to enable (workspace tools are always included)",
+        description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
 
     max_tokens: int = Field(
@@ -1697,53 +1799,34 @@ class ResearchAgent(BaseNode):
         return ["objective", "model", "tools"]
 
     def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
-        """Instantiate Tool objects from tool names."""
-        from nodetool.agents.tools.browser_tools import BrowserTool
-        from nodetool.agents.tools.serp_tools import (
-            GoogleFinanceTool,
-            GoogleImagesTool,
-            GoogleJobsTool,
-            GoogleLensTool,
-            GoogleMapsTool,
-            GoogleNewsTool,
-            GoogleSearchTool,
-            GoogleShoppingTool,
-        )
-        from nodetool.agents.tools.workspace_tools import (
-            ListDirectoryTool,
-            ReadFileTool,
-            WriteFileTool,
-        )
+        """Instantiate Tool objects from tool names.
 
-        # Always include workspace tools
-        tool_instances: list[Tool] = [
-            BrowserTool(),
-            GoogleSearchTool(),
-            GoogleFinanceTool(),
-            GoogleJobsTool(),
-            GoogleNewsTool(),
-            GoogleImagesTool(),
-            GoogleLensTool(),
-            GoogleMapsTool(),
-            GoogleShoppingTool(),
+        Uses the shared instantiate_tools_from_names helper function
+        to create Tool instances from the configured tool names.
+
+        Args:
+            context: The processing context for workspace validation.
+
+        Returns:
+            List of instantiated Tool objects for the research agent.
+
+        Raises:
+            ValueError: If workspace tools are requested but no workspace is configured.
+        """
+        # Check if workspace tools are being requested
+        workspace_tool_names = {"read_file", "write_file", "list_directory"}
+        requested_workspace_tools = [
+            t.name for t in self.tools if t.name in workspace_tool_names
         ]
 
-        # Add requested research tools
-        tool_map = {tool.name: tool for tool in tool_instances}
-        selected_tools = [
-            WriteFileTool(),
-            ReadFileTool(),
-            ListDirectoryTool(),
-        ]
+        # Validate workspace is set if workspace tools are requested
+        if requested_workspace_tools and not context.workspace_dir:
+            raise ValueError(
+                f"Workspace tools ({', '.join(requested_workspace_tools)}) require a workspace directory. "
+                "Please configure a workspace in your workflow settings before using file operations."
+            )
 
-        for tool_name in self.tools:
-            tool_instance = tool_map.get(tool_name.name)
-            if tool_instance:
-                selected_tools.append(tool_instance)
-            else:
-                log.warning(f"Unknown tool requested: {tool_name.name}")
-
-        return selected_tools
+        return instantiate_tools_from_names(self.tools)
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         """Execute research agent and return structured results."""
