@@ -14,6 +14,7 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 
 import asyncio
 import os
+import uuid
 from urllib.parse import urlparse
 from abc import abstractmethod
 from enum import Enum
@@ -1639,20 +1640,29 @@ class IdeogramCharacterRemix(KieBaseNode):
                 url = await self._upload_image(context, add_img)
                 additional_image_urls.append(url)
 
-        return {
+        payload: dict[str, Any] = {
             "prompt": self.prompt,
             "image_url": image_url,
-            "reference_image_urls": reference_image_urls,
             "rendering_speed": self.rendering_speed.value,
             "style": self.style.value,
             "expand_prompt": self.expand_prompt,
             "image_size": self.image_size.value,
-            "num_images": "1",
             "strength": self.strength,
-            "negative_prompt": self.negative_prompt,
-            "image_urls": additional_image_urls,
-            "reference_mask_urls": self.reference_mask_urls,
         }
+
+        if reference_image_urls:
+            payload["reference_image_urls"] = reference_image_urls
+
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        if additional_image_urls:
+            payload["additional_image_urls"] = additional_image_urls
+
+        if self.reference_mask_urls:
+            payload["reference_mask_urls"] = self.reference_mask_urls
+
+        return payload
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
@@ -1662,13 +1672,12 @@ class IdeogramCharacterRemix(KieBaseNode):
 
 
 class IdeogramV3Reframe(KieBaseNode):
-    """Reframe images using Ideogram v3 via Kie.ai.
+    """Reframe images using Ideogram V3 Reframe via Kie.ai.
 
-    kie, ideogram, v3-reframe, image processing, ai, reframe
+    kie, ideogram, v3-reframe, reframing, image, ai, aspect-ratio
 
-    Use cases:
-    - Reframe and rescale existing images
-    - Change aspect ratio of images while maintaining quality
+    Ideogram V3 Reframe allows you to reframe images to different aspect ratios
+    while maintaining the visual quality and style.
     """
 
     _expose_as_tool: ClassVar[bool] = True
@@ -1677,7 +1686,7 @@ class IdeogramV3Reframe(KieBaseNode):
 
     image: ImageRef = Field(
         default=ImageRef(),
-        description="URL of the image to reframe.",
+        description="The image to reframe.",
     )
 
     class ImageSize(str, Enum):
@@ -1690,7 +1699,7 @@ class IdeogramV3Reframe(KieBaseNode):
 
     image_size: ImageSize = Field(
         default=ImageSize.SQUARE_HD,
-        description="Output resolution preset.",
+        description="The resolution for the reframed output image.",
     )
 
     class RenderingSpeed(str, Enum):
@@ -1700,7 +1709,7 @@ class IdeogramV3Reframe(KieBaseNode):
 
     rendering_speed: RenderingSpeed = Field(
         default=RenderingSpeed.BALANCED,
-        description="Rendering speed preference.",
+        description="The rendering speed to use.",
     )
 
     class Style(str, Enum):
@@ -1711,12 +1720,19 @@ class IdeogramV3Reframe(KieBaseNode):
 
     style: Style = Field(
         default=Style.AUTO,
-        description="Generation style.",
+        description="The style type to generate with.",
+    )
+
+    num_images: int = Field(
+        default=1,
+        description="Number of images to generate.",
+        ge=1,
+        le=4,
     )
 
     seed: int = Field(
         default=0,
-        description="RNG seed.",
+        description="Seed for the random number generator.",
     )
 
     def _get_model(self) -> str:
@@ -1727,15 +1743,18 @@ class IdeogramV3Reframe(KieBaseNode):
     ) -> dict[str, Any]:
         if context is None:
             raise ValueError("Context is required for image upload")
+
         if not self.image.is_set():
             raise ValueError("Image is required")
+
         image_url = await self._upload_image(context, self.image)
+
         return {
             "image_url": image_url,
             "image_size": self.image_size.value,
             "rendering_speed": self.rendering_speed.value,
             "style": self.style.value,
-            "num_images": "1",
+            "num_images": str(self.num_images),
             "seed": self.seed,
         }
 
@@ -1749,12 +1768,20 @@ class IdeogramV3Reframe(KieBaseNode):
 class RecraftCrispUpscale(KieBaseNode):
     """Upscale images using Recraft's Crisp Upscale model via Kie.ai.
 
-    kie, recraft, crisp-upscale, upscale, ai
+    kie, recraft, crisp-upscale, upscale, enhance, image, ai, super-resolution
+
+    Recraft Crisp Upscale uses advanced AI models to enlarge images
+    while preserving and enhancing detail with crisp quality.
+
+    Use cases:
+    - Upscale low-resolution images
+    - Enhance image quality and detail
+    - Enlarge images for print or display
     """
 
     _expose_as_tool: ClassVar[bool] = True
-    _poll_interval: float = 1.0
-    _max_poll_attempts: int = 30
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -1771,9 +1798,177 @@ class RecraftCrispUpscale(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.image.is_set():
             raise ValueError("Image is required")
-        image_url = await self._upload_image(context, self.image)
+        input_url = await self._upload_image(context, self.image)
         return {
-            "image": image_url,
+            "image": input_url,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GoogleImagen4(KieBaseNode):
+    """Generate images using Google's Imagen 4 model via Kie.ai.
+
+    kie, google, imagen, imagen4, image generation, ai, text-to-image
+
+    Imagen 4 generates high-quality images from text descriptions with
+    improved detail, coherence, and text rendering capabilities.
+
+    Use cases:
+    - Generate images from text descriptions
+    - Create artistic and realistic images
+    - Generate illustrations with clear text
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="A description of what to discourage in the generated images.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_1_1 = "1:1"
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_3_4 = "3:4"
+        RATIO_4_3 = "4:3"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_1_1,
+        description="The aspect ratio of the generated image.",
+    )
+
+    seed: str = Field(
+        default="",
+        description="Random seed for reproducible generation. Leave empty for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "google/imagen4"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        if self.seed:
+            payload["seed"] = self.seed
+
+        return payload
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GoogleNanoBananaEdit(KieBaseNode):
+    """Edit images using Google's Nano Banana Edit model via Kie.ai.
+
+    kie, google, nano-banana, nano-banana-edit, image editing, ai, image-to-image
+
+    Nano Banana Edit allows you to transform images based on text prompts
+    while maintaining the overall structure and style.
+
+    Use cases:
+    - Transform images with text guidance
+    - Apply artistic styles to photos
+    - Create variations of existing images
+    - Edit and enhance images with AI
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="The prompt for image editing.",
+    )
+
+    image_urls: list[ImageRef] = Field(
+        default=[],
+        description="List of input images for editing (up to 10 images).",
+    )
+
+    class OutputFormat(str, Enum):
+        PNG = "png"
+        JPEG = "jpeg"
+
+    output_format: OutputFormat = Field(
+        default=OutputFormat.PNG,
+        description="Output format for the images.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_1_1 = "1:1"
+        RATIO_9_16 = "9:16"
+        RATIO_16_9 = "16:9"
+        RATIO_3_4 = "3:4"
+        RATIO_4_3 = "4:3"
+        RATIO_3_2 = "3:2"
+        RATIO_2_3 = "2:3"
+        RATIO_5_4 = "5:4"
+        RATIO_4_5 = "4:5"
+        RATIO_21_9 = "21:9"
+        AUTO = "auto"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_1_1,
+        description="The aspect ratio of the output image.",
+    )
+
+    def _get_model(self) -> str:
+        return "google/nano-banana-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+
+        if not self.image_urls:
+            raise ValueError("At least one image is required")
+
+        uploaded_urls = []
+        for img in self.image_urls:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                uploaded_urls.append(url)
+
+        if not uploaded_urls:
+            raise ValueError("At least one valid image is required")
+
+        return {
+            "prompt": self.prompt,
+            "image_urls": uploaded_urls,
+            "output_format": self.output_format.value,
+            "image_size": self.aspect_ratio.value,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
