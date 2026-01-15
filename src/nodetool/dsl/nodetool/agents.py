@@ -49,6 +49,13 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The prompt for the LLM"
     )
+    tools: list[types.ToolName] | OutputHandle[list[types.ToolName]] = connect_field(
+        default=[
+            types.ToolName(type="tool_name", name="google_search"),
+            types.ToolName(type="tool_name", name="browser"),
+        ],
+        description="Tools to enable for the agent. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
+    )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(
             type="image", uri="", asset_id=None, data=None, metadata=None
@@ -382,7 +389,7 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
             types.ToolName(type="tool_name", name="google_search"),
             types.ToolName(type="tool_name", name="browser"),
         ],
-        description="Additional research tools to enable (workspace tools are always included)",
+        description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
     max_tokens: int | OutputHandle[int] = connect_field(
         default=8192, description="Maximum tokens for agent responses"
