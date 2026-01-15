@@ -10,6 +10,11 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 - Flux Pro (Black Forest Labs text-to-image)
 - Topaz Image Upscaler (AI image upscaling and enhancement)
 - Grok Imagine (xAI multimodal image generation)
+- GPT Image 1.5 (OpenAI's latest image generation model)
+- Ideogram (AI-powered text-to-image with typography)
+- Recraft (AI image generation and editing)
+- Qwen (Alibaba's text-to-image model)
+- Google Imagen 4 (Latest Google image generation)
 """
 
 import asyncio
@@ -2015,6 +2020,183 @@ class NanoBananaEdit(KieBaseNode):
             "image_urls": image_urls,
             "output_format": "png",
             "image_size": self.image_size.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+    kie, gpt, openai, gpt-image, image generation, ai, text-to-image, 1.5
+
+    GPT Image 1.5 provides high-quality image generation with OpenAI's latest
+    multimodal capabilities.
+
+    Use cases:
+    - Generate images from text descriptions
+    - Create artistic and realistic images
+    - Generate illustrations and artwork
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class ImageSize(str, Enum):
+        SIZE_256x256 = "256x256"
+        SIZE_512x512 = "512x512"
+        SIZE_1024x1024 = "1024x1024"
+        SIZE_1024x1792 = "1024x1792"
+        SIZE_1792x1024 = "1792x1024"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SIZE_1024x1024,
+        description="The size of the generated image.",
+    )
+
+    quality: str = Field(
+        default="standard",
+        description="Image quality: 'standard' or 'hd'.",
+    )
+
+    style: str = Field(
+        default="natural",
+        description="Image style: 'natural' or 'vivid'.",
+    )
+
+    n: int = Field(
+        default=1,
+        description="Number of images to generate.",
+        ge=1,
+        le=4,
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image-1-5/text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "n": self.n,
+            "size": self.image_size.value,
+            "quality": self.quality,
+            "style": self.style,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15ImageToImage(KieBaseNode):
+    """Transform images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+    kie, gpt, openai, gpt-image, image transformation, ai, image-to-image, 1.5
+
+    GPT Image 1.5 transforms images based on text prompts while preserving
+    the overall structure and style.
+
+    Use cases:
+    - Transform images with text guidance
+    - Apply artistic styles to photos
+    - Create variations of existing images
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Image To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    class ImageSize(str, Enum):
+        SIZE_256x256 = "256x256"
+        SIZE_512x512 = "512x512"
+        SIZE_1024x1024 = "1024x1024"
+        SIZE_1024x1792 = "1024x1792"
+        SIZE_1792x1024 = "1792x1024"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SIZE_1024x1024,
+        description="The size of the output image.",
+    )
+
+    quality: str = Field(
+        default="standard",
+        description="Image quality: 'standard' or 'hd'.",
+    )
+
+    style: str = Field(
+        default="natural",
+        description="Image style: 'natural' or 'vivid'.",
+    )
+
+    strength: float = Field(
+        default=0.5,
+        description="Transformation strength (0.0 to 1.0).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    n: int = Field(
+        default=1,
+        description="Number of images to generate.",
+        ge=1,
+        le=4,
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image-1-5/image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "n": self.n,
+            "size": self.image_size.value,
+            "quality": self.quality,
+            "style": self.style,
+            "strength": self.strength,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:

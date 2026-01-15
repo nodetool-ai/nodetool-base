@@ -310,6 +310,123 @@ import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
 
+class GPTImage15ImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Transform images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+        kie, gpt, openai, gpt-image, image transformation, ai, image-to-image, 1.5
+
+        GPT Image 1.5 transforms images based on text prompts while preserving
+        the overall structure and style.
+
+        Use cases:
+        - Transform images with text guidance
+        - Apply artistic styles to photos
+        - Create variations of existing images
+    """
+
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage15ImageToImage.ImageSize
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to transform the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to transform.",
+    )
+    image_size: nodetool.nodes.kie.image.GPTImage15ImageToImage.ImageSize = Field(
+        default=nodetool.nodes.kie.image.GPTImage15ImageToImage.ImageSize.SIZE_1024x1024,
+        description="The size of the output image.",
+    )
+    quality: str | OutputHandle[str] = connect_field(
+        default="standard", description="Image quality: 'standard' or 'hd'."
+    )
+    style: str | OutputHandle[str] = connect_field(
+        default="natural", description="Image style: 'natural' or 'vivid'."
+    )
+    strength: float | OutputHandle[float] = connect_field(
+        default=0.5, description="Transformation strength (0.0 to 1.0)."
+    )
+    n: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of images to generate."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPTImage15ImageToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class GPTImage15TextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+        kie, gpt, openai, gpt-image, image generation, ai, text-to-image, 1.5
+
+        GPT Image 1.5 provides high-quality image generation with OpenAI's latest
+        multimodal capabilities.
+
+        Use cases:
+        - Generate images from text descriptions
+        - Create artistic and realistic images
+        - Generate illustrations and artwork
+    """
+
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage15TextToImage.ImageSize
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    image_size: nodetool.nodes.kie.image.GPTImage15TextToImage.ImageSize = Field(
+        default=nodetool.nodes.kie.image.GPTImage15TextToImage.ImageSize.SIZE_1024x1024,
+        description="The size of the generated image.",
+    )
+    quality: str | OutputHandle[str] = connect_field(
+        default="standard", description="Image quality: 'standard' or 'hd'."
+    )
+    style: str | OutputHandle[str] = connect_field(
+        default="natural", description="Image style: 'natural' or 'vivid'."
+    )
+    n: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of images to generate."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPTImage15TextToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
 class GrokImagineTextToImage(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
