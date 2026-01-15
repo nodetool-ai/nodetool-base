@@ -625,29 +625,10 @@ class FormatText(SingleOutputGraphNode[str], GraphNode[str]):
 
         This node is dynamic and can be used to format text with dynamic properties.
 
-        Use cases:
-        - Generating personalized messages with dynamic content
-        - Creating parameterized queries or commands
-        - Formatting and filtering text output based on variable inputs
-
         Examples:
         - text: "Hello, {{ name }}!"
         - text: "Title: {{ title|truncate(20) }}"
         - text: "Name: {{ name|upper }}"
-
-        Available filters:
-        - truncate(length): Truncates text to given length
-        - upper: Converts text to uppercase
-        - lower: Converts text to lowercase
-        - title: Converts text to title case
-        - trim: Removes whitespace from start/end
-        - replace(old, new): Replaces substring
-        - default(value): Sets default if value is undefined
-        - first: Gets first character/item
-        - last: Gets last character/item
-        - length: Gets length of string/list
-        - sort: Sorts list
-        - join(delimiter): Joins list with delimiter
 
     This node supports dynamic properties. Additional properties can be passed
     as keyword arguments during initialization and will be stored in the node's
@@ -659,7 +640,7 @@ class FormatText(SingleOutputGraphNode[str], GraphNode[str]):
 
     template: str | OutputHandle[str] = connect_field(
         default="",
-        description='\n    Examples:\n    - text: "Hello, {{ name }}!"\n    - text: "Title: {{ title|truncate(20) }}"\n    - text: "Name: {{ name|upper }}" \n\n    Available filters:\n    - truncate(length): Truncates text to given length\n    - upper: Converts text to uppercase\n    - lower: Converts text to lowercase\n    - title: Converts text to title case\n    - trim: Removes whitespace from start/end\n    - replace(old, new): Replaces substring\n    - default(value): Sets default if value is undefined\n    - first: Gets first character/item\n    - last: Gets last character/item\n    - length: Gets length of string/list\n    - sort: Sorts list\n    - join(delimiter): Joins list with delimiter\n',
+        description="\n    Example: Hello, {{ name }} or {{ title|truncate(20) }}\n\n    Available filters: truncate, upper, lower, title, trim, replace, default, first, last, length, sort, join\n",
     )
 
     def __init__(self, **kwargs: typing.Any) -> None:
