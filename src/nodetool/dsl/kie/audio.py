@@ -19,6 +19,206 @@ import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
 
+class ElevenLabsSoundEffectV2(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Generate sound effects using ElevenLabs Sound Effect V2 model via Kie.ai.
+
+        kie, elevenlabs, sfx, sound-effect, audio, ai, generation
+
+        Creates AI-generated sound effects for games, videos, applications,
+        and creative projects from text descriptions.
+
+        Use cases:
+        - Game audio development
+        - Video production sound design
+        - App sound effects
+        - Creative audio projects
+    """
+
+    OutputFormat: typing.ClassVar[type] = (
+        nodetool.nodes.kie.audio.ElevenLabsSoundEffectV2.OutputFormat
+    )
+
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="The text describing the sound effect to generate."
+    )
+    loop: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Whether to create a sound effect that loops smoothly.",
+    )
+    duration_seconds: float | OutputHandle[float] = connect_field(
+        default=5.0,
+        description="Duration in seconds (0.5-22). If None, optimal duration is determined from prompt.",
+    )
+    prompt_influence: float | OutputHandle[float] = connect_field(
+        default=0.3,
+        description="How closely to follow the prompt (0-1). Higher values mean less variation.",
+    )
+    output_format: nodetool.nodes.kie.audio.ElevenLabsSoundEffectV2.OutputFormat = (
+        Field(
+            default=nodetool.nodes.kie.audio.ElevenLabsSoundEffectV2.OutputFormat.MP3_44100_128,
+            description="Output format of the generated audio.",
+        )
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsSoundEffectV2
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
+class ElevenLabsTextToSpeechMultilingualV2(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Generate high-quality speech using ElevenLabs Multilingual V2 model via Kie.ai.
+
+        kie, elevenlabs, tts, text-to-speech, audio, ai, multilingual, voice
+
+        Produces natural-sounding speech in multiple languages with support for
+        voice cloning, stability controls, and style customization.
+
+        Use cases:
+        - Create voiceovers for videos and presentations
+        - Generate audiobook narration
+        - Produce multilingual content
+        - Accessibility applications
+    """
+
+    Voice: typing.ClassVar[type] = (
+        nodetool.nodes.kie.audio.ElevenLabsTextToSpeechMultilingualV2.Voice
+    )
+
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="The text to convert to speech."
+    )
+    voice: nodetool.nodes.kie.audio.ElevenLabsTextToSpeechMultilingualV2.Voice = Field(
+        default=nodetool.nodes.kie.audio.ElevenLabsTextToSpeechMultilingualV2.Voice.RACHEL,
+        description="The voice to use for speech generation.",
+    )
+    stability: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="Voice stability (0-1). Higher values produce more consistent output.",
+    )
+    similarity_boost: float | OutputHandle[float] = connect_field(
+        default=0.75,
+        description="Similarity boost (0-1). Higher values make speech more similar to the original voice.",
+    )
+    style: float | OutputHandle[float] = connect_field(
+        default=0.0,
+        description="Style exaggeration (0-1). Higher values apply more style.",
+    )
+    speed: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="Speech speed (0.7-1.2). Values below 1.0 slow down, above 1.0 speed up.",
+    )
+    timestamps: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Whether to return timestamps for each word in the generated speech.",
+    )
+    language_code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Language code (ISO 639-1) to enforce a specific language.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsTextToSpeechMultilingualV2
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
+class ElevenLabsTextToSpeechTurbo25(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Generate speech using ElevenLabs Turbo 2.5 model via Kie.ai.
+
+        kie, elevenlabs, tts, text-to-speech, audio, ai, turbo, fast
+
+        Fast text-to-speech model optimized for low latency while maintaining
+        high quality natural-sounding output.
+
+        Use cases:
+        - Real-time voice applications
+        - Interactive voice responses
+        - Gaming audio
+        - Quick voiceover generation
+    """
+
+    Voice: typing.ClassVar[type] = (
+        nodetool.nodes.kie.audio.ElevenLabsTextToSpeechTurbo25.Voice
+    )
+
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="The text to convert to speech."
+    )
+    voice: nodetool.nodes.kie.audio.ElevenLabsTextToSpeechTurbo25.Voice = Field(
+        default=nodetool.nodes.kie.audio.ElevenLabsTextToSpeechTurbo25.Voice.RACHEL,
+        description="The voice to use for speech generation.",
+    )
+    stability: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="Voice stability (0-1). Higher values produce more consistent output.",
+    )
+    similarity_boost: float | OutputHandle[float] = connect_field(
+        default=0.75,
+        description="Similarity boost (0-1). Higher values make speech more similar to the original voice.",
+    )
+    style: float | OutputHandle[float] = connect_field(
+        default=0.0,
+        description="Style exaggeration (0-1). Higher values apply more style.",
+    )
+    speed: float | OutputHandle[float] = connect_field(
+        default=1.0,
+        description="Speech speed (0.7-1.2). Values below 1.0 slow down, above 1.0 speed up.",
+    )
+    timestamps: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Whether to return timestamps for each word in the generated speech.",
+    )
+    language_code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Language code (ISO 639-1) to enforce a specific language.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsTextToSpeechTurbo25
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
 class Suno(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Generate music using Suno AI via Kie.ai.
