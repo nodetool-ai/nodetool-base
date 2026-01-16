@@ -688,6 +688,261 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class LumaModifyVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
+    """
+    Modify and transform videos using Luma via Kie.ai.
+
+        kie, luma, video modification, ai, video-to-video, transform
+
+        Luma Modify transforms existing videos based on text prompts,
+        enabling creative video editing and style transfer.
+
+        Use cases:
+        - Transform video style and content
+        - Apply AI-powered edits to existing videos
+        - Create video variations with different aesthetics
+    """
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text description of the desired video transformation."
+    )
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The source video to modify.",
+    )
+    call_back_url: str | OutputHandle[str] = connect_field(
+        default="", description="Optional callback URL for task completion."
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark identifier."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.LumaModifyVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunwayBaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
+    """
+    Base class for Runway video generation nodes via Kie.ai.
+
+        kie, runway, video generation, ai, text-to-video, image-to-video
+
+        Runway API uses different endpoints and response formats than other providers.
+    """
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.RunwayBaseNode
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunwayExtendVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Extend existing videos using Runway via Kie.ai.
+
+        kie, runway, video generation, ai, video-extension, extend
+
+        Runway extends existing videos to create longer sequences while
+        maintaining visual consistency.
+
+        Use cases:
+        - Extend short videos into longer content
+        - Create seamless video continuations
+        - Build longer narratives from clips
+    """
+
+    Quality: typing.ClassVar[type] = nodetool.nodes.kie.video.RunwayExtendVideo.Quality
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="Continue the motion naturally.",
+        description="Text description of how the video should continue.",
+    )
+    task_id: str | OutputHandle[str] = connect_field(
+        default="", description="The task ID of the video to extend."
+    )
+    quality: nodetool.nodes.kie.video.RunwayExtendVideo.Quality = Field(
+        default=nodetool.nodes.kie.video.RunwayExtendVideo.Quality.P720,
+        description="Video quality resolution.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to display."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.RunwayExtendVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunwayImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Runway via Kie.ai.
+
+        kie, runway, video generation, ai, image-to-video
+
+        Runway animates static images into dynamic videos based on text prompts.
+
+        Use cases:
+        - Animate static images into videos
+        - Create dynamic content from reference images
+        - Add motion to artwork or photos
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.RunwayImageToVideo.Duration
+    )
+    Quality: typing.ClassVar[type] = nodetool.nodes.kie.video.RunwayImageToVideo.Quality
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.RunwayImageToVideo.AspectRatio
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description of how the image should animate.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to animate.",
+    )
+    duration: nodetool.nodes.kie.video.RunwayImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.RunwayImageToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    quality: nodetool.nodes.kie.video.RunwayImageToVideo.Quality = Field(
+        default=nodetool.nodes.kie.video.RunwayImageToVideo.Quality.P720,
+        description="Video quality resolution.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.RunwayImageToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.RunwayImageToVideo.AspectRatio.LANDSCAPE,
+        description="The aspect ratio of the generated video.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to display."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.RunwayImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunwayTextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Runway via Kie.ai.
+
+        kie, runway, video generation, ai, text-to-video
+
+        Runway generates high-quality videos from text descriptions with
+        support for multiple durations, qualities, and aspect ratios.
+
+        Use cases:
+        - Generate videos from text descriptions
+        - Create short cinematic clips
+        - Produce content for social media
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.RunwayTextToVideo.Duration
+    )
+    Quality: typing.ClassVar[type] = nodetool.nodes.kie.video.RunwayTextToVideo.Quality
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.RunwayTextToVideo.AspectRatio
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    duration: nodetool.nodes.kie.video.RunwayTextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.RunwayTextToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    quality: nodetool.nodes.kie.video.RunwayTextToVideo.Quality = Field(
+        default=nodetool.nodes.kie.video.RunwayTextToVideo.Quality.P720,
+        description="Video quality resolution.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.RunwayTextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.RunwayTextToVideo.AspectRatio.LANDSCAPE,
+        description="The aspect ratio of the generated video.",
+    )
+    watermark: str | OutputHandle[str] = connect_field(
+        default="", description="Optional watermark text to display."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.RunwayTextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class SeedanceBaseNode(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -1371,18 +1626,10 @@ class Veo31BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
     )
     aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
-        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+        description="Video aspect ratio.",
     )
-    seed: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Random seed for reproducible results. Use 0 for random seed.",
-    )
-    enable_translation: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Enable automatic translation of prompts to English for better results.",
-    )
-    watermark: str | OutputHandle[str] = connect_field(
-        default="", description="Optional watermark text to add to the generated video."
+    call_back_url: str | OutputHandle[str] = connect_field(
+        default="", description="Optional callback URL for task completion."
     )
 
     @classmethod
@@ -1424,18 +1671,10 @@ class Veo31ImageToVideo(
     )
     aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
-        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+        description="Video aspect ratio.",
     )
-    seed: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Random seed for reproducible results. Use 0 for random seed.",
-    )
-    enable_translation: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Enable automatic translation of prompts to English for better results.",
-    )
-    watermark: str | OutputHandle[str] = connect_field(
-        default="", description="Optional watermark text to add to the generated video."
+    call_back_url: str | OutputHandle[str] = connect_field(
+        default="", description="Optional callback URL for task completion."
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1479,7 +1718,7 @@ class Veo31ReferenceToVideo(
         kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video
 
         Material-to-video generation based on reference images. Only supports veo3_fast model
-        and 16:9 aspect ratio. Requires 1-3 reference images.
+        and requires 1-3 reference images.
     """
 
     Model: typing.ClassVar[type] = nodetool.nodes.kie.video.Veo31BaseNode.Model
@@ -1493,18 +1732,10 @@ class Veo31ReferenceToVideo(
     )
     aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
-        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+        description="Video aspect ratio.",
     )
-    seed: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Random seed for reproducible results. Use 0 for random seed.",
-    )
-    enable_translation: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Enable automatic translation of prompts to English for better results.",
-    )
-    watermark: str | OutputHandle[str] = connect_field(
-        default="", description="Optional watermark text to add to the generated video."
+    call_back_url: str | OutputHandle[str] = connect_field(
+        default="", description="Optional callback URL for task completion."
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1565,18 +1796,10 @@ class Veo31TextToVideo(
     )
     aspect_ratio: nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio.RATIO_16_9,
-        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+        description="Video aspect ratio.",
     )
-    seed: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Random seed for reproducible results. Use 0 for random seed.",
-    )
-    enable_translation: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Enable automatic translation of prompts to English for better results.",
-    )
-    watermark: str | OutputHandle[str] = connect_field(
-        default="", description="Optional watermark text to add to the generated video."
+    call_back_url: str | OutputHandle[str] = connect_field(
+        default="", description="Optional callback URL for task completion."
     )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",

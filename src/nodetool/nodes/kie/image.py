@@ -14,6 +14,7 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 
 import asyncio
 import os
+import uuid
 from urllib.parse import urlparse
 from abc import abstractmethod
 from enum import Enum
@@ -1956,65 +1957,219 @@ class Imagen4(KieBaseNode):
         )
 
 
-class NanoBananaEdit(KieBaseNode):
-    """Edit images using Google's Nano Banana model via Kie.ai.
+class Gpt4oTextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT-4o Image model via Kie.ai.
 
-    kie, google, nano-banana, nano-banana-edit, image editing, ai
+    kie, gpt-4o, openai, image generation, ai, text-to-image, dall-e
+
+    GPT-4o Image generates high-quality images from text descriptions
+    with support for multiple aspect ratios and variants.
+
+    Use cases:
+    - Generate images from text descriptions
+    - Create multiple image variants
+    - Produce high-quality artistic content
     """
 
     _expose_as_tool: ClassVar[bool] = True
-    _poll_interval: float = 1.5
+    _poll_interval: float = 2.0
     _max_poll_attempts: int = 60
 
     prompt: str = Field(
         default="",
-        description="Text description of the changes to make.",
-    )
-
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Images to edit.",
+        description="The text prompt describing the image to generate.",
     )
 
     class ImageSize(str, Enum):
         SQUARE = "1:1"
-        PORTRAIT_9_16 = "9:16"
-        LANDSCAPE_16_9 = "16:9"
-        PORTRAIT_3_4 = "3:4"
-        LANDSCAPE_4_3 = "4:3"
-        LANDSCAPE_3_2 = "3:2"
-        PORTRAIT_2_3 = "2:3"
-        LANDSCAPE_5_4 = "5:4"
-        PORTRAIT_4_5 = "4:5"
-        WIDE_21_9 = "21:9"
-        AUTO = "auto"
+        LANDSCAPE = "3:2"
+        PORTRAIT = "2:3"
 
     image_size: ImageSize = Field(
         default=ImageSize.SQUARE,
-        description="The size of the output image.",
+        description="The aspect ratio of the generated image.",
+    )
+
+    n_variants: int = Field(
+        default=1,
+        description="Number of image variants to generate.",
+        ge=1,
+        le=4,
+    )
+
+    enhance_prompt: bool = Field(
+        default=False,
+        description="Whether to enhance the prompt for better results.",
     )
 
     def _get_model(self) -> str:
-        return "google/nano-banana-edit"
+        return "gpt4o-image"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "size": self.image_size.value,
+            "nVariants": self.n_variants,
+            "isEnhance": self.enhance_prompt,
+        }
 
-        image_urls = []
-        if context:
-            for img in self.image_input:
-                if img.is_set():
-                    url = await self._upload_image(context, img)
-                    image_urls.append(url)
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class Gpt4oEdit(KieBaseNode):
+    """Edit images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, gpt-4o, openai, image editing, ai, inpainting, mask
+
+    GPT-4o Edit allows you to modify specific regions of images using
+    masks and text prompts.
+
+    Use cases:
+    - Edit specific regions of images
+    - Remove objects from images
+    - Add elements to specific areas
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="Text description of the edits to make.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    mask: ImageRef = Field(
+        default=ImageRef(),
+        description="The mask image. Black areas will be edited, white areas preserved.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "3:2"
+        PORTRAIT = "2:3"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    n_variants: int = Field(
+        default=1,
+        description="Number of output variants to generate.",
+        ge=1,
+        le=4,
+    )
+
+    def _get_model(self) -> str:
+        return "gpt4o-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if not self.mask.is_set():
+            raise ValueError("Mask is required")
+
+        image_url = await self._upload_image(context, self.image)
+        mask_url = await self._upload_image(context, self.mask)
 
         return {
             "prompt": self.prompt,
-            "image_urls": image_urls,
-            "output_format": "png",
-            "image_size": self.image_size.value,
+            "filesUrl": [image_url],
+            "maskUrl": mask_url,
+            "size": self.image_size.value,
+            "nVariants": self.n_variants,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class Gpt4oImageToImage(KieBaseNode):
+    """Generate image variants using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, gpt-4o, openai, image generation, ai, image-to-image, variants
+
+    GPT-4o Image-to-Image generates creative variants of input images
+    based on text prompts while preserving main elements.
+
+    Use cases:
+    - Generate style variations of images
+    - Create artwork based on reference images
+    - Transform images to different styles
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="Text description of the desired output style.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to generate variants from.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "3:2"
+        PORTRAIT = "2:3"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    n_variants: int = Field(
+        default=1,
+        description="Number of variants to generate.",
+        ge=1,
+        le=4,
+    )
+
+    def _get_model(self) -> str:
+        return "gpt4o-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+
+        return {
+            "prompt": self.prompt,
+            "filesUrl": [image_url],
+            "size": self.image_size.value,
+            "nVariants": self.n_variants,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:

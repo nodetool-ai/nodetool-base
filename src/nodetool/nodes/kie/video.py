@@ -2020,3 +2020,513 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
         }
 
         return payload
+
+
+class RunwayBaseNode(KieVideoBaseNode):
+    """Base class for Runway video generation nodes via Kie.ai.
+
+    kie, runway, video generation, ai, text-to-video, image-to-video
+
+    Runway API uses different endpoints and response formats than other providers.
+    """
+
+    _poll_interval: float = 10.0
+    _max_poll_attempts: int = 60
+
+    def _get_headers(self, api_key: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+
+    def _is_task_complete(self, status_response: dict[str, Any]) -> bool:
+        state = status_response.get("data", {}).get("state", "")
+        return state == "success"
+
+    def _is_task_failed(self, status_response: dict[str, Any]) -> bool:
+        state = status_response.get("data", {}).get("state", "")
+        return state == "fail"
+
+    def _get_error_message(self, status_response: dict[str, Any]) -> str:
+        return (
+            status_response.get("data", {}).get("failMsg") or "Unknown error occurred"
+        )
+
+    def _extract_task_id(self, response: dict[str, Any]) -> str:
+        if "data" in response and isinstance(response["data"], dict):
+            if "taskId" in response["data"]:
+                return response["data"]["taskId"]
+        raise ValueError(f"Could not extract taskId from response: {response}")
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/runway/record-detail?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+
+            video_info = status_data.get("data", {}).get("videoInfo", {})
+            video_url = video_info.get("videoUrl")
+
+            if not video_url:
+                raise ValueError("No videoUrl in response")
+
+            async with session.get(video_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(f"Failed to download video from URL: {video_url}")
+                return await video_response.read()
+
+
+class RunwayTextToVideo(RunwayBaseNode):
+    """Generate videos from text using Runway via Kie.ai.
+
+    kie, runway, video generation, ai, text-to-video
+
+    Runway generates high-quality videos from text descriptions with
+    support for multiple durations, qualities, and aspect ratios.
+
+    Use cases:
+    - Generate videos from text descriptions
+    - Create short cinematic clips
+    - Produce content for social media
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    class Quality(str, Enum):
+        P720 = "720p"
+        P1080 = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.P720,
+        description="Video quality resolution.",
+    )
+
+    class AspectRatio(str, Enum):
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        SQUARE = "1:1"
+        STANDARD_4_3 = "4:3"
+        PORTRAIT_3_4 = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.LANDSCAPE,
+        description="The aspect ratio of the generated video.",
+    )
+
+    watermark: str = Field(
+        default="",
+        description="Optional watermark text to display.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "aspectRatio": self.aspect_ratio.value,
+        }
+
+        if self.watermark:
+            payload["waterMark"] = self.watermark
+
+        return payload
+
+    async def _execute_video_task(
+        self, context: ProcessingContext
+    ) -> tuple[bytes, str]:
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Runway task submitted with ID: {task_id}")
+
+            await self._poll_status(session, api_key, task_id)
+
+            return await self._download_result(session, api_key, task_id), task_id
+
+
+class RunwayImageToVideo(RunwayBaseNode):
+    """Generate videos from images using Runway via Kie.ai.
+
+    kie, runway, video generation, ai, image-to-video
+
+    Runway animates static images into dynamic videos based on text prompts.
+
+    Use cases:
+    - Animate static images into videos
+    - Create dynamic content from reference images
+    - Add motion to artwork or photos
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description of how the image should animate.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to animate.",
+    )
+
+    class Duration(str, Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    class Quality(str, Enum):
+        P720 = "720p"
+        P1080 = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.P720,
+        description="Video quality resolution.",
+    )
+
+    class AspectRatio(str, Enum):
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        SQUARE = "1:1"
+        STANDARD_4_3 = "4:3"
+        PORTRAIT_3_4 = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.LANDSCAPE,
+        description="The aspect ratio of the generated video.",
+    )
+
+    watermark: str = Field(
+        default="",
+        description="Optional watermark text to display.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "imageUrl": image_url,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "aspectRatio": self.aspect_ratio.value,
+        }
+
+        if self.watermark:
+            payload["waterMark"] = self.watermark
+
+        return payload
+
+    async def _execute_video_task(
+        self, context: ProcessingContext
+    ) -> tuple[bytes, str]:
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Runway task submitted with ID: {task_id}")
+
+            await self._poll_status(session, api_key, task_id)
+
+            return await self._download_result(session, api_key, task_id), task_id
+
+
+class RunwayExtendVideo(RunwayBaseNode):
+    """Extend existing videos using Runway via Kie.ai.
+
+    kie, runway, video generation, ai, video-extension, extend
+
+    Runway extends existing videos to create longer sequences while
+    maintaining visual consistency.
+
+    Use cases:
+    - Extend short videos into longer content
+    - Create seamless video continuations
+    - Build longer narratives from clips
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Extend Video"
+
+    prompt: str = Field(
+        default="Continue the motion naturally.",
+        description="Text description of how the video should continue.",
+    )
+
+    task_id: str = Field(
+        default="",
+        description="The task ID of the video to extend.",
+    )
+
+    class Quality(str, Enum):
+        P720 = "720p"
+        P1080 = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.P720,
+        description="Video quality resolution.",
+    )
+
+    watermark: str = Field(
+        default="",
+        description="Optional watermark text to display.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.task_id:
+            raise ValueError("Task ID is required")
+
+        payload: dict[str, Any] = {
+            "taskId": self.task_id,
+            "prompt": self.prompt,
+            "quality": self.quality.value,
+        }
+
+        if self.watermark:
+            payload["waterMark"] = self.watermark
+
+        return payload
+
+    async def _submit_task(
+        self,
+        session: aiohttp.ClientSession,
+        api_key: str,
+        context: ProcessingContext | None = None,
+    ) -> dict[str, Any]:
+        url = f"{KIE_API_BASE_URL}/api/v1/runway/extend"
+        payload = await self._get_input_params(context)
+        headers = self._get_headers(api_key)
+        log.info(f"Submitting Runway extend task to {url} with payload: {payload}")
+
+        async with session.post(url, json=payload, headers=headers) as response:
+            response_data = await response.json()
+            if "code" in response_data:
+                self._check_response_status(response_data)
+
+            if response.status != 200:
+                raise ValueError(
+                    f"Failed to submit task: {response.status} - {response_data}"
+                )
+            return response_data
+
+
+class LumaModifyVideo(KieVideoBaseNode):
+    """Modify and transform videos using Luma via Kie.ai.
+
+    kie, luma, video modification, ai, video-to-video, transform
+
+    Luma Modify transforms existing videos based on text prompts,
+    enabling creative video editing and style transfer.
+
+    Use cases:
+    - Transform video style and content
+    - Apply AI-powered edits to existing videos
+    - Create video variations with different aesthetics
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 10.0
+    _max_poll_attempts: int = 90
+
+    prompt: str = Field(
+        default="",
+        description="Text description of the desired video transformation.",
+    )
+
+    video: VideoRef = Field(
+        default=VideoRef(),
+        description="The source video to modify.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL for task completion.",
+    )
+
+    watermark: str = Field(
+        default="",
+        description="Optional watermark identifier.",
+    )
+
+    def _get_model(self) -> str:
+        return "luma/modify"
+
+    def _get_headers(self, api_key: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+
+    def _is_task_complete(self, status_response: dict[str, Any]) -> bool:
+        success_flag = status_response.get("data", {}).get("successFlag", -1)
+        return success_flag == 1
+
+    def _is_task_failed(self, status_response: dict[str, Any]) -> bool:
+        success_flag = status_response.get("data", {}).get("successFlag", -1)
+        return success_flag in {2, 3}
+
+    def _get_error_message(self, status_response: dict[str, Any]) -> str:
+        return (
+            status_response.get("data", {}).get("errorMessage")
+            or "Unknown error occurred"
+        )
+
+    async def _submit_task(
+        self,
+        session: aiohttp.ClientSession,
+        api_key: str,
+        context: ProcessingContext | None = None,
+    ) -> dict[str, Any]:
+        url = f"{KIE_API_BASE_URL}/api/v1/modify/generate"
+        payload = await self._get_input_params(context)
+        headers = self._get_headers(api_key)
+        log.info(f"Submitting Luma modify task to {url} with payload: {payload}")
+
+        async with session.post(url, json=payload, headers=headers) as response:
+            response_data = await response.json()
+            if "code" in response_data:
+                self._check_response_status(response_data)
+
+            if response.status != 200:
+                raise ValueError(
+                    f"Failed to submit task: {response.status} - {response_data}"
+                )
+            return response_data
+
+    async def _download_result(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> bytes:
+        url = f"{KIE_API_BASE_URL}/api/v1/modify/record-info?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        async with session.get(url, headers=headers) as response:
+            if response.status != 200:
+                response_text = await response.text()
+                raise ValueError(
+                    f"Failed to get result: {response.status} - {response_text}"
+                )
+
+            status_data = await response.json()
+            if "code" in status_data:
+                self._check_response_status(status_data)
+
+            response_body = status_data.get("data", {}).get("response", {})
+            result_urls = response_body.get("resultUrls", [])
+
+            if not result_urls:
+                raise ValueError("No resultUrls in response")
+
+            video_url = result_urls[0]
+            log.debug(f"Downloading result from {video_url}")
+
+            async with session.get(video_url) as video_response:
+                if video_response.status != 200:
+                    raise ValueError(f"Failed to download video from URL: {video_url}")
+                return await video_response.read()
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.video.is_set():
+            raise ValueError("Video is required")
+        if context is None:
+            raise ValueError("Context is required for video upload")
+
+        video_url = await self._upload_video(context, self.video)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "videoUrl": video_url,
+        }
+
+        if self.call_back_url:
+            payload["callBackUrl"] = self.call_back_url
+        if self.watermark:
+            payload["watermark"] = self.watermark
+
+        return payload
+
+    async def _execute_video_task(
+        self, context: ProcessingContext
+    ) -> tuple[bytes, str]:
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Luma modify task submitted with ID: {task_id}")
+
+            await self._poll_status(session, api_key, task_id)
+
+            return await self._download_result(session, api_key, task_id), task_id
