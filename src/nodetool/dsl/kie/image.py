@@ -310,6 +310,167 @@ import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
 
+class Gpt4oEdit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+    """
+    Edit images using OpenAI's GPT-4o Image model via Kie.ai.
+
+        kie, gpt-4o, openai, image editing, ai, inpainting, mask
+
+        GPT-4o Edit allows you to modify specific regions of images using
+        masks and text prompts.
+
+        Use cases:
+        - Edit specific regions of images
+        - Remove objects from images
+        - Add elements to specific areas
+    """
+
+    ImageSize: typing.ClassVar[type] = nodetool.nodes.kie.image.Gpt4oEdit.ImageSize
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text description of the edits to make."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to edit.",
+    )
+    mask: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The mask image. Black areas will be edited, white areas preserved.",
+    )
+    image_size: nodetool.nodes.kie.image.Gpt4oEdit.ImageSize = Field(
+        default=nodetool.nodes.kie.image.Gpt4oEdit.ImageSize.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+    n_variants: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of output variants to generate."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.Gpt4oEdit
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class Gpt4oImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate image variants using OpenAI's GPT-4o Image model via Kie.ai.
+
+        kie, gpt-4o, openai, image generation, ai, image-to-image, variants
+
+        GPT-4o Image-to-Image generates creative variants of input images
+        based on text prompts while preserving main elements.
+
+        Use cases:
+        - Generate style variations of images
+        - Create artwork based on reference images
+        - Transform images to different styles
+    """
+
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Gpt4oImageToImage.ImageSize
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text description of the desired output style."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to generate variants from.",
+    )
+    image_size: nodetool.nodes.kie.image.Gpt4oImageToImage.ImageSize = Field(
+        default=nodetool.nodes.kie.image.Gpt4oImageToImage.ImageSize.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+    n_variants: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of variants to generate."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.Gpt4oImageToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class Gpt4oTextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+        kie, gpt-4o, openai, image generation, ai, text-to-image, dall-e
+
+        GPT-4o Image generates high-quality images from text descriptions
+        with support for multiple aspect ratios and variants.
+
+        Use cases:
+        - Generate images from text descriptions
+        - Create multiple image variants
+        - Produce high-quality artistic content
+    """
+
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Gpt4oTextToImage.ImageSize
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    image_size: nodetool.nodes.kie.image.Gpt4oTextToImage.ImageSize = Field(
+        default=nodetool.nodes.kie.image.Gpt4oTextToImage.ImageSize.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    n_variants: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of image variants to generate."
+    )
+    enhance_prompt: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Whether to enhance the prompt for better results."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.Gpt4oTextToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
 class GrokImagineTextToImage(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
@@ -663,42 +824,6 @@ class NanoBanana(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.kie.image.NanoBanana
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.kie.image
-from nodetool.workflows.base_node import BaseNode
-
-
-class NanoBananaEdit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
-    """
-    Edit images using Google's Nano Banana model via Kie.ai.
-
-        kie, google, nano-banana, nano-banana-edit, image editing, ai
-    """
-
-    ImageSize: typing.ClassVar[type] = nodetool.nodes.kie.image.NanoBananaEdit.ImageSize
-
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Text description of the changes to make."
-    )
-    image_input: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = (
-        connect_field(default=[], description="Images to edit.")
-    )
-    image_size: nodetool.nodes.kie.image.NanoBananaEdit.ImageSize = Field(
-        default=nodetool.nodes.kie.image.NanoBananaEdit.ImageSize.SQUARE,
-        description="The size of the output image.",
-    )
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.kie.image.NanoBananaEdit
 
     @classmethod
     def get_node_type(cls):
