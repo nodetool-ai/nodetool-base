@@ -2020,3 +2020,53 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
         }
 
         return payload
+
+
+class RunwayVideo(KieVideoBaseNode):
+    """Generate videos using Runway via Kie.ai.
+
+    kie, runway, video generation, ai, text-to-video
+
+    Runway provides advanced video generation capabilities through its AI models.
+
+    Use cases:
+    - Generate creative videos from text descriptions
+    - Create AI-powered video content
+    - Produce high-quality video outputs
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the desired video content.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
