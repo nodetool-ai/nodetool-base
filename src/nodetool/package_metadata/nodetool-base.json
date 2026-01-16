@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.21",
+  "version": "0.6.2-rc.25",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -33642,7 +33642,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Veo 31 Image To Video",
+      "title": "Veo 3.1 Image To Video",
       "description": "Generate videos from images using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, image-to-video, i2v\n\n    Supports single image (image comes alive) or two images (first and last frames transition).\n    For two images, the first image serves as the video's first frame and the second as the last frame.",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31ImageToVideo",
@@ -33667,43 +33667,22 @@
             "type": "enum",
             "values": [
               "16:9",
-              "9:16",
-              "Auto"
+              "9:16"
             ],
             "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio"
           },
           "default": "16:9",
           "title": "Aspect Ratio",
-          "description": "Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images."
+          "description": "Video aspect ratio."
         },
         {
-          "name": "seed",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Seed",
-          "description": "Random seed for reproducible results. Use 0 for random seed.",
-          "min": 0.0,
-          "max": 99999.0
-        },
-        {
-          "name": "enable_translation",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Translation",
-          "description": "Enable automatic translation of prompts to English for better results."
-        },
-        {
-          "name": "watermark",
+          "name": "call_back_url",
           "type": {
             "type": "str"
           },
           "default": "",
-          "title": "Watermark",
-          "description": "Optional watermark text to add to the generated video."
+          "title": "Call Back Url",
+          "description": "Optional callback URL for task completion."
         },
         {
           "name": "prompt",
@@ -33756,9 +33735,7 @@
       "basic_fields": [
         "model",
         "aspect_ratio",
-        "seed",
-        "enable_translation",
-        "watermark",
+        "call_back_url",
         "prompt",
         "image1",
         "image2"
@@ -33766,8 +33743,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Veo 31 Reference To Video",
-      "description": "Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video\n\n    Material-to-video generation based on reference images. Only supports veo3_fast model\n    and 16:9 aspect ratio. Requires 1-3 reference images.",
+      "title": "Veo 3.1 Reference To Video",
+      "description": "Generate videos from reference images using Google's Veo 3.1 Fast model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video\n\n    Material-to-video generation based on reference images. Only supports veo3_fast model\n    and requires 1-3 reference images.",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31ReferenceToVideo",
       "properties": [
@@ -33791,43 +33768,22 @@
             "type": "enum",
             "values": [
               "16:9",
-              "9:16",
-              "Auto"
+              "9:16"
             ],
             "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio"
           },
           "default": "16:9",
           "title": "Aspect Ratio",
-          "description": "Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images."
+          "description": "Video aspect ratio."
         },
         {
-          "name": "seed",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Seed",
-          "description": "Random seed for reproducible results. Use 0 for random seed.",
-          "min": 0.0,
-          "max": 99999.0
-        },
-        {
-          "name": "enable_translation",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Translation",
-          "description": "Enable automatic translation of prompts to English for better results."
-        },
-        {
-          "name": "watermark",
+          "name": "call_back_url",
           "type": {
             "type": "str"
           },
           "default": "",
-          "title": "Watermark",
-          "description": "Optional watermark text to add to the generated video."
+          "title": "Call Back Url",
+          "description": "Optional callback URL for task completion."
         },
         {
           "name": "prompt",
@@ -33895,9 +33851,7 @@
       "basic_fields": [
         "model",
         "aspect_ratio",
-        "seed",
-        "enable_translation",
-        "watermark",
+        "call_back_url",
         "prompt",
         "image1",
         "image2",
@@ -33906,7 +33860,7 @@
       "expose_as_tool": true
     },
     {
-      "title": "Veo 31 Text To Video",
+      "title": "Veo 3.1 Text To Video",
       "description": "Generate videos from text using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31TextToVideo",
@@ -33931,43 +33885,22 @@
             "type": "enum",
             "values": [
               "16:9",
-              "9:16",
-              "Auto"
+              "9:16"
             ],
             "type_name": "nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio"
           },
           "default": "16:9",
           "title": "Aspect Ratio",
-          "description": "Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images."
+          "description": "Video aspect ratio."
         },
         {
-          "name": "seed",
-          "type": {
-            "type": "int"
-          },
-          "default": 0,
-          "title": "Seed",
-          "description": "Random seed for reproducible results. Use 0 for random seed.",
-          "min": 0.0,
-          "max": 99999.0
-        },
-        {
-          "name": "enable_translation",
-          "type": {
-            "type": "bool"
-          },
-          "default": true,
-          "title": "Enable Translation",
-          "description": "Enable automatic translation of prompts to English for better results."
-        },
-        {
-          "name": "watermark",
+          "name": "call_back_url",
           "type": {
             "type": "str"
           },
           "default": "",
-          "title": "Watermark",
-          "description": "Optional watermark text to add to the generated video."
+          "title": "Call Back Url",
+          "description": "Optional callback URL for task completion."
         },
         {
           "name": "prompt",
@@ -33990,9 +33923,7 @@
       "basic_fields": [
         "model",
         "aspect_ratio",
-        "seed",
-        "enable_translation",
-        "watermark",
+        "call_back_url",
         "prompt"
       ],
       "expose_as_tool": true

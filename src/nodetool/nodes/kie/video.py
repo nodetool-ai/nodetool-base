@@ -1708,28 +1708,15 @@ class Veo31BaseNode(KieVideoBaseNode):
     class AspectRatio(str, Enum):
         RATIO_16_9 = "16:9"
         RATIO_9_16 = "9:16"
-        AUTO = "Auto"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.RATIO_16_9,
-        description="Video aspect ratio. Auto mode matches the aspect ratio based on uploaded images.",
+        description="Video aspect ratio.",
     )
 
-    seed: int = Field(
-        default=0,
-        description="Random seed for reproducible results. Use 0 for random seed.",
-        ge=0,
-        le=99999,
-    )
-
-    enable_translation: bool = Field(
-        default=True,
-        description="Enable automatic translation of prompts to English for better results.",
-    )
-
-    watermark: str = Field(
+    call_back_url: str = Field(
         default="",
-        description="Optional watermark text to add to the generated video.",
+        description="Optional callback URL for task completion.",
     )
 
     def _get_headers(self, api_key: str) -> dict[str, str]:
@@ -1737,6 +1724,141 @@ class Veo31BaseNode(KieVideoBaseNode):
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         }
+
+    async def _get_submit_payload(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        payload = await self._get_input_params(context)
+        if self.call_back_url:
+            payload["callBackUrl"] = self.call_back_url
+        return payload
+
+    def _get_success_flag(self, status_response: dict[str, Any]) -> int | None:
+        success_flag = status_response.get("data", {}).get("successFlag")
+        try:
+            return int(success_flag)
+        except (TypeError, ValueError):
+            return None
+
+    def _is_task_complete(self, status_response: dict[str, Any]) -> bool:
+        return self._get_success_flag(status_response) == 1
+
+    def _is_task_failed(self, status_response: dict[str, Any]) -> bool:
+        return self._get_success_flag(status_response) in {2, 3}
+
+    def _get_error_message(self, status_response: dict[str, Any]) -> str:
+        return status_response.get("msg") or "Unknown error occurred"
+
+    async def _submit_task(
+        self,
+        session: aiohttp.ClientSession,
+        api_key: str,
+        context: ProcessingContext | None = None,
+    ) -> dict[str, Any]:
+        url = f"{KIE_API_BASE_URL}/api/v1/veo/generate"
+        payload = await self._get_submit_payload(context)
+        headers = self._get_headers(api_key)
+        log.info(f"Submitting Veo task to {url} with payload: {payload}")
+        async with session.post(url, json=payload, headers=headers) as response:
+            response_data = await response.json()
+            if "code" in response_data:
+                self._check_response_status(response_data)
+
+            if response.status != 200:
+                raise ValueError(
+                    f"Failed to submit task: {response.status} - {response_data}"
+                )
+            return response_data
+
+    async def _poll_status(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> dict[str, Any]:
+        url = f"{KIE_API_BASE_URL}/api/v1/veo/record-info?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        for attempt in range(self._max_poll_attempts):
+            log.debug(
+                f"Polling Veo task status (attempt {attempt + 1}/{self._max_poll_attempts})"
+            )
+            async with session.get(url, headers=headers) as response:
+                status_data = await response.json()
+                print(f"Veo poll response: {status_data}")
+                if "code" in status_data:
+                    self._check_response_status(status_data)
+
+                if self._is_task_complete(status_data):
+                    log.debug("Veo task completed successfully")
+                    return status_data
+
+                if self._is_task_failed(status_data):
+                    error_msg = self._get_error_message(status_data)
+                    raise ValueError(f"Veo task failed: {error_msg}")
+
+            await asyncio.sleep(self._poll_interval)
+
+        raise TimeoutError(
+            f"Veo task did not complete within {self._max_poll_attempts * self._poll_interval} seconds"
+        )
+
+    def _parse_result_urls(self, result_urls: Any) -> list[str]:
+        import json
+
+        if not result_urls:
+            return []
+
+        if isinstance(result_urls, list):
+            return [url for url in result_urls if isinstance(url, str)]
+
+        if isinstance(result_urls, str):
+            try:
+                parsed = json.loads(result_urls)
+            except json.JSONDecodeError:
+                return [result_urls]
+            if isinstance(parsed, list):
+                return [url for url in parsed if isinstance(url, str)]
+            if isinstance(parsed, str):
+                return [parsed]
+
+        raise ValueError(f"Unexpected resultUrls format: {result_urls}")
+
+    async def _download_result(  # type: ignore[override]
+        self, session: aiohttp.ClientSession, api_key: str, status_data: dict[str, Any]
+    ) -> bytes:
+        if not self._is_task_complete(status_data):
+            raise ValueError("Veo task is not complete yet")
+
+        log.debug(f"Veo status_data: {status_data}")
+        data = status_data.get("data", {})
+        result_urls = self._parse_result_urls(
+            data.get("resultUrls")
+            or data.get("response", {}).get("resultUrls")
+            or data.get("response", {}).get("originUrls")
+        )
+        log.debug(f"Veo resultUrls: {result_urls}")
+
+        if not result_urls:
+            raise ValueError("No resultUrls in response")
+
+        result_url = result_urls[0]
+        log.debug(f"Downloading result from {result_url}")
+
+        async with session.get(result_url) as video_response:
+            if video_response.status != 200:
+                raise ValueError(f"Failed to download result from URL: {result_url}")
+            return await video_response.read()
+
+    async def _execute_task(self, context: ProcessingContext) -> tuple[bytes, str]:
+        """Execute the full task workflow: submit, poll, download."""
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Task submitted with ID: {task_id}")
+
+            status_data = await self._poll_status(session, api_key, task_id)
+
+            return await self._download_result(session, api_key, status_data), task_id
 
 
 class Veo31TextToVideo(Veo31BaseNode):
@@ -1747,13 +1869,17 @@ class Veo31TextToVideo(Veo31BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "Veo 3.1 Text To Video"
+
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the desired video content.",
     )
 
     def _get_model(self) -> str:
-        return f"google/{self.model.value}"
+        return self.model.value
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -1761,60 +1887,11 @@ class Veo31TextToVideo(Veo31BaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
 
-        payload: dict[str, Any] = {
+        return {
             "prompt": self.prompt,
             "model": self.model.value,
-            "generationType": "TEXT_2_VIDEO",
-            "aspectRatio": self.aspect_ratio.value,
-            "enableTranslation": self.enable_translation,
+            "aspect_ratio": self.aspect_ratio.value,
         }
-
-        if self.seed > 0:
-            payload["seeds"] = self.seed
-
-        if self.watermark:
-            payload["watermark"] = self.watermark
-
-        return payload
-
-    async def _download_result(
-        self, session: aiohttp.ClientSession, api_key: str, task_id: str
-    ) -> bytes:
-        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
-        headers = self._get_headers(api_key)
-
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                response_text = await response.text()
-                raise ValueError(
-                    f"Failed to get result: {response.status} - {response_text}"
-                )
-
-            status_data = await response.json()
-            if "code" in status_data:
-                self._check_response_status(status_data)
-            result_json_str = status_data.get("data", {}).get("resultJson", "")
-
-            if not result_json_str:
-                raise ValueError("No resultJson in response")
-
-            import json
-
-            result_data = json.loads(result_json_str)
-            result_urls = result_data.get("resultUrls", [])
-
-            if not result_urls:
-                raise ValueError("No resultUrls in resultJson")
-
-            result_url = result_urls[0]
-            log.debug(f"Downloading result from {result_url}")
-
-            async with session.get(result_url) as video_response:
-                if video_response.status != 200:
-                    raise ValueError(
-                        f"Failed to download result from URL: {result_url}"
-                    )
-                return await video_response.read()
 
 
 class Veo31ImageToVideo(Veo31BaseNode):
@@ -1827,6 +1904,10 @@ class Veo31ImageToVideo(Veo31BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Veo 3.1 Image To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1844,7 +1925,7 @@ class Veo31ImageToVideo(Veo31BaseNode):
     )
 
     def _get_model(self) -> str:
-        return f"google/{self.model.value}"
+        return self.model.value
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -1864,60 +1945,15 @@ class Veo31ImageToVideo(Veo31BaseNode):
             image_urls.append(image_url2)
 
         payload: dict[str, Any] = {
-            "prompt": self.prompt,
             "imageUrls": image_urls,
             "model": self.model.value,
-            "generationType": "FIRST_AND_LAST_FRAMES_2_VIDEO",
-            "aspectRatio": self.aspect_ratio.value,
-            "enableTranslation": self.enable_translation,
+            "aspect_ratio": self.aspect_ratio.value,
         }
 
-        if self.seed > 0:
-            payload["seeds"] = self.seed
-
-        if self.watermark:
-            payload["watermark"] = self.watermark
+        if self.prompt:
+            payload["prompt"] = self.prompt
 
         return payload
-
-    async def _download_result(
-        self, session: aiohttp.ClientSession, api_key: str, task_id: str
-    ) -> bytes:
-        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
-        headers = self._get_headers(api_key)
-
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                response_text = await response.text()
-                raise ValueError(
-                    f"Failed to get result: {response.status} - {response_text}"
-                )
-
-            status_data = await response.json()
-            if "code" in status_data:
-                self._check_response_status(status_data)
-            result_json_str = status_data.get("data", {}).get("resultJson", "")
-
-            if not result_json_str:
-                raise ValueError("No resultJson in response")
-
-            import json
-
-            result_data = json.loads(result_json_str)
-            result_urls = result_data.get("resultUrls", [])
-
-            if not result_urls:
-                raise ValueError("No resultUrls in resultJson")
-
-            result_url = result_urls[0]
-            log.debug(f"Downloading result from {result_url}")
-
-            async with session.get(result_url) as video_response:
-                if video_response.status != 200:
-                    raise ValueError(
-                        f"Failed to download result from URL: {result_url}"
-                    )
-                return await video_response.read()
 
 
 class Veo31ReferenceToVideo(Veo31BaseNode):
@@ -1926,10 +1962,14 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
     kie, google, veo, veo3, veo3.1, video generation, ai, reference-to-video, material-to-video
 
     Material-to-video generation based on reference images. Only supports veo3_fast model
-    and 16:9 aspect ratio. Requires 1-3 reference images.
+    and requires 1-3 reference images.
     """
 
     _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Veo 3.1 Reference To Video"
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
@@ -1952,7 +1992,7 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
     )
 
     def _get_model(self) -> str:
-        return "google/veo3_fast"
+        return "veo3_fast"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -1962,9 +2002,6 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
 
         if not self.image1.is_set():
             raise ValueError("At least one reference image is required")
-
-        if self.aspect_ratio != self.AspectRatio.RATIO_16_9:
-            raise ValueError("REFERENCE_2_VIDEO mode only supports 16:9 aspect ratio")
 
         image_urls = []
         for img in [self.image1, self.image2, self.image3]:
@@ -1979,54 +2016,7 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
             "prompt": self.prompt,
             "imageUrls": image_urls,
             "model": "veo3_fast",
-            "generationType": "REFERENCE_2_VIDEO",
-            "aspectRatio": "16:9",
-            "enableTranslation": self.enable_translation,
+            "aspect_ratio": self.aspect_ratio.value,
         }
 
-        if self.seed > 0:
-            payload["seeds"] = self.seed
-
-        if self.watermark:
-            payload["watermark"] = self.watermark
-
         return payload
-
-    async def _download_result(
-        self, session: aiohttp.ClientSession, api_key: str, task_id: str
-    ) -> bytes:
-        url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
-        headers = self._get_headers(api_key)
-
-        async with session.get(url, headers=headers) as response:
-            if response.status != 200:
-                response_text = await response.text()
-                raise ValueError(
-                    f"Failed to get result: {response.status} - {response_text}"
-                )
-
-            status_data = await response.json()
-            if "code" in status_data:
-                self._check_response_status(status_data)
-            result_json_str = status_data.get("data", {}).get("resultJson", "")
-
-            if not result_json_str:
-                raise ValueError("No resultJson in response")
-
-            import json
-
-            result_data = json.loads(result_json_str)
-            result_urls = result_data.get("resultUrls", [])
-
-            if not result_urls:
-                raise ValueError("No resultUrls in resultJson")
-
-            result_url = result_urls[0]
-            log.debug(f"Downloading result from {result_url}")
-
-            async with session.get(result_url) as video_response:
-                if video_response.status != 200:
-                    raise ValueError(
-                        f"Failed to download result from URL: {result_url}"
-                    )
-                return await video_response.read()
