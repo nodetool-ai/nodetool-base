@@ -2020,3 +2020,80 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
         }
 
         return payload
+
+
+class KlingMotionControl(KieVideoBaseNode):
+    """Generate videos with motion control using Kuaishou's Kling 2.6 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, motion-control, character-animation, 2.6
+
+    Kling Motion Control generates videos where character actions are guided by a reference video,
+    while the visual appearance is based on a reference image. Perfect for character animation
+    and motion transfer tasks.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.6 Motion Control"
+
+    prompt: str = Field(
+        default="The cartoon character is dancing.",
+        description="A text description of the desired output. Maximum 2500 characters.",
+        max_length=2500,
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Reference image. The characters, backgrounds, and other elements in the generated video are based on this image. Supports .jpg/.jpeg/.png, max 10MB, size needs to be greater than 300px, aspect ratio 2:5 to 5:2.",
+    )
+
+    video: VideoRef = Field(
+        default=VideoRef(),
+        description="Reference video. The character actions in the generated video will be consistent with this reference video. Supports .mp4/.mov, max 100MB, 3-30 seconds duration depending on character_orientation.",
+    )
+
+    class CharacterOrientation(str, Enum):
+        IMAGE = "image"
+        VIDEO = "video"
+
+    character_orientation: CharacterOrientation = Field(
+        default=CharacterOrientation.VIDEO,
+        description="Generate the orientation of the characters in the video. 'image': same orientation as the person in the picture (max 10s video). 'video': consistent with the orientation of the characters in the video (max 30s video).",
+    )
+
+    class Mode(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    mode: Mode = Field(
+        default=Mode.R720P,
+        description="Output resolution mode. Use '720p' for 720p or '1080p' for 1080p.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling-2.6/motion-control"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Reference image is required")
+        if not self.video.is_set():
+            raise ValueError("Reference video is required")
+        if context is None:
+            raise ValueError("Context is required for media upload")
+
+        image_url, video_url = await asyncio.gather(
+            self._upload_image(context, self.image),
+            self._upload_video(context, self.video),
+        )
+
+        return {
+            "prompt": self.prompt,
+            "input_urls": [image_url],
+            "video_urls": [video_url],
+            "character_orientation": self.character_orientation.value,
+            "mode": self.mode.value,
+        }

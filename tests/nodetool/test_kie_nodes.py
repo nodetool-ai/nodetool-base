@@ -1,6 +1,7 @@
 """Tests for Kie.ai image generation nodes."""
 
 import pytest
+from io import BytesIO
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from nodetool.workflows.processing_context import ProcessingContext
@@ -34,6 +35,7 @@ from nodetool.nodes.kie.video import (
     KlingTextToVideo,
     KlingImageToVideo,
     KlingAIAvatarStandard,
+    KlingMotionControl,
     TopazVideoUpscale,
     GrokImagineImageToVideo,
     GrokImagineTextToVideo,
@@ -42,6 +44,7 @@ from nodetool.nodes.kie.video import (
     Veo31ReferenceToVideo,
 )
 from nodetool.nodes.kie.audio import Suno
+from nodetool.metadata.types import VideoRef
 
 
 class MockResponse:
@@ -149,11 +152,32 @@ class TestKieBaseNode:
         assert KlingTextToVideo.is_visible()
         assert KlingImageToVideo.is_visible()
         assert KlingAIAvatarStandard.is_visible()
+        assert KlingMotionControl.is_visible()
         assert TopazVideoUpscale.is_visible()
         assert GrokImagineImageToVideo.is_visible()
         assert GrokImagineTextToVideo.is_visible()
         # Audio generation nodes
         assert Suno.is_visible()
+
+    @pytest.mark.asyncio
+    async def test_upload_video_transcodes_non_mp4(self, mock_context):
+        node = KlingMotionControl()
+        video_ref = VideoRef(uri="file:///tmp/input.mov", format="mov")
+        mock_context.asset_to_io = AsyncMock(return_value=BytesIO(b"mov-bytes"))
+
+        with patch.object(
+            node, "_convert_video_to_mp4", AsyncMock(return_value=b"mp4-bytes")
+        ) as mock_convert, patch.object(
+            node, "_upload_asset", AsyncMock(return_value="https://example.com/video.mp4")
+        ) as mock_upload:
+            result = await node._upload_video(mock_context, video_ref)
+
+        assert result == "https://example.com/video.mp4"
+        mock_convert.assert_awaited_once()
+        call_args = mock_upload.await_args.args
+        assert call_args[2] == "videos/user-uploads"
+        assert isinstance(call_args[1], VideoRef)
+        assert call_args[1].data == b"mp4-bytes"
 
 
 class TestFlux2ProTextToImage:
@@ -982,3 +1006,112 @@ class TestVeo31Visibility:
     def test_veo31_reference_to_video_visible(self):
         """Veo31ReferenceToVideo should be visible in UI."""
         assert Veo31ReferenceToVideo.is_visible()
+
+
+class TestKlingMotionControl:
+    """Tests for KlingMotionControl node."""
+
+    @pytest.mark.asyncio
+    async def test_model_name(self):
+        """Test model name returns correct value."""
+        node = KlingMotionControl()
+        assert node._get_model() == "kling-2.6/motion-control"
+
+    @pytest.mark.asyncio
+    async def test_get_title(self):
+        """Test get_title returns correct value."""
+        assert KlingMotionControl.get_title() == "Kling 2.6 Motion Control"
+
+    @pytest.mark.asyncio
+    async def test_is_visible(self):
+        """Test node is visible in UI."""
+        assert KlingMotionControl.is_visible()
+
+    @pytest.mark.asyncio
+    async def test_default_values(self):
+        """Test default values are set correctly."""
+        node = KlingMotionControl()
+        assert node.prompt == "The cartoon character is dancing."
+        assert node.character_orientation == KlingMotionControl.CharacterOrientation.VIDEO
+        assert node.mode == KlingMotionControl.Mode.R720P
+
+    @pytest.mark.asyncio
+    async def test_missing_image_raises_error(self, mock_context):
+        """Test that missing image raises ValueError."""
+        from nodetool.metadata.types import ImageRef, VideoRef
+
+        node = KlingMotionControl(
+            image=ImageRef(),
+            video=VideoRef(uri="http://example.com/video.mp4"),
+        )
+        with pytest.raises(ValueError, match="Reference image is required"):
+            await node._get_input_params(mock_context)
+
+    @pytest.mark.asyncio
+    async def test_missing_video_raises_error(self, mock_context):
+        """Test that missing video raises ValueError."""
+        from nodetool.metadata.types import ImageRef, VideoRef
+
+        node = KlingMotionControl(
+            image=ImageRef(uri="http://example.com/image.jpg"),
+            video=VideoRef(),
+        )
+        with pytest.raises(ValueError, match="Reference video is required"):
+            await node._get_input_params(mock_context)
+
+    @pytest.mark.asyncio
+    async def test_input_params(self, mock_context):
+        """Test input parameters are correctly generated."""
+        from nodetool.metadata.types import ImageRef, VideoRef
+
+        node = KlingMotionControl(
+            prompt="A character dancing",
+            image=ImageRef(uri="http://example.com/image.jpg"),
+            video=VideoRef(uri="http://example.com/video.mp4"),
+            character_orientation=KlingMotionControl.CharacterOrientation.IMAGE,
+            mode=KlingMotionControl.Mode.R1080P,
+        )
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            with patch.object(
+                node, "_upload_video", return_value="http://uploaded-url.com/video.mp4"
+            ):
+                params = await node._get_input_params(mock_context)
+
+        assert params == {
+            "prompt": "A character dancing",
+            "input_urls": ["http://uploaded-url.com/image.jpg"],
+            "video_urls": ["http://uploaded-url.com/video.mp4"],
+            "character_orientation": "image",
+            "mode": "1080p",
+        }
+
+    @pytest.mark.asyncio
+    async def test_submit_payload(self, mock_context):
+        """Test that submit payload is correctly generated."""
+        from nodetool.metadata.types import ImageRef, VideoRef
+
+        node = KlingMotionControl(
+            prompt="Character animation",
+            image=ImageRef(uri="http://example.com/image.jpg"),
+            video=VideoRef(uri="http://example.com/video.mp4"),
+        )
+        with patch.object(
+            node, "_upload_image", return_value="http://uploaded-url.com/image.jpg"
+        ):
+            with patch.object(
+                node, "_upload_video", return_value="http://uploaded-url.com/video.mp4"
+            ):
+                payload = await node._get_submit_payload(mock_context)
+
+        assert payload == {
+            "model": "kling-2.6/motion-control",
+            "input": {
+                "prompt": "Character animation",
+                "input_urls": ["http://uploaded-url.com/image.jpg"],
+                "video_urls": ["http://uploaded-url.com/video.mp4"],
+                "character_orientation": "video",
+                "mode": "720p",
+            },
+        }
