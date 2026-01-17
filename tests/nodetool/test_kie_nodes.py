@@ -1,6 +1,7 @@
 """Tests for Kie.ai image generation nodes."""
 
 import pytest
+from io import BytesIO
 from unittest.mock import AsyncMock, MagicMock, patch
 
 from nodetool.workflows.processing_context import ProcessingContext
@@ -43,6 +44,7 @@ from nodetool.nodes.kie.video import (
     Veo31ReferenceToVideo,
 )
 from nodetool.nodes.kie.audio import Suno
+from nodetool.metadata.types import VideoRef
 
 
 class MockResponse:
@@ -156,6 +158,26 @@ class TestKieBaseNode:
         assert GrokImagineTextToVideo.is_visible()
         # Audio generation nodes
         assert Suno.is_visible()
+
+    @pytest.mark.asyncio
+    async def test_upload_video_transcodes_non_mp4(self, mock_context):
+        node = KlingMotionControl()
+        video_ref = VideoRef(uri="file:///tmp/input.mov", format="mov")
+        mock_context.asset_to_io = AsyncMock(return_value=BytesIO(b"mov-bytes"))
+
+        with patch.object(
+            node, "_convert_video_to_mp4", AsyncMock(return_value=b"mp4-bytes")
+        ) as mock_convert, patch.object(
+            node, "_upload_asset", AsyncMock(return_value="https://example.com/video.mp4")
+        ) as mock_upload:
+            result = await node._upload_video(mock_context, video_ref)
+
+        assert result == "https://example.com/video.mp4"
+        mock_convert.assert_awaited_once()
+        call_args = mock_upload.await_args.args
+        assert call_args[2] == "videos/user-uploads"
+        assert isinstance(call_args[1], VideoRef)
+        assert call_args[1].data == b"mp4-bytes"
 
 
 class TestFlux2ProTextToImage:
