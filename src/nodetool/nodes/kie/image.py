@@ -1639,7 +1639,7 @@ class IdeogramCharacterRemix(KieBaseNode):
                 url = await self._upload_image(context, add_img)
                 additional_image_urls.append(url)
 
-        return {
+        input_params: dict[str, Any] = {
             "prompt": self.prompt,
             "image_url": image_url,
             "reference_image_urls": reference_image_urls,
@@ -1647,12 +1647,19 @@ class IdeogramCharacterRemix(KieBaseNode):
             "style": self.style.value,
             "expand_prompt": self.expand_prompt,
             "image_size": self.image_size.value,
-            "num_images": "1",
             "strength": self.strength,
-            "negative_prompt": self.negative_prompt,
-            "image_urls": additional_image_urls,
-            "reference_mask_urls": self.reference_mask_urls,
         }
+
+        if self.negative_prompt:
+            input_params["negative_prompt"] = self.negative_prompt
+
+        if additional_image_urls:
+            input_params["additional_image_urls"] = additional_image_urls
+
+            if self.reference_mask_urls:
+                input_params["reference_mask_urls"] = self.reference_mask_urls
+
+        return input_params
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
@@ -1738,6 +1745,114 @@ class IdeogramV3Reframe(KieBaseNode):
             "num_images": "1",
             "seed": self.seed,
         }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramV3TextToImage(KieBaseNode):
+    """Generate images using Ideogram V3 via Kie.ai.
+
+    kie, ideogram, v3, image generation, ai, text-to-image
+
+    Ideogram V3 generates high-quality images from text descriptions
+    with improved text rendering, style consistency, and visual quality.
+
+    Use cases:
+    - Generate artistic images from text prompts
+    - Create images with embedded text
+    - Produce designs and illustrations
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram V3 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="Description of the image to generate.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="The rendering speed to use.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        GENERAL = "GENERAL"
+        REALISTIC = "REALISTIC"
+        DESIGN = "DESIGN"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="The style type to generate with. Cannot be used with style_codes.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Determine if MagicPrompt should be used in generating the request.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The resolution of the generated image.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Seed for the random number generator.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Description of what to exclude from an image.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/v3-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+
+        input_params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "image_size": self.image_size.value,
+        }
+
+        if self.seed != -1:
+            input_params["seed"] = self.seed
+
+        if self.negative_prompt:
+            input_params["negative_prompt"] = self.negative_prompt
+
+        return input_params
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)

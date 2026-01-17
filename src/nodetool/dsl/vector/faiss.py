@@ -18,22 +18,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddVectors(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
 
-    Add vectors to a FAISS index.
-    faiss, add, vectors
+        Add vectors to a FAISS index.
+        faiss, add, vectors
     """
 
-    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
-        default=types.FaissIndex(type="faiss_index", index=None),
-        description="FAISS index",
-    )
-    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Vectors to add (n, d)",
-    )
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(default=types.FaissIndex(type='faiss_index', index=None), description='FAISS index')
+    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Vectors to add (n, d)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,26 +43,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddWithIds(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
 
-    Add vectors with explicit integer IDs to a FAISS index.
-    faiss, add, ids, vectors
+        Add vectors with explicit integer IDs to a FAISS index.
+        faiss, add, ids, vectors
     """
 
-    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
-        default=types.FaissIndex(type="faiss_index", index=None),
-        description="FAISS index",
-    )
-    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Vectors to add (n, d)",
-    )
-    ids: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="1-D int64 IDs (n,)",
-    )
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(default=types.FaissIndex(type='faiss_index', index=None), description='FAISS index')
+    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Vectors to add (n, d)')
+    ids: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='1-D int64 IDs (n,)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -86,19 +69,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
-class CreateIndexFlatIP(
-    SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
-):
+class CreateIndexFlatIP(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
 
-    Create a FAISS IndexFlatIP (inner product / cosine with normalized vectors).
-    faiss, index, ip, create
+        Create a FAISS IndexFlatIP (inner product / cosine with normalized vectors).
+        faiss, index, ip, create
     """
 
-    dim: int | OutputHandle[int] = connect_field(
-        default=768, description="Embedding dimensionality"
-    )
+    dim: int | OutputHandle[int] = connect_field(default=768, description='Embedding dimensionality')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -115,19 +93,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
-class CreateIndexFlatL2(
-    SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
-):
+class CreateIndexFlatL2(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
 
-    Create a FAISS IndexFlatL2.
-    faiss, index, l2, create
+        Create a FAISS IndexFlatL2.
+        faiss, index, l2, create
     """
 
-    dim: int | OutputHandle[int] = connect_field(
-        default=768, description="Embedding dimensionality"
-    )
+    dim: int | OutputHandle[int] = connect_field(default=768, description='Embedding dimensionality')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -144,27 +117,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
-class CreateIndexIVFFlat(
-    SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]
-):
+class CreateIndexIVFFlat(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
 
-    Create a FAISS IndexIVFFlat (inverted file index with flat quantizer).
-    faiss, index, ivf, create
+        Create a FAISS IndexIVFFlat (inverted file index with flat quantizer).
+        faiss, index, ivf, create
     """
 
     Metric: typing.ClassVar[type] = nodetool.nodes.vector.faiss.Metric
 
-    dim: int | OutputHandle[int] = connect_field(
-        default=768, description="Embedding dimensionality"
-    )
-    nlist: int | OutputHandle[int] = connect_field(
-        default=1024, description="Number of Voronoi cells"
-    )
-    metric: nodetool.nodes.vector.faiss.Metric = Field(
-        default=nodetool.nodes.vector.faiss.Metric.L2, description="Distance metric"
-    )
+    dim: int | OutputHandle[int] = connect_field(default=768, description='Embedding dimensionality')
+    nlist: int | OutputHandle[int] = connect_field(default=1024, description='Number of Voronoi cells')
+    metric: nodetool.nodes.vector.faiss.Metric = Field(default=nodetool.nodes.vector.faiss.Metric.L2, description='Distance metric')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -181,28 +145,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
 class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
     """
 
-    Search a FAISS index with query vectors, returning distances and indices.
-    faiss, search, query, knn
+        Search a FAISS index with query vectors, returning distances and indices.
+        faiss, search, query, knn
     """
 
-    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
-        default=types.FaissIndex(type="faiss_index", index=None),
-        description="FAISS index",
-    )
-    query: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Query vectors (m, d) or (d,)",
-    )
-    k: int | OutputHandle[int] = connect_field(
-        default=5, description="Number of nearest neighbors"
-    )
-    nprobe: int | OutputHandle[int] = connect_field(
-        default=10, description="nprobe for IVF indices"
-    )
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(default=types.FaissIndex(type='faiss_index', index=None), description='FAISS index')
+    query: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Query vectors (m, d) or (d,)')
+    k: int | OutputHandle[int] = connect_field(default=5, description='Number of nearest neighbors')
+    nprobe: int | OutputHandle[int] = connect_field(default=10, description='nprobe for IVF indices')
 
     @property
     def out(self) -> "SearchOutputs":
@@ -216,15 +169,14 @@ class Search(GraphNode[nodetool.nodes.vector.faiss.Search.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SearchOutputs(OutputsProxy):
     @property
     def distances(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self["distances"])
+        return typing.cast(OutputHandle[types.NPArray], self['distances'])
 
     @property
     def indices(self) -> OutputHandle[types.NPArray]:
-        return typing.cast(OutputHandle[types.NPArray], self["indices"])
+        return typing.cast(OutputHandle[types.NPArray], self['indices'])
 
 
 import typing
@@ -233,22 +185,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.vector.faiss
 from nodetool.workflows.base_node import BaseNode
 
-
 class TrainIndex(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissIndex]):
     """
 
-    Train a FAISS index with training vectors (required for IVF indices).
-    faiss, train, index
+        Train a FAISS index with training vectors (required for IVF indices).
+        faiss, train, index
     """
 
-    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(
-        default=types.FaissIndex(type="faiss_index", index=None),
-        description="FAISS index",
-    )
-    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Training vectors (n, d)",
-    )
+    index: types.FaissIndex | OutputHandle[types.FaissIndex] = connect_field(default=types.FaissIndex(type='faiss_index', index=None), description='FAISS index')
+    vectors: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Training vectors (n, d)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -257,3 +202,5 @@ class TrainIndex(SingleOutputGraphNode[types.FaissIndex], GraphNode[types.FaissI
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
