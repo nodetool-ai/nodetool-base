@@ -265,9 +265,15 @@ class Date(BaseNode):
     date, make, create
     """
 
-    year: int = Field(default=1900, description="Year of the date")
-    month: int = Field(default=1, description="Month of the date")
-    day: int = Field(default=1, description="Day of the date")
+    year: int = Field(
+        default=1900, description="Year of the date", ge=1, le=9999
+    )
+    month: int = Field(
+        default=1, description="Month of the date", ge=1, le=12
+    )
+    day: int = Field(
+        default=1, description="Day of the date", ge=1, le=31
+    )
 
     async def process(self, context: ProcessingContext) -> DateType:
         return DateType.from_date(date(self.year, self.month, self.day))  # type: ignore
@@ -279,19 +285,40 @@ class DateTime(Constant):
     datetime, make, create
     """
 
-    year: int = Field(default=1900, description="Year of the datetime")
-    month: int = Field(default=1, description="Month of the datetime")
-    day: int = Field(default=1, description="Day of the datetime")
-    hour: int = Field(default=0, description="Hour of the datetime")
-    minute: int = Field(default=0, description="Minute of the datetime")
-    second: int = Field(default=0, description="Second of the datetime")
-    microsecond: int = Field(default=0, description="Microsecond of the datetime")
+    year: int = Field(
+        default=1900, description="Year of the datetime", ge=1, le=9999
+    )
+    month: int = Field(
+        default=1, description="Month of the datetime", ge=1, le=12
+    )
+    day: int = Field(
+        default=1, description="Day of the datetime", ge=1, le=31
+    )
+    hour: int = Field(
+        default=0, description="Hour of the datetime", ge=0, le=23
+    )
+    minute: int = Field(
+        default=0, description="Minute of the datetime", ge=0, le=59
+    )
+    second: int = Field(
+        default=0, description="Second of the datetime", ge=0, le=59
+    )
+    millisecond: int = Field(
+        default=0, description="Millisecond of the datetime", ge=0, le=999
+    )
     tzinfo: str = Field(default="UTC", description="Timezone of the datetime")
-    utc_offset: int = Field(default=0, description="UTC offset of the datetime")
+    utc_offset: int = Field(
+        default=0,
+        description="UTC offset of the datetime in minutes",
+        ge=-720,
+        le=840,
+    )
 
     _expose_as_tool = True
 
     async def process(self, context: ProcessingContext) -> Datetime:
+        utc_offset_seconds = self.utc_offset * 60
+        microseconds = self.millisecond * 1000
         return Datetime(
             year=self.year,
             month=self.month,
@@ -299,9 +326,9 @@ class DateTime(Constant):
             hour=self.hour,
             minute=self.minute,
             second=self.second,
-            microsecond=self.microsecond,
+            microsecond=microseconds,
             tzinfo=self.tzinfo,
-            utc_offset=self.utc_offset,
+            utc_offset=utc_offset_seconds,
         )
 
 
