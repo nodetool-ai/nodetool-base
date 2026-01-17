@@ -1585,6 +1585,185 @@ class Wan26VideoToVideo(KieVideoBaseNode):
         }
 
 
+class Wan25TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Alibaba's Wan 2.5 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, 2.5
+
+    Wan 2.5 generates high-quality videos from text descriptions
+    with advanced motion and visual fidelity.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.5 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R1080P,
+        description="Video resolution.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated video.",
+    )
+
+    enable_prompt_expansion: bool = Field(
+        default=True,
+        description="Whether to enable prompt rewriting using LLM.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducibility. -1 for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/2-5-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "aspect_ratio": self.aspect_ratio.value,
+            "resolution": self.resolution.value,
+            "enable_prompt_expansion": self.enable_prompt_expansion,
+        }
+
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        if self.seed != -1:
+            payload["seed"] = self.seed
+
+        return payload
+
+
+class Wan25ImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Alibaba's Wan 2.5 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, image-to-video, 2.5
+
+    Wan 2.5 transforms static images into dynamic videos with
+    realistic motion and temporal consistency.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.5 Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video motion.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to animate into a video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R1080P,
+        description="Video resolution.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated video.",
+    )
+
+    enable_prompt_expansion: bool = Field(
+        default=True,
+        description="Whether to enable prompt rewriting using LLM.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducibility. -1 for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/2-5-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+            "enable_prompt_expansion": self.enable_prompt_expansion,
+        }
+
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        if self.seed != -1:
+            payload["seed"] = self.seed
+
+        return payload
+
+
 class TopazVideoUpscale(KieVideoBaseNode):
     """Upscale and enhance videos using Topaz Labs AI via Kie.ai."""
 
