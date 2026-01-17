@@ -14,6 +14,7 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 
 import asyncio
 import os
+import uuid
 from urllib.parse import urlparse
 from abc import abstractmethod
 from enum import Enum
