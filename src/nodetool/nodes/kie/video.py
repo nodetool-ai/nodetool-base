@@ -1862,35 +1862,419 @@ class Veo31BaseNode(KieVideoBaseNode):
 
 
 class Veo31TextToVideo(Veo31BaseNode):
-    """Generate videos from text using Google's Veo 3.1 model via Kie.ai.
+    """Generate videos from text using Google's Veo 3.1 via Kie.ai.
 
-    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
+    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video
+
+    Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
+    and significant cost savings (25% of Google's direct API pricing).
     """
 
     _expose_as_tool: ClassVar[bool] = True
 
-    @classmethod
-    def get_title(cls) -> str:
-        return "Veo 3.1 Text To Video"
-
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the desired video content.",
+        description="The text prompt describing the video.",
     )
 
     def _get_model(self) -> str:
-        return self.model.value
+        return "veo3/text-to-video"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
+        return {
+            "model": self.model.value,
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
 
+
+class RunwayGen3AlphaTextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Runway's Gen-3 Alpha model via Kie.ai.
+
+    kie, runway, gen-3, gen3alpha, video generation, ai, text-to-video
+
+    Runway Gen-3 Alpha produces high-quality videos from text descriptions
+    with advanced motion and temporal consistency.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Gen-3 Alpha Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+        max_length=1800,
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V4_3 = "4:3"
+        V1_1 = "1:1"
+        V3_4 = "3:4"
+        V9_16 = "9:16"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video. Required for text-to-video generation.",
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/gen-3-alpha-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
         return {
             "prompt": self.prompt,
-            "model": self.model.value,
+            "aspectRatio": self.aspect_ratio.value,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+
+
+class RunwayGen3AlphaImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Runway's Gen-3 Alpha model via Kie.ai.
+
+    kie, runway, gen-3, gen3alpha, video generation, ai, image-to-video
+
+    Runway Gen-3 Alpha transforms static images into dynamic videos
+    with realistic motion and temporal consistency.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Gen-3 Alpha Image To Video"
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Reference image to base the video on.",
+    )
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text to guide the video generation. Maximum length is 1800 characters.",
+        max_length=1800,
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/gen-3-alpha-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
+        image_url = await self._upload_image(context, self.image)
+        payload: dict[str, Any] = {
+            "imageUrl": image_url,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+        if self.prompt:
+            payload["prompt"] = self.prompt
+        return payload
+
+
+class RunwayGen3AlphaExtendVideo(KieVideoBaseNode):
+    """Extend videos using Runway's Gen-3 Alpha model via Kie.ai.
+
+    kie, runway, gen-3, gen3alpha, video generation, ai, video-extension
+
+    Runway Gen-3 Alpha can extend existing videos with additional generated content.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Gen-3 Alpha Extend Video"
+
+    video_url: str = Field(
+        default="",
+        description="The source video URL to extend.",
+    )
+
+    prompt: str = Field(
+        default="Continue the motion naturally with smooth transitions.",
+        description="Text prompt to guide the video extension. Maximum length is 1800 characters.",
+        max_length=1800,
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Duration to extend the video by in seconds. If 10-second extension is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second extension cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/gen-3-alpha-extend-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.video_url:
+            raise ValueError("video_url is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second extension cannot be generated with 1080p resolution")
+        return {
+            "video_url": self.video_url,
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+
+
+class RunwayAlephVideo(KieVideoBaseNode):
+    """Generate videos using Runway's Aleph model via Kie.ai.
+
+    kie, runway, aleph, video generation, ai, text-to-video
+
+    Aleph is Runway's advanced video generation model offering
+    high-quality output with sophisticated motion handling.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Aleph Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+        max_length=1800,
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video. Required for text-to-video generation.",
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/generate-aleph-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
+        return {
+            "prompt": self.prompt,
+            "aspectRatio": self.aspect_ratio.value,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+
+
+class LumaModifyVideo(KieVideoBaseNode):
+    """Modify and enhance videos using Luma's API via Kie.ai.
+
+    kie, luma, video modification, ai, video-editing
+
+    Luma's video modification API allows for sophisticated video editing
+    and enhancement capabilities.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Luma Modify Video"
+
+    video: VideoRef = Field(
+        default=VideoRef(),
+        description="The source video to modify.",
+    )
+
+    prompt: str = Field(
+        default="Enhance the video quality and add smooth motion.",
+        description="Text prompt describing the modifications to make.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_16_9,
+        description="The aspect ratio of the output video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Duration of the modified video segment.",
+    )
+
+    def _get_model(self) -> str:
+        return "luma/generate-luma-modify-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for video upload")
+        if not self.video.is_set():
+            raise ValueError("Video is required")
+
+        video_url = await self._upload_video(context, self.video)
+        return {
+            "video_url": video_url,
+            "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
+            "duration": self.duration.value,
         }
 
 

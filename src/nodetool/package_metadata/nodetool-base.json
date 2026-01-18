@@ -33242,6 +33242,460 @@
       "expose_as_tool": true
     },
     {
+      "title": "Luma Modify Video",
+      "description": "Modify and enhance videos using Luma's API via Kie.ai.\n\n    kie, luma, video modification, ai, video-editing\n\n    Luma's video modification API allows for sophisticated video editing\n    and enhancement capabilities.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.LumaModifyVideo",
+      "properties": [
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video",
+          "description": "The source video to modify."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "Enhance the video quality and add smooth motion.",
+          "title": "Prompt",
+          "description": "Text prompt describing the modifications to make."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.LumaModifyVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the output video."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              "5",
+              "10"
+            ],
+            "type_name": "nodetool.nodes.kie.video.LumaModifyVideo.Duration"
+          },
+          "default": "5",
+          "title": "Duration",
+          "description": "Duration of the modified video segment."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "video",
+        "prompt",
+        "aspect_ratio",
+        "duration"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Runway Aleph Video",
+      "description": "Generate videos using Runway's Aleph model via Kie.ai.\n\n    kie, runway, aleph, video generation, ai, text-to-video\n\n    Aleph is Runway's advanced video generation model offering\n    high-quality output with sophisticated motion handling.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.RunwayAlephVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the video."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "9:16",
+              "1:1"
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayAlephVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video. Required for text-to-video generation."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              5,
+              10
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayAlephVideo.Duration"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used."
+        },
+        {
+          "name": "quality",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayAlephVideo.Quality"
+          },
+          "default": "720p",
+          "title": "Quality",
+          "description": "Video resolution. If 1080p is selected, 10-second video cannot be generated."
+        },
+        {
+          "name": "water_mark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Water Mark",
+          "description": "Video watermark text content. An empty string indicates no watermark."
+        },
+        {
+          "name": "call_back_url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Call Back Url",
+          "description": "Optional callback URL to receive task completion updates."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "duration",
+        "quality",
+        "water_mark",
+        "call_back_url"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Runway Gen-3 Alpha Extend Video",
+      "description": "Extend videos using Runway's Gen-3 Alpha model via Kie.ai.\n\n    kie, runway, gen-3, gen3alpha, video generation, ai, video-extension\n\n    Runway Gen-3 Alpha can extend existing videos with additional generated content.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.RunwayGen3AlphaExtendVideo",
+      "properties": [
+        {
+          "name": "video_url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Video Url",
+          "description": "The source video URL to extend."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "Continue the motion naturally with smooth transitions.",
+          "title": "Prompt",
+          "description": "Text prompt to guide the video extension. Maximum length is 1800 characters."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              5,
+              10
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaExtendVideo.Duration"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Duration to extend the video by in seconds. If 10-second extension is selected, 1080p resolution cannot be used."
+        },
+        {
+          "name": "quality",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaExtendVideo.Quality"
+          },
+          "default": "720p",
+          "title": "Quality",
+          "description": "Video resolution. If 1080p is selected, 10-second extension cannot be generated."
+        },
+        {
+          "name": "water_mark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Water Mark",
+          "description": "Video watermark text content. An empty string indicates no watermark."
+        },
+        {
+          "name": "call_back_url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Call Back Url",
+          "description": "Optional callback URL to receive task completion updates."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "video_url",
+        "prompt",
+        "duration",
+        "quality",
+        "water_mark",
+        "call_back_url"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Runway Gen-3 Alpha Image To Video",
+      "description": "Generate videos from images using Runway's Gen-3 Alpha model via Kie.ai.\n\n    kie, runway, gen-3, gen3alpha, video generation, ai, image-to-video\n\n    Runway Gen-3 Alpha transforms static images into dynamic videos\n    with realistic motion and temporal consistency.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.RunwayGen3AlphaImageToVideo",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "Reference image to base the video on."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "Optional text to guide the video generation. Maximum length is 1800 characters."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              5,
+              10
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaImageToVideo.Duration"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used."
+        },
+        {
+          "name": "quality",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaImageToVideo.Quality"
+          },
+          "default": "720p",
+          "title": "Quality",
+          "description": "Video resolution. If 1080p is selected, 10-second video cannot be generated."
+        },
+        {
+          "name": "water_mark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Water Mark",
+          "description": "Video watermark text content. An empty string indicates no watermark."
+        },
+        {
+          "name": "call_back_url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Call Back Url",
+          "description": "Optional callback URL to receive task completion updates."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt",
+        "duration",
+        "quality",
+        "water_mark",
+        "call_back_url"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Runway Gen-3 Alpha Text To Video",
+      "description": "Generate videos from text using Runway's Gen-3 Alpha model via Kie.ai.\n\n    kie, runway, gen-3, gen3alpha, video generation, ai, text-to-video\n\n    Runway Gen-3 Alpha produces high-quality videos from text descriptions\n    with advanced motion and temporal consistency.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.RunwayGen3AlphaTextToVideo",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
+          "title": "Prompt",
+          "description": "The text prompt describing the video."
+        },
+        {
+          "name": "aspect_ratio",
+          "type": {
+            "type": "enum",
+            "values": [
+              "16:9",
+              "4:3",
+              "1:1",
+              "3:4",
+              "9:16"
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaTextToVideo.AspectRatio"
+          },
+          "default": "16:9",
+          "title": "Aspect Ratio",
+          "description": "The aspect ratio of the generated video. Required for text-to-video generation."
+        },
+        {
+          "name": "duration",
+          "type": {
+            "type": "enum",
+            "values": [
+              5,
+              10
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaTextToVideo.Duration"
+          },
+          "default": 5,
+          "title": "Duration",
+          "description": "Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used."
+        },
+        {
+          "name": "quality",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.RunwayGen3AlphaTextToVideo.Quality"
+          },
+          "default": "720p",
+          "title": "Quality",
+          "description": "Video resolution. If 1080p is selected, 10-second video cannot be generated."
+        },
+        {
+          "name": "water_mark",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Water Mark",
+          "description": "Video watermark text content. An empty string indicates no watermark."
+        },
+        {
+          "name": "call_back_url",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Call Back Url",
+          "description": "Optional callback URL to receive task completion updates."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "aspect_ratio",
+        "duration",
+        "quality",
+        "water_mark",
+        "call_back_url"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Seedance V1 Lite Image To Video",
       "description": "Bytedance 1.0 - image-to-video-lite via Kie.ai.",
       "namespace": "kie.video",
@@ -34440,8 +34894,8 @@
       "expose_as_tool": true
     },
     {
-      "title": "Veo 3.1 Text To Video",
-      "description": "Generate videos from text using Google's Veo 3.1 model via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v",
+      "title": "Veo 31 Text To Video",
+      "description": "Generate videos from text using Google's Veo 3.1 via Kie.ai.\n\n    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video\n\n    Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,\n    and significant cost savings (25% of Google's direct API pricing).",
       "namespace": "kie.video",
       "node_type": "kie.video.Veo31TextToVideo",
       "properties": [
@@ -34489,7 +34943,7 @@
           },
           "default": "A cinematic video with smooth motion, natural lighting, and high detail.",
           "title": "Prompt",
-          "description": "The text prompt describing the desired video content."
+          "description": "The text prompt describing the video."
         }
       ],
       "outputs": [
