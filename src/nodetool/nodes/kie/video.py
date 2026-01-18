@@ -1892,7 +1892,139 @@ class Veo31TextToVideo(Veo31BaseNode):
         }
 
 
-class RunwayGen3AlphaTextToVideo(KieVideoBaseNode):
+class RunwayBaseNode(KieVideoBaseNode):
+    """Base class for Runway video generation nodes via Kie.ai.
+
+    kie, runway, gen-3, video generation, ai
+
+    Uses the dedicated Runway API endpoints:
+    - POST /api/v1/runway/generate for task submission
+    - GET /api/v1/runway/record-detail for polling
+    """
+
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def is_visible(cls) -> bool:
+        return cls is not RunwayBaseNode
+
+    def _get_headers(self, api_key: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+
+    async def _get_submit_payload(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        """Get the payload for Runway API - uses flat parameters, not nested input."""
+        return await self._get_input_params(context)
+
+    async def _submit_task(
+        self,
+        session: aiohttp.ClientSession,
+        api_key: str,
+        context: ProcessingContext | None = None,
+    ) -> dict[str, Any]:
+        """Submit a task using the dedicated Runway endpoint."""
+        url = f"{KIE_API_BASE_URL}/api/v1/runway/generate"
+        payload = await self._get_submit_payload(context)
+        headers = self._get_headers(api_key)
+        log.info(f"Submitting Runway task to {url} with payload: {payload}")
+        async with session.post(url, json=payload, headers=headers) as response:
+            response_data = await response.json()
+            if "code" in response_data:
+                self._check_response_status(response_data)
+
+            if response.status != 200:
+                raise ValueError(
+                    f"Failed to submit Runway task: {response.status} - {response_data}"
+                )
+            return response_data
+
+    def _is_task_complete(self, status_response: dict[str, Any]) -> bool:
+        """Check if Runway task is complete."""
+        state = status_response.get("data", {}).get("state", "")
+        return state == "success"
+
+    def _is_task_failed(self, status_response: dict[str, Any]) -> bool:
+        """Check if Runway task has failed."""
+        state = status_response.get("data", {}).get("state", "")
+        return state == "fail"
+
+    def _get_error_message(self, status_response: dict[str, Any]) -> str:
+        """Extract error message from Runway response."""
+        data = status_response.get("data", {})
+        return data.get("failMsg") or status_response.get("msg") or "Unknown error occurred"
+
+    async def _poll_status(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> dict[str, Any]:
+        """Poll for Runway task completion using dedicated endpoint."""
+        url = f"{KIE_API_BASE_URL}/api/v1/runway/record-detail?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        for attempt in range(self._max_poll_attempts):
+            log.debug(
+                f"Polling Runway task status (attempt {attempt + 1}/{self._max_poll_attempts})"
+            )
+            async with session.get(url, headers=headers) as response:
+                status_data = await response.json()
+                log.debug(f"Runway poll response: {status_data}")
+
+                if "code" in status_data:
+                    self._check_response_status(status_data)
+
+                if self._is_task_complete(status_data):
+                    log.debug("Runway task completed successfully")
+                    return status_data
+
+                if self._is_task_failed(status_data):
+                    error_msg = self._get_error_message(status_data)
+                    raise ValueError(f"Runway task failed: {error_msg}")
+
+            await asyncio.sleep(self._poll_interval)
+
+        raise TimeoutError(
+            f"Runway task did not complete within {self._max_poll_attempts * self._poll_interval} seconds"
+        )
+
+    async def _download_result(  # type: ignore[override]
+        self, session: aiohttp.ClientSession, api_key: str, status_data: dict[str, Any]
+    ) -> bytes:
+        """Download video from Runway result."""
+        if not self._is_task_complete(status_data):
+            raise ValueError("Runway task is not complete yet")
+
+        data = status_data.get("data", {})
+        video_info = data.get("videoInfo", {})
+        video_url = video_info.get("videoUrl")
+
+        if not video_url:
+            raise ValueError(f"No videoUrl in Runway response: {status_data}")
+
+        log.debug(f"Downloading Runway result from {video_url}")
+        async with session.get(video_url) as video_response:
+            if video_response.status != 200:
+                raise ValueError(f"Failed to download video from URL: {video_url}")
+            return await video_response.read()
+
+    async def _execute_task(self, context: ProcessingContext) -> tuple[bytes, str]:
+        """Execute the full Runway task workflow: submit, poll, download."""
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Runway task submitted with ID: {task_id}")
+
+            status_data = await self._poll_status(session, api_key, task_id)
+
+            return await self._download_result(session, api_key, status_data), task_id
+
+
+class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
     """Generate videos from text using Runway's Gen-3 Alpha model via Kie.ai.
 
     kie, runway, gen-3, gen3alpha, video generation, ai, text-to-video
@@ -1902,8 +2034,6 @@ class RunwayGen3AlphaTextToVideo(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
-    _poll_interval: float = 5.0
-    _max_poll_attempts: int = 180
 
     @classmethod
     def get_title(cls) -> str:
@@ -1975,7 +2105,7 @@ class RunwayGen3AlphaTextToVideo(KieVideoBaseNode):
         }
 
 
-class RunwayGen3AlphaImageToVideo(KieVideoBaseNode):
+class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
     """Generate videos from images using Runway's Gen-3 Alpha model via Kie.ai.
 
     kie, runway, gen-3, gen3alpha, video generation, ai, image-to-video
@@ -1985,8 +2115,6 @@ class RunwayGen3AlphaImageToVideo(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
-    _poll_interval: float = 5.0
-    _max_poll_attempts: int = 180
 
     @classmethod
     def get_title(cls) -> str:
@@ -2056,7 +2184,7 @@ class RunwayGen3AlphaImageToVideo(KieVideoBaseNode):
         return payload
 
 
-class RunwayGen3AlphaExtendVideo(KieVideoBaseNode):
+class RunwayGen3AlphaExtendVideo(RunwayBaseNode):
     """Extend videos using Runway's Gen-3 Alpha model via Kie.ai.
 
     kie, runway, gen-3, gen3alpha, video generation, ai, video-extension
@@ -2065,8 +2193,6 @@ class RunwayGen3AlphaExtendVideo(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
-    _poll_interval: float = 5.0
-    _max_poll_attempts: int = 180
 
     @classmethod
     def get_title(cls) -> str:
@@ -2131,7 +2257,7 @@ class RunwayGen3AlphaExtendVideo(KieVideoBaseNode):
         }
 
 
-class RunwayAlephVideo(KieVideoBaseNode):
+class RunwayAlephVideo(RunwayBaseNode):
     """Generate videos using Runway's Aleph model via Kie.ai.
 
     kie, runway, aleph, video generation, ai, text-to-video
@@ -2141,8 +2267,6 @@ class RunwayAlephVideo(KieVideoBaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
-    _poll_interval: float = 5.0
-    _max_poll_attempts: int = 180
 
     @classmethod
     def get_title(cls) -> str:
