@@ -1912,37 +1912,47 @@ class RunwayGen3AlphaTextToVideo(KieVideoBaseNode):
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
+        max_length=1800,
     )
 
     class AspectRatio(str, Enum):
-        RATIO_16_9 = "16:9"
-        RATIO_9_16 = "9:16"
-        RATIO_1_1 = "1:1"
-        RATIO_4_3 = "4:3"
-        RATIO_3_4 = "3:4"
+        V16_9 = "16:9"
+        V4_3 = "4:3"
+        V1_1 = "1:1"
+        V3_4 = "3:4"
+        V9_16 = "9:16"
 
     aspect_ratio: AspectRatio = Field(
-        default=AspectRatio.RATIO_16_9,
-        description="The aspect ratio of the generated video.",
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video. Required for text-to-video generation.",
     )
 
-    class Duration(str, Enum):
-        D5 = "5"
-        D10 = "10"
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
 
     duration: Duration = Field(
         default=Duration.D5,
-        description="Video duration in seconds.",
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
     )
 
-    class MotionBucket(str, Enum):
-        LOW = "127"
-        MEDIUM = "255"
-        HIGH = "384"
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
 
-    motion_bucket: MotionBucket = Field(
-        default=MotionBucket.MEDIUM,
-        description="Motion bucket ID for controlling motion intensity.",
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
     )
 
     def _get_model(self) -> str:
@@ -1953,11 +1963,15 @@ class RunwayGen3AlphaTextToVideo(KieVideoBaseNode):
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
         return {
             "prompt": self.prompt,
-            "aspect_ratio": self.aspect_ratio.value,
+            "aspectRatio": self.aspect_ratio.value,
             "duration": self.duration.value,
-            "motion_bucket_id": self.motion_bucket.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
         }
 
 
@@ -1978,33 +1992,43 @@ class RunwayGen3AlphaImageToVideo(KieVideoBaseNode):
     def get_title(cls) -> str:
         return "Runway Gen-3 Alpha Image To Video"
 
-    prompt: str = Field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text to guide the video generation.",
-    )
-
     image: ImageRef = Field(
         default=ImageRef(),
-        description="The source image to animate.",
+        description="Reference image to base the video on.",
     )
 
-    class Duration(str, Enum):
-        D5 = "5"
-        D10 = "10"
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text to guide the video generation. Maximum length is 1800 characters.",
+        max_length=1800,
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
 
     duration: Duration = Field(
         default=Duration.D5,
-        description="Video duration in seconds.",
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
     )
 
-    class MotionBucket(str, Enum):
-        LOW = "127"
-        MEDIUM = "255"
-        HIGH = "384"
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
 
-    motion_bucket: MotionBucket = Field(
-        default=MotionBucket.MEDIUM,
-        description="Motion bucket ID for controlling motion intensity.",
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
     )
 
     def _get_model(self) -> str:
@@ -2013,16 +2037,19 @@ class RunwayGen3AlphaImageToVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
-        if context is None:
-            raise ValueError("Context is required for image upload")
         if not self.image.is_set():
             raise ValueError("Image is required")
-
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
         image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
-            "image_url": image_url,
+            "imageUrl": image_url,
             "duration": self.duration.value,
-            "motion_bucket_id": self.motion_bucket.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
         }
         if self.prompt:
             payload["prompt"] = self.prompt
@@ -2045,33 +2072,43 @@ class RunwayGen3AlphaExtendVideo(KieVideoBaseNode):
     def get_title(cls) -> str:
         return "Runway Gen-3 Alpha Extend Video"
 
-    video: VideoRef = Field(
-        default=VideoRef(),
-        description="The source video to extend.",
+    video_url: str = Field(
+        default="",
+        description="The source video URL to extend.",
     )
 
     prompt: str = Field(
         default="Continue the motion naturally with smooth transitions.",
-        description="Text prompt to guide the video extension.",
+        description="Text prompt to guide the video extension. Maximum length is 1800 characters.",
+        max_length=1800,
     )
 
-    class Duration(str, Enum):
-        D5 = "5"
-        D10 = "10"
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
 
     duration: Duration = Field(
         default=Duration.D5,
-        description="Duration to extend the video by.",
+        description="Duration to extend the video by in seconds. If 10-second extension is selected, 1080p resolution cannot be used.",
     )
 
-    class MotionBucket(str, Enum):
-        LOW = "127"
-        MEDIUM = "255"
-        HIGH = "384"
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
 
-    motion_bucket: MotionBucket = Field(
-        default=MotionBucket.MEDIUM,
-        description="Motion bucket ID for controlling motion intensity.",
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second extension cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
     )
 
     def _get_model(self) -> str:
@@ -2080,17 +2117,17 @@ class RunwayGen3AlphaExtendVideo(KieVideoBaseNode):
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
-        if context is None:
-            raise ValueError("Context is required for video upload")
-        if not self.video.is_set():
-            raise ValueError("Video is required")
-
-        video_url = await self._upload_video(context, self.video)
+        if not self.video_url:
+            raise ValueError("video_url is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second extension cannot be generated with 1080p resolution")
         return {
-            "video_url": video_url,
+            "video_url": self.video_url,
             "prompt": self.prompt,
             "duration": self.duration.value,
-            "motion_bucket_id": self.motion_bucket.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
         }
 
 
@@ -2114,35 +2151,45 @@ class RunwayAlephVideo(KieVideoBaseNode):
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
+        max_length=1800,
     )
 
     class AspectRatio(str, Enum):
-        RATIO_16_9 = "16:9"
-        RATIO_9_16 = "9:16"
-        RATIO_1_1 = "1:1"
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
 
     aspect_ratio: AspectRatio = Field(
-        default=AspectRatio.RATIO_16_9,
-        description="The aspect ratio of the generated video.",
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video. Required for text-to-video generation.",
     )
 
-    class Duration(str, Enum):
-        D5 = "5"
-        D10 = "10"
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
 
     duration: Duration = Field(
         default=Duration.D5,
-        description="Video duration in seconds.",
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
     )
 
-    class MotionBucket(str, Enum):
-        LOW = "127"
-        MEDIUM = "255"
-        HIGH = "384"
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
 
-    motion_bucket: MotionBucket = Field(
-        default=MotionBucket.MEDIUM,
-        description="Motion bucket ID for controlling motion intensity.",
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
     )
 
     def _get_model(self) -> str:
@@ -2153,11 +2200,15 @@ class RunwayAlephVideo(KieVideoBaseNode):
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
         return {
             "prompt": self.prompt,
-            "aspect_ratio": self.aspect_ratio.value,
+            "aspectRatio": self.aspect_ratio.value,
             "duration": self.duration.value,
-            "motion_bucket_id": self.motion_bucket.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
         }
 
 
