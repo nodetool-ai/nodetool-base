@@ -3572,7 +3572,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 42055,
+          "downloads": 41640,
           "likes": 119
         },
         {
@@ -3623,7 +3623,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 18630,
           "likes": 48
         },
         {
@@ -3674,7 +3674,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 14098,
+          "downloads": 13100,
           "likes": 30
         },
         {
@@ -3694,7 +3694,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1492,
+          "downloads": 1410,
           "likes": 27
         },
         {
@@ -3720,7 +3720,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4351,
+          "downloads": 4191,
           "likes": 7
         },
         {
@@ -3741,7 +3741,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 38453,
+          "downloads": 37502,
           "likes": 12
         },
         {
@@ -3760,7 +3760,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 945,
+          "downloads": 914,
           "likes": 19
         },
         {
@@ -3811,7 +3811,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2086,
+          "downloads": 2109,
           "likes": 23
         }
       ],
@@ -4025,7 +4025,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 18630,
           "likes": 48
         }
       ],
@@ -4254,7 +4254,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 18630,
           "likes": 48
         }
       ],
@@ -4384,7 +4384,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 42055,
+          "downloads": 41640,
           "likes": 119
         },
         {
@@ -4435,7 +4435,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 14098,
+          "downloads": 13100,
           "likes": 30
         }
       ],
@@ -4638,7 +4638,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 18630,
           "likes": 48
         }
       ],
@@ -39054,6 +39054,11 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Pokemon Maker.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Data Generator.jpg",
       "path": ""
     },
@@ -39351,12 +39356,13 @@
       ]
     },
     {
-      "id": "09eedfbaa30511f0a0840000727222e1",
+      "id": "",
       "name": "Movie Posters",
       "description": "Create cinematic movie posters using AI image generation",
       "tags": [
         "start",
-        "image"
+        "image",
+        "example"
       ]
     },
     {
@@ -39455,6 +39461,14 @@
       "description": "This workflow automatically fetches and downloads research papers from the Awesome Transformers GitHub repository. It extracts paper links from the README.md file, filters for actual papers, and downloads them to a specified folder. Ideal for researchers and AI enthusiasts who want to stay updated with the latest transformer model papers.",
       "tags": [
         "automation"
+      ]
+    },
+    {
+      "id": "",
+      "name": "Pokemon Maker",
+      "description": "",
+      "tags": [
+        "example"
       ]
     },
     {
