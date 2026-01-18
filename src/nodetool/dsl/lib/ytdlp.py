@@ -18,52 +18,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ytdlp
 from nodetool.workflows.base_node import BaseNode
 
-
 class YtDlpDownload(GraphNode[nodetool.nodes.lib.ytdlp.YtDlpDownload.OutputType]):
     """
 
-    Download media from URLs using yt-dlp.
-    download, video, audio, youtube, media, yt-dlp, metadata, subtitles
+        Download media from URLs using yt-dlp.
+        download, video, audio, youtube, media, yt-dlp, metadata, subtitles
 
-    Use cases:
-    - Download videos from YouTube and other platforms
-    - Extract audio from video URLs
-    - Retrieve video/audio metadata without downloading
-    - Download subtitles and thumbnails
+        Use cases:
+        - Download videos from YouTube and other platforms
+        - Extract audio from video URLs
+        - Retrieve video/audio metadata without downloading
+        - Download subtitles and thumbnails
     """
 
     DownloadMode: typing.ClassVar[type] = nodetool.nodes.lib.ytdlp.DownloadMode
 
-    url: str | OutputHandle[str] = connect_field(
-        default="", description="URL of the media to download"
-    )
-    mode: nodetool.nodes.lib.ytdlp.DownloadMode = Field(
-        default=nodetool.nodes.lib.ytdlp.DownloadMode.VIDEO,
-        description="Download mode: video, audio, or metadata only",
-    )
-    format_selector: str | OutputHandle[str] = connect_field(
-        default="best",
-        description="yt-dlp format selector (e.g., 'best', 'bestvideo+bestaudio')",
-    )
-    container: str | OutputHandle[str] = connect_field(
-        default="auto",
-        description="Output container format (e.g., 'mp4', 'webm', 'auto')",
-    )
-    subtitles: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Download subtitles if available"
-    )
-    thumbnail: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Download thumbnail if available"
-    )
-    overwrite: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Overwrite existing files"
-    )
-    rate_limit_kbps: int | OutputHandle[int] = connect_field(
-        default=0, description="Rate limit in KB/s (0 = unlimited)"
-    )
-    timeout: int | OutputHandle[int] = connect_field(
-        default=600, description="Timeout in seconds"
-    )
+    url: str | OutputHandle[str] = connect_field(default='', description='URL of the media to download')
+    mode: nodetool.nodes.lib.ytdlp.DownloadMode = Field(default=nodetool.nodes.lib.ytdlp.DownloadMode.VIDEO, description='Download mode: video, audio, or metadata only')
+    format_selector: str | OutputHandle[str] = connect_field(default='best', description="yt-dlp format selector (e.g., 'best', 'bestvideo+bestaudio')")
+    container: str | OutputHandle[str] = connect_field(default='auto', description="Output container format (e.g., 'mp4', 'webm', 'auto')")
+    subtitles: bool | OutputHandle[bool] = connect_field(default=False, description='Download subtitles if available')
+    thumbnail: bool | OutputHandle[bool] = connect_field(default=False, description='Download thumbnail if available')
+    overwrite: bool | OutputHandle[bool] = connect_field(default=False, description='Overwrite existing files')
+    rate_limit_kbps: int | OutputHandle[int] = connect_field(default=0, description='Rate limit in KB/s (0 = unlimited)')
+    timeout: int | OutputHandle[int] = connect_field(default=600, description='Timeout in seconds')
 
     @property
     def out(self) -> "YtDlpDownloadOutputs":
@@ -77,26 +55,25 @@ class YtDlpDownload(GraphNode[nodetool.nodes.lib.ytdlp.YtDlpDownload.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class YtDlpDownloadOutputs(OutputsProxy):
     @property
     def video(self) -> OutputHandle[types.VideoRef]:
-        return typing.cast(OutputHandle[types.VideoRef], self["video"])
+        return typing.cast(OutputHandle[types.VideoRef], self['video'])
 
     @property
     def audio(self) -> OutputHandle[types.AudioRef]:
-        return typing.cast(OutputHandle[types.AudioRef], self["audio"])
+        return typing.cast(OutputHandle[types.AudioRef], self['audio'])
 
     @property
     def metadata(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["metadata"])
+        return typing.cast(OutputHandle[dict], self['metadata'])
 
     @property
     def subtitles(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["subtitles"])
+        return typing.cast(OutputHandle[str], self['subtitles'])
 
     @property
     def thumbnail(self) -> OutputHandle[nodetool.metadata.types.ImageRef]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.ImageRef], self["thumbnail"]
-        )
+        return typing.cast(OutputHandle[nodetool.metadata.types.ImageRef], self['thumbnail'])
+
+

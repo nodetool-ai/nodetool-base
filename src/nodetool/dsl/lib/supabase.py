@@ -18,22 +18,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
 from nodetool.workflows.base_node import BaseNode
 
-
 class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Delete records from a Supabase table.
-    supabase, database, delete, remove
+        Delete records from a Supabase table.
+        supabase, database, delete, remove
     """
 
-    table_name: str | OutputHandle[str] = connect_field(
-        default="", description="Table to delete from"
-    )
-    filters: (
-        list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
-    ) = connect_field(
-        default=[], description="Filters to select rows to delete (required for safety)"
-    )
+    table_name: str | OutputHandle[str] = connect_field(default='', description='Table to delete from')
+    filters: list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]] = connect_field(default=[], description='Filters to select rows to delete (required for safety)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,25 +43,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
 from nodetool.workflows.base_node import BaseNode
 
-
 class Insert(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Insert record(s) into a Supabase table.
-    supabase, database, insert, add, record
+        Insert record(s) into a Supabase table.
+        supabase, database, insert, add, record
     """
 
-    table_name: str | OutputHandle[str] = connect_field(
-        default="", description="Table to insert into"
-    )
-    records: (
-        list[dict[str, typing.Any]]
-        | dict[str, typing.Any]
-        | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]]
-    ) = connect_field(default=[], description="One or multiple rows to insert")
-    return_rows: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Return inserted rows (uses select('*'))"
-    )
+    table_name: str | OutputHandle[str] = connect_field(default='', description='Table to insert into')
+    records: list[dict[str, typing.Any]] | dict[str, typing.Any] | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]] = connect_field(default=[], description='One or multiple rows to insert')
+    return_rows: bool | OutputHandle[bool] = connect_field(default=True, description="Return inserted rows (uses select('*'))")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -85,23 +69,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
 from nodetool.workflows.base_node import BaseNode
 
-
 class RPC(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Call a PostgreSQL function via Supabase RPC.
-    supabase, database, rpc, function
+        Call a PostgreSQL function via Supabase RPC.
+        supabase, database, rpc, function
     """
 
-    function: str | OutputHandle[str] = connect_field(
-        default="", description="RPC function name"
-    )
-    params: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description="Function params"
-    )
-    to_dataframe: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Return DataframeRef if result is a list of records"
-    )
+    function: str | OutputHandle[str] = connect_field(default='', description='RPC function name')
+    params: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description='Function params')
+    to_dataframe: bool | OutputHandle[bool] = connect_field(default=False, description='Return DataframeRef if result is a list of records')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -118,36 +95,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
 from nodetool.workflows.base_node import BaseNode
 
-
 class Select(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Query records from a Supabase table.
-    supabase, database, query, select
+        Query records from a Supabase table.
+        supabase, database, query, select
     """
 
-    table_name: str | OutputHandle[str] = connect_field(
-        default="", description="Table to query"
-    )
-    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
-        default=types.RecordType(type="record_type", columns=[]),
-        description="Columns to select",
-    )
-    filters: (
-        list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
-    ) = connect_field(default=[], description="List of typed filters to apply")
-    order_by: str | OutputHandle[str] = connect_field(
-        default="", description="Column to order by"
-    )
-    descending: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Order direction"
-    )
-    limit: int | OutputHandle[int] = connect_field(
-        default=0, description="Max rows to return (0 = no limit)"
-    )
-    to_dataframe: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Return a DataframeRef instead of list of dicts"
-    )
+    table_name: str | OutputHandle[str] = connect_field(default='', description='Table to query')
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(default=types.RecordType(type='record_type', columns=[]), description='Columns to select')
+    filters: list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]] = connect_field(default=[], description='List of typed filters to apply')
+    order_by: str | OutputHandle[str] = connect_field(default='', description='Column to order by')
+    descending: bool | OutputHandle[bool] = connect_field(default=False, description='Order direction')
+    limit: int | OutputHandle[int] = connect_field(default=0, description='Max rows to return (0 = no limit)')
+    to_dataframe: bool | OutputHandle[bool] = connect_field(default=False, description='Return a DataframeRef instead of list of dicts')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -164,26 +125,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
 from nodetool.workflows.base_node import BaseNode
 
-
 class Update(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Update records in a Supabase table.
-    supabase, database, update, modify, change
+        Update records in a Supabase table.
+        supabase, database, update, modify, change
     """
 
-    table_name: str | OutputHandle[str] = connect_field(
-        default="", description="Table to update"
-    )
-    values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description="New values"
-    )
-    filters: (
-        list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]]
-    ) = connect_field(default=[], description="Filters to select rows to update")
-    return_rows: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Return updated rows (uses select('*'))"
-    )
+    table_name: str | OutputHandle[str] = connect_field(default='', description='Table to update')
+    values: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description='New values')
+    filters: list[tuple[str, FilterOp, Any]] | OutputHandle[list[tuple[str, FilterOp, Any]]] = connect_field(default=[], description='Filters to select rows to update')
+    return_rows: bool | OutputHandle[bool] = connect_field(default=True, description="Return updated rows (uses select('*'))")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -200,25 +152,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.supabase
 from nodetool.workflows.base_node import BaseNode
 
-
 class Upsert(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Insert or update (upsert) records in a Supabase table.
-    supabase, database, upsert, merge
+        Insert or update (upsert) records in a Supabase table.
+        supabase, database, upsert, merge
     """
 
-    table_name: str | OutputHandle[str] = connect_field(
-        default="", description="Table to upsert into"
-    )
-    records: (
-        list[dict[str, typing.Any]]
-        | dict[str, typing.Any]
-        | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]]
-    ) = connect_field(default=[], description="One or multiple rows to upsert")
-    return_rows: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Return upserted rows (uses select('*'))"
-    )
+    table_name: str | OutputHandle[str] = connect_field(default='', description='Table to upsert into')
+    records: list[dict[str, typing.Any]] | dict[str, typing.Any] | OutputHandle[list[dict[str, typing.Any]] | dict[str, typing.Any]] = connect_field(default=[], description='One or multiple rows to upsert')
+    return_rows: bool | OutputHandle[bool] = connect_field(default=True, description="Return upserted rows (uses select('*'))")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -227,3 +170,5 @@ class Upsert(SingleOutputGraphNode[Any], GraphNode[Any]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

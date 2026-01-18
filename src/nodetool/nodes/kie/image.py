@@ -3,6 +3,7 @@
 This module provides nodes for generating images using Kie.ai's various APIs:
 - 4O Image API (GPT-4o powered image generation)
 - Seedream 4.5 (ByteDance's image generation model)
+- Seedream (ByteDance's 3.0 image generation model)
 - Z-Image Turbo (Alibaba's photorealistic image generation)
 - Nano Banana (Google Gemini 2.5 image model)
 - Nano Banana Pro (Google Gemini 3.0 image model)
@@ -10,6 +11,7 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 - Flux Pro (Black Forest Labs text-to-image)
 - Topaz Image Upscaler (AI image upscaling and enhancement)
 - Grok Imagine (xAI multimodal image generation)
+- Ideogram V3 (Design-focused text-to-image with typography)
 """
 
 import asyncio
@@ -2089,6 +2091,193 @@ class NanoBananaEdit(KieBaseNode):
             "output_format": "png",
             "image_size": self.image_size.value,
         }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramV3TextToImage(KieBaseNode):
+    """Generate images using Ideogram's V3 Text-to-Image model via Kie.ai.
+
+    kie, ideogram, v3, image generation, ai, text-to-image, design
+
+    Ideogram V3 generates high-quality images from text prompts with
+    excellent design and typography capabilities.
+
+    Use cases:
+    - Generate images with embedded text
+    - Create professional designs and graphics
+    - Generate artistic images with typography
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram V3 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference: TURBO (fastest), BALANCED, QUALITY (slowest).",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        GENERAL = "GENERAL"
+        REALISTIC = "REALISTIC"
+        DESIGN = "DESIGN"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style: AUTO, GENERAL, REALISTIC, or DESIGN.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to use MagicPrompt to enhance the prompt.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The resolution/aspect ratio of the generated image.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Description of what to exclude from the image.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/v3-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "image_size": self.image_size.value,
+        }
+        if self.seed > 0:
+            params["seed"] = self.seed
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class ByteDanceSeedream(KieBaseNode):
+    """Generate images using ByteDance's Seedream model via Kie.ai.
+
+    kie, seedream, bytedance, image generation, ai, text-to-image, 3d, 2d
+
+    Seedream generates high-quality images with support for both 2D and 3D styles.
+    It excels at creating artistic illustrations, designs, and visual content.
+
+    Use cases:
+    - Generate 2D flat art illustrations
+    - Create 3D style images
+    - Design posters and marketing materials
+    - Generate artistic content in various styles
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "ByteDance Seedream"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The resolution/aspect ratio of the generated image.",
+    )
+
+    guidance_scale: float = Field(
+        default=2.5,
+        description="Controls how closely the output aligns with the prompt. Range: 1-10.",
+        ge=1.0,
+        le=10.0,
+    )
+
+    seed: int = Field(
+        default=0,
+        description="Random seed for reproducible results. Use 0 for random.",
+    )
+
+    enable_safety_checker: bool = Field(
+        default=True,
+        description="Whether to enable safety checking on generated images.",
+    )
+
+    def _get_model(self) -> str:
+        return "bytedance/seedream"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_size": self.image_size.value,
+            "guidance_scale": self.guidance_scale,
+            "enable_safety_checker": self.enable_safety_checker,
+        }
+        if self.seed > 0:
+            params["seed"] = self.seed
+        return params
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
