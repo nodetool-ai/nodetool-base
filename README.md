@@ -40,7 +40,7 @@ Detailed documentation for each node group lives in the [`docs/`](docs) folder. 
 - **kie** - Advanced media generation via Kie.ai (Suno music, Grok/Hailuo/Kling video)
 - **openai** - OpenAI models for chat, agents, audio transcription, and image generation
 
-### Core Node Types (nodetool.*)
+### Core Node Types (nodetool.* - 21 modules)
 - **agents** - Agent-based workflows and orchestration
 - **audio** - Audio processing and manipulation
 - **boolean** - Logical operators and comparisons
@@ -63,7 +63,7 @@ Detailed documentation for each node group lives in the [`docs/`](docs) folder. 
 - **video** - Video processing and editing
 - **workspace** - Workspace management
 
-### Utility Libraries (lib.*)
+### Utility Libraries (lib.* - 28 modules)
 - **beautifulsoup** - HTML/XML parsing
 - **browser** - Web browser automation
 - **date** - Date and time utilities
