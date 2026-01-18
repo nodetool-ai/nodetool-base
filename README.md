@@ -6,12 +6,15 @@ A collection of reusable nodes for [Nodetool](https://github.com/nodetool-ai/nod
 
 Nodetool lets you compose AI workflows as graphs. `nodetool-base` ships with a rich set of nodes so you can build useful flows out of the box. The nodes are organised into several namespaces under `src/nodetool/nodes`:
 
-- `calendly` – access to Calendly events
-- `chroma` – Chroma vector database operations
-- `google` – Google image generation
-- `lib` – helpers using libraries like BeautifulSoup, LlamaIndex or PyMuPDF
+- `anthropic` – Claude AI integration for chat and agent interactions
+- `gemini` – Google Gemini models for text, audio, images and video generation
+- `kie` – Kie.ai integrations for advanced media generation (Suno, Grok, Hailuo, Kling)
+- `lib` – helpers using libraries like BeautifulSoup, PyMuPDF, NumPy, Pillow and more
+- `messaging` – Discord and Telegram messaging integrations
 - `nodetool` – core utilities such as audio, boolean logic, image processing and more
-- `openai` – wrappers around OpenAI APIs
+- `openai` – OpenAI API wrappers for chat, agents, audio and image generation
+- `search` – Google search integration
+- `vector` – vector database operations (Chroma, FAISS)
 
 Example workflows using these nodes can be found in `src/nodetool/examples/nodetool-base`.
 
@@ -31,25 +34,74 @@ Detailed documentation for each node group lives in the [`docs/`](docs) folder. 
 
 ## Available Nodes
 
-- **[lib.audio](nodetool_audio.md)** - Save audio files to the assets directory.
-- **[nodetool.boolean](nodetool_boolean.md)** - Logical operators, comparisons and flow control helpers.
-- **[nodetool.code](nodetool_code.md)** - Evaluate expressions or run small Python snippets (development use).
-- **[nodetool.constant](nodetool_constant.md)** - Provide constant values like numbers, strings and images.
-- **[nodetool.control](nodetool_control.md)** - Basic branching with an if node.
-- **[nodetool.date](nodetool_date.md)** - Utilities for manipulating dates and times.
-- **[nodetool.dictionary](nodetool_dictionary.md)** - Manipulate key/value data and dictionaries.
-- **[nodetool.group](nodetool_group.md)** - Group operations such as looping over inputs.
-- **[nodetool.image](nodetool_image.md)** - Image manipulation including crop, resize and save.
-- **[nodetool.input](nodetool_input.md)** - Nodes for collecting user input of various types.
-- **[nodetool.json](nodetool_json.md)** - Parse, query and validate JSON data.
-- **[nodetool.list](nodetool_list.md)** - List processing utilities.
-- **[nodetool.math](nodetool_math.md)** - Basic arithmetic and math functions.
-- **[nodetool.os](nodetool_os.md)** - File system and path helpers.
-- **[nodetool.output](nodetool_output.md)** - Output nodes to return results to the user.
-- **[nodetool.text](nodetool_text.md)** - Text processing nodes with regex and templating.
-- **[nodetool.video](nodetool_video.md)** - Video editing and generation tools.
+### AI & LLM Integrations
+- **anthropic** - Claude AI models for chat, agents, and multimodal interactions
+- **gemini** - Google Gemini for text-to-speech, image/video generation, and grounded search
+- **kie** - Advanced media generation via Kie.ai (Suno music, Grok/Hailuo/Kling video)
+- **openai** - OpenAI models for chat, agents, audio transcription, and image generation
 
-Refer to the individual markdown files for usage details and examples of each node.
+### Core Node Types (nodetool.*)
+- **agents** - Agent-based workflows and orchestration
+- **audio** - Audio processing and manipulation
+- **boolean** - Logical operators and comparisons
+- **code** - Execute Python code snippets
+- **compare** - Comparison operations
+- **constant** - Constant value providers
+- **control** - Flow control (if/else, branching)
+- **data** - Data manipulation utilities
+- **dictionary** - Dictionary/key-value operations
+- **document** - Document processing
+- **generators** - Data and content generation
+- **image** - Image manipulation and processing
+- **input** - User input collection nodes
+- **list** - List processing utilities
+- **model3d** - 3D model operations
+- **numbers** - Numeric operations and math
+- **output** - Output nodes for results
+- **text** - Text processing and manipulation
+- **triggers** - Event triggers
+- **video** - Video processing and editing
+- **workspace** - Workspace management
+
+### Utility Libraries (lib.*)
+- **beautifulsoup** - HTML/XML parsing
+- **browser** - Web browser automation
+- **date** - Date and time utilities
+- **docx** - Word document processing
+- **excel** - Excel file operations
+- **grid** - Grid/table operations
+- **http** - HTTP requests and APIs
+- **json** - JSON parsing and manipulation
+- **mail** - Email operations
+- **markdown** - Markdown processing
+- **markitdown** - Document to markdown conversion
+- **math** - Mathematical operations
+- **numpy** - NumPy array operations
+- **ocr** - Optical character recognition
+- **os** - File system and OS operations
+- **pandoc** - Document format conversion
+- **pdfplumber** - PDF text extraction
+- **pillow** - Advanced image processing
+- **pymupdf** - PDF manipulation
+- **rss** - RSS feed parsing
+- **seaborn** - Data visualization
+- **secret** - Secret/credential management
+- **sqlite** - SQLite database operations
+- **supabase** - Supabase database integration
+- **svg** - SVG graphics processing
+- **text_utils** - Text utility functions
+- **uuid** - UUID generation
+- **ytdlp** - YouTube video download
+
+### Messaging & Communication
+- **discord** - Discord bot integration
+- **telegram** - Telegram bot integration
+
+### Search & Vector Databases
+- **search** - Google search integration
+- **vector** - Vector databases (Chroma, FAISS)
+
+For detailed documentation on each node, see [`docs/index.md`](docs/index.md).
 
 ## Running tests
 
