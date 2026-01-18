@@ -14,6 +14,17 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-18 - OpenAI GPT-Image-1 Models
+
+- **Model IDs:**
+  - `openai/gpt-image-1` (for both text-to-image and image-to-image)
+
+- **Category:** image
+
+- **Description:** Added support for OpenAI's GPT-Image-1 model (also known as 4o Image API) via Kie.ai. This includes both text-to-image generation and image-to-image transformation capabilities. GPT-Image-1 offers accurate prompt following, flexible style control, clear text rendering, and diverse artistic styles.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
