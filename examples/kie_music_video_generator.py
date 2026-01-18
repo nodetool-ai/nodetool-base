@@ -26,7 +26,6 @@ from nodetool.dsl.nodetool.input import StringInput, IntegerInput
 from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.agents import Agent
-from nodetool.dsl.nodetool.generators import ListGenerator
 from nodetool.dsl.nodetool.video import AddAudio
 from nodetool.dsl.kie.image import (
     Imagen4,

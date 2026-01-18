@@ -43,8 +43,8 @@ def build_social_media_video_ad():
     This function builds a workflow graph that:
     1. Accepts product/service description and ad copy
     2. Generates a hero image using Imagen 4 Fast
-    3. Transforms the image into a video clip with Kling 2.6
-    4. Creates voice-over narration with ElevenLabs
+    3. Transforms the image into a video clip with Kling
+    4. Adds background music with Suno
     5. Combines everything into a final video ad
 
     Returns:
@@ -95,7 +95,7 @@ def build_social_media_video_ad():
         upscale_factor=TopazImageUpscale.UpscaleFactor.X2,
     )
 
-    # --- Animate Image to Video with Kling 2.6 ---
+    # --- Animate Image to Video with Kling ---
     animated_video = KlingImageToVideo(
         prompt=f"Cinematic product reveal, {product_name.output} floating with "
         "subtle rotation, water droplets gently falling, soft bokeh background, "
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     print("Kie Models Used:")
     print("  - Imagen 4 Fast (Google) - Hero image generation")
     print("  - Topaz Image Upscale - Image enhancement")
-    print("  - Kling 2.6 Image-to-Video - Animation")
+    print("  - Kling Image-to-Video - Animation")
     print("  - Kling 2.5 Turbo Text-to-Video - Alternative")
     print("  - Suno - Background music generation")
     print()
