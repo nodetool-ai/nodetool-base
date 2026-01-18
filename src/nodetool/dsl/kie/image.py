@@ -310,6 +310,65 @@ import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
 
+class GPT4oImageGeneration(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+        kie, openai, gpt-4o, gpt4o, image generation, ai, text-to-image, multimodal
+
+        GPT-4o Image generates high-quality images from text descriptions with
+        strong text rendering capabilities and photorealistic output.
+
+        Use cases:
+        - Generate photorealistic images from text descriptions
+        - Create images with accurate text rendering
+        - Produce high-quality visual content with multimodal capabilities
+    """
+
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPT4oImageGeneration.ImageSize
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPT4oImageGeneration.Quality
+    )
+    Background: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPT4oImageGeneration.Background
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    image_size: nodetool.nodes.kie.image.GPT4oImageGeneration.ImageSize = Field(
+        default=nodetool.nodes.kie.image.GPT4oImageGeneration.ImageSize.SQUARE,
+        description="The size of the generated image.",
+    )
+    quality: nodetool.nodes.kie.image.GPT4oImageGeneration.Quality = Field(
+        default=nodetool.nodes.kie.image.GPT4oImageGeneration.Quality.HIGH,
+        description="The quality of the generated image.",
+    )
+    background: nodetool.nodes.kie.image.GPT4oImageGeneration.Background = Field(
+        default=nodetool.nodes.kie.image.GPT4oImageGeneration.Background.AUTO,
+        description="The background setting for the generated image.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPT4oImageGeneration
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
 class GrokImagineTextToImage(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):

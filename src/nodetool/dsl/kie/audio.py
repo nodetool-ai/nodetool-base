@@ -19,6 +19,73 @@ import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
 
+class ElevenLabsTextToSpeech(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Generate speech using ElevenLabs AI via Kie.ai.
+
+        kie, elevenlabs, tts, text-to-speech, voice, audio, ai, speech synthesis
+
+        Creates natural-sounding speech from text using ElevenLabs' voice models.
+        Supports multiple voices, stability controls, and multilingual output.
+
+        Use cases:
+        - Generate voiceovers for videos and podcasts
+        - Create audiobooks and narrated content
+        - Produce natural-sounding speech for applications
+        - Generate speech in multiple languages and voices
+    """
+
+    Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model
+
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="The text to convert to speech."
+    )
+    voice: str | OutputHandle[str] = connect_field(
+        default="Rachel",
+        description="The voice ID to use for synthesis. Common voices: Rachel, Adam, Bella, Antoni.",
+    )
+    stability: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="Stability of the voice output. Lower values are more expressive, higher values are more consistent.",
+    )
+    similarity_boost: float | OutputHandle[float] = connect_field(
+        default=0.75,
+        description="How closely to clone the voice characteristics. Higher values match the voice more closely.",
+    )
+    style: float | OutputHandle[float] = connect_field(
+        default=0.0,
+        description="Style parameter for voice expression. Range 0.0 to 1.0.",
+    )
+    speed: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Speed of the speech. Range 0.5 to 1.5."
+    )
+    language_code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Language code for multilingual TTS (e.g., 'en', 'es', 'fr', 'de'). Leave empty for auto-detection.",
+    )
+    model: nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model = Field(
+        default=nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model.TURBO_2_5,
+        description="ElevenLabs model version to use.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsTextToSpeech
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
 class Suno(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Generate music using Suno AI via Kie.ai.

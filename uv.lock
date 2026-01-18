@@ -3837,7 +3837,7 @@ wheels = [
 
 [[package]]
 name = "nodetool-base"
-version = "0.6.2rc24"
+version = "0.6.2rc26"
 source = { editable = "." }
 dependencies = [
     { name = "browser-use" },
@@ -3885,7 +3885,7 @@ requires-dist = [
     { name = "langchain-openai" },
     { name = "moto", marker = "extra == 'dev'", specifier = ">=5.0.3" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.9.0" },
-    { name = "nodetool-core", specifier = "==0.6.2rc24" },
+    { name = "nodetool-core", specifier = "==0.6.2rc26" },
     { name = "plyer", specifier = "==2.1.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.5" },
@@ -3901,7 +3901,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "nodetool-core"
-version = "0.6.2rc24"
+version = "0.6.2rc26"
 source = { registry = "https://nodetool-ai.github.io/nodetool-registry/simple/" }
 dependencies = [
     { name = "aioconsole" },
@@ -3910,6 +3910,7 @@ dependencies = [
     { name = "aiosqlite" },
     { name = "annotated-types" },
     { name = "anthropic" },
+    { name = "attrs" },
     { name = "authlib" },
     { name = "boto3" },
     { name = "bs4" },
@@ -4006,7 +4007,7 @@ dependencies = [
     { name = "websockets" },
 ]
 wheels = [
-    { url = "https://github.com/nodetool-ai/nodetool-core/releases/download/v0.6.2-rc.24/nodetool_core-0.6.2rc24-py3-none-any.whl" },
+    { url = "https://github.com/nodetool-ai/nodetool-core/releases/download/v0.6.2-rc.26/nodetool_core-0.6.2rc26-py3-none-any.whl" },
 ]
 
 [[package]]

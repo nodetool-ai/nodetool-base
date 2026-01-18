@@ -2095,3 +2095,82 @@ class NanoBananaEdit(KieBaseNode):
         return await context.image_from_bytes(
             image_bytes, metadata={"task_id": task_id}
         )
+
+
+class GPT4oImageGeneration(KieBaseNode):
+    """Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, openai, gpt-4o, gpt4o, image generation, ai, text-to-image, multimodal
+
+    GPT-4o Image generates high-quality images from text descriptions with
+    strong text rendering capabilities and photorealistic output.
+
+    Use cases:
+    - Generate photorealistic images from text descriptions
+    - Create images with accurate text rendering
+    - Produce high-quality visual content with multimodal capabilities
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT-4o Image Generation"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "1024x1024"
+        LANDSCAPE = "1536x1024"
+        PORTRAIT = "1024x1536"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE,
+        description="The size of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.HIGH,
+        description="The quality of the generated image.",
+    )
+
+    class Background(str, Enum):
+        AUTO = "auto"
+        TRANSPARENT = "transparent"
+        OPAQUE = "opaque"
+
+    background: Background = Field(
+        default=Background.AUTO,
+        description="The background setting for the generated image.",
+    )
+
+    def _get_model(self) -> str:
+        return "openai/4o-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "size": self.image_size.value,
+            "quality": self.quality.value,
+            "background": self.background.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
