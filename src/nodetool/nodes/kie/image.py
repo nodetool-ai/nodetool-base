@@ -2095,3 +2095,174 @@ class NanoBananaEdit(KieBaseNode):
         return await context.image_from_bytes(
             image_bytes, metadata={"task_id": task_id}
         )
+
+
+class GPTImage1TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT-Image-1 model (4o Image) via Kie.ai.
+
+    kie, openai, gpt-image, gpt-image-1, 4o-image, image generation, ai, text-to-image
+
+    GPT-Image-1 is OpenAI's latest image generation model behind ChatGPT-4o.
+    It delivers accurate prompt following, flexible style control, and clear text rendering.
+
+    Use cases:
+    - Generate high-quality images from text descriptions
+    - Create images with accurate text rendering
+    - Produce diverse artistic styles
+    - Design product mockups and marketing visuals
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 90
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_1_1 = "1:1"
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_4_3 = "4:3"
+        RATIO_3_4 = "3:4"
+        RATIO_3_2 = "3:2"
+        RATIO_2_3 = "2:3"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_1_1,
+        description="The aspect ratio of the generated image.",
+    )
+
+    enhance_prompt: bool = Field(
+        default=False,
+        description="Enable prompt enhancement for better results.",
+    )
+
+    enable_fallback: bool = Field(
+        default=False,
+        description="Enable fallback to alternative model if generation fails.",
+    )
+
+    fallback_model: str = Field(
+        default="FLUX_MAX",
+        description="Fallback model to use if enable_fallback is true.",
+    )
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT-Image-1 Text To Image"
+
+    def _get_model(self) -> str:
+        return "openai/gpt-image-1"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "size": self.aspect_ratio.value,
+            "isEnhance": self.enhance_prompt,
+            "enableFallback": self.enable_fallback,
+            "fallbackModel": self.fallback_model,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage1ImageToImage(KieBaseNode):
+    """Generate images from images using OpenAI's GPT-Image-1 model (4o Image) via Kie.ai.
+
+    kie, openai, gpt-image, gpt-image-1, 4o-image, image generation, ai, image-to-image, editing
+
+    GPT-Image-1 supports image-to-image workflows for editing and variations.
+
+    Use cases:
+    - Edit and transform existing images
+    - Create image variations
+    - Apply styles to photos
+    - Enhance and modify images with text guidance
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 90
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_1_1 = "1:1"
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_4_3 = "4:3"
+        RATIO_3_4 = "3:4"
+        RATIO_3_2 = "3:2"
+        RATIO_2_3 = "2:3"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_1_1,
+        description="The aspect ratio of the output image.",
+    )
+
+    enhance_prompt: bool = Field(
+        default=False,
+        description="Enable prompt enhancement for better results.",
+    )
+
+    enable_fallback: bool = Field(
+        default=False,
+        description="Enable fallback to alternative model if generation fails.",
+    )
+
+    fallback_model: str = Field(
+        default="FLUX_MAX",
+        description="Fallback model to use if enable_fallback is true.",
+    )
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT-Image-1 Image To Image"
+
+    def _get_model(self) -> str:
+        return "openai/gpt-image-1"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        input_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "filesUrl": [input_url],
+            "size": self.aspect_ratio.value,
+            "isEnhance": self.enhance_prompt,
+            "enableFallback": self.enable_fallback,
+            "fallbackModel": self.fallback_model,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
