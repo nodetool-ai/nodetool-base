@@ -18,31 +18,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractMarkdown(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Convert PDF to Markdown format using pymupdf4llm.
-    pdf, markdown, convert
+        Convert PDF to Markdown format using pymupdf4llm.
+        pdf, markdown, convert
 
-    Use cases:
-    - Convert PDF documents to markdown format
-    - Preserve document structure in markdown
-    - Create editable markdown from PDFs
+        Use cases:
+        - Convert PDF documents to markdown format
+        - Preserve document structure in markdown
+        - Create editable markdown from PDFs
     """
 
-    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The PDF document to convert to markdown",
-    )
-    start_page: int | OutputHandle[int] = connect_field(
-        default=0, description="First page to extract (0-based index)"
-    )
-    end_page: int | OutputHandle[int] = connect_field(
-        default=-1, description="Last page to extract (-1 for last page)"
-    )
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The PDF document to convert to markdown')
+    start_page: int | OutputHandle[int] = connect_field(default=0, description='First page to extract (0-based index)')
+    end_page: int | OutputHandle[int] = connect_field(default=-1, description='Last page to extract (-1 for last page)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -59,31 +49,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractTables(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extract tables from a PDF document using PyMuPDF.
-    pdf, tables, extract, structured
+        Extract tables from a PDF document using PyMuPDF.
+        pdf, tables, extract, structured
 
-    Use cases:
-    - Extract tabular data from PDFs
-    - Convert PDF tables to structured formats
-    - Analyze table layouts and content
+        Use cases:
+        - Extract tabular data from PDFs
+        - Convert PDF tables to structured formats
+        - Analyze table layouts and content
     """
 
-    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The PDF document to extract tables from",
-    )
-    start_page: int | OutputHandle[int] = connect_field(
-        default=0, description="First page to extract (0-based index)"
-    )
-    end_page: int | OutputHandle[int] = connect_field(
-        default=-1, description="Last page to extract (-1 for last page)"
-    )
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The PDF document to extract tables from')
+    start_page: int | OutputHandle[int] = connect_field(default=0, description='First page to extract (0-based index)')
+    end_page: int | OutputHandle[int] = connect_field(default=-1, description='Last page to extract (-1 for last page)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -100,31 +80,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Extract plain text from a PDF document using PyMuPDF.
-    pdf, text, extract
+        Extract plain text from a PDF document using PyMuPDF.
+        pdf, text, extract
 
-    Use cases:
-    - Extract raw text content from PDFs
-    - Convert PDF documents to plain text
-    - Prepare text for further processing
+        Use cases:
+        - Extract raw text content from PDFs
+        - Convert PDF documents to plain text
+        - Prepare text for further processing
     """
 
-    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The PDF document to extract text from",
-    )
-    start_page: int | OutputHandle[int] = connect_field(
-        default=0, description="First page to extract (0-based index)"
-    )
-    end_page: int | OutputHandle[int] = connect_field(
-        default=-1, description="Last page to extract (-1 for last page)"
-    )
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The PDF document to extract text from')
+    start_page: int | OutputHandle[int] = connect_field(default=0, description='First page to extract (0-based index)')
+    end_page: int | OutputHandle[int] = connect_field(default=-1, description='Last page to extract (-1 for last page)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -141,31 +111,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractTextBlocks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extract text blocks with their bounding boxes from a PDF.
-    pdf, text, blocks, layout
+        Extract text blocks with their bounding boxes from a PDF.
+        pdf, text, blocks, layout
 
-    Use cases:
-    - Analyze text layout and structure
-    - Extract text while preserving block-level formatting
-    - Get text position information
+        Use cases:
+        - Analyze text layout and structure
+        - Extract text while preserving block-level formatting
+        - Get text position information
     """
 
-    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The PDF document to extract text blocks from",
-    )
-    start_page: int | OutputHandle[int] = connect_field(
-        default=0, description="First page to extract (0-based index)"
-    )
-    end_page: int | OutputHandle[int] = connect_field(
-        default=-1, description="Last page to extract (-1 for last page)"
-    )
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The PDF document to extract text blocks from')
+    start_page: int | OutputHandle[int] = connect_field(default=0, description='First page to extract (0-based index)')
+    end_page: int | OutputHandle[int] = connect_field(default=-1, description='Last page to extract (-1 for last page)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -182,31 +142,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pymupdf
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractTextWithStyle(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extract text with style information (font, size, color) from a PDF.
-    pdf, text, style, formatting
+        Extract text with style information (font, size, color) from a PDF.
+        pdf, text, style, formatting
 
-    Use cases:
-    - Preserve text formatting during extraction
-    - Analyze document styling
-    - Extract text with font information
+        Use cases:
+        - Preserve text formatting during extraction
+        - Analyze document styling
+        - Extract text with font information
     """
 
-    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The PDF document to extract styled text from",
-    )
-    start_page: int | OutputHandle[int] = connect_field(
-        default=0, description="First page to extract (0-based index)"
-    )
-    end_page: int | OutputHandle[int] = connect_field(
-        default=-1, description="Last page to extract (-1 for last page)"
-    )
+    pdf: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The PDF document to extract styled text from')
+    start_page: int | OutputHandle[int] = connect_field(default=0, description='First page to extract (0-based index)')
+    end_page: int | OutputHandle[int] = connect_field(default=-1, description='Last page to extract (-1 for last page)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -215,3 +165,5 @@ class ExtractTextWithStyle(SingleOutputGraphNode[typing.Any], GraphNode[typing.A
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

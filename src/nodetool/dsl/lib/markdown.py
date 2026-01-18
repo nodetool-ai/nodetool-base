@@ -18,22 +18,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractBulletLists(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extracts bulleted lists from markdown.
-    markdown, lists, bullets, extraction
+        Extracts bulleted lists from markdown.
+        markdown, lists, bullets, extraction
 
-    Use cases:
-    - Extract unordered list items
-    - Analyze bullet point structures
-    - Convert bullet lists to structured data
+        Use cases:
+        - Extract unordered list items
+        - Analyze bullet point structures
+        - Convert bullet lists to structured data
     """
 
-    markdown: str | OutputHandle[str] = connect_field(
-        default="", description="The markdown text to analyze"
-    )
+    markdown: str | OutputHandle[str] = connect_field(default='', description='The markdown text to analyze')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,22 +47,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractCodeBlocks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extracts code blocks and their languages from markdown.
-    markdown, code, extraction
+        Extracts code blocks and their languages from markdown.
+        markdown, code, extraction
 
-    Use cases:
-    - Extract code samples for analysis
-    - Collect programming examples
-    - Analyze code snippets in documentation
+        Use cases:
+        - Extract code samples for analysis
+        - Collect programming examples
+        - Analyze code snippets in documentation
     """
 
-    markdown: str | OutputHandle[str] = connect_field(
-        default="", description="The markdown text to analyze"
-    )
+    markdown: str | OutputHandle[str] = connect_field(default='', description='The markdown text to analyze')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -82,25 +76,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractHeaders(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extracts headers and creates a document structure/outline.
-    markdown, headers, structure
+        Extracts headers and creates a document structure/outline.
+        markdown, headers, structure
 
-    Use cases:
-    - Generate table of contents
-    - Analyze document structure
-    - Extract main topics from documents
+        Use cases:
+        - Generate table of contents
+        - Analyze document structure
+        - Extract main topics from documents
     """
 
-    markdown: str | OutputHandle[str] = connect_field(
-        default="", description="The markdown text to analyze"
-    )
-    max_level: int | OutputHandle[int] = connect_field(
-        default=6, description="Maximum header level to extract (1-6)"
-    )
+    markdown: str | OutputHandle[str] = connect_field(default='', description='The markdown text to analyze')
+    max_level: int | OutputHandle[int] = connect_field(default=6, description='Maximum header level to extract (1-6)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -117,25 +106,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractLinks(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extracts all links from markdown text.
-    markdown, links, extraction
+        Extracts all links from markdown text.
+        markdown, links, extraction
 
-    Use cases:
-    - Extract references and citations from academic documents
-    - Build link graphs from markdown documentation
-    - Analyze external resources referenced in markdown files
+        Use cases:
+        - Extract references and citations from academic documents
+        - Build link graphs from markdown documentation
+        - Analyze external resources referenced in markdown files
     """
 
-    markdown: str | OutputHandle[str] = connect_field(
-        default="", description="The markdown text to analyze"
-    )
-    include_titles: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to include link titles in output"
-    )
+    markdown: str | OutputHandle[str] = connect_field(default='', description='The markdown text to analyze')
+    include_titles: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to include link titles in output')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -152,22 +136,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtractNumberedLists(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Extracts numbered lists from markdown.
-    markdown, lists, numbered, extraction
+        Extracts numbered lists from markdown.
+        markdown, lists, numbered, extraction
 
-    Use cases:
-    - Extract ordered list items
-    - Analyze enumerated structures
-    - Convert numbered lists to structured data
+        Use cases:
+        - Extract ordered list items
+        - Analyze enumerated structures
+        - Convert numbered lists to structured data
     """
 
-    markdown: str | OutputHandle[str] = connect_field(
-        default="", description="The markdown text to analyze"
-    )
+    markdown: str | OutputHandle[str] = connect_field(default='', description='The markdown text to analyze')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -184,24 +165,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.markdown
 from nodetool.workflows.base_node import BaseNode
 
-
-class ExtractTables(
-    SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
-):
+class ExtractTables(SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]):
     """
 
-    Extracts tables from markdown and converts them to structured data.
-    markdown, tables, data
+        Extracts tables from markdown and converts them to structured data.
+        markdown, tables, data
 
-    Use cases:
-    - Extract tabular data from markdown
-    - Convert markdown tables to structured formats
-    - Analyze tabulated information
+        Use cases:
+        - Extract tabular data from markdown
+        - Convert markdown tables to structured formats
+        - Analyze tabulated information
     """
 
-    markdown: str | OutputHandle[str] = connect_field(
-        default="", description="The markdown text to analyze"
-    )
+    markdown: str | OutputHandle[str] = connect_field(default='', description='The markdown text to analyze')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -210,3 +186,5 @@ class ExtractTables(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

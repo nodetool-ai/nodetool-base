@@ -18,36 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.gemini.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class ImageGeneration(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Generate an image using Google's Imagen model via the Gemini API.
-    google, image generation, ai, imagen
+        Generate an image using Google's Imagen model via the Gemini API.
+        google, image generation, ai, imagen
 
-    Use cases:
-    - Create images from text descriptions
-    - Generate assets for creative projects
-    - Explore AI-powered image synthesis
+        Use cases:
+        - Create images from text descriptions
+        - Generate assets for creative projects
+        - Explore AI-powered image synthesis
     """
 
-    ImageGenerationModel: typing.ClassVar[type] = (
-        nodetool.nodes.gemini.image.ImageGenerationModel
-    )
+    ImageGenerationModel: typing.ClassVar[type] = nodetool.nodes.gemini.image.ImageGenerationModel
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="The text prompt describing the image to generate."
-    )
-    model: nodetool.nodes.gemini.image.ImageGenerationModel = Field(
-        default=nodetool.nodes.gemini.image.ImageGenerationModel.IMAGEN_3_0_GENERATE_002,
-        description="The image generation model to use",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to use as a base for the generation.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='', description='The text prompt describing the image to generate.')
+    model: nodetool.nodes.gemini.image.ImageGenerationModel = Field(default=nodetool.nodes.gemini.image.ImageGenerationModel.IMAGEN_3_0_GENERATE_002, description='The image generation model to use')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to use as a base for the generation.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -56,3 +43,5 @@ class ImageGeneration(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Ima
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

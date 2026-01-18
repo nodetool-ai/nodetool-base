@@ -20,8 +20,12 @@ Repository configured with OpenCode memory and automated Kie.ai sync workflow.
 
 ---
 
-## 2026-01-15 - ElevenLabs Text-to-Speech
+## 2026-01-18 - Ideogram V3 and ByteDance Seedream
 
-- Model ID: `elevenlabs/text-to-speech-turbo-2-5`
-- Category: `audio`
-- Description: Added ElevenLabs text-to-speech node supporting natural-sounding voice synthesis with multiple voices, stability controls, and multilingual output via Kie.ai API.
+- Model ID: `ideogram/v3-text-to-image`
+- Category: `image`
+- Description: Added Ideogram V3 Text-to-Image node supporting design-focused image generation with typography, multiple rendering speeds (TURBO, BALANCED, QUALITY), style options (AUTO, GENERAL, REALISTIC, DESIGN), and MagicPrompt expansion.
+
+- Model ID: `bytedance/seedream`
+- Category: `image`
+- Description: Added ByteDance Seedream Text-to-Image node supporting high-quality 2D and 3D style image generation with guidance scale control, seed support, and safety checking options.
