@@ -14,6 +14,8 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 
 import asyncio
 import os
+import tempfile
+import uuid
 from urllib.parse import urlparse
 from abc import abstractmethod
 from enum import Enum
@@ -23,7 +25,8 @@ import aiohttp
 from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
-from nodetool.metadata.types import ImageRef
+from nodetool.media.common.media_utils import FFMPEG_PATH
+from nodetool.metadata.types import ImageRef, VideoRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -196,7 +199,77 @@ class KieBaseNode(BaseNode):
             default_extension=".mp3",
         )
 
+    async def _convert_video_to_mp4(self, source_bytes: bytes) -> bytes:
+        """Convert input video bytes to MP4 using ffmpeg."""
+        input_path = None
+        output_path = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".input") as temp_in:
+                temp_in.write(source_bytes)
+                temp_in.flush()
+                input_path = temp_in.name
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_out:
+                output_path = temp_out.name
+
+            cmd = [
+                FFMPEG_PATH,
+                "-y",
+                "-i",
+                input_path,
+                "-c:v",
+                "libx264",
+                "-c:a",
+                "aac",
+                "-movflags",
+                "+faststart",
+                output_path,
+            ]
+
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            _stdout, stderr = await process.communicate()
+            if process.returncode != 0:
+                error_msg = stderr.decode(errors="ignore").strip()
+                raise ValueError(
+                    f"ffmpeg error (using {FFMPEG_PATH}): {error_msg or 'unknown error'}"
+                )
+
+            with open(output_path, "rb") as f:
+                return f.read()
+        finally:
+            if input_path and os.path.exists(input_path):
+                os.remove(input_path)
+            if output_path and os.path.exists(output_path):
+                os.remove(output_path)
+
     async def _upload_video(self, context: ProcessingContext, video: Any) -> str:
+        file_obj = await context.asset_to_io(video)
+        try:
+            filename = self._resolve_upload_filename(
+                video, default_extension=".mp4", file_obj=file_obj
+            )
+            ext = os.path.splitext(filename)[1].lower()
+            format_hint = getattr(video, "format", None)
+            needs_conversion = ext != ".mp4" or (
+                isinstance(format_hint, str) and format_hint.lower() != "mp4"
+            )
+
+            if needs_conversion:
+                log.info(
+                    "Converting video to MP4 before upload for Kie.ai compatibility."
+                )
+                source_bytes = file_obj.read()
+                mp4_bytes = await self._convert_video_to_mp4(source_bytes)
+                video = VideoRef(data=mp4_bytes)
+        finally:
+            close_fn = getattr(file_obj, "close", None)
+            if callable(close_fn):
+                close_fn()
+
         return await self._upload_asset(
             context,
             asset=video,

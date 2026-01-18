@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.25",
+  "version": "0.6.2-rc.26",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -3563,7 +3563,17 @@
           "path": "gpt-oss-20b-mxfp4.gguf",
           "description": "OpenAI's open-weight model in efficient MXFP4 format for llama.cpp.",
           "size_on_disk": 9191230013,
-          "has_model_index": false
+          "tags": [
+            "gguf",
+            "base_model:openai/gpt-oss-20b",
+            "base_model:quantized:openai/gpt-oss-20b",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 41640,
+          "likes": 119
         },
         {
           "id": "ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
@@ -3573,7 +3583,48 @@
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Google's Gemma 3 4B in Q4_K_M quantization for efficient inference.",
           "size_on_disk": 3113851289,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-4b-it",
+            "base_model:quantized:google/gemma-3-4b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 18630,
+          "likes": 48
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -3583,7 +3634,48 @@
           "path": "gemma-3-12b-it-Q4_K_M.gguf",
           "description": "Google's Gemma 3 12B in Q4_K_M quantization with strong reasoning.",
           "size_on_disk": 7838315315,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-12b-it",
+            "base_model:quantized:google/gemma-3-12b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 13100,
+          "likes": 30
         },
         {
           "id": "ggml-org/Kimi-VL-A3B-Thinking-2506-GGUF:Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf",
@@ -3593,7 +3685,17 @@
           "path": "Kimi-VL-A3B-Thinking-2506-Q4_K_M.gguf",
           "description": "Moonshot AI's vision-language model with enhanced reasoning capabilities.",
           "size_on_disk": 2362232012,
-          "has_model_index": false
+          "tags": [
+            "gguf",
+            "base_model:moonshotai/Kimi-VL-A3B-Thinking-2506",
+            "base_model:quantized:moonshotai/Kimi-VL-A3B-Thinking-2506",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 1410,
+          "likes": 27
         },
         {
           "id": "ggml-org/Qwen3-Coder-30B-A3B-Instruct-Q8_0-GGUF:qwen3-coder-30b-a3b-instruct-q8_0.gguf",
@@ -3603,7 +3705,23 @@
           "path": "qwen3-coder-30b-a3b-instruct-q8_0.gguf",
           "description": "MoE coding model with 3B active params, excellent for code generation.",
           "size_on_disk": 3865470566,
-          "has_model_index": false
+          "pipeline_tag": "text-generation",
+          "tags": [
+            "transformers",
+            "gguf",
+            "llama-cpp",
+            "gguf-my-repo",
+            "text-generation",
+            "base_model:Qwen/Qwen3-Coder-30B-A3B-Instruct",
+            "base_model:quantized:Qwen/Qwen3-Coder-30B-A3B-Instruct",
+            "license:apache-2.0",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 4191,
+          "likes": 7
         },
         {
           "id": "ggml-org/Qwen3-0.6B-GGUF:Qwen3-0.6B-Q4_0.gguf",
@@ -3613,7 +3731,18 @@
           "path": "Qwen3-0.6B-Q4_0.gguf",
           "description": "Ultra-lightweight Qwen3 for edge devices and fast inference.",
           "size_on_disk": 429496729,
-          "has_model_index": false
+          "tags": [
+            "gguf",
+            "base_model:Qwen/Qwen3-0.6B",
+            "base_model:quantized:Qwen/Qwen3-0.6B",
+            "license:apache-2.0",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 37502,
+          "likes": 12
         },
         {
           "id": "ggml-org/gemma-3-270m-GGUF:gemma-3-270m-Q8_0.gguf",
@@ -3623,7 +3752,16 @@
           "path": "gemma-3-270m-Q8_0.gguf",
           "description": "Tiny Gemma 3 for ultra-fast inference on CPU.",
           "size_on_disk": 375809638,
-          "has_model_index": false
+          "tags": [
+            "gguf",
+            "base_model:google/gemma-3-270m",
+            "base_model:quantized:google/gemma-3-270m",
+            "endpoints_compatible",
+            "region:us"
+          ],
+          "has_model_index": false,
+          "downloads": 914,
+          "likes": 19
         },
         {
           "id": "ggml-org/gemma-3-27b-it-GGUF:gemma-3-27b-it-Q4_K_M.gguf",
@@ -3633,7 +3771,48 @@
           "path": "gemma-3-27b-it-Q4_K_M.gguf",
           "description": "Google's largest Gemma 3 with strong reasoning and tool use.",
           "size_on_disk": 16965120819,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-27b-it",
+            "base_model:quantized:google/gemma-3-27b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 2109,
+          "likes": 23
         }
       ],
       "basic_fields": [
@@ -3806,7 +3985,48 @@
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Efficient Gemma 3 for classification via llama.cpp.",
           "size_on_disk": 3113851289,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-4b-it",
+            "base_model:quantized:google/gemma-3-4b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 18630,
+          "likes": 48
         }
       ],
       "basic_fields": [
@@ -3994,7 +4214,48 @@
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Efficient Gemma 3 for extraction via llama.cpp.",
           "size_on_disk": 3113851289,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-4b-it",
+            "base_model:quantized:google/gemma-3-4b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 18630,
+          "likes": 48
         }
       ],
       "basic_fields": [
@@ -4114,7 +4375,17 @@
           "path": "gpt-oss-20b-mxfp4.gguf",
           "description": "OpenAI's open-weight model for research via llama.cpp.",
           "size_on_disk": 9191230013,
-          "has_model_index": false
+          "tags": [
+            "gguf",
+            "base_model:openai/gpt-oss-20b",
+            "base_model:quantized:openai/gpt-oss-20b",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 41640,
+          "likes": 119
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -4124,7 +4395,48 @@
           "path": "gemma-3-12b-it-Q4_K_M.gguf",
           "description": "Google's Gemma 3 12B for research with strong reasoning.",
           "size_on_disk": 7838315315,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-12b-it",
+            "base_model:quantized:google/gemma-3-12b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 13100,
+          "likes": 30
         }
       ],
       "basic_fields": [
@@ -4286,7 +4598,48 @@
           "path": "gemma-3-4b-it-Q4_K_M.gguf",
           "description": "Efficient Gemma 3 for summarization via llama.cpp.",
           "size_on_disk": 3113851289,
-          "has_model_index": false
+          "pipeline_tag": "image-text-to-text",
+          "tags": [
+            "gguf",
+            "image-text-to-text",
+            "arxiv:1905.07830",
+            "arxiv:1905.10044",
+            "arxiv:1911.11641",
+            "arxiv:1904.09728",
+            "arxiv:1705.03551",
+            "arxiv:1911.01547",
+            "arxiv:1907.10641",
+            "arxiv:1903.00161",
+            "arxiv:2009.03300",
+            "arxiv:2304.06364",
+            "arxiv:2103.03874",
+            "arxiv:2110.14168",
+            "arxiv:2311.12022",
+            "arxiv:2108.07732",
+            "arxiv:2107.03374",
+            "arxiv:2210.03057",
+            "arxiv:2106.03193",
+            "arxiv:1910.11856",
+            "arxiv:2502.12404",
+            "arxiv:2502.21228",
+            "arxiv:2404.16816",
+            "arxiv:2104.12756",
+            "arxiv:2311.16502",
+            "arxiv:2203.10244",
+            "arxiv:2404.12390",
+            "arxiv:1810.12440",
+            "arxiv:1908.02660",
+            "arxiv:2312.11805",
+            "base_model:google/gemma-3-4b-it",
+            "base_model:quantized:google/gemma-3-4b-it",
+            "license:gemma",
+            "endpoints_compatible",
+            "region:us",
+            "conversational"
+          ],
+          "has_model_index": false,
+          "downloads": 18630,
+          "likes": 48
         }
       ],
       "basic_fields": [
@@ -10304,7 +10657,9 @@
           },
           "default": 1900,
           "title": "Year",
-          "description": "Year of the date"
+          "description": "Year of the date",
+          "min": 1.0,
+          "max": 9999.0
         },
         {
           "name": "month",
@@ -10313,7 +10668,9 @@
           },
           "default": 1,
           "title": "Month",
-          "description": "Month of the date"
+          "description": "Month of the date",
+          "min": 1.0,
+          "max": 12.0
         },
         {
           "name": "day",
@@ -10322,7 +10679,9 @@
           },
           "default": 1,
           "title": "Day",
-          "description": "Day of the date"
+          "description": "Day of the date",
+          "min": 1.0,
+          "max": 31.0
         }
       ],
       "outputs": [
@@ -10352,7 +10711,9 @@
           },
           "default": 1900,
           "title": "Year",
-          "description": "Year of the datetime"
+          "description": "Year of the datetime",
+          "min": 1.0,
+          "max": 9999.0
         },
         {
           "name": "month",
@@ -10361,7 +10722,9 @@
           },
           "default": 1,
           "title": "Month",
-          "description": "Month of the datetime"
+          "description": "Month of the datetime",
+          "min": 1.0,
+          "max": 12.0
         },
         {
           "name": "day",
@@ -10370,7 +10733,9 @@
           },
           "default": 1,
           "title": "Day",
-          "description": "Day of the datetime"
+          "description": "Day of the datetime",
+          "min": 1.0,
+          "max": 31.0
         },
         {
           "name": "hour",
@@ -10379,7 +10744,9 @@
           },
           "default": 0,
           "title": "Hour",
-          "description": "Hour of the datetime"
+          "description": "Hour of the datetime",
+          "min": 0.0,
+          "max": 23.0
         },
         {
           "name": "minute",
@@ -10388,7 +10755,9 @@
           },
           "default": 0,
           "title": "Minute",
-          "description": "Minute of the datetime"
+          "description": "Minute of the datetime",
+          "min": 0.0,
+          "max": 59.0
         },
         {
           "name": "second",
@@ -10397,16 +10766,20 @@
           },
           "default": 0,
           "title": "Second",
-          "description": "Second of the datetime"
+          "description": "Second of the datetime",
+          "min": 0.0,
+          "max": 59.0
         },
         {
-          "name": "microsecond",
+          "name": "millisecond",
           "type": {
             "type": "int"
           },
           "default": 0,
-          "title": "Microsecond",
-          "description": "Microsecond of the datetime"
+          "title": "Millisecond",
+          "description": "Millisecond of the datetime",
+          "min": 0.0,
+          "max": 999.0
         },
         {
           "name": "tzinfo",
@@ -10424,7 +10797,9 @@
           },
           "default": 0,
           "title": "Utc Offset",
-          "description": "UTC offset of the datetime"
+          "description": "UTC offset of the datetime in minutes",
+          "min": -720.0,
+          "max": 840.0
         }
       ],
       "outputs": [
@@ -10442,7 +10817,7 @@
         "hour",
         "minute",
         "second",
-        "microsecond",
+        "millisecond",
         "tzinfo",
         "utc_offset"
       ],
@@ -31587,6 +31962,118 @@
       "is_streaming_output": true
     },
     {
+      "title": "ElevenLabs Text To Speech",
+      "description": "Generate speech using ElevenLabs AI via Kie.ai.\n\n    kie, elevenlabs, tts, text-to-speech, voice, audio, ai, speech synthesis\n\n    Creates natural-sounding speech from text using ElevenLabs' voice models.\n    Supports multiple voices, stability controls, and multilingual output.\n\n    Use cases:\n    - Generate voiceovers for videos and podcasts\n    - Create audiobooks and narrated content\n    - Produce natural-sounding speech for applications\n    - Generate speech in multiple languages and voices",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.ElevenLabsTextToSpeech",
+      "properties": [
+        {
+          "name": "text",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Text",
+          "description": "The text to convert to speech."
+        },
+        {
+          "name": "voice",
+          "type": {
+            "type": "str"
+          },
+          "default": "Rachel",
+          "title": "Voice",
+          "description": "The voice ID to use for synthesis. Common voices: Rachel, Adam, Bella, Antoni."
+        },
+        {
+          "name": "stability",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.5,
+          "title": "Stability",
+          "description": "Stability of the voice output. Lower values are more expressive, higher values are more consistent.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "similarity_boost",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.75,
+          "title": "Similarity Boost",
+          "description": "How closely to clone the voice characteristics. Higher values match the voice more closely.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "style",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Style",
+          "description": "Style parameter for voice expression. Range 0.0 to 1.0.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "speed",
+          "type": {
+            "type": "float"
+          },
+          "default": 1.0,
+          "title": "Speed",
+          "description": "Speed of the speech. Range 0.5 to 1.5.",
+          "min": 0.5,
+          "max": 1.5
+        },
+        {
+          "name": "language_code",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Language Code",
+          "description": "Language code for multilingual TTS (e.g., 'en', 'es', 'fr', 'de'). Leave empty for auto-detection."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "text-to-speech-turbo-2-5",
+              "text-to-speech-multilingual-v2"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model"
+          },
+          "default": "text-to-speech-turbo-2-5",
+          "title": "Model",
+          "description": "ElevenLabs model version to use."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "text",
+        "voice",
+        "stability",
+        "similarity_boost",
+        "style",
+        "speed",
+        "language_code",
+        "model"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Suno Music Generator",
       "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals up to around 8 minutes long.\n    Supports the latest Suno V4.5+ model with improved vocal quality and composition.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
       "namespace": "kie.audio",
@@ -32577,6 +33064,99 @@
         "image3",
         "sound",
         "duration"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Kling 2.6 Motion Control",
+      "description": "Generate videos with motion control using Kuaishou's Kling 2.6 model via Kie.ai.\n\n    kie, kling, kuaishou, video generation, ai, motion-control, character-animation, 2.6\n\n    Kling Motion Control generates videos where character actions are guided by a reference video,\n    while the visual appearance is based on a reference image. Perfect for character animation\n    and motion transfer tasks.",
+      "namespace": "kie.video",
+      "node_type": "kie.video.KlingMotionControl",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "The cartoon character is dancing.",
+          "title": "Prompt",
+          "description": "A text description of the desired output. Maximum 2500 characters."
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "Reference image. The characters, backgrounds, and other elements in the generated video are based on this image. Supports .jpg/.jpeg/.png, max 10MB, size needs to be greater than 300px, aspect ratio 2:5 to 5:2."
+        },
+        {
+          "name": "video",
+          "type": {
+            "type": "video"
+          },
+          "default": {
+            "type": "video",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null,
+            "duration": null,
+            "format": null
+          },
+          "title": "Video",
+          "description": "Reference video. The character actions in the generated video will be consistent with this reference video. Supports .mp4/.mov, max 100MB, 3-30 seconds duration depending on character_orientation."
+        },
+        {
+          "name": "character_orientation",
+          "type": {
+            "type": "enum",
+            "values": [
+              "image",
+              "video"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingMotionControl.CharacterOrientation"
+          },
+          "default": "video",
+          "title": "Character Orientation",
+          "description": "Generate the orientation of the characters in the video. 'image': same orientation as the person in the picture (max 10s video). 'video': consistent with the orientation of the characters in the video (max 30s video)."
+        },
+        {
+          "name": "mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "720p",
+              "1080p"
+            ],
+            "type_name": "nodetool.nodes.kie.video.KlingMotionControl.Mode"
+          },
+          "default": "720p",
+          "title": "Mode",
+          "description": "Output resolution mode. Use '720p' for 720p or '1080p' for 1080p."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "image",
+        "video",
+        "character_orientation",
+        "mode"
       ],
       "expose_as_tool": true
     },
@@ -38474,6 +39054,11 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Pokemon Maker.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Data Generator.jpg",
       "path": ""
     },
@@ -38771,12 +39356,13 @@
       ]
     },
     {
-      "id": "09eedfbaa30511f0a0840000727222e1",
+      "id": "",
       "name": "Movie Posters",
       "description": "Create cinematic movie posters using AI image generation",
       "tags": [
         "start",
-        "image"
+        "image",
+        "example"
       ]
     },
     {
@@ -38875,6 +39461,14 @@
       "description": "This workflow automatically fetches and downloads research papers from the Awesome Transformers GitHub repository. It extracts paper links from the README.md file, filters for actual papers, and downloads them to a specified folder. Ideal for researchers and AI enthusiasts who want to stay updated with the latest transformer model papers.",
       "tags": [
         "automation"
+      ]
+    },
+    {
+      "id": "",
+      "name": "Pokemon Maker",
+      "description": "",
+      "tags": [
+        "example"
       ]
     },
     {
