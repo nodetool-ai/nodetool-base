@@ -14,7 +14,11 @@ Each entry should follow this format:
 
 ---
 
-## Initial Setup - 2026-01-15
+## 2026-01-18 - GPT-4o Image Generation
+
+- Model ID: `openai/4o-image`
+- Category: `image`
+- Description: Added GPT-4o Image Generation node for OpenAI's multimodal image generation model via Kie.ai API. Supports high-quality photorealistic images with accurate text rendering, configurable image sizes, quality settings, and background options.
 
 Repository configured with OpenCode memory and automated Kie.ai sync workflow.
 
