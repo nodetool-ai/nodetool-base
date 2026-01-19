@@ -1862,35 +1862,543 @@ class Veo31BaseNode(KieVideoBaseNode):
 
 
 class Veo31TextToVideo(Veo31BaseNode):
-    """Generate videos from text using Google's Veo 3.1 model via Kie.ai.
+    """Generate videos from text using Google's Veo 3.1 via Kie.ai.
 
-    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video, t2v
+    kie, google, veo, veo3, veo3.1, video generation, ai, text-to-video
+
+    Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
+    and significant cost savings (25% of Google's direct API pricing).
     """
 
     _expose_as_tool: ClassVar[bool] = True
 
-    @classmethod
-    def get_title(cls) -> str:
-        return "Veo 3.1 Text To Video"
-
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the desired video content.",
+        description="The text prompt describing the video.",
     )
 
     def _get_model(self) -> str:
-        return self.model.value
+        return "veo3/text-to-video"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
+        return {
+            "model": self.model.value,
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
 
+
+class RunwayBaseNode(KieVideoBaseNode):
+    """Base class for Runway video generation nodes via Kie.ai.
+
+    kie, runway, gen-3, video generation, ai
+
+    Uses the dedicated Runway API endpoints:
+    - POST /api/v1/runway/generate for task submission
+    - GET /api/v1/runway/record-detail for polling
+    """
+
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def is_visible(cls) -> bool:
+        return cls is not RunwayBaseNode
+
+    def _get_headers(self, api_key: str) -> dict[str, str]:
+        return {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
+
+    async def _get_submit_payload(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        """Get the payload for Runway API - uses flat parameters, not nested input."""
+        return await self._get_input_params(context)
+
+    async def _submit_task(
+        self,
+        session: aiohttp.ClientSession,
+        api_key: str,
+        context: ProcessingContext | None = None,
+    ) -> dict[str, Any]:
+        """Submit a task using the dedicated Runway endpoint."""
+        url = f"{KIE_API_BASE_URL}/api/v1/runway/generate"
+        payload = await self._get_submit_payload(context)
+        headers = self._get_headers(api_key)
+        log.info(f"Submitting Runway task to {url} with payload: {payload}")
+        async with session.post(url, json=payload, headers=headers) as response:
+            response_data = await response.json()
+            if "code" in response_data:
+                self._check_response_status(response_data)
+
+            if response.status != 200:
+                raise ValueError(
+                    f"Failed to submit Runway task: {response.status} - {response_data}"
+                )
+            return response_data
+
+    def _is_task_complete(self, status_response: dict[str, Any]) -> bool:
+        """Check if Runway task is complete."""
+        state = status_response.get("data", {}).get("state", "")
+        return state == "success"
+
+    def _is_task_failed(self, status_response: dict[str, Any]) -> bool:
+        """Check if Runway task has failed."""
+        state = status_response.get("data", {}).get("state", "")
+        return state == "fail"
+
+    def _get_error_message(self, status_response: dict[str, Any]) -> str:
+        """Extract error message from Runway response."""
+        data = status_response.get("data", {})
+        return data.get("failMsg") or status_response.get("msg") or "Unknown error occurred"
+
+    async def _poll_status(
+        self, session: aiohttp.ClientSession, api_key: str, task_id: str
+    ) -> dict[str, Any]:
+        """Poll for Runway task completion using dedicated endpoint."""
+        url = f"{KIE_API_BASE_URL}/api/v1/runway/record-detail?taskId={task_id}"
+        headers = self._get_headers(api_key)
+
+        for attempt in range(self._max_poll_attempts):
+            log.debug(
+                f"Polling Runway task status (attempt {attempt + 1}/{self._max_poll_attempts})"
+            )
+            async with session.get(url, headers=headers) as response:
+                status_data = await response.json()
+                log.debug(f"Runway poll response: {status_data}")
+
+                if "code" in status_data:
+                    self._check_response_status(status_data)
+
+                if self._is_task_complete(status_data):
+                    log.debug("Runway task completed successfully")
+                    return status_data
+
+                if self._is_task_failed(status_data):
+                    error_msg = self._get_error_message(status_data)
+                    raise ValueError(f"Runway task failed: {error_msg}")
+
+            await asyncio.sleep(self._poll_interval)
+
+        raise TimeoutError(
+            f"Runway task did not complete within {self._max_poll_attempts * self._poll_interval} seconds"
+        )
+
+    async def _download_result(  # type: ignore[override]
+        self, session: aiohttp.ClientSession, api_key: str, status_data: dict[str, Any]
+    ) -> bytes:
+        """Download video from Runway result."""
+        if not self._is_task_complete(status_data):
+            raise ValueError("Runway task is not complete yet")
+
+        data = status_data.get("data", {})
+        video_info = data.get("videoInfo", {})
+        video_url = video_info.get("videoUrl")
+
+        if not video_url:
+            raise ValueError(f"No videoUrl in Runway response: {status_data}")
+
+        log.debug(f"Downloading Runway result from {video_url}")
+        async with session.get(video_url) as video_response:
+            if video_response.status != 200:
+                raise ValueError(f"Failed to download video from URL: {video_url}")
+            return await video_response.read()
+
+    async def _execute_task(self, context: ProcessingContext) -> tuple[bytes, str]:
+        """Execute the full Runway task workflow: submit, poll, download."""
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Runway task submitted with ID: {task_id}")
+
+            status_data = await self._poll_status(session, api_key, task_id)
+
+            return await self._download_result(session, api_key, status_data), task_id
+
+
+class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
+    """Generate videos from text using Runway's Gen-3 Alpha model via Kie.ai.
+
+    kie, runway, gen-3, gen3alpha, video generation, ai, text-to-video
+
+    Runway Gen-3 Alpha produces high-quality videos from text descriptions
+    with advanced motion and temporal consistency.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Gen-3 Alpha Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+        max_length=1800,
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V4_3 = "4:3"
+        V1_1 = "1:1"
+        V3_4 = "3:4"
+        V9_16 = "9:16"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video. Required for text-to-video generation.",
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/gen-3-alpha-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
         return {
             "prompt": self.prompt,
-            "model": self.model.value,
+            "aspectRatio": self.aspect_ratio.value,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+
+
+class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
+    """Generate videos from images using Runway's Gen-3 Alpha model via Kie.ai.
+
+    kie, runway, gen-3, gen3alpha, video generation, ai, image-to-video
+
+    Runway Gen-3 Alpha transforms static images into dynamic videos
+    with realistic motion and temporal consistency.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Gen-3 Alpha Image To Video"
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Reference image to base the video on.",
+    )
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Optional text to guide the video generation. Maximum length is 1800 characters.",
+        max_length=1800,
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/gen-3-alpha-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
+        image_url = await self._upload_image(context, self.image)
+        payload: dict[str, Any] = {
+            "imageUrl": image_url,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+        if self.prompt:
+            payload["prompt"] = self.prompt
+        return payload
+
+
+class RunwayGen3AlphaExtendVideo(RunwayBaseNode):
+    """Extend videos using Runway's Gen-3 Alpha model via Kie.ai.
+
+    kie, runway, gen-3, gen3alpha, video generation, ai, video-extension
+
+    Runway Gen-3 Alpha can extend existing videos with additional generated content.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Gen-3 Alpha Extend Video"
+
+    video_url: str = Field(
+        default="",
+        description="The source video URL to extend.",
+    )
+
+    prompt: str = Field(
+        default="Continue the motion naturally with smooth transitions.",
+        description="Text prompt to guide the video extension. Maximum length is 1800 characters.",
+        max_length=1800,
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Duration to extend the video by in seconds. If 10-second extension is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second extension cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/gen-3-alpha-extend-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.video_url:
+            raise ValueError("video_url is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second extension cannot be generated with 1080p resolution")
+        return {
+            "video_url": self.video_url,
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+
+
+class RunwayAlephVideo(RunwayBaseNode):
+    """Generate videos using Runway's Aleph model via Kie.ai.
+
+    kie, runway, aleph, video generation, ai, text-to-video
+
+    Aleph is Runway's advanced video generation model offering
+    high-quality output with sophisticated motion handling.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Runway Aleph Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+        max_length=1800,
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video. Required for text-to-video generation.",
+    )
+
+    class Duration(Enum):
+        D5 = 5
+        D10 = 10
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds. If 10-second video is selected, 1080p resolution cannot be used.",
+    )
+
+    class Quality(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    quality: Quality = Field(
+        default=Quality.R720P,
+        description="Video resolution. If 1080p is selected, 10-second video cannot be generated.",
+    )
+
+    water_mark: str = Field(
+        default="",
+        description="Video watermark text content. An empty string indicates no watermark.",
+    )
+
+    call_back_url: str = Field(
+        default="",
+        description="Optional callback URL to receive task completion updates.",
+    )
+
+    def _get_model(self) -> str:
+        return "runway/generate-aleph-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
+            raise ValueError("10-second video cannot be generated with 1080p resolution")
+        return {
+            "prompt": self.prompt,
+            "aspectRatio": self.aspect_ratio.value,
+            "duration": self.duration.value,
+            "quality": self.quality.value,
+            "waterMark": self.water_mark,
+            "callBackUrl": self.call_back_url,
+        }
+
+
+class LumaModifyVideo(KieVideoBaseNode):
+    """Modify and enhance videos using Luma's API via Kie.ai.
+
+    kie, luma, video modification, ai, video-editing
+
+    Luma's video modification API allows for sophisticated video editing
+    and enhancement capabilities.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 5.0
+    _max_poll_attempts: int = 180
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Luma Modify Video"
+
+    video: VideoRef = Field(
+        default=VideoRef(),
+        description="The source video to modify.",
+    )
+
+    prompt: str = Field(
+        default="Enhance the video quality and add smooth motion.",
+        description="Text prompt describing the modifications to make.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_16_9 = "16:9"
+        RATIO_9_16 = "9:16"
+        RATIO_1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_16_9,
+        description="The aspect ratio of the output video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Duration of the modified video segment.",
+    )
+
+    def _get_model(self) -> str:
+        return "luma/generate-luma-modify-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for video upload")
+        if not self.video.is_set():
+            raise ValueError("Video is required")
+
+        video_url = await self._upload_video(context, self.video)
+        return {
+            "video_url": video_url,
+            "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
+            "duration": self.duration.value,
         }
 
 
