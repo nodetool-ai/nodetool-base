@@ -14,78 +14,29 @@ from nodetool.dsl.graph import GraphNode, SingleOutputGraphNode
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import (
-    OutputHandle,
-    OutputsProxy,
-    DynamicOutputsProxy,
-    connect_field,
-)
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
-
 
 class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
     """
 
-    Generate natural language responses using LLM providers and streams output.
-    llm, text-generation, chatbot, question-answering, streaming
+        Generate natural language responses using LLM providers and streams output.
+        llm, text-generation, chatbot, question-answering, streaming
     """
 
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="Model to use for execution",
-    )
-    system: str | OutputHandle[str] = connect_field(
-        default="You are a friendly assistant",
-        description="The system prompt for the LLM",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="The prompt for the LLM"
-    )
-    tools: list[types.ToolName] | OutputHandle[list[types.ToolName]] = connect_field(
-        default=[
-            types.ToolName(type="tool_name", name="google_search"),
-            types.ToolName(type="tool_name", name="browser"),
-        ],
-        description="Tools to enable for the agent. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to analyze",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The audio to analyze",
-    )
-    history: list[types.Message] | OutputHandle[list[types.Message]] = connect_field(
-        default=[], description="The messages for the LLM"
-    )
-    thread_id: str | OutputHandle[str] | None = connect_field(
-        default="",
-        description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
-    )
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='Model to use for execution')
+    system: str | OutputHandle[str] = connect_field(default='You are a friendly assistant', description='The system prompt for the LLM')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='The prompt for the LLM')
+    tools: list[types.ToolName] | OutputHandle[list[types.ToolName]] = connect_field(default=[types.ToolName(type='tool_name', name='google_search'), types.ToolName(type='tool_name', name='browser')], description='Tools to enable for the agent. Select workspace tools (read_file, write_file, list_directory) to enable file operations.')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to analyze')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='The audio to analyze')
+    history: list[types.Message] | OutputHandle[list[types.Message]] = connect_field(default=[], description='The messages for the LLM')
+    thread_id: str | OutputHandle[str] | None = connect_field(default='', description='Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.')
     max_tokens: int | OutputHandle[int] = connect_field(default=8192, description=None)
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
+    context_window: int | OutputHandle[int] = connect_field(default=4096, description=None)
 
-    def __init__(
-        self,
-        *,
-        dynamic_outputs: dict[str, typing.Any] | None = None,
-        **kwargs: typing.Any,
-    ) -> None:
+    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
         """
         Initialize a Agent node.
 
@@ -113,21 +64,18 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class AgentOutputs(DynamicOutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def chunk(self) -> OutputHandle[nodetool.metadata.types.Chunk]:
-        return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self["chunk"])
+        return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self['chunk'])
 
     @property
     def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
-        return typing.cast(
-            OutputHandle[nodetool.metadata.types.AudioRef], self["audio"]
-        )
+        return typing.cast(OutputHandle[nodetool.metadata.types.AudioRef], self['audio'])
 
 
 import typing
@@ -136,57 +84,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
 
-
 class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Classify text into predefined or dynamic categories using LLM.
-    classification, nlp, categorization
+        Classify text into predefined or dynamic categories using LLM.
+        classification, nlp, categorization
 
-    Use cases:
-    - Sentiment analysis
-    - Topic classification
-    - Intent detection
-    - Content categorization
+        Use cases:
+        - Sentiment analysis
+        - Topic classification
+        - Intent detection
+        - Content categorization
     """
 
-    system_prompt: str | OutputHandle[str] = connect_field(
-        default='\nYou are a precise classifier.\n\nGoal\n- Select exactly one category from the list provided by the user.\n\nOutput format (MANDATORY)\n- Return ONLY a single JSON object with this exact schema and nothing else:\n  {"category": "<one-of-the-allowed-categories>"}\n- No prose, no Markdown, no code fences, no explanations, no extra keys.\n\nSelection criteria\n- Choose the single best category that captures the main intent of the text.\n- If multiple categories seem plausible, pick the most probable one; do not return multiple.\n- If none fit perfectly, choose the closest allowed category. If the list includes "Other" or "Unknown", prefer it when appropriate.\n- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., "not spam" ≠ spam).\n- Never invent categories that are not in the provided list.\n\nBehavior\n- Be deterministic for the same input.\n- Do not ask clarifying questions; make the best choice with what\'s given.\n',
-        description="The system prompt for the classifier",
-    )
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="Model to use for classification",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="Text to classify"
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Optional image to classify in context",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Optional audio to classify in context",
-    )
-    categories: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[],
-        description="List of possible categories. If empty, LLM will determine categories.",
-    )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
+    system_prompt: str | OutputHandle[str] = connect_field(default='\nYou are a precise classifier.\n\nGoal\n- Select exactly one category from the list provided by the user.\n\nOutput format (MANDATORY)\n- Return ONLY a single JSON object with this exact schema and nothing else:\n  {"category": "<one-of-the-allowed-categories>"}\n- No prose, no Markdown, no code fences, no explanations, no extra keys.\n\nSelection criteria\n- Choose the single best category that captures the main intent of the text.\n- If multiple categories seem plausible, pick the most probable one; do not return multiple.\n- If none fit perfectly, choose the closest allowed category. If the list includes "Other" or "Unknown", prefer it when appropriate.\n- Be robust to casing, punctuation, emojis, and minor typos. Handle negation correctly (e.g., "not spam" ≠ spam).\n- Never invent categories that are not in the provided list.\n\nBehavior\n- Be deterministic for the same input.\n- Do not ask clarifying questions; make the best choice with what\'s given.\n', description='The system prompt for the classifier')
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='Model to use for classification')
+    text: str | OutputHandle[str] = connect_field(default='', description='Text to classify')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Optional image to classify in context')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Optional audio to classify in context')
+    categories: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='List of possible categories. If empty, LLM will determine categories.')
+    context_window: int | OutputHandle[int] = connect_field(default=4096, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -203,24 +120,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
 
-
 class CreateThread(GraphNode[nodetool.nodes.nodetool.agents.CreateThread.OutputType]):
     """
 
-    Create a new conversation thread and return its ID.
-    threads, chat, conversation, context
+        Create a new conversation thread and return its ID.
+        threads, chat, conversation, context
 
-    Use this to seed a thread_id that downstream Agent nodes can reuse for
-    persistent history across the graph or multiple runs.
+        Use this to seed a thread_id that downstream Agent nodes can reuse for
+        persistent history across the graph or multiple runs.
     """
 
-    title: str | OutputHandle[str] | None = connect_field(
-        default="Agent Conversation", description="Optional title for the new thread"
-    )
-    thread_id: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Optional custom thread ID. If provided and owned by the user, it will be reused; otherwise a new thread is created.",
-    )
+    title: str | OutputHandle[str] | None = connect_field(default='Agent Conversation', description='Optional title for the new thread')
+    thread_id: str | OutputHandle[str] = connect_field(default='', description='Optional custom thread ID. If provided and owned by the user, it will be reused; otherwise a new thread is created.')
 
     @property
     def out(self) -> "CreateThreadOutputs":
@@ -234,78 +145,39 @@ class CreateThread(GraphNode[nodetool.nodes.nodetool.agents.CreateThread.OutputT
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class CreateThreadOutputs(OutputsProxy):
     @property
     def thread_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["thread_id"])
+        return typing.cast(OutputHandle[str], self['thread_id'])
 
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import (
-    OutputHandle,
-    OutputsProxy,
-    DynamicOutputsProxy,
-    connect_field,
-)
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
-
 
 class Extractor(GraphNode[dict[str, Any]]):
     """
 
-    Extract structured data from text content using LLM providers.
-    data-extraction, structured-data, nlp, parsing
+        Extract structured data from text content using LLM providers.
+        data-extraction, structured-data, nlp, parsing
 
-    Specialized for extracting structured information:
-    - Converting unstructured text into structured data
-    - Identifying and extracting specific fields from documents
-    - Parsing text according to predefined schemas
-    - Creating structured records from natural language content
+        Specialized for extracting structured information:
+        - Converting unstructured text into structured data
+        - Identifying and extracting specific fields from documents
+        - Parsing text according to predefined schemas
+        - Creating structured records from natural language content
     """
 
-    system_prompt: str | OutputHandle[str] = connect_field(
-        default='\nYou are a precise structured data extractor.\n\nGoal\n- Extract exactly the fields described in <JSON_SCHEMA> from the content in <TEXT> (and any attached media).\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nExtraction rules\n- Use only information found in <TEXT> or attached media. Do not invent facts.\n- Preserve source values; normalize internal whitespace and trim leading/trailing spaces.\n- If a required field is missing or not explicitly stated, return the closest reasonable default consistent with its type:\n  - string: ""\n  - number: 0\n  - boolean: false\n  - array/object: empty value of that type (only if allowed by the schema)\n- Dates/times: prefer ISO 8601 when the schema type is string and the value represents a date/time.\n- If multiple candidates exist, choose the most precise and unambiguous one.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n',
-        description="The system prompt for the data extractor",
-    )
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="Model to use for data extraction",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The text to extract data from"
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Optional image to assist extraction",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Optional audio to assist extraction",
-    )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
+    system_prompt: str | OutputHandle[str] = connect_field(default='\nYou are a precise structured data extractor.\n\nGoal\n- Extract exactly the fields described in <JSON_SCHEMA> from the content in <TEXT> (and any attached media).\n\nOutput format (MANDATORY)\n- Output exactly ONE fenced code block labeled json containing ONLY the JSON object:\n\n  ```json\n  { ...single JSON object matching <JSON_SCHEMA>... }\n  ```\n\n- No additional prose before or after the block.\n\nExtraction rules\n- Use only information found in <TEXT> or attached media. Do not invent facts.\n- Preserve source values; normalize internal whitespace and trim leading/trailing spaces.\n- If a required field is missing or not explicitly stated, return the closest reasonable default consistent with its type:\n  - string: ""\n  - number: 0\n  - boolean: false\n  - array/object: empty value of that type (only if allowed by the schema)\n- Dates/times: prefer ISO 8601 when the schema type is string and the value represents a date/time.\n- If multiple candidates exist, choose the most precise and unambiguous one.\n\nValidation\n- Ensure the final JSON validates against <JSON_SCHEMA> exactly.\n', description='The system prompt for the data extractor')
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='Model to use for data extraction')
+    text: str | OutputHandle[str] = connect_field(default='', description='The text to extract data from')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Optional image to assist extraction')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Optional audio to assist extraction')
+    context_window: int | OutputHandle[int] = connect_field(default=4096, description=None)
 
-    def __init__(
-        self,
-        *,
-        dynamic_outputs: dict[str, typing.Any] | None = None,
-        **kwargs: typing.Any,
-    ) -> None:
+    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
         """
         Initialize a Extractor node.
 
@@ -336,74 +208,38 @@ class Extractor(GraphNode[dict[str, Any]]):
 
 import typing
 from pydantic import Field
-from nodetool.dsl.handles import (
-    OutputHandle,
-    OutputsProxy,
-    DynamicOutputsProxy,
-    connect_field,
-)
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, DynamicOutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
-
 
 class ResearchAgent(GraphNode[dict[str, Any]]):
     """
 
-    Autonomous research agent that gathers information from the web and synthesizes findings.
-    research, web-search, data-gathering, agent, automation
+        Autonomous research agent that gathers information from the web and synthesizes findings.
+        research, web-search, data-gathering, agent, automation
 
-    Uses dynamic outputs to define the structure of research results.
-    The agent will:
-    - Search the web for relevant information
-    - Browse and extract content from web pages
-    - Organize findings in the workspace
-    - Return structured results matching your output schema
+        Uses dynamic outputs to define the structure of research results.
+        The agent will:
+        - Search the web for relevant information
+        - Browse and extract content from web pages
+        - Organize findings in the workspace
+        - Return structured results matching your output schema
 
-    Perfect for:
-    - Market research and competitive analysis
-    - Literature reviews and fact-finding
-    - Data collection from multiple sources
-    - Automated research workflows
+        Perfect for:
+        - Market research and competitive analysis
+        - Literature reviews and fact-finding
+        - Data collection from multiple sources
+        - Automated research workflows
     """
 
-    objective: str | OutputHandle[str] = connect_field(
-        default="", description="The research objective or question to investigate"
-    )
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="Model to use for research and synthesis",
-    )
-    system_prompt: str | OutputHandle[str] = connect_field(
-        default="You are a research assistant.\n\nGoal\n- Conduct thorough research on the given objective\n- Use tools to gather information from multiple sources\n- Write intermediate findings to the workspace for reference\n- Synthesize information into the structured output format specified\n\nTools Available\n- google_search: Search the web for information\n- browser: Navigate to URLs and extract content\n- write_file: Save research findings to files\n- read_file: Read previously saved research files\n- list_directory: List files in the workspace\n\nWorkflow\n1. Break down the research objective into specific queries\n2. Use google_search to find relevant sources\n3. Use browser to extract content from promising URLs\n4. Save important findings using write_file\n5. Synthesize all findings into the requested output format\n\nOutput Format\n- Return a structured JSON object matching the defined output schema\n- Be thorough and cite sources where appropriate\n- Ensure all required fields are populated with accurate information\n",
-        description="System prompt guiding the agent's research behavior",
-    )
-    tools: list[types.ToolName] | OutputHandle[list[types.ToolName]] = connect_field(
-        default=[
-            types.ToolName(type="tool_name", name="google_search"),
-            types.ToolName(type="tool_name", name="browser"),
-        ],
-        description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
-    )
-    max_tokens: int | OutputHandle[int] = connect_field(
-        default=8192, description="Maximum tokens for agent responses"
-    )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=8192, description="Context window size"
-    )
+    objective: str | OutputHandle[str] = connect_field(default='', description='The research objective or question to investigate')
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='Model to use for research and synthesis')
+    system_prompt: str | OutputHandle[str] = connect_field(default='You are a research assistant.\n\nGoal\n- Conduct thorough research on the given objective\n- Use tools to gather information from multiple sources\n- Write intermediate findings to the workspace for reference\n- Synthesize information into the structured output format specified\n\nTools Available\n- google_search: Search the web for information\n- browser: Navigate to URLs and extract content\n- write_file: Save research findings to files\n- read_file: Read previously saved research files\n- list_directory: List files in the workspace\n\nWorkflow\n1. Break down the research objective into specific queries\n2. Use google_search to find relevant sources\n3. Use browser to extract content from promising URLs\n4. Save important findings using write_file\n5. Synthesize all findings into the requested output format\n\nOutput Format\n- Return a structured JSON object matching the defined output schema\n- Be thorough and cite sources where appropriate\n- Ensure all required fields are populated with accurate information\n', description="System prompt guiding the agent's research behavior")
+    tools: list[types.ToolName] | OutputHandle[list[types.ToolName]] = connect_field(default=[types.ToolName(type='tool_name', name='google_search'), types.ToolName(type='tool_name', name='browser')], description='Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.')
+    max_tokens: int | OutputHandle[int] = connect_field(default=8192, description='Maximum tokens for agent responses')
+    context_window: int | OutputHandle[int] = connect_field(default=8192, description='Context window size')
 
-    def __init__(
-        self,
-        *,
-        dynamic_outputs: dict[str, typing.Any] | None = None,
-        **kwargs: typing.Any,
-    ) -> None:
+    def __init__(self, *, dynamic_outputs: dict[str, typing.Any] | None = None, **kwargs: typing.Any) -> None:
         """
         Initialize a ResearchAgent node.
 
@@ -438,53 +274,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
 
-
 class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]):
     """
 
-    Generate concise summaries of text content using LLM providers with streaming output.
-    text, summarization, nlp, content, streaming
+        Generate concise summaries of text content using LLM providers with streaming output.
+        text, summarization, nlp, content, streaming
 
-    Specialized for creating high-quality summaries with real-time streaming:
-    - Condensing long documents into key points
-    - Creating executive summaries with live output
-    - Extracting main ideas from text as they're generated
-    - Maintaining factual accuracy while reducing length
+        Specialized for creating high-quality summaries with real-time streaming:
+        - Condensing long documents into key points
+        - Creating executive summaries with live output
+        - Extracting main ideas from text as they're generated
+        - Maintaining factual accuracy while reducing length
     """
 
-    system_prompt: str | OutputHandle[str] = connect_field(
-        default="\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.\n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ",
-        description="The system prompt for the summarizer",
-    )
-    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
-        default=types.LanguageModel(
-            type="language_model",
-            provider=nodetool.metadata.types.Provider.Empty,
-            id="",
-            name="",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="Model to use for summarization",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The text to summarize"
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Optional image to condition the summary",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Optional audio to condition the summary",
-    )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
+    system_prompt: str | OutputHandle[str] = connect_field(default='\n        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.\n        Follow these guidelines:\n        1. Identify and include only the most important information.\n        2. Maintain factual accuracy - do not add or modify information.\n        3. Use clear, direct language.\n        4. Aim for approximately {self.max_tokens} tokens.\n        ', description='The system prompt for the summarizer')
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Empty, id='', name='', path=None, supported_tasks=[]), description='Model to use for summarization')
+    text: str | OutputHandle[str] = connect_field(default='', description='The text to summarize')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Optional image to condition the summary')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Optional audio to condition the summary')
+    context_window: int | OutputHandle[int] = connect_field(default=4096, description=None)
 
     @property
     def out(self) -> "SummarizerOutputs":
@@ -498,12 +306,13 @@ class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SummarizerOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def chunk(self) -> OutputHandle[nodetool.metadata.types.Chunk]:
-        return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self["chunk"])
+        return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self['chunk'])
+
+

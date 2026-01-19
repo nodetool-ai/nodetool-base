@@ -18,32 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.ocr
 from nodetool.workflows.base_node import BaseNode
 
-
 class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
     """
 
-    Performs Optical Character Recognition (OCR) on images using PaddleOCR.
-    image, text, ocr, document
+        Performs Optical Character Recognition (OCR) on images using PaddleOCR.
+        image, text, ocr, document
 
-    Use cases:
-    - Text extraction from images
-    - Document digitization
-    - Receipt/invoice processing
-    - Handwriting recognition
+        Use cases:
+        - Text extraction from images
+        - Document digitization
+        - Receipt/invoice processing
+        - Handwriting recognition
     """
 
     OCRLanguage: typing.ClassVar[type] = nodetool.nodes.lib.ocr.OCRLanguage
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to perform OCR on",
-    )
-    language: nodetool.nodes.lib.ocr.OCRLanguage = Field(
-        default=nodetool.nodes.lib.ocr.OCRLanguage.ENGLISH,
-        description="Language code for OCR",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to perform OCR on')
+    language: nodetool.nodes.lib.ocr.OCRLanguage = Field(default=nodetool.nodes.lib.ocr.OCRLanguage.ENGLISH, description='Language code for OCR')
 
     @property
     def out(self) -> "PaddleOCRNodeOutputs":
@@ -57,12 +48,13 @@ class PaddleOCRNode(GraphNode[nodetool.nodes.lib.ocr.PaddleOCRNode.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class PaddleOCRNodeOutputs(OutputsProxy):
     @property
     def boxes(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self["boxes"])
+        return typing.cast(OutputHandle[typing.Any], self['boxes'])
 
     @property
     def text(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self["text"])
+        return typing.cast(OutputHandle[typing.Any], self['text'])
+
+

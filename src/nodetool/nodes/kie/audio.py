@@ -980,7 +980,9 @@ class AddInstrumental(KieBaseNode):
         url = f"{KIE_API_BASE_URL}/api/v1/generate/add-instrumental"
         payload = await self._get_input_params(context)
         headers = self._get_headers(api_key)
-        log.info(f"Submitting Suno add-instrumental task to {url} with payload: {payload}")
+        log.info(
+            f"Submitting Suno add-instrumental task to {url} with payload: {payload}"
+        )
         async with session.post(url, json=payload, headers=headers) as response:
             response_data = await response.json()
             if "code" in response_data:
@@ -1370,9 +1372,7 @@ class GetTimestampedLyrics(KieBaseNode):
                 data = response_data.get("data", {}) or {}
                 import json
 
-                return await context.text_from_str(
-                    json.dumps(data, ensure_ascii=False)
-                )
+                return await context.text_from_str(json.dumps(data, ensure_ascii=False))
 
 
 class BoostMusicStyle(KieBaseNode):
@@ -1497,14 +1497,13 @@ class GenerateMusicCover(KieBaseNode):
                         raise ValueError("No images found in cover response")
                     return list(
                         await asyncio.gather(
-                            *[
-                                context.image_from_url(image_url)
-                                for image_url in images
-                            ]
+                            *[context.image_from_url(image_url) for image_url in images]
                         )
                     )
                 if success_flag == 3:
-                    error_message = data.get("errorMessage") or "Cover generation failed"
+                    error_message = (
+                        data.get("errorMessage") or "Cover generation failed"
+                    )
                     raise ValueError(error_message)
 
             await asyncio.sleep(self._poll_interval)
@@ -1587,9 +1586,7 @@ class ReplaceMusicSection(KieBaseNode):
             raise ValueError("infill_start_s must be less than infill_end_s")
         duration = self.infill_end_s - self.infill_start_s
         if duration < 6 or duration > 60:
-            raise ValueError(
-                "Replacement duration must be between 6 and 60 seconds"
-            )
+            raise ValueError("Replacement duration must be between 6 and 60 seconds")
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -1632,7 +1629,9 @@ class ReplaceMusicSection(KieBaseNode):
         url = f"{KIE_API_BASE_URL}/api/v1/generate/replace-section"
         payload = await self._get_input_params(context)
         headers = self._get_headers(api_key)
-        log.info(f"Submitting Suno replace-section task to {url} with payload: {payload}")
+        log.info(
+            f"Submitting Suno replace-section task to {url} with payload: {payload}"
+        )
         async with session.post(url, json=payload, headers=headers) as response:
             response_data = await response.json()
             if "code" in response_data:
@@ -1850,7 +1849,9 @@ class GenerateLyrics(KieBaseNode):
                         )
                     return results
                 if status in failed_statuses:
-                    error_message = data.get("errorMessage") or "Lyrics generation failed"
+                    error_message = (
+                        data.get("errorMessage") or "Lyrics generation failed"
+                    )
                     raise ValueError(error_message)
 
             await asyncio.sleep(self._poll_interval)
@@ -1952,9 +1953,7 @@ class ConvertToWav(KieBaseNode):
                     if not audio_url:
                         raise ValueError("No audioWavUrl found in response")
                     buffer = await context.download_file(audio_url)
-                    return await context.audio_from_io(
-                        buffer, content_type="audio/wav"
-                    )
+                    return await context.audio_from_io(buffer, content_type="audio/wav")
                 if status in failed_statuses:
                     error_message = data.get("errorMessage") or "WAV conversion failed"
                     raise ValueError(error_message)
@@ -2072,11 +2071,11 @@ class GenerateMusicVideo(KieBaseNode):
                     if not video_url:
                         raise ValueError("No videoUrl found in response")
                     buffer = await context.download_file(video_url)
-                    return await context.video_from_io(
-                        buffer, content_type="video/mp4"
-                    )
+                    return await context.video_from_io(buffer, content_type="video/mp4")
                 if status in failed_statuses:
-                    error_message = data.get("errorMessage") or "Video generation failed"
+                    error_message = (
+                        data.get("errorMessage") or "Video generation failed"
+                    )
                     raise ValueError(error_message)
 
             await asyncio.sleep(self._poll_interval)

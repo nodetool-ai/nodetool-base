@@ -14,6 +14,24 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-19 - GPT Image 1.5, Google Imagen 4 & Seedance 1.5 Pro
+
+- **Model IDs:**
+  - `gpt-image/1.5-text-to-image`
+  - `gpt-image/1.5-image-to-image`
+  - `google/imagen4`
+  - `google/imagen4-fast`
+  - `google/imagen4-ultra`
+  - `bytedance/seedance-1.5-pro`
+  - `ideogram/character`
+  - `kling-2.6/motion-control`
+
+- **Categories:** image, video
+
+- **Description:** Added support for OpenAI GPT Image 1.5 (text-to-image and image-to-image), Google Imagen 4 family (standard, fast, ultra variants), Bytedance Seedance 1.5 Pro (text-to-video and image-to-video with dynamic camera and audio generation), Ideogram character generation, and Kling 2.6 motion control for character animation via Kie.ai API.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
@@ -25,7 +43,7 @@ Each entry should follow this format:
 
 - **Category:** video
 
-- **Description:** Added support for Runway Gen-3 Alpha video generation (text-to-video, image-to-video, extend-video) and Aleph model, plus Luma's video modification API via Kie.ai.
+- **Description:** Added support for Runway Gen-3 Alpha video generation (text-to-video, image-to-video, extend-video) and Aleph model, plus Luma's video modification API via Kie.ai API.
 
 ---
 
