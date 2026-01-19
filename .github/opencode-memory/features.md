@@ -14,6 +14,19 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-18 - New Video Generation Models
+
+- **Model IDs:**
+  - `kling-2.7/text-to-video`
+  - `seedance/v2-lite-text-to-video`
+  - `hailuo/2-4-text-to-video`
+
+- **Category:** video
+
+- **Description:** Added support for newer versions of popular video generation models including Kling 2.7, Seedance V2 Lite, and Hailuo 2.4 via Kie.ai API.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
