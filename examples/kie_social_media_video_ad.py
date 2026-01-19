@@ -69,23 +69,12 @@ def build_social_media_video_ad():
         value="Modern, minimalist, tech-forward, with soft gradient lighting and floating water droplets",
     )
 
-    target_platform = StringInput(
-        name="target_platform",
-        description="Target social media platform (affects aspect ratio)",
-        value="Instagram Reels",  # 9:16 for vertical video
-    )
-
-    voice_over_text = StringInput(
-        name="voice_over_text",
-        description="The narration text for the ad",
-        value="Stay hydrated, stay connected. AuraFlow Pro - your smart companion for peak performance. Available now.",
-    )
 
     # --- Generate Hero Image with Imagen 4 Fast ---
     hero_image = Imagen4Fast(
         prompt=f"Professional product photography of {product_name.output}, "
         f"{product_description.output}, {ad_style.output}, "
-        "clean background, dramatic lighting, 8K quality, advertising photography",
+        "clean backgound, dramatic lighting, 8K quality, advertising photography",
         aspect_ratio=Imagen4Fast.AspectRatio.PORTRAIT,  # 9:16 for social
     )
 
@@ -202,5 +191,5 @@ if __name__ == "__main__":
     print()
 
     # Uncomment to run:
-    # result = run_graph(graph)
-    # print(result)
+    result = run_graph(graph)
+    print(result)

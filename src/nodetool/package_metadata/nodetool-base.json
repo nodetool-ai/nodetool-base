@@ -3572,7 +3572,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 42055,
+          "downloads": 41031,
           "likes": 119
         },
         {
@@ -3623,7 +3623,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 19016,
           "likes": 48
         },
         {
@@ -3674,7 +3674,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 14098,
+          "downloads": 12228,
           "likes": 30
         },
         {
@@ -3694,7 +3694,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1492,
+          "downloads": 1351,
           "likes": 27
         },
         {
@@ -3720,7 +3720,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4351,
+          "downloads": 4193,
           "likes": 7
         },
         {
@@ -3741,7 +3741,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 38453,
+          "downloads": 36878,
           "likes": 12
         },
         {
@@ -3760,7 +3760,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 945,
+          "downloads": 962,
           "likes": 19
         },
         {
@@ -3811,7 +3811,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2086,
+          "downloads": 2177,
           "likes": 23
         }
       ],
@@ -4025,7 +4025,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 19016,
           "likes": 48
         }
       ],
@@ -4254,7 +4254,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 19016,
           "likes": 48
         }
       ],
@@ -4384,7 +4384,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 42055,
+          "downloads": 41031,
           "likes": 119
         },
         {
@@ -4435,7 +4435,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 14098,
+          "downloads": 12228,
           "likes": 30
         }
       ],
@@ -4638,7 +4638,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 20315,
+          "downloads": 19016,
           "likes": 48
         }
       ],
@@ -31962,6 +31962,447 @@
       "is_streaming_output": true
     },
     {
+      "title": "Add Instrumental",
+      "description": "Add instrumental accompaniment to uploaded audio via Suno AI.\n\n    kie, suno, music, audio, ai, instrumental, accompaniment, upload\n\n    Uploads a source track (e.g., vocals/stems) and generates a backing track.",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.AddInstrumental",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Audio",
+          "description": "Source audio to upload for instrumental generation."
+        },
+        {
+          "name": "title",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Title",
+          "description": "Title of the generated music."
+        },
+        {
+          "name": "tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Tags",
+          "description": "Music styles or tags to include in the generated music."
+        },
+        {
+          "name": "negative_tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Tags",
+          "description": "Music styles or characteristics to exclude."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "V4_5PLUS",
+              "V5"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.AddInstrumental.Model"
+          },
+          "default": "V4_5PLUS",
+          "title": "Model",
+          "description": "Suno model version to use."
+        },
+        {
+          "name": "vocal_gender",
+          "type": {
+            "type": "enum",
+            "values": [
+              "",
+              "m",
+              "f"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.VocalGender"
+          },
+          "default": "",
+          "title": "Vocal Gender",
+          "description": "Vocal gender preference."
+        },
+        {
+          "name": "style_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Style Weight",
+          "description": "Strength of adherence to style (0-1)."
+        },
+        {
+          "name": "weirdness_constraint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Weirdness Constraint",
+          "description": "Creative deviation control (0-1)."
+        },
+        {
+          "name": "audio_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Audio Weight",
+          "description": "Balance weight for audio features (0-1)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "title",
+        "tags",
+        "negative_tags",
+        "model",
+        "vocal_gender",
+        "style_weight",
+        "weirdness_constraint",
+        "audio_weight"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Add Vocals",
+      "description": "Add AI vocals to uploaded audio via Suno AI.\n\n    kie, suno, music, audio, ai, vocals, singing, upload\n\n    Uploads an instrumental track and generates vocal layers on top.",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.AddVocals",
+      "properties": [
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Audio",
+          "description": "Source audio to upload for vocal generation."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Prompt describing lyric content and singing style."
+        },
+        {
+          "name": "title",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Title",
+          "description": "Title of the generated music."
+        },
+        {
+          "name": "style",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Style",
+          "description": "Music style for vocal generation."
+        },
+        {
+          "name": "tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Tags",
+          "description": "Optional music tags to include in the generation."
+        },
+        {
+          "name": "negative_tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Tags",
+          "description": "Excluded music styles or elements."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "V4_5PLUS",
+              "V5"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.AddVocals.Model"
+          },
+          "default": "V4_5PLUS",
+          "title": "Model",
+          "description": "Suno model version to use."
+        },
+        {
+          "name": "vocal_gender",
+          "type": {
+            "type": "enum",
+            "values": [
+              "",
+              "m",
+              "f"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.VocalGender"
+          },
+          "default": "",
+          "title": "Vocal Gender",
+          "description": "Vocal gender preference."
+        },
+        {
+          "name": "style_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Style Weight",
+          "description": "Strength of adherence to style (0-1)."
+        },
+        {
+          "name": "weirdness_constraint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Weirdness Constraint",
+          "description": "Creative deviation control (0-1)."
+        },
+        {
+          "name": "audio_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Audio Weight",
+          "description": "Balance weight for audio features (0-1)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "audio",
+        "prompt",
+        "title",
+        "style",
+        "tags",
+        "negative_tags",
+        "model",
+        "vocal_gender",
+        "style_weight",
+        "weirdness_constraint",
+        "audio_weight"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Cover Audio",
+      "description": "Cover an uploaded audio track using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, cover, upload, style transfer\n\n    Uploads a source track and generates a covered version in a new style while\n    retaining the original melody.",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.CoverAudio",
+      "properties": [
+        {
+          "name": "custom_mode",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Custom Mode",
+          "description": "Enable custom mode for detailed control over style and title."
+        },
+        {
+          "name": "audio",
+          "type": {
+            "type": "audio"
+          },
+          "default": {
+            "type": "audio",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Audio",
+          "description": "Source audio to upload for covering."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Music description or lyrics. In custom mode, this is used as lyrics when instrumental is false. In non-custom mode, this is the core idea."
+        },
+        {
+          "name": "style",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Style",
+          "description": "Music style specification (required in custom mode)."
+        },
+        {
+          "name": "title",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Title",
+          "description": "Track title (required in custom mode)."
+        },
+        {
+          "name": "instrumental",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Instrumental",
+          "description": "Generate instrumental-only (no vocals)."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "V4",
+              "V4_5",
+              "V4_5PLUS",
+              "V4_5ALL",
+              "V5"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.CoverAudio.Model"
+          },
+          "default": "V4_5PLUS",
+          "title": "Model",
+          "description": "Suno model version to use."
+        },
+        {
+          "name": "negative_tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Tags",
+          "description": "Music styles or traits to exclude from the generated audio."
+        },
+        {
+          "name": "vocal_gender",
+          "type": {
+            "type": "enum",
+            "values": [
+              "",
+              "m",
+              "f"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.VocalGender"
+          },
+          "default": "",
+          "title": "Vocal Gender",
+          "description": "Vocal gender preference (custom mode only)."
+        },
+        {
+          "name": "style_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Style Weight",
+          "description": "Strength of adherence to style (0-1)."
+        },
+        {
+          "name": "weirdness_constraint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Weirdness Constraint",
+          "description": "Creative deviation control (0-1)."
+        },
+        {
+          "name": "audio_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Audio Weight",
+          "description": "Balance weight for audio features (0-1)."
+        },
+        {
+          "name": "persona_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Persona Id",
+          "description": "Persona ID to apply (custom mode only)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "custom_mode",
+        "audio",
+        "prompt",
+        "style",
+        "title",
+        "instrumental",
+        "model",
+        "negative_tags",
+        "vocal_gender",
+        "style_weight",
+        "weirdness_constraint",
+        "audio_weight",
+        "persona_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "ElevenLabs Text To Speech",
       "description": "Generate speech using ElevenLabs AI via Kie.ai.\n\n    kie, elevenlabs, tts, text-to-speech, voice, audio, ai, speech synthesis\n\n    Creates natural-sounding speech from text using ElevenLabs' voice models.\n    Supports multiple voices, stability controls, and multilingual output.\n\n    Use cases:\n    - Generate voiceovers for videos and podcasts\n    - Create audiobooks and narrated content\n    - Produce natural-sounding speech for applications\n    - Generate speech in multiple languages and voices",
       "namespace": "kie.audio",
@@ -32074,11 +32515,29 @@
       "expose_as_tool": true
     },
     {
-      "title": "Suno Music Generator",
-      "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals up to around 8 minutes long.\n    Supports the latest Suno V4.5+ model with improved vocal quality and composition.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
+      "title": "Extend Music",
+      "description": "Extend music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, extension, continuation, remix\n\n    Extends an existing track by continuing from a specified time point.\n    Can reuse original parameters or override them with custom settings.",
       "namespace": "kie.audio",
-      "node_type": "kie.audio.Suno",
+      "node_type": "kie.audio.ExtendMusic",
       "properties": [
+        {
+          "name": "default_param_flag",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Default Param Flag",
+          "description": "If true, use custom parameters (prompt/style/title/continue_at). If false, inherit parameters from the source audio."
+        },
+        {
+          "name": "audio_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Audio Id",
+          "description": "Audio ID to extend."
+        },
         {
           "name": "prompt",
           "type": {
@@ -32086,74 +32545,112 @@
           },
           "default": "",
           "title": "Prompt",
-          "description": "Description of the music to generate (genre, mood, instruments, etc.)."
-        },
-        {
-          "name": "lyrics",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Lyrics",
-          "description": "Optional lyrics for the song. Leave empty for instrumental."
+          "description": "Description of the desired extension content."
         },
         {
           "name": "style",
           "type": {
-            "type": "enum",
-            "values": [
-              "pop",
-              "rock",
-              "jazz",
-              "classical",
-              "electronic",
-              "hip-hop",
-              "r&b",
-              "country",
-              "folk",
-              "ambient",
-              "custom"
-            ],
-            "type_name": "nodetool.nodes.kie.audio.Suno.Style"
+            "type": "str"
           },
-          "default": "custom",
+          "default": "",
           "title": "Style",
-          "description": "Music style/genre. Use 'custom' for prompt-based generation."
+          "description": "Music style for the extension (required for custom params)."
         },
         {
-          "name": "instrumental",
+          "name": "title",
           "type": {
-            "type": "bool"
+            "type": "str"
           },
-          "default": false,
-          "title": "Instrumental",
-          "description": "Generate instrumental-only (no vocals)."
+          "default": "",
+          "title": "Title",
+          "description": "Title for the extended track (required for custom params)."
         },
         {
-          "name": "duration",
+          "name": "continue_at",
           "type": {
-            "type": "int"
+            "type": "float"
           },
-          "default": 60,
-          "title": "Duration",
-          "description": "Approximate duration in seconds.",
-          "min": 30.0,
-          "max": 480.0
+          "default": 0.0,
+          "title": "Continue At",
+          "description": "Time in seconds to start extending from (required for custom params).",
+          "min": 0.0
         },
         {
           "name": "model",
           "type": {
             "type": "enum",
             "values": [
-              "v4",
-              "v4.5",
-              "v4.5+"
+              "V4",
+              "V4_5",
+              "V4_5PLUS",
+              "V4_5ALL",
+              "V5"
             ],
-            "type_name": "nodetool.nodes.kie.audio.Suno.Model"
+            "type_name": "nodetool.nodes.kie.audio.ExtendMusic.Model"
           },
-          "default": "v4.5+",
+          "default": "V4_5PLUS",
           "title": "Model",
-          "description": "Suno model version to use."
+          "description": "Suno model version to use (must match source audio)."
+        },
+        {
+          "name": "negative_tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Tags",
+          "description": "Music styles or traits to exclude from the extension."
+        },
+        {
+          "name": "vocal_gender",
+          "type": {
+            "type": "enum",
+            "values": [
+              "",
+              "m",
+              "f"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.VocalGender"
+          },
+          "default": "",
+          "title": "Vocal Gender",
+          "description": "Vocal gender preference."
+        },
+        {
+          "name": "style_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Style Weight",
+          "description": "Strength of adherence to style (0-1)."
+        },
+        {
+          "name": "weirdness_constraint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Weirdness Constraint",
+          "description": "Creative deviation control (0-1)."
+        },
+        {
+          "name": "audio_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Audio Weight",
+          "description": "Balance weight for audio features (0-1)."
+        },
+        {
+          "name": "persona_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Persona Id",
+          "description": "Persona ID to apply (custom params only)."
         }
       ],
       "outputs": [
@@ -32165,12 +32662,283 @@
         }
       ],
       "basic_fields": [
+        "default_param_flag",
+        "audio_id",
         "prompt",
-        "lyrics",
         "style",
+        "title",
+        "continue_at",
+        "model",
+        "negative_tags",
+        "vocal_gender",
+        "style_weight",
+        "weirdness_constraint",
+        "audio_weight",
+        "persona_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Generate Music",
+      "description": "Generate music using Suno AI via Kie.ai.\n\n    kie, suno, music, audio, ai, generation, vocals, instrumental\n\n    Creates full tracks with vocals and instrumentals using Suno models.\n    Supports custom mode for strict lyric control and non-custom mode for easy prompts.\n\n    Use cases:\n    - Generate background music for projects\n    - Create AI-composed songs with vocals\n    - Produce instrumentals for content\n    - Generate music in various genres and styles",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.GenerateMusic",
+      "properties": [
+        {
+          "name": "custom_mode",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Custom Mode",
+          "description": "Enable custom mode for detailed control over style and title."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Music description or lyrics. In custom mode, this is used as lyrics when instrumental is false. In non-custom mode, this is the core idea."
+        },
+        {
+          "name": "style",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Style",
+          "description": "Music style specification (required in custom mode)."
+        },
+        {
+          "name": "title",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Title",
+          "description": "Track title (required in custom mode, max 80 characters)."
+        },
+        {
+          "name": "instrumental",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Instrumental",
+          "description": "Generate instrumental-only (no vocals)."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "V4",
+              "V4_5",
+              "V4_5PLUS",
+              "V4_5ALL",
+              "V5"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.GenerateMusic.Model"
+          },
+          "default": "V4_5PLUS",
+          "title": "Model",
+          "description": "Suno model version to use."
+        },
+        {
+          "name": "negative_tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Tags",
+          "description": "Music styles or traits to exclude from the generated audio."
+        },
+        {
+          "name": "vocal_gender",
+          "type": {
+            "type": "enum",
+            "values": [
+              "",
+              "m",
+              "f"
+            ],
+            "type_name": "nodetool.nodes.kie.audio.VocalGender"
+          },
+          "default": "",
+          "title": "Vocal Gender",
+          "description": "Vocal gender preference (custom mode only)."
+        },
+        {
+          "name": "style_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Style Weight",
+          "description": "Strength of adherence to style (0-1)."
+        },
+        {
+          "name": "weirdness_constraint",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Weirdness Constraint",
+          "description": "Creative deviation control (0-1)."
+        },
+        {
+          "name": "audio_weight",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Audio Weight",
+          "description": "Balance weight for audio features (0-1)."
+        },
+        {
+          "name": "persona_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Persona Id",
+          "description": "Persona ID to apply (custom mode only)."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "custom_mode",
+        "prompt",
+        "style",
+        "title",
         "instrumental",
-        "duration",
-        "model"
+        "model",
+        "negative_tags",
+        "vocal_gender",
+        "style_weight",
+        "weirdness_constraint",
+        "audio_weight",
+        "persona_id"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Replace Music Section",
+      "description": "Replace a section of a generated Suno track.\n\n    kie, suno, music, replace, edit, infill\n\n    Regenerates a time range and blends it into the original track.",
+      "namespace": "kie.audio",
+      "node_type": "kie.audio.ReplaceMusicSection",
+      "properties": [
+        {
+          "name": "task_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Task Id",
+          "description": "Original music task ID."
+        },
+        {
+          "name": "audio_id",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Audio Id",
+          "description": "Audio ID to replace."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Prompt describing the replacement segment content."
+        },
+        {
+          "name": "tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Tags",
+          "description": "Music style tags."
+        },
+        {
+          "name": "title",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Title",
+          "description": "Music title."
+        },
+        {
+          "name": "infill_start_s",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Infill Start S",
+          "description": "Start time point for replacement (seconds).",
+          "min": 0.0
+        },
+        {
+          "name": "infill_end_s",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Infill End S",
+          "description": "End time point for replacement (seconds).",
+          "min": 0.0
+        },
+        {
+          "name": "negative_tags",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Tags",
+          "description": "Excluded music styles for the replacement segment."
+        },
+        {
+          "name": "full_lyrics",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Full Lyrics",
+          "description": "Full lyrics after modification."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "audio"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "task_id",
+        "audio_id",
+        "prompt",
+        "tags",
+        "title",
+        "infill_start_s",
+        "infill_end_s",
+        "negative_tags",
+        "full_lyrics"
       ],
       "expose_as_tool": true
     },
@@ -38920,6 +39688,11 @@
     {
       "package_name": "nodetool-base",
       "name": "Index PDFs.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": ".DS_Store",
       "path": ""
     },
     {

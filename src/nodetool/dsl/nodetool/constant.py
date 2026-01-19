@@ -209,14 +209,14 @@ class DateTime(SingleOutputGraphNode[types.Datetime], GraphNode[types.Datetime])
     second: int | OutputHandle[int] = connect_field(
         default=0, description="Second of the datetime"
     )
-    microsecond: int | OutputHandle[int] = connect_field(
-        default=0, description="Microsecond of the datetime"
+    millisecond: int | OutputHandle[int] = connect_field(
+        default=0, description="Millisecond of the datetime"
     )
     tzinfo: str | OutputHandle[str] = connect_field(
         default="UTC", description="Timezone of the datetime"
     )
     utc_offset: int | OutputHandle[int] = connect_field(
-        default=0, description="UTC offset of the datetime"
+        default=0, description="UTC offset of the datetime in minutes"
     )
 
     @classmethod

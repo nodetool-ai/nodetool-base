@@ -119,4 +119,5 @@ artifacts = [
     "assets/nodetool-base/Album Cover Creator.jpg",
     "assets/nodetool-base/Social Media Calendar Filler.jpg",
     "assets/nodetool-base/Learning Path Generator.jpg",
+    "assets/nodetool-base/.DS_Store",
 ]

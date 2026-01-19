@@ -790,6 +790,8 @@ class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
     The filename can include time and date variables:
     %Y - Year, %m - Month, %d - Day
     %H - Hour, %M - Minute, %S - Second
+
+    Supported formats: mp3, wav, ogg, flac, aac, m4a
     """
 
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
@@ -804,6 +806,17 @@ class SaveAudioFile(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
     filename: str | OutputHandle[str] = connect_field(
         default="",
         description="\n        Name of the file to save.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
+    )
+    FORMAT_MAP: dict[str, str] | OutputHandle[dict[str, str]] = connect_field(
+        default={
+            ".mp3": "mp3",
+            ".wav": "wav",
+            ".ogg": "ogg",
+            ".flac": "flac",
+            ".aac": "adts",
+            ".m4a": "ipod",
+        },
+        description=None,
     )
 
     @classmethod
