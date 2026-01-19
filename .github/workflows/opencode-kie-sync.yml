@@ -60,7 +60,7 @@ jobs:
             - `.github/opencode-memory/features.md`
 
             ## Step 2: Discover New Models
-            1. Browse https://kie.ai/market for new or featured models
+            1. Browse https://kie.ai/market and https://docs.kie.ai/llms.txt for new or featured models
             2. Focus on models released in the last 30 days or trending providers
             3. Check `src/nodetool/nodes/kie/image.py`, `video.py`, and `audio.py` for existing nodes
             4. Pick 1-3 new models that are not already in the codebase
