@@ -35,6 +35,18 @@ Repository configured with OpenCode memory and automated Kie.ai sync workflow.
 
 ---
 
+## 2026-01-19 - Ideogram Character Models
+
+- **Model IDs:**
+  - `ideogram/character`
+  - `ideogram/character-edit`
+
+- **Category:** image
+
+- **Description:** Added support for Ideogram character generation (placing characters from reference images into new scenes) and character editing (inpainting specific regions while maintaining character consistency) via Kie.ai API.
+
+---
+
 ## 2026-01-15 - ElevenLabs Text-to-Speech
 
 - Model ID: `elevenlabs/text-to-speech-turbo-2-5`

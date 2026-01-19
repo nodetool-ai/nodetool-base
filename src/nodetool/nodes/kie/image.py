@@ -1734,6 +1734,233 @@ class IdeogramCharacterRemix(KieBaseNode):
         )
 
 
+class IdeogramCharacter(KieBaseNode):
+    """Generate images with consistent characters using Ideogram via Kie.ai.
+
+    kie, ideogram, character, image generation, ai, consistency
+
+    Ideogram Character generates images with character consistency using
+    reference images and text prompts.
+
+    Use cases:
+    - Create images with consistent characters
+    - Generate character variations in different settings
+    - Create character-focused artwork
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="Text description for the image generation.",
+    )
+
+    reference_images: list[ImageRef] = Field(
+        default=[],
+        description="Reference images for character guidance.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        REALISTIC = "REALISTIC"
+        FICTION = "FICTION"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The size of the output image.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Undesired elements to exclude from the image.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="RNG seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/character"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        reference_image_urls = []
+        for ref_img in self.reference_images:
+            if ref_img.is_set():
+                url = await self._upload_image(context, ref_img)
+                reference_image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "reference_image_urls": reference_image_urls,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "image_size": self.image_size.value,
+            "num_images": "1",
+            "negative_prompt": self.negative_prompt,
+            "seed": self.seed,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramCharacterEdit(KieBaseNode):
+    """Edit characters in images using Ideogram via Kie.ai.
+
+    kie, ideogram, character-edit, image editing, ai, inpaint
+
+    Ideogram Character Edit allows you to edit specific regions of images
+    while maintaining character consistency using reference images and masks.
+
+    Use cases:
+    - Edit character clothing or accessories
+    - Change character expressions or poses
+    - Inpaint specific regions with character consistency
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="Text description of the changes to make.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The base image to edit.",
+    )
+
+    mask: ImageRef = Field(
+        default=ImageRef(),
+        description="The mask image indicating regions to edit.",
+    )
+
+    reference_images: list[ImageRef] = Field(
+        default=[],
+        description="Reference images for character guidance.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        REALISTIC = "REALISTIC"
+        FICTION = "FICTION"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    seed: int = Field(
+        default=0,
+        description="RNG seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/character-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        if not self.mask.is_set():
+            raise ValueError("Mask is required")
+
+        image_url = await self._upload_image(context, self.image)
+        mask_url = await self._upload_image(context, self.mask)
+
+        reference_image_urls = []
+        for ref_img in self.reference_images:
+            if ref_img.is_set():
+                url = await self._upload_image(context, ref_img)
+                reference_image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "mask_url": mask_url,
+            "reference_image_urls": reference_image_urls,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "num_images": "1",
+            "seed": self.seed,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
 class IdeogramV3Reframe(KieBaseNode):
     """Reframe images using Ideogram v3 via Kie.ai.
 

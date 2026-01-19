@@ -18,32 +18,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
     """
 
-    Generate vector representations of text for semantic analysis.
-    embeddings, similarity, search, clustering, classification
+        Generate vector representations of text for semantic analysis.
+        embeddings, similarity, search, clustering, classification
 
-    Uses OpenAI's embedding models to create dense vector representations of text.
-    These vectors capture semantic meaning, enabling:
-    - Semantic search
-    - Text clustering
-    - Document classification
-    - Recommendation systems
-    - Anomaly detection
-    - Measuring text similarity and diversity
+        Uses OpenAI's embedding models to create dense vector representations of text.
+        These vectors capture semantic meaning, enabling:
+        - Semantic search
+        - Text clustering
+        - Document classification
+        - Recommendation systems
+        - Anomaly detection
+        - Measuring text similarity and diversity
     """
 
-    EmbeddingModel: typing.ClassVar[type] = (
-        nodetool.nodes.openai.text.Embedding.EmbeddingModel
-    )
+    EmbeddingModel: typing.ClassVar[type] = nodetool.nodes.openai.text.Embedding.EmbeddingModel
 
-    input: str | OutputHandle[str] = connect_field(default="", description=None)
-    model: nodetool.nodes.openai.text.Embedding.EmbeddingModel = Field(
-        default=nodetool.nodes.openai.text.Embedding.EmbeddingModel.TEXT_EMBEDDING_3_SMALL,
-        description=None,
-    )
+    input: str | OutputHandle[str] = connect_field(default='', description=None)
+    model: nodetool.nodes.openai.text.Embedding.EmbeddingModel = Field(default=nodetool.nodes.openai.text.Embedding.EmbeddingModel.TEXT_EMBEDDING_3_SMALL, description=None)
     chunk_size: int | OutputHandle[int] = connect_field(default=4096, description=None)
 
     @classmethod
@@ -61,20 +55,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.openai.text
 from nodetool.workflows.base_node import BaseNode
 
-
 class WebSearch(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    🔍 OpenAI Web Search - Searches the web using OpenAI's web search capabilities.
+        🔍 OpenAI Web Search - Searches the web using OpenAI's web search capabilities.
 
-    This node uses an OpenAI model equipped with web search functionality
-    (like gpt-4o with search preview) to answer queries based on current web information.
-    Requires an OpenAI API key.
+        This node uses an OpenAI model equipped with web search functionality
+        (like gpt-4o with search preview) to answer queries based on current web information.
+        Requires an OpenAI API key.
     """
 
-    query: str | OutputHandle[str] = connect_field(
-        default="", description="The search query to execute."
-    )
+    query: str | OutputHandle[str] = connect_field(default='', description='The search query to execute.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -83,3 +74,5 @@ class WebSearch(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

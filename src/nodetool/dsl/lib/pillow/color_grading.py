@@ -18,59 +18,33 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class CDL(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    ASC CDL (Color Decision List) color correction.
-    cdl, slope, offset, power, saturation, asc, color decision list
+        ASC CDL (Color Decision List) color correction.
+        cdl, slope, offset, power, saturation, asc, color decision list
 
-    Use cases:
-    - Apply industry-standard CDL color correction
-    - Exchange color grades between different software
-    - Apply precise mathematical color transformations
-    - Create consistent looks across multiple shots
+        Use cases:
+        - Apply industry-standard CDL color correction
+        - Exchange color grades between different software
+        - Apply precise mathematical color transformations
+        - Create consistent looks across multiple shots
 
-    Formula: output = (input * slope + offset) ^ power
-    Followed by saturation adjustment.
+        Formula: output = (input * slope + offset) ^ power
+        Followed by saturation adjustment.
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to color correct.",
-    )
-    slope_r: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Red slope (multiplier)."
-    )
-    slope_g: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Green slope (multiplier)."
-    )
-    slope_b: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Blue slope (multiplier)."
-    )
-    offset_r: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Red offset (addition)."
-    )
-    offset_g: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Green offset (addition)."
-    )
-    offset_b: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Blue offset (addition)."
-    )
-    power_r: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Red power (gamma)."
-    )
-    power_g: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Green power (gamma)."
-    )
-    power_b: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Blue power (gamma)."
-    )
-    saturation: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Saturation adjustment."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to color correct.')
+    slope_r: float | OutputHandle[float] = connect_field(default=1.0, description='Red slope (multiplier).')
+    slope_g: float | OutputHandle[float] = connect_field(default=1.0, description='Green slope (multiplier).')
+    slope_b: float | OutputHandle[float] = connect_field(default=1.0, description='Blue slope (multiplier).')
+    offset_r: float | OutputHandle[float] = connect_field(default=0.0, description='Red offset (addition).')
+    offset_g: float | OutputHandle[float] = connect_field(default=0.0, description='Green offset (addition).')
+    offset_b: float | OutputHandle[float] = connect_field(default=0.0, description='Blue offset (addition).')
+    power_r: float | OutputHandle[float] = connect_field(default=1.0, description='Red power (gamma).')
+    power_g: float | OutputHandle[float] = connect_field(default=1.0, description='Green power (gamma).')
+    power_b: float | OutputHandle[float] = connect_field(default=1.0, description='Blue power (gamma).')
+    saturation: float | OutputHandle[float] = connect_field(default=1.0, description='Saturation adjustment.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -87,33 +61,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class ColorBalance(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Adjust color temperature and tint for white balance correction.
-    white balance, temperature, tint, color balance, warm, cool
+        Adjust color temperature and tint for white balance correction.
+        white balance, temperature, tint, color balance, warm, cool
 
-    Use cases:
-    - Correct white balance in photos and video
-    - Warm up or cool down the overall image
-    - Fix color casts from mixed lighting
-    - Create mood through color temperature shifts
+        Use cases:
+        - Correct white balance in photos and video
+        - Warm up or cool down the overall image
+        - Fix color casts from mixed lighting
+        - Create mood through color temperature shifts
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to adjust.",
-    )
-    temperature: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Color temperature. Positive = warmer (orange), negative = cooler (blue).",
-    )
-    tint: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Color tint. Positive = magenta, negative = green."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to adjust.')
+    temperature: float | OutputHandle[float] = connect_field(default=0.0, description='Color temperature. Positive = warmer (orange), negative = cooler (blue).')
+    tint: float | OutputHandle[float] = connect_field(default=0.0, description='Color tint. Positive = magenta, negative = green.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -130,50 +93,28 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class Curves(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    RGB curves adjustment with control points for precise tonal control.
-    curves, rgb, tonal, contrast, levels
+        RGB curves adjustment with control points for precise tonal control.
+        curves, rgb, tonal, contrast, levels
 
-    Use cases:
-    - Create custom contrast curves
-    - Adjust specific tonal ranges precisely
-    - Create cross-processed or stylized looks
-    - Match the tonal characteristics of film stocks
+        Use cases:
+        - Create custom contrast curves
+        - Adjust specific tonal ranges precisely
+        - Create cross-processed or stylized looks
+        - Match the tonal characteristics of film stocks
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to adjust.",
-    )
-    black_point: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Input black point (lifts shadows)."
-    )
-    white_point: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Input white point (compresses highlights)."
-    )
-    shadows: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Shadow curve adjustment."
-    )
-    midtones: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Midtone curve adjustment (gamma)."
-    )
-    highlights: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Highlight curve adjustment."
-    )
-    red_midtones: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Red channel midtone adjustment."
-    )
-    green_midtones: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Green channel midtone adjustment."
-    )
-    blue_midtones: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Blue channel midtone adjustment."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to adjust.')
+    black_point: float | OutputHandle[float] = connect_field(default=0.0, description='Input black point (lifts shadows).')
+    white_point: float | OutputHandle[float] = connect_field(default=1.0, description='Input white point (compresses highlights).')
+    shadows: float | OutputHandle[float] = connect_field(default=0.0, description='Shadow curve adjustment.')
+    midtones: float | OutputHandle[float] = connect_field(default=0.0, description='Midtone curve adjustment (gamma).')
+    highlights: float | OutputHandle[float] = connect_field(default=0.0, description='Highlight curve adjustment.')
+    red_midtones: float | OutputHandle[float] = connect_field(default=0.0, description='Red channel midtone adjustment.')
+    green_midtones: float | OutputHandle[float] = connect_field(default=0.0, description='Green channel midtone adjustment.')
+    blue_midtones: float | OutputHandle[float] = connect_field(default=0.0, description='Blue channel midtone adjustment.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -190,44 +131,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class Exposure(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Comprehensive tonal exposure controls similar to Lightroom/Camera Raw.
-    exposure, contrast, highlights, shadows, whites, blacks, tonal
+        Comprehensive tonal exposure controls similar to Lightroom/Camera Raw.
+        exposure, contrast, highlights, shadows, whites, blacks, tonal
 
-    Use cases:
-    - Correct over/underexposed images
-    - Recover highlight and shadow detail
-    - Adjust overall contrast and tonal range
-    - Fine-tune the brightness of specific tonal regions
+        Use cases:
+        - Correct over/underexposed images
+        - Recover highlight and shadow detail
+        - Adjust overall contrast and tonal range
+        - Fine-tune the brightness of specific tonal regions
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to adjust.",
-    )
-    exposure: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Exposure adjustment in stops. Affects entire image."
-    )
-    contrast: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Contrast adjustment. Affects midtone separation."
-    )
-    highlights: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Highlight recovery/boost. Affects brightest areas."
-    )
-    shadows: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Shadow recovery/darken. Affects darkest areas."
-    )
-    whites: float | OutputHandle[float] = connect_field(
-        default=0.0, description="White point adjustment. Sets the brightest white."
-    )
-    blacks: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Black point adjustment. Sets the darkest black."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to adjust.')
+    exposure: float | OutputHandle[float] = connect_field(default=0.0, description='Exposure adjustment in stops. Affects entire image.')
+    contrast: float | OutputHandle[float] = connect_field(default=0.0, description='Contrast adjustment. Affects midtone separation.')
+    highlights: float | OutputHandle[float] = connect_field(default=0.0, description='Highlight recovery/boost. Affects brightest areas.')
+    shadows: float | OutputHandle[float] = connect_field(default=0.0, description='Shadow recovery/darken. Affects darkest areas.')
+    whites: float | OutputHandle[float] = connect_field(default=0.0, description='White point adjustment. Sets the brightest white.')
+    blacks: float | OutputHandle[float] = connect_field(default=0.0, description='Black point adjustment. Sets the darkest black.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -244,38 +167,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class FilmLook(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Apply preset cinematic film looks with adjustable intensity.
-    film look, cinematic, preset, movie, lut, color grade
+        Apply preset cinematic film looks with adjustable intensity.
+        film look, cinematic, preset, movie, lut, color grade
 
-    Use cases:
-    - Quickly apply popular cinematic color grades
-    - Create consistent looks across multiple images
-    - Emulate classic film stock characteristics
-    - Starting point for custom color grading
+        Use cases:
+        - Quickly apply popular cinematic color grades
+        - Create consistent looks across multiple images
+        - Emulate classic film stock characteristics
+        - Starting point for custom color grading
     """
 
-    FilmLookPreset: typing.ClassVar[type] = (
-        nodetool.nodes.lib.pillow.color_grading.FilmLookPreset
-    )
+    FilmLookPreset: typing.ClassVar[type] = nodetool.nodes.lib.pillow.color_grading.FilmLookPreset
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to apply the film look to.",
-    )
-    preset: nodetool.nodes.lib.pillow.color_grading.FilmLookPreset = Field(
-        default=nodetool.nodes.lib.pillow.color_grading.FilmLookPreset.TEAL_ORANGE,
-        description="The cinematic look to apply.",
-    )
-    intensity: float | OutputHandle[float] = connect_field(
-        default=1.0,
-        description="Intensity of the effect. 0=none, 1=full, 2=exaggerated.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to apply the film look to.')
+    preset: nodetool.nodes.lib.pillow.color_grading.FilmLookPreset = Field(default=nodetool.nodes.lib.pillow.color_grading.FilmLookPreset.TEAL_ORANGE, description='The cinematic look to apply.')
+    intensity: float | OutputHandle[float] = connect_field(default=1.0, description='Intensity of the effect. 0=none, 1=full, 2=exaggerated.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -292,44 +201,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class HSLAdjust(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Adjust hue, saturation, and luminance for specific color ranges.
-    hsl, hue, saturation, luminance, selective color, color range
+        Adjust hue, saturation, and luminance for specific color ranges.
+        hsl, hue, saturation, luminance, selective color, color range
 
-    Use cases:
-    - Shift specific colors (e.g., make blues more cyan)
-    - Desaturate or boost individual color ranges
-    - Brighten or darken specific colors
-    - Create color-specific looks (teal skies, orange skin)
+        Use cases:
+        - Shift specific colors (e.g., make blues more cyan)
+        - Desaturate or boost individual color ranges
+        - Brighten or darken specific colors
+        - Create color-specific looks (teal skies, orange skin)
     """
 
-    ColorRange: typing.ClassVar[type] = (
-        nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange
-    )
+    ColorRange: typing.ClassVar[type] = nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to adjust.",
-    )
-    color_range: nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange = Field(
-        default=nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange.REDS,
-        description="The color range to adjust.",
-    )
-    hue_shift: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Hue shift for the selected color range. -1 to 1 = -180 to +180 degrees.",
-    )
-    saturation: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Saturation adjustment for the selected color range."
-    )
-    luminance: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Luminance adjustment for the selected color range."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to adjust.')
+    color_range: nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange = Field(default=nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange.REDS, description='The color range to adjust.')
+    hue_shift: float | OutputHandle[float] = connect_field(default=0.0, description='Hue shift for the selected color range. -1 to 1 = -180 to +180 degrees.')
+    saturation: float | OutputHandle[float] = connect_field(default=0.0, description='Saturation adjustment for the selected color range.')
+    luminance: float | OutputHandle[float] = connect_field(default=0.0, description='Luminance adjustment for the selected color range.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -346,65 +237,35 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class LiftGammaGain(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Three-way color corrector for shadows, midtones, and highlights.
-    lift, gamma, gain, color wheels, primary correction, shadows, midtones, highlights
+        Three-way color corrector for shadows, midtones, and highlights.
+        lift, gamma, gain, color wheels, primary correction, shadows, midtones, highlights
 
-    Use cases:
-    - Apply the industry-standard three-way color correction
-    - Balance colors across different tonal ranges
-    - Create color contrast between shadows and highlights
-    - Match footage from different sources
+        Use cases:
+        - Apply the industry-standard three-way color correction
+        - Balance colors across different tonal ranges
+        - Create color contrast between shadows and highlights
+        - Match footage from different sources
 
-    Lift affects shadows, Gamma affects midtones, Gain affects highlights.
-    Each control adjusts both luminance and color for its tonal range.
+        Lift affects shadows, Gamma affects midtones, Gain affects highlights.
+        Each control adjusts both luminance and color for its tonal range.
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to color correct.",
-    )
-    lift_r: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Red lift (shadow color shift)."
-    )
-    lift_g: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Green lift (shadow color shift)."
-    )
-    lift_b: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Blue lift (shadow color shift)."
-    )
-    lift_master: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Master lift (shadow brightness)."
-    )
-    gamma_r: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Red gamma (midtone adjustment)."
-    )
-    gamma_g: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Green gamma (midtone adjustment)."
-    )
-    gamma_b: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Blue gamma (midtone adjustment)."
-    )
-    gamma_master: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Master gamma (overall midtones)."
-    )
-    gain_r: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Red gain (highlight multiplier)."
-    )
-    gain_g: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Green gain (highlight multiplier)."
-    )
-    gain_b: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Blue gain (highlight multiplier)."
-    )
-    gain_master: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Master gain (overall brightness)."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to color correct.')
+    lift_r: float | OutputHandle[float] = connect_field(default=0.0, description='Red lift (shadow color shift).')
+    lift_g: float | OutputHandle[float] = connect_field(default=0.0, description='Green lift (shadow color shift).')
+    lift_b: float | OutputHandle[float] = connect_field(default=0.0, description='Blue lift (shadow color shift).')
+    lift_master: float | OutputHandle[float] = connect_field(default=0.0, description='Master lift (shadow brightness).')
+    gamma_r: float | OutputHandle[float] = connect_field(default=1.0, description='Red gamma (midtone adjustment).')
+    gamma_g: float | OutputHandle[float] = connect_field(default=1.0, description='Green gamma (midtone adjustment).')
+    gamma_b: float | OutputHandle[float] = connect_field(default=1.0, description='Blue gamma (midtone adjustment).')
+    gamma_master: float | OutputHandle[float] = connect_field(default=1.0, description='Master gamma (overall midtones).')
+    gain_r: float | OutputHandle[float] = connect_field(default=1.0, description='Red gain (highlight multiplier).')
+    gain_g: float | OutputHandle[float] = connect_field(default=1.0, description='Green gain (highlight multiplier).')
+    gain_b: float | OutputHandle[float] = connect_field(default=1.0, description='Blue gain (highlight multiplier).')
+    gain_master: float | OutputHandle[float] = connect_field(default=1.0, description='Master gain (overall brightness).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -421,36 +282,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
-class SaturationVibrance(
-    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
-):
+class SaturationVibrance(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Adjust color saturation with vibrance protection for skin tones.
-    saturation, vibrance, color intensity, skin tones
+        Adjust color saturation with vibrance protection for skin tones.
+        saturation, vibrance, color intensity, skin tones
 
-    Use cases:
-    - Boost color intensity without clipping
-    - Protect skin tones while increasing saturation
-    - Create desaturated or oversaturated looks
-    - Fine-tune color intensity independently
+        Use cases:
+        - Boost color intensity without clipping
+        - Protect skin tones while increasing saturation
+        - Create desaturated or oversaturated looks
+        - Fine-tune color intensity independently
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to adjust.",
-    )
-    saturation: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Global saturation. 0 = no change, -1 = grayscale, 1 = 2x saturation.",
-    )
-    vibrance: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Smart saturation that protects already-saturated colors and skin tones.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to adjust.')
+    saturation: float | OutputHandle[float] = connect_field(default=0.0, description='Global saturation. 0 = no change, -1 = grayscale, 1 = 2x saturation.')
+    vibrance: float | OutputHandle[float] = connect_field(default=0.0, description='Smart saturation that protects already-saturated colors and skin tones.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -467,42 +314,25 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class SplitToning(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Apply different color tints to shadows and highlights.
-    split toning, shadows, highlights, tint, duotone
+        Apply different color tints to shadows and highlights.
+        split toning, shadows, highlights, tint, duotone
 
-    Use cases:
-    - Create classic teal and orange looks
-    - Add color contrast between shadows and highlights
-    - Emulate film processing techniques
-    - Create stylized color-graded images
+        Use cases:
+        - Create classic teal and orange looks
+        - Add color contrast between shadows and highlights
+        - Emulate film processing techniques
+        - Create stylized color-graded images
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to apply split toning to.",
-    )
-    shadow_hue: float | OutputHandle[float] = connect_field(
-        default=200.0,
-        description="Hue of shadow tint in degrees (0=red, 120=green, 240=blue).",
-    )
-    shadow_saturation: float | OutputHandle[float] = connect_field(
-        default=0.3, description="Saturation of shadow tint."
-    )
-    highlight_hue: float | OutputHandle[float] = connect_field(
-        default=40.0, description="Hue of highlight tint in degrees."
-    )
-    highlight_saturation: float | OutputHandle[float] = connect_field(
-        default=0.3, description="Saturation of highlight tint."
-    )
-    balance: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Balance between shadows (-1) and highlights (+1)."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to apply split toning to.')
+    shadow_hue: float | OutputHandle[float] = connect_field(default=200.0, description='Hue of shadow tint in degrees (0=red, 120=green, 240=blue).')
+    shadow_saturation: float | OutputHandle[float] = connect_field(default=0.3, description='Saturation of shadow tint.')
+    highlight_hue: float | OutputHandle[float] = connect_field(default=40.0, description='Hue of highlight tint in degrees.')
+    highlight_saturation: float | OutputHandle[float] = connect_field(default=0.3, description='Saturation of highlight tint.')
+    balance: float | OutputHandle[float] = connect_field(default=0.0, description='Balance between shadows (-1) and highlights (+1).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -519,41 +349,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.pillow.color_grading
 from nodetool.workflows.base_node import BaseNode
 
-
 class Vignette(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Apply cinematic vignette effect to darken or lighten image edges.
-    vignette, edge, darken, focus, cinematic
+        Apply cinematic vignette effect to darken or lighten image edges.
+        vignette, edge, darken, focus, cinematic
 
-    Use cases:
-    - Draw attention to the center of the image
-    - Create a classic cinematic look
-    - Simulate lens light falloff
-    - Add subtle framing to photos
+        Use cases:
+        - Draw attention to the center of the image
+        - Create a classic cinematic look
+        - Simulate lens light falloff
+        - Add subtle framing to photos
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to apply vignette to.",
-    )
-    amount: float | OutputHandle[float] = connect_field(
-        default=0.5,
-        description="Vignette amount. Positive darkens edges, negative lightens.",
-    )
-    midpoint: float | OutputHandle[float] = connect_field(
-        default=0.5,
-        description="Distance from center where vignette begins (0=center, 1=edges).",
-    )
-    roundness: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Shape of vignette. 0=oval matching image aspect, 1=circular, -1=rectangular.",
-    )
-    feather: float | OutputHandle[float] = connect_field(
-        default=0.5, description="Softness of the vignette edge."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to apply vignette to.')
+    amount: float | OutputHandle[float] = connect_field(default=0.5, description='Vignette amount. Positive darkens edges, negative lightens.')
+    midpoint: float | OutputHandle[float] = connect_field(default=0.5, description='Distance from center where vignette begins (0=center, 1=edges).')
+    roundness: float | OutputHandle[float] = connect_field(default=0.0, description='Shape of vignette. 0=oval matching image aspect, 1=circular, -1=rectangular.')
+    feather: float | OutputHandle[float] = connect_field(default=0.5, description='Softness of the vignette edge.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -562,3 +375,5 @@ class Vignette(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef])
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
