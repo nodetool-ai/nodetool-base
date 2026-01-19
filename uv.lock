@@ -4157,7 +4157,7 @@ wheels = [
 
 [[package]]
 name = "nodetool-base"
-version = "0.6.2rc26"
+version = "0.6.2rc27"
 source = { editable = "." }
 dependencies = [
     { name = "browser-use" },
@@ -4205,7 +4205,7 @@ requires-dist = [
     { name = "langchain-openai" },
     { name = "moto", marker = "extra == 'dev'", specifier = ">=5.0.3" },
     { name = "mypy", marker = "extra == 'dev'", specifier = ">=1.9.0" },
-    { name = "nodetool-core", specifier = "==0.6.2rc26" },
+    { name = "nodetool-core", specifier = "==0.6.2rc27" },
     { name = "plyer", specifier = "==2.1.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=8.0.0" },
     { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.5" },
@@ -4221,7 +4221,7 @@ provides-extras = ["dev"]
 
 [[package]]
 name = "nodetool-core"
-version = "0.6.2rc26"
+version = "0.6.2rc27"
 source = { registry = "https://nodetool-ai.github.io/nodetool-registry/simple/" }
 dependencies = [
     { name = "aioconsole" },
@@ -4233,6 +4233,7 @@ dependencies = [
     { name = "attrs" },
     { name = "authlib" },
     { name = "boto3" },
+    { name = "brotli" },
     { name = "bs4" },
     { name = "chromadb" },
     { name = "claude-agent-sdk" },
@@ -4325,7 +4326,7 @@ dependencies = [
     { name = "websockets" },
 ]
 wheels = [
-    { url = "https://github.com/nodetool-ai/nodetool-core/releases/download/v0.6.2-rc.26/nodetool_core-0.6.2rc26-py3-none-any.whl" },
+    { url = "https://github.com/nodetool-ai/nodetool-core/releases/download/v0.6.2-rc.27/nodetool_core-0.6.2rc27-py3-none-any.whl" },
 ]
 
 [[package]]
@@ -10520,8 +10521,8 @@ name = "secretstorage"
 version = "3.5.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
-    { name = "cryptography" },
-    { name = "jeepney" },
+    { name = "cryptography", marker = "sys_platform != 'darwin' and sys_platform != 'win32'" },
+    { name = "jeepney", marker = "sys_platform != 'darwin' and sys_platform != 'win32'" },
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/1c/03/e834bcd866f2f8a49a85eaff47340affa3bfa391ee9912a952a1faa68c7b/secretstorage-3.5.0.tar.gz", hash = "sha256:f04b8e4689cbce351744d5537bf6b1329c6fc68f91fa666f60a380edddcd11be", size = 19884, upload-time = "2025-11-23T19:02:53.191Z" }
 wheels = [

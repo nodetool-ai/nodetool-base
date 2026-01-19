@@ -2095,3 +2095,62 @@ class NanoBananaEdit(KieBaseNode):
         return await context.image_from_bytes(
             image_bytes, metadata={"task_id": task_id}
         )
+
+
+class FourOImageAPI(KieBaseNode):
+    """Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, openai, gpt-4o, 4o, image generation, ai, text-to-image
+
+    4o Image API leverages OpenAI's GPT-4o model for high-fidelity image
+    generation with accurate text rendering and flexible style control.
+
+    Use cases:
+    - Generate images from text descriptions
+    - Create images with embedded text
+    - Produce high-quality visuals with GPT-4o's understanding
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "4o Image API"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    def _get_model(self) -> str:
+        return "4o-image-api"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
