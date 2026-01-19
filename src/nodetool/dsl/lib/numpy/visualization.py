@@ -18,31 +18,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.numpy.visualization
 from nodetool.workflows.base_node import BaseNode
 
-
 class PlotArray(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Create a plot visualization of array data.
-    array, plot, visualization, graph
+        Create a plot visualization of array data.
+        array, plot, visualization, graph
 
-    Use cases:
-    - Visualize trends in array data
-    - Create charts for reports or dashboards
-    - Debug array outputs in workflows
+        Use cases:
+        - Visualize trends in array data
+        - Create charts for reports or dashboards
+        - Debug array outputs in workflows
     """
 
-    PlotType: typing.ClassVar[type] = (
-        nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType
-    )
+    PlotType: typing.ClassVar[type] = nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType
 
-    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(
-        default=types.NPArray(type="np_array", value=None, dtype="<i8", shape=(1,)),
-        description="Array to plot",
-    )
-    plot_type: nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType = Field(
-        default=nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType.LINE,
-        description="Type of plot to create",
-    )
+    values: types.NPArray | OutputHandle[types.NPArray] = connect_field(default=types.NPArray(type='np_array', value=None, dtype='<i8', shape=(1,)), description='Array to plot')
+    plot_type: nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType = Field(default=nodetool.nodes.lib.numpy.visualization.PlotArray.PlotType.LINE, description='Type of plot to create')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -51,3 +42,5 @@ class PlotArray(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

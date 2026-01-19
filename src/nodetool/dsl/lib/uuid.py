@@ -18,7 +18,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
 
-
 class FormatUUID(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Format a UUID string in different representations.
@@ -32,13 +31,8 @@ class FormatUUID(SingleOutputGraphNode[str], GraphNode[str]):
 
     UUIDFormat: typing.ClassVar[type] = nodetool.nodes.lib.uuid.UUIDFormat
 
-    uuid_string: str | OutputHandle[str] = connect_field(
-        default="", description="UUID string to format"
-    )
-    format: nodetool.nodes.lib.uuid.UUIDFormat = Field(
-        default=nodetool.nodes.lib.uuid.UUIDFormat.STANDARD,
-        description="Output format (standard, hex, urn, int, bytes_hex)",
-    )
+    uuid_string: str | OutputHandle[str] = connect_field(default='', description='UUID string to format')
+    format: nodetool.nodes.lib.uuid.UUIDFormat = Field(default=nodetool.nodes.lib.uuid.UUIDFormat.STANDARD, description='Output format (standard, hex, urn, int, bytes_hex)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -54,7 +48,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
-
 
 class GenerateUUID1(SingleOutputGraphNode[str], GraphNode[str]):
     """
@@ -82,7 +75,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
 
-
 class GenerateUUID3(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Generate a name-based UUID using MD5 (version 3).
@@ -94,12 +86,8 @@ class GenerateUUID3(SingleOutputGraphNode[str], GraphNode[str]):
         - Map names to unique identifiers
     """
 
-    namespace: str | OutputHandle[str] = connect_field(
-        default="dns", description="Namespace (dns, url, oid, x500, or a UUID string)"
-    )
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="Name to generate UUID from"
-    )
+    namespace: str | OutputHandle[str] = connect_field(default='dns', description='Namespace (dns, url, oid, x500, or a UUID string)')
+    name: str | OutputHandle[str] = connect_field(default='', description='Name to generate UUID from')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -115,7 +103,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
-
 
 class GenerateUUID4(SingleOutputGraphNode[str], GraphNode[str]):
     """
@@ -143,7 +130,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
 
-
 class GenerateUUID5(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Generate a name-based UUID using SHA-1 (version 5).
@@ -155,12 +141,8 @@ class GenerateUUID5(SingleOutputGraphNode[str], GraphNode[str]):
         - Map names to unique identifiers with better collision resistance
     """
 
-    namespace: str | OutputHandle[str] = connect_field(
-        default="dns", description="Namespace (dns, url, oid, x500, or a UUID string)"
-    )
-    name: str | OutputHandle[str] = connect_field(
-        default="", description="Name to generate UUID from"
-    )
+    namespace: str | OutputHandle[str] = connect_field(default='dns', description='Namespace (dns, url, oid, x500, or a UUID string)')
+    name: str | OutputHandle[str] = connect_field(default='', description='Name to generate UUID from')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -177,7 +159,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
 
-
 class IsValidUUID(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Check if a string is a valid UUID.
@@ -189,9 +170,7 @@ class IsValidUUID(SingleOutputGraphNode[bool], GraphNode[bool]):
         - Conditional workflow based on UUID validity
     """
 
-    uuid_string: str | OutputHandle[str] = connect_field(
-        default="", description="String to check"
-    )
+    uuid_string: str | OutputHandle[str] = connect_field(default='', description='String to check')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -208,7 +187,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.uuid
 from nodetool.workflows.base_node import BaseNode
 
-
 class ParseUUID(SingleOutputGraphNode[dict], GraphNode[dict]):
     """
     Parse and validate a UUID string.
@@ -220,9 +198,7 @@ class ParseUUID(SingleOutputGraphNode[dict], GraphNode[dict]):
         - Extract UUID version information
     """
 
-    uuid_string: str | OutputHandle[str] = connect_field(
-        default="", description="UUID string to parse"
-    )
+    uuid_string: str | OutputHandle[str] = connect_field(default='', description='UUID string to parse')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -231,3 +207,5 @@ class ParseUUID(SingleOutputGraphNode[dict], GraphNode[dict]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

@@ -18,36 +18,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
 class CreateTable(GraphNode[nodetool.nodes.lib.sqlite.CreateTable.OutputType]):
     """
 
-    Create a new SQLite table with specified columns.
-    sqlite, database, table, create, schema
+        Create a new SQLite table with specified columns.
+        sqlite, database, table, create, schema
 
-    Use cases:
-    - Initialize database schema for flashcards
-    - Set up tables for persistent storage
-    - Create memory structures for agents
+        Use cases:
+        - Initialize database schema for flashcards
+        - Set up tables for persistent storage
+        - Create memory structures for agents
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
-    table_name: str | OutputHandle[str] = connect_field(
-        default="flashcards", description="Name of the table to create"
-    )
-    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
-        default=types.RecordType(type="record_type", columns=[]),
-        description="Column definitions",
-    )
-    add_primary_key: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Automatically make first integer column PRIMARY KEY AUTOINCREMENT",
-    )
-    if_not_exists: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Only create table if it doesn't exist"
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
+    table_name: str | OutputHandle[str] = connect_field(default='flashcards', description='Name of the table to create')
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(default=types.RecordType(type='record_type', columns=[]), description='Column definitions')
+    add_primary_key: bool | OutputHandle[bool] = connect_field(default=True, description='Automatically make first integer column PRIMARY KEY AUTOINCREMENT')
+    if_not_exists: bool | OutputHandle[bool] = connect_field(default=True, description="Only create table if it doesn't exist")
 
     @property
     def out(self) -> "CreateTableOutputs":
@@ -61,19 +48,18 @@ class CreateTable(GraphNode[nodetool.nodes.lib.sqlite.CreateTable.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class CreateTableOutputs(OutputsProxy):
     @property
     def database_name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["database_name"])
+        return typing.cast(OutputHandle[str], self['database_name'])
 
     @property
     def table_name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["table_name"])
+        return typing.cast(OutputHandle[str], self['table_name'])
 
     @property
     def columns(self) -> OutputHandle[types.RecordType]:
-        return typing.cast(OutputHandle[types.RecordType], self["columns"])
+        return typing.cast(OutputHandle[types.RecordType], self['columns'])
 
 
 import typing
@@ -82,29 +68,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
 class Delete(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Delete records from a SQLite table.
-    sqlite, database, delete, remove, drop
+        Delete records from a SQLite table.
+        sqlite, database, delete, remove, drop
 
-    Use cases:
-    - Remove flashcards
-    - Delete agent memory
-    - Clean up old data
+        Use cases:
+        - Remove flashcards
+        - Delete agent memory
+        - Clean up old data
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
-    table_name: str | OutputHandle[str] = connect_field(
-        default="flashcards", description="Name of the table to delete from"
-    )
-    where: str | OutputHandle[str] = connect_field(
-        default="",
-        description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'. REQUIRED for safety.",
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
+    table_name: str | OutputHandle[str] = connect_field(default='flashcards', description='Name of the table to delete from')
+    where: str | OutputHandle[str] = connect_field(default='', description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'. REQUIRED for safety.")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -121,28 +99,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExecuteSQL(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Execute arbitrary SQL statements for advanced operations.
-    sqlite, database, sql, execute, custom
+        Execute arbitrary SQL statements for advanced operations.
+        sqlite, database, sql, execute, custom
 
-    Use cases:
-    - Complex queries with joins
-    - Aggregate functions (COUNT, SUM, AVG)
-    - Custom SQL operations
+        Use cases:
+        - Complex queries with joins
+        - Aggregate functions (COUNT, SUM, AVG)
+        - Custom SQL operations
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
-    sql: str | OutputHandle[str] = connect_field(
-        default="SELECT * FROM flashcards", description="SQL statement to execute"
-    )
-    parameters: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description="Parameters for parameterized queries (use ? in SQL)"
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
+    sql: str | OutputHandle[str] = connect_field(default='SELECT * FROM flashcards', description='SQL statement to execute')
+    parameters: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description='Parameters for parameterized queries (use ? in SQL)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -159,22 +130,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetDatabasePath(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Get the full path to a SQLite database file.
-    sqlite, database, path, location
+        Get the full path to a SQLite database file.
+        sqlite, database, path, location
 
-    Use cases:
-    - Reference database location
-    - Verify database exists
-    - Pass path to external tools
+        Use cases:
+        - Reference database location
+        - Verify database exists
+        - Pass path to external tools
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -191,29 +159,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
 class Insert(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Insert a record into a SQLite table.
-    sqlite, database, insert, add, record
+        Insert a record into a SQLite table.
+        sqlite, database, insert, add, record
 
-    Use cases:
-    - Add new flashcards to database
-    - Store agent observations
-    - Persist workflow results
+        Use cases:
+        - Add new flashcards to database
+        - Store agent observations
+        - Persist workflow results
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
-    table_name: str | OutputHandle[str] = connect_field(
-        default="flashcards", description="Name of the table to insert into"
-    )
-    data: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={"content": "example"},
-        description="Data to insert as dict (column: value)",
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
+    table_name: str | OutputHandle[str] = connect_field(default='flashcards', description='Name of the table to insert into')
+    data: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={'content': 'example'}, description='Data to insert as dict (column: value)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -230,40 +190,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
-class Query(
-    SingleOutputGraphNode[list[dict[str, Any]]], GraphNode[list[dict[str, Any]]]
-):
+class Query(SingleOutputGraphNode[list[dict[str, Any]]], GraphNode[list[dict[str, Any]]]):
     """
 
-    Query records from a SQLite table.
-    sqlite, database, query, select, search, retrieve
+        Query records from a SQLite table.
+        sqlite, database, query, select, search, retrieve
 
-    Use cases:
-    - Retrieve flashcards for review
-    - Search agent memory
-    - Fetch stored data
+        Use cases:
+        - Retrieve flashcards for review
+        - Search agent memory
+        - Fetch stored data
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
-    table_name: str | OutputHandle[str] = connect_field(
-        default="flashcards", description="Name of the table to query"
-    )
-    where: str | OutputHandle[str] = connect_field(
-        default="", description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
-    )
-    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(
-        default=types.RecordType(type="record_type", columns=[]),
-        description="Columns to select",
-    )
-    order_by: str | OutputHandle[str] = connect_field(
-        default="", description="ORDER BY clause (without 'ORDER BY' keyword)"
-    )
-    limit: int | OutputHandle[int] = connect_field(
-        default=0, description="Maximum number of rows to return (0 = no limit)"
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
+    table_name: str | OutputHandle[str] = connect_field(default='flashcards', description='Name of the table to query')
+    where: str | OutputHandle[str] = connect_field(default='', description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'")
+    columns: types.RecordType | OutputHandle[types.RecordType] = connect_field(default=types.RecordType(type='record_type', columns=[]), description='Columns to select')
+    order_by: str | OutputHandle[str] = connect_field(default='', description="ORDER BY clause (without 'ORDER BY' keyword)")
+    limit: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of rows to return (0 = no limit)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -280,32 +224,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.sqlite
 from nodetool.workflows.base_node import BaseNode
 
-
 class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Update records in a SQLite table.
-    sqlite, database, update, modify, change
+        Update records in a SQLite table.
+        sqlite, database, update, modify, change
 
-    Use cases:
-    - Update flashcard content
-    - Modify stored records
-    - Change agent memory
+        Use cases:
+        - Update flashcard content
+        - Modify stored records
+        - Change agent memory
     """
 
-    database_name: str | OutputHandle[str] = connect_field(
-        default="memory.db", description="Name of the SQLite database file"
-    )
-    table_name: str | OutputHandle[str] = connect_field(
-        default="flashcards", description="Name of the table to update"
-    )
-    data: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={"content": "updated"},
-        description="Data to update as dict (column: new_value)",
-    )
-    where: str | OutputHandle[str] = connect_field(
-        default="", description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
-    )
+    database_name: str | OutputHandle[str] = connect_field(default='memory.db', description='Name of the SQLite database file')
+    table_name: str | OutputHandle[str] = connect_field(default='flashcards', description='Name of the table to update')
+    data: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={'content': 'updated'}, description='Data to update as dict (column: new_value)')
+    where: str | OutputHandle[str] = connect_field(default='', description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'")
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -314,3 +248,5 @@ class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
