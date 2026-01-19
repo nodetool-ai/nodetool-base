@@ -120,4 +120,5 @@ artifacts = [
     "assets/nodetool-base/Social Media Calendar Filler.jpg",
     "assets/nodetool-base/Learning Path Generator.jpg",
     "assets/nodetool-base/Pokemon Maker.jpg",
+    "assets/nodetool-base/.DS_Store",
 ]
