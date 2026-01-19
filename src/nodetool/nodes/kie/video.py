@@ -1956,7 +1956,11 @@ class RunwayBaseNode(KieVideoBaseNode):
     def _get_error_message(self, status_response: dict[str, Any]) -> str:
         """Extract error message from Runway response."""
         data = status_response.get("data", {})
-        return data.get("failMsg") or status_response.get("msg") or "Unknown error occurred"
+        return (
+            data.get("failMsg")
+            or status_response.get("msg")
+            or "Unknown error occurred"
+        )
 
     async def _poll_status(
         self, session: aiohttp.ClientSession, api_key: str, task_id: str
@@ -2094,7 +2098,9 @@ class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2170,7 +2176,9 @@ class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
         if context is None:
             raise ValueError("Context is required for image upload")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
             "imageUrl": image_url,
@@ -2246,7 +2254,9 @@ class RunwayGen3AlphaExtendVideo(RunwayBaseNode):
         if not self.video_url:
             raise ValueError("video_url is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second extension cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second extension cannot be generated with 1080p resolution"
+            )
         return {
             "video_url": self.video_url,
             "prompt": self.prompt,
@@ -2325,7 +2335,9 @@ class RunwayAlephVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2605,3 +2617,167 @@ class KlingMotionControl(KieVideoBaseNode):
             "character_orientation": self.character_orientation.value,
             "mode": self.mode.value,
         }
+
+
+class Kling27TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Kuaishou's Kling 2.7 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, text-to-video, 2.7
+
+    Kling 2.7 produces high-quality videos from text descriptions with
+    improved motion, realistic lighting, and enhanced cinematic detail.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.7 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    duration: int = Field(
+        default=5,
+        description="Video duration in seconds.",
+        ge=1,
+        le=10,
+    )
+
+    class Resolution(str, Enum):
+        R768P = "768P"
+        R1080P = "1080P"
+
+    resolution: Resolution = Field(
+        default=Resolution.R768P,
+        description="Video resolution.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling-2.7/text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "resolution": self.resolution.value,
+            "duration": str(self.duration),
+            "seed": self.seed,
+        }
+
+
+class SeedanceV2LiteTextToVideo(SeedanceBaseNode):
+    """Bytedance 2.0 - text-to-video-lite via Kie.ai.
+
+    kie, seedance, bytedance, video generation, ai, text-to-video, lite, 2.0
+
+    Seedance V2 Lite offers efficient text-to-video generation
+    with good quality and faster processing times.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance V2 Lite Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    def _get_model(self) -> str:
+        return "seedance/v2-lite-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        params = self._get_common_params()
+        params["prompt"] = self.prompt
+        return params
+
+
+class Hailuo24TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using MiniMax's Hailuo 2.4 model via Kie.ai.
+
+    kie, hailuo, minimax, video generation, ai, text-to-video, 2.4
+
+    Hailuo 2.4 offers improved quality text-to-video generation with
+    realistic motion, detailed textures, and cinematic quality.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 2.4 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D6 = "6"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D6,
+        description="The duration of the video in seconds. 10s is not supported for 1080p.",
+    )
+
+    class Resolution(str, Enum):
+        R768P = "768P"
+        R1080P = "1080P"
+
+    resolution: Resolution = Field(
+        default=Resolution.R768P,
+        description="Video resolution.",
+    )
+
+    def _get_model(self) -> str:
+        return "hailuo/2-4-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if (
+            self.resolution == self.Resolution.R1080P
+            and self.duration == self.Duration.D10
+        ):
+            raise ValueError("10s duration is not supported for 1080p resolution.")
+
+        return {
+            "prompt": self.prompt,
+            "resolution": self.resolution.value,
+            "duration": self.duration.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> VideoRef:
+        video_bytes, task_id = await self._execute_video_task(context)
+        return await context.video_from_bytes(video_bytes)
