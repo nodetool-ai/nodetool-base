@@ -21,7 +21,7 @@ Perfect for photographers, filmmakers, and content creators.
 Note: If imports fail, run 'nodetool package scan && nodetool codegen' to regenerate DSL.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, ImageInput
 from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.kie.image import (
@@ -112,7 +112,7 @@ def build_photo_to_cinematic_video():
     # Option 1: Google Veo 3.1 - Highest quality
     veo_video = Veo31ImageToVideo(
         image1=upscaled_source.output,
-        prompt=f"{motion_prompt.output}. {style_prompt.output}",
+        prompt=f"{motion_prompt.output}. {style_prompt.output}. Duration: {video_duration.output} seconds.",
         model=Veo31ImageToVideo.Model.VEO3,
         aspect_ratio=Veo31ImageToVideo.AspectRatio.RATIO_16_9,
     )
@@ -120,7 +120,7 @@ def build_photo_to_cinematic_video():
     # Option 2: Hailuo Pro - Excellent motion
     hailuo_video = HailuoImageToVideoPro(
         image=upscaled_source.output,
-        prompt=f"{motion_prompt.output}. {style_prompt.output}",
+        prompt=f"{motion_prompt.output}. {style_prompt.output}. Duration: {video_duration.output} seconds.",
         duration=HailuoImageToVideoPro.Duration.D6,
         resolution=HailuoImageToVideoPro.Resolution.R1080P,
     )
@@ -128,7 +128,7 @@ def build_photo_to_cinematic_video():
     # Option 3: Kling 2.5 Turbo - Fast and high quality
     kling_video = Kling25TurboImageToVideo(
         image=upscaled_source.output,
-        prompt=f"{motion_prompt.output}. {style_prompt.output}",
+        prompt=f"{motion_prompt.output}. {style_prompt.output}. Duration: {video_duration.output} seconds.",
         duration=Kling25TurboImageToVideo.Duration.D5,
         cfg_scale=0.5,
     )
@@ -136,7 +136,7 @@ def build_photo_to_cinematic_video():
     # Option 4: Seedance Pro - Bytedance quality
     seedance_video = SeedanceV1ProImageToVideo(
         image1=upscaled_source.output,
-        prompt=f"{motion_prompt.output}. {style_prompt.output}",
+        prompt=f"{motion_prompt.output}. {style_prompt.output}. Duration: {video_duration.output} seconds.",
         duration=SeedanceV1ProImageToVideo.Duration.D5,
         resolution=SeedanceV1ProImageToVideo.Resolution.R720P,
         remove_watermark=True,
@@ -145,7 +145,7 @@ def build_photo_to_cinematic_video():
     # Option 5: Wan 2.6 - Alibaba quality
     wan_video = Wan26ImageToVideo(
         image1=upscaled_source.output,
-        prompt=f"{motion_prompt.output}. {style_prompt.output}",
+        prompt=f"{motion_prompt.output}. {style_prompt.output}. Duration: {video_duration.output} seconds.",
         duration=Wan26ImageToVideo.Duration.D5,
         resolution=Wan26ImageToVideo.Resolution.R1080P,
     )
@@ -200,6 +200,12 @@ def build_photo_to_cinematic_video():
         description="Enhanced source image (2x upscaled)",
     )
 
+    crisp_source = Output(
+        name="crisp_upscaled_image",
+        value=crisp_upscaled.output,
+        description="Alternative enhancement (Recraft Crisp Upscale)",
+    )
+
     landscape_frame = Output(
         name="landscape_reframe",
         value=reframed_landscape.output,
@@ -219,6 +225,7 @@ def build_photo_to_cinematic_video():
         seedance_output,
         wan_output,
         enhanced_source,
+        crisp_source,
         landscape_frame,
         portrait_frame,
     )

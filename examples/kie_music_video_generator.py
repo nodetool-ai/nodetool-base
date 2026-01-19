@@ -1,27 +1,27 @@
 """
 Example: Kie Music Video Generator
 
-This workflow creates complete music videos by generating AI music with Suno
+This workflow creates complete music videos by generating AI music with GenerateMusic
 and matching video content with Kie.ai's video models. Similar to Weavy-style
 audio-visual creation.
 
-1. Generate original music track with Suno
+1. Generate original music track with GenerateMusic (Suno via Kie.ai)
 2. Create visual concept images matching the mood
 3. Transform images into dynamic video sequences
 4. Combine music and video for final output
 
-The workflow pattern:
-    [MusicPrompt] -> [Suno] (generate track)
-                        -> [Imagen4/Seedream] (visual concepts)
-                            -> [Veo31ImageToVideo] (animate)
-                                -> [AddAudio] -> [Output]
+    The workflow pattern:
+        [MusicPrompt] -> [GenerateMusic] (generate track)
+                            -> [Imagen4/Seedream] (visual concepts)
+                                -> [Veo31ImageToVideo] (animate)
+                                    -> [AddAudio] -> [Output]
 
 Perfect for musicians, content creators, and music video producers.
 
 Note: If imports fail, run 'nodetool package scan && nodetool codegen' to regenerate DSL.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, IntegerInput
 from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.nodetool.text import FormatText
@@ -39,7 +39,7 @@ from nodetool.dsl.kie.video import (
     HailuoImageToVideoPro,
     Sora2ProImageToVideo,
 )
-from nodetool.dsl.kie.audio import Suno
+from nodetool.dsl.kie.audio import GenerateMusic
 from nodetool.metadata.types import LanguageModel, Provider
 
 
@@ -102,23 +102,21 @@ With the future on our side""",
     )
 
     # --- Generate Music Track ---
-    music_track = Suno(
-        prompt=f"{song_concept.output}. Style: {music_genre.output}",
-        lyrics=song_lyrics.output,
-        style=Suno.Style.ELECTRONIC,
+    music_track = GenerateMusic(
+        custom_mode=True,
+        prompt=song_lyrics.output,
+        title="Neon Dreams",
+        style=music_genre.output,
         instrumental=False,
-        duration=120,  # 2 minutes
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Generate Instrumental Version ---
-    instrumental_track = Suno(
-        prompt=f"{song_concept.output}. Style: {music_genre.output}",
-        lyrics="",
-        style=Suno.Style.ELECTRONIC,
+    instrumental_track = GenerateMusic(
+        prompt=f"{song_concept.output}. Style: {music_genre.output}. (~2 minutes)",
+        style=music_genre.output,
         instrumental=True,
-        duration=120,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Generate Visual Scene Concepts ---
@@ -325,7 +323,7 @@ if __name__ == "__main__":
     print()
     print("Kie Models Used:")
     print("  Audio:")
-    print("    - Suno V4.5+ - Music generation with vocals")
+    print("    - GenerateMusic (Suno via Kie.ai) - Music generation with vocals")
     print()
     print("  Image Generation:")
     print("    - Imagen 4 (Google) - Opening scene")
@@ -341,7 +339,7 @@ if __name__ == "__main__":
     print()
     print("Workflow pattern:")
     print("  [Song Concept + Lyrics]")
-    print("      -> [Suno] (generate music)")
+    print("      -> [GenerateMusic] (generate music)")
     print("          -> [Imagen4/Seedream/Flux] (scene images)")
     print("              -> [Veo/Kling/Hailuo/Sora] (animate)")
     print("                  -> [AddAudio] (combine)")

@@ -4,16 +4,16 @@ Example: Kie Talking Head Presenter
 This workflow creates AI-powered talking head videos using Kie.ai's avatar
 generation. Perfect for creating explainer videos, tutorials, and presentations.
 
-1. Generate or provide a presenter image
-2. Provide or generate audio for the script
-3. Animate the presenter with lip-sync using Kling Avatar
-4. Add background music with Suno
+    1. Generate or provide a presenter image
+    2. Provide or generate audio for the script
+    3. Animate the presenter with lip-sync using Kling Avatar
+    4. Add background music with GenerateMusic (Suno via Kie.ai)
 
-The workflow pattern:
-    [ImageInput/TextToImage] -> [AudioInput] (script audio)
-                                   -> [KlingAIAvatarPro] (lip-sync)
-                                       -> [Suno] (background music)
-                                           -> [AddAudio] -> [Output]
+    The workflow pattern:
+        [ImageInput/TextToImage] -> [AudioInput] (script audio)
+                                       -> [KlingAIAvatarPro] (lip-sync)
+                                           -> [GenerateMusic] (background music)
+                                               -> [AddAudio] -> [Output]
 
 Ideal for corporate training, YouTube creators, and marketing presentations.
 
@@ -21,7 +21,7 @@ Note: If you need AI text-to-speech, run 'nodetool package scan && nodetool code
 to get access to ElevenLabsTextToSpeech after DSL regeneration.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, ImageInput, AudioInput
 from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.kie.image import (
@@ -33,7 +33,7 @@ from nodetool.dsl.kie.video import (
     KlingAIAvatarStandard,
     KlingImageToVideo,
 )
-from nodetool.dsl.kie.audio import Suno
+from nodetool.dsl.kie.audio import GenerateMusic
 from nodetool.dsl.nodetool.video import AddAudio
 from nodetool.metadata.types import ImageRef, AudioRef
 
@@ -42,11 +42,11 @@ def build_talking_head_presenter():
     """
     Create an AI talking head presenter video.
 
-    This function builds a workflow graph that:
+        This function builds a workflow graph that:
     1. Generates a professional presenter portrait or uses provided image
     2. Uses provided audio narration for lip-sync
     3. Animates the presenter with Kling AI Avatar
-    4. Adds background music with Suno
+        4. Adds background music with GenerateMusic (Suno via Kie.ai)
     5. Outputs the final presentation video
 
     Returns:
@@ -95,7 +95,7 @@ def build_talking_head_presenter():
 
     # --- Create Talking Head Video with Kling Avatar Pro ---
     talking_head_pro = KlingAIAvatarPro(
-        image=generated_presenter.output,
+        image=clean_presenter.output,
         audio=script_audio.output,
         prompt="Professional presenter speaking confidently, natural gestures, "
         "slight head movements, engaging eye contact, business presentation style",
@@ -104,7 +104,7 @@ def build_talking_head_presenter():
 
     # --- Alternative: Standard quality for faster processing ---
     talking_head_standard = KlingAIAvatarStandard(
-        image=generated_presenter.output,
+        image=clean_presenter.output,
         audio=script_audio.output,
         prompt="Professional presenter speaking naturally, slight movements, "
         "engaging delivery, corporate presentation",
@@ -115,18 +115,17 @@ def build_talking_head_presenter():
     simple_animation = KlingImageToVideo(
         prompt="Professional presenter with subtle head movements, "
         "slight nodding, engaging eye contact, professional pose",
-        image1=generated_presenter.output,
+        image1=clean_presenter.output,
         duration=5,
         sound=False,
     )
 
     # --- Generate Background Music ---
-    background_music = Suno(
-        prompt=music_style.output,
-        style=Suno.Style.AMBIENT,
+    background_music = GenerateMusic(
+        prompt=f"{music_style.output} (~60 seconds)",
+        style="ambient",
         instrumental=True,
-        duration=60,  # Match approximate video length
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Combine Video with Background Music ---
@@ -174,6 +173,12 @@ def build_talking_head_presenter():
         description="Background music track",
     )
 
+    presenter_image_input = Output(
+        name="presenter_image_input",
+        value=presenter_image.output,
+        description="Optional input portrait image (if provided)",
+    )
+
     return create_graph(
         main_output,
         video_only,
@@ -181,6 +186,7 @@ def build_talking_head_presenter():
         simple_output,
         presenter_portrait,
         music_track,
+        presenter_image_input,
     )
 
 
@@ -211,14 +217,14 @@ if __name__ == "__main__":
     print("  - Recraft Remove Background - Clean composite")
     print("  - Kling AI Avatar Pro/Standard - Lip-sync animation")
     print("  - Kling Image-to-Video - Simple animation")
-    print("  - Suno - Background music")
+    print("  - GenerateMusic (Suno via Kie.ai) - Background music")
     print()
     print("Workflow pattern:")
     print("  [Presenter Description]")
     print("      -> [Flux2ProTextToImage] (generate presenter)")
     print("          -> [AudioInput] (pre-recorded narration)")
     print("              -> [KlingAIAvatarPro] (lip-sync)")
-    print("                  -> [Suno] (background music)")
+    print("                  -> [GenerateMusic] (background music)")
     print("                      -> [AddAudio] (combine)")
     print("                          -> [Output]")
     print()

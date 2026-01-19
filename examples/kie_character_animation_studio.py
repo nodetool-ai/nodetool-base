@@ -10,18 +10,18 @@ animation and consistent character generation.
 3. Generate character-consistent video sequences
 4. Add background music
 
-The workflow pattern:
-    [CharacterImage] -> [IdeogramCharacterRemix] (style variations)
-                           -> [KlingAIAvatarPro] (lip-sync)
-                               -> [Suno] (theme music)
-                                   -> [Output]
+    The workflow pattern:
+        [CharacterImage] -> [IdeogramCharacterRemix] (style variations)
+                               -> [KlingAIAvatarPro] (lip-sync)
+                                   -> [GenerateMusic] (theme music)
+                                       -> [Output]
 
 Perfect for animators, game developers, and digital content creators.
 
 Note: If imports fail, run 'nodetool package scan && nodetool codegen' to regenerate DSL.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
+from nodetool.dsl.graph import create_graph
 from nodetool.dsl.nodetool.input import StringInput, ImageInput, AudioInput
 from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.kie.image import (
@@ -36,7 +36,7 @@ from nodetool.dsl.kie.video import (
     KlingImageToVideo,
     InfinitalkV1,
 )
-from nodetool.dsl.kie.audio import Suno
+from nodetool.dsl.kie.audio import GenerateMusic
 from nodetool.dsl.nodetool.video import AddAudio
 from nodetool.metadata.types import ImageRef, AudioRef
 
@@ -191,13 +191,12 @@ def build_character_animation_studio():
     )
 
     # --- Generate Character Theme Music ---
-    character_theme = Suno(
-        prompt="Cute character theme music, playful melody, "
+    character_theme = GenerateMusic(
+        prompt="Cute character theme music (~30 seconds), playful melody, "
         "upbeat tempo, kid-friendly, mascot jingle, memorable tune",
-        style=Suno.Style.POP,
+        style="pop",
         instrumental=True,
-        duration=30,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Combine Talking Animation with Music ---
@@ -290,6 +289,12 @@ def build_character_animation_studio():
         description="Character theme music",
     )
 
+    character_image_input = Output(
+        name="character_image_input",
+        value=character_image.output,
+        description="Optional input character image (if provided)",
+    )
+
     return create_graph(
         talking_output,
         talking_with_music,
@@ -297,6 +302,7 @@ def build_character_animation_studio():
         waving_output,
         action_output,
         infinitalk_output,
+        character_image_input,
         base_character,
         action_pose,
         waving_pose,
@@ -341,7 +347,7 @@ if __name__ == "__main__":
     print("  - Infinitalk V1 - Alternative talking animation")
     print()
     print("Audio Generation:")
-    print("  - Suno - Character theme music")
+    print("  - GenerateMusic (Suno via Kie.ai) - Character theme music")
     print()
     print("Use Cases:")
     print("  - YouTube mascot animations")

@@ -9,10 +9,10 @@ AI video generation capabilities. It demonstrates:
 3. Add background music with AI-generated tracks
 4. Combine audio and video for final ad
 
-The workflow pattern:
-    [StringInputs] -> [Imagen4/Flux] (hero image) -> [KlingImageToVideo] (animate)
-                                                        -> [Suno] (background music)
-                                                            -> [AddAudio] -> [Output]
+    The workflow pattern:
+        [StringInputs] -> [Imagen4/Flux] (hero image) -> [KlingImageToVideo] (animate)
+                                                            -> [GenerateMusic] (background music)
+                                                                -> [AddAudio] -> [Output]
 
 Perfect for marketing teams and content creators generating social media ads.
 
@@ -24,15 +24,12 @@ from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.output import Output
 from nodetool.dsl.kie.image import (
     Imagen4Fast,
-    FluxKontext,
     TopazImageUpscale,
 )
 from nodetool.dsl.kie.video import (
     KlingImageToVideo,
-    Kling25TurboTextToVideo,
-    HailuoImageToVideoPro,
 )
-from nodetool.dsl.kie.audio import Suno
+from nodetool.dsl.kie.audio import GenerateMusic
 from nodetool.dsl.nodetool.video import AddAudio
 
 
@@ -40,11 +37,11 @@ def build_social_media_video_ad():
     """
     Generate a social media video ad with Kie AI models.
 
-    This function builds a workflow graph that:
+        This function builds a workflow graph that:
     1. Accepts product/service description and ad copy
     2. Generates a hero image using Imagen 4 Fast
     3. Transforms the image into a video clip with Kling
-    4. Adds background music with Suno
+        4. Adds background music with GenerateMusic (Suno via Kie.ai)
     5. Combines everything into a final video ad
 
     Returns:
@@ -94,14 +91,13 @@ def build_social_media_video_ad():
         sound=False,  # We'll add our own audio
     )
 
-    # --- Generate Background Music with Suno ---
-    background_music = Suno(
+    # --- Generate Background Music ---
+    background_music = GenerateMusic(
         prompt="Modern electronic advertising music, upbeat, professional, "
         "product showcase energy, corporate tech vibes",
-        style=Suno.Style.ELECTRONIC,
+        style="electronic",
         instrumental=True,
-        duration=30,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Combine Video and Audio ---
@@ -110,18 +106,6 @@ def build_social_media_video_ad():
         audio=background_music.output,
         volume=0.8,
         mix=False,
-    )
-
-    # --- Alternative: Text-to-Video Only ---
-    # For comparison, also generate a direct text-to-video version
-    text_to_video_ad = Kling25TurboTextToVideo(
-        prompt=f"Professional advertisement for {product_name.output}, "
-        f"{product_description.output}, {ad_style.output}, "
-        "cinematic product showcase, smooth camera movement, "
-        "professional lighting, high-end commercial quality",
-        duration=Kling25TurboTextToVideo.Duration.D5,
-        aspect_ratio=Kling25TurboTextToVideo.AspectRatio.V9_16,
-        cfg_scale=0.6,
     )
 
     # --- Outputs ---
@@ -137,19 +121,13 @@ def build_social_media_video_ad():
         description="High-quality hero image for static ads",
     )
 
-    alternative_ad = Output(
-        name="text_to_video_ad",
-        value=text_to_video_ad.output,
-        description="Alternative ad generated directly from text",
-    )
-
     audio_output = Output(
         name="background_music",
         value=background_music.output,
         description="Background music track for reuse",
     )
 
-    return create_graph(main_ad, hero_output, alternative_ad, audio_output)
+    return create_graph(main_ad, hero_output, audio_output)
 
 
 # Build the graph
@@ -178,14 +156,14 @@ if __name__ == "__main__":
     print("  - Topaz Image Upscale - Image enhancement")
     print("  - Kling Image-to-Video - Animation")
     print("  - Kling 2.5 Turbo Text-to-Video - Alternative")
-    print("  - Suno - Background music generation")
+    print("  - GenerateMusic (Suno via Kie.ai) - Background music generation")
     print()
     print("Workflow pattern:")
     print("  [Product Description]")
     print("      -> [Imagen4Fast] (hero image)")
     print("          -> [TopazImageUpscale] (enhance)")
     print("              -> [KlingImageToVideo] (animate)")
-    print("                  -> [Suno] (background music)")
+    print("                  -> [GenerateMusic] (background music)")
     print("                      -> [AddAudio] (combine)")
     print("                          -> [Output]")
     print()

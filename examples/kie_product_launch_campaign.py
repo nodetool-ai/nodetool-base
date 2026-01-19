@@ -10,21 +10,20 @@ product videos, social media assets, and promotional content.
 3. Generate social media assets for different platforms
 4. Produce background music for videos
 
-The workflow pattern:
-    [ProductInfo] -> [Imagen4/Flux/Seedream] (hero images)
-                        -> [KlingTextToVideo] (promo video)
-                            -> [Suno] (background music)
-                                -> [AddAudio] -> [Outputs]
+    The workflow pattern:
+        [ProductInfo] -> [Imagen4/Flux/Seedream] (hero images)
+                            -> [KlingTextToVideo] (promo video)
+                                -> [GenerateMusic] (background music)
+                                    -> [AddAudio] -> [Outputs]
 
 Perfect for marketing teams, product managers, and brand agencies.
 
 Note: If imports fail, run 'nodetool package scan && nodetool codegen' to regenerate DSL.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.input import StringInput, ImageInput
+from nodetool.dsl.graph import create_graph
+from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.output import Output
-from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.kie.image import (
     Imagen4Ultra,
     Flux2ProTextToImage,
@@ -42,9 +41,8 @@ from nodetool.dsl.kie.video import (
     HailuoTextToVideoPro,
     Sora2ProTextToVideo,
 )
-from nodetool.dsl.kie.audio import Suno
+from nodetool.dsl.kie.audio import GenerateMusic
 from nodetool.dsl.nodetool.video import AddAudio
-from nodetool.metadata.types import ImageRef
 
 
 def build_product_launch_campaign():
@@ -104,7 +102,7 @@ def build_product_launch_campaign():
         prompt=f"Professional product photography of {product_name.output}, "
         f"{product_description.output}, studio lighting, clean white background, "
         "dramatic shadows, 8K quality, advertising campaign hero shot, "
-        "ultra high resolution, photorealistic",
+        f"ultra high resolution, photorealistic. Target audience: {target_audience.output}.",
         aspect_ratio=Imagen4Ultra.AspectRatio.SQUARE,
     )
 
@@ -174,7 +172,7 @@ def build_product_launch_campaign():
         prompt=f"Cinematic product reveal video for {product_name.output}, "
         f"{product_description.output}, smooth camera movement, "
         "dramatic lighting transitions, premium tech commercial, "
-        "high production value, professional advertising quality",
+        f"high production value, professional advertising quality. Voiceover: {announcement_text.output}",
         model=Veo31TextToVideo.Model.VEO3,
         aspect_ratio=Veo31TextToVideo.AspectRatio.RATIO_16_9,
     )
@@ -210,23 +208,21 @@ def build_product_launch_campaign():
 
     # --- Audio Assets ---
     # Background music
-    campaign_music = Suno(
-        prompt=f"Modern tech product launch music, {brand_values.output}, "
+    campaign_music = GenerateMusic(
+        prompt=f"Modern tech product launch music (~60 seconds), {brand_values.output}, "
         "inspiring, innovative, futuristic corporate background music",
-        style=Suno.Style.ELECTRONIC,
+        style="electronic",
         instrumental=True,
-        duration=60,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # Energetic promo music
-    promo_music = Suno(
-        prompt=f"Upbeat product announcement jingle, {brand_values.output}, "
+    promo_music = GenerateMusic(
+        prompt=f"Upbeat product announcement jingle (~30 seconds), {brand_values.output}, "
         "catchy, modern, corporate advertising music",
-        style=Suno.Style.POP,
+        style="pop",
         instrumental=True,
-        duration=30,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Combine Video and Audio ---
@@ -282,6 +278,18 @@ def build_product_launch_campaign():
         description="Vertical social media hero (Qwen)",
     )
 
+    hero_fast_out = Output(
+        name="hero_fast",
+        value=hero_fast.output,
+        description="Fast iteration hero (Z-Image)",
+    )
+
+    hero_grok_out = Output(
+        name="hero_grok",
+        value=hero_grok.output,
+        description="Alternative style hero (Grok Imagine)",
+    )
+
     # Videos
     video_main = Output(
         name="promo_video_main",
@@ -327,6 +335,8 @@ def build_product_launch_campaign():
         hero_artistic_out,
         hero_isolated_out,
         hero_vertical_out,
+        hero_fast_out,
+        hero_grok_out,
         video_main,
         video_music,
         video_social,
@@ -375,7 +385,7 @@ if __name__ == "__main__":
     print("    - Sora 2 Pro - Stories format")
     print()
     print("  Audio Assets:")
-    print("    - Suno - Background music & promo jingles")
+    print("    - GenerateMusic (Suno via Kie.ai) - Background music & promo jingles")
     print()
     print("  Additional Processing:")
     print("    - Topaz Upscale - 4x hero enhancement")

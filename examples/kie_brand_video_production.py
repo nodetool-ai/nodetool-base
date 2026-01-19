@@ -21,10 +21,9 @@ Perfect for brand agencies, video producers, and creative directors.
 Note: If imports fail, run 'nodetool package scan && nodetool codegen' to regenerate DSL.
 """
 
-from nodetool.dsl.graph import create_graph, run_graph
-from nodetool.dsl.nodetool.input import StringInput, VideoInput
+from nodetool.dsl.graph import create_graph
+from nodetool.dsl.nodetool.input import StringInput
 from nodetool.dsl.nodetool.output import Output
-from nodetool.dsl.nodetool.text import FormatText
 from nodetool.dsl.nodetool.video import AddAudio, Transition
 from nodetool.dsl.kie.image import (
     Seedream45TextToImage,
@@ -38,8 +37,7 @@ from nodetool.dsl.kie.video import (
     Veo31ReferenceToVideo,
     TopazVideoUpscale,
 )
-from nodetool.dsl.kie.audio import Suno
-from nodetool.metadata.types import ImageRef
+from nodetool.dsl.kie.audio import GenerateMusic
 
 
 def build_brand_video_production():
@@ -184,24 +182,22 @@ def build_brand_video_production():
 
     # --- Audio Production ---
     # Background music
-    brand_music = Suno(
-        prompt=f"Corporate brand music for {brand_name.output}, {video_tone.output}, "
+    brand_music = GenerateMusic(
+        prompt=f"Corporate brand music (~60 seconds) for {brand_name.output}, {video_tone.output}, "
         "inspirational orchestral, modern corporate, emotional build, "
         "professional advertising music",
-        style=Suno.Style.AMBIENT,
+        style="ambient",
         instrumental=True,
-        duration=60,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # Epic version for dramatic videos
-    epic_music = Suno(
-        prompt=f"Epic corporate anthem for {brand_name.output}, {video_tone.output}, "
+    epic_music = GenerateMusic(
+        prompt=f"Epic corporate anthem (~60 seconds) for {brand_name.output}, {video_tone.output}, "
         "cinematic, building crescendo, powerful emotional impact",
-        style=Suno.Style.CLASSICAL,
+        style="classical",
         instrumental=True,
-        duration=60,
-        model=Suno.Model.V4_5_PLUS,
+        model=GenerateMusic.Model.V4_5PLUS,
     )
 
     # --- Combine Video and Audio ---
@@ -301,6 +297,18 @@ def build_brand_video_production():
         description="Epic brand music track",
     )
 
+    transition_demo_out = Output(
+        name="transition_demo",
+        value=transition_demo.output,
+        description="Simple transition between two generated videos",
+    )
+
+    narration_out = Output(
+        name="narration_script",
+        value=narration_script.output,
+        description="Narration script for voice-over (connect to TTS in a downstream workflow)",
+    )
+
     return create_graph(
         main_video,
         music_video,
@@ -308,12 +316,14 @@ def build_brand_video_production():
         multishot_out,
         reference_out,
         text_video_out,
+        transition_demo_out,
         frame_1_out,
         frame_2_out,
         frame_3_out,
         frame_4_out,
         music_out,
         epic_out,
+        narration_out,
     )
 
 
@@ -355,7 +365,7 @@ if __name__ == "__main__":
     print("     - Topaz Video Upscale - 4K quality")
     print()
     print("  4. Audio Production:")
-    print("     - Suno - Original brand music (ambient + epic)")
+    print("     - GenerateMusic (Suno via Kie.ai) - Original brand music (ambient + epic)")
     print()
     print("Use Cases:")
     print("  - Brand manifesto videos")
