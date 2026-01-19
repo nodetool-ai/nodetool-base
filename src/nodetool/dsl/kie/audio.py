@@ -18,7 +18,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddInstrumental(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Add instrumental accompaniment to uploaded audio via Suno AI.
@@ -31,39 +30,15 @@ class AddInstrumental(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Aud
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.AddInstrumental.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Source audio to upload for instrumental generation.",
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="", description="Title of the generated music."
-    )
-    tags: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Music styles or tags to include in the generated music.",
-    )
-    negative_tags: str | OutputHandle[str] = connect_field(
-        default="", description="Music styles or characteristics to exclude."
-    )
-    model: nodetool.nodes.kie.audio.AddInstrumental.Model = Field(
-        default=nodetool.nodes.kie.audio.AddInstrumental.Model.V4_5PLUS,
-        description="Suno model version to use.",
-    )
-    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(
-        default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED,
-        description="Vocal gender preference.",
-    )
-    style_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Strength of adherence to style (0-1)."
-    )
-    weirdness_constraint: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Creative deviation control (0-1)."
-    )
-    audio_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Balance weight for audio features (0-1)."
-    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Source audio to upload for instrumental generation.')
+    title: str | OutputHandle[str] = connect_field(default='', description='Title of the generated music.')
+    tags: str | OutputHandle[str] = connect_field(default='', description='Music styles or tags to include in the generated music.')
+    negative_tags: str | OutputHandle[str] = connect_field(default='', description='Music styles or characteristics to exclude.')
+    model: nodetool.nodes.kie.audio.AddInstrumental.Model = Field(default=nodetool.nodes.kie.audio.AddInstrumental.Model.V4_5PLUS, description='Suno model version to use.')
+    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED, description='Vocal gender preference.')
+    style_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Strength of adherence to style (0-1).')
+    weirdness_constraint: float | OutputHandle[float] = connect_field(default=0.0, description='Creative deviation control (0-1).')
+    audio_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Balance weight for audio features (0-1).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -80,7 +55,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddVocals(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Add AI vocals to uploaded audio via Suno AI.
@@ -93,44 +67,17 @@ class AddVocals(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.AddVocals.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Source audio to upload for vocal generation.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Prompt describing lyric content and singing style."
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="", description="Title of the generated music."
-    )
-    style: str | OutputHandle[str] = connect_field(
-        default="", description="Music style for vocal generation."
-    )
-    tags: str | OutputHandle[str] = connect_field(
-        default="", description="Optional music tags to include in the generation."
-    )
-    negative_tags: str | OutputHandle[str] = connect_field(
-        default="", description="Excluded music styles or elements."
-    )
-    model: nodetool.nodes.kie.audio.AddVocals.Model = Field(
-        default=nodetool.nodes.kie.audio.AddVocals.Model.V4_5PLUS,
-        description="Suno model version to use.",
-    )
-    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(
-        default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED,
-        description="Vocal gender preference.",
-    )
-    style_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Strength of adherence to style (0-1)."
-    )
-    weirdness_constraint: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Creative deviation control (0-1)."
-    )
-    audio_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Balance weight for audio features (0-1)."
-    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Source audio to upload for vocal generation.')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Prompt describing lyric content and singing style.')
+    title: str | OutputHandle[str] = connect_field(default='', description='Title of the generated music.')
+    style: str | OutputHandle[str] = connect_field(default='', description='Music style for vocal generation.')
+    tags: str | OutputHandle[str] = connect_field(default='', description='Optional music tags to include in the generation.')
+    negative_tags: str | OutputHandle[str] = connect_field(default='', description='Excluded music styles or elements.')
+    model: nodetool.nodes.kie.audio.AddVocals.Model = Field(default=nodetool.nodes.kie.audio.AddVocals.Model.V4_5PLUS, description='Suno model version to use.')
+    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED, description='Vocal gender preference.')
+    style_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Strength of adherence to style (0-1).')
+    weirdness_constraint: float | OutputHandle[float] = connect_field(default=0.0, description='Creative deviation control (0-1).')
+    audio_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Balance weight for audio features (0-1).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -147,7 +94,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class BoostMusicStyle(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
     Boost music style text using Suno V4_5 style generation.
@@ -155,9 +101,7 @@ class BoostMusicStyle(SingleOutputGraphNode[types.TextRef], GraphNode[types.Text
         kie, suno, music, style, prompt, enhancement
     """
 
-    content: str | OutputHandle[str] = connect_field(
-        default="", description="Style description to enhance."
-    )
+    content: str | OutputHandle[str] = connect_field(default='', description='Style description to enhance.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -174,7 +118,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class ConvertToWav(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Convert a generated music track to WAV format.
@@ -182,12 +125,8 @@ class ConvertToWav(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         kie, suno, music, audio, wav, conversion
     """
 
-    task_id: str | OutputHandle[str] = connect_field(
-        default="", description="Original music task ID."
-    )
-    audio_id: str | OutputHandle[str] = connect_field(
-        default="", description="Audio ID to convert to WAV."
-    )
+    task_id: str | OutputHandle[str] = connect_field(default='', description='Original music task ID.')
+    audio_id: str | OutputHandle[str] = connect_field(default='', description='Audio ID to convert to WAV.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -204,7 +143,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class CoverAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Cover an uploaded audio track using Suno AI via Kie.ai.
@@ -218,53 +156,19 @@ class CoverAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.CoverAudio.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
-    custom_mode: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Enable custom mode for detailed control over style and title.",
-    )
-    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
-        default=types.AudioRef(
-            type="audio", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Source audio to upload for covering.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Music description or lyrics. In custom mode, this is used as lyrics when instrumental is false. In non-custom mode, this is the core idea.",
-    )
-    style: str | OutputHandle[str] = connect_field(
-        default="", description="Music style specification (required in custom mode)."
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="", description="Track title (required in custom mode)."
-    )
-    instrumental: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Generate instrumental-only (no vocals)."
-    )
-    model: nodetool.nodes.kie.audio.CoverAudio.Model = Field(
-        default=nodetool.nodes.kie.audio.CoverAudio.Model.V4_5PLUS,
-        description="Suno model version to use.",
-    )
-    negative_tags: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Music styles or traits to exclude from the generated audio.",
-    )
-    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(
-        default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED,
-        description="Vocal gender preference (custom mode only).",
-    )
-    style_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Strength of adherence to style (0-1)."
-    )
-    weirdness_constraint: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Creative deviation control (0-1)."
-    )
-    audio_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Balance weight for audio features (0-1)."
-    )
-    persona_id: str | OutputHandle[str] = connect_field(
-        default="", description="Persona ID to apply (custom mode only)."
-    )
+    custom_mode: bool | OutputHandle[bool] = connect_field(default=False, description='Enable custom mode for detailed control over style and title.')
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(default=types.AudioRef(type='audio', uri='', asset_id=None, data=None, metadata=None), description='Source audio to upload for covering.')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Music description or lyrics. In custom mode, this is used as lyrics when instrumental is false. In non-custom mode, this is the core idea.')
+    style: str | OutputHandle[str] = connect_field(default='', description='Music style specification (required in custom mode).')
+    title: str | OutputHandle[str] = connect_field(default='', description='Track title (required in custom mode).')
+    instrumental: bool | OutputHandle[bool] = connect_field(default=False, description='Generate instrumental-only (no vocals).')
+    model: nodetool.nodes.kie.audio.CoverAudio.Model = Field(default=nodetool.nodes.kie.audio.CoverAudio.Model.V4_5PLUS, description='Suno model version to use.')
+    negative_tags: str | OutputHandle[str] = connect_field(default='', description='Music styles or traits to exclude from the generated audio.')
+    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED, description='Vocal gender preference (custom mode only).')
+    style_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Strength of adherence to style (0-1).')
+    weirdness_constraint: float | OutputHandle[float] = connect_field(default=0.0, description='Creative deviation control (0-1).')
+    audio_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Balance weight for audio features (0-1).')
+    persona_id: str | OutputHandle[str] = connect_field(default='', description='Persona ID to apply (custom mode only).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -281,10 +185,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class ElevenLabsTextToSpeech(
-    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
-):
+class ElevenLabsTextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Generate speech using ElevenLabs AI via Kie.ai.
 
@@ -302,36 +203,14 @@ class ElevenLabsTextToSpeech(
 
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model
 
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="The text to convert to speech."
-    )
-    voice: str | OutputHandle[str] = connect_field(
-        default="Rachel",
-        description="The voice ID to use for synthesis. Common voices: Rachel, Adam, Bella, Antoni.",
-    )
-    stability: float | OutputHandle[float] = connect_field(
-        default=0.5,
-        description="Stability of the voice output. Lower values are more expressive, higher values are more consistent.",
-    )
-    similarity_boost: float | OutputHandle[float] = connect_field(
-        default=0.75,
-        description="How closely to clone the voice characteristics. Higher values match the voice more closely.",
-    )
-    style: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Style parameter for voice expression. Range 0.0 to 1.0.",
-    )
-    speed: float | OutputHandle[float] = connect_field(
-        default=1.0, description="Speed of the speech. Range 0.5 to 1.5."
-    )
-    language_code: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Language code for multilingual TTS (e.g., 'en', 'es', 'fr', 'de'). Leave empty for auto-detection.",
-    )
-    model: nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model = Field(
-        default=nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model.TURBO_2_5,
-        description="ElevenLabs model version to use.",
-    )
+    text: str | OutputHandle[str] = connect_field(default='', description='The text to convert to speech.')
+    voice: str | OutputHandle[str] = connect_field(default='Rachel', description='The voice ID to use for synthesis. Common voices: Rachel, Adam, Bella, Antoni.')
+    stability: float | OutputHandle[float] = connect_field(default=0.5, description='Stability of the voice output. Lower values are more expressive, higher values are more consistent.')
+    similarity_boost: float | OutputHandle[float] = connect_field(default=0.75, description='How closely to clone the voice characteristics. Higher values match the voice more closely.')
+    style: float | OutputHandle[float] = connect_field(default=0.0, description='Style parameter for voice expression. Range 0.0 to 1.0.')
+    speed: float | OutputHandle[float] = connect_field(default=1.0, description='Speed of the speech. Range 0.5 to 1.5.')
+    language_code: str | OutputHandle[str] = connect_field(default='', description="Language code for multilingual TTS (e.g., 'en', 'es', 'fr', 'de'). Leave empty for auto-detection.")
+    model: nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model = Field(default=nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model.TURBO_2_5, description='ElevenLabs model version to use.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -348,7 +227,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
 class ExtendMusic(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Extend music using Suno AI via Kie.ai.
@@ -362,51 +240,19 @@ class ExtendMusic(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRe
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.ExtendMusic.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
-    default_param_flag: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="If true, use custom parameters (prompt/style/title/continue_at). If false, inherit parameters from the source audio.",
-    )
-    audio_id: str | OutputHandle[str] = connect_field(
-        default="", description="Audio ID to extend."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Description of the desired extension content."
-    )
-    style: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Music style for the extension (required for custom params).",
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Title for the extended track (required for custom params).",
-    )
-    continue_at: float | OutputHandle[float] = connect_field(
-        default=0.0,
-        description="Time in seconds to start extending from (required for custom params).",
-    )
-    model: nodetool.nodes.kie.audio.ExtendMusic.Model = Field(
-        default=nodetool.nodes.kie.audio.ExtendMusic.Model.V4_5PLUS,
-        description="Suno model version to use (must match source audio).",
-    )
-    negative_tags: str | OutputHandle[str] = connect_field(
-        default="", description="Music styles or traits to exclude from the extension."
-    )
-    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(
-        default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED,
-        description="Vocal gender preference.",
-    )
-    style_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Strength of adherence to style (0-1)."
-    )
-    weirdness_constraint: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Creative deviation control (0-1)."
-    )
-    audio_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Balance weight for audio features (0-1)."
-    )
-    persona_id: str | OutputHandle[str] = connect_field(
-        default="", description="Persona ID to apply (custom params only)."
-    )
+    default_param_flag: bool | OutputHandle[bool] = connect_field(default=False, description='If true, use custom parameters (prompt/style/title/continue_at). If false, inherit parameters from the source audio.')
+    audio_id: str | OutputHandle[str] = connect_field(default='', description='Audio ID to extend.')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Description of the desired extension content.')
+    style: str | OutputHandle[str] = connect_field(default='', description='Music style for the extension (required for custom params).')
+    title: str | OutputHandle[str] = connect_field(default='', description='Title for the extended track (required for custom params).')
+    continue_at: float | OutputHandle[float] = connect_field(default=0.0, description='Time in seconds to start extending from (required for custom params).')
+    model: nodetool.nodes.kie.audio.ExtendMusic.Model = Field(default=nodetool.nodes.kie.audio.ExtendMusic.Model.V4_5PLUS, description='Suno model version to use (must match source audio).')
+    negative_tags: str | OutputHandle[str] = connect_field(default='', description='Music styles or traits to exclude from the extension.')
+    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED, description='Vocal gender preference.')
+    style_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Strength of adherence to style (0-1).')
+    weirdness_constraint: float | OutputHandle[float] = connect_field(default=0.0, description='Creative deviation control (0-1).')
+    audio_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Balance weight for audio features (0-1).')
+    persona_id: str | OutputHandle[str] = connect_field(default='', description='Persona ID to apply (custom params only).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -423,20 +269,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class GenerateLyrics(
-    SingleOutputGraphNode[list[dict[str, Any]]], GraphNode[list[dict[str, Any]]]
-):
+class GenerateLyrics(SingleOutputGraphNode[list[dict[str, Any]]], GraphNode[list[dict[str, Any]]]):
     """
     Generate lyrics based on a text prompt via Kie.ai.
 
         kie, suno, lyrics, text, songwriting, prompt
     """
 
-    prompt: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Prompt describing the theme, mood, or style of the lyrics.",
-    )
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Prompt describing the theme, mood, or style of the lyrics.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -452,7 +292,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
-
 
 class GenerateMusic(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
@@ -473,48 +312,18 @@ class GenerateMusic(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.GenerateMusic.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
-    custom_mode: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Enable custom mode for detailed control over style and title.",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Music description or lyrics. In custom mode, this is used as lyrics when instrumental is false. In non-custom mode, this is the core idea.",
-    )
-    style: str | OutputHandle[str] = connect_field(
-        default="", description="Music style specification (required in custom mode)."
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Track title (required in custom mode, max 80 characters).",
-    )
-    instrumental: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Generate instrumental-only (no vocals)."
-    )
-    model: nodetool.nodes.kie.audio.GenerateMusic.Model = Field(
-        default=nodetool.nodes.kie.audio.GenerateMusic.Model.V4_5PLUS,
-        description="Suno model version to use.",
-    )
-    negative_tags: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Music styles or traits to exclude from the generated audio.",
-    )
-    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(
-        default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED,
-        description="Vocal gender preference (custom mode only).",
-    )
-    style_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Strength of adherence to style (0-1)."
-    )
-    weirdness_constraint: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Creative deviation control (0-1)."
-    )
-    audio_weight: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Balance weight for audio features (0-1)."
-    )
-    persona_id: str | OutputHandle[str] = connect_field(
-        default="", description="Persona ID to apply (custom mode only)."
-    )
+    custom_mode: bool | OutputHandle[bool] = connect_field(default=False, description='Enable custom mode for detailed control over style and title.')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Music description or lyrics. In custom mode, this is used as lyrics when instrumental is false. In non-custom mode, this is the core idea.')
+    style: str | OutputHandle[str] = connect_field(default='', description='Music style specification (required in custom mode).')
+    title: str | OutputHandle[str] = connect_field(default='', description='Track title (required in custom mode, max 80 characters).')
+    instrumental: bool | OutputHandle[bool] = connect_field(default=False, description='Generate instrumental-only (no vocals).')
+    model: nodetool.nodes.kie.audio.GenerateMusic.Model = Field(default=nodetool.nodes.kie.audio.GenerateMusic.Model.V4_5PLUS, description='Suno model version to use.')
+    negative_tags: str | OutputHandle[str] = connect_field(default='', description='Music styles or traits to exclude from the generated audio.')
+    vocal_gender: nodetool.nodes.kie.audio.VocalGender = Field(default=nodetool.nodes.kie.audio.VocalGender.UNSPECIFIED, description='Vocal gender preference (custom mode only).')
+    style_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Strength of adherence to style (0-1).')
+    weirdness_constraint: float | OutputHandle[float] = connect_field(default=0.0, description='Creative deviation control (0-1).')
+    audio_weight: float | OutputHandle[float] = connect_field(default=0.0, description='Balance weight for audio features (0-1).')
+    persona_id: str | OutputHandle[str] = connect_field(default='', description='Persona ID to apply (custom mode only).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -531,19 +340,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class GenerateMusicCover(
-    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
-):
+class GenerateMusicCover(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
     """
     Generate cover images for a Suno music task.
 
         kie, suno, music, cover, image, artwork
     """
 
-    task_id: str | OutputHandle[str] = connect_field(
-        default="", description="Original music task ID."
-    )
+    task_id: str | OutputHandle[str] = connect_field(default='', description='Original music task ID.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -560,28 +364,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class GenerateMusicVideo(
-    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
-):
+class GenerateMusicVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Create a music video visualization for a generated track.
 
         kie, suno, music, video, mp4, visualization
     """
 
-    task_id: str | OutputHandle[str] = connect_field(
-        default="", description="Original music task ID."
-    )
-    audio_id: str | OutputHandle[str] = connect_field(
-        default="", description="Audio ID to visualize."
-    )
-    author: str | OutputHandle[str] = connect_field(
-        default="", description="Optional artist/creator name (max 50 chars)."
-    )
-    domain_name: str | OutputHandle[str] = connect_field(
-        default="", description="Optional domain watermark (max 50 chars)."
-    )
+    task_id: str | OutputHandle[str] = connect_field(default='', description='Original music task ID.')
+    audio_id: str | OutputHandle[str] = connect_field(default='', description='Audio ID to visualize.')
+    author: str | OutputHandle[str] = connect_field(default='', description='Optional artist/creator name (max 50 chars).')
+    domain_name: str | OutputHandle[str] = connect_field(default='', description='Optional domain watermark (max 50 chars).')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -598,10 +391,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class GetTimestampedLyrics(
-    SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]
-):
+class GetTimestampedLyrics(SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]):
     """
     Retrieve timestamped lyrics for a generated Suno track.
 
@@ -610,12 +400,8 @@ class GetTimestampedLyrics(
         Fetches word-level alignment and waveform data for a specific task/audio pair.
     """
 
-    task_id: str | OutputHandle[str] = connect_field(
-        default="", description="Task ID from Generate Music or Extend Music."
-    )
-    audio_id: str | OutputHandle[str] = connect_field(
-        default="", description="Audio ID for the specific track."
-    )
+    task_id: str | OutputHandle[str] = connect_field(default='', description='Task ID from Generate Music or Extend Music.')
+    audio_id: str | OutputHandle[str] = connect_field(default='', description='Audio ID for the specific track.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -632,10 +418,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class ReplaceMusicSection(
-    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
-):
+class ReplaceMusicSection(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Replace a section of a generated Suno track.
 
@@ -644,33 +427,15 @@ class ReplaceMusicSection(
         Regenerates a time range and blends it into the original track.
     """
 
-    task_id: str | OutputHandle[str] = connect_field(
-        default="", description="Original music task ID."
-    )
-    audio_id: str | OutputHandle[str] = connect_field(
-        default="", description="Audio ID to replace."
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Prompt describing the replacement segment content."
-    )
-    tags: str | OutputHandle[str] = connect_field(
-        default="", description="Music style tags."
-    )
-    title: str | OutputHandle[str] = connect_field(
-        default="", description="Music title."
-    )
-    infill_start_s: float | OutputHandle[float] = connect_field(
-        default=0.0, description="Start time point for replacement (seconds)."
-    )
-    infill_end_s: float | OutputHandle[float] = connect_field(
-        default=0.0, description="End time point for replacement (seconds)."
-    )
-    negative_tags: str | OutputHandle[str] = connect_field(
-        default="", description="Excluded music styles for the replacement segment."
-    )
-    full_lyrics: str | OutputHandle[str] = connect_field(
-        default="", description="Full lyrics after modification."
-    )
+    task_id: str | OutputHandle[str] = connect_field(default='', description='Original music task ID.')
+    audio_id: str | OutputHandle[str] = connect_field(default='', description='Audio ID to replace.')
+    prompt: str | OutputHandle[str] = connect_field(default='', description='Prompt describing the replacement segment content.')
+    tags: str | OutputHandle[str] = connect_field(default='', description='Music style tags.')
+    title: str | OutputHandle[str] = connect_field(default='', description='Music title.')
+    infill_start_s: float | OutputHandle[float] = connect_field(default=0.0, description='Start time point for replacement (seconds).')
+    infill_end_s: float | OutputHandle[float] = connect_field(default=0.0, description='End time point for replacement (seconds).')
+    negative_tags: str | OutputHandle[str] = connect_field(default='', description='Excluded music styles for the replacement segment.')
+    full_lyrics: str | OutputHandle[str] = connect_field(default='', description='Full lyrics after modification.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -687,33 +452,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
-
-class VocalStemSeparation(
-    SingleOutputGraphNode[dict[str, types.AudioRef]],
-    GraphNode[dict[str, types.AudioRef]],
-):
+class VocalStemSeparation(SingleOutputGraphNode[dict[str, types.AudioRef]], GraphNode[dict[str, types.AudioRef]]):
     """
     Separate a track into vocal/instrument stems via Suno.
 
         kie, suno, music, stems, separation, vocals, instrumental
     """
 
-    SeparationType: typing.ClassVar[type] = (
-        nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType
-    )
+    SeparationType: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType
 
-    task_id: str | OutputHandle[str] = connect_field(
-        default="", description="Original music task ID."
-    )
-    audio_id: str | OutputHandle[str] = connect_field(
-        default="", description="Audio ID to separate."
-    )
-    separation_type: nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType = (
-        Field(
-            default=nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType.SEPARATE_VOCAL,
-            description="Separation mode.",
-        )
-    )
+    task_id: str | OutputHandle[str] = connect_field(default='', description='Original music task ID.')
+    audio_id: str | OutputHandle[str] = connect_field(default='', description='Audio ID to separate.')
+    separation_type: nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType = Field(default=nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType.SEPARATE_VOCAL, description='Separation mode.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -722,3 +472,5 @@ class VocalStemSeparation(
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

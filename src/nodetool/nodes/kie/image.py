@@ -2029,65 +2029,244 @@ class Imagen4(KieBaseNode):
         )
 
 
-class NanoBananaEdit(KieBaseNode):
-    """Edit images using Google's Nano Banana model via Kie.ai.
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 Text-to-Image model via Kie.ai.
 
-    kie, google, nano-banana, nano-banana-edit, image editing, ai
+    kie, gpt-image, openai, image generation, ai, text-to-image, 1.5
+
+    GPT Image 1.5 creates high-quality images from text descriptions with
+    support for various aspect ratios and quality settings.
+
+    Use cases:
+    - Generate photorealistic images from text
+    - Create artistic illustrations
+    - Generate images with specific aspect ratios
     """
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
     _max_poll_attempts: int = 60
 
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Text To Image"
+
     prompt: str = Field(
         default="",
-        description="Text description of the changes to make.",
+        description="The text prompt describing the image to generate.",
     )
 
-    image_input: list[ImageRef] = Field(
-        default=[],
-        description="Images to edit.",
-    )
-
-    class ImageSize(str, Enum):
+    class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        PORTRAIT_9_16 = "9:16"
-        LANDSCAPE_16_9 = "16:9"
-        PORTRAIT_3_4 = "3:4"
-        LANDSCAPE_4_3 = "4:3"
-        LANDSCAPE_3_2 = "3:2"
         PORTRAIT_2_3 = "2:3"
-        LANDSCAPE_5_4 = "5:4"
-        PORTRAIT_4_5 = "4:5"
-        WIDE_21_9 = "21:9"
-        AUTO = "auto"
+        LANDSCAPE_3_2 = "3:2"
 
-    image_size: ImageSize = Field(
-        default=ImageSize.SQUARE,
-        description="The size of the output image.",
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality setting: medium=balanced, high=slow/detailed.",
     )
 
     def _get_model(self) -> str:
-        return "google/nano-banana-edit"
+        return "gpt-image/1.5-text-to-image"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-
-        image_urls = []
-        if context:
-            for img in self.image_input:
-                if img.is_set():
-                    url = await self._upload_image(context, img)
-                    image_urls.append(url)
-
         return {
             "prompt": self.prompt,
-            "image_urls": image_urls,
-            "output_format": "png",
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15ImageToImage(KieBaseNode):
+    """Generate images from input images using OpenAI's GPT Image 1.5 Image-to-Image model via Kie.ai.
+
+    kie, gpt-image, openai, image generation, ai, image-to-image, 1.5
+
+    GPT Image 1.5 Image-to-Image transforms existing images based on text prompts
+    while preserving the original structure and content.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply styles to photos
+    - Modify specific elements in images
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Image To Image"
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    prompt: str = Field(
+        default="",
+        description="Text description of the desired changes.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        PORTRAIT_2_3 = "2:3"
+        LANDSCAPE_3_2 = "3:2"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.LANDSCAPE_3_2,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality setting: medium=balanced, high=slow/detailed.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image/1.5-image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
+        return {
+            "input_urls": [input_url],
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramCharacter(KieBaseNode):
+    """Generate images with character consistency using Ideogram via Kie.ai.
+
+    kie, ideogram, character, image generation, ai, character-consistency
+
+    Ideogram Character creates images with consistent characters based on
+    reference images and text prompts.
+
+    Use cases:
+    - Create images with consistent characters
+    - Generate character-focused artwork
+    - Build character libraries for stories or projects
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="Text description for the image generation.",
+    )
+
+    reference_image: ImageRef = Field(
+        default=ImageRef(),
+        description="Reference image for character guidance.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        REALISTIC = "REALISTIC"
+        FICTION = "FICTION"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The size of the output image.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Undesired elements to exclude from the image.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/character"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.reference_image.is_set():
+            raise ValueError("Reference image is required")
+        reference_url = await self._upload_image(context, self.reference_image)
+        return {
+            "prompt": self.prompt,
+            "reference_image_urls": [reference_url],
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
             "image_size": self.image_size.value,
+            "num_images": "1",
+            "negative_prompt": self.negative_prompt,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:

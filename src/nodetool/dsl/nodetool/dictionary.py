@@ -18,23 +18,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class ArgMax(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
-    Returns the label associated with the highest value in a dictionary.
-    dictionary, maximum, label, argmax
+        Returns the label associated with the highest value in a dictionary.
+        dictionary, maximum, label, argmax
 
-    Use cases:
-    - Get the most likely class from classification probabilities
-    - Find the category with highest score
-    - Identify the winner in a voting/ranking system
+        Use cases:
+        - Get the most likely class from classification probabilities
+        - Find the category with highest score
+        - Identify the winner in a voting/ranking system
     """
 
-    scores: dict[str, float] | OutputHandle[dict[str, float]] = connect_field(
-        default={},
-        description="Dictionary mapping labels to their corresponding scores/values",
-    )
+    scores: dict[str, float] | OutputHandle[dict[str, float]] = connect_field(default={}, description='Dictionary mapping labels to their corresponding scores/values')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -51,25 +47,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class Combine(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Merges two dictionaries, with second dictionary values taking precedence.
-    dictionary, merge, update, +, add, concatenate
+        Merges two dictionaries, with second dictionary values taking precedence.
+        dictionary, merge, update, +, add, concatenate
 
-    Use cases:
-    - Combine default and custom configurations
-    - Merge partial updates with existing data
-    - Create aggregate data structures
+        Use cases:
+        - Combine default and custom configurations
+        - Merge partial updates with existing data
+        - Create aggregate data structures
     """
 
-    dict_a: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
-    dict_b: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
+    dict_a: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
+    dict_b: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -86,25 +77,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class Filter(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Creates a new dictionary with only specified keys from the input.
-    dictionary, filter, select
+        Creates a new dictionary with only specified keys from the input.
+        dictionary, filter, select
 
-    Use cases:
-    - Extract relevant fields from a larger data structure
-    - Implement data access controls
-    - Prepare specific data subsets for processing
+        Use cases:
+        - Extract relevant fields from a larger data structure
+        - Implement data access controls
+        - Prepare specific data subsets for processing
     """
 
-    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
-    keys: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[], description=None
-    )
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
+    keys: list[str] | OutputHandle[list[str]] = connect_field(default=[], description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -121,39 +107,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterDictByNumber(
-    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByNumber.OutputType]
-):
+class FilterDictByNumber(GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByNumber.OutputType]):
     """
 
-    Filters a stream of dictionaries based on numeric values for a specified key.
-    filter, dictionary, numbers, numeric, stream
+        Filters a stream of dictionaries based on numeric values for a specified key.
+        filter, dictionary, numbers, numeric, stream
 
-    Use cases:
-    - Filter dictionaries by numeric comparisons (greater than, less than, equal to)
-    - Filter records with even/odd numeric values
+        Use cases:
+        - Filter dictionaries by numeric comparisons (greater than, less than, equal to)
+        - Filter records with even/odd numeric values
     """
 
-    FilterDictNumberType: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType
-    )
+    FilterDictNumberType: typing.ClassVar[type] = nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType
 
-    value: dict | OutputHandle[dict] = connect_field(
-        default={}, description="Input dictionary stream"
-    )
-    key: str | OutputHandle[str] = connect_field(
-        default="", description="The dictionary key to check"
-    )
-    filter_type: (
-        nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType
-    ) = Field(
-        default=nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType.GREATER_THAN,
-        description=None,
-    )
-    compare_value: float | OutputHandle[float] = connect_field(
-        default=0, description="Comparison value"
-    )
+    value: dict | OutputHandle[dict] = connect_field(default={}, description='Input dictionary stream')
+    key: str | OutputHandle[str] = connect_field(default='', description='The dictionary key to check')
+    filter_type: nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType = Field(default=nodetool.nodes.nodetool.dictionary.FilterDictByNumber.FilterDictNumberType.GREATER_THAN, description=None)
+    compare_value: float | OutputHandle[float] = connect_field(default=0, description='Comparison value')
 
     @property
     def out(self) -> "FilterDictByNumberOutputs":
@@ -167,11 +137,10 @@ class FilterDictByNumber(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterDictByNumberOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["output"])
+        return typing.cast(OutputHandle[dict], self['output'])
 
 
 import typing
@@ -180,31 +149,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterDictByQuery(
-    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByQuery.OutputType]
-):
+class FilterDictByQuery(GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByQuery.OutputType]):
     """
 
-    Filter a stream of dictionary objects based on a pandas query condition.
-    filter, query, condition, dictionary, stream
+        Filter a stream of dictionary objects based on a pandas query condition.
+        filter, query, condition, dictionary, stream
 
-    Basic Operators:
-    - Comparison: >, <, >=, <=, ==, !=
-    - Logical: and, or, not
-    - Membership: in, not in
+        Basic Operators:
+        - Comparison: >, <, >=, <=, ==, !=
+        - Logical: and, or, not
+        - Membership: in, not in
 
-    Use cases:
-    - Filter dictionary objects based on complex criteria
-    - Extract subset of data meeting specific conditions
+        Use cases:
+        - Filter dictionary objects based on complex criteria
+        - Extract subset of data meeting specific conditions
     """
 
-    value: dict | OutputHandle[dict] = connect_field(
-        default={}, description="Input dictionary stream"
-    )
-    condition: str | OutputHandle[str] = connect_field(
-        default="", description="The filtering condition using pandas query syntax."
-    )
+    value: dict | OutputHandle[dict] = connect_field(default={}, description='Input dictionary stream')
+    condition: str | OutputHandle[str] = connect_field(default='', description='The filtering condition using pandas query syntax.')
 
     @property
     def out(self) -> "FilterDictByQueryOutputs":
@@ -218,11 +180,10 @@ class FilterDictByQuery(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterDictByQueryOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["output"])
+        return typing.cast(OutputHandle[dict], self['output'])
 
 
 import typing
@@ -231,36 +192,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterDictByRange(
-    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByRange.OutputType]
-):
+class FilterDictByRange(GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByRange.OutputType]):
     """
 
-    Filters a stream of dictionaries based on a numeric range for a specified key.
-    filter, dictionary, range, between, stream
+        Filters a stream of dictionaries based on a numeric range for a specified key.
+        filter, dictionary, range, between, stream
 
-    Use cases:
-    - Filter records based on numeric ranges (e.g., price range, age range)
-    - Find entries with values within specified bounds
+        Use cases:
+        - Filter records based on numeric ranges (e.g., price range, age range)
+        - Find entries with values within specified bounds
     """
 
-    value: dict | OutputHandle[dict] = connect_field(
-        default={}, description="Input dictionary stream"
-    )
-    key: str | OutputHandle[str] = connect_field(
-        default="", description="The dictionary key to check for the range"
-    )
-    min_value: float | OutputHandle[float] = connect_field(
-        default=0, description="The minimum value (inclusive) of the range"
-    )
-    max_value: float | OutputHandle[float] = connect_field(
-        default=0, description="The maximum value (inclusive) of the range"
-    )
-    inclusive: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="If True, includes the min and max values in the results",
-    )
+    value: dict | OutputHandle[dict] = connect_field(default={}, description='Input dictionary stream')
+    key: str | OutputHandle[str] = connect_field(default='', description='The dictionary key to check for the range')
+    min_value: float | OutputHandle[float] = connect_field(default=0, description='The minimum value (inclusive) of the range')
+    max_value: float | OutputHandle[float] = connect_field(default=0, description='The maximum value (inclusive) of the range')
+    inclusive: bool | OutputHandle[bool] = connect_field(default=True, description='If True, includes the min and max values in the results')
 
     @property
     def out(self) -> "FilterDictByRangeOutputs":
@@ -274,11 +221,10 @@ class FilterDictByRange(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterDictByRangeOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["output"])
+        return typing.cast(OutputHandle[dict], self['output'])
 
 
 import typing
@@ -287,41 +233,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterDictByValue(
-    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByValue.OutputType]
-):
+class FilterDictByValue(GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictByValue.OutputType]):
     """
 
-    Filters a stream of dictionaries based on their values using various criteria.
-    filter, dictionary, values, stream
+        Filters a stream of dictionaries based on their values using various criteria.
+        filter, dictionary, values, stream
 
-    Use cases:
-    - Filter dictionaries by value content
-    - Filter dictionaries by value type
-    - Filter dictionaries by value patterns
+        Use cases:
+        - Filter dictionaries by value content
+        - Filter dictionaries by value type
+        - Filter dictionaries by value patterns
     """
 
-    FilterType: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType
-    )
+    FilterType: typing.ClassVar[type] = nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType
 
-    value: dict | OutputHandle[dict] = connect_field(
-        default={}, description="Input dictionary stream"
-    )
-    key: str | OutputHandle[str] = connect_field(
-        default="", description="The dictionary key to check"
-    )
-    filter_type: nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType = (
-        Field(
-            default=nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType.CONTAINS,
-            description="The type of filter to apply",
-        )
-    )
-    criteria: str | OutputHandle[str] = connect_field(
-        default="",
-        description="The filtering criteria (text to match, type name, or length as string)",
-    )
+    value: dict | OutputHandle[dict] = connect_field(default={}, description='Input dictionary stream')
+    key: str | OutputHandle[str] = connect_field(default='', description='The dictionary key to check')
+    filter_type: nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType = Field(default=nodetool.nodes.nodetool.dictionary.FilterDictByValue.FilterType.CONTAINS, description='The type of filter to apply')
+    criteria: str | OutputHandle[str] = connect_field(default='', description='The filtering criteria (text to match, type name, or length as string)')
 
     @property
     def out(self) -> "FilterDictByValueOutputs":
@@ -335,11 +264,10 @@ class FilterDictByValue(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterDictByValueOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["output"])
+        return typing.cast(OutputHandle[dict], self['output'])
 
 
 import typing
@@ -348,32 +276,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
-class FilterDictRegex(
-    GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictRegex.OutputType]
-):
+class FilterDictRegex(GraphNode[nodetool.nodes.nodetool.dictionary.FilterDictRegex.OutputType]):
     """
 
-    Filters a stream of dictionaries using regular expressions on specified keys.
-    filter, regex, dictionary, pattern, stream
+        Filters a stream of dictionaries using regular expressions on specified keys.
+        filter, regex, dictionary, pattern, stream
 
-    Use cases:
-    - Filter dictionaries with values matching complex patterns
-    - Search for dictionaries containing emails, dates, or specific formats
+        Use cases:
+        - Filter dictionaries with values matching complex patterns
+        - Search for dictionaries containing emails, dates, or specific formats
     """
 
-    value: dict | OutputHandle[dict] = connect_field(
-        default={}, description="Input dictionary stream"
-    )
-    key: str | OutputHandle[str] = connect_field(
-        default="", description="The dictionary key to check"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="The regex pattern"
-    )
-    full_match: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Full match or partial"
-    )
+    value: dict | OutputHandle[dict] = connect_field(default={}, description='Input dictionary stream')
+    key: str | OutputHandle[str] = connect_field(default='', description='The dictionary key to check')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='The regex pattern')
+    full_match: bool | OutputHandle[bool] = connect_field(default=False, description='Full match or partial')
 
     @property
     def out(self) -> "FilterDictRegexOutputs":
@@ -387,11 +304,10 @@ class FilterDictRegex(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class FilterDictRegexOutputs(OutputsProxy):
     @property
     def output(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["output"])
+        return typing.cast(OutputHandle[dict], self['output'])
 
 
 import typing
@@ -400,23 +316,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetValue(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Retrieves a value from a dictionary using a specified key.
-    dictionary, get, value, key
+        Retrieves a value from a dictionary using a specified key.
+        dictionary, get, value, key
 
-    Use cases:
-    - Access a specific item in a configuration dictionary
-    - Retrieve a value from a parsed JSON object
-    - Extract a particular field from a data structure
+        Use cases:
+        - Access a specific item in a configuration dictionary
+        - Retrieve a value from a parsed JSON object
+        - Extract a particular field from a data structure
     """
 
-    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
-    key: str | OutputHandle[str] = connect_field(default="", description=None)
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
+    key: str | OutputHandle[str] = connect_field(default='', description=None)
     default: Any | OutputHandle[Any] = connect_field(default=(), description=None)
 
     @classmethod
@@ -434,17 +347,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class LoadCSVFile(SingleOutputGraphNode[list[dict]], GraphNode[list[dict]]):
     """
 
-    Read a CSV file from disk.
-    files, csv, read, input, load, file
+        Read a CSV file from disk.
+        files, csv, read, input, load, file
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to the CSV file to read"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to the CSV file to read')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -460,7 +370,6 @@ from pydantic import Field
 from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
-
 
 class MakeDictionary(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
@@ -510,20 +419,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class ParseJSON(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Parses a JSON string into a Python dictionary.
-    json, parse, dictionary
+        Parses a JSON string into a Python dictionary.
+        json, parse, dictionary
 
-    Use cases:
-    - Process API responses
-    - Load configuration files
-    - Deserialize stored data
+        Use cases:
+        - Process API responses
+        - Load configuration files
+        - Deserialize stored data
     """
 
-    json_string: str | OutputHandle[str] = connect_field(default="", description=None)
+    json_string: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -540,42 +448,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
-class ReduceDictionaries(
-    SingleOutputGraphNode[dict[Any, Any]], GraphNode[dict[Any, Any]]
-):
+class ReduceDictionaries(SingleOutputGraphNode[dict[Any, Any]], GraphNode[dict[Any, Any]]):
     """
 
-    Reduces a list of dictionaries into one dictionary based on a specified key field.
-    dictionary, reduce, aggregate
+        Reduces a list of dictionaries into one dictionary based on a specified key field.
+        dictionary, reduce, aggregate
 
-    Use cases:
-    - Aggregate data by a specific field
-    - Create summary dictionaries from list of records
-    - Combine multiple data points into a single structure
+        Use cases:
+        - Aggregate data by a specific field
+        - Create summary dictionaries from list of records
+        - Combine multiple data points into a single structure
     """
 
-    ConflictResolution: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
-    )
+    ConflictResolution: typing.ClassVar[type] = nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
 
-    dictionaries: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = (
-        connect_field(default=[], description="List of dictionaries to be reduced")
-    )
-    key_field: str | OutputHandle[str] = connect_field(
-        default="",
-        description="The field to use as the key in the resulting dictionary",
-    )
-    value_field: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value.",
-    )
-    conflict_resolution: (
-        nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution
-    ) = Field(
-        default=nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution.FIRST,
-        description="How to handle conflicts when the same key appears multiple times",
-    )
+    dictionaries: list[dict[str, Any]] | OutputHandle[list[dict[str, Any]]] = connect_field(default=[], description='List of dictionaries to be reduced')
+    key_field: str | OutputHandle[str] = connect_field(default='', description='The field to use as the key in the resulting dictionary')
+    value_field: str | OutputHandle[str] = connect_field(default='', description='Optional field to use as the value. If not specified, the entire dictionary (minus the key field) will be used as the value.')
+    conflict_resolution: nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution = Field(default=nodetool.nodes.nodetool.dictionary.ReduceDictionaries.ConflictResolution.FIRST, description='How to handle conflicts when the same key appears multiple times')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -592,23 +482,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class Remove(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Removes a key-value pair from a dictionary.
-    dictionary, remove, delete
+        Removes a key-value pair from a dictionary.
+        dictionary, remove, delete
 
-    Use cases:
-    - Delete a specific configuration option
-    - Remove sensitive information before processing
-    - Clean up temporary entries in a data structure
+        Use cases:
+        - Delete a specific configuration option
+        - Remove sensitive information before processing
+        - Clean up temporary entries in a data structure
     """
 
-    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
-    key: str | OutputHandle[str] = connect_field(default="", description=None)
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
+    key: str | OutputHandle[str] = connect_field(default='', description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -625,28 +512,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveCSVFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Write a list of dictionaries to a CSV file.
-    files, csv, write, output, save, file
+        Write a list of dictionaries to a CSV file.
+        files, csv, write, output, save, file
 
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
+        The filename can include time and date variables:
+        %Y - Year, %m - Month, %d - Day
+        %H - Hour, %M - Minute, %S - Second
     """
 
-    data: list[dict] | OutputHandle[list[dict]] = connect_field(
-        default=[], description="list of dictionaries to write to CSV"
-    )
-    folder: str | OutputHandle[str] = connect_field(
-        default="", description="Folder where the file will be saved"
-    )
-    filename: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Name of the CSV file to save. Supports strftime format codes.",
-    )
+    data: list[dict] | OutputHandle[list[dict]] = connect_field(default=[], description='list of dictionaries to write to CSV')
+    folder: str | OutputHandle[str] = connect_field(default='', description='Folder where the file will be saved')
+    filename: str | OutputHandle[str] = connect_field(default='', description='Name of the CSV file to save. Supports strftime format codes.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -663,25 +542,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
-    Updates a dictionary with new key-value pairs.
-    dictionary, add, update
+        Updates a dictionary with new key-value pairs.
+        dictionary, add, update
 
-    Use cases:
-    - Extend a configuration with additional settings
-    - Add new entries to a cache or lookup table
-    - Merge user input with existing data
+        Use cases:
+        - Extend a configuration with additional settings
+        - Add new entries to a cache or lookup table
+        - Merge user input with existing data
     """
 
-    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
-    new_pairs: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
-        default={}, description=None
-    )
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
+    new_pairs: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(default={}, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -698,25 +572,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
-
 class Zip(SingleOutputGraphNode[dict[Any, Any]], GraphNode[dict[Any, Any]]):
     """
 
-    Creates a dictionary from parallel lists of keys and values.
-    dictionary, create, zip
+        Creates a dictionary from parallel lists of keys and values.
+        dictionary, create, zip
 
-    Use cases:
-    - Convert separate data columns into key-value pairs
-    - Create lookups from parallel data structures
-    - Transform list data into associative arrays
+        Use cases:
+        - Convert separate data columns into key-value pairs
+        - Create lookups from parallel data structures
+        - Transform list data into associative arrays
     """
 
-    keys: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description=None
-    )
-    values: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description=None
-    )
+    keys: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
+    values: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -725,3 +594,5 @@ class Zip(SingleOutputGraphNode[dict[Any, Any]], GraphNode[dict[Any, Any]]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
