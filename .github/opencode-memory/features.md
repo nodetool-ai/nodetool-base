@@ -14,6 +14,19 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-20 - GPT Image 1.5 & Seedance 1.5 Pro Models
+
+- **Model IDs:**
+  - `gpt-image/1.5-text-to-image`
+  - `gpt-image/1.5-image-to-image`
+  - `bytedance/seedance-1.5-pro` (text-to-video and image-to-video)
+
+- **Categories:** image, video
+
+- **Description:** Added OpenAI GPT Image 1.5 support for text-to-image and image-to-image generation with quality and aspect ratio controls. Added Bytedance Seedance 1.5 Pro for advanced video generation with dynamic camera movements and optional audio generation.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**

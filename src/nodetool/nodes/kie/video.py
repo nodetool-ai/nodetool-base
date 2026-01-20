@@ -1956,7 +1956,11 @@ class RunwayBaseNode(KieVideoBaseNode):
     def _get_error_message(self, status_response: dict[str, Any]) -> str:
         """Extract error message from Runway response."""
         data = status_response.get("data", {})
-        return data.get("failMsg") or status_response.get("msg") or "Unknown error occurred"
+        return (
+            data.get("failMsg")
+            or status_response.get("msg")
+            or "Unknown error occurred"
+        )
 
     async def _poll_status(
         self, session: aiohttp.ClientSession, api_key: str, task_id: str
@@ -2094,7 +2098,9 @@ class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2170,7 +2176,9 @@ class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
         if context is None:
             raise ValueError("Context is required for image upload")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
             "imageUrl": image_url,
@@ -2246,7 +2254,9 @@ class RunwayGen3AlphaExtendVideo(RunwayBaseNode):
         if not self.video_url:
             raise ValueError("video_url is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second extension cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second extension cannot be generated with 1080p resolution"
+            )
         return {
             "video_url": self.video_url,
             "prompt": self.prompt,
@@ -2325,7 +2335,9 @@ class RunwayAlephVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2605,3 +2617,201 @@ class KlingMotionControl(KieVideoBaseNode):
             "character_orientation": self.character_orientation.value,
             "mode": self.mode.value,
         }
+
+
+class Seedance15ProTextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Bytedance's Seedance 1.5 Pro model via Kie.ai.
+
+    kie, seedance, bytedance, video generation, ai, text-to-video, 1.5, pro
+
+    Seedance 1.5 Pro generates high-quality videos from text descriptions
+    with advanced camera movements and optional audio generation.
+
+    Use cases:
+    - Generate cinematic videos from text
+    - Create videos with dynamic camera movements
+    - Produce high-quality video content with audio
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance 1.5 Pro Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        V1_1 = "1:1"
+        V4_3 = "4:3"
+        V3_4 = "3:4"
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V21_9 = "21:9"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    class Resolution(str, Enum):
+        R480P = "480p"
+        R720P = "720p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="Video resolution: 480p for faster generation, 720p for higher quality.",
+    )
+
+    class Duration(str, Enum):
+        D4 = 4
+        D8 = 8
+        D12 = 12
+
+    duration: Duration = Field(
+        default=Duration.D8,
+        description="Duration of the video in seconds.",
+    )
+
+    fixed_lens: bool = Field(
+        default=False,
+        description="Lock camera for static shots. Enable for stable, non-moving camera.",
+    )
+
+    generate_audio: bool = Field(
+        default=False,
+        description="Whether to generate audio for the video. Note: increases cost.",
+    )
+
+    def _get_model(self) -> str:
+        return "bytedance/seedance-1.5-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "resolution": self.resolution.value,
+            "duration": self.duration.value,
+            "fixed_lens": self.fixed_lens,
+            "generate_audio": self.generate_audio,
+        }
+        return payload
+
+
+class Seedance15ProImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Bytedance's Seedance 1.5 Pro model via Kie.ai.
+
+    kie, seedance, bytedance, video generation, ai, image-to-video, 1.5, pro
+
+    Seedance 1.5 Pro animates static images into dynamic videos
+    with advanced camera movements and optional audio generation.
+
+    Use cases:
+    - Animate static images into videos
+    - Create dynamic content from photos
+    - Generate videos with camera movements
+    - Produce video content with audio from images
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedance 1.5 Pro Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video to generate.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional, max 2 images).",
+    )
+
+    class AspectRatio(str, Enum):
+        V1_1 = "1:1"
+        V4_3 = "4:3"
+        V3_4 = "3:4"
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V21_9 = "21:9"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    class Resolution(str, Enum):
+        R480P = "480p"
+        R720P = "720p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="Video resolution: 480p for faster generation, 720p for higher quality.",
+    )
+
+    class Duration(str, Enum):
+        D4 = 4
+        D8 = 8
+        D12 = 12
+
+    duration: Duration = Field(
+        default=Duration.D8,
+        description="Duration of the video in seconds.",
+    )
+
+    fixed_lens: bool = Field(
+        default=False,
+        description="Lock camera for static shots. Enable for stable, non-moving camera.",
+    )
+
+    generate_audio: bool = Field(
+        default=False,
+        description="Whether to generate audio for the video. Note: increases cost.",
+    )
+
+    def _get_model(self) -> str:
+        return "bytedance/seedance-1.5-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_urls = []
+        if self.image1.is_set():
+            url = await self._upload_image(context, self.image1)
+            image_urls.append(url)
+        if self.image2.is_set():
+            url = await self._upload_image(context, self.image2)
+            image_urls.append(url)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "input_urls": image_urls,
+            "aspect_ratio": self.aspect_ratio.value,
+            "resolution": self.resolution.value,
+            "duration": self.duration.value,
+            "fixed_lens": self.fixed_lens,
+            "generate_audio": self.generate_audio,
+        }
+        return payload
