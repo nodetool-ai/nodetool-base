@@ -14,6 +14,22 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-20 - GPT Image 1.5 & Google Imagen 4 Models
+
+- **Model IDs:**
+  - `gpt-image/1.5-text-to-image`
+  - `gpt-image/1.5-image-to-image`
+  - `google/imagen4`
+  - `google/imagen4-fast`
+  - `google/imagen4-ultra`
+  - `recraft/crisp-upscale`
+
+- **Category:** image
+
+- **Description:** Added support for OpenAI's GPT Image 1.5 models (text-to-image and image-to-image), Google's Imagen 4 family (standard, fast, and ultra variants), and Recraft Crisp Upscale for AI-powered image enhancement via Kie.ai API.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**

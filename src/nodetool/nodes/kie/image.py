@@ -2029,6 +2029,152 @@ class Imagen4(KieBaseNode):
         )
 
 
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 Text-to-Image model via Kie.ai.
+
+    kie, gpt-image, openai, image generation, ai, text-to-image, 1.5
+
+    GPT Image 1.5 generates high-quality images from text descriptions
+    with excellent detail and prompt adherence.
+
+    Use cases:
+    - Generate images from text prompts
+    - Create photorealistic and artistic images
+    - Generate detailed illustrations and artwork
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        PORTRAIT_2_3 = "2:3"
+        LANDSCAPE_3_2 = "3:2"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality setting: medium=balanced, high=slow/detailed.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image/1.5-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15ImageToImage(KieBaseNode):
+    """Generate images from images using OpenAI's GPT Image 1.5 Image-to-Image model via Kie.ai.
+
+    kie, gpt-image, openai, image generation, ai, image-to-image, 1.5
+
+    GPT Image 1.5 transforms existing images based on text prompts
+    while preserving the overall structure and style.
+
+    Use cases:
+    - Transform images with text guidance
+    - Apply artistic styles to photos
+    - Edit and modify existing images
+    - Create variations of existing images
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Image To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        PORTRAIT_2_3 = "2:3"
+        LANDSCAPE_3_2 = "3:2"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.LANDSCAPE_3_2,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality setting: medium=balanced, high=slow/detailed.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image/1.5-image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        input_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "input_urls": [input_url],
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
 class NanoBananaEdit(KieBaseNode):
     """Edit images using Google's Nano Banana model via Kie.ai.
 
