@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nodetool-base"
-version = "0.6.2-rc.28"
+version = "0.6.2"
 description = "Nodetool Base nodes"
 readme = "README.md"
 authors = [{ name = "Matthias Georgi", email = "matti.georgi@gmail.com" }]
 requires-python = ">=3.11"
 
 dependencies = [
-    "nodetool-core==0.6.2-rc.28",
+    "nodetool-core==0.6.2",
     "plyer==2.1.0",
     "selenium>=4.26.1",
     "trafilatura>=2.0.0",
