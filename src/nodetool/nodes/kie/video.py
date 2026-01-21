@@ -1956,7 +1956,11 @@ class RunwayBaseNode(KieVideoBaseNode):
     def _get_error_message(self, status_response: dict[str, Any]) -> str:
         """Extract error message from Runway response."""
         data = status_response.get("data", {})
-        return data.get("failMsg") or status_response.get("msg") or "Unknown error occurred"
+        return (
+            data.get("failMsg")
+            or status_response.get("msg")
+            or "Unknown error occurred"
+        )
 
     async def _poll_status(
         self, session: aiohttp.ClientSession, api_key: str, task_id: str
@@ -2094,7 +2098,9 @@ class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2170,7 +2176,9 @@ class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
         if context is None:
             raise ValueError("Context is required for image upload")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
             "imageUrl": image_url,
@@ -2246,7 +2254,9 @@ class RunwayGen3AlphaExtendVideo(RunwayBaseNode):
         if not self.video_url:
             raise ValueError("video_url is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second extension cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second extension cannot be generated with 1080p resolution"
+            )
         return {
             "video_url": self.video_url,
             "prompt": self.prompt,
@@ -2325,7 +2335,9 @@ class RunwayAlephVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2605,3 +2617,59 @@ class KlingMotionControl(KieVideoBaseNode):
             "character_orientation": self.character_orientation.value,
             "mode": self.mode.value,
         }
+
+
+class Sora2Characters(KieVideoBaseNode):
+    """Create dynamic character animations using Sora 2 Characters model via Kie.ai.
+
+    kie, sora, sora-2, openai, character animation, video generation, ai
+
+    Sora 2 Characters creates animations from character video inputs,
+    allowing you to animate characters with specific prompts and safety guidelines.
+
+    Requirements:
+    - Video duration: 1-4 seconds
+    - Supported formats: MP4, WebM, AVI
+    - Max file size: 10MB per file
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 8.0
+    _max_poll_attempts: int = 240
+
+    character_video: VideoRef = Field(
+        default=VideoRef(),
+        description="Character video input (1-4 seconds, MP4/WebM/AVI, max 10MB).",
+    )
+
+    character_prompt: str = Field(
+        default="",
+        description="Description of the character and desired animation style (max 5000 chars).",
+    )
+
+    safety_instruction: str = Field(
+        default="",
+        description="Safety guidelines and content restrictions for the animation (max 5000 chars).",
+    )
+
+    def _get_model(self) -> str:
+        return "sora-2-characters"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.character_video.is_set():
+            raise ValueError("Character video is required")
+        if context is None:
+            raise ValueError("Context is required for video upload")
+
+        video_url = await self._upload_video(context, self.character_video)
+
+        payload: dict[str, Any] = {
+            "character_file_url": [video_url],
+        }
+        if self.character_prompt:
+            payload["character_prompt"] = self.character_prompt
+        if self.safety_instruction:
+            payload["safety_instruction"] = self.safety_instruction
+        return payload
