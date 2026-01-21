@@ -14,6 +14,14 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-21 - Ideogram Character Model
+
+- **Model ID:** `ideogram/character`
+- **Category:** `image`
+- **Description:** Added Ideogram Character node for generating consistent character images from text prompts and reference images via Kie.ai API. Supports rendering speed options, style selection, and configurable output sizes for character design workflows.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
