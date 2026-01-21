@@ -2095,3 +2095,133 @@ class NanoBananaEdit(KieBaseNode):
         return await context.image_from_bytes(
             image_bytes, metadata={"task_id": task_id}
         )
+
+
+class IdeogramCharacter(KieBaseNode):
+    """Generate character images using Ideogram via Kie.ai.
+
+    kie, ideogram, character, image generation, ai, character design
+
+    Ideogram Character creates consistent character images from text prompts
+    and reference images. Useful for character design and storytelling.
+
+    Use cases:
+    - Create consistent character designs
+    - Generate character portraits
+    - Design characters for stories and games
+    - Create character variations from references
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram Character"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the character to generate.",
+    )
+
+    reference_images: list[ImageRef] = Field(
+        default=[],
+        description="Reference images for character guidance (max 1 image used).",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        REALISTIC = "REALISTIC"
+        FICTION = "FICTION"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand the prompt with AI suggestions.",
+    )
+
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_4_3 = "portrait_4_3"
+        PORTRAIT_16_9 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE_HD,
+        description="The size of the output image.",
+    )
+
+    num_images: int = Field(
+        default=1,
+        description="Number of images to generate.",
+        ge=1,
+        le=4,
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated image.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/character"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.reference_images:
+            raise ValueError("At least one reference image is required")
+
+        image_urls = []
+        if context:
+            for img in self.reference_images[:1]:
+                if img.is_set():
+                    url = await self._upload_image(context, img)
+                    image_urls.append(url)
+
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "reference_image_urls": image_urls,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "expand_prompt": self.expand_prompt,
+            "num_images": str(self.num_images),
+            "image_size": self.image_size.value,
+        }
+
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt
+        if self.seed != -1:
+            params["seed"] = self.seed
+
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
