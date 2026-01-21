@@ -19,6 +19,7 @@ from nodetool.nodes.kie.image import (
     FluxKontext,
     GrokImagineTextToImage,
     TopazImageUpscale,
+    GPTImage15TextToImage,
 )
 from nodetool.nodes.kie.video import (
     Sora2TextToVideo,
@@ -165,11 +166,16 @@ class TestKieBaseNode:
         video_ref = VideoRef(uri="file:///tmp/input.mov", format="mov")
         mock_context.asset_to_io = AsyncMock(return_value=BytesIO(b"mov-bytes"))
 
-        with patch.object(
-            node, "_convert_video_to_mp4", AsyncMock(return_value=b"mp4-bytes")
-        ) as mock_convert, patch.object(
-            node, "_upload_asset", AsyncMock(return_value="https://example.com/video.mp4")
-        ) as mock_upload:
+        with (
+            patch.object(
+                node, "_convert_video_to_mp4", AsyncMock(return_value=b"mp4-bytes")
+            ) as mock_convert,
+            patch.object(
+                node,
+                "_upload_asset",
+                AsyncMock(return_value="https://example.com/video.mp4"),
+            ) as mock_upload,
+        ):
             result = await node._upload_video(mock_context, video_ref)
 
         assert result == "https://example.com/video.mp4"
@@ -1032,7 +1038,9 @@ class TestKlingMotionControl:
         """Test default values are set correctly."""
         node = KlingMotionControl()
         assert node.prompt == "The cartoon character is dancing."
-        assert node.character_orientation == KlingMotionControl.CharacterOrientation.VIDEO
+        assert (
+            node.character_orientation == KlingMotionControl.CharacterOrientation.VIDEO
+        )
         assert node.mode == KlingMotionControl.Mode.R720P
 
     @pytest.mark.asyncio
@@ -1115,3 +1123,63 @@ class TestKlingMotionControl:
                 "mode": "720p",
             },
         }
+
+
+class TestGPTImage15TextToImage:
+    """Tests for GPTImage15TextToImage node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = GPTImage15TextToImage(prompt="test")
+        assert node._get_model() == "gpt-image/1.5-text-to-image"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test"
+        assert params["aspect_ratio"] == "1:1"
+        assert params["quality"] == "medium"
+
+    @pytest.mark.asyncio
+    async def test_submit_payload(self):
+        """Test submit payload generation."""
+        node = GPTImage15TextToImage(
+            prompt="A photorealistic portrait",
+            aspect_ratio=GPTImage15TextToImage.AspectRatio.RATIO_3_2,
+            quality=GPTImage15TextToImage.Quality.HIGH,
+        )
+        payload = await node._get_submit_payload()
+        assert payload == {
+            "model": "gpt-image/1.5-text-to-image",
+            "input": {
+                "prompt": "A photorealistic portrait",
+                "aspect_ratio": "3:2",
+                "quality": "high",
+            },
+        }
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = GPTImage15TextToImage(prompt="")
+        with pytest.raises(ValueError, match="Prompt cannot be empty"):
+            await node._get_input_params()
+
+    @pytest.mark.asyncio
+    async def test_is_visible(self):
+        """Test node is visible in UI."""
+        assert GPTImage15TextToImage.is_visible()
+
+    @pytest.mark.asyncio
+    async def test_aspect_ratio_options(self):
+        """Test all aspect ratio options."""
+        for ratio in GPTImage15TextToImage.AspectRatio:
+            node = GPTImage15TextToImage(prompt="test", aspect_ratio=ratio)
+            params = await node._get_input_params()
+            assert params["aspect_ratio"] == ratio.value
+
+    @pytest.mark.asyncio
+    async def test_quality_options(self):
+        """Test quality options."""
+        for quality in GPTImage15TextToImage.Quality:
+            node = GPTImage15TextToImage(prompt="test", quality=quality)
+            params = await node._get_input_params()
+            assert params["quality"] == quality.value

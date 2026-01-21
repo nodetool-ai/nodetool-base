@@ -2095,3 +2095,66 @@ class NanoBananaEdit(KieBaseNode):
         return await context.image_from_bytes(
             image_bytes, metadata={"task_id": task_id}
         )
+
+
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 Text-to-Image model via Kie.ai.
+
+    kie, openai, gpt-image, gpt-image-1.5, text-to-image, ai
+
+    GPT Image 1.5 creates high-quality images from text descriptions with
+    support for multiple aspect ratios and quality settings.
+
+    Use cases:
+    - Generate photorealistic images from text prompts
+    - Create artistic and creative imagery
+    - Generate product visuals and marketing content
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    prompt: str = Field(
+        default="",
+        description="A text description of the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        RATIO_1_1 = "1:1"
+        RATIO_2_3 = "2:3"
+        RATIO_3_2 = "3:2"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.RATIO_1_1,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality of the generated image. High is slower but more detailed.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image/1.5-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
