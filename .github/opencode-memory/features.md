@@ -14,6 +14,19 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-21 - GPT Image 1.5 & Sora2 Characters
+
+- **Model IDs:**
+  - `gpt-image/1.5-text-to-image`
+  - `gpt-image/1.5-image-to-image`
+  - `sora-2-characters`
+
+- **Categories:** `image`, `video`
+
+- **Description:** Added support for OpenAI's GPT Image 1.5 models (text-to-image and image-to-image) with multiple aspect ratios and quality settings, plus Sora 2 Characters for character animation via Kie.ai API.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
