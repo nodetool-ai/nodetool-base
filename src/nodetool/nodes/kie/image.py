@@ -10,6 +10,7 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 - Flux Pro (Black Forest Labs text-to-image)
 - Topaz Image Upscaler (AI image upscaling and enhancement)
 - Grok Imagine (xAI multimodal image generation)
+- GPT Image 1.5 (OpenAI's advanced image generation model)
 """
 
 import asyncio
@@ -2088,6 +2089,159 @@ class NanoBananaEdit(KieBaseNode):
             "image_urls": image_urls,
             "output_format": "png",
             "image_size": self.image_size.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 Text-to-Image model via Kie.ai.
+
+    kie, gpt, gpt-image, openai, image generation, ai, text-to-image, 1.5
+
+    GPT Image 1.5 generates high-quality images from text prompts with
+    excellent detail and adherence to prompts.
+
+    Use cases:
+    - Generate images from detailed text descriptions
+    - Create photorealistic or artistic images
+    - Generate images with specific aspect ratios
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="A text description of the image you want to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        PORTRAIT = "2:3"
+        LANDSCAPE = "3:2"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="Width-height ratio of the image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality: medium=balanced, high=slow/detailed.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image/1.5-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15ImageToImage(KieBaseNode):
+    """Generate images from input images using OpenAI's GPT Image 1.5 Image-to-Image model via Kie.ai.
+
+    kie, gpt, gpt-image, openai, image generation, ai, image-to-image, edit, 1.5
+
+    GPT Image 1.5 allows you to edit or transform existing images with text prompts
+    while preserving key elements of the original.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply artistic styles to photos
+    - Modify specific elements in images
+    - Create variations of existing images
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Image To Image"
+
+    prompt: str = Field(
+        default="",
+        description="A text description of how to transform the image.",
+    )
+
+    image_input: list[ImageRef] = Field(
+        default=[],
+        description="Input images to transform (max 16).",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        PORTRAIT = "2:3"
+        LANDSCAPE = "3:2"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.LANDSCAPE,
+        description="Width-height ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        MEDIUM = "medium"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.MEDIUM,
+        description="Quality: medium=balanced, high=slow/detailed.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image/1.5-image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image_input:
+            raise ValueError("At least one image is required")
+        if len(self.image_input) > 16:
+            raise ValueError("Maximum 16 images allowed")
+
+        image_urls = []
+        if context:
+            for img in self.image_input:
+                if img.is_set():
+                    url = await self._upload_image(context, img)
+                    image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "input_urls": image_urls,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:

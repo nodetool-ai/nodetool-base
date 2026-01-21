@@ -14,6 +14,18 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-21 - GPT Image 1.5 Models
+
+- **Model IDs:**
+  - `gpt-image/1.5-text-to-image`
+  - `gpt-image/1.5-image-to-image`
+
+- **Category:** `image`
+
+- **Description:** Added support for OpenAI's GPT Image 1.5 models (text-to-image and image-to-image) via Kie.ai API. These models generate high-quality images from text prompts and support image transformation with aspect ratios (1:1, 2:3, 3:2) and quality settings (medium, high).
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
