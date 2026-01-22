@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.27",
+  "version": "0.6.3-rc.1",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -1998,7 +1998,7 @@
     },
     {
       "title": "Select Elements",
-      "description": "Selects specific values from a list using index positions.\n    list, select, index, extract\n\n    Use cases:\n    - Pick specific elements by their positions\n    - Rearrange list elements\n    - Create a new list from selected indices",
+      "description": "Selects specific values from a list using index positions. Stop=0 selects elements until the end of the list.\n    list, select, index, extract\n\n    Use cases:\n    - Pick specific elements by their positions\n    - Rearrange list elements\n    - Create a new list from selected indices",
       "namespace": "nodetool.list",
       "node_type": "nodetool.list.SelectElements",
       "properties": [
@@ -2049,7 +2049,7 @@
     },
     {
       "title": "Slice",
-      "description": "Extracts a subset from a list using start, stop, and step indices.\n    list, slice, subset, extract\n\n    Use cases:\n    - Get a portion of a list\n    - Implement pagination\n    - Extract every nth element",
+      "description": "Extracts a subset from a list using start, stop, and step indices.\n    list, slice, subset, extract\n\n    Notes:\n    - stop=0 means \"slice to end\" (no upper limit)\n    - Negative indices work as in Python (e.g., start=-3 for last 3 items)\n    Use cases:\n    - Extract a portion of a list\n    - Implement pagination\n    - Get every nth element",
       "namespace": "nodetool.list",
       "node_type": "nodetool.list.Slice",
       "properties": [
@@ -2064,7 +2064,8 @@
             ]
           },
           "default": [],
-          "title": "Values"
+          "title": "Values",
+          "description": "The input list to slice."
         },
         {
           "name": "start",
@@ -2072,7 +2073,8 @@
             "type": "int"
           },
           "default": 0,
-          "title": "Start"
+          "title": "Start",
+          "description": "Starting index (inclusive). Negative values count from end."
         },
         {
           "name": "stop",
@@ -2080,7 +2082,8 @@
             "type": "int"
           },
           "default": 0,
-          "title": "Stop"
+          "title": "Stop",
+          "description": "Ending index (exclusive). 0 means slice to end of list."
         },
         {
           "name": "step",
@@ -2088,7 +2091,8 @@
             "type": "int"
           },
           "default": 1,
-          "title": "Step"
+          "title": "Step",
+          "description": "Step between elements. Negative for reverse order."
         }
       ],
       "outputs": [
@@ -40057,7 +40061,7 @@
     },
     {
       "package_name": "nodetool-base",
-      "name": "Chat with docs.jpg",
+      "name": "Chat with Docs.jpg",
       "path": ""
     },
     {
@@ -40276,12 +40280,6 @@
         "research",
         "writing"
       ]
-    },
-    {
-      "id": "",
-      "name": "[ERROR] thumbnail_prompts.json",
-      "description": "Error loading this workflow: 7 validation errors for Workflow\nid\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\naccess\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\ncreated_at\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\nupdated_at\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\nname\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\ndescription\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing\ngraph\n  Field required [type=missing, input_value={'AI Product Launch Video...thumbnail_prompts.json'}, input_type=dict]\n    For further information visit https://errors.pydantic.dev/2.12/v/missing",
-      "tags": []
     },
     {
       "id": "39664b20a78311f0bfc6000069947dd1",
