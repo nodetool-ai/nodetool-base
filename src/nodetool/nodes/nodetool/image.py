@@ -13,6 +13,7 @@ import datetime
 from pydantic import Field
 import PIL
 import PIL.Image
+import aiofiles
 
 
 class LoadImageFile(BaseNode):
@@ -33,8 +34,8 @@ class LoadImageFile(BaseNode):
         if not os.path.exists(expanded_path):
             raise ValueError(f"Image file not found: {expanded_path}")
 
-        with open(expanded_path, "rb") as f:
-            image_data = f.read()
+        async with aiofiles.open(expanded_path, "rb") as f:
+            image_data = await f.read()
 
         image = await context.image_from_bytes(image_data)
         image.uri = create_file_uri(expanded_path)
@@ -98,8 +99,8 @@ class LoadImageFolder(BaseNode):
             if self.pattern and not fnmatch.fnmatch(path, self.pattern):
                 continue
 
-            with open(path, "rb") as f:
-                image_data = f.read()
+            async with aiofiles.open(path, "rb") as f:
+                image_data = await f.read()
 
             image = await context.image_from_bytes(image_data)
             image.uri = create_file_uri(path)

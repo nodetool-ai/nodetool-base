@@ -57,6 +57,7 @@ class RealtimeAgent(GraphNode[nodetool.nodes.openai.agents.RealtimeAgent.OutputT
             content="",
             content_metadata={},
             done=False,
+            thinking=False,
         ),
         description="The audio chunk to use as input.",
     )

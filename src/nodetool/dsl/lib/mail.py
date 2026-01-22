@@ -203,8 +203,8 @@ class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
 
 class GmailSearchOutputs(OutputsProxy):
     @property
-    def email(self) -> OutputHandle[types.Email]:
-        return typing.cast(OutputHandle[types.Email], self["email"])
+    def email(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["email"])
 
     @property
     def message_id(self) -> OutputHandle[str]:

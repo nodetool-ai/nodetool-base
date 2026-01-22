@@ -2,6 +2,7 @@ import io
 import os
 import datetime
 import base64
+import asyncio
 from typing import AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.config.logging_config import get_logger
@@ -18,6 +19,7 @@ from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 import numpy as np
 from pydub import AudioSegment
 from nodetool.metadata.types import NPArray
+import aiofiles
 
 log = get_logger(__name__)
 
@@ -79,8 +81,8 @@ class LoadAudioFile(BaseNode):
         if not os.path.exists(expanded_path):
             raise ValueError(f"Audio file not found: {expanded_path}")
 
-        with open(expanded_path, "rb") as f:
-            audio_data = f.read()
+        async with aiofiles.open(expanded_path, "rb") as f:
+            audio_data = await f.read()
 
         audio = await context.audio_from_bytes(audio_data)
         audio.uri = create_file_uri(expanded_path)
@@ -141,8 +143,8 @@ class LoadAudioFolder(BaseNode):
             if ext.lower() not in allowed_exts:
                 continue
 
-            with open(file_path, "rb") as f:
-                audio_data = f.read()
+            async with aiofiles.open(file_path, "rb") as f:
+                audio_data = await f.read()
 
             audio = await context.audio_from_bytes(audio_data)
             audio.uri = create_file_uri(file_path)
@@ -265,12 +267,17 @@ class SaveAudioFile(BaseNode):
 
         # Load audio as AudioSegment and export with proper encoding
         audio_segment = await context.audio_to_audio_segment(self.audio)
-        with open(expanded_path, "wb") as f:
-            audio_segment.export(f, format=export_format)
+
+        # Export to file in a thread to avoid blocking
+        def export_audio():
+            with open(expanded_path, "wb") as f:
+                audio_segment.export(f, format=export_format)
+
+        await asyncio.to_thread(export_audio)
 
         # Read back the exported data for the AudioRef
-        with open(expanded_path, "rb") as f:
-            audio_data = f.read()
+        async with aiofiles.open(expanded_path, "rb") as f:
+            audio_data = await f.read()
 
         result = AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
 

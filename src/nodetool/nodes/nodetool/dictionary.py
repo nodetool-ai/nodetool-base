@@ -10,6 +10,7 @@ import csv
 import datetime
 
 from nodetool.config.environment import Environment
+import aiofiles
 
 logger = get_logger(__name__)
 
@@ -283,8 +284,9 @@ class LoadCSVFile(BaseNode):
         if not self.path:
             raise ValueError("path cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        with open(expanded_path, "r") as f:
-            reader = csv.DictReader(f)
+        async with aiofiles.open(expanded_path, "r") as f:
+            content = await f.read()
+            reader = csv.DictReader(content.splitlines())
             return [row for row in reader]
 
 
@@ -323,11 +325,18 @@ class SaveCSVFile(BaseNode):
 
         filename = datetime.datetime.now().strftime(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
-        with open(expanded_path, "w") as f:
-            writer = csv.DictWriter(f, fieldnames=self.data[0].keys())
-            writer.writeheader()
-            for row in self.data:
-                writer.writerow(row)
+
+        # Use StringIO to build CSV content asynchronously
+        import io
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=self.data[0].keys())
+        writer.writeheader()
+        for row in self.data:
+            writer.writerow(row)
+
+        # Write the CSV content to file
+        async with aiofiles.open(expanded_path, "w") as f:
+            await f.write(output.getvalue())
 
 
 class FilterDictByValue(BaseNode):

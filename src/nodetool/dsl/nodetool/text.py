@@ -912,6 +912,57 @@ import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class LoadTextFolder(GraphNode[nodetool.nodes.nodetool.text.LoadTextFolder.OutputType]):
+    """
+
+    Load all text files from a folder, optionally including subfolders.
+    text, load, folder, files
+    """
+
+    folder: str | OutputHandle[str] = connect_field(
+        default="", description="Folder to scan for text files"
+    )
+    include_subdirectories: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Include text files in subfolders"
+    )
+    extensions: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[".txt", ".csv", ".json", ".xml", ".md", ".html", ".pdf"],
+        description="Text file extensions to include",
+    )
+    pattern: str | OutputHandle[str] = connect_field(
+        default="", description="Pattern to match text files"
+    )
+
+    @property
+    def out(self) -> "LoadTextFolderOutputs":
+        return LoadTextFolderOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.LoadTextFolder
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class LoadTextFolderOutputs(OutputsProxy):
+    @property
+    def text(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["text"])
+
+    @property
+    def path(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["path"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class PadText(SingleOutputGraphNode[str], GraphNode[str]):
     """
 

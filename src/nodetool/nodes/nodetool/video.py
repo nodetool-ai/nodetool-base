@@ -3,6 +3,7 @@ import enum
 from fractions import Fraction
 import os
 import tempfile
+import asyncio
 from typing import AsyncGenerator, ClassVar, TypedDict
 import uuid
 import ffmpeg
@@ -30,6 +31,7 @@ from nodetool.workflows.processing_context import create_file_uri
 from nodetool.config.environment import Environment
 from nodetool.workflows.types import SaveUpdate
 from nodetool.providers.types import TextToVideoParams, ImageToVideoParams
+import aiofiles
 
 logger = get_logger(__name__)
 
@@ -291,8 +293,8 @@ class LoadVideoFile(BaseNode):
         if not os.path.exists(expanded_path):
             raise ValueError(f"Video file not found: {expanded_path}")
 
-        with open(expanded_path, "rb") as f:
-            video_data = f.read()
+        async with aiofiles.open(expanded_path, "rb") as f:
+            video_data = await f.read()
             video = await context.video_from_bytes(video_data)
             video.uri = create_file_uri(expanded_path)
             return video
@@ -343,8 +345,8 @@ class SaveVideoFile(BaseNode):
         video_io = await context.asset_to_io(self.video)
         video_data = video_io.read()
 
-        with open(expanded_path, "wb") as f:
-            f.write(video_data)
+        async with aiofiles.open(expanded_path, "wb") as f:
+            await f.write(video_data)
 
         result = VideoRef(uri=create_file_uri(expanded_path), data=video_data)
 
@@ -601,7 +603,7 @@ class FrameToVideo(BaseNode):
             )
 
             # Read the created video and return as VideoRef
-            with open(video_path, "rb") as f:
+            async with aiofiles.open(video_path, "rb") as f:
                 return await context.video_from_io(f)
 
         except ffmpeg.Error as e:
@@ -649,9 +651,9 @@ class Concat(BaseNode):
                 output_temp.close()
 
                 # Create a list file for concatenation
-                with open(temp_list.name, "w") as f:
-                    f.write(f"file '{temp_a.name}'\n")
-                    f.write(f"file '{temp_b.name}'\n")
+                async with aiofiles.open(temp_list.name, "w") as f:
+                    await f.write(f"file '{temp_a.name}'\n")
+                    await f.write(f"file '{temp_b.name}'\n")
                 temp_list.close()
 
                 # Check if both videos have audio streams
@@ -679,7 +681,7 @@ class Concat(BaseNode):
                 )
 
                 # Read the concatenated video and create a VideoRef
-                with open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             except ffmpeg.Error as e:
                 logger.error("FFmpeg stdout:\n%s", e.stdout.decode("utf8"))
@@ -766,7 +768,7 @@ class Trim(BaseNode):
                     ).overwrite_output().run(quiet=False)
 
                 # Read the trimmed video and create a VideoRef
-                with open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             finally:
                 safe_unlink(temp.name)
@@ -830,7 +832,7 @@ class ResizeNode(BaseNode):
                     )
 
                 # Read the resized video and create a VideoRef
-                with open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             finally:
                 safe_unlink(temp.name)
@@ -892,7 +894,7 @@ class Rotate(BaseNode):
                     )
 
                 # Read the rotated video and create a VideoRef
-                with open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             finally:
                 safe_unlink(temp.name)
@@ -972,7 +974,7 @@ class SetSpeed(BaseNode):
                     ).overwrite_output().run(quiet=False)
 
                 # Read the speed-adjusted video and create a VideoRef
-                with open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             finally:
                 safe_unlink(temp.name)
@@ -1080,7 +1082,7 @@ class Overlay(BaseNode):
                     ).overwrite_output().run(quiet=False)
 
                 # Read the overlaid video and create a VideoRef
-                with open(output_temp.name, "rb") as f:
+                async with aiofiles.open(output_temp.name, "rb") as f:
                     return await context.video_from_io(f)
             except ffmpeg.Error as e:
                 logger.error("stdout: %s", e.stdout.decode("utf8"))
@@ -1168,7 +1170,7 @@ class ColorBalance(BaseNode):
                 output.overwrite_output().run(quiet=True)
 
                 # Read the processed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1240,7 +1242,7 @@ class Denoise(BaseNode):
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1315,7 +1317,7 @@ class Stabilize(BaseNode):
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1398,7 +1400,7 @@ class Sharpness(BaseNode):
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1469,7 +1471,7 @@ class Blur(BaseNode):
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1538,7 +1540,7 @@ class Saturation(BaseNode):
                 ffmpeg.run(output, quiet=True, overwrite_output=True)
 
                 # Read the processed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1720,7 +1722,7 @@ class AddSubtitles(BaseNode):
                     ).overwrite_output().run(quiet=True)
 
                     # Read the final video and create a VideoRef
-                    with open(final_output.name, "rb") as f:
+                    async with aiofiles.open(final_output.name, "rb") as f:
                         return await context.video_from_io(f)
 
             except Exception as e:
@@ -1766,7 +1768,7 @@ class Reverse(BaseNode):
                 )
 
                 # Read the reversed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -1923,7 +1925,7 @@ class Transition(BaseNode):
                 output.overwrite_output().run(quiet=False)
 
                 # Read the transitioned video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -2003,7 +2005,7 @@ class AddAudio(BaseNode):
                 ).overwrite_output().run(quiet=False)
 
                 # Read the video with added audio and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -2074,7 +2076,7 @@ class ChromaKey(BaseNode):
                 )
 
                 # Read the chroma keyed video and create a VideoRef
-                with open(temp_output.name, "rb") as f:
+                async with aiofiles.open(temp_output.name, "rb") as f:
                     return await context.video_from_io(f)
 
             except ffmpeg.Error as e:
@@ -2129,7 +2131,7 @@ class ExtractAudio(BaseNode):
                 )
 
                 # Read the extracted audio and return it
-                with open(temp_audio.name, "rb") as f:
+                async with aiofiles.open(temp_audio.name, "rb") as f:
                     return await context.audio_from_io(f, content_type="audio/opus")
 
             except ffmpeg.Error as e:

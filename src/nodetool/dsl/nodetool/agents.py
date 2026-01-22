@@ -124,6 +124,12 @@ class AgentOutputs(DynamicOutputsProxy):
         return typing.cast(OutputHandle[nodetool.metadata.types.Chunk], self["chunk"])
 
     @property
+    def thinking(self) -> OutputHandle[nodetool.metadata.types.Chunk]:
+        return typing.cast(
+            OutputHandle[nodetool.metadata.types.Chunk], self["thinking"]
+        )
+
+    @property
     def audio(self) -> OutputHandle[nodetool.metadata.types.AudioRef]:
         return typing.cast(
             OutputHandle[nodetool.metadata.types.AudioRef], self["audio"]
