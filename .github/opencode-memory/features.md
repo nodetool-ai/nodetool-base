@@ -40,3 +40,16 @@ Repository configured with OpenCode memory and automated Kie.ai sync workflow.
 - Model ID: `elevenlabs/text-to-speech-turbo-2-5`
 - Category: `audio`
 - Description: Added ElevenLabs text-to-speech node supporting natural-sounding voice synthesis with multiple voices, stability controls, and multilingual output via Kie.ai API.
+
+---
+
+## 2026-01-22 - Kling V2.1 Video Models
+
+- **Model IDs:**
+  - `kling/v2-1-pro`
+  - `kling/v2-1-standard`
+  - `kling/v2-1-master-text-to-video`
+
+- **Category:** video
+
+- **Description:** Added support for Kling V2.1 video generation models including Pro and Standard image-to-video variants, plus Master text-to-video model with advanced motion and visual fidelity.

@@ -755,6 +755,174 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class KlingV21MasterTextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Kuaishou's Kling V2.1 Master model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, text-to-video, v2.1, master
+
+        Kling V2.1 Master produces high-quality videos from text descriptions
+        with advanced motion and visual fidelity.
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.KlingV21MasterTextToVideo.Duration
+    )
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.KlingV21MasterTextToVideo.AspectRatio
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video. Max 5000 characters.",
+    )
+    duration: nodetool.nodes.kie.video.KlingV21MasterTextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.KlingV21MasterTextToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.KlingV21MasterTextToVideo.AspectRatio = (
+        Field(
+            default=nodetool.nodes.kie.video.KlingV21MasterTextToVideo.AspectRatio.V16_9,
+            description="The aspect ratio of the generated video.",
+        )
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Elements to avoid in the generated video. Max 500 characters.",
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="CFG scale for prompt adherence (0-1). Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.KlingV21MasterTextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class KlingV21ProImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Kuaishou's Kling V2.1 Pro model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, v2.1, pro
+
+        Kling V2.1 Pro transforms static images into dynamic videos with
+        high-quality motion and temporal consistency.
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.KlingV21ProImageToVideo.Duration
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description of the desired video content. Max 5000 characters.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Source image to animate into a video. Supports jpg/png/webp, max 10MB.",
+    )
+    duration: nodetool.nodes.kie.video.KlingV21ProImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.KlingV21ProImageToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Elements to avoid in the generated video. Max 500 characters.",
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="CFG scale for prompt adherence (0-1). Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.KlingV21ProImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class KlingV21StandardImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Kuaishou's Kling V2.1 Standard model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, v2.1, standard
+
+        Kling V2.1 Standard offers efficient image-to-video generation
+        with good quality and faster processing times.
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.KlingV21StandardImageToVideo.Duration
+    )
+
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description of the desired video content. Max 5000 characters.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Source image to animate into a video. Supports jpg/png/webp, max 10MB.",
+    )
+    duration: nodetool.nodes.kie.video.KlingV21StandardImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.KlingV21StandardImageToVideo.Duration.D5,
+        description="Video duration in seconds.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Elements to avoid in the generated video. Max 500 characters.",
+    )
+    cfg_scale: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="CFG scale for prompt adherence (0-1). Lower values allow more creativity.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.KlingV21StandardImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class LumaModifyVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Modify and enhance videos using Luma's API via Kie.ai.

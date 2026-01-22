@@ -1956,7 +1956,11 @@ class RunwayBaseNode(KieVideoBaseNode):
     def _get_error_message(self, status_response: dict[str, Any]) -> str:
         """Extract error message from Runway response."""
         data = status_response.get("data", {})
-        return data.get("failMsg") or status_response.get("msg") or "Unknown error occurred"
+        return (
+            data.get("failMsg")
+            or status_response.get("msg")
+            or "Unknown error occurred"
+        )
 
     async def _poll_status(
         self, session: aiohttp.ClientSession, api_key: str, task_id: str
@@ -2094,7 +2098,9 @@ class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2170,7 +2176,9 @@ class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
         if context is None:
             raise ValueError("Context is required for image upload")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         image_url = await self._upload_image(context, self.image)
         payload: dict[str, Any] = {
             "imageUrl": image_url,
@@ -2246,7 +2254,9 @@ class RunwayGen3AlphaExtendVideo(RunwayBaseNode):
         if not self.video_url:
             raise ValueError("video_url is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second extension cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second extension cannot be generated with 1080p resolution"
+            )
         return {
             "video_url": self.video_url,
             "prompt": self.prompt,
@@ -2325,7 +2335,9 @@ class RunwayAlephVideo(RunwayBaseNode):
         if not self.prompt:
             raise ValueError("Prompt is required")
         if self.duration == self.Duration.D10 and self.quality == self.Quality.R1080P:
-            raise ValueError("10-second video cannot be generated with 1080p resolution")
+            raise ValueError(
+                "10-second video cannot be generated with 1080p resolution"
+            )
         return {
             "prompt": self.prompt,
             "aspectRatio": self.aspect_ratio.value,
@@ -2605,3 +2617,227 @@ class KlingMotionControl(KieVideoBaseNode):
             "character_orientation": self.character_orientation.value,
             "mode": self.mode.value,
         }
+
+
+class KlingV21ProImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Kuaishou's Kling V2.1 Pro model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, image-to-video, v2.1, pro
+
+    Kling V2.1 Pro transforms static images into dynamic videos with
+    high-quality motion and temporal consistency.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling V2.1 Pro Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description of the desired video content. Max 5000 characters.",
+        max_length=5000,
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Source image to animate into a video. Supports jpg/png/webp, max 10MB.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the generated video. Max 500 characters.",
+        max_length=500,
+    )
+
+    cfg_scale: float = Field(
+        default=0.5,
+        description="CFG scale for prompt adherence (0-1). Lower values allow more creativity.",
+        ge=0.0,
+        le=1.0,
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-1-pro"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "cfg_scale": self.cfg_scale,
+        }
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        return payload
+
+
+class KlingV21StandardImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Kuaishou's Kling V2.1 Standard model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, image-to-video, v2.1, standard
+
+    Kling V2.1 Standard offers efficient image-to-video generation
+    with good quality and faster processing times.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling V2.1 Standard Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text description of the desired video content. Max 5000 characters.",
+        max_length=5000,
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Source image to animate into a video. Supports jpg/png/webp, max 10MB.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the generated video. Max 500 characters.",
+        max_length=500,
+    )
+
+    cfg_scale: float = Field(
+        default=0.5,
+        description="CFG scale for prompt adherence (0-1). Lower values allow more creativity.",
+        ge=0.0,
+        le=1.0,
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-1-standard"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "cfg_scale": self.cfg_scale,
+        }
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        return payload
+
+
+class KlingV21MasterTextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Kuaishou's Kling V2.1 Master model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, text-to-video, v2.1, master
+
+    Kling V2.1 Master produces high-quality videos from text descriptions
+    with advanced motion and visual fidelity.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling V2.1 Master Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video. Max 5000 characters.",
+        max_length=5000,
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="Video duration in seconds.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the generated video. Max 500 characters.",
+        max_length=500,
+    )
+
+    cfg_scale: float = Field(
+        default=0.5,
+        description="CFG scale for prompt adherence (0-1). Lower values allow more creativity.",
+        ge=0.0,
+        le=1.0,
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-1-master-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+
+        payload: dict[str, Any] = {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "aspect_ratio": self.aspect_ratio.value,
+            "cfg_scale": self.cfg_scale,
+        }
+        if self.negative_prompt:
+            payload["negative_prompt"] = self.negative_prompt
+
+        return payload
