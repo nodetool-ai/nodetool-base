@@ -22,6 +22,7 @@ from nodetool.metadata.types import FolderRef, Model3DRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
 from nodetool.workflows.types import SaveUpdate
+import aiofiles
 
 
 # Supported 3D file formats
@@ -117,8 +118,8 @@ class LoadModel3DFile(BaseNode):
                 f"Supported formats: {', '.join(SUPPORTED_FORMATS.keys())}"
             )
 
-        with open(expanded_path, "rb") as f:
-            model_data = f.read()
+        async with aiofiles.open(expanded_path, "rb") as f:
+            model_data = await f.read()
 
         # IMPORTANT:
         # Returning large `data` blobs will be serialized into websocket updates and can
@@ -198,8 +199,8 @@ class SaveModel3DFile(BaseNode):
                 expanded_path = os.path.join(expanded_folder, filename)
                 count += 1
 
-        with open(expanded_path, "wb") as f:
-            f.write(model_data)
+        async with aiofiles.open(expanded_path, "wb") as f:
+            await f.write(model_data)
 
         # Determine format from filename
         _, ext = os.path.splitext(expanded_path)

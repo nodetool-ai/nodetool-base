@@ -15,6 +15,7 @@ from nodetool.workflows.types import SaveUpdate
 from nodetool.io.uri_utils import create_file_uri
 from datetime import datetime
 import datetime as dt
+import aiofiles
 
 
 def _validate_workspace_path(workspace_dir: str, relative_path: str) -> str:
@@ -118,8 +119,8 @@ class ReadTextFile(BaseNode):
         if not os.path.isfile(full_path):
             raise ValueError(f"Path is not a file: {self.path}")
 
-        with open(full_path, "r", encoding=self.encoding) as f:
-            return f.read()
+        async with aiofiles.open(full_path, "r", encoding=self.encoding) as f:
+            return await f.read()
 
 
 class WriteTextFile(BaseNode):
@@ -144,8 +145,8 @@ class WriteTextFile(BaseNode):
         os.makedirs(os.path.dirname(full_path), exist_ok=True)
 
         mode = "a" if self.append else "w"
-        with open(full_path, mode, encoding=self.encoding) as f:
-            f.write(self.content)
+        async with aiofiles.open(full_path, mode, encoding=self.encoding) as f:
+            await f.write(self.content)
 
         return self.path
 
@@ -169,8 +170,8 @@ class ReadBinaryFile(BaseNode):
         if not os.path.isfile(full_path):
             raise ValueError(f"Path is not a file: {self.path}")
 
-        with open(full_path, "rb") as f:
-            data = f.read()
+        async with aiofiles.open(full_path, "rb") as f:
+            data = await f.read()
             return base64.b64encode(data).decode("ascii")
 
 
@@ -195,8 +196,8 @@ class WriteBinaryFile(BaseNode):
 
         # Decode base64 and write
         data = base64.b64decode(self.content)
-        with open(full_path, "wb") as f:
-            f.write(data)
+        async with aiofiles.open(full_path, "wb") as f:
+            await f.write(data)
 
         return self.path
 
@@ -573,8 +574,8 @@ class SaveVideoFile(BaseNode):
         video_io = await context.asset_to_io(self.video)
         video_data = video_io.read()
 
-        with open(full_path, "wb") as f:
-            f.write(video_data)
+        async with aiofiles.open(full_path, "wb") as f:
+            await f.write(video_data)
 
         result = VideoRef(uri=create_file_uri(full_path), data=video_data)
 

@@ -153,6 +153,7 @@ class ChunkToAudio(GraphNode[nodetool.nodes.nodetool.audio.ChunkToAudio.OutputTy
             content="",
             content_metadata={},
             done=False,
+            thinking=False,
         ),
         description="Stream of audio chunks",
     )

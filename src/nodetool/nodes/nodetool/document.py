@@ -16,6 +16,7 @@ from llama_index.core.node_parser import (
 )
 from llama_index.core.schema import Document
 from llama_index.embeddings.ollama import OllamaEmbedding
+import aiofiles
 
 
 class LoadDocumentFile(BaseNode):
@@ -69,8 +70,8 @@ class SaveDocumentFile(BaseNode):
         filename = datetime.datetime.now().strftime(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
         data = await context.asset_to_bytes(self.document)
-        with open(expanded_path, "wb") as f:
-            f.write(data)
+        async with aiofiles.open(expanded_path, "wb") as f:
+            await f.write(data)
 
 
 class ListDocuments(BaseNode):

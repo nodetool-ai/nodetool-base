@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.2-rc.27",
+  "version": "0.6.3-rc.1",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -1998,7 +1998,7 @@
     },
     {
       "title": "Select Elements",
-      "description": "Selects specific values from a list using index positions.\n    list, select, index, extract\n\n    Use cases:\n    - Pick specific elements by their positions\n    - Rearrange list elements\n    - Create a new list from selected indices",
+      "description": "Selects specific values from a list using index positions. Stop=0 selects elements until the end of the list.\n    list, select, index, extract\n\n    Use cases:\n    - Pick specific elements by their positions\n    - Rearrange list elements\n    - Create a new list from selected indices",
       "namespace": "nodetool.list",
       "node_type": "nodetool.list.SelectElements",
       "properties": [
@@ -2049,7 +2049,7 @@
     },
     {
       "title": "Slice",
-      "description": "Extracts a subset from a list using start, stop, and step indices.\n    list, slice, subset, extract\n\n    Use cases:\n    - Get a portion of a list\n    - Implement pagination\n    - Extract every nth element",
+      "description": "Extracts a subset from a list using start, stop, and step indices.\n    list, slice, subset, extract\n\n    Notes:\n    - stop=0 means \"slice to end\" (no upper limit)\n    - Negative indices work as in Python (e.g., start=-3 for last 3 items)\n    Use cases:\n    - Extract a portion of a list\n    - Implement pagination\n    - Get every nth element",
       "namespace": "nodetool.list",
       "node_type": "nodetool.list.Slice",
       "properties": [
@@ -2064,7 +2064,8 @@
             ]
           },
           "default": [],
-          "title": "Values"
+          "title": "Values",
+          "description": "The input list to slice."
         },
         {
           "name": "start",
@@ -2072,7 +2073,8 @@
             "type": "int"
           },
           "default": 0,
-          "title": "Start"
+          "title": "Start",
+          "description": "Starting index (inclusive). Negative values count from end."
         },
         {
           "name": "stop",
@@ -2080,7 +2082,8 @@
             "type": "int"
           },
           "default": 0,
-          "title": "Stop"
+          "title": "Stop",
+          "description": "Ending index (exclusive). 0 means slice to end of list."
         },
         {
           "name": "step",
@@ -2088,7 +2091,8 @@
             "type": "int"
           },
           "default": 1,
-          "title": "Step"
+          "title": "Step",
+          "description": "Step between elements. Negative for reverse order."
         }
       ],
       "outputs": [
@@ -3477,6 +3481,12 @@
         },
         {
           "type": {
+            "type": "chunk"
+          },
+          "name": "thinking"
+        },
+        {
+          "type": {
             "type": "audio"
           },
           "name": "audio"
@@ -3572,8 +3582,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 41031,
-          "likes": 119
+          "downloads": 41756,
+          "likes": 120
         },
         {
           "id": "ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
@@ -3623,7 +3633,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 19016,
+          "downloads": 21960,
           "likes": 48
         },
         {
@@ -3674,7 +3684,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 12228,
+          "downloads": 10301,
           "likes": 30
         },
         {
@@ -3694,7 +3704,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1351,
+          "downloads": 1281,
           "likes": 27
         },
         {
@@ -3720,7 +3730,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4193,
+          "downloads": 4316,
           "likes": 7
         },
         {
@@ -3741,7 +3751,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 36878,
+          "downloads": 36328,
           "likes": 12
         },
         {
@@ -3760,7 +3770,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 962,
+          "downloads": 1032,
           "likes": 19
         },
         {
@@ -3811,7 +3821,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2177,
+          "downloads": 2375,
           "likes": 23
         }
       ],
@@ -4025,7 +4035,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 19016,
+          "downloads": 21960,
           "likes": 48
         }
       ],
@@ -4254,7 +4264,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 19016,
+          "downloads": 21960,
           "likes": 48
         }
       ],
@@ -4384,8 +4394,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 41031,
-          "likes": 119
+          "downloads": 41756,
+          "likes": 120
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -4435,7 +4445,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 12228,
+          "downloads": 10301,
           "likes": 30
         }
       ],
@@ -4638,7 +4648,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 19016,
+          "downloads": 21960,
           "likes": 48
         }
       ],
@@ -7606,6 +7616,84 @@
       "is_streaming_output": true
     },
     {
+      "title": "Load Text Folder",
+      "description": "Load all text files from a folder, optionally including subfolders.\n    text, load, folder, files",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.LoadTextFolder",
+      "properties": [
+        {
+          "name": "folder",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Folder",
+          "description": "Folder to scan for text files"
+        },
+        {
+          "name": "include_subdirectories",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Include Subdirectories",
+          "description": "Include text files in subfolders"
+        },
+        {
+          "name": "extensions",
+          "type": {
+            "type": "list",
+            "type_args": [
+              {
+                "type": "str"
+              }
+            ]
+          },
+          "default": [
+            ".txt",
+            ".csv",
+            ".json",
+            ".xml",
+            ".md",
+            ".html",
+            ".pdf"
+          ],
+          "title": "Extensions",
+          "description": "Text file extensions to include"
+        },
+        {
+          "name": "pattern",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Pattern",
+          "description": "Pattern to match text files"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "text"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "path"
+        }
+      ],
+      "basic_fields": [
+        "folder",
+        "include_subdirectories",
+        "extensions",
+        "pattern"
+      ],
+      "is_streaming_output": true
+    },
+    {
       "title": "Pad Text",
       "description": "Pads text to a target length.\n    text, pad, length, format",
       "namespace": "nodetool.text",
@@ -9413,7 +9501,8 @@
             "content_type": "text",
             "content": "",
             "content_metadata": {},
-            "done": false
+            "done": false,
+            "thinking": false
           },
           "title": "Chunk",
           "description": "Stream of audio chunks"
@@ -17719,76 +17808,6 @@
       "expose_as_tool": true
     },
     {
-      "title": "Email Fields",
-      "description": "Decomposes an email into its individual components.\n    email, decompose, extract\n\n    Takes an Email object and returns its individual fields:\n    - id: Message ID\n    - subject: Email subject\n    - sender: Sender address\n    - date: Datetime of email\n    - body: Email body content",
-      "namespace": "lib.mail",
-      "node_type": "lib.mail.EmailFields",
-      "properties": [
-        {
-          "name": "email",
-          "type": {
-            "type": "email"
-          },
-          "default": {
-            "type": "email",
-            "id": "",
-            "sender": "",
-            "subject": "",
-            "date": {
-              "type": "datetime",
-              "year": 0,
-              "month": 0,
-              "day": 0,
-              "hour": 0,
-              "minute": 0,
-              "second": 0,
-              "microsecond": 0,
-              "tzinfo": "UTC",
-              "utc_offset": 0
-            },
-            "body": ""
-          },
-          "title": "Email",
-          "description": "Email object to decompose"
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "id"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "subject"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "sender"
-        },
-        {
-          "type": {
-            "type": "datetime"
-          },
-          "name": "date"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "body"
-        }
-      ],
-      "basic_fields": [
-        "email"
-      ]
-    },
-    {
       "title": "Gmail Search",
       "description": "Searches Gmail using Gmail-specific search operators and yields matching emails.\n    email, gmail, search\n\n    Use cases:\n    - Search for emails based on specific criteria\n    - Retrieve emails from a specific sender\n    - Filter emails by subject, sender, or date",
       "namespace": "lib.mail",
@@ -17890,57 +17909,12 @@
           "default": 50,
           "title": "Max Results",
           "description": "Maximum number of emails to return"
-        },
-        {
-          "name": "retry_attempts",
-          "type": {
-            "type": "int"
-          },
-          "default": 3,
-          "title": "Retry Attempts",
-          "description": "Maximum retry attempts for Gmail operations"
-        },
-        {
-          "name": "retry_base_delay",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.5,
-          "title": "Retry Base Delay",
-          "description": "Base delay (seconds) for exponential backoff"
-        },
-        {
-          "name": "retry_max_delay",
-          "type": {
-            "type": "float"
-          },
-          "default": 5.0,
-          "title": "Retry Max Delay",
-          "description": "Maximum delay (seconds) for exponential backoff"
-        },
-        {
-          "name": "retry_factor",
-          "type": {
-            "type": "float"
-          },
-          "default": 2.0,
-          "title": "Retry Factor",
-          "description": "Exponential growth factor for backoff"
-        },
-        {
-          "name": "retry_jitter",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.1,
-          "title": "Retry Jitter",
-          "description": "Random jitter (seconds) added to each backoff"
         }
       ],
       "outputs": [
         {
           "type": {
-            "type": "email"
+            "type": "dict"
           },
           "name": "email"
         },
@@ -18067,51 +18041,6 @@
           "default": "",
           "title": "Body",
           "description": "Email body"
-        },
-        {
-          "name": "retry_attempts",
-          "type": {
-            "type": "int"
-          },
-          "default": 3,
-          "title": "Retry Attempts",
-          "description": "Maximum retry attempts for SMTP send"
-        },
-        {
-          "name": "retry_base_delay",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.5,
-          "title": "Retry Base Delay",
-          "description": "Base delay (seconds) for exponential backoff"
-        },
-        {
-          "name": "retry_max_delay",
-          "type": {
-            "type": "float"
-          },
-          "default": 5.0,
-          "title": "Retry Max Delay",
-          "description": "Maximum delay (seconds) for exponential backoff"
-        },
-        {
-          "name": "retry_factor",
-          "type": {
-            "type": "float"
-          },
-          "default": 2.0,
-          "title": "Retry Factor",
-          "description": "Exponential growth factor for backoff"
-        },
-        {
-          "name": "retry_jitter",
-          "type": {
-            "type": "float"
-          },
-          "default": 0.1,
-          "title": "Retry Jitter",
-          "description": "Random jitter (seconds) added to each backoff"
         }
       ],
       "outputs": [
@@ -18130,12 +18059,7 @@
         "from_address",
         "to_address",
         "subject",
-        "body",
-        "retry_attempts",
-        "retry_base_delay",
-        "retry_max_delay",
-        "retry_factor",
-        "retry_jitter"
+        "body"
       ],
       "expose_as_tool": true
     },
@@ -39496,7 +39420,8 @@
             "content_type": "text",
             "content": "",
             "content_metadata": {},
-            "done": false
+            "done": false,
+            "thinking": false
           },
           "title": "Chunk",
           "description": "The audio chunk to use as input."
@@ -40126,6 +40051,11 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Research Paper Summarizer.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Reddit Scraper.jpg",
       "path": ""
     },
@@ -40137,11 +40067,6 @@
     {
       "package_name": "nodetool-base",
       "name": "ChromaDB Research Agent.jpg",
-      "path": ""
-    },
-    {
-      "package_name": "nodetool-base",
-      "name": "Index PDFs.jpg",
       "path": ""
     },
     {
@@ -40161,12 +40086,27 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "thumbnail_prompts.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Image Enhance.jpg",
       "path": ""
     },
     {
       "package_name": "nodetool-base",
+      "name": "Music Video Visualizer.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Story to Video Generator.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Concept Art Iteration Board.jpg",
       "path": ""
     },
     {
@@ -40201,6 +40141,11 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "Audio To Image.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Social Media Calendar Filler.jpg",
       "path": ""
     },
@@ -40216,7 +40161,12 @@
     },
     {
       "package_name": "nodetool-base",
-      "name": "Daily Digest.jpg",
+      "name": "Photo Enhancement Suite.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Hacker News Agent.jpg",
       "path": ""
     },
     {
@@ -40256,6 +40206,11 @@
     },
     {
       "package_name": "nodetool-base",
+      "name": "YouTube Thumbnail Pipeline.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
       "name": "Summarize Newsletters.jpg",
       "path": ""
     },
@@ -40267,6 +40222,11 @@
     {
       "package_name": "nodetool-base",
       "name": "Learning Path Generator.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Wikipedia Agent.jpg",
       "path": ""
     },
     {
@@ -40297,6 +40257,11 @@
     {
       "package_name": "nodetool-base",
       "name": "Realtime Agent.jpg",
+      "path": ""
+    },
+    {
+      "package_name": "nodetool-base",
+      "name": "Game Encounter Planner Agent.jpg",
       "path": ""
     },
     {
@@ -40617,15 +40582,6 @@
       "description": "",
       "tags": [
         "video",
-        "start"
-      ]
-    },
-    {
-      "id": "3047c2fa760811f0b24700002df0a13c",
-      "name": "Index PDFs",
-      "description": "Workflow to index PDFs in a folder into a Chroma collection",
-      "tags": [
-        "rag",
         "start"
       ]
     },

@@ -1101,6 +1101,7 @@ class Agent(BaseNode):
     class OutputType(TypedDict):
         text: str | None
         chunk: Chunk | None
+        thinking: Chunk | None
         audio: AudioRef | None
 
     def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
@@ -1420,26 +1421,35 @@ class Agent(BaseNode):
                 if messages[-1] != assistant_message:
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
+                    is_thinking = bool(getattr(chunk, "thinking", False))
                     log.debug(
                         f"_execute_agent_loop chunk received: iteration={iteration}, "
                         f"chunk_count={chunk_count}, content_type={chunk.content_type}, "
                         f"done={chunk.done}, content_len={len(chunk.content or '')}, "
                         f"current_text_len={len(message_text_content.text)}"
                     )
+                    if is_thinking:
+                        yield {
+                            "chunk": None,
+                            "thinking": chunk,
+                            "text": None,
+                            "audio": None,
+                        }
+                        continue
                     if chunk.content_type in ("text", None):
                         message_text_content.text += chunk.content
                         log.debug(
                             f"_execute_agent_loop accumulated text: iteration={iteration}, "
                             f"chunk_count={chunk_count}, total_text_len={len(message_text_content.text)}"
                         )
-                        yield {"chunk": chunk, "text": None, "audio": None}
+                        yield {"chunk": chunk, "thinking": None, "text": None, "audio": None}
                     elif chunk.content_type == "audio":
-                        yield {"chunk": chunk, "text": None, "audio": None}
+                        yield {"chunk": chunk, "thinking": None, "text": None, "audio": None}
                         import base64
 
                         audio_bytes = base64.b64decode(chunk.content or "")
                         audio_ref = AudioRef(data=audio_bytes)
-                        yield {"chunk": None, "text": None, "audio": audio_ref}
+                        yield {"chunk": None, "thinking": None, "text": None, "audio": audio_ref}
                     else:
                         log.warning(
                             "Agent received unsupported chunk type %s; ignoring",
@@ -1463,6 +1473,7 @@ class Agent(BaseNode):
                         )
                         yield {
                             "chunk": None,
+                            "thinking": None,
                             "text": final_text,
                             "audio": None,
                         }
@@ -1570,6 +1581,7 @@ class Agent(BaseNode):
                 await self._save_message_to_thread(context, assistant_message)
                 yield {
                     "chunk": None,
+                    "thinking": None,
                     "text": message_text_content.text,
                     "audio": None,
                 }
@@ -1659,6 +1671,7 @@ class Agent(BaseNode):
                 f"gen_process yielding item {item_count}: keys={list(item.keys())}, "
                 f"text_len={len(item.get('text', '') or '')}, "
                 f"has_chunk={item.get('chunk') is not None}, "
+                f"has_thinking={item.get('thinking') is not None}, "
                 f"has_audio={item.get('audio') is not None}"
             )
             yield item

@@ -18,6 +18,7 @@ from enum import Enum
 import html2text
 from nodetool.io.uri_utils import create_file_uri
 from nodetool.workflows.types import SaveUpdate
+import aiofiles
 
 
 class ToString(BaseNode):
@@ -316,7 +317,7 @@ class SaveTextFile(BaseNode):
 
     async def process(self, context: ProcessingContext) -> TextRef:
         filename = datetime.now().strftime(self.name)
-        file = BytesIO(self.text.encode("utf-8"))
+        file_data = self.text.encode("utf-8")
         if not self.folder:
             raise ValueError("folder cannot be empty")
         expanded_folder = os.path.expanduser(self.folder)
@@ -324,9 +325,11 @@ class SaveTextFile(BaseNode):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
         filename = datetime.now().strftime(self.name)
         expanded_path = os.path.join(expanded_folder, filename)
-        with open(expanded_path, "wb") as f:
-            f.write(file.getvalue())
-        result = TextRef(uri=create_file_uri(expanded_path), data=file.getvalue())
+
+        async with aiofiles.open(expanded_path, "wb") as f:
+            await f.write(file_data)
+
+        result = TextRef(uri=create_file_uri(expanded_path), data=file_data)
 
         # Emit SaveUpdate event
         context.post_message(
@@ -388,6 +391,71 @@ class SaveText(BaseNode):
 
         return result
 
+
+class LoadTextFolder(BaseNode):
+    """
+    Load all text files from a folder, optionally including subfolders.
+    text, load, folder, files
+    """
+
+    folder: str = Field(default="", description="Folder to scan for text files")
+    include_subdirectories: bool = Field(
+        default=False, description="Include text files in subfolders"
+    )
+    extensions: list[str] = Field(
+        default=[".txt", ".csv", ".json", ".xml", ".md", ".html", ".pdf"],
+        description="Text file extensions to include",
+    )
+    pattern: str = Field(default="", description="Pattern to match text files")
+
+    @classmethod
+    def get_title(cls):
+        return "Load Text Folder"
+
+    class OutputType(TypedDict):
+        text: str
+        path: str
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
+        from nodetool.config.environment import Environment
+        import fnmatch
+
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder:
+            raise ValueError("folder cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder)
+        if not os.path.isdir(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        allowed_exts = {ext.lower() for ext in self.extensions}
+
+        def iter_files(base_folder: str):
+            if self.include_subdirectories:
+                for root, _, files in os.walk(base_folder):
+                    for f in files:
+                        yield os.path.join(root, f)
+            else:
+                for f in os.listdir(base_folder):
+                    yield os.path.join(base_folder, f)
+
+        for path in iter_files(expanded_folder):
+            if not os.path.isfile(path):
+                continue
+            _, ext = os.path.splitext(path)
+            if ext.lower() not in allowed_exts:
+                continue
+
+            if self.pattern and not fnmatch.fnmatch(path, self.pattern):
+                continue
+
+            async with aiofiles.open(path, "r") as f:
+                text_data = await f.read()
+
+            yield {"path": path, "text": text_data}
 
 class Split(BaseNode):
     """
