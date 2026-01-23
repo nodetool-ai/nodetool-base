@@ -493,6 +493,12 @@ class TextToImage(BaseNode):
         default=True,
         description="Enable safety checker to filter inappropriate content",
     )
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=3600,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         # Get the image provider for this model
@@ -512,7 +518,10 @@ class TextToImage(BaseNode):
 
         # Generate image
         image_bytes = await provider_instance.text_to_image(
-            params, context=context, node_id=self.id
+            params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+            context=context,
+            node_id=self.id,
         )
 
         # Convert to ImageRef
@@ -594,6 +603,12 @@ class ImageToImage(BaseNode):
         default=True,
         description="Enable safety checker",
     )
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=3600,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         if self.image.is_empty():
@@ -619,7 +634,11 @@ class ImageToImage(BaseNode):
 
         # Transform image
         output_image_bytes = await provider_instance.image_to_image(
-            image=input_image_bytes, params=params, context=context, node_id=self.id
+            image=input_image_bytes,
+            params=params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+            context=context,
+            node_id=self.id,
         )
 
         # Convert to ImageRef

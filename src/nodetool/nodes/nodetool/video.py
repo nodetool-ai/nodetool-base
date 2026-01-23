@@ -135,6 +135,12 @@ class TextToVideo(BaseNode):
         ge=-1,
         description="Random seed for reproducibility (-1 for random)",
     )
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=7200,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         # Get the video provider for this model
@@ -154,7 +160,10 @@ class TextToVideo(BaseNode):
 
         # Generate video
         video_bytes = await provider_instance.text_to_video(
-            params, context=context, node_id=self.id
+            params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+            context=context,
+            node_id=self.id,
         )
 
         # Convert to VideoRef
@@ -237,6 +246,12 @@ class ImageToVideo(BaseNode):
         ge=-1,
         description="Random seed for reproducibility (-1 for random)",
     )
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=7200,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
 
     async def process(self, context: ProcessingContext) -> VideoRef:
         if self.image.is_empty():
@@ -264,6 +279,7 @@ class ImageToVideo(BaseNode):
         video_bytes = await provider_instance.image_to_video(
             image=image_bytes,
             params=params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
             context=context,
             node_id=self.id,
         )
