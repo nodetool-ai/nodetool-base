@@ -16,6 +16,7 @@ from nodetool.nodes.kie.image import (
     ZImage,
     NanoBanana,
     NanoBananaPro,
+    NanoBananaEdit,
     FluxKontext,
     GrokImagineTextToImage,
     TopazImageUpscale,
@@ -500,6 +501,85 @@ class TestNanoBananaProGenerate:
         params = await node._get_input_params()
         assert params["prompt"] == "test"
         assert params["aspect_ratio"] == "1:1"
+
+    @pytest.mark.asyncio
+    async def test_image_input_parameter_name(self):
+        """Test that image inputs are passed as 'image_urls' key, consistent with NanoBananaEdit."""
+        from nodetool.metadata.types import ImageRef
+        from unittest.mock import AsyncMock
+
+        # Create mock context
+        mock_context = AsyncMock(spec=ProcessingContext)
+        
+        # Create test image refs
+        img1 = ImageRef(uri="http://example.com/test1.png")
+        img2 = ImageRef(uri="http://example.com/test2.png")
+        
+        # Create node with image inputs
+        node = NanoBananaPro(
+            prompt="test prompt",
+            image_input=[img1, img2]
+        )
+        
+        # Mock the _upload_image method to return test URLs
+        async def mock_upload(ctx, img):
+            return img.uri
+        
+        node._upload_image = mock_upload
+        
+        # Get parameters
+        params = await node._get_input_params(mock_context)
+        
+        # Verify 'image_urls' key is used (not 'image_input')
+        assert "image_urls" in params
+        assert "image_input" not in params
+        assert params["image_urls"] == ["http://example.com/test1.png", "http://example.com/test2.png"]
+
+
+class TestNanoBananaEdit:
+    """Tests for NanoBananaEdit node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = NanoBananaEdit(prompt="test")
+        assert node._get_model() == "google/nano-banana-edit"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test"
+        assert params["image_size"] == "1:1"
+
+    @pytest.mark.asyncio
+    async def test_image_input_parameter_name(self):
+        """Test that image inputs are passed as 'image_urls' key, consistent with NanoBananaPro."""
+        from nodetool.metadata.types import ImageRef
+        from unittest.mock import AsyncMock
+
+        # Create mock context
+        mock_context = AsyncMock(spec=ProcessingContext)
+        
+        # Create test image refs
+        img1 = ImageRef(uri="http://example.com/test1.png")
+        img2 = ImageRef(uri="http://example.com/test2.png")
+        
+        # Create node with image inputs
+        node = NanoBananaEdit(
+            prompt="test prompt",
+            image_input=[img1, img2]
+        )
+        
+        # Mock the _upload_image method to return test URLs
+        async def mock_upload(ctx, img):
+            return img.uri
+        
+        node._upload_image = mock_upload
+        
+        # Get parameters
+        params = await node._get_input_params(mock_context)
+        
+        # Verify 'image_urls' key is used
+        assert "image_urls" in params
+        assert "image_input" not in params
+        assert params["image_urls"] == ["http://example.com/test1.png", "http://example.com/test2.png"]
 
 
 class TestFluxKontext:
