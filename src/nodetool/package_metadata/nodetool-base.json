@@ -3582,7 +3582,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 41756,
+          "downloads": 42807,
           "likes": 120
         },
         {
@@ -3633,7 +3633,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 21960,
+          "downloads": 22958,
           "likes": 48
         },
         {
@@ -3684,7 +3684,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 10301,
+          "downloads": 9551,
           "likes": 30
         },
         {
@@ -3704,7 +3704,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1281,
+          "downloads": 1241,
           "likes": 27
         },
         {
@@ -3730,7 +3730,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4316,
+          "downloads": 4427,
           "likes": 7
         },
         {
@@ -3751,7 +3751,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 36328,
+          "downloads": 36580,
           "likes": 12
         },
         {
@@ -3770,7 +3770,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 1032,
+          "downloads": 1049,
           "likes": 19
         },
         {
@@ -3821,7 +3821,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2375,
+          "downloads": 2315,
           "likes": 23
         }
       ],
@@ -4035,7 +4035,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 21960,
+          "downloads": 22958,
           "likes": 48
         }
       ],
@@ -4264,7 +4264,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 21960,
+          "downloads": 22958,
           "likes": 48
         }
       ],
@@ -4394,7 +4394,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 41756,
+          "downloads": 42807,
           "likes": 120
         },
         {
@@ -4445,7 +4445,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 10301,
+          "downloads": 9551,
           "likes": 30
         }
       ],
@@ -4648,7 +4648,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 21960,
+          "downloads": 22958,
           "likes": 48
         }
       ],
@@ -12705,6 +12705,78 @@
         "data",
         "folder",
         "filename"
+      ]
+    },
+    {
+      "title": "To JSON",
+      "description": "Converts a dictionary to a JSON string.\n    json, serialize, string, convert\n\n    Use cases:\n    - Serialize dictionaries for API payloads\n    - Store configuration data as JSON\n    - Prepare data for network transmission",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.ToJSON",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "dictionary",
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Dictionary"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "dictionary"
+      ]
+    },
+    {
+      "title": "To YAML",
+      "description": "Converts a dictionary to a YAML string.\n    yaml, serialize, string, convert\n\n    Use cases:\n    - Create configuration files in YAML format\n    - Generate human-readable data representations\n    - Prepare data for YAML-based systems",
+      "namespace": "nodetool.dictionary",
+      "node_type": "nodetool.dictionary.ToYAML",
+      "layout": "small",
+      "properties": [
+        {
+          "name": "dictionary",
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "default": {},
+          "title": "Dictionary"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "dictionary"
       ]
     },
     {
@@ -40282,12 +40354,13 @@
       ]
     },
     {
-      "id": "39664b20a78311f0bfc6000069947dd1",
+      "id": "summarize-newsletters",
       "name": "Summarize Newsletters",
       "description": "",
       "tags": [
         "email",
-        "start"
+        "start",
+        "example"
       ]
     },
     {

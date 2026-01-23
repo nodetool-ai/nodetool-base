@@ -49,85 +49,6 @@ import nodetool.nodes.lib.mail
 from nodetool.workflows.base_node import BaseNode
 
 
-class EmailFields(GraphNode[nodetool.nodes.lib.mail.EmailFields.OutputType]):
-    """
-
-    Decomposes an email into its individual components.
-    email, decompose, extract
-
-    Takes an Email object and returns its individual fields:
-    - id: Message ID
-    - subject: Email subject
-    - sender: Sender address
-    - date: Datetime of email
-    - body: Email body content
-    """
-
-    email: types.Email | OutputHandle[types.Email] = connect_field(
-        default=types.Email(
-            type="email",
-            id="",
-            sender="",
-            subject="",
-            date=types.Datetime(
-                type="datetime",
-                year=0,
-                month=0,
-                day=0,
-                hour=0,
-                minute=0,
-                second=0,
-                microsecond=0,
-                tzinfo="UTC",
-                utc_offset=0,
-            ),
-            body="",
-        ),
-        description="Email object to decompose",
-    )
-
-    @property
-    def out(self) -> "EmailFieldsOutputs":
-        return EmailFieldsOutputs(self)
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.lib.mail.EmailFields
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-class EmailFieldsOutputs(OutputsProxy):
-    @property
-    def id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["id"])
-
-    @property
-    def subject(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["subject"])
-
-    @property
-    def sender(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["sender"])
-
-    @property
-    def date(self) -> OutputHandle[types.Datetime]:
-        return typing.cast(OutputHandle[types.Datetime], self["date"])
-
-    @property
-    def body(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["body"])
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.lib.mail
-from nodetool.workflows.base_node import BaseNode
-
-
 class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
     """
 
@@ -171,21 +92,6 @@ class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
     )
     max_results: int | OutputHandle[int] = connect_field(
         default=50, description="Maximum number of emails to return"
-    )
-    retry_attempts: int | OutputHandle[int] = connect_field(
-        default=3, description="Maximum retry attempts for Gmail operations"
-    )
-    retry_base_delay: float | OutputHandle[float] = connect_field(
-        default=0.5, description="Base delay (seconds) for exponential backoff"
-    )
-    retry_max_delay: float | OutputHandle[float] = connect_field(
-        default=5.0, description="Maximum delay (seconds) for exponential backoff"
-    )
-    retry_factor: float | OutputHandle[float] = connect_field(
-        default=2.0, description="Exponential growth factor for backoff"
-    )
-    retry_jitter: float | OutputHandle[float] = connect_field(
-        default=0.1, description="Random jitter (seconds) added to each backoff"
     )
 
     @property
@@ -277,21 +183,6 @@ class SendEmail(SingleOutputGraphNode[bool], GraphNode[bool]):
         default="", description="Email subject"
     )
     body: str | OutputHandle[str] = connect_field(default="", description="Email body")
-    retry_attempts: int | OutputHandle[int] = connect_field(
-        default=3, description="Maximum retry attempts for SMTP send"
-    )
-    retry_base_delay: float | OutputHandle[float] = connect_field(
-        default=0.5, description="Base delay (seconds) for exponential backoff"
-    )
-    retry_max_delay: float | OutputHandle[float] = connect_field(
-        default=5.0, description="Maximum delay (seconds) for exponential backoff"
-    )
-    retry_factor: float | OutputHandle[float] = connect_field(
-        default=2.0, description="Exponential growth factor for backoff"
-    )
-    retry_jitter: float | OutputHandle[float] = connect_field(
-        default=0.1, description="Random jitter (seconds) added to each backoff"
-    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:

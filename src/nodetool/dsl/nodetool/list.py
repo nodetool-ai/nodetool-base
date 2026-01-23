@@ -621,7 +621,7 @@ from nodetool.workflows.base_node import BaseNode
 class SelectElements(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     """
 
-    Selects specific values from a list using index positions.
+    Selects specific values from a list using index positions. Stop=0 selects elements until the end of the list.
     list, select, index, extract
 
     Use cases:
@@ -659,18 +659,28 @@ class Slice(SingleOutputGraphNode[list[Any]], GraphNode[list[Any]]):
     Extracts a subset from a list using start, stop, and step indices.
     list, slice, subset, extract
 
+    Notes:
+    - stop=0 means "slice to end" (no upper limit)
+    - Negative indices work as in Python (e.g., start=-3 for last 3 items)
     Use cases:
-    - Get a portion of a list
+    - Extract a portion of a list
     - Implement pagination
-    - Extract every nth element
+    - Get every nth element
     """
 
     values: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description=None
+        default=[], description="The input list to slice."
     )
-    start: int | OutputHandle[int] = connect_field(default=0, description=None)
-    stop: int | OutputHandle[int] = connect_field(default=0, description=None)
-    step: int | OutputHandle[int] = connect_field(default=1, description=None)
+    start: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Starting index (inclusive). Negative values count from end.",
+    )
+    stop: int | OutputHandle[int] = connect_field(
+        default=0, description="Ending index (exclusive). 0 means slice to end of list."
+    )
+    step: int | OutputHandle[int] = connect_field(
+        default=1, description="Step between elements. Negative for reverse order."
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:

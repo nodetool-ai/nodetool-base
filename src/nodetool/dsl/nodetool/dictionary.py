@@ -664,6 +664,70 @@ import nodetool.nodes.nodetool.dictionary
 from nodetool.workflows.base_node import BaseNode
 
 
+class ToJSON(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts a dictionary to a JSON string.
+    json, serialize, string, convert
+
+    Use cases:
+    - Serialize dictionaries for API payloads
+    - Store configuration data as JSON
+    - Prepare data for network transmission
+    """
+
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
+        default={}, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.ToJSON
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
+class ToYAML(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Converts a dictionary to a YAML string.
+    yaml, serialize, string, convert
+
+    Use cases:
+    - Create configuration files in YAML format
+    - Generate human-readable data representations
+    - Prepare data for YAML-based systems
+    """
+
+    dictionary: dict[str, Any] | OutputHandle[dict[str, Any]] = connect_field(
+        default={}, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.dictionary.ToYAML
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.dictionary
+from nodetool.workflows.base_node import BaseNode
+
+
 class Update(SingleOutputGraphNode[dict[str, Any]], GraphNode[dict[str, Any]]):
     """
 
