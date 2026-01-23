@@ -2249,7 +2249,7 @@ class ElevenLabsTextToSpeech(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     text: str = Field(
         default="",

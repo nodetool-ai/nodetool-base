@@ -52,6 +52,14 @@ class KieBaseNode(BaseNode):
     _poll_interval: float
     _max_poll_attempts: int
 
+    # User-configurable timeout (0 = use class default)
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=3600,
+        description="Timeout in seconds for API calls (0 = use default)",
+    )
+
     @classmethod
     def is_visible(cls) -> bool:
         return cls is not KieBaseNode
@@ -397,7 +405,12 @@ class KieBaseNode(BaseNode):
         url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
         headers = self._get_headers(api_key)
 
-        for attempt in range(self._max_poll_attempts):
+        # Calculate max attempts based on timeout_seconds if set, otherwise use class default
+        max_attempts = self._max_poll_attempts
+        if self.timeout_seconds > 0:
+            max_attempts = max(1, int(self.timeout_seconds / self._poll_interval))
+
+        for attempt in range(max_attempts):
             log.debug(
                 f"Polling task status (attempt {attempt + 1}/{self._max_poll_attempts})"
             )
@@ -417,7 +430,7 @@ class KieBaseNode(BaseNode):
             await asyncio.sleep(self._poll_interval)
 
         raise TimeoutError(
-            f"Task did not complete within {self._max_poll_attempts * self._poll_interval} seconds"
+            f"Task did not complete within {max_attempts * self._poll_interval} seconds"
         )
 
     async def _download_result(
@@ -498,7 +511,7 @@ class Flux2ProTextToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -581,7 +594,7 @@ class Flux2ProImageToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -676,7 +689,7 @@ class Flux2FlexTextToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -759,7 +772,7 @@ class Flux2FlexImageToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -857,7 +870,7 @@ class Seedream45TextToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -927,7 +940,7 @@ class Seedream45Edit(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1010,7 +1023,7 @@ class ZImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1061,7 +1074,7 @@ class NanoBanana(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1119,7 +1132,7 @@ class NanoBananaPro(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1205,7 +1218,7 @@ class FluxKontext(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1273,7 +1286,7 @@ class GrokImagineTextToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1330,7 +1343,7 @@ class GrokImagineUpscale(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1383,7 +1396,7 @@ class QwenTextToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1442,7 +1455,7 @@ class QwenImageToImage(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1512,7 +1525,7 @@ class TopazImageUpscale(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     @classmethod
     def get_title(cls) -> str:
@@ -1608,7 +1621,7 @@ class IdeogramCharacterRemix(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1746,7 +1759,7 @@ class IdeogramV3Reframe(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -1864,7 +1877,7 @@ class Imagen4Fast(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1918,7 +1931,7 @@ class Imagen4Ultra(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1977,7 +1990,7 @@ class Imagen4(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -2037,7 +2050,7 @@ class NanoBananaEdit(KieBaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
