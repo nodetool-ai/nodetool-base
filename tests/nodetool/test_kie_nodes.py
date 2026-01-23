@@ -504,32 +504,32 @@ class TestNanoBananaProGenerate:
 
     @pytest.mark.asyncio
     async def test_image_input_parameter_name(self):
-        """Test that image inputs are passed as 'image_urls' key, consistent with NanoBananaEdit."""
+        """Test image inputs use 'image_urls' key, consistent with NanoBananaEdit."""
         from nodetool.metadata.types import ImageRef
         from unittest.mock import AsyncMock
 
         # Create mock context
         mock_context = AsyncMock(spec=ProcessingContext)
-        
+
         # Create test image refs
         img1 = ImageRef(uri="http://example.com/test1.png")
         img2 = ImageRef(uri="http://example.com/test2.png")
-        
+
         # Create node with image inputs
         node = NanoBananaPro(
             prompt="test prompt",
             image_input=[img1, img2]
         )
-        
+
         # Mock the _upload_image method to return test URLs
         async def mock_upload(ctx, img):
             return img.uri
-        
+
         node._upload_image = mock_upload
-        
+
         # Get parameters
         params = await node._get_input_params(mock_context)
-        
+
         # Verify 'image_urls' key is used (not 'image_input')
         assert "image_urls" in params
         assert "image_input" not in params
@@ -550,32 +550,32 @@ class TestNanoBananaEdit:
 
     @pytest.mark.asyncio
     async def test_image_input_parameter_name(self):
-        """Test that image inputs are passed as 'image_urls' key, consistent with NanoBananaPro."""
+        """Test image inputs use 'image_urls' key, consistent with NanoBananaPro."""
         from nodetool.metadata.types import ImageRef
         from unittest.mock import AsyncMock
 
         # Create mock context
         mock_context = AsyncMock(spec=ProcessingContext)
-        
+
         # Create test image refs
         img1 = ImageRef(uri="http://example.com/test1.png")
         img2 = ImageRef(uri="http://example.com/test2.png")
-        
+
         # Create node with image inputs
         node = NanoBananaEdit(
             prompt="test prompt",
             image_input=[img1, img2]
         )
-        
+
         # Mock the _upload_image method to return test URLs
         async def mock_upload(ctx, img):
             return img.uri
-        
+
         node._upload_image = mock_upload
-        
+
         # Get parameters
         params = await node._get_input_params(mock_context)
-        
+
         # Verify 'image_urls' key is used
         assert "image_urls" in params
         assert "image_input" not in params
