@@ -26,6 +26,7 @@ class TextToVideo(BaseNode):
     Supports 720p resolution at 24fps with 8-second duration and native audio generation.
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(
@@ -98,6 +99,7 @@ class ImageToVideo(BaseNode):
     Supports 720p resolution at 24fps with 8-second duration and native audio generation.
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     image: ImageRef = Field(

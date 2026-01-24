@@ -39,6 +39,7 @@ class TextToSpeech(BaseNode):
     input: str = Field(title="Input", default="")
     speed: float = Field(title="Speed", default=1.0, ge=0.25, le=4.0)
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> AudioRef:

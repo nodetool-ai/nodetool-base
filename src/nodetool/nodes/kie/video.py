@@ -26,6 +26,7 @@ class KieVideoBaseNode(KieBaseNode):
 
     Extends KieBaseNode with video-specific result handling.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _poll_interval: float = 8.0
     _max_poll_attempts: int = 240
@@ -190,6 +191,7 @@ class KlingAIAvatarStandard(KieVideoBaseNode):
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -255,6 +257,7 @@ class KlingAIAvatarPro(KieVideoBaseNode):
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -684,6 +687,7 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
     Hailuo 2.3 Pro offers the highest quality text-to-video generation with
     realistic motion, detailed textures, and cinematic quality.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -744,6 +748,7 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
 
     kie, hailuo, minimax, video generation, ai, text-to-video, standard, fast
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -807,6 +812,7 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
     Hailuo 2.3 Pro offers the highest quality image-to-video generation with
     realistic motion, detailed textures, and cinematic quality.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -884,6 +890,7 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
     Hailuo 2.3 Standard offers efficient image-to-video generation with good quality
     and faster processing times for practical use cases.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
