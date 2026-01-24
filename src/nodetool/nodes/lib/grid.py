@@ -1,5 +1,5 @@
 import math
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, ClassVar, List
 
 from pydantic import Field
 
@@ -183,6 +183,8 @@ class CombineImageGrid(BaseNode):
     - Create composite images from smaller parts
     - Merge tiled image data from distributed processing
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     tiles: list[ImageRef] = Field(
         default=[], description="List of image tiles to combine."

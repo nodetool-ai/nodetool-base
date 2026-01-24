@@ -1,5 +1,6 @@
 import io
 from enum import Enum
+from typing import ClassVar
 
 from pydantic import Field
 
@@ -46,6 +47,8 @@ class ChartRenderer(BaseNode):
     Node responsible for rendering chart configurations into image format using seaborn.
     chart, seaborn, plot, visualization, data
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     chart_config: ChartConfig = Field(
         default=ChartConfig(), description="The chart configuration to render."

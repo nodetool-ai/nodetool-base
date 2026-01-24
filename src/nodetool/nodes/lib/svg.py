@@ -1,5 +1,6 @@
 from enum import Enum
 import io
+from typing import ClassVar
 
 from pydantic import Field
 
@@ -388,6 +389,8 @@ class SVGToImage(BaseNode):
     - Generate image files from SVG elements
     - Convert vector graphics to bitmap format with custom dimensions
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls) -> str:

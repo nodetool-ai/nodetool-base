@@ -1,5 +1,6 @@
 from io import BytesIO
 from enum import Enum
+from typing import ClassVar
 
 from pydantic import Field
 
@@ -18,6 +19,8 @@ class PlotArray(BaseNode):
     - Create charts for reports or dashboards
     - Debug array outputs in workflows
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     class PlotType(str, Enum):
         LINE = "line"
