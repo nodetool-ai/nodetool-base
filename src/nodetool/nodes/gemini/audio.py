@@ -70,6 +70,7 @@ class TextToSpeech(BaseNode):
     - Generate multilingual audio content
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     text: str = Field(default="", description="The text to convert to speech.")

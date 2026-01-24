@@ -47,6 +47,7 @@ class CreateImage(BaseNode):
         default=Quality.high, description="The quality of the image to generate."
     )
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     async def process(self, context: ProcessingContext) -> ImageRef:

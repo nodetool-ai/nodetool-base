@@ -76,6 +76,8 @@ class TextToVideo(BaseNode):
     video, generation, AI, text-to-video, t2v
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     class AspectRatio(str, enum.Enum):
         RATIO_16_9 = "16:9"
         RATIO_9_16 = "9:16"
@@ -182,6 +184,8 @@ class ImageToVideo(BaseNode):
     Animates static images into dynamic video content with AI-powered motion.
     video, image-to-video, i2v, animation, AI, generation, sora, veo
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     class AspectRatio(str, enum.Enum):
         RATIO_16_9 = "16:9"
@@ -562,6 +566,8 @@ class FrameToVideo(BaseNode):
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     frame: ImageRef = Field(default=ImageRef(), description="Collect input frames")
     fps: float = Field(default=30, description="The FPS of the output video.")

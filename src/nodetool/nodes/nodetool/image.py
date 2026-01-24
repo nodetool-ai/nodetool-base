@@ -443,6 +443,7 @@ class TextToImage(BaseNode):
     image, generation, AI, text-to-image, t2i
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     model: ImageModel = Field(
@@ -539,6 +540,7 @@ class ImageToImage(BaseNode):
     image, transformation, AI, image-to-image, i2i
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     model: ImageModel = Field(

@@ -737,6 +737,8 @@ class CreateSilence(BaseNode):
     audio, silence, empty
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     duration: float = Field(
         default=1.0, ge=0.0, description="The duration of the silence in seconds."
     )
@@ -803,6 +805,7 @@ class TextToSpeech(BaseNode):
     audio, generation, AI, text-to-speech, tts, voice
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     model: TTSModel = Field(

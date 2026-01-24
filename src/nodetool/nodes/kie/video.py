@@ -26,7 +26,6 @@ class KieVideoBaseNode(KieBaseNode):
 
     Extends KieBaseNode with video-specific result handling.
     """
-
     _poll_interval: float = 8.0
     _max_poll_attempts: int = 240
 
@@ -53,6 +52,7 @@ class KlingTextToVideo(KieVideoBaseNode):
     Kling 2.6 produces high-quality videos from text descriptions with
     realistic motion, natural lighting, and cinematic detail.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -120,6 +120,7 @@ class KlingImageToVideo(KieVideoBaseNode):
     Transforms static images into dynamic videos with realistic motion
     and temporal consistency while preserving the original visual style.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -190,6 +191,7 @@ class KlingAIAvatarStandard(KieVideoBaseNode):
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -255,6 +257,7 @@ class KlingAIAvatarPro(KieVideoBaseNode):
     Transforms a photo plus audio track into a lip-synced talking avatar video
     with natural-looking speech animation and consistent identity.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -320,6 +323,7 @@ class GrokImagineTextToVideo(KieVideoBaseNode):
     Grok Imagine generates videos from text prompts using xAI's
     multimodal generation capabilities.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -374,6 +378,7 @@ class GrokImagineImageToVideo(KieVideoBaseNode):
     Grok Imagine transforms images into videos using xAI's
     multimodal generation capabilities.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -476,6 +481,7 @@ class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
     Seedance V1 Lite offers efficient text-to-video generation
     with good quality and faster processing times.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -503,6 +509,7 @@ class SeedanceV1LiteTextToVideo(SeedanceBaseNode):
 
 class SeedanceV1ProTextToVideo(SeedanceBaseNode):
     """Bytedance 1.0 - text-to-video-pro via Kie.ai."""
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -530,6 +537,7 @@ class SeedanceV1ProTextToVideo(SeedanceBaseNode):
 
 class SeedanceV1LiteImageToVideo(SeedanceBaseNode):
     """Bytedance 1.0 - image-to-video-lite via Kie.ai."""
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -582,6 +590,7 @@ class SeedanceV1LiteImageToVideo(SeedanceBaseNode):
 
 class SeedanceV1ProImageToVideo(SeedanceBaseNode):
     """Bytedance 1.0 - image-to-video-pro via Kie.ai."""
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -634,6 +643,7 @@ class SeedanceV1ProImageToVideo(SeedanceBaseNode):
 
 class SeedanceV1ProFastImageToVideo(SeedanceBaseNode):
     """Bytedance 1.0 - fast-image-to-video-pro via Kie.ai."""
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -684,6 +694,7 @@ class HailuoTextToVideoPro(KieVideoBaseNode):
     Hailuo 2.3 Pro offers the highest quality text-to-video generation with
     realistic motion, detailed textures, and cinematic quality.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -744,6 +755,7 @@ class HailuoTextToVideoStandard(KieVideoBaseNode):
 
     kie, hailuo, minimax, video generation, ai, text-to-video, standard, fast
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -807,6 +819,7 @@ class HailuoImageToVideoPro(KieVideoBaseNode):
     Hailuo 2.3 Pro offers the highest quality image-to-video generation with
     realistic motion, detailed textures, and cinematic quality.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -884,6 +897,7 @@ class HailuoImageToVideoStandard(KieVideoBaseNode):
     Hailuo 2.3 Standard offers efficient image-to-video generation with good quality
     and faster processing times for practical use cases.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -961,6 +975,7 @@ class Kling25TurboTextToVideo(KieVideoBaseNode):
     Kling 2.5 Turbo offers improved prompt adherence, fluid motion,
     consistent artistic styles, and realistic physics simulation.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1032,6 +1047,7 @@ class Kling25TurboImageToVideo(KieVideoBaseNode):
     Transforms a static image into a dynamic video while preserving
     visual style, colors, lighting, and texture.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1141,6 +1157,7 @@ class Sora2ProTextToVideo(Sora2BaseNode):
     Sora 2 Pro generates high-quality videos from text descriptions
     with advanced motion and temporal consistency.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1177,6 +1194,7 @@ class Sora2ProImageToVideo(Sora2BaseNode):
     Sora 2 Pro transforms images into high-quality videos with
     realistic motion and temporal consistency.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1222,6 +1240,7 @@ class Sora2ProStoryboard(Sora2BaseNode):
     Sora 2 Pro creates videos from storyboard sequences with
     consistent characters and scenes across frames.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1282,6 +1301,7 @@ class Sora2TextToVideo(Sora2BaseNode):
     Sora 2 Standard generates quality videos from text descriptions
     with efficient processing and good visual quality.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1318,6 +1338,7 @@ class WanMultiShotTextToVideoPro(KieVideoBaseNode):
     Wan 2.1 Multi-Shot generates complex videos with multiple shots
     and scene transitions from text descriptions.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1390,6 +1411,7 @@ class Wan26TextToVideo(KieVideoBaseNode):
     Wan 2.6 generates high-quality videos from text descriptions
     with advanced motion and visual fidelity.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1437,6 +1459,7 @@ class Wan26TextToVideo(KieVideoBaseNode):
 
 class Wan26ImageToVideo(KieVideoBaseNode):
     """Generate videos from images using Alibaba's Wan 2.6 model via Kie.ai."""
+    _auto_save_asset: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls) -> str:
@@ -1628,6 +1651,7 @@ class TopazVideoUpscale(KieVideoBaseNode):
 
 class InfinitalkV1(KieVideoBaseNode):
     """Generate videos using Infinitalk v1 (image-to-video) via Kie.ai."""
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -1869,6 +1893,7 @@ class Veo31TextToVideo(Veo31BaseNode):
     Veo 3.1 offers native 9:16 vertical video support, multilingual prompt processing,
     and significant cost savings (25% of Google's direct API pricing).
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -2032,6 +2057,7 @@ class RunwayGen3AlphaTextToVideo(RunwayBaseNode):
     Runway Gen-3 Alpha produces high-quality videos from text descriptions
     with advanced motion and temporal consistency.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -2113,6 +2139,7 @@ class RunwayGen3AlphaImageToVideo(RunwayBaseNode):
     Runway Gen-3 Alpha transforms static images into dynamic videos
     with realistic motion and temporal consistency.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -2265,6 +2292,7 @@ class RunwayAlephVideo(RunwayBaseNode):
     Aleph is Runway's advanced video generation model offering
     high-quality output with sophisticated motion handling.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -2410,6 +2438,7 @@ class Veo31ImageToVideo(Veo31BaseNode):
     Supports single image (image comes alive) or two images (first and last frames transition).
     For two images, the first image serves as the video's first frame and the second as the last frame.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
@@ -2472,6 +2501,7 @@ class Veo31ReferenceToVideo(Veo31BaseNode):
     Material-to-video generation based on reference images. Only supports veo3_fast model
     and requires 1-3 reference images.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
 
