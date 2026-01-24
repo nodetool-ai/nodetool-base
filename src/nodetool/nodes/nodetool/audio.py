@@ -297,6 +297,7 @@ class Normalize(BaseNode):
     audio, fix, dynamics, volume
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -315,6 +316,7 @@ class OverlayAudio(BaseNode):
     audio, edit, transform
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     a: AudioRef = Field(default=AudioRef(), description="The first audio file.")
@@ -333,6 +335,7 @@ class RemoveSilence(BaseNode):
     audio, edit, clean
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -388,6 +391,7 @@ class SliceAudio(BaseNode):
     audio, edit, trim
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio file.")
@@ -409,6 +413,7 @@ class MonoToStereo(BaseNode):
     audio, convert, channels
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -433,6 +438,7 @@ class StereoToMono(BaseNode):
     audio, convert, channels
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -470,6 +476,7 @@ class Reverse(BaseNode):
     audio, edit, transform
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -488,6 +495,7 @@ class FadeIn(BaseNode):
     audio, edit, transition
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -509,6 +517,7 @@ class FadeOut(BaseNode):
     audio, edit, transition
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(
@@ -530,6 +539,7 @@ class Repeat(BaseNode):
     audio, edit, repeat
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio file to loop.")
@@ -554,6 +564,8 @@ class AudioMixer(BaseNode):
     Mix up to 5 audio tracks together with individual volume controls.
     audio, mix, volume, combine, blend, layer, add, overlay
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     track1: AudioRef = Field(
         default=AudioRef(), description="First audio track to mix."
@@ -666,6 +678,8 @@ class NumpyToAudio(BaseNode):
     audio, numpy, convert
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     array: NPArray = Field(
         default=NPArray(), description="The numpy array to convert to audio."
     )
@@ -697,6 +711,7 @@ class Trim(BaseNode):
     audio, trim, cut
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio file to trim.")
@@ -737,6 +752,8 @@ class CreateSilence(BaseNode):
     audio, silence, empty
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     duration: float = Field(
         default=1.0, ge=0.0, description="The duration of the silence in seconds."
     )
@@ -752,6 +769,7 @@ class Concat(BaseNode):
     audio, edit, join, +
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     a: AudioRef = Field(default=AudioRef(), description="The first audio file.")
@@ -770,6 +788,7 @@ class ConcatList(BaseNode):
     audio, edit, join, multiple, +
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool = True
 
     audio_files: list[AudioRef] = Field(
@@ -803,6 +822,7 @@ class TextToSpeech(BaseNode):
     audio, generation, AI, text-to-speech, tts, voice
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     model: TTSModel = Field(
@@ -1117,6 +1137,8 @@ class ChunkToAudio(BaseNode):
     Aggregates audio chunks from an input stream into AudioRef objects.
     audio, stream, chunk, aggregate, collect, batch
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     chunk: Chunk = Field(default=Chunk(), description="Stream of audio chunks")
     batch_size: int = Field(
