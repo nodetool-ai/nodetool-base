@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
 from pydantic import Field
 
@@ -21,7 +21,6 @@ class Invert(BaseNode):
     - Analyze image data by bringing out hidden details
     - Preprocess images for operations that work better on inverted colors
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the brightness for."
@@ -44,7 +43,6 @@ class Solarize(BaseNode):
     - Enhance visual data by making certain elements more prominent
     - Add a unique style to images for graphic design
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to solarize.")
     threshold: int = Field(
@@ -68,7 +66,6 @@ class Posterize(BaseNode):
     - Apply artistic effects to photographs
     - Generate visually compelling content for advertising
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to posterize.")
     bits: int = Field(
@@ -92,7 +89,6 @@ class Expand(BaseNode):
     - Create framed photo effects
     - Separate image content from surroundings
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to expand.")
     border: int = Field(default=0, ge=0, le=512, description="Border size.")
@@ -115,7 +111,6 @@ class Blur(BaseNode):
     - Make focal areas stand out by blurring surroundings
     - Protect privacy by blurring sensitive information
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to blur.")
     radius: int = Field(default=2, ge=0, le=128, description="Blur radius.")
@@ -137,7 +132,6 @@ class Contour(BaseNode):
     - Aid pattern recognition and object detection
     - Create stylized contour sketch art effects
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to contour.")
 
@@ -157,7 +151,6 @@ class Emboss(BaseNode):
     - Create visually interesting graphics
     - Incorporate unique effects in digital artwork
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to emboss.")
 
@@ -177,7 +170,6 @@ class FindEdges(BaseNode):
     - Aid object detection in computer vision
     - Detect important features like corners and ridges
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to find edges.")
 
@@ -197,7 +189,6 @@ class Smooth(BaseNode):
     - Improve object detection by reducing irrelevant details
     - Aid facial recognition by simplifying images
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to smooth.")
 
@@ -217,7 +208,6 @@ class Canny(BaseNode):
     - Outline object boundaries and structure
     - Enhance inputs for object detection and image segmentation
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to canny.")
     low_threshold: int = Field(default=100, ge=0, le=255, description="Low threshold.")
@@ -240,7 +230,6 @@ class ConvertToGrayscale(BaseNode):
     - Prepare images for shape-based machine learning
     - Create vintage or monochrome aesthetic effects
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to convert.")
 
@@ -258,7 +247,6 @@ class GetChannel(BaseNode):
     - Manipulate specific color components in graphic design
     - Enhance or reduce visibility of certain colors
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     class ChannelEnum(str, Enum):
         RED = "R"

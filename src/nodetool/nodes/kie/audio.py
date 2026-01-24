@@ -312,8 +312,6 @@ class ExtendMusic(KieBaseNode):
     Extends an existing track by continuing from a specified time point.
     Can reuse original parameters or override them with custom settings.
     """
-    _auto_save_asset: ClassVar[bool] = True
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 4.0
     _max_poll_attempts: int = 120
@@ -594,8 +592,6 @@ class CoverAudio(KieBaseNode):
     Uploads a source track and generates a covered version in a new style while
     retaining the original melody.
     """
-    _auto_save_asset: ClassVar[bool] = True
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 4.0
     _max_poll_attempts: int = 120
@@ -878,8 +874,6 @@ class AddInstrumental(KieBaseNode):
 
     Uploads a source track (e.g., vocals/stems) and generates a backing track.
     """
-    _auto_save_asset: ClassVar[bool] = True
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 4.0
     _max_poll_attempts: int = 120
@@ -1096,8 +1090,6 @@ class AddVocals(KieBaseNode):
 
     Uploads an instrumental track and generates vocal layers on top.
     """
-    _auto_save_asset: ClassVar[bool] = True
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 4.0
     _max_poll_attempts: int = 120
@@ -1526,8 +1518,6 @@ class ReplaceMusicSection(KieBaseNode):
 
     Regenerates a time range and blends it into the original track.
     """
-    _auto_save_asset: ClassVar[bool] = True
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 4.0
     _max_poll_attempts: int = 120
@@ -1871,8 +1861,6 @@ class ConvertToWav(KieBaseNode):
 
     kie, suno, music, audio, wav, conversion
     """
-    _auto_save_asset: ClassVar[bool] = True
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 4.0
     _max_poll_attempts: int = 120

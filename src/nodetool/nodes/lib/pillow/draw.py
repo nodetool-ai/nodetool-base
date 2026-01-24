@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
 import numpy as np
 from pydantic import Field
@@ -23,7 +23,6 @@ class Background(BaseNode):
     - As a starting point for generating patterns or graphics.
     - When blank backgrounds of specific colors are required for visualization tasks.
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     width: int = Field(default=512, ge=1, le=4096)
     height: int = Field(default=512, ge=1, le=4096)
@@ -71,7 +70,6 @@ class RenderText(BaseNode):
     - Creating instructional images to guide the reader's view.
     - Using premium Google Fonts for professional typography.
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     class TextAlignment(str, Enum):
         LEFT = "left"
@@ -125,7 +123,6 @@ class GaussianNoise(BaseNode):
     - Testing image-processing algorithms' resilience to noise.
     - Creating artistic effects in images.
     """
-    _auto_save_asset: ClassVar[bool] = True
 
     mean: float = Field(default=0.0)
     stddev: float = Field(default=1.0)

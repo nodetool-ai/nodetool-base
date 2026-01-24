@@ -351,8 +351,6 @@ class Paste(BaseNode):
     paste, composite, positioning, overlay
     """
 
-    _auto_save_asset: ClassVar[bool] = True
-
     image: ImageRef = Field(default=ImageRef(), description="The image to paste into.")
     paste: ImageRef = Field(default=ImageRef(), description="The image to paste.")
     left: int = Field(default=0, ge=0, le=4096, description="The left coordinate.")
@@ -376,8 +374,6 @@ class Scale(BaseNode):
     image, resize, scale
     """
 
-    _auto_save_asset: ClassVar[bool] = True
-
     image: ImageRef = Field(default=ImageRef(), description="The image to scale.")
     scale: float = Field(default=1.0, ge=0.0, le=10.0, description="The scale factor.")
 
@@ -395,8 +391,6 @@ class Resize(BaseNode):
     image, resize
     """
 
-    _auto_save_asset: ClassVar[bool] = True
-
     image: ImageRef = Field(default=ImageRef(), description="The image to resize.")
     width: int = Field(default=512, ge=0, le=4096, description="The target width.")
     height: int = Field(default=512, ge=0, le=4096, description="The target height.")
@@ -412,8 +406,6 @@ class Crop(BaseNode):
     Crop an image to specified coordinates.
     image, crop
     """
-
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to crop.")
     left: int = Field(default=0, ge=0, le=4096, description="The left coordinate.")
@@ -434,8 +426,6 @@ class Fit(BaseNode):
     Resize an image to fit within specified dimensions while preserving aspect ratio.
     image, resize, fit
     """
-
-    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to fit.")
     width: int = Field(default=512, ge=1, le=4096, description="Width to fit to.")
