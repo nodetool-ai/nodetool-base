@@ -6,7 +6,7 @@ combined in a node graph to achieve complex cinematic looks.
 """
 
 from enum import Enum
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 import numpy as np
 from pydantic import Field
@@ -63,6 +63,7 @@ class LiftGammaGain(BaseNode):
     Lift affects shadows, Gamma affects midtones, Gain affects highlights.
     Each control adjusts both luminance and color for its tonal range.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to color correct."
@@ -156,6 +157,7 @@ class CDL(BaseNode):
     Formula: output = (input * slope + offset) ^ power
     Followed by saturation adjustment.
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to color correct."
@@ -240,6 +242,7 @@ class ColorBalance(BaseNode):
     - Fix color casts from mixed lighting
     - Create mood through color temperature shifts
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to adjust.")
 
@@ -294,6 +297,7 @@ class Exposure(BaseNode):
     - Adjust overall contrast and tonal range
     - Fine-tune the brightness of specific tonal regions
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to adjust.")
 
@@ -397,6 +401,7 @@ class SaturationVibrance(BaseNode):
     - Create desaturated or oversaturated looks
     - Fine-tune color intensity independently
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to adjust.")
 
@@ -461,6 +466,7 @@ class HSLAdjust(BaseNode):
     - Brighten or darken specific colors
     - Create color-specific looks (teal skies, orange skin)
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     class ColorRange(str, Enum):
         REDS = "reds"
@@ -583,6 +589,7 @@ class Curves(BaseNode):
     - Create cross-processed or stylized looks
     - Match the tonal characteristics of film stocks
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to adjust.")
 
@@ -704,6 +711,7 @@ class Vignette(BaseNode):
     - Simulate lens light falloff
     - Add subtle framing to photos
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to apply vignette to."
@@ -819,6 +827,7 @@ class FilmLook(BaseNode):
     - Emulate classic film stock characteristics
     - Starting point for custom color grading
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to apply the film look to."
@@ -963,6 +972,7 @@ class SplitToning(BaseNode):
     - Emulate film processing techniques
     - Create stylized color-graded images
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to apply split toning to."

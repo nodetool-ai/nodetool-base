@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, ClassVar
 
 import numpy as np
 
@@ -72,6 +72,7 @@ class AutoContrast(BaseNode):
     - Pre-process images for computer vision tasks
     - Improve photo aesthetics in editing workflows
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the contrast for."
@@ -101,6 +102,7 @@ class Sharpness(BaseNode):
     - Refine images for object detection tasks
     - Correct slightly blurred images
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the brightness for."
@@ -127,6 +129,7 @@ class Equalize(BaseNode):
     - Enhance details for image analysis tasks
     - Normalize image data for machine learning
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to equalize.")
 
@@ -148,6 +151,7 @@ class Contrast(BaseNode):
     - Prepare images for visual analysis or recognition tasks
     - Create dramatic effects in artistic photography
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the brightness for."
@@ -174,6 +178,7 @@ class EdgeEnhance(BaseNode):
     - Highlight structural elements in technical drawings
     - Prepare images for feature extraction in image analysis
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to edge enhance."
@@ -196,6 +201,7 @@ class Sharpen(BaseNode):
     - Refine texture details in product photography
     - Enhance readability of text in document images
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to sharpen.")
 
@@ -216,6 +222,7 @@ class RankFilter(BaseNode):
     - Enhance specific image features based on local intensity
     - Pre-process images for improved segmentation results
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to rank filter.")
     size: int = Field(default=3, ge=1, le=512, description="Rank filter size.")
@@ -240,6 +247,7 @@ class UnsharpMask(BaseNode):
     - Improve perceived sharpness of digital artwork
     - Prepare images for high-quality printing or display
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to unsharp mask."
@@ -272,6 +280,7 @@ class Brightness(BaseNode):
     - Enhance visibility of dark image regions
     - Prepare images for consistent display across devices
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the brightness for."
@@ -299,6 +308,7 @@ class Color(BaseNode):
     - Correct color imbalances in digital images
     - Prepare images for consistent brand color representation
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the brightness for."
@@ -325,6 +335,7 @@ class Detail(BaseNode):
     - Enhance visibility of small features for analysis
     - Prepare images for high-resolution display or printing
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(default=ImageRef(), description="The image to detail.")
 
@@ -344,6 +355,7 @@ class AdaptiveContrast(BaseNode):
     - Improve visibility in images with varying lighting conditions
     - Prepare images for improved feature detection in computer vision
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to adjust the contrast for."
