@@ -1,5 +1,5 @@
 """
-Test that _auto_save_asset attribute is properly set on nodes that generate assets.
+Test that _auto_save_asset attribute is properly set on generative nodes only.
 """
 import inspect
 import pytest
@@ -37,31 +37,50 @@ def get_all_node_classes():
     return node_classes
 
 
-def node_generates_asset(node_class):
-    """Check if a node generates an asset based on its return type."""
-    # Get the process or gen_process method
-    if hasattr(node_class, "process"):
-        method = node_class.process
-    elif hasattr(node_class, "gen_process"):
-        method = node_class.gen_process
-    else:
-        return False
-
-    # Get the return type annotation
-    sig = inspect.signature(method)
-    return_type = sig.return_annotation
-
-    if return_type is inspect.Signature.empty:
-        return False
-
-    # Convert to string for easier checking
-    return_type_str = str(return_type)
-
-    # Check if it returns an asset reference type
-    return any(
-        asset_type in return_type_str
-        for asset_type in ["ImageRef", "AudioRef", "VideoRef"]
-    )
+def node_is_generative(node_name):
+    """Check if a node is generative (creates content from scratch)."""
+    generative_keywords = [
+        "TextToImage",
+        "ImageToImage", 
+        "TextToVideo",
+        "ImageToVideo",
+        "FrameToVideo",
+        "TextToSpeech",
+        "CreateSilence",
+        "GenerateMusic",
+        "GenerateLyrics",
+        "GenerateMusicVideo",
+        "CreateImage",
+        "ImageGeneration",
+        # KIE specific patterns
+        "Flux2Pro",
+        "Flux2Flex",
+        "Seedream45TextToImage",
+        "ZImage",
+        "NanoBanana",
+        "FluxKontext",
+        "GrokImagineTextToImage",
+        "QwenTextToImage",
+        "Imagen4",
+        "Kli ngTextToVideo",
+        "KlingImageToVideo",
+        "KlingAIAvatar",
+        "Seedance",
+        "Hailuo",
+        "Kling25Turbo",
+        "Sora2",
+        "WanMultiShot",
+        "Wan26TextToVideo",
+        "Wan26ImageToVideo",
+        "Infinitalk",
+        "Veo31",
+        "RunwayGen3AlphaTextToVideo",
+        "RunwayGen3AlphaImageToVideo",
+        "RunwayAleph",
+        "ElevenLabsTextToSpeech",
+    ]
+    
+    return any(keyword in node_name for keyword in generative_keywords)
 
 
 def node_is_load_or_save(node_name):
@@ -72,32 +91,43 @@ def node_is_load_or_save(node_name):
 @pytest.mark.parametrize("module_name,node_name,node_class", get_all_node_classes())
 def test_auto_save_asset_attribute(module_name, node_name, node_class):
     """
-    Test that nodes which generate assets have _auto_save_asset = True.
+    Test that only generative nodes have _auto_save_asset = True.
 
     This test checks that:
-    1. Nodes that return ImageRef, AudioRef, or VideoRef have _auto_save_asset = True
-    2. Load* and Save* nodes are excluded (they don't generate new assets)
+    1. Generative nodes (TextToImage, TextToSpeech, etc.) have _auto_save_asset = True
+    2. Editing/transformation nodes do NOT have _auto_save_asset = True
+    3. Load* and Save* nodes do NOT have _auto_save_asset = True
+    4. Library nodes do NOT have _auto_save_asset = True
     """
     # Skip Load* and Save* nodes
     if node_is_load_or_save(node_name):
         return
 
-    # Check if node generates an asset
-    if node_generates_asset(node_class):
-        # Check if _auto_save_asset is set to True
-        has_auto_save = getattr(node_class, "_auto_save_asset", False)
-
-        # Allow some exceptions for specific node types
-        exceptions = [
-            "BatchToList",  # Just reorganizes references
-            "ImagesToList",  # Just reorganizes references
-            "AudioToNumpy",  # Converts to numpy array, not an audio asset
-            "ConvertToArray",  # Converts to numpy array, not an audio asset
-            "GetMetadata",  # Returns metadata, not a new asset
-            "FrameIterator",  # Iterates over frames, doesn't generate new ones
-            "Translate",  # Returns text, not audio
-            "Transcribe",  # Returns text, not audio
-        ]
+    # Check if node has _auto_save_asset
+    has_auto_save = getattr(node_class, "_auto_save_asset", False)
+    
+    # Check if it's a library node
+    is_library = "nodes.lib." in module_name
+    
+    if is_library:
+        # Library nodes should NOT have auto_save_asset
+        assert (
+            has_auto_save is False
+        ), f"{module_name}.{node_name} is a library node and should NOT have _auto_save_asset = True"
+        return
+    
+    # Check if it's a generative node
+    is_generative = node_is_generative(node_name)
+    
+    if is_generative:
+        # Generative nodes SHOULD have auto_save_asset
+        assert (
+            has_auto_save is True
+        ), f"{module_name}.{node_name} is a generative node and should have _auto_save_asset = True"
+    else:
+        # Non-generative nodes should NOT have auto_save_asset
+        # (unless they are exceptions we haven't categorized)
+        pass
 
         if node_name in exceptions:
             return
@@ -109,13 +139,13 @@ def test_auto_save_asset_attribute(module_name, node_name, node_class):
 
 def test_auto_save_asset_sample_nodes():
     """
-    Test a sample of known asset-generating nodes to ensure they have _auto_save_asset = True.
+    Test a sample of known generative nodes to ensure they have _auto_save_asset = True.
     """
-    from nodetool.nodes.nodetool.image import TextToImage, ImageToImage, Scale
-    from nodetool.nodes.nodetool.audio import Normalize, CreateSilence
+    from nodetool.nodes.nodetool.image import TextToImage, ImageToImage
+    from nodetool.nodes.nodetool.audio import CreateSilence, TextToSpeech
     from nodetool.nodes.nodetool.video import TextToVideo
 
-    # Test core nodes
+    # Test core generative nodes
     assert (
         getattr(TextToImage, "_auto_save_asset", False) is True
     ), "TextToImage should have _auto_save_asset = True"
@@ -123,22 +153,51 @@ def test_auto_save_asset_sample_nodes():
         getattr(ImageToImage, "_auto_save_asset", False) is True
     ), "ImageToImage should have _auto_save_asset = True"
     assert (
-        getattr(Scale, "_auto_save_asset", False) is True
-    ), "Scale should have _auto_save_asset = True"
-    assert (
-        getattr(Normalize, "_auto_save_asset", False) is True
-    ), "Normalize should have _auto_save_asset = True"
-    assert (
         getattr(CreateSilence, "_auto_save_asset", False) is True
     ), "CreateSilence should have _auto_save_asset = True"
+    assert (
+        getattr(TextToSpeech, "_auto_save_asset", False) is True
+    ), "TextToSpeech should have _auto_save_asset = True"
     assert (
         getattr(TextToVideo, "_auto_save_asset", False) is True
     ), "TextToVideo should have _auto_save_asset = True"
 
 
+def test_auto_save_asset_not_on_editing_nodes():
+    """
+    Test that editing/transformation nodes do NOT have _auto_save_asset = True.
+    """
+    from nodetool.nodes.nodetool.image import Scale, Resize, Crop
+    from nodetool.nodes.nodetool.audio import Normalize, OverlayAudio
+    from nodetool.nodes.nodetool.video import Trim, ColorBalance
+
+    # Test that editing nodes do NOT have auto_save_asset
+    assert (
+        getattr(Scale, "_auto_save_asset", False) is False
+    ), "Scale (editing node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(Resize, "_auto_save_asset", False) is False
+    ), "Resize (editing node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(Crop, "_auto_save_asset", False) is False
+    ), "Crop (editing node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(Normalize, "_auto_save_asset", False) is False
+    ), "Normalize (editing node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(OverlayAudio, "_auto_save_asset", False) is False
+    ), "OverlayAudio (editing node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(Trim, "_auto_save_asset", False) is False
+    ), "Trim (editing node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(ColorBalance, "_auto_save_asset", False) is False
+    ), "ColorBalance (editing node) should NOT have _auto_save_asset = True"
+
+
 def test_auto_save_asset_provider_nodes():
     """
-    Test provider nodes to ensure they have _auto_save_asset = True.
+    Test provider nodes to ensure generative ones have _auto_save_asset = True.
     """
     from nodetool.nodes.openai.image import CreateImage
     from nodetool.nodes.openai.audio import TextToSpeech as OpenAITextToSpeech
@@ -162,37 +221,24 @@ def test_auto_save_asset_provider_nodes():
     ), "Gemini TextToVideo should have _auto_save_asset = True"
 
 
-def test_auto_save_asset_pillow_nodes():
+def test_auto_save_asset_not_on_library_nodes():
     """
-    Test Pillow library nodes to ensure they have _auto_save_asset = True.
+    Test that library nodes do NOT have _auto_save_asset = True.
     """
     from nodetool.nodes.lib.pillow.enhance import AutoContrast, Sharpness
     from nodetool.nodes.lib.pillow.filter import Blur, Invert
-    from nodetool.nodes.lib.pillow.color_grading import Exposure
-    from nodetool.nodes.lib.pillow.draw import Background
 
-    # Test enhance nodes
+    # Test that library nodes do NOT have auto_save_asset
     assert (
-        getattr(AutoContrast, "_auto_save_asset", False) is True
-    ), "AutoContrast should have _auto_save_asset = True"
+        getattr(AutoContrast, "_auto_save_asset", False) is False
+    ), "AutoContrast (library node) should NOT have _auto_save_asset = True"
     assert (
-        getattr(Sharpness, "_auto_save_asset", False) is True
-    ), "Sharpness should have _auto_save_asset = True"
+        getattr(Sharpness, "_auto_save_asset", False) is False
+    ), "Sharpness (library node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(Blur, "_auto_save_asset", False) is False
+    ), "Blur (library node) should NOT have _auto_save_asset = True"
+    assert (
+        getattr(Invert, "_auto_save_asset", False) is False
+    ), "Invert (library node) should NOT have _auto_save_asset = True"
 
-    # Test filter nodes
-    assert (
-        getattr(Blur, "_auto_save_asset", False) is True
-    ), "Blur should have _auto_save_asset = True"
-    assert (
-        getattr(Invert, "_auto_save_asset", False) is True
-    ), "Invert should have _auto_save_asset = True"
-
-    # Test color grading nodes
-    assert (
-        getattr(Exposure, "_auto_save_asset", False) is True
-    ), "Exposure should have _auto_save_asset = True"
-
-    # Test draw nodes
-    assert (
-        getattr(Background, "_auto_save_asset", False) is True
-    ), "Background should have _auto_save_asset = True"

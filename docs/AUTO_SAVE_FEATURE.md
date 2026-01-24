@@ -2,7 +2,7 @@
 
 ## Overview
 
-This document describes the auto-save feature for nodes that generate assets (images, audio, video, etc.).
+This document describes the auto-save feature for nodes that **generate** assets (images, audio, video, etc.) from scratch.
 
 ## What is Auto-Save?
 
@@ -12,20 +12,37 @@ When a node has `_auto_save_asset = True`, any AssetRef (ImageRef, AudioRef, Vid
 - `job_id` - The ID of the job/workflow run
 - `workflow_id` - The ID of the workflow
 
+## Important: Generative Nodes Only
+
+**Auto-save is only enabled for generative nodes** - nodes that create content from scratch:
+
+✅ **Enabled for:**
+- Text-to-Image (e.g., `TextToImage`, `CreateImage`)
+- Text-to-Audio (e.g., `TextToSpeech`, `GenerateMusic`)
+- Text-to-Video (e.g., `TextToVideo`)
+- Image-to-Image generation (e.g., `ImageToImage`)
+- Image-to-Video generation (e.g., `ImageToVideo`)
+- Content generation from nothing (e.g., `CreateSilence`)
+
+❌ **NOT enabled for:**
+- Editing/transformation nodes (e.g., `Resize`, `Crop`, `Normalize`, `Trim`)
+- Library nodes (e.g., Pillow filters, enhancements, color grading)
+- Load/Save nodes (e.g., `LoadImage`, `SaveImage`)
+
 ## Implementation
 
-### Adding Auto-Save to a Node
+### Adding Auto-Save to a Generative Node
 
-To enable auto-save for a node, add the class variable `_auto_save_asset` with value `True`:
+To enable auto-save for a generative node, add the class variable `_auto_save_asset` with value `True`:
 
 ```python
 from typing import ClassVar
 from nodetool.workflows.base_node import BaseNode
 from nodetool.metadata.types import ImageRef
 
-class MyImageNode(BaseNode):
+class TextToImage(BaseNode):
     """
-    Example node that generates images.
+    Generate images from text prompts.
     """
     
     _auto_save_asset: ClassVar[bool] = True  # Enable auto-save
@@ -38,63 +55,53 @@ class MyImageNode(BaseNode):
 
 ### Which Nodes Have Auto-Save Enabled?
 
-Auto-save is enabled for all nodes that:
-1. **Generate** or **transform** assets (create new ImageRef, AudioRef, VideoRef, etc.)
-2. Are **not** Load* or Save* nodes (these handle their own storage logic)
+Auto-save is enabled for approximately **50 generative nodes**:
 
-This includes:
+#### Core Generative Nodes (7 nodes)
+- **Image**: TextToImage, ImageToImage
+- **Audio**: TextToSpeech, CreateSilence
+- **Video**: TextToVideo, ImageToVideo, FrameToVideo
 
-#### Core Nodes (47 nodes)
-- **Image nodes**: TextToImage, ImageToImage, Paste, Scale, Resize, Crop, Fit
-- **Audio nodes**: Normalize, OverlayAudio, RemoveSilence, TextToSpeech, CreateSilence, Concat, etc.
-- **Video nodes**: TextToVideo, ImageToVideo, Trim, Overlay, ColorBalance, AddSubtitles, etc.
-
-#### AI Provider Nodes (45 nodes)
+#### AI Provider Nodes (6 nodes)
 - **OpenAI**: CreateImage, TextToSpeech
 - **Gemini**: ImageGeneration, TextToSpeech, TextToVideo, ImageToVideo
-- **KIE**: 39 nodes across image, audio, and video generation
 
-#### Library Nodes (41 nodes)
-- **Pillow**: All image enhancement, filtering, and color grading nodes (37 nodes)
-- **Other libraries**: CombineImageGrid, SVGToImage, ChartRenderer, PlotArray
-
-**Total: 133 nodes have auto-save enabled**
+#### KIE Generative Nodes (~37 nodes)
+- **Image generation**: Flux2Pro, Flux2Flex, Seedream, ZImage, NanoBanana, GrokImagine, Qwen, Imagen4, etc.
+- **Audio generation**: GenerateMusic, GenerateMusicVideo, ElevenLabsTextToSpeech
+- **Video generation**: All TextToVideo and ImageToVideo variants (Kling, Sora, Hailuo, Runway, Veo, etc.)
+- **Avatar generation**: KlingAIAvatar nodes
 
 ## Benefits
 
 1. **Automatic Tracking**: Assets are automatically tagged with node_id, job_id, and workflow_id
-2. **Simplified Code**: No need to manually call `context.create_asset()` 
-3. **Consistent Behavior**: All asset-generating nodes behave the same way
+2. **Simplified Code**: No need to manually call `context.create_asset()` for generative nodes
+3. **Consistent Behavior**: All generative nodes behave the same way
 4. **Better Debugging**: Easy to trace which node created which asset
 
 ## Example Usage
 
-### Before (Manual Save)
+### Generative Node (Auto-Save Enabled)
 ```python
-class MyImageNode(BaseNode):
-    async def process(self, context: ProcessingContext) -> ImageRef:
-        image_data = generate_image()
-        image = await context.image_from_bytes(image_data)
-        
-        # Manual save with tracking
-        saved_image = await context.create_asset(
-            asset_ref=image,
-            node_id=self.id,
-            job_id=context.job_id,
-            workflow_id=context.workflow_id
-        )
-        return saved_image
-```
-
-### After (Auto-Save)
-```python
-class MyImageNode(BaseNode):
-    _auto_save_asset: ClassVar[bool] = True  # Enable auto-save
+class TextToImage(BaseNode):
+    _auto_save_asset: ClassVar[bool] = True
     
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_data = generate_image()
-        image = await context.image_from_bytes(image_data)
-        return image  # Automatically saved with tracking!
+        return await context.image_from_bytes(image_data)
+        # Automatically saved with tracking!
+```
+
+### Editing Node (Auto-Save NOT Enabled)
+```python
+class Resize(BaseNode):
+    # No _auto_save_asset - this is an editing node
+    
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image = await context.image_to_pil(self.image)
+        resized = image.resize((self.width, self.height))
+        return await context.image_from_pil(resized)
+        # Not automatically saved - transforms existing asset
 ```
 
 ## Querying Assets
@@ -116,9 +123,10 @@ assets_by_workflow = await context.get_assets_by_workflow(workflow_id)
 
 Tests are provided in `tests/nodetool/test_auto_save_asset.py` to verify:
 
-1. All asset-generating nodes have `_auto_save_asset = True`
-2. Load* and Save* nodes are excluded
-3. Core, provider, and library nodes are properly configured
+1. Generative nodes have `_auto_save_asset = True`
+2. Editing/transformation nodes do NOT have `_auto_save_asset = True`
+3. Library nodes do NOT have `_auto_save_asset = True`
+4. Load*/Save* nodes do NOT have `_auto_save_asset = True`
 
 Run tests with:
 ```bash
@@ -128,5 +136,6 @@ pytest tests/nodetool/test_auto_save_asset.py -v
 ## Notes
 
 - The actual auto-save infrastructure is implemented in `nodetool-core` (the base framework)
-- This repository (`nodetool-base`) contains the node implementations with the feature enabled
-- Nodes that only load or save assets (Load*, Save*) do NOT have auto-save enabled as they manage storage themselves
+- This repository (`nodetool-base`) contains the node implementations with the feature enabled for generative nodes only
+- Editing/transformation nodes do NOT have auto-save as they transform existing assets rather than generating new content
+
