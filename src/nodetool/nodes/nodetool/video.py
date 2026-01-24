@@ -76,6 +76,8 @@ class TextToVideo(BaseNode):
     video, generation, AI, text-to-video, t2v
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     class AspectRatio(str, enum.Enum):
         RATIO_16_9 = "16:9"
         RATIO_9_16 = "9:16"
@@ -182,6 +184,8 @@ class ImageToVideo(BaseNode):
     Animates static images into dynamic video content with AI-powered motion.
     video, image-to-video, i2v, animation, AI, generation, sora, veo
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     class AspectRatio(str, enum.Enum):
         RATIO_16_9 = "16:9"
@@ -545,6 +549,8 @@ class Fps(BaseNode):
     video, analysis, frames, fps
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to analyze for FPS."
     )
@@ -562,6 +568,8 @@ class FrameToVideo(BaseNode):
     Combine a sequence of frames into a single video file.
     video, frames, combine, sequence
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     frame: ImageRef = Field(default=ImageRef(), description="Collect input frames")
     fps: float = Field(default=30, description="The FPS of the output video.")
@@ -636,6 +644,8 @@ class Concat(BaseNode):
     Concatenate multiple video files into a single video, including audio when available.
     video, concat, merge, combine, audio, +
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     video_a: VideoRef = Field(
         default=VideoRef(), description="The first video to concatenate."
@@ -718,6 +728,8 @@ class Trim(BaseNode):
     video, trim, cut, segment
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(default=VideoRef(), description="The input video to trim.")
     start_time: float = Field(
         default=0.0, description="The start time in seconds for the trimmed video."
@@ -797,6 +809,8 @@ class ResizeNode(BaseNode):
     video, resize, scale, dimensions
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to resize."
     )
@@ -861,6 +875,8 @@ class Rotate(BaseNode):
     video, rotate, orientation, transform
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to rotate."
     )
@@ -922,6 +938,8 @@ class SetSpeed(BaseNode):
     Adjust the playback speed of a video.
     video, speed, tempo, time
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to adjust speed."
@@ -1002,6 +1020,8 @@ class Overlay(BaseNode):
     Overlay one video on top of another, including audio overlay when available.
     video, overlay, composite, picture-in-picture, audio
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     main_video: VideoRef = Field(
         default=VideoRef(), description="The main (background) video."
@@ -1116,6 +1136,8 @@ class ColorBalance(BaseNode):
     video, color, balance, adjustment
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to adjust color balance."
     )
@@ -1204,6 +1226,8 @@ class Denoise(BaseNode):
     video, denoise, clean, enhance
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to denoise."
     )
@@ -1275,6 +1299,8 @@ class Stabilize(BaseNode):
     Apply video stabilization to reduce camera shake and jitter.
     video, stabilize, smooth, shake-reduction
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to stabilize."
@@ -1350,6 +1376,8 @@ class Sharpness(BaseNode):
     Adjust the sharpness of a video.
     video, sharpen, enhance, detail
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to sharpen."
@@ -1434,6 +1462,8 @@ class Blur(BaseNode):
     video, blur, smooth, soften
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to apply blur effect."
     )
@@ -1505,6 +1535,8 @@ class Saturation(BaseNode):
     video, saturation, color, enhance
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to adjust saturation."
     )
@@ -1573,6 +1605,8 @@ class AddSubtitles(BaseNode):
     Add subtitles to a video.
     video, subtitles, text, caption
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     class SubtitleTextAlignment(str, enum.Enum):
         TOP = "top"
@@ -1755,6 +1789,8 @@ class Reverse(BaseNode):
     video, reverse, backwards, effect
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to reverse."
     )
@@ -1800,6 +1836,8 @@ class Transition(BaseNode):
     Create a transition effect between two videos, including audio transition when available.
     video, transition, effect, merge, audio
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     class TransitionType(str, enum.Enum):
         fade = "fade"
@@ -1959,6 +1997,8 @@ class AddAudio(BaseNode):
     video, audio, soundtrack, merge
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to add audio to."
     )
@@ -2039,6 +2079,8 @@ class ChromaKey(BaseNode):
     video, chroma key, green screen, compositing
     """
 
+    _auto_save_asset: ClassVar[bool] = True
+
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to apply chroma key effect."
     )
@@ -2108,6 +2150,8 @@ class ExtractAudio(BaseNode):
     Separate and extract audio track from a video file.
     video, audio, extract, separate, split
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     video: VideoRef = Field(
         default=VideoRef(), description="The input video to separate."
