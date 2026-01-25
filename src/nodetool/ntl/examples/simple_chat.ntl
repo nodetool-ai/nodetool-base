@@ -1,0 +1,31 @@
+# Simple Chat Workflow
+# Basic conversational AI pattern
+
+@name "Simple Chat"
+@description "A basic chat workflow using MessageInput and Agent"
+@tags chat, agent, start
+
+# Receive incoming chat message
+message_input: nodetool.input.MessageInput
+  name = "user_message"
+  description = "The incoming chat message from the user"
+
+# Extract text from message object
+deconstructor: nodetool.input.MessageDeconstructor
+  value = @message_input.output
+
+# Process with AI agent
+agent: nodetool.agents.Agent
+  prompt = @deconstructor.text
+  system = "You are a helpful assistant. Respond in a friendly and informative manner."
+  model = {
+    type: "language_model",
+    provider: "ollama",
+    id: "llama3.2:3b"
+  }
+
+# Return the response
+output: nodetool.output.Output
+  name = "assistant_response"
+  description = "The assistant's response to the user message"
+  value = @agent.text
