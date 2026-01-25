@@ -892,6 +892,14 @@ class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
         default="", description="The parameter name for the workflow."
     )
     value: str | OutputHandle[str] = connect_field(default="", description=None)
+    max_length: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Maximum number of characters allowed. Use 0 for unlimited.",
+    )
+    line_mode: str | OutputHandle[str] = connect_field(
+        default="single_line",
+        description="Controls whether the UI should render the input as single-line or multiline.",
+    )
     description: str | OutputHandle[str] = connect_field(
         default="", description="The description of the input for the workflow."
     )

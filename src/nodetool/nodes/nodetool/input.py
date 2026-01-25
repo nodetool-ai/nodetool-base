@@ -1,4 +1,4 @@
-from typing import Literal, TypedDict
+from typing import TypedDict
 
 from pydantic import Field
 
@@ -97,13 +97,15 @@ class StringInput(InputNode):
     max_length: int = Field(
         0,
         ge=0,
+        le=100000,
         title="Max length",
         description="Maximum number of characters allowed. Use 0 for unlimited.",
     )
-    line_mode: Literal["single_line", "multiline"] = Field(
+    line_mode: str = Field(
         "single_line",
         title="Line mode",
         description="Controls whether the UI should render the input as single-line or multiline.",
+        json_schema_extra={"type": "enum", "values": ["single_line", "multiline"]},
     )
 
     @classmethod

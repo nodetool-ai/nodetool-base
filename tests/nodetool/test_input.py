@@ -124,3 +124,27 @@ async def test_input_node_json_schema(node_class):
     assert isinstance(schema, dict)
     assert "type" in schema
     assert "properties" in schema
+
+
+@pytest.mark.asyncio
+async def test_string_input_max_length_enforced(context: ProcessingContext):
+    node = StringInput(
+        name="string_input",
+        value="hello world",
+        max_length=5,
+        description="test",
+    )
+    result = await node.process(context)
+    assert result == "hello"
+
+
+@pytest.mark.asyncio
+async def test_string_input_max_length_zero_unlimited(context: ProcessingContext):
+    node = StringInput(
+        name="string_input",
+        value="hello world",
+        max_length=0,
+        description="test",
+    )
+    result = await node.process(context)
+    assert result == "hello world"
