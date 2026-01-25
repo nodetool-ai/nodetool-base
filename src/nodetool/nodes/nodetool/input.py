@@ -4,10 +4,12 @@ from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
+    ASRModel,
     AudioRef,
     ColorRef,
     DataframeRef,
     DocumentRef,
+    EmbeddingModel,
     FolderRef,
     HuggingFaceModel,
     ImageModel,
@@ -19,6 +21,8 @@ from nodetool.metadata.types import (
     MessageTextContent,
     Model3DRef,
     Provider,
+    TTSModel,
+    VideoModel,
     VideoRef,
 )
 from nodetool.workflows.base_node import BaseNode, InputNode
@@ -247,6 +251,66 @@ class ImageModelInput(InputNode):
     @classmethod
     def return_type(cls):
         return ImageModel
+
+
+class VideoModelInput(InputNode):
+    """
+    Accepts a video generation model as a parameter for workflows.
+    input, parameter, model, video, generation
+    """
+
+    value: VideoModel = Field(
+        VideoModel(), description="The video generation model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return VideoModel
+
+
+class TTSModelInput(InputNode):
+    """
+    Accepts a text-to-speech model as a parameter for workflows.
+    input, parameter, model, tts, speech, voice
+    """
+
+    value: TTSModel = Field(
+        TTSModel(), description="The text-to-speech model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return TTSModel
+
+
+class ASRModelInput(InputNode):
+    """
+    Accepts an automatic speech recognition model as a parameter for workflows.
+    input, parameter, model, asr, transcription, speech
+    """
+
+    value: ASRModel = Field(
+        ASRModel(), description="The speech recognition model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return ASRModel
+
+
+class EmbeddingModelInput(InputNode):
+    """
+    Accepts an embedding model as a parameter for workflows.
+    input, parameter, model, embedding, vector
+    """
+
+    value: EmbeddingModel = Field(
+        EmbeddingModel(), description="The embedding model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return EmbeddingModel
 
 
 class DataframeInput(InputNode):
