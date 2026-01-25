@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 from pydantic import Field
 
@@ -94,12 +94,25 @@ class StringInput(InputNode):
     """
 
     value: str = ""
+    max_length: int = Field(
+        0,
+        ge=0,
+        title="Max length",
+        description="Maximum number of characters allowed. Use 0 for unlimited.",
+    )
+    line_mode: Literal["single_line", "multiline"] = Field(
+        "single_line",
+        title="Line mode",
+        description="Controls whether the UI should render the input as single-line or multiline.",
+    )
 
     @classmethod
     def return_type(cls):
         return str
 
     async def process(self, context: ProcessingContext) -> str:
+        if self.max_length and len(self.value) > self.max_length:
+            return self.value[: self.max_length]
         return self.value
 
 
