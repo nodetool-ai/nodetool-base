@@ -77,7 +77,7 @@ class AutomaticSpeechRecognition(BaseNode):
 class Concat(BaseNode):
     """
     Concatenates two text inputs into a single output.
-    text, concatenation, combine, +
+    text, combine, add, +, concatenate, merge, join, append
     """
 
     a: str = Field(default="")
@@ -94,7 +94,7 @@ class Concat(BaseNode):
 class Join(BaseNode):
     """
     Joins a list of strings into a single string using a specified separator.
-    text, join, combine, +, add, concatenate
+    text, join, combine, +, add, concatenate, merge
     """
 
     strings: list[Any] = Field(default=[])
