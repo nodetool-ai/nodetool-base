@@ -5,12 +5,18 @@ from typing import Any
 from pydantic import Field
 
 from nodetool.metadata.types import (
+    ASRModel,
     AudioRef,
     Datetime,
     DocumentRef,
+    EmbeddingModel,
+    ImageModel,
     ImageRef,
     JSONRef,
+    LanguageModel,
     Model3DRef,
+    TTSModel,
+    VideoModel,
     VideoRef,
 )
 from nodetool.metadata.types import DataframeRef as DataFrameRef
@@ -377,4 +383,112 @@ class JSON(Constant):
     value: JSONRef = JSONRef()
 
     async def process(self, context: ProcessingContext) -> JSONRef:
+        return self.value
+
+
+class LanguageModelConstant(Constant):
+    """Represents a language model constant in the workflow.
+    llm, language, model, ai, chat, gpt
+
+    Use cases:
+    - Provide a fixed language model for chat or text generation
+    - Set default language model for the workflow
+    - Configure model selection without user input
+    """
+
+    _expose_as_tool = True
+
+    value: LanguageModel = Field(default_factory=lambda: LanguageModel())
+
+    async def process(self, context: ProcessingContext) -> LanguageModel:
+        return self.value
+
+
+class ImageModelConstant(Constant):
+    """Represents an image generation model constant in the workflow.
+    image, model, ai, generation, diffusion
+
+    Use cases:
+    - Provide a fixed image model for generation
+    - Set default image model for the workflow
+    - Configure model selection without user input
+    """
+
+    _expose_as_tool = True
+
+    value: ImageModel = Field(default_factory=lambda: ImageModel())
+
+    async def process(self, context: ProcessingContext) -> ImageModel:
+        return self.value
+
+
+class VideoModelConstant(Constant):
+    """Represents a video generation model constant in the workflow.
+    video, model, ai, generation
+
+    Use cases:
+    - Provide a fixed video model for generation
+    - Set default video model for the workflow
+    - Configure model selection without user input
+    """
+
+    _expose_as_tool = True
+
+    value: VideoModel = Field(default_factory=lambda: VideoModel())
+
+    async def process(self, context: ProcessingContext) -> VideoModel:
+        return self.value
+
+
+class TTSModelConstant(Constant):
+    """Represents a text-to-speech model constant in the workflow.
+    tts, speech, voice, model, audio
+
+    Use cases:
+    - Provide a fixed TTS model for speech synthesis
+    - Set default TTS model for the workflow
+    - Configure model selection without user input
+    """
+
+    _expose_as_tool = True
+
+    value: TTSModel = Field(default_factory=lambda: TTSModel())
+
+    async def process(self, context: ProcessingContext) -> TTSModel:
+        return self.value
+
+
+class ASRModelConstant(Constant):
+    """Represents an automatic speech recognition model constant in the workflow.
+    asr, speech, recognition, transcription, model
+
+    Use cases:
+    - Provide a fixed ASR model for transcription
+    - Set default ASR model for the workflow
+    - Configure model selection without user input
+    """
+
+    _expose_as_tool = True
+
+    value: ASRModel = Field(default_factory=lambda: ASRModel())
+
+    async def process(self, context: ProcessingContext) -> ASRModel:
+        return self.value
+
+
+class EmbeddingModelConstant(Constant):
+    """Represents an embedding model constant in the workflow.
+    embedding, model, vector, semantic
+
+    Use cases:
+    - Provide a fixed embedding model for vectorization
+    - Set default embedding model for the workflow
+    - Configure model selection without user input
+    """
+
+    _expose_as_tool = True
+
+    value: EmbeddingModel = Field(default_factory=lambda: EmbeddingModel())
+
+    async def process(self, context: ProcessingContext) -> EmbeddingModel:
         return self.value

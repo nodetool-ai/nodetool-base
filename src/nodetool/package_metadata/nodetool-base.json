@@ -25125,6 +25125,35 @@
       ]
     },
     {
+      "title": "ASRModel Constant",
+      "description": "Represents an automatic speech recognition model constant in the workflow.\n    asr, speech, recognition, transcription, model\n\n    Use cases:\n    - Provide a fixed ASR model for transcription\n    - Set default ASR model for the workflow\n    - Configure model selection without user input",
+      "namespace": "nodetool.constant",
+      "node_type": "nodetool.constant.ASRModelConstant",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "asr_model"
+          },
+          "default": null,
+          "title": "Value",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "asr_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Audio",
       "description": "Represents an audio file constant in the workflow.\n    audio, file, mp3, wav\n\n    Use cases:\n    - Provide a fixed audio input for audio processing nodes\n    - Reference a specific audio file in the workflow\n    - Set default audio for testing or demonstration purposes",
       "namespace": "nodetool.constant",
@@ -25485,6 +25514,35 @@
       "expose_as_tool": true
     },
     {
+      "title": "Embedding Model Constant",
+      "description": "Represents an embedding model constant in the workflow.\n    embedding, model, vector, semantic\n\n    Use cases:\n    - Provide a fixed embedding model for vectorization\n    - Set default embedding model for the workflow\n    - Configure model selection without user input",
+      "namespace": "nodetool.constant",
+      "node_type": "nodetool.constant.EmbeddingModelConstant",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "embedding_model"
+          },
+          "default": null,
+          "title": "Value",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "embedding_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Float",
       "description": "Represents a floating-point number constant in the workflow.\n    number, decimal, float\n\n    Use cases:\n    - Set numerical parameters for calculations\n    - Define thresholds or limits\n    - Provide fixed numerical inputs for processing",
       "namespace": "nodetool.constant",
@@ -25546,6 +25604,35 @@
       "expose_as_tool": true
     },
     {
+      "title": "Image Model Constant",
+      "description": "Represents an image generation model constant in the workflow.\n    image, model, ai, generation, diffusion\n\n    Use cases:\n    - Provide a fixed image model for generation\n    - Set default image model for the workflow\n    - Configure model selection without user input",
+      "namespace": "nodetool.constant",
+      "node_type": "nodetool.constant.ImageModelConstant",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "image_model"
+          },
+          "default": null,
+          "title": "Value",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Integer",
       "description": "Represents an integer constant in the workflow.\n    number, integer, whole\n\n    Use cases:\n    - Set numerical parameters for calculations\n    - Define counts, indices, or sizes\n    - Provide fixed numerical inputs for processing",
       "namespace": "nodetool.constant",
@@ -25597,6 +25684,35 @@
         {
           "type": {
             "type": "json"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Language Model Constant",
+      "description": "Represents a language model constant in the workflow.\n    llm, language, model, ai, chat, gpt\n\n    Use cases:\n    - Provide a fixed language model for chat or text generation\n    - Set default language model for the workflow\n    - Configure model selection without user input",
+      "namespace": "nodetool.constant",
+      "node_type": "nodetool.constant.LanguageModelConstant",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "language_model"
+          },
+          "default": null,
+          "title": "Value",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "language_model"
           },
           "name": "output"
         }
@@ -25760,6 +25876,35 @@
       ]
     },
     {
+      "title": "TTSModel Constant",
+      "description": "Represents a text-to-speech model constant in the workflow.\n    tts, speech, voice, model, audio\n\n    Use cases:\n    - Provide a fixed TTS model for speech synthesis\n    - Set default TTS model for the workflow\n    - Configure model selection without user input",
+      "namespace": "nodetool.constant",
+      "node_type": "nodetool.constant.TTSModelConstant",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "tts_model"
+          },
+          "default": null,
+          "title": "Value",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "tts_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Video",
       "description": "Represents a video file constant in the workflow.\n    video, movie, mp4, file\n\n    Use cases:\n    - Provide a fixed video input for video processing nodes\n    - Reference a specific video file in the workflow\n    - Set default video for testing or demonstration purposes",
       "namespace": "nodetool.constant",
@@ -25786,6 +25931,35 @@
         {
           "type": {
             "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "value"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Video Model Constant",
+      "description": "Represents a video generation model constant in the workflow.\n    video, model, ai, generation\n\n    Use cases:\n    - Provide a fixed video model for generation\n    - Set default video model for the workflow\n    - Configure model selection without user input",
+      "namespace": "nodetool.constant",
+      "node_type": "nodetool.constant.VideoModelConstant",
+      "properties": [
+        {
+          "name": "value",
+          "type": {
+            "type": "video_model"
+          },
+          "default": null,
+          "title": "Value",
+          "required": true
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video_model"
           },
           "name": "output"
         }
