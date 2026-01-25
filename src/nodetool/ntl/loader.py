@@ -7,6 +7,7 @@ to the workflow dictionary format used by nodetool.
 
 from __future__ import annotations
 
+import json
 import uuid
 from pathlib import Path
 from typing import Any
@@ -210,21 +211,28 @@ def load_workflow_from_ntl(source: str | Path) -> dict:
         NTLParseError: If parsing fails.
         FileNotFoundError: If the file doesn't exist.
     """
-    if isinstance(source, Path) or (
-        isinstance(source, str) and (source.endswith(".ntl") or "\n" not in source)
-    ):
-        # Treat as file path
-        path = Path(source)
-        if path.exists():
-            content = path.read_text(encoding="utf-8")
-        elif "\n" not in str(source) and not Path(source).suffix:
-            # It's a short string without newlines but not a file - could be source
-            content = str(source)
+    # Handle Path objects directly
+    if isinstance(source, Path):
+        if source.exists():
+            content = source.read_text(encoding="utf-8")
         else:
             raise FileNotFoundError(f"NTL file not found: {source}")
+    elif isinstance(source, str):
+        # Check if it's a file path (exists on disk) first
+        path = Path(source)
+        if path.exists() and path.is_file():
+            content = path.read_text(encoding="utf-8")
+        elif "\n" in source or "@" in source or ":" in source:
+            # Contains NTL syntax indicators - treat as source
+            content = source
+        elif source.endswith(".ntl"):
+            # Looks like a file path but doesn't exist
+            raise FileNotFoundError(f"NTL file not found: {source}")
+        else:
+            # Treat as source (could be minimal NTL like just metadata)
+            content = source
     else:
-        # Treat as source string
-        content = source
+        content = str(source)
 
     ast = parse_ntl(content)
     return ast_to_workflow(ast)
@@ -240,7 +248,5 @@ def ntl_to_json(source: str | Path) -> str:
     Returns:
         JSON string of the workflow.
     """
-    import json
-
     workflow = load_workflow_from_ntl(source)
     return json.dumps(workflow, indent=2)

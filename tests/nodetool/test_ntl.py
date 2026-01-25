@@ -299,8 +299,11 @@ class TestNTLExamples:
 
     @pytest.fixture
     def examples_dir(self):
-        """Get the examples directory."""
-        return Path(__file__).parent.parent / "src" / "nodetool" / "ntl" / "examples"
+        """Get the examples directory relative to the test file location."""
+        # Navigate from tests/nodetool/test_ntl.py to src/nodetool/ntl/examples
+        test_dir = Path(__file__).parent  # tests/nodetool
+        repo_root = test_dir.parent.parent  # repository root
+        return repo_root / "src" / "nodetool" / "ntl" / "examples"
 
     def test_image_enhance_example(self, examples_dir):
         """Test loading the image enhance example."""

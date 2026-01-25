@@ -201,11 +201,13 @@ class NTLLexer:
         start = self.pos
         if self.peek() == "-":
             self.advance()
-        while self.peek().isdigit():
+        while self.peek() and self.peek().isdigit():
             self.advance()
-        if self.peek() == "." and self.peek(1).isdigit():
+        peek_char = self.peek()
+        peek_next = self.peek(1)
+        if peek_char == "." and peek_next and peek_next.isdigit():
             self.advance()
-            while self.peek().isdigit():
+            while self.peek() and self.peek().isdigit():
                 self.advance()
             return float(self.source[start : self.pos])
         return int(self.source[start : self.pos])
