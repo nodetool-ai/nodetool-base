@@ -4,10 +4,12 @@ from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
+    ASRModel,
     AudioRef,
     ColorRef,
     DataframeRef,
     DocumentRef,
+    EmbeddingModel,
     FolderRef,
     HuggingFaceModel,
     ImageModel,
@@ -19,6 +21,8 @@ from nodetool.metadata.types import (
     MessageTextContent,
     Model3DRef,
     Provider,
+    TTSModel,
+    VideoModel,
     VideoRef,
 )
 from nodetool.workflows.base_node import BaseNode, InputNode
@@ -118,6 +122,47 @@ class StringInput(InputNode):
         return self.value
 
 
+class SelectInput(InputNode):
+    """
+    Accepts a selection from a predefined set of options as a parameter for workflows.
+    input, parameter, select, enum, dropdown, choice, options
+
+    Use cases:
+    - Let users choose from a fixed set of values in app mode
+    - Configure enum-like options for downstream nodes
+    - Provide dropdown selection for workflow parameters
+
+    The output is a string that can be connected to enum-typed inputs.
+    """
+
+    value: str = Field(
+        "",
+        description="The currently selected value.",
+        json_schema_extra={"type": "select"},
+    )
+    options: list[str] = Field(
+        default=[],
+        description="The list of available options to choose from.",
+    )
+    enum_type_name: str = Field(
+        default="",
+        description="The enum type name this select corresponds to (for type matching).",
+    )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        # Only show 'value' in the UI; hide options and enum_type_name as plumbing
+        basic_fields = super().get_basic_fields()
+        return basic_fields + ["value"]
+
+    @classmethod
+    def return_type(cls):
+        return str
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.value
+
+
 class StringListInput(InputNode):
     """
     Accepts a list of strings as a parameter for workflows.
@@ -206,6 +251,66 @@ class ImageModelInput(InputNode):
     @classmethod
     def return_type(cls):
         return ImageModel
+
+
+class VideoModelInput(InputNode):
+    """
+    Accepts a video generation model as a parameter for workflows.
+    input, parameter, model, video, generation
+    """
+
+    value: VideoModel = Field(
+        VideoModel(), description="The video generation model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return VideoModel
+
+
+class TTSModelInput(InputNode):
+    """
+    Accepts a text-to-speech model as a parameter for workflows.
+    input, parameter, model, tts, speech, voice
+    """
+
+    value: TTSModel = Field(
+        TTSModel(), description="The text-to-speech model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return TTSModel
+
+
+class ASRModelInput(InputNode):
+    """
+    Accepts an automatic speech recognition model as a parameter for workflows.
+    input, parameter, model, asr, transcription, speech
+    """
+
+    value: ASRModel = Field(
+        ASRModel(), description="The speech recognition model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return ASRModel
+
+
+class EmbeddingModelInput(InputNode):
+    """
+    Accepts an embedding model as a parameter for workflows.
+    input, parameter, model, embedding, vector
+    """
+
+    value: EmbeddingModel = Field(
+        EmbeddingModel(), description="The embedding model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return EmbeddingModel
 
 
 class DataframeInput(InputNode):

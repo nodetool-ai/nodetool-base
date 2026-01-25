@@ -203,6 +203,41 @@ class String(Constant):
         return self.value
 
 
+class Select(Constant):
+    """Represents a selection from a predefined set of options in the workflow.
+    select, enum, dropdown, choice, options
+
+    Use cases:
+    - Choose from a fixed set of values
+    - Configure options for downstream nodes
+    - Provide enum-compatible inputs for nodes that expect specific values
+
+    The output is a string that can be connected to enum-typed inputs.
+    """
+
+    value: str = Field(
+        "",
+        description="The currently selected value.",
+        json_schema_extra={"type": "select"},
+    )
+    options: list[str] = Field(
+        default=[],
+        description="The list of available options to choose from.",
+    )
+    enum_type_name: str = Field(
+        default="",
+        description="The enum type name this select corresponds to (for type matching).",
+    )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        # Only show 'value' in the UI; hide options and enum_type_name as plumbing
+        return ["value"]
+
+    async def process(self, context: ProcessingContext) -> str:
+        return self.value
+
+
 class Video(Constant):
     """Represents a video file constant in the workflow.
     video, movie, mp4, file
