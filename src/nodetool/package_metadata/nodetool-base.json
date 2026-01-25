@@ -21810,7 +21810,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 43380,
+          "downloads": 43704,
           "likes": 121
         },
         {
@@ -21861,7 +21861,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23405,
+          "downloads": 24325,
           "likes": 48
         },
         {
@@ -21912,7 +21912,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 8745,
+          "downloads": 7968,
           "likes": 30
         },
         {
@@ -21932,7 +21932,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1195,
+          "downloads": 1185,
           "likes": 27
         },
         {
@@ -21958,7 +21958,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4540,
+          "downloads": 4606,
           "likes": 7
         },
         {
@@ -21979,7 +21979,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 36628,
+          "downloads": 37003,
           "likes": 12
         },
         {
@@ -21998,7 +21998,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 1047,
+          "downloads": 1052,
           "likes": 19
         },
         {
@@ -22049,7 +22049,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2331,
+          "downloads": 2303,
           "likes": 23
         }
       ],
@@ -22263,7 +22263,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23405,
+          "downloads": 24325,
           "likes": 48
         }
       ],
@@ -22492,7 +22492,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23405,
+          "downloads": 24325,
           "likes": 48
         }
       ],
@@ -22622,7 +22622,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 43380,
+          "downloads": 43704,
           "likes": 121
         },
         {
@@ -22673,7 +22673,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 8745,
+          "downloads": 7968,
           "likes": 30
         }
       ],
@@ -22876,7 +22876,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 23405,
+          "downloads": 24325,
           "likes": 48
         }
       ],
@@ -30187,6 +30187,59 @@
       "expose_as_tool": true
     },
     {
+      "title": "ASRModel Input",
+      "description": "Accepts an automatic speech recognition model as a parameter for workflows.\n    input, parameter, model, asr, transcription, speech",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ASRModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "asr_model"
+          },
+          "default": {
+            "type": "asr_model",
+            "provider": "empty",
+            "id": "",
+            "name": "",
+            "path": null
+          },
+          "title": "Value",
+          "description": "The speech recognition model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "asr_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Asset Folder Input",
       "description": "Accepts an asset folder as a parameter for workflows.\n    input, parameter, folder, path, folderpath, local_folder, filesystem",
       "namespace": "nodetool.input",
@@ -30542,6 +30595,59 @@
         {
           "type": {
             "type": "document"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Embedding Model Input",
+      "description": "Accepts an embedding model as a parameter for workflows.\n    input, parameter, model, embedding, vector",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.EmbeddingModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "embedding_model"
+          },
+          "default": {
+            "type": "embedding_model",
+            "provider": "empty",
+            "id": "",
+            "name": "",
+            "dimensions": 0
+          },
+          "title": "Value",
+          "description": "The embedding model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "embedding_model"
           },
           "name": "output"
         }
@@ -31516,6 +31622,61 @@
       ]
     },
     {
+      "title": "TTSModel Input",
+      "description": "Accepts a text-to-speech model as a parameter for workflows.\n    input, parameter, model, tts, speech, voice",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.TTSModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "tts_model"
+          },
+          "default": {
+            "type": "tts_model",
+            "provider": "empty",
+            "id": "",
+            "name": "",
+            "path": null,
+            "voices": [],
+            "selected_voice": ""
+          },
+          "title": "Value",
+          "description": "The text-to-speech model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "tts_model"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Video Input",
       "description": "Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.\n    input, parameter, video, movie, clip, visual, asset",
       "namespace": "nodetool.input",
@@ -31561,6 +31722,60 @@
         {
           "type": {
             "type": "video"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
+      "title": "Video Model Input",
+      "description": "Accepts a video generation model as a parameter for workflows.\n    input, parameter, model, video, generation",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.VideoModelInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "video_model"
+          },
+          "default": {
+            "type": "video_model",
+            "provider": "empty",
+            "id": "",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "title": "Value",
+          "description": "The video generation model to use as input."
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "video_model"
           },
           "name": "output"
         }
@@ -33761,7 +33976,7 @@
     },
     {
       "title": "Concatenate Text",
-      "description": "Concatenates two text inputs into a single output.\n    text, concatenation, combine, +",
+      "description": "Concatenates two text inputs into a single output.\n    text, combine, add, +, concatenate, merge, join, append",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Concat",
       "properties": [
@@ -34604,7 +34819,7 @@
     },
     {
       "title": "Join",
-      "description": "Joins a list of strings into a single string using a specified separator.\n    text, join, combine, +, add, concatenate",
+      "description": "Joins a list of strings into a single string using a specified separator.\n    text, join, combine, +, add, concatenate, merge",
       "namespace": "nodetool.text",
       "node_type": "nodetool.text.Join",
       "properties": [
