@@ -8,6 +8,14 @@ from nodetool.workflows.processing_context import ProcessingContext
 from pydantic import Field, field_validator
 
 
+class TranscriptionModel(str, Enum):
+    GEMINI_2_5_FLASH = "gemini-2.5-flash"
+    GEMINI_2_5_PRO = "gemini-2.5-pro"
+    GEMINI_2_0_FLASH = "gemini-2.0-flash"
+    GEMINI_1_5_PRO = "gemini-1.5-pro"
+    GEMINI_1_5_FLASH = "gemini-1.5-flash"
+
+
 class TTSModel(str, Enum):
     GEMINI_2_5_FLASH_PREVIEW_TTS = "gemini-2.5-flash-preview-tts"
     GEMINI_2_5_PRO_PREVIEW_TTS = "gemini-2.5-pro-preview-tts"
@@ -162,3 +170,92 @@ class TextToSpeech(BaseNode):
         )
 
         return await context.audio_from_segment(audio_segment)
+
+
+class Transcribe(BaseNode):
+    """
+    Transcribe audio to text using Google's Gemini models.
+    google, transcription, speech-to-text, audio, whisper, ai
+
+    This node converts audio input into text using Google's multimodal Gemini models.
+    Supports various audio formats and provides accurate speech-to-text transcription.
+
+    Use cases:
+    - Convert recorded audio to text
+    - Transcribe podcasts and interviews
+    - Generate subtitles from audio tracks
+    - Create meeting notes from audio recordings
+    - Analyze speech content in audio files
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    audio: AudioRef = Field(
+        default=AudioRef(), description="The audio file to transcribe."
+    )
+
+    model: TranscriptionModel = Field(
+        default=TranscriptionModel.GEMINI_2_5_FLASH,
+        description="The Gemini model to use for transcription",
+    )
+
+    prompt: str = Field(
+        default="Transcribe the following audio accurately. Return only the transcription text without any additional commentary.",
+        description="Instructions for the transcription. You can customize this to request specific formatting or focus.",
+    )
+
+    async def process(self, context: ProcessingContext) -> str:
+        """
+        Transcribe audio using the Gemini model.
+
+        Returns:
+            str: The transcribed text from the audio
+        """
+        import filetype
+        from google.genai import types
+
+        if not self.audio.is_set():
+            raise ValueError("Audio file is required for transcription")
+
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+
+        # Get audio bytes and create the inline data
+        audio_bytes = await context.asset_to_bytes(self.audio)
+
+        # Detect MIME type from audio bytes
+        kind = filetype.guess(audio_bytes)
+        mime_type = (
+            kind.mime if kind else "audio/mpeg"
+        )  # Default to audio/mpeg if detection fails
+
+        # Create the audio part
+        audio_part = types.Part.from_bytes(
+            data=audio_bytes,
+            mime_type=mime_type,
+        )
+
+        # Generate transcription using Gemini's multimodal capabilities
+        response = await client.models.generate_content(
+            model=self.model.value,
+            contents=[self.prompt, audio_part],
+            config=types.GenerateContentConfig(
+                response_modalities=["TEXT"],
+            ),
+        )
+
+        if (
+            not response.candidates
+            or not response.candidates[0].content
+            or not response.candidates[0].content.parts
+        ):
+            raise ValueError("No transcription generated from the audio")
+
+        # Extract text from the response
+        transcription_parts = []
+        for part in response.candidates[0].content.parts:
+            if hasattr(part, "text") and part.text:
+                transcription_parts.append(part.text)
+
+        return "".join(transcription_parts)
