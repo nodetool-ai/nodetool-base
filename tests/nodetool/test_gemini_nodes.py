@@ -15,6 +15,7 @@ class TestTranscribeNode:
         try:
             from nodetool.nodes.gemini.audio import Transcribe, TranscriptionModel
             from nodetool.metadata.types import AudioRef
+
             self.Transcribe = Transcribe
             self.TranscriptionModel = TranscriptionModel
             self.AudioRef = AudioRef
@@ -63,6 +64,7 @@ class TestEmbeddingNode:
         """Import node classes only if nodetool-core is available."""
         try:
             from nodetool.nodes.gemini.text import Embedding, EmbeddingModel
+
             self.Embedding = Embedding
             self.EmbeddingModel = EmbeddingModel
             self.skip = False

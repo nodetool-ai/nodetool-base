@@ -211,6 +211,7 @@ class Transcribe(BaseNode):
         Returns:
             str: The transcribed text from the audio
         """
+        import filetype
         from google.genai import types
 
         if not self.audio.is_set():
@@ -223,10 +224,16 @@ class Transcribe(BaseNode):
         # Get audio bytes and create the inline data
         audio_bytes = await context.asset_to_bytes(self.audio)
 
+        # Detect MIME type from audio bytes
+        kind = filetype.guess(audio_bytes)
+        mime_type = (
+            kind.mime if kind else "audio/mpeg"
+        )  # Default to audio/mpeg if detection fails
+
         # Create the audio part
         audio_part = types.Part.from_bytes(
             data=audio_bytes,
-            mime_type="audio/mp3",
+            mime_type=mime_type,
         )
 
         # Generate transcription using Gemini's multimodal capabilities
