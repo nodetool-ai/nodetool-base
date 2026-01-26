@@ -161,21 +161,6 @@ class Moderation(BaseNode):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    class CategoryScores(TypedDict):
-        harassment: float
-        harassment_threatening: float
-        hate: float
-        hate_threatening: float
-        illicit: float
-        illicit_violent: float
-        self_harm: float
-        self_harm_instructions: float
-        self_harm_intent: float
-        sexual: float
-        sexual_minors: float
-        violence: float
-        violence_graphic: float
-
     class OutputType(TypedDict):
         flagged: bool
         categories: dict[str, bool]
