@@ -17,11 +17,15 @@ from nodetool.nodes.nodetool.constant import (
     DataFrame,
     Dict,
     Image,
+    ImageList,
     Integer,
     List,
     Float,
     String,
     Video,
+    VideoList,
+    AudioList,
+    TextList,
     JSON,
     Document,
     Date,
@@ -44,11 +48,15 @@ def context():
         DataFrame,
         Dict,
         Image,
+        ImageList,
         Integer,
         List,
         Float,
         String,
         Video,
+        VideoList,
+        AudioList,
+        TextList,
         JSON,
         Document,
         Date,
@@ -75,6 +83,8 @@ async def test_constant_node(context: ProcessingContext, node_class):
             assert isinstance(result, dict)
         elif node_class == Image:
             assert isinstance(result, ImageRef)
+        elif node_class == ImageList:
+            assert isinstance(result, list)
         elif node_class == Integer:
             assert isinstance(result, int)
         elif node_class == List:
@@ -85,6 +95,12 @@ async def test_constant_node(context: ProcessingContext, node_class):
             assert isinstance(result, str)
         elif node_class == Video:
             assert isinstance(result, VideoRef)
+        elif node_class == VideoList:
+            assert isinstance(result, list)
+        elif node_class == AudioList:
+            assert isinstance(result, list)
+        elif node_class == TextList:
+            assert isinstance(result, list)
         elif node_class == JSON:
             assert isinstance(result, JSONRef)
         elif node_class == Document:
