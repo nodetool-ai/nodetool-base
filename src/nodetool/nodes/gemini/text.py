@@ -21,6 +21,102 @@ class EmbeddingModel(str, Enum):
     TEXT_EMBEDDING_005 = "text-embedding-005"
 
 
+class ChatComplete(BaseNode):
+    """
+    Generate text using Google's Gemini models.
+    gemini, google, chat, ai, text generation, llm, completion
+
+    Uses Google's Gemini models to generate responses from prompts.
+    Requires a Gemini API key.
+
+    Use cases:
+    - Generate text responses to prompts
+    - Build conversational AI applications
+    - Multi-modal understanding and generation
+    - Code generation and explanation
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: GeminiModel = Field(
+        default=GeminiModel.GEMINI_2_0_FLASH,
+        description="The Gemini model to use for generation",
+    )
+
+    prompt: str = Field(default="", description="The prompt for text generation")
+
+    system_prompt: str = Field(
+        default="",
+        description="Optional system prompt to guide the model's behavior",
+    )
+
+    temperature: float = Field(
+        default=1.0,
+        ge=0.0,
+        le=2.0,
+        description="Sampling temperature. Higher values make output more random.",
+    )
+
+    max_tokens: int = Field(
+        default=1024,
+        ge=1,
+        le=8192,
+        description="Maximum number of tokens to generate",
+    )
+
+    async def process(self, context: ProcessingContext) -> str:
+        """
+        Generate a chat completion using Google's Gemini.
+
+        Args:
+            context: The processing context.
+
+        Returns:
+            str: The generated text response.
+        """
+        from google.genai.types import GenerateContentConfig
+
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+
+        # Generate content using Gemini
+        response = await client.models.generate_content(
+            model=self.model.value,
+            contents=self.prompt,
+            config=GenerateContentConfig(
+                system_instruction=self.system_prompt if self.system_prompt else None,
+                temperature=self.temperature,
+                max_output_tokens=self.max_tokens,
+                response_modalities=["TEXT"],
+            ),
+        )
+
+        # Extract text from the response
+        if not response or not response.candidates:
+            raise ValueError("No response received from Gemini API")
+
+        candidate = response.candidates[0]
+        if not candidate or not candidate.content:
+            raise ValueError("Invalid response format from Gemini API")
+
+        # Get the main response text
+        text_parts = []
+        if candidate.content.parts:
+            for part in candidate.content.parts:
+                if part.text:
+                    text_parts.append(part.text)
+
+        return "".join(text_parts)
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["prompt", "model"]
+
+
 class GroundedSearch(BaseNode):
     """
     Search the web using Google's Gemini API with grounding capabilities.

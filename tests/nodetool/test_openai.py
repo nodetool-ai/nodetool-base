@@ -1,13 +1,84 @@
 import numpy as np
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.openai.text import WebSearch, Embedding, Moderation
+from nodetool.nodes.openai.text import WebSearch, Embedding, Moderation, ChatComplete, GPTModel
 from nodetool.nodes.openai.image import EditImage
 from nodetool.metadata.types import NPArray, ImageRef
+
 
 @pytest.fixture
 def context():
     return ProcessingContext(user_id="test", auth_token="test")
+
+
+# ChatComplete Tests
+
+
+@pytest.mark.asyncio
+async def test_chat_complete_success(context, monkeypatch):
+    """Test successful GPT chat completion."""
+    node = ChatComplete(prompt="Hello, world!", model=GPTModel.GPT_4O_MINI)
+
+    async def fake_run_prediction(node_id, provider, model, run_prediction_function, params=None, data=None):
+        return {"choices": [{"message": {"content": "Hello! How can I help you?"}}]}
+
+    monkeypatch.setattr(context, "run_prediction", fake_run_prediction)
+    result = await node.process(context)
+    assert result == "Hello! How can I help you?"
+
+
+@pytest.mark.asyncio
+async def test_chat_complete_empty_prompt(context):
+    """Test that empty prompt raises ValueError."""
+    node = ChatComplete(prompt="")
+    with pytest.raises(ValueError, match="Prompt cannot be empty"):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
+async def test_chat_complete_with_system_prompt(context, monkeypatch):
+    """Test GPT chat completion with system prompt."""
+    node = ChatComplete(
+        prompt="Write a poem",
+        system_prompt="You are a creative poet.",
+        model=GPTModel.GPT_4O,
+    )
+
+    async def fake_run_prediction(node_id, provider, model, run_prediction_function, params=None, data=None):
+        # Verify system prompt is included in messages
+        assert len(params["messages"]) == 2
+        assert params["messages"][0]["role"] == "system"
+        assert params["messages"][0]["content"] == "You are a creative poet."
+        return {"choices": [{"message": {"content": "A beautiful poem"}}]}
+
+    monkeypatch.setattr(context, "run_prediction", fake_run_prediction)
+    result = await node.process(context)
+    assert result == "A beautiful poem"
+
+
+def test_chat_complete_basic_fields():
+    """Test ChatComplete basic fields."""
+    assert ChatComplete.get_basic_fields() == ["prompt", "model"]
+
+
+def test_chat_complete_default_values():
+    """Test ChatComplete default field values."""
+    node = ChatComplete()
+    assert node.model == GPTModel.GPT_4O_MINI
+    assert node.prompt == ""
+    assert node.system_prompt == ""
+    assert node.temperature == 1.0
+    assert node.max_tokens == 1024
+
+
+def test_gpt_model_enum_values():
+    """Test that all GPT model enum values are valid strings."""
+    for model in GPTModel:
+        assert isinstance(model.value, str)
+
+
+# WebSearch Tests
+
 
 @pytest.mark.asyncio
 async def test_websearch_success(context, monkeypatch):
