@@ -18,7 +18,7 @@ class Schema(BaseNode):
     Define a schema for a dataframe.
     schema, dataframe, create
     """
-    
+
     columns: RecordType = Field(
         default=RecordType(),
         description="The columns to use in the dataframe.",
@@ -26,7 +26,7 @@ class Schema(BaseNode):
 
     async def process(self, context: ProcessingContext) -> RecordType:
         return self.columns
-    
+
 
 class Filter(BaseNode):
     """
@@ -136,12 +136,11 @@ class SaveDataframe(BaseNode):
         result = await context.dataframe_from_pandas(df, filename, parent_id)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="dataframe"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="dataframe"
+            )
+        )
 
         return result
 
@@ -323,6 +322,41 @@ class ExtractColumn(BaseNode):
     async def process(self, context: ProcessingContext) -> list[Any]:
         df = await context.dataframe_to_pandas(self.dataframe)
         return df[self.column_name].tolist()
+
+
+class ExtractColumns(BaseNode):
+    """
+    Extract multiple columns from a dataframe as lists using dynamic outputs.
+    dataframe, columns, extract, dynamic
+
+    Use cases:
+    - Extract multiple columns at once for parallel processing
+    - Convert dataframe columns to individual lists
+    - Route column data to different downstream nodes
+
+    When dynamic outputs are defined, each output name that matches a column
+    in the dataframe will receive that column's data as a list.
+    For example, if the dataframe has columns 'name' and 'age', and you define
+    dynamic outputs 'name' and 'age', each will output a list of values.
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The input dataframe."
+    )
+
+    async def process(self, context: ProcessingContext) -> dict[str, Any]:
+        df = await context.dataframe_to_pandas(self.dataframe)
+        result: dict[str, Any] = {}
+
+        # For each dynamic output, check if it matches a column name
+        for output_name in self._dynamic_outputs.keys():
+            if output_name in df.columns:
+                result[output_name] = df[output_name].tolist()
+
+        return result
 
 
 class AddColumn(BaseNode):
@@ -577,14 +611,20 @@ class DropNA(BaseNode):
 class ForEachRow(BaseNode):
     """
     Iterate over rows of a dataframe.
-    iterator, loop, dataframe, sequence, rows
+    iterator, loop, dataframe, sequence, rows, dynamic
 
     Use cases:
     - Process each row of a dataframe individually
     - Trigger actions for every record in a dataset
+    - Route specific columns to dynamic outputs as lists
+
+    When dynamic outputs are defined, each output name that matches a column
+    in the dataframe will receive that column's data as a list. This allows
+    routing specific columns to different downstream nodes.
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
 
     dataframe: DataframeRef = Field(
         default=DataframeRef(), description="The input dataframe."
@@ -596,8 +636,24 @@ class ForEachRow(BaseNode):
 
     async def gen_process(
         self, context: ProcessingContext
-    ) -> AsyncGenerator[OutputType, None]:
+    ) -> AsyncGenerator[dict[str, Any], None]:
         df = await context.dataframe_to_pandas(self.dataframe)
+
+        # Check if we have dynamic outputs defined
+        dynamic_output_names = set(self._dynamic_outputs.keys())
+
+        # If dynamic outputs are defined and match column names, yield column lists
+        if dynamic_output_names:
+            matching_columns = dynamic_output_names.intersection(set(df.columns))
+            if matching_columns:
+                # Build a result dict with each matching column as a list
+                result: dict[str, Any] = {}
+                for col_name in matching_columns:
+                    result[col_name] = df[col_name].tolist()
+                yield result
+                return
+
+        # Default behavior: iterate over rows
         for index, row in df.iterrows():
             yield {"row": row.to_dict(), "index": index}
 
@@ -899,12 +955,11 @@ class SaveCSVDataframeFile(BaseNode):
         result = self.dataframe
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="dataframe"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="dataframe"
+            )
+        )
 
         return result
 
@@ -929,11 +984,13 @@ class FilterNone(BaseNode):
     @classmethod
     def is_streaming_input(cls) -> bool:
         return True
-    
+
     class OutputType(TypedDict):
         output: Any
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         async for handle, item in self.iter_any_input():
             if handle == "value":
                 if item is not None:
