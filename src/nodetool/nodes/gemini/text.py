@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import ClassVar, TypedDict
 
-from nodetool.metadata.types import Provider, Source
+from nodetool.metadata.types import NPArray, Provider, Source
 from nodetool.providers.gemini_provider import GeminiProvider
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
@@ -14,6 +14,11 @@ class GeminiModel(str, Enum):
     GEMINI_2_0_FLASH = "gemini-2.0-flash"
     GEMINI_1_5_PRO = "gemini-1.5-pro"
     GEMINI_1_5_FLASH = "gemini-1.5-flash"
+
+
+class EmbeddingModel(str, Enum):
+    TEXT_EMBEDDING_004 = "text-embedding-004"
+    TEXT_EMBEDDING_005 = "text-embedding-005"
 
 
 class GroundedSearch(BaseNode):
@@ -114,3 +119,58 @@ class GroundedSearch(BaseNode):
             "results": results,
             "sources": sources,
         }
+
+
+class Embedding(BaseNode):
+    """
+    Generate vector representations of text for semantic analysis using Google's Gemini API.
+    embeddings, similarity, search, clustering, classification, gemini
+
+    Uses Google's text embedding models to create dense vector representations of text.
+    These vectors capture semantic meaning, enabling:
+    - Semantic search
+    - Text clustering
+    - Document classification
+    - Recommendation systems
+    - Anomaly detection
+    - Measuring text similarity and diversity
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    input: str = Field(title="Input", default="", description="The text to embed.")
+
+    model: EmbeddingModel = Field(
+        title="Model",
+        default=EmbeddingModel.TEXT_EMBEDDING_004,
+        description="The embedding model to use",
+    )
+
+    async def process(self, context: ProcessingContext) -> NPArray:
+        """
+        Generate embeddings for the input text using Gemini's embedding models.
+
+        Returns:
+            NPArray: The embedding vector representation of the text
+        """
+        import numpy as np
+
+        if not self.input:
+            raise ValueError("Input text is required for embedding generation")
+
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+
+        # Generate embedding using Gemini's embedding API
+        response = await client.models.embed_content(
+            model=self.model.value,
+            contents=self.input,
+        )
+
+        if not response.embeddings or not response.embeddings[0].values:
+            raise ValueError("No embedding generated from the input text")
+
+        # Convert to numpy array
+        embedding_values = response.embeddings[0].values
+        return NPArray.from_numpy(np.array(embedding_values))
