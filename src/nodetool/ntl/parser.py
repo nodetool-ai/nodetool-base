@@ -277,16 +277,15 @@ class NTLLexer:
                 lines = text.rstrip().split("\n")
                 if lines:
                     # Find minimum indentation
-                    min_indent = float("inf")
+                    min_indent = len(lines[0]) if lines[0] else 0
                     for line in lines:
                         if line.strip():
                             indent = len(line) - len(line.lstrip())
                             min_indent = min(min_indent, indent)
-                    if min_indent != float("inf"):
-                        lines = [
-                            line[int(min_indent) :] if len(line) >= min_indent else line
-                            for line in lines
-                        ]
+                    lines = [
+                        line[min_indent:] if len(line) >= min_indent else line
+                        for line in lines
+                    ]
                 return "\n".join(lines)
             result.append(self.advance())
         raise NTLParseError("Unterminated multi-line string", self.line, self.column)
@@ -794,7 +793,7 @@ class NTLParser:
             return items
 
         # Check if it's an uppercase constant reference
-        if first.isupper() and "_" in first or first.isupper():
+        if first.isupper():
             # Could be a constant - check if defined
             if first in self.ast.constants:
                 return self.ast.constants[first]

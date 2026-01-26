@@ -123,10 +123,10 @@ def convert_node(
             data[prop.name] = value
         all_edges.extend(edges)
 
-    # Default UI properties
-    ui_props = {
+    # Default UI properties - use None for position to indicate unset
+    ui_props: dict[str, Any] = {
         "selected": False,
-        "position": {"x": 0, "y": 0},
+        "position": None,  # None indicates position should be auto-generated
         "zIndex": 0,
         "width": 280,
         "selectable": True,
@@ -190,9 +190,9 @@ def layout_nodes(nodes: list[dict]) -> None:
 
     layout_index = 0
     for node in nodes:
-        pos = node["ui_properties"].get("position", {})
-        # Only auto-layout if position is not already set (x=0, y=0 means unset)
-        if pos.get("x", 0) == 0 and pos.get("y", 0) == 0:
+        pos = node["ui_properties"].get("position")
+        # Only auto-layout if position is None (not set via annotation)
+        if pos is None:
             row = layout_index // per_row
             col = layout_index % per_row
             node["ui_properties"]["position"] = {
@@ -284,9 +284,17 @@ def load_workflow_from_ntl(source: str | Path) -> dict:
         else:
             raise FileNotFoundError(f"NTL file not found: {source}")
     elif isinstance(source, str):
-        # First check for NTL syntax indicators (faster and safer than path check)
-        if "\n" in source or "@" in source or "!" in source:
-            # Contains NTL syntax indicators - treat as source
+        # First check for clear NTL syntax patterns (faster and safer than path check)
+        # These patterns are unambiguous NTL syntax that wouldn't appear in file paths
+        has_ntl_syntax = (
+            "\n" in source  # Multi-line content is never a file path
+            or source.startswith("!ntl")  # Version directive
+            or source.startswith("!meta")  # Meta block
+            or source.startswith("@name")  # Legacy metadata
+            or source.startswith("@description")  # Legacy metadata
+            or source.startswith("#")  # Comment at start
+        )
+        if has_ntl_syntax:
             content = source
         elif len(source) > 260:
             # Too long to be a file path, treat as source
