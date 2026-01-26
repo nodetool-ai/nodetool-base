@@ -1700,7 +1700,7 @@ class Embedding(BaseNode):
         if self.model.provider == Provider.OpenAI:
             return await self._process_openai(context, chunks)
         elif self.model.provider == Provider.Gemini:
-            return await self._process_gemini(context)
+            return await self._process_gemini(context, chunks)
         elif self.model.provider == Provider.Mistral:
             return await self._process_mistral(context, chunks)
         else:
@@ -1727,7 +1727,9 @@ class Embedding(BaseNode):
         avg = np.mean(all_embeddings, axis=0)
         return NPArray.from_numpy(avg)
 
-    async def _process_gemini(self, context: ProcessingContext) -> NPArray:
+    async def _process_gemini(
+        self, context: ProcessingContext, chunks: list[str]
+    ) -> NPArray:
         """Process embedding using Gemini provider."""
         import numpy as np
         from nodetool.providers.gemini_provider import GeminiProvider
@@ -1736,17 +1738,22 @@ class Embedding(BaseNode):
         assert isinstance(provider, GeminiProvider)
         client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
 
-        # Generate embedding using Gemini's embedding API
-        response = await client.models.embed_content(
-            model=self.model.id,
-            contents=self.input,
-        )
+        # Generate embeddings for each chunk and average them
+        all_embeddings = []
+        for chunk in chunks:
+            response = await client.models.embed_content(
+                model=self.model.id,
+                contents=chunk,
+            )
 
-        if not response.embeddings or not response.embeddings[0].values:
-            raise ValueError("No embedding generated from the input text")
+            if not response.embeddings or not response.embeddings[0].values:
+                raise ValueError("No embedding generated from the input text")
 
-        embedding_values = response.embeddings[0].values
-        return NPArray.from_numpy(np.array(embedding_values))
+            all_embeddings.append(response.embeddings[0].values)
+
+        # Average all embeddings
+        avg_embedding = np.mean(all_embeddings, axis=0)
+        return NPArray.from_numpy(np.array(avg_embedding))
 
     async def _process_mistral(
         self, context: ProcessingContext, chunks: list[str]
