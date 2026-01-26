@@ -14,6 +14,19 @@ Each entry should follow this format:
 
 ---
 
+## 2026-01-22 - Google Imagen 4 Models
+
+- **Model IDs:**
+  - `google/imagen4`
+  - `google/imagen4-fast`
+  - `google/imagen4-ultra`
+
+- **Category:** `image`
+
+- **Description:** Added support for Google's latest Imagen 4 image generation models. The standard model provides high-quality image generation, the Fast variant offers speed-optimized generation, and the Ultra variant delivers the highest quality output. All variants support text-to-image generation with configurable aspect ratios, negative prompts, and seed control.
+
+---
+
 ## 2026-01-16 - Runway & Luma Video Models
 
 - **Model IDs:**
