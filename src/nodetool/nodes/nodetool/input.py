@@ -394,6 +394,9 @@ class VideoListInput(InputNode):
     def return_type(cls):
         return list[VideoRef]
 
+    async def process(self, context: ProcessingContext) -> list[VideoRef]:
+        return self.value
+
 
 class AudioListInput(InputNode):
     """
@@ -409,6 +412,9 @@ class AudioListInput(InputNode):
     def return_type(cls):
         return list[AudioRef]
 
+    async def process(self, context: ProcessingContext) -> list[AudioRef]:
+        return self.value
+
 
 class TextListInput(InputNode):
     """
@@ -423,6 +429,9 @@ class TextListInput(InputNode):
     @classmethod
     def return_type(cls):
         return list[str]
+
+    async def process(self, context: ProcessingContext) -> list[str]:
+        return self.value
 
 
 class VideoInput(InputNode):
