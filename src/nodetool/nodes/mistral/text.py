@@ -176,7 +176,7 @@ class CodeComplete(BaseNode):
         # Use fill-in-the-middle if suffix is provided
         if self.suffix:
             response = await client.fim.complete_async(
-                model="codestral-latest",
+                model=MistralModel.CODESTRAL.value,
                 prompt=self.prompt,
                 suffix=self.suffix,
                 temperature=self.temperature,
@@ -185,7 +185,7 @@ class CodeComplete(BaseNode):
         else:
             # Use regular chat completion for code generation
             response = await client.chat.complete_async(
-                model="codestral-latest",
+                model=MistralModel.CODESTRAL.value,
                 messages=[{"role": "user", "content": self.prompt}],
                 temperature=self.temperature,
                 max_tokens=self.max_tokens,
