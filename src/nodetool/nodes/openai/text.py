@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import ClassVar
+from typing import ClassVar, TypedDict
 
 from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import NPArray, Provider
@@ -123,3 +123,85 @@ class WebSearch(BaseNode):
     @classmethod
     def get_basic_fields(cls) -> list[str]:
         return ["query"]
+
+
+class ModerationModel(str, Enum):
+    """Available moderation models."""
+
+    OMNI_MODERATION_LATEST = "omni-moderation-latest"
+    OMNI_MODERATION_2024_09_26 = "omni-moderation-2024-09-26"
+    TEXT_MODERATION_LATEST = "text-moderation-latest"
+    TEXT_MODERATION_STABLE = "text-moderation-stable"
+
+
+class Moderation(BaseNode):
+    """
+    Check text content for potential policy violations using OpenAI's moderation API.
+    moderation, safety, content, filter, policy, harmful, toxic
+
+    Uses OpenAI's moderation models to detect potentially harmful content including:
+    - Hate speech
+    - Harassment
+    - Self-harm content
+    - Sexual content
+    - Violence
+    - Graphic violence
+
+    Returns flagged status and category scores for comprehensive content analysis.
+    """
+
+    input: str = Field(
+        default="",
+        description="The text content to check for policy violations.",
+    )
+    model: ModerationModel = Field(
+        default=ModerationModel.OMNI_MODERATION_LATEST,
+        description="The moderation model to use.",
+    )
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    class OutputType(TypedDict):
+        flagged: bool
+        categories: dict[str, bool]
+        category_scores: dict[str, float]
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        """
+        Check content for policy violations.
+
+        Returns:
+            Dict containing flagged status, categories, and category scores.
+        """
+        if not self.input:
+            raise ValueError("Input text cannot be empty")
+
+        response = await context.run_prediction(
+            node_id=self.id,
+            provider=Provider.OpenAI,
+            model=self.model.value,
+            run_prediction_function=run_openai,
+            params={
+                "input": self.input,
+            },
+        )
+
+        # Parse the moderation response
+        if isinstance(response, dict) and "results" in response:
+            result = response["results"][0]
+            return {
+                "flagged": result.get("flagged", False),
+                "categories": result.get("categories", {}),
+                "category_scores": result.get("category_scores", {}),
+            }
+        else:
+            logger.warning("Unexpected moderation response format: %s", type(response))
+            return {
+                "flagged": False,
+                "categories": {},
+                "category_scores": {},
+            }
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["input"]

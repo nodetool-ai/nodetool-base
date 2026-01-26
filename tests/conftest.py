@@ -41,6 +41,7 @@ for module_name in [
     # API SDKs (used conditionally)
     "openai",
     "anthropic",
+    "mistralai",
     "boto3",
     "botocore",
     "botocore.exceptions",

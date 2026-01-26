@@ -62,6 +62,67 @@ import nodetool.nodes.openai.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class Moderation(GraphNode[nodetool.nodes.openai.text.Moderation.OutputType]):
+    """
+
+    Check text content for potential policy violations using OpenAI's moderation API.
+    moderation, safety, content, filter, policy, harmful, toxic
+
+    Uses OpenAI's moderation models to detect potentially harmful content including:
+    - Hate speech
+    - Harassment
+    - Self-harm content
+    - Sexual content
+    - Violence
+    - Graphic violence
+
+    Returns flagged status and category scores for comprehensive content analysis.
+    """
+
+    ModerationModel: typing.ClassVar[type] = nodetool.nodes.openai.text.ModerationModel
+
+    input: str | OutputHandle[str] = connect_field(
+        default="", description="The text content to check for policy violations."
+    )
+    model: nodetool.nodes.openai.text.ModerationModel = Field(
+        default=nodetool.nodes.openai.text.ModerationModel.OMNI_MODERATION_LATEST,
+        description="The moderation model to use.",
+    )
+
+    @property
+    def out(self) -> "ModerationOutputs":
+        return ModerationOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.text.Moderation
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class ModerationOutputs(OutputsProxy):
+    @property
+    def flagged(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self["flagged"])
+
+    @property
+    def categories(self) -> OutputHandle[dict[str, bool]]:
+        return typing.cast(OutputHandle[dict[str, bool]], self["categories"])
+
+    @property
+    def category_scores(self) -> OutputHandle[dict[str, float]]:
+        return typing.cast(OutputHandle[dict[str, float]], self["category_scores"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class WebSearch(SingleOutputGraphNode[str], GraphNode[str]):
     """
 

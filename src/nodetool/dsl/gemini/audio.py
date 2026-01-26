@@ -70,3 +70,55 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.gemini.audio
+from nodetool.workflows.base_node import BaseNode
+
+
+class Transcribe(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Transcribe audio to text using Google's Gemini models.
+    google, transcription, speech-to-text, audio, whisper, ai
+
+    This node converts audio input into text using Google's multimodal Gemini models.
+    Supports various audio formats and provides accurate speech-to-text transcription.
+
+    Use cases:
+    - Convert recorded audio to text
+    - Transcribe podcasts and interviews
+    - Generate subtitles from audio tracks
+    - Create meeting notes from audio recordings
+    - Analyze speech content in audio files
+    """
+
+    TranscriptionModel: typing.ClassVar[type] = (
+        nodetool.nodes.gemini.audio.TranscriptionModel
+    )
+
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The audio file to transcribe.",
+    )
+    model: nodetool.nodes.gemini.audio.TranscriptionModel = Field(
+        default=nodetool.nodes.gemini.audio.TranscriptionModel.GEMINI_2_5_FLASH,
+        description="The Gemini model to use for transcription",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="Transcribe the following audio accurately. Return only the transcription text without any additional commentary.",
+        description="Instructions for the transcription. You can customize this to request specific formatting or focus.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.gemini.audio.Transcribe
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
