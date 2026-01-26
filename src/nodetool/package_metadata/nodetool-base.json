@@ -28870,8 +28870,8 @@
               }
             ]
           },
-          "default": 1.7976931348623157e+308,
-          "title": "Max"
+          "default": 0.0,
+          "title": "B"
         }
       ],
       "outputs": [
@@ -29259,8 +29259,9 @@
           "type": {
             "type": "int"
           },
-          "default": 9007199254740991,
-          "title": "Max"
+          "default": 0,
+          "title": "Num Cols",
+          "description": "The number of columns"
         }
       ],
       "outputs": [
@@ -41367,6 +41368,330 @@
         "tts",
         "embeds"
       ]
+    },
+    {
+      "title": "Image To Text",
+      "description": "Analyze images and generate text descriptions using Mistral AI's Pixtral models.\n    mistral, pixtral, vision, image, ocr, analysis, multimodal\n\n    Uses Mistral AI's Pixtral vision models to understand and describe images.\n    Can perform OCR, image analysis, and answer questions about images.\n    Requires a Mistral API key.\n\n    Use cases:\n    - Extract text from images (OCR)\n    - Describe image contents\n    - Answer questions about images\n    - Analyze charts and diagrams\n    - Document understanding",
+      "namespace": "mistral.vision",
+      "node_type": "mistral.vision.ImageToText",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "The image to analyze"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "Describe this image in detail.",
+          "title": "Prompt",
+          "description": "The prompt/question about the image"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pixtral-large-latest",
+              "pixtral-12b-2409"
+            ],
+            "type_name": "nodetool.nodes.mistral.vision.VisionModel"
+          },
+          "default": "pixtral-large-latest",
+          "title": "Model",
+          "description": "The Pixtral model to use for vision tasks"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.3,
+          "title": "Temperature",
+          "description": "Sampling temperature for response generation",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 1024,
+          "title": "Max Tokens",
+          "description": "Maximum number of tokens to generate",
+          "min": 1.0,
+          "max": 16384.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "prompt"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "OCR",
+      "description": "Extract text from images using Mistral AI's Pixtral models.\n    mistral, pixtral, ocr, text extraction, document, image\n\n    Specialized node for optical character recognition (OCR) using Pixtral.\n    Optimized for extracting text content from documents, screenshots, and images.\n    Requires a Mistral API key.\n\n    Use cases:\n    - Extract text from scanned documents\n    - Read text from screenshots\n    - Digitize printed materials\n    - Extract data from forms and receipts",
+      "namespace": "mistral.vision",
+      "node_type": "mistral.vision.OCR",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "The image to extract text from"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "pixtral-large-latest",
+              "pixtral-12b-2409"
+            ],
+            "type_name": "nodetool.nodes.mistral.vision.VisionModel"
+          },
+          "default": "pixtral-large-latest",
+          "title": "Model",
+          "description": "The Pixtral model to use for OCR"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Embedding",
+      "description": "Generate vector embeddings using Mistral AI.\n    mistral, embeddings, vectors, semantic, similarity, search\n\n    Uses Mistral AI's embedding model to create dense vector representations of text.\n    These vectors capture semantic meaning, enabling:\n    - Semantic search\n    - Text clustering\n    - Document classification\n    - Recommendation systems\n    - Measuring text similarity\n\n    Requires a Mistral API key.",
+      "namespace": "mistral.embeddings",
+      "node_type": "mistral.embeddings.Embedding",
+      "properties": [
+        {
+          "name": "input",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input",
+          "description": "The text to embed"
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "mistral-embed"
+            ],
+            "type_name": "nodetool.nodes.mistral.embeddings.EmbeddingModel"
+          },
+          "default": "mistral-embed",
+          "title": "Model",
+          "description": "The embedding model to use"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Chunk Size",
+          "description": "Size of text chunks for embedding",
+          "min": 1.0,
+          "max": 8192.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "input"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Chat Complete",
+      "description": "Generate text using Mistral AI's chat completion models.\n    mistral, chat, ai, text generation, llm, completion\n\n    Uses Mistral AI's chat models to generate responses from prompts.\n    Requires a Mistral API key.\n\n    Use cases:\n    - Generate text responses to prompts\n    - Build conversational AI applications\n    - Code generation with Codestral\n    - Multi-modal understanding with Pixtral",
+      "namespace": "mistral.text",
+      "node_type": "mistral.text.ChatComplete",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "mistral-large-latest",
+              "mistral-medium-latest",
+              "mistral-small-latest",
+              "pixtral-large-latest",
+              "codestral-latest",
+              "ministral-8b-latest",
+              "ministral-3b-latest"
+            ],
+            "type_name": "nodetool.nodes.mistral.text.MistralModel"
+          },
+          "default": "mistral-small-latest",
+          "title": "Model",
+          "description": "The Mistral model to use for generation"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The prompt for text generation"
+        },
+        {
+          "name": "system_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "System Prompt",
+          "description": "Optional system prompt to guide the model's behavior"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.7,
+          "title": "Temperature",
+          "description": "Sampling temperature. Higher values make output more random.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 1024,
+          "title": "Max Tokens",
+          "description": "Maximum number of tokens to generate",
+          "min": 1.0,
+          "max": 32768.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "model"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Code Complete",
+      "description": "Generate code using Mistral AI's Codestral model.\n    mistral, code, codestral, ai, programming, completion\n\n    Uses Mistral AI's Codestral model specifically designed for code generation.\n    Supports fill-in-the-middle (FIM) for code completion tasks.\n    Requires a Mistral API key.\n\n    Use cases:\n    - Generate code from natural language descriptions\n    - Complete partial code snippets\n    - Fill in code between prefix and suffix\n    - Automated code generation for various programming languages",
+      "namespace": "mistral.text",
+      "node_type": "mistral.text.CodeComplete",
+      "properties": [
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The prompt or code prefix for generation"
+        },
+        {
+          "name": "suffix",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Suffix",
+          "description": "Optional suffix for fill-in-the-middle completion"
+        },
+        {
+          "name": "temperature",
+          "type": {
+            "type": "float"
+          },
+          "default": 0.0,
+          "title": "Temperature",
+          "description": "Sampling temperature. Lower values for code generation.",
+          "min": 0.0,
+          "max": 1.0
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 2048,
+          "title": "Max Tokens",
+          "description": "Maximum number of tokens to generate",
+          "min": 1.0,
+          "max": 32768.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "prompt",
+        "suffix"
+      ],
+      "expose_as_tool": true
     },
     {
       "title": "Realtime Agent",
