@@ -69,6 +69,13 @@ class BraveVideoResult(BaseModel):
     duration: str = ""
 
 
+class BraveImageSearchOutput(TypedDict):
+    """Output type for BraveImageSearch node."""
+
+    results: list[BraveImageResult]
+    images: list[ImageRef]
+
+
 class BraveSearchBase(BaseNode):
     """Base node for Brave Search API requests.
 
@@ -280,11 +287,7 @@ class BraveImageSearch(BraveSearchBase):
 
     _expose_as_tool: ClassVar[bool] = True
 
-    class OutputType(TypedDict):
-        results: list[BraveImageResult]
-        images: list[ImageRef]
-
-    async def process(self, context: ProcessingContext) -> OutputType:
+    async def process(self, context: ProcessingContext) -> BraveImageSearchOutput:
         if not self.query:
             raise ValueError("Query is required for image search")
 
