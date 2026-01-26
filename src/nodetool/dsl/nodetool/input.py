@@ -133,6 +133,41 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class AudioListInput(
+    SingleOutputGraphNode[list[types.AudioRef]], GraphNode[list[types.AudioRef]]
+):
+    """
+
+    Accepts a list of audio references as a parameter for workflows.
+    input, parameter, audio, sound, voice, speech, asset, list
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(
+        default=[], description="The list of audio files to use as input."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.AudioListInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class BooleanInput(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
@@ -424,7 +459,7 @@ class FloatInput(SingleOutputGraphNode[float], GraphNode[float]):
         default="", description="The description of the input for the workflow."
     )
     min: float | OutputHandle[float] = connect_field(default=0, description=None)
-    max: float | OutputHandle[float] = connect_field(default=100, description=None)
+    max: float | OutputHandle[float] = connect_field(default=99999, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -649,7 +684,7 @@ class IntegerInput(SingleOutputGraphNode[int], GraphNode[int]):
         default="", description="The description of the input for the workflow."
     )
     min: int | OutputHandle[int] = connect_field(default=0, description=None)
-    max: int | OutputHandle[int] = connect_field(default=100, description=None)
+    max: int | OutputHandle[int] = connect_field(default=99999, description=None)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1159,6 +1194,39 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class TextListInput(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
+    """
+
+    Accepts a list of text strings as a parameter for workflows.
+    input, parameter, text, string, list
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="The list of text strings to use as input."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.TextListInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class VideoInput(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
@@ -1188,6 +1256,41 @@ class VideoInput(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.input.VideoInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
+class VideoListInput(
+    SingleOutputGraphNode[list[types.VideoRef]], GraphNode[list[types.VideoRef]]
+):
+    """
+
+    Accepts a list of video references as a parameter for workflows.
+    input, parameter, video, movie, clip, visual, asset, list
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: list[types.VideoRef] | OutputHandle[list[types.VideoRef]] = connect_field(
+        default=[], description="The list of videos to use as input."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.VideoListInput
 
     @classmethod
     def get_node_type(cls):

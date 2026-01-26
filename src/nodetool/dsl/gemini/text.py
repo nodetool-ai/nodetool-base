@@ -19,6 +19,48 @@ import nodetool.nodes.gemini.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
+    """
+
+    Generate vector representations of text for semantic analysis using Google's Gemini API.
+    embeddings, similarity, search, clustering, classification, gemini
+
+    Uses Google's text embedding models to create dense vector representations of text.
+    These vectors capture semantic meaning, enabling:
+    - Semantic search
+    - Text clustering
+    - Document classification
+    - Recommendation systems
+    - Anomaly detection
+    - Measuring text similarity and diversity
+    """
+
+    EmbeddingModel: typing.ClassVar[type] = nodetool.nodes.gemini.text.EmbeddingModel
+
+    input: str | OutputHandle[str] = connect_field(
+        default="", description="The text to embed."
+    )
+    model: nodetool.nodes.gemini.text.EmbeddingModel = Field(
+        default=nodetool.nodes.gemini.text.EmbeddingModel.TEXT_EMBEDDING_004,
+        description="The embedding model to use",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.gemini.text.Embedding
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.gemini.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class GroundedSearch(GraphNode[nodetool.nodes.gemini.text.GroundedSearch.OutputType]):
     """
 
