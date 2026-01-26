@@ -40,7 +40,7 @@ class FloatInput(InputNode):
 
     value: float = 0.0
     min: float = 0
-    max: float = 100
+    max: float = 99999
 
     @classmethod
     def return_type(cls):
@@ -74,7 +74,7 @@ class IntegerInput(InputNode):
 
     value: int = 0
     min: int = 0
-    max: int = 100
+    max: int = 99999
 
     @classmethod
     def return_type(cls):
