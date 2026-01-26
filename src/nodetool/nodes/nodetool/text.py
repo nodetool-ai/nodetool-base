@@ -9,7 +9,7 @@ from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ASRModel, FolderRef, AudioRef, Provider
+from nodetool.metadata.types import ASRModel, FolderRef, AudioRef, Provider, EmbeddingModel, NPArray
 from nodetool.workflows.base_node import BaseNode
 import re
 from jsonpath_ng import parse
@@ -1638,3 +1638,142 @@ class FilterRegexString(BaseNode):
 
                 if matched:
                     yield {"output": val}
+
+
+class Embedding(BaseNode):
+    """
+    Generate vector representations of text using any supported embedding provider.
+    Automatically routes to the appropriate backend (OpenAI, Gemini, Mistral).
+    embeddings, similarity, search, clustering, classification, vectors, semantic
+
+    Uses embedding models to create dense vector representations of text.
+    These vectors capture semantic meaning, enabling:
+    - Semantic search
+    - Text clustering
+    - Document classification
+    - Recommendation systems
+    - Anomaly detection
+    - Measuring text similarity and diversity
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: EmbeddingModel = Field(
+        default=EmbeddingModel(
+            provider=Provider.OpenAI,
+            id="text-embedding-3-small",
+            name="Text Embedding 3 Small",
+        ),
+        description="The embedding model to use",
+    )
+    input: str = Field(
+        title="Input",
+        default="",
+        description="The text to embed",
+    )
+    chunk_size: int = Field(
+        default=4096,
+        ge=1,
+        le=8192,
+        description="Size of text chunks for embedding (used when input exceeds model limits)",
+    )
+
+    async def process(self, context: ProcessingContext) -> NPArray:
+        """
+        Generate embeddings for the input text using the specified model.
+
+        Returns:
+            NPArray: The embedding vector representation of the text
+        """
+        if not self.input:
+            raise ValueError("Input text cannot be empty")
+
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Please select an embedding model")
+
+        # Chunk the input into smaller pieces if necessary
+        chunks = [
+            self.input[i : i + self.chunk_size]
+            for i in range(0, len(self.input), self.chunk_size)
+        ]
+
+        if self.model.provider == Provider.OpenAI:
+            return await self._process_openai(context, chunks)
+        elif self.model.provider == Provider.Gemini:
+            return await self._process_gemini(context)
+        elif self.model.provider == Provider.Mistral:
+            return await self._process_mistral(context, chunks)
+        else:
+            raise ValueError(f"Unsupported embedding provider: {self.model.provider}")
+
+    async def _process_openai(
+        self, context: ProcessingContext, chunks: list[str]
+    ) -> NPArray:
+        """Process embedding using OpenAI provider."""
+        import numpy as np
+        from nodetool.providers.openai_prediction import run_openai
+        from openai.types.create_embedding_response import CreateEmbeddingResponse
+
+        response = await context.run_prediction(
+            self.id,
+            provider="openai",
+            params={"input": chunks},
+            model=self.model.id,
+            run_prediction_function=run_openai,
+        )
+
+        res = CreateEmbeddingResponse(**response)
+        all_embeddings = [i.embedding for i in res.data]
+        avg = np.mean(all_embeddings, axis=0)
+        return NPArray.from_numpy(avg)
+
+    async def _process_gemini(self, context: ProcessingContext) -> NPArray:
+        """Process embedding using Gemini provider."""
+        import numpy as np
+        from nodetool.providers.gemini_provider import GeminiProvider
+
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+
+        # Generate embedding using Gemini's embedding API
+        response = await client.models.embed_content(
+            model=self.model.id,
+            contents=self.input,
+        )
+
+        if not response.embeddings or not response.embeddings[0].values:
+            raise ValueError("No embedding generated from the input text")
+
+        embedding_values = response.embeddings[0].values
+        return NPArray.from_numpy(np.array(embedding_values))
+
+    async def _process_mistral(
+        self, context: ProcessingContext, chunks: list[str]
+    ) -> NPArray:
+        """Process embedding using Mistral provider."""
+        import numpy as np
+
+        api_key = await context.get_secret("MISTRAL_API_KEY")
+        if not api_key:
+            raise ValueError("Mistral API key not configured")
+
+        from mistralai import Mistral
+
+        client = Mistral(api_key=api_key)
+
+        response = await client.embeddings.create_async(
+            model=self.model.id,
+            inputs=chunks,
+        )
+
+        if not response or not response.data:
+            raise ValueError("No embeddings received from Mistral API")
+
+        all_embeddings = [item.embedding for item in response.data]
+        avg_embedding = np.mean(all_embeddings, axis=0)
+        return NPArray.from_numpy(avg_embedding)
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["model", "input"]
