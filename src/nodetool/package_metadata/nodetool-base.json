@@ -31186,7 +31186,7 @@
           "type": {
             "type": "float"
           },
-          "default": 1.7976931348623157e+308,
+          "default": 99999,
           "title": "Max"
         }
       ],
@@ -31516,7 +31516,7 @@
           "type": {
             "type": "int"
           },
-          "default": 9007199254740991,
+          "default": 99999,
           "title": "Max"
         }
       ],
