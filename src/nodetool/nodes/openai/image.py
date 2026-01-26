@@ -1,4 +1,3 @@
-import base64
 from io import BytesIO
 from enum import Enum
 from typing import ClassVar
@@ -129,36 +128,36 @@ class EditImage(BaseNode):
     async def process(self, context: ProcessingContext) -> ImageRef:
         import PIL.Image
 
+        from nodetool.metadata.types import ImageModel as ImageModelType
+        from nodetool.providers.openai_provider import OpenAIProvider
+        from nodetool.providers.types import ImageToImageParams
+
         if not self.prompt:
             raise ValueError("Edit prompt cannot be empty")
 
         if not self.image.is_set():
             raise ValueError("Input image is required")
 
-        # Get image bytes and encode to base64
+        provider = await context.get_provider(Provider.OpenAI)
+        assert isinstance(provider, OpenAIProvider)
+
         image_bytes = await context.asset_to_bytes(self.image)
-        image_b64 = base64.b64encode(image_bytes).decode("utf-8")
-
-        params = {
-            "prompt": self.prompt,
-            "image": image_b64,
-            "n": 1,
-            "size": self.size.value,
-            "quality": self.quality.value,
-        }
-
-        # Add mask if provided
-        if self.mask.is_set():
-            mask_bytes = await context.asset_to_bytes(self.mask)
-            params["mask"] = base64.b64encode(mask_bytes).decode("utf-8")
-
-        response = await context.run_prediction(
-            node_id=self._id,
-            provider=Provider.OpenAI,
-            model=self.model.value,
-            run_prediction_function=run_openai,
-            params=params,
+        mask_bytes = (
+            await context.asset_to_bytes(self.mask) if self.mask.is_set() else None
         )
 
-        pil_image = PIL.Image.open(BytesIO(response))
+        params = ImageToImageParams(
+            model=ImageModelType(provider=Provider.OpenAI, id=self.model.value),
+            prompt=self.prompt,
+            target_width=int(self.size.value.split("x")[0]),
+            target_height=int(self.size.value.split("x")[1]),
+        )
+
+        result_bytes = await provider.image_to_image(
+            image=image_bytes,
+            params=params,
+            mask=mask_bytes,
+        )
+
+        pil_image = PIL.Image.open(BytesIO(result_bytes))
         return await context.image_from_pil(pil_image)

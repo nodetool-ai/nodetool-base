@@ -41606,6 +41606,79 @@
       "expose_as_tool": true
     },
     {
+      "title": "Moderation",
+      "description": "Check text content for potential policy violations using OpenAI's moderation API.\n    moderation, safety, content, filter, policy, harmful, toxic\n\n    Uses OpenAI's moderation models to detect potentially harmful content including:\n    - Hate speech\n    - Harassment\n    - Self-harm content\n    - Sexual content\n    - Violence\n    - Graphic violence\n\n    Returns flagged status and category scores for comprehensive content analysis.",
+      "namespace": "openai.text",
+      "node_type": "openai.text.Moderation",
+      "properties": [
+        {
+          "name": "input",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input",
+          "description": "The text content to check for policy violations."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "omni-moderation-latest",
+              "omni-moderation-2024-09-26",
+              "text-moderation-latest",
+              "text-moderation-stable"
+            ],
+            "type_name": "nodetool.nodes.openai.text.ModerationModel"
+          },
+          "default": "omni-moderation-latest",
+          "title": "Model",
+          "description": "The moderation model to use."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "bool"
+          },
+          "name": "flagged"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "bool"
+              }
+            ]
+          },
+          "name": "categories"
+        },
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "float"
+              }
+            ]
+          },
+          "name": "category_scores"
+        }
+      ],
+      "basic_fields": [
+        "input"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Web Search",
       "description": "\ud83d\udd0d OpenAI Web Search - Searches the web using OpenAI's web search capabilities.\n\n    This node uses an OpenAI model equipped with web search functionality\n    (like gpt-4o with search preview) to answer queries based on current web information.\n    Requires an OpenAI API key.",
       "namespace": "openai.text",
@@ -41953,7 +42026,7 @@
             "values": [
               "gpt-image-1"
             ],
-            "type_name": "nodetool.nodes.openai.image.CreateImage.Model"
+            "type_name": "nodetool.nodes.openai.image.ImageModel"
           },
           "default": "gpt-image-1",
           "title": "Model",
@@ -41968,7 +42041,7 @@
               "1536x1024",
               "1024x1536"
             ],
-            "type_name": "nodetool.nodes.openai.image.CreateImage.Size"
+            "type_name": "nodetool.nodes.openai.image.ImageSize"
           },
           "default": "1024x1024",
           "title": "Size",
@@ -41983,7 +42056,7 @@
               "opaque",
               "auto"
             ],
-            "type_name": "nodetool.nodes.openai.image.CreateImage.Background"
+            "type_name": "nodetool.nodes.openai.image.ImageBackground"
           },
           "default": "auto",
           "title": "Background",
@@ -41998,7 +42071,7 @@
               "medium",
               "low"
             ],
-            "type_name": "nodetool.nodes.openai.image.CreateImage.Quality"
+            "type_name": "nodetool.nodes.openai.image.ImageQuality"
           },
           "default": "high",
           "title": "Quality",
@@ -42018,6 +42091,113 @@
         "model",
         "size",
         "background",
+        "quality"
+      ],
+      "expose_as_tool": true
+    },
+    {
+      "title": "Edit Image",
+      "description": "Edit images using OpenAI's gpt-image-1 model.\n    image, edit, modify, transform, inpaint, outpaint, variation\n\n    Takes an input image and a text prompt to generate a modified version.\n    Can be used for inpainting, outpainting, style transfer, and image modification.\n    Optionally accepts a mask to specify which areas to edit.",
+      "namespace": "openai.image",
+      "node_type": "openai.image.EditImage",
+      "properties": [
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "The image to edit."
+        },
+        {
+          "name": "mask",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Mask",
+          "description": "Optional mask image. White areas will be edited, black areas preserved."
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "The prompt describing the desired edit."
+        },
+        {
+          "name": "model",
+          "type": {
+            "type": "enum",
+            "values": [
+              "gpt-image-1"
+            ],
+            "type_name": "nodetool.nodes.openai.image.ImageModel"
+          },
+          "default": "gpt-image-1",
+          "title": "Model",
+          "description": "The model to use for image editing."
+        },
+        {
+          "name": "size",
+          "type": {
+            "type": "enum",
+            "values": [
+              "1024x1024",
+              "1536x1024",
+              "1024x1536"
+            ],
+            "type_name": "nodetool.nodes.openai.image.ImageSize"
+          },
+          "default": "1024x1024",
+          "title": "Size",
+          "description": "The size of the output image."
+        },
+        {
+          "name": "quality",
+          "type": {
+            "type": "enum",
+            "values": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "type_name": "nodetool.nodes.openai.image.ImageQuality"
+          },
+          "default": "high",
+          "title": "Quality",
+          "description": "The quality of the generated image."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "image",
+        "mask",
+        "prompt",
+        "model",
+        "size",
         "quality"
       ],
       "expose_as_tool": true
