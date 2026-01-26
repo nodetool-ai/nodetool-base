@@ -1,0 +1,46 @@
+!ntl 2.0
+
+# Image Enhancement Workflow (v2 syntax)
+# Demonstrates the new NTL v2 features
+
+!meta
+  name: "Image Enhance v2"
+  description: """
+    Improve image quality with basic enhancement tools
+    like sharpening, contrast and color adjustment.
+  """
+  version: "2.0.0"
+  author: "NodeTool"
+  tags: [image, enhancement, start]
+
+# Constants for configuration
+!const DEFAULT_CUTOFF = 108
+!const SHARPEN_STRENGTH = 1.5
+
+# Input - Load the source image
+image_input: nodetool.input.ImageInput
+  !position: {x: 50, y: 50}
+  name: "image"
+  description: "Source image to enhance"
+  value: {
+    type: "image"
+    uri: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/Blurry_photo.jpg/1600px-Blurry_photo.jpg"
+  }
+
+# Apply sharpening filter to enhance edges and details
+sharpen: lib.pillow.enhance.Sharpen
+  !position: {x: 360, y: 50}
+  image: @image_input.output
+
+# Automatically adjust contrast for optimal visibility
+contrast: lib.pillow.enhance.AutoContrast
+  !position: {x: 670, y: 50}
+  image: @sharpen.output
+  cutoff: int(DEFAULT_CUTOFF)
+
+# Output - Save the enhanced result
+output: nodetool.output.Output
+  !position: {x: 980, y: 50}
+  name: "enhanced"
+  description: "Enhanced image output"
+  value: @contrast.output

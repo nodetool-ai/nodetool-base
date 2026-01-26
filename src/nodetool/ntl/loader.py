@@ -14,9 +14,11 @@ from typing import Any
 
 from nodetool.ntl.parser import (
     NTLAST,
+    NTLConstRef,
     NTLEdge,
     NTLNode,
     NTLReference,
+    NTLTypeCast,
     parse_ntl,
 )
 
@@ -26,7 +28,37 @@ def generate_uuid() -> str:
     return str(uuid.uuid4())
 
 
-def convert_value(value: Any, node_id: str, prop_name: str) -> tuple[Any, list[dict]]:
+def resolve_constants(value: Any, constants: dict[str, Any]) -> Any:
+    """Resolve constant references in a value."""
+    if isinstance(value, NTLConstRef):
+        if value.name in constants:
+            return constants[value.name]
+        # Return the name as-is if not found (may be resolved later)
+        return value.name
+    elif isinstance(value, NTLTypeCast):
+        # Apply type cast
+        inner = resolve_constants(value.value, constants)
+        if value.type_name == "int":
+            return int(inner)
+        elif value.type_name == "float":
+            return float(inner)
+        elif value.type_name == "string" or value.type_name == "str":
+            return str(inner)
+        elif value.type_name == "bool":
+            return bool(inner)
+        else:
+            return inner
+    elif isinstance(value, dict):
+        return {k: resolve_constants(v, constants) for k, v in value.items()}
+    elif isinstance(value, list):
+        return [resolve_constants(v, constants) for v in value]
+    else:
+        return value
+
+
+def convert_value(
+    value: Any, node_id: str, prop_name: str, constants: dict[str, Any] | None = None
+) -> tuple[Any, list[dict]]:
     """
     Convert a parsed value to workflow format.
 
@@ -34,6 +66,10 @@ def convert_value(value: Any, node_id: str, prop_name: str) -> tuple[Any, list[d
         Tuple of (converted_value, list_of_edges_to_add)
     """
     edges = []
+    constants = constants or {}
+
+    # First resolve constants and type casts
+    value = resolve_constants(value, constants)
 
     if isinstance(value, NTLReference):
         # This creates an implicit edge
@@ -52,7 +88,7 @@ def convert_value(value: Any, node_id: str, prop_name: str) -> tuple[Any, list[d
         # Recursively convert dict values
         converted = {}
         for k, v in value.items():
-            conv_v, sub_edges = convert_value(v, node_id, prop_name)
+            conv_v, sub_edges = convert_value(v, node_id, prop_name, constants)
             converted[k] = conv_v
             edges.extend(sub_edges)
         return converted, edges
@@ -60,7 +96,7 @@ def convert_value(value: Any, node_id: str, prop_name: str) -> tuple[Any, list[d
         # Recursively convert list items
         converted = []
         for item in value:
-            conv_item, sub_edges = convert_value(item, node_id, prop_name)
+            conv_item, sub_edges = convert_value(item, node_id, prop_name, constants)
             converted.append(conv_item)
             edges.extend(sub_edges)
         return converted, edges
@@ -68,34 +104,57 @@ def convert_value(value: Any, node_id: str, prop_name: str) -> tuple[Any, list[d
         return value, edges
 
 
-def convert_node(node: NTLNode) -> tuple[dict, list[dict]]:
+def convert_node(
+    node: NTLNode, constants: dict[str, Any] | None = None
+) -> tuple[dict, list[dict]]:
     """
     Convert an NTL node to workflow node format.
 
     Returns:
         Tuple of (node_dict, list_of_edges)
     """
+    constants = constants or {}
     all_edges = []
     data = {}
 
     for prop in node.properties:
-        value, edges = convert_value(prop.value, node.id, prop.name)
+        value, edges = convert_value(prop.value, node.id, prop.name, constants)
         if value is not None:
             data[prop.name] = value
         all_edges.extend(edges)
+
+    # Default UI properties
+    ui_props = {
+        "selected": False,
+        "position": {"x": 0, "y": 0},
+        "zIndex": 0,
+        "width": 280,
+        "selectable": True,
+    }
+
+    # Apply annotations to UI properties
+    for ann in node.annotations:
+        if ann.name == "position":
+            if isinstance(ann.value, dict):
+                ui_props["position"] = ann.value
+        elif ann.name == "width":
+            ui_props["width"] = ann.value
+        elif ann.name == "height":
+            ui_props["height"] = ann.value
+        elif ann.name == "collapsed":
+            ui_props["collapsed"] = ann.value
+        elif ann.name == "color":
+            ui_props["color"] = ann.value
+        elif ann.name == "ui":
+            if isinstance(ann.value, dict):
+                ui_props.update(ann.value)
 
     node_dict = {
         "id": node.id,
         "parent_id": None,
         "type": node.type,
         "data": data,
-        "ui_properties": {
-            "selected": False,
-            "position": {"x": 0, "y": 0},
-            "zIndex": 0,
-            "width": 280,
-            "selectable": True,
-        },
+        "ui_properties": ui_props,
         "dynamic_properties": {},
         "dynamic_outputs": {},
         "sync_mode": "on_any",
@@ -121,6 +180,7 @@ def layout_nodes(nodes: list[dict]) -> None:
     Apply automatic layout to nodes.
 
     Positions nodes in a simple left-to-right flow based on order.
+    Skips nodes that already have positions set (e.g., via annotations).
     """
     x = 50
     y = 50
@@ -128,13 +188,18 @@ def layout_nodes(nodes: list[dict]) -> None:
     spacing_y = 200
     per_row = 4
 
-    for i, node in enumerate(nodes):
-        row = i // per_row
-        col = i % per_row
-        node["ui_properties"]["position"] = {
-            "x": x + col * spacing_x,
-            "y": y + row * spacing_y,
-        }
+    layout_index = 0
+    for node in nodes:
+        pos = node["ui_properties"].get("position", {})
+        # Only auto-layout if position is not already set (x=0, y=0 means unset)
+        if pos.get("x", 0) == 0 and pos.get("y", 0) == 0:
+            row = layout_index // per_row
+            col = layout_index % per_row
+            node["ui_properties"]["position"] = {
+                "x": x + col * spacing_x,
+                "y": y + row * spacing_y,
+            }
+            layout_index += 1
 
 
 def ast_to_workflow(ast: NTLAST) -> dict:
@@ -149,10 +214,11 @@ def ast_to_workflow(ast: NTLAST) -> dict:
     """
     nodes = []
     edges = []
+    constants = ast.constants
 
     # Convert all nodes
     for ntl_node in ast.nodes:
-        node_dict, node_edges = convert_node(ntl_node)
+        node_dict, node_edges = convert_node(ntl_node, constants)
         nodes.append(node_dict)
         edges.extend(node_edges)
 
@@ -160,7 +226,7 @@ def ast_to_workflow(ast: NTLAST) -> dict:
     for ntl_edge in ast.edges:
         edges.append(convert_edge(ntl_edge))
 
-    # Apply layout
+    # Apply layout (only if positions not set by annotations)
     layout_nodes(nodes)
 
     # Build workflow
@@ -218,19 +284,28 @@ def load_workflow_from_ntl(source: str | Path) -> dict:
         else:
             raise FileNotFoundError(f"NTL file not found: {source}")
     elif isinstance(source, str):
-        # Check if it's a file path (exists on disk) first
-        path = Path(source)
-        if path.exists() and path.is_file():
-            content = path.read_text(encoding="utf-8")
-        elif "\n" in source or "@" in source or ":" in source:
+        # First check for NTL syntax indicators (faster and safer than path check)
+        if "\n" in source or "@" in source or "!" in source:
             # Contains NTL syntax indicators - treat as source
             content = source
-        elif source.endswith(".ntl"):
-            # Looks like a file path but doesn't exist
-            raise FileNotFoundError(f"NTL file not found: {source}")
-        else:
-            # Treat as source (could be minimal NTL like just metadata)
+        elif len(source) > 260:
+            # Too long to be a file path, treat as source
             content = source
+        else:
+            # Try to check if it's a file path
+            try:
+                path = Path(source)
+                if path.exists() and path.is_file():
+                    content = path.read_text(encoding="utf-8")
+                elif source.endswith(".ntl"):
+                    # Looks like a file path but doesn't exist
+                    raise FileNotFoundError(f"NTL file not found: {source}")
+                else:
+                    # Treat as source (could be minimal NTL like just metadata)
+                    content = source
+            except OSError:
+                # Path operations failed, treat as source
+                content = source
     else:
         content = str(source)
 

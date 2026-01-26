@@ -8,17 +8,61 @@
 - **Elegant**: Clean syntax with minimal punctuation
 - **Token-efficient**: Compact representation for LLM context windows
 - **Expressive**: Support all workflow features (nodes, edges, metadata)
+- **Extensible**: Directive system for future features
+- **Versioned**: Explicit format versioning for compatibility
+
+## NTL Version 2.0
+
+NTL v2 introduces several improvements over v1:
+- `!` directive system for metadata, constants, and annotations
+- Consistent `:` syntax for all key-value pairs
+- Multi-line strings with triple quotes
+- Explicit type casts
+- Constants and annotations support
 
 ## Syntax Overview
 
-### Workflow Metadata
+### Version Declaration
 
-Workflow metadata is defined at the top of the file using key-value pairs prefixed with `@`:
+Start files with a version declaration:
+
+```ntl
+!ntl 2.0
+```
+
+### Metadata Block
+
+Structured metadata using `!meta`:
+
+```ntl
+!meta
+  name: "Image Enhancement Pipeline"
+  description: """
+    Multi-line description
+    with proper string handling
+  """
+  version: "1.0.0"
+  author: "Your Name"
+  tags: [image, enhancement, start]
+```
+
+### Legacy Metadata (v1 Compatible)
+
+Simple metadata using `@` prefix:
 
 ```ntl
 @name "Image Enhancement Pipeline"
 @description "Enhance images with sharpening and contrast"
 @tags image, enhancement, start
+```
+
+### Constants
+
+Define reusable constants:
+
+```ntl
+!const DEFAULT_CUTOFF = 108
+!const SHARPEN_AMOUNT = 1.5
 ```
 
 ### Node Declarations
@@ -27,8 +71,8 @@ Nodes are declared using their ID, type, and optional properties:
 
 ```ntl
 node_id: NodeType
-  property1 = value
-  property2 = "string value"
+  property1: value
+  property2: "string value"
 ```
 
 **Node Types** use dot notation matching the nodetool namespace:
@@ -37,12 +81,25 @@ node_id: NodeType
 - `nodetool.output.Output`
 
 **Properties** support multiple value types:
-- Strings: `"hello world"`
+- Strings: `"hello world"` or `"""multi-line"""`
 - Numbers: `42`, `3.14`, `-10`
 - Booleans: `true`, `false`
 - References (connections): `@other_node.output`
 - Objects: `{type: "image", uri: "https://..."}`
 - Lists: `[1, 2, 3]` or `["a", "b", "c"]`
+- Type casts: `int(108)`, `float(0.5)`, `string("hello")`
+- Constants: `DEFAULT_CUTOFF`
+
+### Annotations
+
+Add UI hints and metadata to nodes:
+
+```ntl
+sharpen: lib.pillow.enhance.Sharpen
+  !position: {x: 100, y: 100}
+  !collapsed: false
+  image: @image_input.output
+```
 
 ### Connections/Edges
 
@@ -56,7 +113,15 @@ Or inline in property assignments using `@` reference:
 
 ```ntl
 sharpen: lib.pillow.enhance.Sharpen
-  image = @image_input.output
+  image: @image_input.output
+```
+
+Or in an `!edges` block:
+
+```ntl
+!edges
+  image_input.output -> sharpen.image
+  sharpen.output -> output.value
 ```
 
 ### Comments
@@ -77,7 +142,47 @@ Multi-line comments use `/* ... */`:
 */
 ```
 
-## Complete Example
+## Complete Example (v2)
+
+```ntl
+!ntl 2.0
+
+!meta
+  name: "Image Enhance"
+  description: "Improve image quality with basic enhancement tools"
+  version: "1.0.0"
+  tags: [image, start]
+
+# Constants for configuration
+!const DEFAULT_CUTOFF = 108
+
+# Input node
+image_input: nodetool.input.ImageInput
+  !position: {x: 50, y: 50}
+  name: "image"
+  value: {
+    type: "image"
+    uri: "https://example.com/image.jpg"
+  }
+
+# Processing nodes
+sharpen: lib.pillow.enhance.Sharpen
+  !position: {x: 360, y: 50}
+  image: @image_input.output
+
+contrast: lib.pillow.enhance.AutoContrast
+  !position: {x: 670, y: 50}
+  image: @sharpen.output
+  cutoff: int(DEFAULT_CUTOFF)
+
+# Output node  
+output: nodetool.output.Output
+  !position: {x: 980, y: 50}
+  name: "enhanced"
+  value: @contrast.output
+```
+
+## Complete Example (v1 Compatible)
 
 ```ntl
 # Image Enhancement Workflow
@@ -110,25 +215,45 @@ output: nodetool.output.Output
 ## Grammar (EBNF)
 
 ```ebnf
-workflow     = { metadata | node_def | edge_def | comment } ;
-metadata     = '@' identifier string_value ;
-node_def     = identifier ':' node_type [ properties ] ;
-properties   = { newline indent property } ;
-property     = identifier '=' value ;
+workflow     = { directive | metadata | node_def | edge_def | comment } ;
+
+(* Directives *)
+directive    = '!' identifier [ directive_body ] ;
+directive_body = value | indent { property } dedent ;
+
+(* Metadata *)
+metadata     = '@' identifier value ;
+
+(* Nodes *)
+node_def     = identifier ':' node_type [ properties_block ] ;
+properties_block = indent { property | annotation } dedent ;
+property     = identifier ('=' | ':') value ;
+annotation   = '!' identifier ':' value ;
+
+(* Edges *)
 edge_def     = node_ref '->' node_ref ;
 node_ref     = identifier '.' identifier ;
-value        = string | number | boolean | reference | object | list ;
+
+(* Values *)
+value        = string | multiline_string | number | boolean | 
+               reference | object | list | type_cast | identifier ;
 reference    = '@' node_ref ;
+type_cast    = identifier '(' value ')' ;
 object       = '{' [ object_pairs ] '}' ;
 object_pairs = object_pair { ',' object_pair } ;
 object_pair  = identifier ':' value ;
 list         = '[' [ list_items ] ']' ;
 list_items   = value { ',' value } ;
+
+(* Literals *)
 string       = '"' { character } '"' ;
+multiline_string = '"""' { character } '"""' ;
 number       = [ '-' ] digit { digit } [ '.' digit { digit } ] ;
 boolean      = 'true' | 'false' ;
+
+(* Other *)
 comment      = '#' { character } newline | '/*' { character } '*/' ;
-identifier   = letter { letter | digit | '_' } ;
+identifier   = letter { letter | digit | '_' | '-' } ;
 node_type    = identifier { '.' identifier } ;
 ```
 
@@ -144,13 +269,26 @@ from nodetool.ntl import load_workflow_from_ntl, parse_ntl
 # Load workflow from file
 workflow = load_workflow_from_ntl("my_workflow.ntl")
 
-# Parse NTL string
+# Parse NTL string (v2)
+ntl_source = '''
+!ntl 2.0
+
+!meta
+  name: "Test Workflow"
+  tags: [demo]
+
+node1: nodetool.input.StringInput
+  value: "hello"
+'''
+workflow = load_workflow_from_ntl(ntl_source)
+
+# Parse NTL string (v1 legacy)
 ntl_source = '''
 @name "Test"
 node1: nodetool.input.StringInput
   value = "hello"
 '''
-ast = parse_ntl(ntl_source)
+workflow = load_workflow_from_ntl(ntl_source)
 ```
 
 ## Comparison with JSON
@@ -175,19 +313,29 @@ NTL is significantly more compact than JSON workflow format:
 }
 ```
 
-**NTL** (~12 lines):
+**NTL v2** (~15 lines):
 ```ntl
-@name "Image Enhance"
+!ntl 2.0
+
+!meta
+  name: "Image Enhance"
 
 input: nodetool.input.ImageInput
-  name = "image"
+  name: "image"
 
 sharpen: lib.pillow.enhance.Sharpen
-  image = @input.output
+  image: @input.output
 
 output: nodetool.output.Output
-  name = "enhanced"
-  value = @sharpen.output
+  name: "enhanced"
+  value: @sharpen.output
 ```
 
-~70% reduction in tokens while maintaining full expressiveness.
+~65% reduction in tokens while maintaining full expressiveness.
+
+## Version Compatibility
+
+- **v2.0 parsers** support both v1 and v2 syntax
+- **v1 syntax** uses `@` for metadata and `=` for properties
+- **v2 syntax** uses `!` directives and `:` for all key-value pairs
+- Files without `!ntl` version declaration are treated as v1

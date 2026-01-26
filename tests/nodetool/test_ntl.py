@@ -389,3 +389,160 @@ c: test.Node
             workflow = load_workflow_from_ntl(source)
             assert "name" in workflow
             assert "graph" in workflow
+
+
+class TestNTLv2:
+    """Tests for NTL v2 features."""
+
+    def test_version_directive(self):
+        """Test !ntl version directive."""
+        source = """
+!ntl 2.0
+
+node1: test.Node
+"""
+        ast = parse_ntl(source)
+        assert ast.version == "2.0"
+
+    def test_meta_block(self):
+        """Test !meta block with structured metadata."""
+        source = """
+!ntl 2.0
+
+!meta
+  name: "Test Workflow"
+  description: "A test workflow"
+  version: "1.0.0"
+  author: "Test Author"
+  tags: [test, demo]
+"""
+        ast = parse_ntl(source)
+        assert ast.metadata.name == "Test Workflow"
+        assert ast.metadata.description == "A test workflow"
+        assert ast.metadata.version == "1.0.0"
+        assert ast.metadata.author == "Test Author"
+        assert ast.metadata.tags == ["test", "demo"]
+
+    def test_constants(self):
+        """Test !const directive."""
+        source = """
+!ntl 2.0
+!const MY_VALUE = 42
+!const MY_STRING = "hello"
+
+node1: test.Node
+  value: MY_VALUE
+"""
+        ast = parse_ntl(source)
+        assert "MY_VALUE" in ast.constants
+        assert ast.constants["MY_VALUE"] == 42
+        assert ast.constants["MY_STRING"] == "hello"
+
+    def test_colon_property_syntax(self):
+        """Test v2 colon syntax for properties."""
+        source = """
+!ntl 2.0
+
+node1: test.Node
+  name: "test"
+  value: 42
+"""
+        ast = parse_ntl(source)
+        props = {p.name: p.value for p in ast.nodes[0].properties}
+        assert props["name"] == "test"
+        assert props["value"] == 42
+
+    def test_multiline_strings(self):
+        """Test triple-quoted multiline strings."""
+        source = '''
+!ntl 2.0
+!meta
+  description: """
+    This is a
+    multiline description
+  """
+'''
+        ast = parse_ntl(source)
+        assert "multiline" in ast.metadata.description
+
+    def test_annotations(self):
+        """Test ! annotations on nodes."""
+        source = """
+!ntl 2.0
+
+node1: test.Node
+  !position: {x: 100, y: 200}
+  !collapsed: true
+  value: 42
+"""
+        ast = parse_ntl(source)
+        assert len(ast.nodes[0].annotations) == 2
+        ann_names = [a.name for a in ast.nodes[0].annotations]
+        assert "position" in ann_names
+        assert "collapsed" in ann_names
+
+    def test_annotation_position_preserved(self):
+        """Test that position annotations are applied to workflow."""
+        source = """
+!ntl 2.0
+
+node1: test.Node
+  !position: {x: 100, y: 200}
+"""
+        workflow = load_workflow_from_ntl(source)
+        node = workflow["graph"]["nodes"][0]
+        assert node["ui_properties"]["position"]["x"] == 100
+        assert node["ui_properties"]["position"]["y"] == 200
+
+    def test_type_cast(self):
+        """Test explicit type casts."""
+        source = """
+!ntl 2.0
+!const BASE_VALUE = 10
+
+node1: test.Node
+  int_val: int(42)
+  float_val: float(3.14)
+"""
+        workflow = load_workflow_from_ntl(source)
+        data = workflow["graph"]["nodes"][0]["data"]
+        assert data["int_val"] == 42
+        assert isinstance(data["int_val"], int)
+        assert data["float_val"] == 3.14
+        assert isinstance(data["float_val"], float)
+
+    def test_v1_backward_compatibility(self):
+        """Test that v1 syntax still works."""
+        source = """
+@name "Legacy Workflow"
+@tags test, legacy
+
+node1: test.Node
+  name = "test"
+  value = 42
+
+node2: test.Output
+  input = @node1.output
+"""
+        workflow = load_workflow_from_ntl(source)
+        assert workflow["name"] == "Legacy Workflow"
+        assert workflow["tags"] == ["test", "legacy"]
+        assert len(workflow["graph"]["nodes"]) == 2
+        assert len(workflow["graph"]["edges"]) == 1
+
+    def test_mixed_v1_v2_syntax(self):
+        """Test mixing v1 and v2 syntax (for gradual migration)."""
+        source = """
+!ntl 2.0
+
+@name "Mixed Workflow"
+
+node1: test.Node
+  name = "old style"
+  
+node2: test.Node
+  name: "new style"
+"""
+        workflow = load_workflow_from_ntl(source)
+        assert workflow["name"] == "Mixed Workflow"
+        assert len(workflow["graph"]["nodes"]) == 2

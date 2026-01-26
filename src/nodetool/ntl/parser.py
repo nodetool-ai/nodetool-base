@@ -3,6 +3,14 @@ NTL Parser - Parses NTL (NodeTool Language) workflow files.
 
 This module provides a lexer and parser for the NTL syntax, producing
 an Abstract Syntax Tree (AST) that can be converted to a workflow.
+
+NTL v2 supports:
+- Version directive: !ntl 2.0
+- Structured metadata: !meta block
+- Constants: !const NAME = value
+- Consistent syntax: colons for all key-value pairs
+- Multi-line strings: triple quotes
+- Annotations: !directive for tooling hints
 """
 
 from __future__ import annotations
@@ -11,18 +19,23 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Any
 
+# NTL format version
+NTL_VERSION = "2.0"
+
 
 class TokenType(Enum):
     """Token types for the NTL lexer."""
 
     # Literals
     STRING = auto()
+    MULTILINE_STRING = auto()
     NUMBER = auto()
     BOOLEAN = auto()
     IDENTIFIER = auto()
 
     # Keywords/Symbols
     AT = auto()  # @
+    BANG = auto()  # !
     COLON = auto()  # :
     EQUALS = auto()  # =
     DOT = auto()  # .
@@ -32,6 +45,8 @@ class TokenType(Enum):
     RBRACE = auto()  # }
     LBRACKET = auto()  # [
     RBRACKET = auto()  # ]
+    LPAREN = auto()  # (
+    RPAREN = auto()  # )
     NEWLINE = auto()
     INDENT = auto()
     DEDENT = auto()
@@ -50,12 +65,33 @@ class Token:
 
 @dataclass
 class NTLMetadata:
-    """Workflow metadata from @key value declarations."""
+    """Workflow metadata from !meta block or @key value declarations."""
 
     name: str | None = None
     description: str | None = None
     tags: list[str] = field(default_factory=list)
+    version: str | None = None
+    author: str | None = None
+    schema: str | None = None
     extra: dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class NTLConstant:
+    """A constant definition (!const NAME = value)."""
+
+    name: str
+    value: Any
+    line: int
+
+
+@dataclass
+class NTLAnnotation:
+    """An annotation for a node (!directive: value)."""
+
+    name: str
+    value: Any
+    line: int
 
 
 @dataclass
@@ -65,6 +101,7 @@ class NTLProperty:
     name: str
     value: Any
     line: int
+    annotations: list[NTLAnnotation] = field(default_factory=list)
 
 
 @dataclass
@@ -74,6 +111,7 @@ class NTLNode:
     id: str
     type: str
     properties: list[NTLProperty] = field(default_factory=list)
+    annotations: list[NTLAnnotation] = field(default_factory=list)
     line: int = 0
 
 
@@ -97,10 +135,27 @@ class NTLReference:
 
 
 @dataclass
+class NTLTypeCast:
+    """An explicit type cast (e.g., int(108), float(0.5))."""
+
+    type_name: str
+    value: Any
+
+
+@dataclass
+class NTLConstRef:
+    """A reference to a constant (e.g., DEFAULT_CUTOFF)."""
+
+    name: str
+
+
+@dataclass
 class NTLAST:
     """The complete Abstract Syntax Tree for an NTL file."""
 
+    version: str | None = None
     metadata: NTLMetadata = field(default_factory=NTLMetadata)
+    constants: dict[str, Any] = field(default_factory=dict)
     nodes: list[NTLNode] = field(default_factory=list)
     edges: list[NTLEdge] = field(default_factory=list)
 
@@ -169,9 +224,14 @@ class NTLLexer:
             self.advance()
         raise NTLParseError("Unterminated block comment", self.line, self.column)
 
-    def read_string(self) -> str:
-        """Read a quoted string."""
-        quote = self.advance()  # skip opening quote
+    def read_string(self) -> tuple[str, bool]:
+        """Read a quoted string. Returns (string_value, is_multiline)."""
+        quote = self.peek()
+        # Check for multi-line string (triple quotes)
+        if self.peek(1) == quote and self.peek(2) == quote:
+            return self.read_multiline_string(), True
+
+        self.advance()  # skip opening quote
         result = []
         while self.peek() and self.peek() != quote:
             if self.peek() == "\\":
@@ -194,7 +254,42 @@ class NTLLexer:
         if not self.peek():
             raise NTLParseError("Unterminated string", self.line, self.column)
         self.advance()  # skip closing quote
-        return "".join(result)
+        return "".join(result), False
+
+    def read_multiline_string(self) -> str:
+        """Read a triple-quoted multi-line string."""
+        quote = self.advance()  # first quote
+        self.advance()  # second quote
+        self.advance()  # third quote
+
+        result = []
+        while self.pos < len(self.source):
+            if self.peek() == quote and self.peek(1) == quote and self.peek(2) == quote:
+                self.advance()
+                self.advance()
+                self.advance()
+                # Strip leading/trailing whitespace from multiline strings
+                text = "".join(result)
+                # Remove leading newline if present
+                if text.startswith("\n"):
+                    text = text[1:]
+                # Remove trailing whitespace and dedent
+                lines = text.rstrip().split("\n")
+                if lines:
+                    # Find minimum indentation
+                    min_indent = float("inf")
+                    for line in lines:
+                        if line.strip():
+                            indent = len(line) - len(line.lstrip())
+                            min_indent = min(min_indent, indent)
+                    if min_indent != float("inf"):
+                        lines = [
+                            line[int(min_indent) :] if len(line) >= min_indent else line
+                            for line in lines
+                        ]
+                return "\n".join(lines)
+            result.append(self.advance())
+        raise NTLParseError("Unterminated multi-line string", self.line, self.column)
 
     def read_number(self) -> int | float:
         """Read a number (integer or float)."""
@@ -283,14 +378,20 @@ class NTLLexer:
             elif char == "/" and self.peek(1) == "*":
                 self.skip_block_comment()
             elif char in "\"'":
-                value = self.read_string()
-                self.add_token(TokenType.STRING, value)
+                value, is_multiline = self.read_string()
+                token_type = (
+                    TokenType.MULTILINE_STRING if is_multiline else TokenType.STRING
+                )
+                self.add_token(token_type, value)
             elif char.isdigit() or (char == "-" and self.peek(1).isdigit()):
                 value = self.read_number()
                 self.add_token(TokenType.NUMBER, value)
             elif char == "@":
                 self.advance()
                 self.add_token(TokenType.AT)
+            elif char == "!":
+                self.advance()
+                self.add_token(TokenType.BANG)
             elif char == ":":
                 self.advance()
                 self.add_token(TokenType.COLON)
@@ -319,6 +420,12 @@ class NTLLexer:
             elif char == "]":
                 self.advance()
                 self.add_token(TokenType.RBRACKET)
+            elif char == "(":
+                self.advance()
+                self.add_token(TokenType.LPAREN)
+            elif char == ")":
+                self.advance()
+                self.add_token(TokenType.RPAREN)
             elif char.isalpha() or char == "_":
                 value = self.read_identifier()
                 if value in ("true", "false"):
@@ -391,8 +498,12 @@ class NTLParser:
         self.skip_newlines()
 
         while self.peek().type != TokenType.EOF:
-            if self.peek().type == TokenType.AT:
-                self.parse_metadata()
+            if self.peek().type == TokenType.BANG:
+                # Directive: !ntl, !meta, !const, !edges, etc.
+                self.parse_directive()
+            elif self.peek().type == TokenType.AT:
+                # Legacy v1 metadata: @name, @description, @tags
+                self.parse_legacy_metadata()
             elif self.peek().type == TokenType.IDENTIFIER:
                 # Could be node definition or edge definition
                 # Look ahead to determine
@@ -402,12 +513,114 @@ class NTLParser:
                     self.parse_node()
             elif self.peek().type == TokenType.NEWLINE:
                 self.advance()
+            elif self.peek().type in (TokenType.INDENT, TokenType.DEDENT):
+                # Skip stray indent/dedent at top level
+                self.advance()
             else:
                 raise NTLParseError(
                     f"Unexpected token: {self.peek().type.name}",
                     self.peek().line,
                     self.peek().column,
                 )
+
+        return self.ast
+
+    def parse_directive(self) -> None:
+        """Parse a ! directive like !ntl, !meta, !const."""
+        self.expect(TokenType.BANG)
+        directive = self.expect(TokenType.IDENTIFIER).value
+
+        if directive == "ntl":
+            # Version declaration: !ntl 2.0
+            version = self.parse_value()
+            self.ast.version = str(version)
+        elif directive == "meta":
+            # Structured metadata block
+            self.parse_meta_block()
+        elif directive == "const":
+            # Constant definition: !const NAME = value
+            self.parse_const()
+        elif directive == "edges":
+            # Explicit edges block (optional)
+            self.parse_edges_block()
+        else:
+            # Unknown directive - store in metadata extra
+            if self.peek().type == TokenType.COLON:
+                self.advance()
+            value = self.parse_value()
+            self.ast.metadata.extra[f"!{directive}"] = value
+
+        self.skip_newlines()
+
+    def parse_meta_block(self) -> None:
+        """Parse a !meta block with structured metadata."""
+        self.skip_newlines()
+
+        if self.peek().type == TokenType.INDENT:
+            self.advance()
+            while self.peek().type not in (TokenType.DEDENT, TokenType.EOF):
+                if self.peek().type == TokenType.NEWLINE:
+                    self.advance()
+                    continue
+                if self.peek().type == TokenType.IDENTIFIER:
+                    key = self.expect(TokenType.IDENTIFIER).value
+                    self.expect(TokenType.COLON)
+                    value = self.parse_value()
+
+                    if key == "name":
+                        self.ast.metadata.name = value
+                    elif key == "description":
+                        self.ast.metadata.description = value
+                    elif key == "version":
+                        self.ast.metadata.version = str(value)
+                    elif key == "author":
+                        self.ast.metadata.author = value
+                    elif key == "schema":
+                        self.ast.metadata.schema = value
+                    elif key == "tags":
+                        if isinstance(value, list):
+                            self.ast.metadata.tags = value
+                        elif isinstance(value, str):
+                            self.ast.metadata.tags = [
+                                t.strip() for t in value.split(",")
+                            ]
+                        else:
+                            self.ast.metadata.tags = [value]
+                    else:
+                        self.ast.metadata.extra[key] = value
+
+                    self.skip_newlines()
+                else:
+                    break
+            if self.peek().type == TokenType.DEDENT:
+                self.advance()
+
+    def parse_const(self) -> None:
+        """Parse a constant definition: !const NAME = value."""
+        name = self.expect(TokenType.IDENTIFIER).value
+        self.expect(TokenType.EQUALS)
+        value = self.parse_value()
+        self.ast.constants[name] = value
+
+    def parse_edges_block(self) -> None:
+        """Parse an !edges block with explicit edge definitions."""
+        self.skip_newlines()
+
+        if self.peek().type == TokenType.INDENT:
+            self.advance()
+            while self.peek().type not in (TokenType.DEDENT, TokenType.EOF):
+                if self.peek().type == TokenType.NEWLINE:
+                    self.advance()
+                    continue
+                if self.peek().type == TokenType.IDENTIFIER:
+                    if self.is_edge_definition():
+                        self.parse_edge()
+                    else:
+                        break
+                else:
+                    break
+            if self.peek().type == TokenType.DEDENT:
+                self.advance()
 
         return self.ast
 
@@ -428,8 +641,8 @@ class NTLParser:
             return False
         return True
 
-    def parse_metadata(self) -> None:
-        """Parse @key value metadata."""
+    def parse_legacy_metadata(self) -> None:
+        """Parse @key value metadata (v1 legacy syntax)."""
         self.expect(TokenType.AT)
         key = self.expect(TokenType.IDENTIFIER).value
         value = self.parse_value()
@@ -464,10 +677,12 @@ class NTLParser:
 
         self.skip_newlines()
 
-        # Parse properties if indented block follows
+        # Parse properties and annotations if indented block follows
         if self.peek().type == TokenType.INDENT:
             self.advance()
-            node.properties = self.parse_properties()
+            props, annotations = self.parse_properties_and_annotations()
+            node.properties = props
+            node.annotations = annotations
             if self.peek().type == TokenType.DEDENT:
                 self.advance()
 
@@ -482,29 +697,55 @@ class NTLParser:
             parts.append(self.expect(TokenType.IDENTIFIER).value)
         return ".".join(parts)
 
-    def parse_properties(self) -> list[NTLProperty]:
-        """Parse property assignments in an indented block."""
+    def parse_properties_and_annotations(
+        self,
+    ) -> tuple[list[NTLProperty], list[NTLAnnotation]]:
+        """Parse property assignments and annotations in an indented block."""
         properties = []
+        annotations = []
         while self.peek().type not in (TokenType.DEDENT, TokenType.EOF):
             if self.peek().type == TokenType.NEWLINE:
                 self.advance()
                 continue
-            if self.peek().type == TokenType.IDENTIFIER:
+            if self.peek().type == TokenType.BANG:
+                # Annotation: !directive: value
+                self.advance()
+                ann_name = self.expect(TokenType.IDENTIFIER).value
+                self.expect(TokenType.COLON)
+                ann_value = self.parse_value()
+                annotations.append(
+                    NTLAnnotation(name=ann_name, value=ann_value, line=self.peek().line)
+                )
+                self.skip_newlines()
+            elif self.peek().type == TokenType.IDENTIFIER:
                 line = self.peek().line
                 name = self.expect(TokenType.IDENTIFIER).value
-                self.expect(TokenType.EQUALS)
+                # Support both = and : for property assignment
+                if self.peek().type == TokenType.EQUALS:
+                    self.advance()
+                elif self.peek().type == TokenType.COLON:
+                    self.advance()
+                else:
+                    raise NTLParseError(
+                        f"Expected '=' or ':', got {self.peek().type.name}",
+                        self.peek().line,
+                        self.peek().column,
+                    )
                 value = self.parse_value()
                 properties.append(NTLProperty(name=name, value=value, line=line))
                 self.skip_newlines()
             else:
                 break
-        return properties
+        return properties, annotations
 
     def parse_value(self) -> Any:
-        """Parse a value (string, number, boolean, reference, object, list)."""
+        """Parse a value (string, number, boolean, reference, object, list, type cast, constant ref)."""
         token = self.peek()
 
         if token.type == TokenType.STRING:
+            self.advance()
+            return token.value
+        elif token.type == TokenType.MULTILINE_STRING:
             self.advance()
             return token.value
         elif token.type == TokenType.NUMBER:
@@ -520,9 +761,12 @@ class NTLParser:
         elif token.type == TokenType.LBRACKET:
             return self.parse_list()
         elif token.type == TokenType.IDENTIFIER:
-            # Could be an unquoted identifier used as value (e.g., enum values)
-            # or comma-separated tags
-            return self.parse_identifier_or_tags()
+            # Could be:
+            # - Type cast: int(42), float(0.5), string("hello")
+            # - Constant reference: MY_CONSTANT
+            # - Unquoted identifier/enum value
+            # - Comma-separated tags
+            return self.parse_identifier_or_special()
         else:
             raise NTLParseError(
                 f"Expected value, got {token.type.name}",
@@ -530,16 +774,33 @@ class NTLParser:
                 token.column,
             )
 
-    def parse_identifier_or_tags(self) -> str | list[str]:
-        """Parse an identifier or comma-separated list of identifiers."""
+    def parse_identifier_or_special(self) -> Any:
+        """Parse an identifier, type cast, constant ref, or comma-separated list."""
         first = self.expect(TokenType.IDENTIFIER).value
+
+        # Check for type cast: int(value), float(value), string(value)
+        if self.peek().type == TokenType.LPAREN:
+            self.advance()  # skip (
+            inner_value = self.parse_value()
+            self.expect(TokenType.RPAREN)
+            return NTLTypeCast(type_name=first, value=inner_value)
+
+        # Check for comma-separated list (e.g., for tags)
         if self.peek().type == TokenType.COMMA:
-            # It's a list of identifiers (e.g., for tags)
             items = [first]
             while self.peek().type == TokenType.COMMA:
                 self.advance()
                 items.append(self.expect(TokenType.IDENTIFIER).value)
             return items
+
+        # Check if it's an uppercase constant reference
+        if first.isupper() and "_" in first or first.isupper():
+            # Could be a constant - check if defined
+            if first in self.ast.constants:
+                return self.ast.constants[first]
+            # Return as constant reference for later resolution
+            return NTLConstRef(name=first)
+
         return first
 
     def parse_reference(self) -> NTLReference:
@@ -590,7 +851,8 @@ class NTLParser:
             ):
                 self.advance()
                 continue
-            items.append(self.parse_value())
+            # Parse single value (don't consume comma-separated identifiers as list)
+            items.append(self.parse_single_value())
             self.skip_whitespace_tokens()
             if self.peek().type == TokenType.COMMA:
                 self.advance()
@@ -598,6 +860,50 @@ class NTLParser:
 
         self.expect(TokenType.RBRACKET)
         return items
+
+    def parse_single_value(self) -> Any:
+        """Parse a single value without consuming comma-separated lists."""
+        token = self.peek()
+
+        if token.type == TokenType.STRING:
+            self.advance()
+            return token.value
+        elif token.type == TokenType.MULTILINE_STRING:
+            self.advance()
+            return token.value
+        elif token.type == TokenType.NUMBER:
+            self.advance()
+            return token.value
+        elif token.type == TokenType.BOOLEAN:
+            self.advance()
+            return token.value
+        elif token.type == TokenType.AT:
+            return self.parse_reference()
+        elif token.type == TokenType.LBRACE:
+            return self.parse_object()
+        elif token.type == TokenType.LBRACKET:
+            return self.parse_list()
+        elif token.type == TokenType.IDENTIFIER:
+            # Parse identifier but don't consume comma-separated lists
+            first = self.expect(TokenType.IDENTIFIER).value
+            # Check for type cast
+            if self.peek().type == TokenType.LPAREN:
+                self.advance()
+                inner_value = self.parse_value()
+                self.expect(TokenType.RPAREN)
+                return NTLTypeCast(type_name=first, value=inner_value)
+            # Check if it's an uppercase constant reference
+            if first.isupper():
+                if first in self.ast.constants:
+                    return self.ast.constants[first]
+                return NTLConstRef(name=first)
+            return first
+        else:
+            raise NTLParseError(
+                f"Expected value, got {token.type.name}",
+                token.line,
+                token.column,
+            )
 
     def parse_edge(self) -> None:
         """Parse an edge definition like source.handle -> target.handle."""
