@@ -11,8 +11,12 @@ from nodetool.nodes.nodetool.input import (
     IntegerInput,
     StringInput,
     ImageInput,
+    ImageListInput,
     VideoInput,
+    VideoListInput,
     AudioInput,
+    AudioListInput,
+    TextListInput,
 )
 
 
@@ -111,8 +115,12 @@ async def test_input_nodes(
         IntegerInput,
         StringInput,
         ImageInput,
+        ImageListInput,
         VideoInput,
+        VideoListInput,
         AudioInput,
+        AudioListInput,
+        TextListInput,
     ],
 )
 async def test_input_node_json_schema(node_class):

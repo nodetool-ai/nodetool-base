@@ -168,6 +168,73 @@ class ImageList(Constant):
         return self.value
 
 
+class VideoList(Constant):
+    """Represents a list of video file constants in the workflow.
+    videos, movies, clips, collection
+
+    Use cases:
+    - Provide a fixed list of videos for batch processing
+    - Reference multiple video files in the workflow
+    - Set default video list for testing or demonstration purposes
+    """
+
+    _expose_as_tool = True
+
+    value: list[VideoRef] = Field(
+        default_factory=list,
+        description="List of video references",
+    )
+
+    async def process(self, context: ProcessingContext) -> list[VideoRef]:
+        for video in self.value:
+            await context.refresh_uri(video)
+        return self.value
+
+
+class AudioList(Constant):
+    """Represents a list of audio file constants in the workflow.
+    audios, sounds, audio files, collection
+
+    Use cases:
+    - Provide a fixed list of audio files for batch processing
+    - Reference multiple audio files in the workflow
+    - Set default audio list for testing or demonstration purposes
+    """
+
+    _expose_as_tool = True
+
+    value: list[AudioRef] = Field(
+        default_factory=list,
+        description="List of audio references",
+    )
+
+    async def process(self, context: ProcessingContext) -> list[AudioRef]:
+        for audio in self.value:
+            await context.refresh_uri(audio)
+        return self.value
+
+
+class TextList(Constant):
+    """Represents a list of text strings in the workflow.
+    texts, strings, text collection
+
+    Use cases:
+    - Provide a fixed list of text strings for batch processing
+    - Reference multiple text values in the workflow
+    - Set default text list for testing or demonstration purposes
+    """
+
+    _expose_as_tool = True
+
+    value: list[str] = Field(
+        default_factory=list,
+        description="List of text strings",
+    )
+
+    async def process(self, context: ProcessingContext) -> list[str]:
+        return self.value
+
+
 class Integer(Constant):
     """Represents an integer constant in the workflow.
     number, integer, whole

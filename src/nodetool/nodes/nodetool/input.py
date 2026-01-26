@@ -380,6 +380,51 @@ class ImageListInput(InputNode):
         return list[ImageRef]
 
 
+class VideoListInput(InputNode):
+    """
+    Accepts a list of video references as a parameter for workflows.
+    input, parameter, video, movie, clip, visual, asset, list
+    """
+
+    value: list[VideoRef] = Field(
+        default=[], description="The list of videos to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[VideoRef]
+
+
+class AudioListInput(InputNode):
+    """
+    Accepts a list of audio references as a parameter for workflows.
+    input, parameter, audio, sound, voice, speech, asset, list
+    """
+
+    value: list[AudioRef] = Field(
+        default=[], description="The list of audio files to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[AudioRef]
+
+
+class TextListInput(InputNode):
+    """
+    Accepts a list of text strings as a parameter for workflows.
+    input, parameter, text, string, list
+    """
+
+    value: list[str] = Field(
+        default=[], description="The list of text strings to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[str]
+
+
 class VideoInput(InputNode):
     """
     Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
