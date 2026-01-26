@@ -26,36 +26,93 @@ class CreateImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
     image, t2i, tti, text-to-image, create, generate, picture, photo, art, drawing, illustration
     """
 
-    Model: typing.ClassVar[type] = nodetool.nodes.openai.image.CreateImage.Model
-    Size: typing.ClassVar[type] = nodetool.nodes.openai.image.CreateImage.Size
-    Background: typing.ClassVar[type] = (
-        nodetool.nodes.openai.image.CreateImage.Background
-    )
-    Quality: typing.ClassVar[type] = nodetool.nodes.openai.image.CreateImage.Quality
+    ImageModel: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageModel
+    ImageSize: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageSize
+    ImageBackground: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageBackground
+    ImageQuality: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageQuality
 
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The prompt to use."
     )
-    model: nodetool.nodes.openai.image.CreateImage.Model = Field(
-        default=nodetool.nodes.openai.image.CreateImage.Model.GPT_IMAGE_1,
+    model: nodetool.nodes.openai.image.ImageModel = Field(
+        default=nodetool.nodes.openai.image.ImageModel.GPT_IMAGE_1,
         description="The model to use for image generation.",
     )
-    size: nodetool.nodes.openai.image.CreateImage.Size = Field(
-        default=nodetool.nodes.openai.image.CreateImage.Size._1024x1024,
+    size: nodetool.nodes.openai.image.ImageSize = Field(
+        default=nodetool.nodes.openai.image.ImageSize._1024x1024,
         description="The size of the image to generate.",
     )
-    background: nodetool.nodes.openai.image.CreateImage.Background = Field(
-        default=nodetool.nodes.openai.image.CreateImage.Background.auto,
+    background: nodetool.nodes.openai.image.ImageBackground = Field(
+        default=nodetool.nodes.openai.image.ImageBackground.auto,
         description="The background of the image to generate.",
     )
-    quality: nodetool.nodes.openai.image.CreateImage.Quality = Field(
-        default=nodetool.nodes.openai.image.CreateImage.Quality.high,
+    quality: nodetool.nodes.openai.image.ImageQuality = Field(
+        default=nodetool.nodes.openai.image.ImageQuality.high,
         description="The quality of the image to generate.",
     )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.openai.image.CreateImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.openai.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class EditImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+    """
+
+    Edit images using OpenAI's gpt-image-1 model.
+    image, edit, modify, transform, inpaint, outpaint, variation
+
+    Takes an input image and a text prompt to generate a modified version.
+    Can be used for inpainting, outpainting, style transfer, and image modification.
+    Optionally accepts a mask to specify which areas to edit.
+    """
+
+    ImageModel: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageModel
+    ImageSize: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageSize
+    ImageQuality: typing.ClassVar[type] = nodetool.nodes.openai.image.ImageQuality
+
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The image to edit.",
+    )
+    mask: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Optional mask image. White areas will be edited, black areas preserved.",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The prompt describing the desired edit."
+    )
+    model: nodetool.nodes.openai.image.ImageModel = Field(
+        default=nodetool.nodes.openai.image.ImageModel.GPT_IMAGE_1,
+        description="The model to use for image editing.",
+    )
+    size: nodetool.nodes.openai.image.ImageSize = Field(
+        default=nodetool.nodes.openai.image.ImageSize._1024x1024,
+        description="The size of the output image.",
+    )
+    quality: nodetool.nodes.openai.image.ImageQuality = Field(
+        default=nodetool.nodes.openai.image.ImageQuality.high,
+        description="The quality of the generated image.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.openai.image.EditImage
 
     @classmethod
     def get_node_type(cls):
