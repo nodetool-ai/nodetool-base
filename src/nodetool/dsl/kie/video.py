@@ -35,6 +35,9 @@ class GrokImagineImageToVideo(
         nodetool.nodes.kie.video.GrokImagineImageToVideo.Duration
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the animation.",
@@ -85,6 +88,9 @@ class GrokImagineTextToVideo(
         nodetool.nodes.kie.video.GrokImagineTextToVideo.Duration
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -133,6 +139,9 @@ class HailuoImageToVideoPro(
         nodetool.nodes.kie.video.HailuoImageToVideoPro.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(
             type="image", uri="", asset_id=None, data=None, metadata=None
@@ -187,6 +196,9 @@ class HailuoImageToVideoStandard(
         nodetool.nodes.kie.video.HailuoImageToVideoStandard.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(
             type="image", uri="", asset_id=None, data=None, metadata=None
@@ -241,6 +253,9 @@ class HailuoTextToVideoPro(
         nodetool.nodes.kie.video.HailuoTextToVideoPro.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -286,6 +301,9 @@ class HailuoTextToVideoStandard(
         nodetool.nodes.kie.video.HailuoTextToVideoStandard.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -322,6 +340,9 @@ class InfinitalkV1(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
 
     Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.InfinitalkV1.Resolution
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text guide for the video generation.",
@@ -375,6 +396,9 @@ class Kling25TurboImageToVideo(
         nodetool.nodes.kie.video.Kling25TurboImageToVideo.Duration
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Text description to guide the video generation.",
@@ -438,6 +462,9 @@ class Kling25TurboTextToVideo(
         nodetool.nodes.kie.video.Kling25TurboTextToVideo.AspectRatio
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -488,6 +515,9 @@ class KlingAIAvatarPro(
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarPro.Mode
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(
             type="image", uri="", asset_id=None, data=None, metadata=None
@@ -539,6 +569,9 @@ class KlingAIAvatarStandard(
 
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingAIAvatarStandard.Mode
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(
             type="image", uri="", asset_id=None, data=None, metadata=None
@@ -588,6 +621,9 @@ class KlingImageToVideo(
         and temporal consistency while preserving the original visual style.
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="Optional text prompt to guide the video generation.",
@@ -651,6 +687,9 @@ class KlingMotionControl(
     )
     Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.KlingMotionControl.Mode
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="The cartoon character is dancing.",
         description="A text description of the desired output. Maximum 2500 characters.",
@@ -719,6 +758,9 @@ class KlingTextToVideo(
         nodetool.nodes.kie.video.KlingTextToVideo.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -770,6 +812,9 @@ class LumaModifyVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Vid
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.LumaModifyVideo.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video",
@@ -829,6 +874,9 @@ class RunwayAlephVideo(
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.RunwayAlephVideo.Duration
     Quality: typing.ClassVar[type] = nodetool.nodes.kie.video.RunwayAlephVideo.Quality
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -888,6 +936,9 @@ class RunwayGen3AlphaExtendVideo(
         nodetool.nodes.kie.video.RunwayGen3AlphaExtendVideo.Quality
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     video_url: str | OutputHandle[str] = connect_field(
         default="", description="The source video URL to extend."
     )
@@ -947,6 +998,9 @@ class RunwayGen3AlphaImageToVideo(
         nodetool.nodes.kie.video.RunwayGen3AlphaImageToVideo.Quality
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
         default=types.ImageRef(
             type="image", uri="", asset_id=None, data=None, metadata=None
@@ -1012,6 +1066,9 @@ class RunwayGen3AlphaTextToVideo(
         nodetool.nodes.kie.video.RunwayGen3AlphaTextToVideo.Quality
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -1070,6 +1127,9 @@ class SeedanceBaseNode(
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
         description="The aspect ratio of the generated video.",
@@ -1117,6 +1177,9 @@ class SeedanceV1LiteImageToVideo(
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
         description="The aspect ratio of the generated video.",
@@ -1191,6 +1254,9 @@ class SeedanceV1LiteTextToVideo(
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
         description="The aspect ratio of the generated video.",
@@ -1242,6 +1308,9 @@ class SeedanceV1ProFastImageToVideo(
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
         description="The aspect ratio of the generated video.",
@@ -1307,6 +1376,9 @@ class SeedanceV1ProImageToVideo(
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
         description="The aspect ratio of the generated video.",
@@ -1376,6 +1448,9 @@ class SeedanceV1ProTextToVideo(
     )
     Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.SeedanceBaseNode.Duration
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.SeedanceBaseNode.AspectRatio.V16_9,
         description="The aspect ratio of the generated video.",
@@ -1422,6 +1497,9 @@ class Sora2BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
     )
     Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
         description="The aspect ratio of the generated video.",
@@ -1467,6 +1545,9 @@ class Sora2ProImageToVideo(
     )
     Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
         description="The aspect ratio of the generated video.",
@@ -1522,6 +1603,9 @@ class Sora2ProStoryboard(
     )
     Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
         description="The aspect ratio of the generated video.",
@@ -1589,6 +1673,9 @@ class Sora2ProTextToVideo(
     )
     Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
         description="The aspect ratio of the generated video.",
@@ -1638,6 +1725,9 @@ class Sora2TextToVideo(
     )
     Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     aspect_ratio: nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio = Field(
         default=nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio.LANDSCAPE,
         description="The aspect ratio of the generated video.",
@@ -1681,6 +1771,9 @@ class TopazVideoUpscale(
         nodetool.nodes.kie.video.TopazVideoUpscale.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
         default=types.VideoRef(
             type="video",
@@ -1732,6 +1825,9 @@ class Veo31BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
         nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
         description="The model to use for video generation.",
@@ -1777,6 +1873,9 @@ class Veo31ImageToVideo(
         nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
         description="The model to use for video generation.",
@@ -1838,6 +1937,9 @@ class Veo31ReferenceToVideo(
         nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
         description="The model to use for video generation.",
@@ -1905,6 +2007,9 @@ class Veo31TextToVideo(
         nodetool.nodes.kie.video.Veo31BaseNode.AspectRatio
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     model: nodetool.nodes.kie.video.Veo31BaseNode.Model = Field(
         default=nodetool.nodes.kie.video.Veo31BaseNode.Model.VEO3_FAST,
         description="The model to use for video generation.",
@@ -1951,6 +2056,9 @@ class Wan26ImageToVideo(
         nodetool.nodes.kie.video.Wan26ImageToVideo.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -2015,6 +2123,9 @@ class Wan26TextToVideo(
         nodetool.nodes.kie.video.Wan26TextToVideo.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",
@@ -2063,6 +2174,9 @@ class Wan26VideoToVideo(
         nodetool.nodes.kie.video.Wan26VideoToVideo.Resolution
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the changes.",
@@ -2150,6 +2264,9 @@ class WanMultiShotTextToVideoPro(
         nodetool.nodes.kie.video.WanMultiShotTextToVideoPro.Duration
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
         description="The text prompt describing the video.",

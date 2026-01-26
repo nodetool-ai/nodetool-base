@@ -240,7 +240,7 @@ class Concat(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     Concatenates two text inputs into a single output.
-    text, concatenation, combine, +
+    text, combine, add, +, concatenate, merge, join, append
     """
 
     a: str | OutputHandle[str] = connect_field(default="", description=None)
@@ -810,7 +810,7 @@ class Join(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
     Joins a list of strings into a single string using a specified separator.
-    text, join, combine, +, add, concatenate
+    text, join, combine, +, add, concatenate, merge
     """
 
     strings: list[Any] | OutputHandle[list[Any]] = connect_field(

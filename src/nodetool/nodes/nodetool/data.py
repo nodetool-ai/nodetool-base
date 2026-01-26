@@ -574,6 +574,34 @@ class DropNA(BaseNode):
         return await context.dataframe_from_pandas(res)
 
 
+class ForEachRow(BaseNode):
+    """
+    Iterate over rows of a dataframe.
+    iterator, loop, dataframe, sequence, rows
+
+    Use cases:
+    - Process each row of a dataframe individually
+    - Trigger actions for every record in a dataset
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    dataframe: DataframeRef = Field(
+        default=DataframeRef(), description="The input dataframe."
+    )
+
+    class OutputType(TypedDict):
+        row: dict
+        index: Any
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
+        df = await context.dataframe_to_pandas(self.dataframe)
+        for index, row in df.iterrows():
+            yield {"row": row.to_dict(), "index": index}
+
+
 class LoadCSVAssets(BaseNode):
     """
     Load dataframes from an asset folder.

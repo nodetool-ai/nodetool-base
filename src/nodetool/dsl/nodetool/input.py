@@ -19,6 +19,46 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class ASRModelInput(SingleOutputGraphNode[types.ASRModel], GraphNode[types.ASRModel]):
+    """
+
+    Accepts an automatic speech recognition model as a parameter for workflows.
+    input, parameter, model, asr, transcription, speech
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
+        default=types.ASRModel(
+            type="asr_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+            path=None,
+        ),
+        description="The speech recognition model to use as input.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.ASRModelInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class AssetFolderInput(
     SingleOutputGraphNode[types.FolderRef], GraphNode[types.FolderRef]
 ):
@@ -294,6 +334,48 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class EmbeddingModelInput(
+    SingleOutputGraphNode[types.EmbeddingModel], GraphNode[types.EmbeddingModel]
+):
+    """
+
+    Accepts an embedding model as a parameter for workflows.
+    input, parameter, model, embedding, vector
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(
+        default=types.EmbeddingModel(
+            type="embedding_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+            dimensions=0,
+        ),
+        description="The embedding model to use as input.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.EmbeddingModelInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class FilePathInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
@@ -461,6 +543,41 @@ class ImageInput(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.input.ImageInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
+class ImageListInput(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
+    """
+
+    Accepts a list of image references as a parameter for workflows.
+    input, parameter, image, picture, graphic, visual, asset, list
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="The list of images to use as input."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.ImageListInput
 
     @classmethod
     def get_node_type(cls):
@@ -874,6 +991,53 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class SelectInput(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+
+    Accepts a selection from a predefined set of options as a parameter for workflows.
+    input, parameter, select, enum, dropdown, choice, options
+
+    Use cases:
+    - Let users choose from a fixed set of values in app mode
+    - Configure enum-like options for downstream nodes
+    - Provide dropdown selection for workflow parameters
+
+    The output is a string that can be connected to enum-typed inputs.
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: str | OutputHandle[str] = connect_field(
+        default="", description="The currently selected value."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+    options: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="The list of available options to choose from."
+    )
+    enum_type_name: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The enum type name this select corresponds to (for type matching).",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.SelectInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
     """
 
@@ -892,6 +1056,9 @@ class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
         default="", description="The parameter name for the workflow."
     )
     value: str | OutputHandle[str] = connect_field(default="", description=None)
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
     max_length: int | OutputHandle[int] = connect_field(
         default=0,
         description="Maximum number of characters allowed. Use 0 for unlimited.",
@@ -899,9 +1066,6 @@ class StringInput(SingleOutputGraphNode[str], GraphNode[str]):
     line_mode: str | OutputHandle[str] = connect_field(
         default="single_line",
         description="Controls whether the UI should render the input as single-line or multiline.",
-    )
-    description: str | OutputHandle[str] = connect_field(
-        default="", description="The description of the input for the workflow."
     )
 
     @classmethod
@@ -953,6 +1117,48 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class TTSModelInput(SingleOutputGraphNode[types.TTSModel], GraphNode[types.TTSModel]):
+    """
+
+    Accepts a text-to-speech model as a parameter for workflows.
+    input, parameter, model, tts, speech, voice
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(
+        default=types.TTSModel(
+            type="tts_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+            path=None,
+            voices=[],
+            selected_voice="",
+        ),
+        description="The text-to-speech model to use as input.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.TTSModelInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class VideoInput(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
 
@@ -982,6 +1188,49 @@ class VideoInput(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.input.VideoInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
+class VideoModelInput(
+    SingleOutputGraphNode[types.VideoModel], GraphNode[types.VideoModel]
+):
+    """
+
+    Accepts a video generation model as a parameter for workflows.
+    input, parameter, model, video, generation
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
+        default=types.VideoModel(
+            type="video_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+            path=None,
+            supported_tasks=[],
+        ),
+        description="The video generation model to use as input.",
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.VideoModelInput
 
     @classmethod
     def get_node_type(cls):

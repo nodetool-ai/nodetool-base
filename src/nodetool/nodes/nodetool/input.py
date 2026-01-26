@@ -365,6 +365,21 @@ class ImageInput(InputNode):
         return self.value
 
 
+class ImageListInput(InputNode):
+    """
+    Accepts a list of image references as a parameter for workflows.
+    input, parameter, image, picture, graphic, visual, asset, list
+    """
+
+    value: list[ImageRef] = Field(
+        default=[], description="The list of images to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[ImageRef]
+
+
 class VideoInput(InputNode):
     """
     Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.

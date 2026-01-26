@@ -491,6 +491,59 @@ import nodetool.nodes.nodetool.data
 from nodetool.workflows.base_node import BaseNode
 
 
+class ForEachRow(GraphNode[nodetool.nodes.nodetool.data.ForEachRow.OutputType]):
+    """
+
+    Iterate over rows of a dataframe.
+    iterator, loop, dataframe, sequence, rows
+
+    Use cases:
+    - Process each row of a dataframe individually
+    - Trigger actions for every record in a dataset
+    """
+
+    dataframe: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
+        default=types.DataframeRef(
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
+        ),
+        description="The input dataframe.",
+    )
+
+    @property
+    def out(self) -> "ForEachRowOutputs":
+        return ForEachRowOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.data.ForEachRow
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class ForEachRowOutputs(OutputsProxy):
+    @property
+    def row(self) -> OutputHandle[dict]:
+        return typing.cast(OutputHandle[dict], self["row"])
+
+    @property
+    def index(self) -> OutputHandle[Any]:
+        return typing.cast(OutputHandle[Any], self["index"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.data
+from nodetool.workflows.base_node import BaseNode
+
+
 class FromList(
     SingleOutputGraphNode[types.DataframeRef], GraphNode[types.DataframeRef]
 ):

@@ -145,6 +145,29 @@ class Image(Constant):
         return self.value
 
 
+class ImageList(Constant):
+    """Represents a list of image file constants in the workflow.
+    pictures, photos, images, collection
+
+    Use cases:
+    - Provide a fixed list of images for batch processing
+    - Reference multiple image files in the workflow
+    - Set default image list for testing or demonstration purposes
+    """
+
+    _expose_as_tool = True
+
+    value: list[ImageRef] = Field(
+        default_factory=list,
+        description="List of image references",
+    )
+
+    async def process(self, context: ProcessingContext) -> list[ImageRef]:
+        for img in self.value:
+            await context.refresh_uri(img)
+        return self.value
+
+
 class Integer(Constant):
     """Represents an integer constant in the workflow.
     number, integer, whole
@@ -296,7 +319,6 @@ class Model3D(Constant):
                 if ext:
                     self.value.format = ext.lower().lstrip(".")
 
-
         return self.value
 
 
@@ -306,15 +328,9 @@ class Date(BaseNode):
     date, make, create
     """
 
-    year: int = Field(
-        default=1900, description="Year of the date", ge=1, le=9999
-    )
-    month: int = Field(
-        default=1, description="Month of the date", ge=1, le=12
-    )
-    day: int = Field(
-        default=1, description="Day of the date", ge=1, le=31
-    )
+    year: int = Field(default=1900, description="Year of the date", ge=1, le=9999)
+    month: int = Field(default=1, description="Month of the date", ge=1, le=12)
+    day: int = Field(default=1, description="Day of the date", ge=1, le=31)
 
     async def process(self, context: ProcessingContext) -> DateType:
         return DateType.from_date(date(self.year, self.month, self.day))  # type: ignore
@@ -326,24 +342,12 @@ class DateTime(Constant):
     datetime, make, create
     """
 
-    year: int = Field(
-        default=1900, description="Year of the datetime", ge=1, le=9999
-    )
-    month: int = Field(
-        default=1, description="Month of the datetime", ge=1, le=12
-    )
-    day: int = Field(
-        default=1, description="Day of the datetime", ge=1, le=31
-    )
-    hour: int = Field(
-        default=0, description="Hour of the datetime", ge=0, le=23
-    )
-    minute: int = Field(
-        default=0, description="Minute of the datetime", ge=0, le=59
-    )
-    second: int = Field(
-        default=0, description="Second of the datetime", ge=0, le=59
-    )
+    year: int = Field(default=1900, description="Year of the datetime", ge=1, le=9999)
+    month: int = Field(default=1, description="Month of the datetime", ge=1, le=12)
+    day: int = Field(default=1, description="Day of the datetime", ge=1, le=31)
+    hour: int = Field(default=0, description="Hour of the datetime", ge=0, le=23)
+    minute: int = Field(default=0, description="Minute of the datetime", ge=0, le=59)
+    second: int = Field(default=0, description="Second of the datetime", ge=0, le=59)
     millisecond: int = Field(
         default=0, description="Millisecond of the datetime", ge=0, le=999
     )

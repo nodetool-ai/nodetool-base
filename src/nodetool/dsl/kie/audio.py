@@ -31,6 +31,9 @@ class AddInstrumental(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Aud
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.AddInstrumental.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(
             type="audio", uri="", asset_id=None, data=None, metadata=None
@@ -93,6 +96,9 @@ class AddVocals(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.AddVocals.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
         default=types.AudioRef(
             type="audio", uri="", asset_id=None, data=None, metadata=None
@@ -155,6 +161,9 @@ class BoostMusicStyle(SingleOutputGraphNode[types.TextRef], GraphNode[types.Text
         kie, suno, music, style, prompt, enhancement
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     content: str | OutputHandle[str] = connect_field(
         default="", description="Style description to enhance."
     )
@@ -182,6 +191,9 @@ class ConvertToWav(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         kie, suno, music, audio, wav, conversion
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     task_id: str | OutputHandle[str] = connect_field(
         default="", description="Original music task ID."
     )
@@ -218,6 +230,9 @@ class CoverAudio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.CoverAudio.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     custom_mode: bool | OutputHandle[bool] = connect_field(
         default=False,
         description="Enable custom mode for detailed control over style and title.",
@@ -302,6 +317,9 @@ class ElevenLabsTextToSpeech(
 
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.ElevenLabsTextToSpeech.Model
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     text: str | OutputHandle[str] = connect_field(
         default="", description="The text to convert to speech."
     )
@@ -362,6 +380,9 @@ class ExtendMusic(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRe
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.ExtendMusic.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     default_param_flag: bool | OutputHandle[bool] = connect_field(
         default=False,
         description="If true, use custom parameters (prompt/style/title/continue_at). If false, inherit parameters from the source audio.",
@@ -433,6 +454,9 @@ class GenerateLyrics(
         kie, suno, lyrics, text, songwriting, prompt
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     prompt: str | OutputHandle[str] = connect_field(
         default="",
         description="Prompt describing the theme, mood, or style of the lyrics.",
@@ -473,6 +497,9 @@ class GenerateMusic(SingleOutputGraphNode[types.AudioRef], GraphNode[types.Audio
     Model: typing.ClassVar[type] = nodetool.nodes.kie.audio.GenerateMusic.Model
     VocalGender: typing.ClassVar[type] = nodetool.nodes.kie.audio.VocalGender
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     custom_mode: bool | OutputHandle[bool] = connect_field(
         default=False,
         description="Enable custom mode for detailed control over style and title.",
@@ -541,6 +568,9 @@ class GenerateMusicCover(
         kie, suno, music, cover, image, artwork
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     task_id: str | OutputHandle[str] = connect_field(
         default="", description="Original music task ID."
     )
@@ -570,6 +600,9 @@ class GenerateMusicVideo(
         kie, suno, music, video, mp4, visualization
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     task_id: str | OutputHandle[str] = connect_field(
         default="", description="Original music task ID."
     )
@@ -610,6 +643,9 @@ class GetTimestampedLyrics(
         Fetches word-level alignment and waveform data for a specific task/audio pair.
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     task_id: str | OutputHandle[str] = connect_field(
         default="", description="Task ID from Generate Music or Extend Music."
     )
@@ -644,6 +680,9 @@ class ReplaceMusicSection(
         Regenerates a time range and blends it into the original track.
     """
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     task_id: str | OutputHandle[str] = connect_field(
         default="", description="Original music task ID."
     )
@@ -702,6 +741,9 @@ class VocalStemSeparation(
         nodetool.nodes.kie.audio.VocalStemSeparation.SeparationType
     )
 
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
     task_id: str | OutputHandle[str] = connect_field(
         default="", description="Original music task ID."
     )

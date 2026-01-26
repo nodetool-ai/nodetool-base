@@ -241,6 +241,10 @@ class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageR
     safety_check: bool | OutputHandle[bool] = connect_field(
         default=True, description="Enable safety checker"
     )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -666,6 +670,10 @@ class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
     safety_check: bool | OutputHandle[bool] = connect_field(
         default=True,
         description="Enable safety checker to filter inappropriate content",
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Timeout in seconds for API calls (0 = use provider default)",
     )
 
     @classmethod

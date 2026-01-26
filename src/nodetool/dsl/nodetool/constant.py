@@ -19,6 +19,39 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class ASRModelConstant(
+    SingleOutputGraphNode[types.ASRModel], GraphNode[types.ASRModel]
+):
+    """
+    Represents an automatic speech recognition model constant in the workflow.
+        asr, speech, recognition, transcription, model
+
+        Use cases:
+        - Provide a fixed ASR model for transcription
+        - Set default ASR model for the workflow
+        - Configure model selection without user input
+    """
+
+    value: types.ASRModel | OutputHandle[types.ASRModel] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.ASRModelConstant
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class Audio(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]):
     """
     Represents an audio file constant in the workflow.
@@ -295,6 +328,39 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class EmbeddingModelConstant(
+    SingleOutputGraphNode[types.EmbeddingModel], GraphNode[types.EmbeddingModel]
+):
+    """
+    Represents an embedding model constant in the workflow.
+        embedding, model, vector, semantic
+
+        Use cases:
+        - Provide a fixed embedding model for vectorization
+        - Set default embedding model for the workflow
+        - Configure model selection without user input
+    """
+
+    value: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.EmbeddingModelConstant
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class Float(SingleOutputGraphNode[float], GraphNode[float]):
     """
     Represents a floating-point number constant in the workflow.
@@ -358,6 +424,72 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class ImageList(
+    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
+):
+    """
+    Represents a list of image file constants in the workflow.
+        pictures, photos, images, collection
+
+        Use cases:
+        - Provide a fixed list of images for batch processing
+        - Reference multiple image files in the workflow
+        - Set default image list for testing or demonstration purposes
+    """
+
+    value: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=PydanticUndefined, description="List of image references"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.ImageList
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
+class ImageModelConstant(
+    SingleOutputGraphNode[types.ImageModel], GraphNode[types.ImageModel]
+):
+    """
+    Represents an image generation model constant in the workflow.
+        image, model, ai, generation, diffusion
+
+        Use cases:
+        - Provide a fixed image model for generation
+        - Set default image model for the workflow
+        - Configure model selection without user input
+    """
+
+    value: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.ImageModelConstant
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class Integer(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Represents an integer constant in the workflow.
@@ -403,6 +535,39 @@ class JSON(SingleOutputGraphNode[types.JSONRef], GraphNode[types.JSONRef]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.constant.JSON
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
+class LanguageModelConstant(
+    SingleOutputGraphNode[types.LanguageModel], GraphNode[types.LanguageModel]
+):
+    """
+    Represents a language model constant in the workflow.
+        llm, language, model, ai, chat, gpt
+
+        Use cases:
+        - Provide a fixed language model for chat or text generation
+        - Set default language model for the workflow
+        - Configure model selection without user input
+    """
+
+    value: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.LanguageModelConstant
 
     @classmethod
     def get_node_type(cls):
@@ -486,6 +651,46 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class Select(SingleOutputGraphNode[str], GraphNode[str]):
+    """
+    Represents a selection from a predefined set of options in the workflow.
+        select, enum, dropdown, choice, options
+
+        Use cases:
+        - Choose from a fixed set of values
+        - Configure options for downstream nodes
+        - Provide enum-compatible inputs for nodes that expect specific values
+
+        The output is a string that can be connected to enum-typed inputs.
+    """
+
+    value: str | OutputHandle[str] = connect_field(
+        default="", description="The currently selected value."
+    )
+    options: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="The list of available options to choose from."
+    )
+    enum_type_name: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The enum type name this select corresponds to (for type matching).",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.Select
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class String(SingleOutputGraphNode[str], GraphNode[str]):
     """
     Represents a string constant in the workflow.
@@ -502,6 +707,39 @@ class String(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.constant.String
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
+class TTSModelConstant(
+    SingleOutputGraphNode[types.TTSModel], GraphNode[types.TTSModel]
+):
+    """
+    Represents a text-to-speech model constant in the workflow.
+        tts, speech, voice, model, audio
+
+        Use cases:
+        - Provide a fixed TTS model for speech synthesis
+        - Set default TTS model for the workflow
+        - Configure model selection without user input
+    """
+
+    value: types.TTSModel | OutputHandle[types.TTSModel] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.TTSModelConstant
 
     @classmethod
     def get_node_type(cls):
@@ -542,6 +780,39 @@ class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.constant.Video
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
+class VideoModelConstant(
+    SingleOutputGraphNode[types.VideoModel], GraphNode[types.VideoModel]
+):
+    """
+    Represents a video generation model constant in the workflow.
+        video, model, ai, generation
+
+        Use cases:
+        - Provide a fixed video model for generation
+        - Set default video model for the workflow
+        - Configure model selection without user input
+    """
+
+    value: types.VideoModel | OutputHandle[types.VideoModel] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.VideoModelConstant
 
     @classmethod
     def get_node_type(cls):

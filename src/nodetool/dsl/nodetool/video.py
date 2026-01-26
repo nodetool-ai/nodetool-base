@@ -576,6 +576,10 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     seed: int | OutputHandle[int] = connect_field(
         default=-1, description="Random seed for reproducibility (-1 for random)"
     )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -1157,6 +1161,10 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
     )
     seed: int | OutputHandle[int] = connect_field(
         default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0,
+        description="Timeout in seconds for API calls (0 = use provider default)",
     )
 
     @classmethod
