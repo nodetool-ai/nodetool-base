@@ -9,6 +9,7 @@ from nodetool.nodes.nodetool.data import (
     ToList,
     SelectColumn,
     ExtractColumn,
+    ExtractColumns,
     AddColumn,
     Merge,
     Append,
@@ -16,6 +17,7 @@ from nodetool.nodes.nodetool.data import (
     Pivot,
     Rename,
     FillNA,
+    ForEachRow,
 )
 
 
@@ -44,7 +46,7 @@ async def test_from_list_and_to_list(mock_context: ProcessingContext):
     assert list(captured["df"]["a"]) == [1, 2]
 
     # Now round-trip with ToList
-    mock_context.dataframe_to_pandas = AsyncMock(return_value=captured["df"]) 
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=captured["df"])
     list_node = ToList(dataframe=DataframeRef())
     out = await list_node.process(mock_context)
     assert out == [{"a": 1}, {"a": 2}]
@@ -169,3 +171,120 @@ async def test_aggregate_pivot_rename_fillna(mock_context: ProcessingContext):
     await fn.process(mock_context)
     out4 = captured["dfs"][3]
     assert list(out4["v"]) == [1.0, 0, 3.0]
+
+
+@pytest.mark.asyncio
+async def test_extract_columns_with_dynamic_outputs(mock_context: ProcessingContext):
+    """Test ExtractColumns node extracts columns matching dynamic outputs as lists."""
+    df = pd.DataFrame(
+        {
+            "name": ["Alice", "Bob", "Charlie"],
+            "age": [25, 30, 35],
+            "city": ["NYC", "LA", "Chicago"],
+        }
+    )
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=df)
+
+    # Create node with dynamic outputs for 'name' and 'age'
+    node = ExtractColumns(dataframe=DataframeRef())
+    # Simulate dynamic outputs being set (normally done by the workflow engine)
+    node._dynamic_outputs = {"name": {}, "age": {}}
+
+    result = await node.process(mock_context)
+
+    assert "name" in result
+    assert "age" in result
+    assert "city" not in result  # Not in dynamic outputs
+    assert result["name"] == ["Alice", "Bob", "Charlie"]
+    assert result["age"] == [25, 30, 35]
+
+
+@pytest.mark.asyncio
+async def test_extract_columns_empty_dynamic_outputs(mock_context: ProcessingContext):
+    """Test ExtractColumns with no dynamic outputs returns empty dict."""
+    df = pd.DataFrame({"a": [1, 2], "b": [3, 4]})
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=df)
+
+    node = ExtractColumns(dataframe=DataframeRef())
+    node._dynamic_outputs = {}
+
+    result = await node.process(mock_context)
+
+    assert result == {}
+
+
+@pytest.mark.asyncio
+async def test_extract_columns_nonmatching_outputs(mock_context: ProcessingContext):
+    """Test ExtractColumns ignores dynamic outputs that don't match column names."""
+    df = pd.DataFrame({"x": [1, 2], "y": [3, 4]})
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=df)
+
+    node = ExtractColumns(dataframe=DataframeRef())
+    node._dynamic_outputs = {"nonexistent": {}, "x": {}}
+
+    result = await node.process(mock_context)
+
+    assert "x" in result
+    assert "nonexistent" not in result
+    assert result["x"] == [1, 2]
+
+
+@pytest.mark.asyncio
+async def test_foreach_row_with_dynamic_outputs(mock_context: ProcessingContext):
+    """Test ForEachRow extracts columns as lists when dynamic outputs match columns."""
+    df = pd.DataFrame({"name": ["Alice", "Bob"], "score": [90, 85]})
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=df)
+
+    node = ForEachRow(dataframe=DataframeRef())
+    node._dynamic_outputs = {"name": {}, "score": {}}
+
+    results = []
+    async for result in node.gen_process(mock_context):
+        results.append(result)
+
+    # When dynamic outputs match columns, should yield a single dict with column lists
+    assert len(results) == 1
+    assert "name" in results[0]
+    assert "score" in results[0]
+    assert results[0]["name"] == ["Alice", "Bob"]
+    assert results[0]["score"] == [90, 85]
+
+
+@pytest.mark.asyncio
+async def test_foreach_row_without_dynamic_outputs(mock_context: ProcessingContext):
+    """Test ForEachRow iterates rows when no dynamic outputs are set."""
+    df = pd.DataFrame({"name": ["Alice", "Bob"], "score": [90, 85]})
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=df)
+
+    node = ForEachRow(dataframe=DataframeRef())
+    node._dynamic_outputs = {}
+
+    results = []
+    async for result in node.gen_process(mock_context):
+        results.append(result)
+
+    # Should iterate over rows
+    assert len(results) == 2
+    assert results[0]["row"] == {"name": "Alice", "score": 90}
+    assert results[0]["index"] == 0
+    assert results[1]["row"] == {"name": "Bob", "score": 85}
+    assert results[1]["index"] == 1
+
+
+@pytest.mark.asyncio
+async def test_foreach_row_dynamic_outputs_no_match(mock_context: ProcessingContext):
+    """Test ForEachRow falls back to row iteration when dynamic outputs don't match columns."""
+    df = pd.DataFrame({"name": ["Alice", "Bob"], "score": [90, 85]})
+    mock_context.dataframe_to_pandas = AsyncMock(return_value=df)
+
+    node = ForEachRow(dataframe=DataframeRef())
+    node._dynamic_outputs = {"nonexistent_column": {}}
+
+    results = []
+    async for result in node.gen_process(mock_context):
+        results.append(result)
+
+    # Should fall back to row iteration since no columns match
+    assert len(results) == 2
+    assert "row" in results[0]
+    assert "index" in results[0]
