@@ -10,6 +10,37 @@ from pydantic import Field
 logger = get_logger(__name__)
 
 
+# Mapping of MIME types to file extensions for Groq audio API
+MIME_TO_EXTENSION = {
+    "audio/mpeg": "mp3",
+    "audio/mp3": "mp3",
+    "audio/mp4": "mp4",
+    "audio/m4a": "m4a",
+    "audio/wav": "wav",
+    "audio/wave": "wav",
+    "audio/x-wav": "wav",
+    "audio/webm": "webm",
+    "audio/ogg": "ogg",
+    "audio/flac": "flac",
+    "audio/x-flac": "flac",
+}
+
+
+def get_audio_filename(audio_bytes: bytes) -> str:
+    """
+    Detect audio format from bytes and return an appropriate filename.
+    Falls back to 'audio.mp3' if detection fails.
+    """
+    import filetype
+
+    kind = filetype.guess(audio_bytes)
+    if kind and kind.mime in MIME_TO_EXTENSION:
+        ext = MIME_TO_EXTENSION[kind.mime]
+        return f"audio.{ext}"
+    # Default to mp3 if detection fails
+    return "audio.mp3"
+
+
 class WhisperModel(str, Enum):
     """Available Whisper models on Groq."""
 
@@ -83,6 +114,9 @@ class AudioTranscription(BaseNode):
         # Get the audio bytes
         audio_bytes = await context.asset_to_bytes(self.audio)
 
+        # Detect file format and get appropriate filename
+        filename = get_audio_filename(audio_bytes)
+
         # Prepare optional parameters
         kwargs = {
             "model": self.model.value,
@@ -93,7 +127,7 @@ class AudioTranscription(BaseNode):
 
         # Create transcription
         response = await client.audio.transcriptions.create(
-            file=("audio.mp3", audio_bytes),
+            file=(filename, audio_bytes),
             **kwargs,
         )
 
@@ -166,9 +200,12 @@ class AudioTranslation(BaseNode):
         # Get the audio bytes
         audio_bytes = await context.asset_to_bytes(self.audio)
 
+        # Detect file format and get appropriate filename
+        filename = get_audio_filename(audio_bytes)
+
         # Create translation
         response = await client.audio.translations.create(
-            file=("audio.mp3", audio_bytes),
+            file=(filename, audio_bytes),
             model=self.model.value,
             temperature=self.temperature,
         )

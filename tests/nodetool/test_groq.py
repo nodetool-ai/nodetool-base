@@ -2,7 +2,12 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.nodes.groq.text import ChatComplete, GroqModel
-from nodetool.nodes.groq.audio import AudioTranscription, AudioTranslation, WhisperModel
+from nodetool.nodes.groq.audio import (
+    AudioTranscription,
+    AudioTranslation,
+    WhisperModel,
+    get_audio_filename,
+)
 from nodetool.nodes.groq.vision import ImageToText, VisionModel
 from nodetool.metadata.types import AudioRef, ImageRef
 
@@ -146,6 +151,11 @@ async def test_audio_transcription_success(context, monkeypatch):
     monkeypatch.setattr(context, "get_secret", mock_get_secret)
     monkeypatch.setattr(context, "asset_to_bytes", mock_asset_to_bytes)
 
+    # Mock filetype to return a known audio format
+    mock_kind = MagicMock()
+    mock_kind.mime = "audio/mpeg"
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: mock_kind)
+
     mock_response = MagicMock()
     mock_response.text = "Hello, this is a transcription."
 
@@ -208,6 +218,11 @@ async def test_audio_transcription_with_language(context, monkeypatch):
     monkeypatch.setattr(context, "get_secret", mock_get_secret)
     monkeypatch.setattr(context, "asset_to_bytes", mock_asset_to_bytes)
 
+    # Mock filetype to return a known audio format
+    mock_kind = MagicMock()
+    mock_kind.mime = "audio/wav"
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: mock_kind)
+
     mock_response = MagicMock()
     mock_response.text = "Hola, esto es una transcripción."
 
@@ -249,6 +264,11 @@ async def test_audio_translation_success(context, monkeypatch):
 
     monkeypatch.setattr(context, "get_secret", mock_get_secret)
     monkeypatch.setattr(context, "asset_to_bytes", mock_asset_to_bytes)
+
+    # Mock filetype to return a known audio format
+    mock_kind = MagicMock()
+    mock_kind.mime = "audio/ogg"
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: mock_kind)
 
     mock_response = MagicMock()
     mock_response.text = "Hello, this is translated to English."
@@ -396,3 +416,44 @@ def test_vision_model_enum():
     """Test VisionModel enum values."""
     assert VisionModel.LLAMA_3_2_11B_VISION.value == "llama-3.2-11b-vision-preview"
     assert VisionModel.LLAMA_3_2_90B_VISION.value == "llama-3.2-90b-vision-preview"
+
+
+# Test get_audio_filename helper
+
+
+def test_get_audio_filename_known_format(monkeypatch):
+    """Test get_audio_filename with known audio format."""
+    mock_kind = MagicMock()
+    mock_kind.mime = "audio/wav"
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: mock_kind)
+
+    result = get_audio_filename(b"fake wav data")
+    assert result == "audio.wav"
+
+
+def test_get_audio_filename_mp3(monkeypatch):
+    """Test get_audio_filename with MP3 format."""
+    mock_kind = MagicMock()
+    mock_kind.mime = "audio/mpeg"
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: mock_kind)
+
+    result = get_audio_filename(b"fake mp3 data")
+    assert result == "audio.mp3"
+
+
+def test_get_audio_filename_unknown_format(monkeypatch):
+    """Test get_audio_filename with unknown format falls back to mp3."""
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: None)
+
+    result = get_audio_filename(b"unknown data")
+    assert result == "audio.mp3"
+
+
+def test_get_audio_filename_unsupported_mime(monkeypatch):
+    """Test get_audio_filename with unsupported MIME type falls back to mp3."""
+    mock_kind = MagicMock()
+    mock_kind.mime = "audio/unknown"
+    monkeypatch.setattr("nodetool.nodes.groq.audio.filetype.guess", lambda x: mock_kind)
+
+    result = get_audio_filename(b"fake data")
+    assert result == "audio.mp3"
