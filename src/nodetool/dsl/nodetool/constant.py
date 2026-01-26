@@ -86,6 +86,39 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class AudioList(
+    SingleOutputGraphNode[list[types.AudioRef]], GraphNode[list[types.AudioRef]]
+):
+    """
+    Represents a list of audio file constants in the workflow.
+        audios, sounds, audio files, collection
+
+        Use cases:
+        - Provide a fixed list of audio files for batch processing
+        - Reference multiple audio files in the workflow
+        - Set default audio list for testing or demonstration purposes
+    """
+
+    value: list[types.AudioRef] | OutputHandle[list[types.AudioRef]] = connect_field(
+        default=PydanticUndefined, description="List of audio references"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.AudioList
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class Bool(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Represents a boolean constant in the workflow.
@@ -753,6 +786,37 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class TextList(SingleOutputGraphNode[list[str]], GraphNode[list[str]]):
+    """
+    Represents a list of text strings in the workflow.
+        texts, strings, text collection
+
+        Use cases:
+        - Provide a fixed list of text strings for batch processing
+        - Reference multiple text values in the workflow
+        - Set default text list for testing or demonstration purposes
+    """
+
+    value: list[str] | OutputHandle[list[str]] = connect_field(
+        default=PydanticUndefined, description="List of text strings"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.TextList
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     """
     Represents a video file constant in the workflow.
@@ -780,6 +844,39 @@ class Video(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.constant.Video
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
+class VideoList(
+    SingleOutputGraphNode[list[types.VideoRef]], GraphNode[list[types.VideoRef]]
+):
+    """
+    Represents a list of video file constants in the workflow.
+        videos, movies, clips, collection
+
+        Use cases:
+        - Provide a fixed list of videos for batch processing
+        - Reference multiple video files in the workflow
+        - Set default video list for testing or demonstration purposes
+    """
+
+    value: list[types.VideoRef] | OutputHandle[list[types.VideoRef]] = connect_field(
+        default=PydanticUndefined, description="List of video references"
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.VideoList
 
     @classmethod
     def get_node_type(cls):
