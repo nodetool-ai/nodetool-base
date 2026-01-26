@@ -639,19 +639,17 @@ class ForEachRow(BaseNode):
     ) -> AsyncGenerator[dict[str, Any], None]:
         df = await context.dataframe_to_pandas(self.dataframe)
 
-        # Check if we have dynamic outputs defined
+        # Check if dynamic outputs match column names for column extraction mode
         dynamic_output_names = set(self._dynamic_outputs.keys())
+        matching_columns = dynamic_output_names.intersection(set(df.columns))
 
-        # If dynamic outputs are defined and match column names, yield column lists
-        if dynamic_output_names:
-            matching_columns = dynamic_output_names.intersection(set(df.columns))
-            if matching_columns:
-                # Build a result dict with each matching column as a list
-                result: dict[str, Any] = {}
-                for col_name in matching_columns:
-                    result[col_name] = df[col_name].tolist()
-                yield result
-                return
+        # If dynamic outputs match column names, yield column lists
+        if matching_columns:
+            result: dict[str, Any] = {}
+            for col_name in matching_columns:
+                result[col_name] = df[col_name].tolist()
+            yield result
+            return
 
         # Default behavior: iterate over rows
         for index, row in df.iterrows():
