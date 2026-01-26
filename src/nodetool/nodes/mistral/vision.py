@@ -85,24 +85,24 @@ class ImageToText(BaseNode):
         if not api_key:
             raise ValueError("Mistral API key not configured")
 
-        from mistralai import Mistral
+        from openai import AsyncOpenAI
 
-        client = Mistral(api_key=api_key)
-
-        # Convert image to base64 data URL
-        image_url = await context.image_to_base64_url(self.image)
+        client = AsyncOpenAI(api_key=api_key, base_url="https://api.mistral.ai/v1")
 
         messages = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image_url", "image_url": image_url},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": await context.image_ref_to_data_uri(self.image)},
+                    },
                     {"type": "text", "text": self.prompt},
                 ],
             }
         ]
 
-        response = await client.chat.complete_async(
+        response = await client.chat.completions.create(
             model=self.model.value,
             messages=messages,
             temperature=self.temperature,
@@ -167,18 +167,18 @@ class OCR(BaseNode):
         if not api_key:
             raise ValueError("Mistral API key not configured")
 
-        from mistralai import Mistral
+        from openai import AsyncOpenAI
 
-        client = Mistral(api_key=api_key)
-
-        # Convert image to base64 data URL
-        image_url = await context.image_to_base64_url(self.image)
+        client = AsyncOpenAI(api_key=api_key, base_url="https://api.mistral.ai/v1")
 
         messages = [
             {
                 "role": "user",
                 "content": [
-                    {"type": "image_url", "image_url": image_url},
+                    {
+                        "type": "image_url",
+                        "image_url": {"url": await context.image_ref_to_data_uri(self.image)},
+                    },
                     {
                         "type": "text",
                         "text": "Extract and return all text visible in this image. "
@@ -189,7 +189,7 @@ class OCR(BaseNode):
             }
         ]
 
-        response = await client.chat.complete_async(
+        response = await client.chat.completions.create(
             model=self.model.value,
             messages=messages,
             temperature=0.0,  # Use low temperature for accurate extraction

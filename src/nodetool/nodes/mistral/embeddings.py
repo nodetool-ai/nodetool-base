@@ -67,9 +67,9 @@ class Embedding(BaseNode):
         if not api_key:
             raise ValueError("Mistral API key not configured")
 
-        from mistralai import Mistral
+        from openai import AsyncOpenAI
 
-        client = Mistral(api_key=api_key)
+        client = AsyncOpenAI(api_key=api_key, base_url="https://api.mistral.ai/v1")
 
         # Chunk the input into smaller pieces if necessary
         chunks = [
@@ -77,9 +77,9 @@ class Embedding(BaseNode):
             for i in range(0, len(self.input), self.chunk_size)
         ]
 
-        response = await client.embeddings.create_async(
+        response = await client.embeddings.create(
             model=self.model.value,
-            inputs=chunks,
+            input=chunks,
         )
 
         if not response or not response.data:

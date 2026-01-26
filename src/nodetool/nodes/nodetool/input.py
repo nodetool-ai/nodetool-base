@@ -177,6 +177,9 @@ class StringListInput(InputNode):
     def return_type(cls):
         return list[str]
 
+    async def process(self, context: ProcessingContext) -> list[str]:
+        return self.value
+
 
 class FolderPathInput(InputNode):
     """
@@ -378,6 +381,9 @@ class ImageListInput(InputNode):
     @classmethod
     def return_type(cls):
         return list[ImageRef]
+
+    async def process(self, context: ProcessingContext) -> list[ImageRef]:
+        return self.value
 
 
 class VideoListInput(InputNode):

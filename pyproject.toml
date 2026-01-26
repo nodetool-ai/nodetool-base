@@ -24,7 +24,6 @@ dependencies = [
     "trimesh>=4.0.0",
     "fast-simplification>=0.1.0",
     "yt-dlp>=2024.7.1",
-    "mistralai>=1.10.1",
 ]
 
 [project.optional-dependencies]

@@ -81,16 +81,16 @@ class ChatComplete(BaseNode):
         if not api_key:
             raise ValueError("Mistral API key not configured")
 
-        from mistralai import Mistral
+        from openai import AsyncOpenAI
 
-        client = Mistral(api_key=api_key)
+        client = AsyncOpenAI(api_key=api_key, base_url="https://api.mistral.ai/v1")
 
         messages = []
         if self.system_prompt:
             messages.append({"role": "system", "content": self.system_prompt})
         messages.append({"role": "user", "content": self.prompt})
 
-        response = await client.chat.complete_async(
+        response = await client.chat.completions.create(
             model=self.model.value,
             messages=messages,
             temperature=self.temperature,
@@ -169,32 +169,38 @@ class CodeComplete(BaseNode):
         if not api_key:
             raise ValueError("Mistral API key not configured")
 
-        from mistralai import Mistral
-
-        client = Mistral(api_key=api_key)
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+        }
 
         # Use fill-in-the-middle if suffix is provided
         if self.suffix:
-            response = await client.fim.complete_async(
-                model=MistralModel.CODESTRAL.value,
-                prompt=self.prompt,
-                suffix=self.suffix,
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-            )
+            url = "https://api.mistral.ai/v1/fim/completions"
+            payload = {
+                "model": MistralModel.CODESTRAL.value,
+                "prompt": self.prompt,
+                "suffix": self.suffix,
+                "temperature": self.temperature,
+                "max_tokens": self.max_tokens,
+            }
         else:
             # Use regular chat completion for code generation
-            response = await client.chat.complete_async(
-                model=MistralModel.CODESTRAL.value,
-                messages=[{"role": "user", "content": self.prompt}],
-                temperature=self.temperature,
-                max_tokens=self.max_tokens,
-            )
+            url = "https://api.mistral.ai/v1/chat/completions"
+            payload = {
+                "model": MistralModel.CODESTRAL.value,
+                "messages": [{"role": "user", "content": self.prompt}],
+                "temperature": self.temperature,
+                "max_tokens": self.max_tokens,
+            }
 
-        if not response or not response.choices:
+        response = await context.http_post(url, headers=headers, json=payload)
+        data = response.json()
+
+        if not data or "choices" not in data:
             raise ValueError("No response received from Mistral API")
 
-        content = response.choices[0].message.content
+        content = data["choices"][0]["message"]["content"]
         if content is None:
             return ""
         return content
