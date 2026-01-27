@@ -1,9 +1,71 @@
 """
-Tests for Gemini nodes (Transcribe, Embedding)
+Tests for Gemini nodes (ChatComplete, Transcribe, Embedding)
 These tests focus on node field validation and basic instantiation.
 """
 
 import pytest
+
+
+class TestChatCompleteNode:
+    """Tests for the Gemini ChatComplete node."""
+
+    @pytest.fixture(autouse=True)
+    def setup(self):
+        """Import node classes only if nodetool-core is available."""
+        try:
+            from nodetool.nodes.gemini.text import ChatComplete, GeminiModel
+
+            self.ChatComplete = ChatComplete
+            self.GeminiModel = GeminiModel
+            self.skip = False
+        except ImportError:
+            self.skip = True
+
+    def test_default_values(self):
+        """Test default field values."""
+        if self.skip:
+            pytest.skip("nodetool-core not available")
+        node = self.ChatComplete()
+        assert node.model == self.GeminiModel.GEMINI_2_0_FLASH
+        assert node.prompt == ""
+        assert node.system_prompt == ""
+        assert node.temperature == 1.0
+        assert node.max_tokens == 1024
+
+    def test_custom_model(self):
+        """Test setting custom model."""
+        if self.skip:
+            pytest.skip("nodetool-core not available")
+        node = self.ChatComplete(model=self.GeminiModel.GEMINI_2_5_PRO)
+        assert node.model == self.GeminiModel.GEMINI_2_5_PRO
+
+    def test_custom_prompt(self):
+        """Test setting custom prompt."""
+        if self.skip:
+            pytest.skip("nodetool-core not available")
+        node = self.ChatComplete(prompt="Hello, Gemini!")
+        assert node.prompt == "Hello, Gemini!"
+
+    def test_custom_system_prompt(self):
+        """Test setting custom system prompt."""
+        if self.skip:
+            pytest.skip("nodetool-core not available")
+        node = self.ChatComplete(system_prompt="You are a helpful assistant.")
+        assert node.system_prompt == "You are a helpful assistant."
+
+    def test_model_enum_values(self):
+        """Test that all Gemini model enum values are valid strings."""
+        if self.skip:
+            pytest.skip("nodetool-core not available")
+        for model in self.GeminiModel:
+            assert isinstance(model.value, str)
+            assert "gemini" in model.value.lower()
+
+    def test_basic_fields(self):
+        """Test ChatComplete basic fields."""
+        if self.skip:
+            pytest.skip("nodetool-core not available")
+        assert self.ChatComplete.get_basic_fields() == ["prompt", "model"]
 
 
 class TestTranscribeNode:
