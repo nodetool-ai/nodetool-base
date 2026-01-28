@@ -2327,3 +2327,304 @@ class ElevenLabsTextToSpeech(KieBaseNode):
     async def process(self, context: ProcessingContext) -> AudioRef:
         audio_bytes, _ = await self._execute_task(context)
         return await context.audio_from_bytes(audio_bytes)
+
+
+class ElevenLabsAudioIsolation(KieBaseNode):
+    """Isolate speech from audio using ElevenLabs AI via Kie.ai.
+
+    kie, elevenlabs, audio-isolation, speech, noise-removal, ai
+
+    ElevenLabs Audio Isolation uses AI to remove background noise, music,
+    and interference while preserving clear, natural speech.
+
+    Use cases:
+    - Clean up podcast and interview recordings
+    - Remove background noise from audio
+    - Isolate speech for professional recordings
+    - Prepare audio for transcription or production
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "ElevenLabs Audio Isolation"
+
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="Audio file to process for speech isolation.",
+    )
+
+    def _get_model(self) -> str:
+        return "elevenlabs/audio-isolation"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.audio.is_set():
+            raise ValueError("Audio is required")
+        if context is None:
+            raise ValueError("Context is required for audio upload")
+
+        audio_url = await self._upload_audio(context, self.audio)
+        return {
+            "audio_url": audio_url,
+        }
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        audio_bytes, _ = await self._execute_task(context)
+        return await context.audio_from_bytes(audio_bytes)
+
+
+class ElevenLabsSoundEffect(KieBaseNode):
+    """Generate sound effects using ElevenLabs AI via Kie.ai.
+
+    kie, elevenlabs, sound-effect, sfx, audio, ai
+
+    ElevenLabs Sound Effect V2 generates audio from text descriptions,
+    supporting clips up to 20+ seconds with seamless looping and 48kHz audio.
+
+    Use cases:
+    - Generate custom sound effects for videos
+    - Create ambient sounds for games and applications
+    - Produce foley effects from text descriptions
+    - Generate audio elements for creative projects
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "ElevenLabs Sound Effect"
+
+    text: str = Field(
+        default="",
+        description="Text description of the sound effect to generate.",
+    )
+
+    duration_seconds: float = Field(
+        default=5.0,
+        description="Duration of the sound effect in seconds (up to 22 seconds).",
+        ge=0.5,
+        le=22.0,
+    )
+
+    prompt_influence: float = Field(
+        default=0.3,
+        description="How strongly the prompt influences generation (0-1).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    def _get_model(self) -> str:
+        return "elevenlabs/sound-effect"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.text:
+            raise ValueError("Text cannot be empty")
+        return {
+            "text": self.text,
+            "duration_seconds": self.duration_seconds,
+            "prompt_influence": self.prompt_influence,
+        }
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        audio_bytes, _ = await self._execute_task(context)
+        return await context.audio_from_bytes(audio_bytes)
+
+
+class ElevenLabsSpeechToText(KieBaseNode):
+    """Transcribe speech to text using ElevenLabs AI via Kie.ai.
+
+    kie, elevenlabs, speech-to-text, transcription, stt, ai
+
+    ElevenLabs Speech to Text (Scribe v1) delivers state-of-the-art transcription
+    with multilingual support, speaker diarization, and audio-event tagging.
+
+    Use cases:
+    - Transcribe podcasts and interviews
+    - Create subtitles for videos
+    - Convert audio recordings to text
+    - Generate meeting transcripts with speaker labels
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "ElevenLabs Speech To Text"
+
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="Audio file to transcribe.",
+    )
+
+    language_code: str = Field(
+        default="",
+        description="Language code (e.g., 'en', 'es', 'fr'). Leave empty for auto-detection.",
+    )
+
+    diarization: bool = Field(
+        default=False,
+        description="Enable speaker diarization to identify different speakers.",
+    )
+
+    def _get_model(self) -> str:
+        return "elevenlabs/speech-to-text"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.audio.is_set():
+            raise ValueError("Audio is required")
+        if context is None:
+            raise ValueError("Context is required for audio upload")
+
+        audio_url = await self._upload_audio(context, self.audio)
+        params: dict[str, Any] = {
+            "audio_url": audio_url,
+            "diarization": self.diarization,
+        }
+        if self.language_code:
+            params["language_code"] = self.language_code
+        return params
+
+    async def process(self, context: ProcessingContext) -> TextRef:
+        # For speech-to-text, we get JSON with the transcript
+        import json
+
+        api_key = await self._get_api_key(context)
+
+        async with aiohttp.ClientSession() as session:
+            submit_response = await self._submit_task(session, api_key, context)
+            task_id = self._extract_task_id(submit_response)
+            log.info(f"Task submitted with ID: {task_id}")
+
+            await self._poll_status(session, api_key, task_id)
+
+            # Get the result
+            url = f"{KIE_API_BASE_URL}/api/v1/jobs/record-info?taskId={task_id}"
+            headers = self._get_headers(api_key)
+
+            async with session.get(url, headers=headers) as response:
+                if response.status != 200:
+                    response_text = await response.text()
+                    raise ValueError(
+                        f"Failed to get result: {response.status} - {response_text}"
+                    )
+
+                status_data = await response.json()
+                if "code" in status_data:
+                    self._check_response_status(status_data)
+
+                result_json_str = status_data.get("data", {}).get("resultJson", "")
+                if not result_json_str:
+                    raise ValueError("No resultJson in response")
+
+                result_data = json.loads(result_json_str)
+                transcript = result_data.get("text", "")
+
+                return TextRef(data=transcript.encode("utf-8"))
+
+
+class ElevenLabsV3Dialogue(KieBaseNode):
+    """Generate expressive dialogue using ElevenLabs V3 via Kie.ai.
+
+    kie, elevenlabs, v3, dialogue, tts, text-to-speech, multi-speaker, ai
+
+    ElevenLabs Eleven V3 enables expressive multilingual Text to Dialogue
+    with audio tag control, multi-speaker support, and natural delivery.
+
+    Use cases:
+    - Generate dialogue for storytelling applications
+    - Create multi-speaker audio content
+    - Produce expressive voiceovers with audio tags
+    - Generate natural conversation audio
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "ElevenLabs V3 Dialogue"
+
+    text: str = Field(
+        default="",
+        description="The dialogue text to convert to speech. Supports audio tags for control.",
+    )
+
+    voice: str = Field(
+        default="Rachel",
+        description="Primary voice ID to use for synthesis.",
+    )
+
+    stability: float = Field(
+        default=0.5,
+        description="Stability of the voice output (0-1).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    similarity_boost: float = Field(
+        default=0.75,
+        description="Voice clone similarity (0-1).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    style: float = Field(
+        default=0.0,
+        description="Style expression parameter (0-1).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    speed: float = Field(
+        default=1.0,
+        description="Speech speed (0.5-1.5).",
+        ge=0.5,
+        le=1.5,
+    )
+
+    language_code: str = Field(
+        default="",
+        description="Language code for multilingual output. Leave empty for auto-detection.",
+    )
+
+    def _get_model(self) -> str:
+        return "elevenlabs/text-to-dialogue-v3"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.text:
+            raise ValueError("Text cannot be empty")
+        payload: dict[str, Any] = {
+            "text": self.text,
+            "voice": self.voice,
+            "stability": self.stability,
+            "similarity_boost": self.similarity_boost,
+            "style": self.style,
+            "speed": self.speed,
+        }
+        if self.language_code:
+            payload["language_code"] = self.language_code
+        return payload
+
+    async def process(self, context: ProcessingContext) -> AudioRef:
+        audio_bytes, _ = await self._execute_task(context)
+        return await context.audio_from_bytes(audio_bytes)
