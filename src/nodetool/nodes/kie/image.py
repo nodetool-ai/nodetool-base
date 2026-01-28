@@ -2115,3 +2115,689 @@ class NanoBananaEdit(KieBaseNode):
         return await context.image_from_bytes(
             image_bytes, metadata={"task_id": task_id}
         )
+
+
+class GPTImage4oTextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, openai, gpt-4o, 4o-image, image generation, ai, text-to-image
+
+    The GPT-Image-1 model (ChatGPT 4o Image) understands both text and visual
+    context, allowing precise image creation with accurate text rendering
+    and consistent styles.
+
+    Use cases:
+    - Generate high-quality images from text descriptions
+    - Create images with precise text rendering
+    - Generate design and marketing materials
+    - Produce creative visuals with strong instruction following
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT 4o Image Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "4o-image/text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage4oImageToImage(KieBaseNode):
+    """Edit images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, openai, gpt-4o, 4o-image, image editing, ai, image-to-image
+
+    The GPT-Image-1 model (ChatGPT 4o Image) enables precise image editing
+    with strong instruction following and accurate text rendering.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply specific modifications to images
+    - Add or modify text in images
+    - Create variations of existing visuals
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT 4o Image Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to edit the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "4o-image/image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+    kie, openai, gpt-image-1.5, image generation, ai, text-to-image
+
+    GPT Image 1.5 is OpenAI's flagship image generation model for high-quality
+    image creation and precise image editing, with strong instruction following
+    and improved text rendering.
+
+    Use cases:
+    - Generate high-quality images from text descriptions
+    - Create images with excellent text rendering
+    - Generate professional marketing and design materials
+    - Produce creative visuals with precise control
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image-1.5/text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15ImageToImage(KieBaseNode):
+    """Edit images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+    kie, openai, gpt-image-1.5, image editing, ai, image-to-image
+
+    GPT Image 1.5 enables precise image editing with strong instruction following
+    and improved text rendering capabilities.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply specific modifications with precise control
+    - Add or modify text in images accurately
+    - Create variations with high fidelity
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to edit the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image-1.5/image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramV3TextToImage(KieBaseNode):
+    """Generate images using Ideogram V3 model via Kie.ai.
+
+    kie, ideogram, v3, image generation, ai, text-to-image
+
+    Ideogram V3 is the latest generation of Ideogram's image generation model,
+    offering text-to-image with improved consistency and creative control.
+
+    Use cases:
+    - Generate creative images from text descriptions
+    - Create images with excellent text rendering
+    - Produce artistic and design content
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram V3 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the generated image.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        GENERAL = "GENERAL"
+        REALISTIC = "REALISTIC"
+        DESIGN = "DESIGN"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+        ULTRAWIDE = "21:9"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/v3-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "aspect_ratio": self.aspect_ratio.value,
+            "expand_prompt": self.expand_prompt,
+        }
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt
+        if self.seed >= 0:
+            params["seed"] = self.seed
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramV3ImageToImage(KieBaseNode):
+    """Edit images using Ideogram V3 model via Kie.ai.
+
+    kie, ideogram, v3, image editing, ai, image-to-image
+
+    Ideogram V3 offers image editing capabilities with improved consistency
+    and creative control.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply style changes while maintaining structure
+    - Create variations of existing images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram V3 Image To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the output.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        GENERAL = "GENERAL"
+        REALISTIC = "REALISTIC"
+        DESIGN = "DESIGN"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    image_weight: float = Field(
+        default=0.5,
+        description="How much to preserve from the original image (0-1).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/v3-image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "image_weight": self.image_weight,
+            "expand_prompt": self.expand_prompt,
+        }
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt
+        if self.seed >= 0:
+            params["seed"] = self.seed
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class Seedream40TextToImage(KieBaseNode):
+    """Generate images using ByteDance's Seedream 4.0 model via Kie.ai.
+
+    kie, seedream, bytedance, seedream-4, image generation, ai, text-to-image
+
+    Seedream 4.0 is ByteDance's image generation model that combines text-to-image
+    with batch consistency, high speed, and professional-quality outputs.
+
+    Use cases:
+    - Generate creative and artistic images from text
+    - Create professional visual content
+    - Produce consistent batch images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedream 4.0 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        BASIC = "basic"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
+
+    def _get_model(self) -> str:
+        return "seedream/4.0-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class Seedream40ImageToImage(KieBaseNode):
+    """Edit images using ByteDance's Seedream 4.0 model via Kie.ai.
+
+    kie, seedream, bytedance, seedream-4, image editing, ai, image-to-image
+
+    Seedream 4.0 offers image-to-image capabilities with batch consistency
+    and professional-quality outputs.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply style changes to photos
+    - Create variations of existing images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedream 4.0 Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        BASIC = "basic"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
+
+    def _get_model(self) -> str:
+        return "seedream/4.0-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
