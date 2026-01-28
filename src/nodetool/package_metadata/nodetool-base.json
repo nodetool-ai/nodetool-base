@@ -7337,6 +7337,62 @@
       ]
     },
     {
+      "title": "Embedding",
+      "description": "Generate vector representations of text using any supported embedding provider.\n    Automatically routes to the appropriate backend (OpenAI, Gemini, Mistral).\n    embeddings, similarity, search, clustering, classification, vectors, semantic\n\n    Uses embedding models to create dense vector representations of text.\n    These vectors capture semantic meaning, enabling:\n    - Semantic search\n    - Text clustering\n    - Document classification\n    - Recommendation systems\n    - Anomaly detection\n    - Measuring text similarity and diversity",
+      "namespace": "nodetool.text",
+      "node_type": "nodetool.text.Embedding",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "embedding_model"
+          },
+          "default": {
+            "type": "embedding_model",
+            "provider": "openai",
+            "id": "text-embedding-3-small",
+            "name": "Text Embedding 3 Small",
+            "dimensions": 0
+          },
+          "title": "Model",
+          "description": "The embedding model to use"
+        },
+        {
+          "name": "input",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Input",
+          "description": "The text to embed"
+        },
+        {
+          "name": "chunk_size",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Chunk Size",
+          "description": "Size of text chunks for embedding (used when input exceeds model limits)",
+          "min": 1.0,
+          "max": 8192.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "np_array"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "input"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Ends With",
       "description": "Checks if text ends with a specified suffix.\n    text, check, suffix, compare, validate, substring, string\n\n    Use cases:\n    - Validating file extensions\n    - Checking string endings\n    - Filtering text based on ending content",
       "namespace": "nodetool.text",
