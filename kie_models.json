@@ -1,0 +1,737 @@
+[
+  {
+    "id": 76,
+    "groupName": "ElevenLabs V3",
+    "count": 1,
+    "path": "elevenlabs/text-to-dialogue-v3",
+    "tagline": "ElevenLabs Eleven V3 enables expressive multilingual Text to Dialogue with audio tag control, multi-speaker support, and natural delivery, designed for dialogue-driven applications, storytelling tools, and immersive voice experiences.",
+    "taskType": [
+      "Text to Speech"
+    ],
+    "provider": "Elevenlabs",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1768557100213_oAru1Ofg.png",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 72,
+    "groupName": "Gemini 2.5 Flash",
+    "count": 1,
+    "path": "gemini-2.5-flash",
+    "tagline": "Gemini 2.5 Flash API is first hybrid reasoning LLM developed by Google DeepMind, built for developers to combine fast generation with optional reasoning for both simple and complex tasks.",
+    "taskType": [
+      "Chat"
+    ],
+    "provider": "Google",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1768383901134_aRmGDQKh.webp",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 71,
+    "groupName": "Gemini 2.5 Pro",
+    "count": 1,
+    "path": "gemini-2.5-pro",
+    "tagline": "Gemini 2.5 Pro is Google\u2019s advanced thinking model designed for complex reasoning, code generation and long-context understanding. It supports native multimodal inputs and a context window of up to 1 million tokens for demanding analysis and development workflows.",
+    "taskType": [
+      "Chat"
+    ],
+    "provider": "Google",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1767689314658_efHZrE72.webp",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 70,
+    "groupName": "Gemini 3 Flash",
+    "count": 1,
+    "path": "gemini-3-flash",
+    "tagline": "Gemini 3 Flash is a high-performance large language model developed by Google DeepMind, designed to deliver frontier-level reasoning with low latency and high throughput. It demonstrates strong performance across reasoning, multimodal understanding, and agentic benchmarks while supporting up to a 1M-token context window, making it well suited for real-time, high-concurrency, and production-scale AI workloads.",
+    "taskType": [
+      "Chat"
+    ],
+    "provider": "Google",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1768544668909_iLOzTwUf.png",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 68,
+    "groupName": "Kling 2.6 Motion Control",
+    "count": 1,
+    "path": "kling-2.6-motion-control",
+    "tagline": "Developed by KuaiShou, Kling AI 2.6 Motion Control API is a performance-driven image-to-video model that transfers real human motion, gestures, and expressions from reference video to character images with stable timing and realism.",
+    "taskType": [
+      "Video to Video"
+    ],
+    "provider": "Kling",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1767605153342_dBVl085p.mp4",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 67,
+    "groupName": "Seedance 1.5 Pro",
+    "count": 1,
+    "path": "seedance-1-5-pro",
+    "tagline": "Seedance 1.5 Pro is ByteDance\u2019s audio-video generation model that creates cinema-quality video, synchronized audio, and multilingual dialogue with cinematic camera control.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "ByteDance",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1766569319270_Gl919iY3.mp4",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 66,
+    "groupName": "Wan 2.6",
+    "count": 3,
+    "path": "wan-2-6",
+    "tagline": "Wan 2.6 is Alibaba\u2019s latest AI video model, offering affordable multi-shot 1080p generation with stable characters and synchronized native audio. Through the Wan 2.6 API\u2014including T2V, I2V, and reference-guided modes\u2014you can create up to 15-second cinematic videos with improved motion logic, consistent visuals, and production-ready quality.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video",
+      "Video to Video"
+    ],
+    "provider": "Wan",
+    "coverLink": "https://static.aiquickdraw.com/tools/example/1765957599010_59zbAK7u.mp4",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 65,
+    "groupName": "gpt-image-1.5",
+    "count": 2,
+    "path": "gpt-image-1.5",
+    "tagline": "GPT Image 1.5 is OpenAI\u2019s flagship image generation model for high-quality image creation and precise image editing, with strong instruction following and improved text rendering.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "OpenAI",
+    "coverLink": "https://kie.ai/cdn-cgi/image/width=1920,quality=85,fit=scale-down,format=webp/https://static.aiquickdraw.com/tools/example/1765961172105_jRGzhUQE.webp",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 64,
+    "groupName": "Seedream 4.5",
+    "count": 2,
+    "path": "seedream-4-5",
+    "tagline": "Seedream 4.5 is Bytedance\u2019s refined image model for 4K generation, precise editing, and consistent multi-image output.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image",
+      "Image Editing"
+    ],
+    "provider": "ByteDance",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1764900762655_tyWp22vk.webp",
+    "priceInfoJson": "{\"price\":\"0.032\",\"discount\":\"19%\",\"credits\":\"6.5\",\"marketPrice\":\"image\"}"
+  },
+  {
+    "id": 63,
+    "groupName": "Kling 2.6",
+    "count": 2,
+    "path": "kling-2-6",
+    "tagline": "Kling 2.6 is Kling AI\u2019s audio-visual generation model that produces synchronized video, speech, ambient sound, and sound effects from text or image inputs.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Kling",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1764900793345_ls7yXB9a.mp4",
+    "priceInfoJson": "{\"price\":\"0.28\",\"discount\":\"20%\",\"credits\":\"55\",\"marketPrice\":\"5s\"}"
+  },
+  {
+    "id": 62,
+    "groupName": "Z-Image",
+    "count": 2,
+    "path": "z-image",
+    "tagline": "Z-Image is Tongyi-MAI\u2019s efficient image generation model that delivers photorealistic output, fast Turbo performance, and accurate bilingual text rendering with strong semantic understanding.",
+    "taskType": [
+      "Text to Image"
+    ],
+    "provider": "Qwen",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1764668121857_aFTwunEO.webp",
+    "priceInfoJson": "{\"price\":\"0.004\",\"discount\":\"\",\"credits\":\"0.8\",\"marketPrice\":\"image\"}"
+  },
+  {
+    "id": 60,
+    "groupName": "FLUX.2",
+    "count": 4,
+    "path": "flux-2",
+    "tagline": "Flux 2 is Black Forest Labs\u2019 advanced image generation model that delivers photoreal detail, strong multi-reference consistency, and accurate text rendering with flexible control.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Black Forest Labs",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1764248320029_qLjs2dCu.png",
+    "priceInfoJson": "{\"price\":\"0.025\",\"discount\":\"40%\",\"credits\":\"5\",\"marketPrice\":\"image\"}"
+  },
+  {
+    "id": 59,
+    "groupName": "Gemini 3 Pro",
+    "count": 1,
+    "path": "gemini-3-pro",
+    "tagline": "Gemini 3 Pro API is Google DeepMind\u2019s next-generation multimodal model that delivers advanced reasoning, seamless text-image-video-audio understanding, and large-scale long-context processing.",
+    "taskType": [
+      "Chat"
+    ],
+    "provider": "Google",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1763605293713_H2sVHGOl.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 58,
+    "groupName": "Nano Banana Pro",
+    "count": 1,
+    "path": "nano-banana-pro",
+    "tagline": "Google DeepMind\u2019s Nano Banana Pro delivers sharper 2K imagery, intelligent 4K scaling, improved text rendering, and enhanced character consistency\u2014offering a major leap in visual quality for creative and API-driven workflows.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Google",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1763724737745_iMOlYShq.png",
+    "priceInfoJson": "{\"price\":\"0.09\",\"discount\":\"50%\",\"credits\":\"18\",\"marketPrice\":\"image\"}"
+  },
+  {
+    "id": 56,
+    "groupName": "Seedance 1.0 Pro Fast",
+    "count": 1,
+    "path": "seedance-1-0-pro-fast",
+    "tagline": "ByteDance\u2019s AI video-generation model that inherits Seedance 1.0 Pro\u2019s core quality while delivering 3\u00d7 faster rendering, producing coherent 1080p clips with stable motion and efficient compute performance.",
+    "taskType": [
+      "Image to Video"
+    ],
+    "provider": "ByteDance",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1762326539526pljz13sk.mp4",
+    "priceInfoJson": "{\"price\":\"0.08\",\"discount\":\"30%\",\"credits\":\"16\",\"marketPrice\":\"10s\"}"
+  },
+  {
+    "id": 55,
+    "groupName": "Grok Imagine",
+    "count": 5,
+    "path": "grok-imagine",
+    "tagline": "Grok Imagine is xAI\u2019s multimodal image and video generation model that converts text or images into short visual outputs with coherent motion and synchronized audio.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video",
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Grok",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17622493381934oqt0mus.mp4",
+    "priceInfoJson": "{\"price\":\"0.1\",\"discount\":\"\",\"credits\":\"20\",\"marketPrice\":\"6s\"}"
+  },
+  {
+    "id": 54,
+    "groupName": "Hailuo 2.3",
+    "count": 2,
+    "path": "hailuo-2-3",
+    "tagline": "Hailuo 2.3 is MiniMax\u2019s high-fidelity AI video generation model designed to create realistic motion, expressive characters, and cinematic visuals. It supports both text-to-video and image-to-video, handling complex movements, lighting changes, and detailed facial expressions with stability and consistency. ",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Hailuo",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17617485899096l3kaqw8.mp4",
+    "priceInfoJson": "{\"price\":\"0.15\",\"discount\":\"20%\",\"credits\":\"30\",\"marketPrice\":\"6s\"}"
+  },
+  {
+    "id": 53,
+    "groupName": "Sora 2 Pro Storyboard",
+    "count": 1,
+    "path": "sora-2-pro-storyboard",
+    "tagline": "OpenAI\u2019s advanced AI video model for structured video generation, supporting multi-scene sequencing, visual consistency, and 25-second output control.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "OpenAI",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760928741938t7267goh.mp4",
+    "priceInfoJson": "{\"price\":\"0.75\",\"discount\":\"75%\",\"credits\":\"150\",\"marketPrice\":\"10-25s\"}"
+  },
+  {
+    "id": 52,
+    "groupName": "Veo 3.1",
+    "count": 4,
+    "path": "veo-3-1",
+    "tagline": "Google DeepMind\u2019s upgraded AI video model for realistic motion generation, extended clip duration, multi-image reference control, and synchronized audio output in native 1080p.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Google",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760602507559tkxwc40s.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 51,
+    "groupName": "Sora 2 Pro",
+    "count": 4,
+    "path": "sora-2-pro",
+    "tagline": "An upgraded version of OpenAI\u2019s Sora 2 model, delivering more realistic motion, refined physics, and synchronized native audio, with text-to-video and image-to-video generation up to 15 seconds in 1080p HD.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "OpenAI",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760438795712rpkzz007.png",
+    "priceInfoJson": "{\"price\":\"0.75\",\"discount\":\"58%\",\"credits\":\"150\",\"marketPrice\":\"10\u201315s\"}"
+  },
+  {
+    "id": 50,
+    "groupName": "Sora 2 Watermark Remove API",
+    "count": 1,
+    "path": "sora-2-watermark-remover",
+    "tagline": "Kie AI Sora 2 Watermark Remover API uses AI detection and motion tracking to remove dynamic watermarks from Sora 2 videos while keeping frames smooth and natural. The original video URL must be publicly accessible, and the processing time typically takes 1\u20133 seconds.",
+    "taskType": [
+      "Video Editing"
+    ],
+    "provider": "OpenAI",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604323611691vk4ciwm.png",
+    "priceInfoJson": "{\"price\":\"0.05\",\"discount\":\"\",\"credits\":\"10\",\"marketPrice\":\"use\"}"
+  },
+  {
+    "id": 49,
+    "groupName": "Veo 3",
+    "count": 4,
+    "path": "features/v3-api",
+    "tagline": "Google Veo 3 is a next-generation AI video generation model developed by Google DeepMind. It supports both text-to-video and image-to-video creation, producing high-fidelity, cinematic visuals with advanced scene understanding and natural motion simulation. Through Kie.ai, users can access Veo 3 Fast for rapid, cost-efficient workflows or Veo 3 Quality for premium output, all with transparent pricing and stable infrastructure.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Google",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760432731471jt448wny.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 47,
+    "groupName": "4o Image",
+    "count": 1,
+    "path": "4o-image-api",
+    "tagline": "The GPT-Image-1 model, also known as ChatGPT 4o Image, is OpenAI\u2019s latest AI image generation model. It understands both text and visual context, allowing developers to create and edit images with remarkable accuracy. Unlike traditional diffusion models, GPT-Image-1 follows instructions precisely, supports consistent styles, and renders legible text \u2014 making it ideal for applications in design, marketing, and creative automation.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "OpenAI",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604329349269y2j98mv.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 46,
+    "groupName": "Flux Kontext",
+    "count": 1,
+    "path": "flux-kontext-api",
+    "tagline": "In a world where visuals drive engagement, FLUX.1 Kontext API on Kie.ai empowers you to edit images like never before. Harness cutting-edge AI to transform photos with simple text commands, delivering professional results that save time and boost creativity. Whether you're optimizing e-commerce listings or crafting marketing masterpieces, Kie.ai's FLUX.1 Kontext API is your gateway to efficient, high-quality image innovation.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Black Forest Labs",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760432961990rfe43tz2.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 45,
+    "groupName": "Sora 2",
+    "count": 7,
+    "path": "sora-2",
+    "tagline": "Sora 2 is OpenAI\u2019s latest AI video generation model, supporting both text-to-video and image-to-video. It delivers realistic motion, physics consistency, with improved control over style, scene, and aspect ratio\u2014ideal for creative apps and social media content.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "OpenAI",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760432975229058dr3gj.png",
+    "priceInfoJson": "{\"price\":\"0.15\",\"discount\":\"85%\",\"credits\":\"30\",\"marketPrice\":\"10s\"}"
+  },
+  {
+    "id": 44,
+    "groupName": "Topaz Image Upscale",
+    "count": 1,
+    "path": "topaz-image-upscale",
+    "tagline": "Topaz Labs Image Upscale is an AI image enhancement model that increases resolution and restores detail with high-fidelity upscaling, natural texture reconstruction, and improved clarity across low-quality images.",
+    "taskType": [
+      "Image to Image"
+    ],
+    "provider": "Topaz",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1763435260839_zZ9NIgks.png",
+    "priceInfoJson": "{\"price\":\"0.05\",\"discount\":\"50%\",\"credits\":\"10\",\"marketPrice\":\"image\"}"
+  },
+  {
+    "id": 43,
+    "groupName": "Kling 2.5 Turbo",
+    "count": 2,
+    "path": "kling-2-5",
+    "tagline": "Kling 2.5 Turbo is the latest AI video generation model from Kuaishou Kling, designed for text-to-video and image-to-video creation. Compared to earlier versions, it features better prompt adherence, more fluid motion, consistent artistic styles, and realistic physics simulation.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Kling",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760432909816jpwq718j.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 42,
+    "groupName": "Wan 2.5",
+    "count": 2,
+    "path": "wan-2-5",
+    "tagline": " Wan 2.5 API from Alibaba is designed for cinematic AI video generation, supporting both text-to-video (wan2.5-t2v-preview) and image-to-video (wan2.5-i2v-preview). It natively synchronizes visuals with dialogue, ambient sound, and background music. With support for multiple resolutions (720p, 1080p) and aspect ratios (16:9, 9:16, 1:1), the API delivers flexible outputs suitable for social media, advertising, and creative storytelling.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Wan",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760434369873nrjlnnt2.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 40,
+    "groupName": "Wan 2.2 Animate",
+    "count": 2,
+    "path": "wan-animate",
+    "tagline": "Wan 2.2 Animate API by Alibaba\u2019s Tongyi Lab generates realistic character videos with motion, expressions, and lighting. It supports animation mode for driving static images and replacement mode for swapping characters into existing clips seamlessly.",
+    "taskType": [
+      "Image to Video"
+    ],
+    "provider": "Wan",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1767074742592_fqgf9Fbd.mp4",
+    "priceInfoJson": "{\"price\":\"\",\"discount\":\"\",\"credits\":\"\",\"marketPrice\":\"\"}"
+  },
+  {
+    "id": 39,
+    "groupName": "Hailuo 02",
+    "count": 4,
+    "path": "hailuo-api",
+    "tagline": "Hailuo 02 API is Minimax\u2019s advanced AI video generation model that turns text or images into short, cinematic clips. It supports high-quality output up to 1080P, with realistic motion, physics simulation, and precise camera control.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Other",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604344287926wc9xcv4.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 38,
+    "groupName": "Topaz Video Upscaler",
+    "count": 1,
+    "path": "topaz-video-upscaler",
+    "tagline": "Topaz Video Upscaler API delivers professional-grade AI video enhancement, restoring detail, reducing noise, and providing high-quality upscaling to 1080p or 4K.",
+    "taskType": [
+      "Video to Video"
+    ],
+    "provider": "Topaz",
+    "coverLink": "https://static.aiquickdraw.com/aa/kie-maket/1763435397624_8Upi9flH.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 36,
+    "groupName": "Kling AI Avatar",
+    "count": 2,
+    "path": "kling-ai-avatar",
+    "tagline": "Kling AI Avtar API generates lifelike talking avatars from photos and audio. With prompt control for emotions, expressions, and pacing, it delivers accurate lip sync and consistent identity for education, marketing, social media, and virtual influencers.",
+    "taskType": [
+      "Lip Sync"
+    ],
+    "provider": "Kling",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17619663858536k4b38ze.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 35,
+    "groupName": "Seedream 4.0",
+    "count": 2,
+    "path": "seedream-api",
+    "tagline": "Seedream 4.0 API from ByteDance is a next-generation model that combines text-to-image, image-to-image, and editing with batch consistency, high speed, and professional-quality outputs.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "ByteDance",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604346335909arn4y6a.webp",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 34,
+    "groupName": "Infinitalk API-AI lip-sync generator",
+    "count": 1,
+    "path": "infinitalk",
+    "tagline": "InfiniteTalk API is an advanced AI lip sync video API developed by MeiGen-AI. It transforms images or text with audio into natural talking avatars, offering precise lip synchronization, expressive facial movements, and even infinite-length video generation.",
+    "taskType": [
+      "Speech to Video",
+      "Lip Sync"
+    ],
+    "provider": "Other",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17612189801555a59wtwu.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 33,
+    "groupName": "Recraft Remove Background",
+    "count": 1,
+    "path": "recraft-remove-background",
+    "tagline": "Built by Recraft AI, the Remove Background API accurately separates subjects from any background and delivers clean, transparent outputs\u2014optimized for seamless integration into websites, eCommerce platforms, and creative workflows.",
+    "taskType": [
+      "Image to Image"
+    ],
+    "provider": "Recraft",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760434543121linen0ej.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 32,
+    "groupName": "Recraft Crisp Upscale",
+    "count": 1,
+    "path": "recraft-crisp-upscale",
+    "tagline": "Transform blurry photos into crystal-clear masterpieces using the Recraft Crisp Upscale API. As the ultimate free image upscaler, this tool leverages advanced AI to deliver professional-grade results without costing a dime. Whether you're a designer, marketer, or hobbyist, experience seamless picture upscaler capabilities that make free image upscaling a breeze. Available exclusively on Kie.ai, it's the best image upscaler online perfectly free online for anyone wondering how to make a picture higher resolution online free.",
+    "taskType": [
+      "Image to Image"
+    ],
+    "provider": "Recraft",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604347566588mjtbog0.webp",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 31,
+    "groupName": "Ideogram V3 Reframe Image",
+    "count": 1,
+    "path": "ideogram-reframe",
+    "tagline": "Ideogram V3 Reframe is a specialized image-to-image model built on Ideogram 3.0, designed to intelligently extend and adapt images across diverse aspect ratios and resolutions. Leveraging advanced AI outpainting, it preserves visual consistency while enabling creative reframing for digital, print, and video content.",
+    "taskType": [
+      "Image to Image"
+    ],
+    "provider": "Ideogram",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433803152bz80x9a1.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 30,
+    "groupName": "Elevenlabs Audio Isolation",
+    "count": 1,
+    "path": "elevenlabs-audio-isolation",
+    "tagline": "ElevenLabs Audio Isolation API uses AI to remove background noise, music, and interference, while preserving clear, natural speech. It isolates speech with high precision, making it ideal for podcasts, interviews, livestreams, and professional recordings.",
+    "taskType": [
+      "Audio to Audio"
+    ],
+    "provider": "Elevenlabs",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604337309549kvpcuz0.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 29,
+    "groupName": "Elevenlabs Sound Effect",
+    "count": 1,
+    "path": "elevenlabs-sound-effect",
+    "tagline": "The Elevenlabs Sound Effect V2 API is the upgraded version of the Elevenlabs Sound Effect Model, launched in September 2025. It supports 20+ second clips , seamless looping, and 48 kHz audio, making text to sound effect generation more accurate and production-ready.",
+    "taskType": [
+      "Text to Speech"
+    ],
+    "provider": "Elevenlabs",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433696929wdlu0jeq.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 28,
+    "groupName": "Elevenlabs Speech to Text",
+    "count": 1,
+    "path": "elevenlabs-speech-to-text",
+    "tagline": "The ElevenLabs speech to text API, powered by the Scribe v1 model, delivers state-of-the-art transcription with industry-leading accuracy, multilingual support, and advanced features such as speaker diarization and audio-event tagging.",
+    "taskType": [
+      "Speech to Text"
+    ],
+    "provider": "Elevenlabs",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433678866k5uw7r46.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 27,
+    "groupName": "Elevenlabs Text to Speech",
+    "count": 2,
+    "path": "elevenlabs-tts",
+    "tagline": "Elevate your content with the ElevenLabs API text to speech, delivering human-like audio that captivates audiences. At Kie.ai, access ElevenLabs TTS API effortlessly for podcasts, apps, and more \u2013 no coding expertise required.",
+    "taskType": [
+      "Text to Speech"
+    ],
+    "provider": "Elevenlabs",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433667541h7dtoy2i.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 26,
+    "groupName": "Wan 2.2 A14B Speech to Video Turbo",
+    "count": 1,
+    "path": "wan-speech-to-video-turbo",
+    "tagline": "Wan 2.2 A14B Turbo API Speech to Video, this revolutionary AI model turns static images and audio clips into dynamic, expressive videos, perfect for creators, marketers, and educators. Available now on Kie.ai, experience seamless integration and unparalleled quality in video generation.",
+    "taskType": [
+      "Speech to Video"
+    ],
+    "provider": "Wan",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433638006zvwqx9bq.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 25,
+    "groupName": "Seedream",
+    "count": 1,
+    "path": "seedream",
+    "tagline": "Seedream 3.0 API is ByteDance\u2019s latest text-to-image API, built for native 2K resolution, faster generation, and precise bilingual text rendering. Compared to Seedream 2.0, the Seedream v3 API delivers higher fidelity, cinematic aesthetics, and designer-level typography.",
+    "taskType": [
+      "Text to Image"
+    ],
+    "provider": "ByteDance",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604336223654bm85hvx.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 24,
+    "groupName": "Qwen Image",
+    "count": 2,
+    "path": "qwen-image",
+    "tagline": "The Qwen Image API empowers creators, developers, and businesses to generate and edit photorealistic images effortlessly. Whether you're crafting intricate designs or refining existing visuals, this powerful Qwen API integrates seamlessly into your workflow, delivering multilingual text rendering and advanced editing capabilities that rival top models.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Qwen",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433599320dsgya6hv.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 23,
+    "groupName": "NanoBanana-Gemini 2.5 Flash Image Preview",
+    "count": 3,
+    "path": "nano-banana",
+    "tagline": "Gemini 3 Image Preview (aka Nano Banana) is an advanced AI model excelling in natural language-driven image generation and editing. It produces hyper-realistic, physics-aware visuals with seamless style transformations.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Google",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/176043358319433328iqf.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 22,
+    "groupName": "Runway Video Generation",
+    "count": 2,
+    "path": "runway-api",
+    "tagline": "Step into the future of content creation with the Runway API, powered by Runway AI's groundbreaking Gen-4 architecture. Available exclusively through Kie.ai, this toolkit transforms ideas into stunning videos using Runway Gen 4 Turbo API and Runway Aleph API. Whether you're generating from text, editing scenes, or converting images to dynamic footage, Runway AI image to video capabilities deliver professional results instantly.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Runway",
+    "coverLink": "",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 16,
+    "groupName": "Suno API",
+    "count": 15,
+    "path": "suno-api",
+    "tagline": "Kie AI Music API is an AI music-generation model that converts text prompts into full vocal and instrumental tracks with natural dynamics and coherent musical progression, and it currently supports the latest V5 model for enhanced realism and scalable performance.",
+    "taskType": [
+      "Text to Music"
+    ],
+    "provider": "Suno",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433549799kz5yzjvx.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 13,
+    "groupName": "Qwen Image Edit",
+    "count": 1,
+    "path": "qwen/image-edit",
+    "tagline": "Qwen-Image-Edit is an open-source image editing model based on Qwen-Image, supporting semantic and appearance editing with precise, visually coherent results. It also handles bilingual (Chinese and English) text editing while preserving font, size, and style, making it a versatile tool for advanced visual content manipulation.",
+    "taskType": [
+      "Image to Image"
+    ],
+    "provider": "Qwen",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760433511788x6nqijt3.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 12,
+    "groupName": "Ideogram Character",
+    "count": 3,
+    "path": "ideogram/character",
+    "tagline": "Ideogram Character is the latest feature released by Ideogram AI, ensuring characters retain core features such as facial traits, proportions, and hairstyles across different scenes, artistic styles, and contexts. Whether creating characters from a single reference image or fine-tuning existing ones, Kie.ai's Ideogram Character API offers flexibility and precision through its Base, Edit, and Remix operations. ",
+    "taskType": [
+      "Image to Image"
+    ],
+    "provider": "Ideogram",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760434830700wqw6xlbh.png",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 6,
+    "groupName": "Seedance V1",
+    "count": 5,
+    "path": "bytedance/seedance-v1",
+    "tagline": "From Seeds of Ideas to Dancing Visuals: Seedance 1.0 API Brings Your Stories to Life",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "ByteDance",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760434788210cjt1t1sz.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 5,
+    "groupName": "Kling V2.1",
+    "count": 4,
+    "path": "kling/v2-1",
+    "tagline": "The Kling 2.1 model powers cutting-edge video generation with hyper-realistic motion, advanced physics, and high-resolution outputs up to 1080p. Its enhanced semantic understanding and fast rendering make it ideal for dynamic, professional-grade video creation.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Kling",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/176043490634201gk2mdm.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 4,
+    "groupName": "Ideogram V3",
+    "count": 3,
+    "path": "ideogram/v3",
+    "tagline": "Ideogram V3 API is the latest generation of Ideogram\u2019s image generation model, offering text-to-image, image editing, reframing, and remixing with improved consistency and creative control.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Ideogram",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760434993367qdfpwl8y.webp",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 3,
+    "groupName": "Wan V2.2 A14B",
+    "count": 2,
+    "path": "wan/v2-2",
+    "tagline": "Wan 2.2 A14B Turbo API, the latest generation of the Wan video model, is built with a Mixture-of-Experts (MoE) architecture and supports text-to-video (T2V), image-to-video (I2V) and speech-to-video(S2V). It delivers smooth 720p@24fps clips with cinematic quality, stable motion, and consistent visual style for diverse creative and commercial use cases.",
+    "taskType": [
+      "Text to Video",
+      "Image to Video"
+    ],
+    "provider": "Wan",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/17604350251754xfutuuc.mp4",
+    "priceInfoJson": ""
+  },
+  {
+    "id": 2,
+    "groupName": "Imagen 4",
+    "count": 3,
+    "path": "google/imagen4",
+    "tagline": "Google Imagen 4, developed by Google DeepMind and introduced at Google I/O 2025, is a state-of-the-art text-to-image generation model that transforms prompts into photorealistic, high-quality visuals with exceptional detail and creative versatility. Its enhanced variant, Google Imagen 4 Ultra, delivers even greater precision, speed, and resolution, making both models ideal for commercial, marketing, design, and creative applications.",
+    "taskType": [
+      "Text to Image",
+      "Image to Image"
+    ],
+    "provider": "Google",
+    "coverLink": "https://file.aiquickdraw.com/static//kie-maket/1760435085346iwop02tf.webp",
+    "priceInfoJson": ""
+  }
+]
