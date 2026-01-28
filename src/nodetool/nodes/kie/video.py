@@ -2744,7 +2744,7 @@ class Kling21ImageToVideo(KieVideoBaseNode):
 
     prompt: str = Field(
         default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="Optional text prompt to guide the video generation.",
+        description="Text prompt to guide the video generation.",
     )
 
     image1: ImageRef = Field(
@@ -2789,6 +2789,8 @@ class Kling21ImageToVideo(KieVideoBaseNode):
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
@@ -2919,8 +2921,8 @@ class Wan25ImageToVideo(KieVideoBaseNode):
     )
 
     class Duration(str, Enum):
-        D5 = "5"
-        D10 = "10"
+        D5 = "5s"
+        D10 = "10s"
 
     duration: Duration = Field(
         default=Duration.D5,
@@ -2944,6 +2946,8 @@ class Wan25ImageToVideo(KieVideoBaseNode):
     ) -> dict[str, Any]:
         if not self.prompt:
             raise ValueError("Prompt is required")
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
