@@ -18,30 +18,46 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+
 class FileWatchTrigger(GraphNode[FileWatchTriggerOutput]):
     """
 
-        Trigger node that monitors filesystem changes.
+    Trigger node that monitors filesystem changes.
 
-        This trigger uses the watchdog library to monitor a directory or file
-        for changes. When a change is detected, an event is emitted containing:
-        - The path of the changed file
-        - The type of change (created, modified, deleted, moved)
-        - Timestamp of the event
+    This trigger uses the watchdog library to monitor a directory or file
+    for changes. When a change is detected, an event is emitted containing:
+    - The path of the changed file
+    - The type of change (created, modified, deleted, moved)
+    - Timestamp of the event
 
-        This trigger is useful for:
-        - Processing files as they arrive in a directory
-        - Triggering workflows on configuration changes
-        - Building file-based automation pipelines
+    This trigger is useful for:
+    - Processing files as they arrive in a directory
+    - Triggering workflows on configuration changes
+    - Building file-based automation pipelines
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-    path: str | OutputHandle[str] = connect_field(default='.', description='Path to watch (file or directory)')
-    recursive: bool | OutputHandle[bool] = connect_field(default=False, description='Watch subdirectories recursively')
-    patterns: list[str] | OutputHandle[list[str]] = connect_field(default=['*'], description="File patterns to watch (e.g., ['*.txt', '*.json'])")
-    ignore_patterns: list[str] | OutputHandle[list[str]] = connect_field(default=[], description='File patterns to ignore')
-    events: list[str] | OutputHandle[list[str]] = connect_field(default=['created', 'modified', 'deleted', 'moved'], description='Types of events to watch for')
-    debounce_seconds: float | OutputHandle[float] = connect_field(default=0.5, description='Debounce time to avoid duplicate events')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default=".", description="Path to watch (file or directory)"
+    )
+    recursive: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Watch subdirectories recursively"
+    )
+    patterns: list[str] | OutputHandle[list[str]] = connect_field(
+        default=["*"], description="File patterns to watch (e.g., ['*.txt', '*.json'])"
+    )
+    ignore_patterns: list[str] | OutputHandle[list[str]] = connect_field(
+        default=[], description="File patterns to ignore"
+    )
+    events: list[str] | OutputHandle[list[str]] = connect_field(
+        default=["created", "modified", "deleted", "moved"],
+        description="Types of events to watch for",
+    )
+    debounce_seconds: float | OutputHandle[float] = connect_field(
+        default=0.5, description="Debounce time to avoid duplicate events"
+    )
 
     @property
     def out(self) -> "FileWatchTriggerOutputs":
@@ -55,26 +71,27 @@ class FileWatchTrigger(GraphNode[FileWatchTriggerOutput]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class FileWatchTriggerOutputs(OutputsProxy):
     @property
     def event(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['event'])
+        return typing.cast(OutputHandle[typing.Any], self["event"])
 
     @property
     def path(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['path'])
+        return typing.cast(OutputHandle[typing.Any], self["path"])
 
     @property
     def dest_path(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['dest_path'])
+        return typing.cast(OutputHandle[typing.Any], self["dest_path"])
 
     @property
     def is_directory(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['is_directory'])
+        return typing.cast(OutputHandle[typing.Any], self["is_directory"])
 
     @property
     def timestamp(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['timestamp'])
+        return typing.cast(OutputHandle[typing.Any], self["timestamp"])
 
 
 import typing
@@ -83,29 +100,41 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+
 class IntervalTrigger(GraphNode[IntervalTriggerOutput]):
     """
 
-        Trigger node that fires at regular time intervals.
+    Trigger node that fires at regular time intervals.
 
-        This trigger emits events at a configured interval, similar to a timer
-        or scheduler. Each event contains:
-        - The tick number (how many times the trigger has fired)
-        - The current timestamp
-        - The configured interval
+    This trigger emits events at a configured interval, similar to a timer
+    or scheduler. Each event contains:
+    - The tick number (how many times the trigger has fired)
+    - The current timestamp
+    - The configured interval
 
-        This trigger is useful for:
-        - Periodic data collection or polling
-        - Scheduled batch processing
-        - Heartbeat or keepalive workflows
-        - Time-based automation
+    This trigger is useful for:
+    - Periodic data collection or polling
+    - Scheduled batch processing
+    - Heartbeat or keepalive workflows
+    - Time-based automation
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-    interval_seconds: float | OutputHandle[float] = connect_field(default=60.0, description='Interval between triggers in seconds')
-    initial_delay_seconds: float | OutputHandle[float] = connect_field(default=0.0, description='Delay before the first trigger fires')
-    emit_on_start: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to emit an event immediately on start')
-    include_drift_compensation: bool | OutputHandle[bool] = connect_field(default=True, description='Compensate for execution time to maintain accurate intervals')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
+    interval_seconds: float | OutputHandle[float] = connect_field(
+        default=60.0, description="Interval between triggers in seconds"
+    )
+    initial_delay_seconds: float | OutputHandle[float] = connect_field(
+        default=0.0, description="Delay before the first trigger fires"
+    )
+    emit_on_start: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Whether to emit an event immediately on start"
+    )
+    include_drift_compensation: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Compensate for execution time to maintain accurate intervals",
+    )
 
     @property
     def out(self) -> "IntervalTriggerOutputs":
@@ -119,30 +148,31 @@ class IntervalTrigger(GraphNode[IntervalTriggerOutput]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class IntervalTriggerOutputs(OutputsProxy):
     @property
     def tick(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['tick'])
+        return typing.cast(OutputHandle[typing.Any], self["tick"])
 
     @property
     def elapsed_seconds(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['elapsed_seconds'])
+        return typing.cast(OutputHandle[typing.Any], self["elapsed_seconds"])
 
     @property
     def interval_seconds(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['interval_seconds'])
+        return typing.cast(OutputHandle[typing.Any], self["interval_seconds"])
 
     @property
     def timestamp(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['timestamp'])
+        return typing.cast(OutputHandle[typing.Any], self["timestamp"])
 
     @property
     def source(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['source'])
+        return typing.cast(OutputHandle[typing.Any], self["source"])
 
     @property
     def event_type(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['event_type'])
+        return typing.cast(OutputHandle[typing.Any], self["event_type"])
 
 
 import typing
@@ -151,25 +181,33 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+
 class ManualTrigger(GraphNode[ManualTriggerOutput]):
     """
 
-        Trigger node that waits for manual events pushed via the API.
+    Trigger node that waits for manual events pushed via the API.
 
-        This trigger enables interactive workflows where events are pushed
-        programmatically through the workflow runner's input API. Each event
-        pushed to the trigger is emitted and processed by the workflow.
+    This trigger enables interactive workflows where events are pushed
+    programmatically through the workflow runner's input API. Each event
+    pushed to the trigger is emitted and processed by the workflow.
 
-        This trigger is useful for:
-        - Building chatbot-style workflows
-        - Interactive processing pipelines
-        - Manual batch processing
-        - Testing and debugging workflows
+    This trigger is useful for:
+    - Building chatbot-style workflows
+    - Interactive processing pipelines
+    - Manual batch processing
+    - Testing and debugging workflows
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-    name: str | OutputHandle[str] = connect_field(default='manual_trigger', description='Name for this trigger (used in API calls)')
-    timeout_seconds: float | OutputHandle[float] | None = connect_field(default=None, description='Timeout waiting for events (None = wait forever)')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
+    name: str | OutputHandle[str] = connect_field(
+        default="manual_trigger",
+        description="Name for this trigger (used in API calls)",
+    )
+    timeout_seconds: float | OutputHandle[float] | None = connect_field(
+        default=None, description="Timeout waiting for events (None = wait forever)"
+    )
 
     @property
     def out(self) -> "ManualTriggerOutputs":
@@ -183,22 +221,23 @@ class ManualTrigger(GraphNode[ManualTriggerOutput]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class ManualTriggerOutputs(OutputsProxy):
     @property
     def data(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['data'])
+        return typing.cast(OutputHandle[typing.Any], self["data"])
 
     @property
     def timestamp(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['timestamp'])
+        return typing.cast(OutputHandle[typing.Any], self["timestamp"])
 
     @property
     def source(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['source'])
+        return typing.cast(OutputHandle[typing.Any], self["source"])
 
     @property
     def event_type(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['event_type'])
+        return typing.cast(OutputHandle[typing.Any], self["event_type"])
 
 
 import typing
@@ -207,28 +246,31 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
+
 class TriggerNode(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-        Base class for trigger nodes that enable infinite-running workflows.
+    Base class for trigger nodes that enable infinite-running workflows.
 
-        Trigger nodes are special streaming nodes that:
-        1. Wait for external events (webhooks, file changes, timers, etc.)
-        2. Emit event data when triggered
-        3. Loop back to wait for the next event
-        4. Only terminate when the workflow is explicitly stopped
+    Trigger nodes are special streaming nodes that:
+    1. Wait for external events (webhooks, file changes, timers, etc.)
+    2. Emit event data when triggered
+    3. Loop back to wait for the next event
+    4. Only terminate when the workflow is explicitly stopped
 
-        Subclasses must implement:
-        - setup_trigger(): Initialize the event source
-        - wait_for_event(): Block until an event occurs and return event data
-        - cleanup_trigger(): Clean up the event source
+    Subclasses must implement:
+    - setup_trigger(): Initialize the event source
+    - wait_for_event(): Block until an event occurs and return event data
+    - cleanup_trigger(): Clean up the event source
 
-        Attributes:
-            _is_running: Flag to control the trigger loop
-            _event_queue: Queue for receiving events from external sources
+    Attributes:
+        _is_running: Flag to control the trigger loop
+        _event_queue: Queue for receiving events from external sources
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -245,16 +287,60 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
-class TriggerNode[FileWatchTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
+
+class WaitNode(GraphNode[WaitOutput]):
+    """
+
+    Node that suspends workflow execution until externally resumed.
+
+    This node pauses the workflow at this point and waits for an external
+    signal (via API call) to continue. When resumed, it outputs the input
+    data merged with any data provided during the resume call.
+
+    Use cases:
+    - Human-in-the-loop workflows requiring approval
+    - Waiting for external processes to complete
+    - Pausing workflows for manual data entry
+    - Synchronization points in multi-step processes
+    - Interactive chatbot-style workflows
+
+    The workflow is suspended (not running) while waiting, so it doesn't
+    consume resources. State is persisted and the workflow can be resumed
+    even after server restarts.
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Optional timeout in seconds (0 = wait indefinitely)"
+    )
+    input: Any | OutputHandle[Any] = connect_field(
+        default="", description="Input data to pass through to the output when resumed"
+    )
+
+    @property
+    def out(self) -> "WaitNodeOutputs":
+        return WaitNodeOutputs(self)
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.triggers.TriggerNode[FileWatchTriggerOutput]
+        return nodetool.nodes.nodetool.triggers.WaitNode
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
+class WaitNodeOutputs(OutputsProxy):
+    @property
+    def data(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self["data"])
+
+    @property
+    def resumed_at(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self["resumed_at"])
+
+    @property
+    def waited_seconds(self) -> OutputHandle[typing.Any]:
+        return typing.cast(OutputHandle[typing.Any], self["waited_seconds"])
 
 
 import typing
@@ -263,83 +349,44 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.triggers
 from nodetool.workflows.base_node import BaseNode
 
-class TriggerNode[IntervalTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.triggers.TriggerNode[IntervalTriggerOutput]
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.triggers
-from nodetool.workflows.base_node import BaseNode
-
-class TriggerNode[ManualTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.triggers.TriggerNode[ManualTriggerOutput]
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.triggers
-from nodetool.workflows.base_node import BaseNode
-
-class TriggerNode[WebhookTriggerOutput](SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-
-    @classmethod
-    def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.triggers.TriggerNode[WebhookTriggerOutput]
-
-    @classmethod
-    def get_node_type(cls):
-        return cls.get_node_class().get_node_type()
-
-
-import typing
-from pydantic import Field
-from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
-import nodetool.nodes.nodetool.triggers
-from nodetool.workflows.base_node import BaseNode
 
 class WebhookTrigger(GraphNode[WebhookTriggerOutput]):
     """
 
-        Trigger node that starts an HTTP server to receive webhook requests.
+    Trigger node that starts an HTTP server to receive webhook requests.
 
-        Each incoming HTTP request is emitted as an event containing:
-        - The request body (parsed as JSON if applicable)
-        - Request headers
-        - Query parameters
-        - HTTP method
+    Each incoming HTTP request is emitted as an event containing:
+    - The request body (parsed as JSON if applicable)
+    - Request headers
+    - Query parameters
+    - HTTP method
 
-        This trigger is useful for:
-        - Receiving notifications from external services
-        - Building API endpoints that trigger workflows
-        - Integration with third-party webhook providers
+    This trigger is useful for:
+    - Receiving notifications from external services
+    - Building API endpoints that trigger workflows
+    - Integration with third-party webhook providers
     """
 
-    max_events: int | OutputHandle[int] = connect_field(default=0, description='Maximum number of events to process (0 = unlimited)')
-    port: int | OutputHandle[int] = connect_field(default=8080, description='Port to listen on for webhook requests')
-    path: str | OutputHandle[str] = connect_field(default='/webhook', description='URL path to listen on')
-    host: str | OutputHandle[str] = connect_field(default='127.0.0.1', description="Host address to bind to. Use '0.0.0.0' to listen on all interfaces.")
-    methods: list[str] | OutputHandle[list[str]] = connect_field(default=['POST'], description='HTTP methods to accept')
-    secret: str | OutputHandle[str] = connect_field(default='', description='Optional secret for validating requests (checks X-Webhook-Secret header)')
+    max_events: int | OutputHandle[int] = connect_field(
+        default=0, description="Maximum number of events to process (0 = unlimited)"
+    )
+    port: int | OutputHandle[int] = connect_field(
+        default=8080, description="Port to listen on for webhook requests"
+    )
+    path: str | OutputHandle[str] = connect_field(
+        default="/webhook", description="URL path to listen on"
+    )
+    host: str | OutputHandle[str] = connect_field(
+        default="127.0.0.1",
+        description="Host address to bind to. Use '0.0.0.0' to listen on all interfaces.",
+    )
+    methods: list[str] | OutputHandle[list[str]] = connect_field(
+        default=["POST"], description="HTTP methods to accept"
+    )
+    secret: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Optional secret for validating requests (checks X-Webhook-Secret header)",
+    )
 
     @property
     def out(self) -> "WebhookTriggerOutputs":
@@ -353,37 +400,36 @@ class WebhookTrigger(GraphNode[WebhookTriggerOutput]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
+
 class WebhookTriggerOutputs(OutputsProxy):
     @property
     def body(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['body'])
+        return typing.cast(OutputHandle[typing.Any], self["body"])
 
     @property
     def headers(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['headers'])
+        return typing.cast(OutputHandle[typing.Any], self["headers"])
 
     @property
     def query(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['query'])
+        return typing.cast(OutputHandle[typing.Any], self["query"])
 
     @property
     def method(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['method'])
+        return typing.cast(OutputHandle[typing.Any], self["method"])
 
     @property
     def path(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['path'])
+        return typing.cast(OutputHandle[typing.Any], self["path"])
 
     @property
     def timestamp(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['timestamp'])
+        return typing.cast(OutputHandle[typing.Any], self["timestamp"])
 
     @property
     def source(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['source'])
+        return typing.cast(OutputHandle[typing.Any], self["source"])
 
     @property
     def event_type(self) -> OutputHandle[typing.Any]:
-        return typing.cast(OutputHandle[typing.Any], self['event_type'])
-
-
+        return typing.cast(OutputHandle[typing.Any], self["event_type"])

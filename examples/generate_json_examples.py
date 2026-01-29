@@ -4,130 +4,130 @@ import datetime
 import sys
 import os
 from unittest.mock import MagicMock
-
-# Mock huggingface_hub to avoid dependency issues in this environment
-sys.modules["huggingface_hub"] = MagicMock()
-sys.modules["huggingface_hub.inference"] = MagicMock()
-sys.modules["huggingface_hub.inference._providers"] = MagicMock()
-
 from pydantic import BaseModel
 
-# Define a dummy ModelInfo class for Pydantic compatibility
-class ModelInfo(BaseModel):
-    pass
+sys.path.append(os.path.dirname(__file__))
 
-sys.modules["huggingface_hub"].ModelInfo = ModelInfo
-sys.modules["cryptography"] = MagicMock()
-sys.modules["cryptography.fernet"] = MagicMock()
-sys.modules["cryptography.hazmat"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives.kdf"] = MagicMock()
-sys.modules["cryptography.hazmat.primitives.kdf.pbkdf2"] = MagicMock()
-sys.modules["cryptography.hazmat.backends"] = MagicMock()
-sys.modules["boto3"] = MagicMock()
-sys.modules["botocore"] = MagicMock()
-sys.modules["botocore.exceptions"] = MagicMock()
-sys.modules["keyring"] = MagicMock()
-sys.modules["keyring.errors"] = MagicMock()
-sys.modules["chromadb"] = MagicMock()
-sys.modules["chromadb.config"] = MagicMock()
-sys.modules["chromadb.utils"] = MagicMock()
-sys.modules["chromadb.utils.embedding_functions"] = MagicMock()
-sys.modules["chromadb.utils.embedding_functions.ollama_embedding_function"] = MagicMock()
-sys.modules["chromadb.utils.embedding_functions.sentence_transformer_embedding_function"] = MagicMock()
-sys.modules["langchain_core"] = MagicMock()
-sys.modules["langchain_core.documents"] = MagicMock()
-sys.modules["langchain_text_splitters"] = MagicMock()
-sys.modules["google"] = MagicMock()
-sys.modules["google.genai"] = MagicMock()
-sys.modules["google.genai.client"] = MagicMock()
-sys.modules["google.genai.types"] = MagicMock()
+from ai_workflows_on_reddit import graph as ai_workflows_on_reddit_graph
+from wikipedia_agent_example import graph as wikipedia_agent_example_graph
+from learning_path_generator import graph as learning_path_generator_graph
+from instagram_scraper_task import graph as instagram_scraper_task_graph
+from reddit_scraper_agent import graph as reddit_scraper_agent_graph
+from test_hackernews_agent import graph as test_hackernews_agent_graph
+from chromadb_research_agent import graph as chromadb_research_agent_graph
+from product_hunt_ai_extractor_agent import graph as product_hunt_ai_extractor_agent_graph
+from concept_art_iteration_board import graph as concept_art_iteration_board_graph
+from album_cover_creator import graph as album_cover_creator_graph
+from brand_asset_generator import graph as brand_asset_generator_graph
+from product_mockup_generator import graph as product_mockup_generator_graph
 
-# Add the workspace root to python path to allow imports
-sys.path.append("/Users/mg/workspace/nodetool-base/examples")
-sys.path.append("/Users/mg/workspace/nodetool-core/src")
-sys.path.append("/Users/mg/workspace/nodetool-base/src")
-
-# Import the graphs from the example files
-# We use importlib to import by path or module name
-import importlib.util
-
-def load_graph_from_file(filepath: str):
-    spec = importlib.util.spec_from_file_location("module.name", filepath)
-    module = importlib.util.module_from_spec(spec)
-    sys.modules["module.name"] = module
-    spec.loader.exec_module(module)
-    return module.graph
 
 EXAMPLES = [
+    {
+        "filename": "concept_art_iteration_board.py",
+        "json_name": "Concept Art Iteration Board.json",
+        "name": "Concept Art Iteration Board",
+        "description": "Create a comprehensive learning path for a topic.",
+        "tags": ["concept-art", "planning"],
+        "graph": concept_art_iteration_board_graph
+    },
+
     {
         "filename": "ai_workflows_on_reddit.py",
         "json_name": "AI Workflows on Reddit.json",
         "name": "AI Workflows on Reddit",
         "description": "Find examples of AI workflows on Reddit and compile a markdown report.",
-        "tags": ["reddit", "research", "ai"]
+        "tags": ["reddit", "research", "ai"],
+        "graph": ai_workflows_on_reddit_graph
     },
     {
         "filename": "wikipedia_agent_example.py",
         "json_name": "Wikipedia Agent.json",
         "name": "Wikipedia Agent",
         "description": "Wikipedia style research and documentation agent.",
-        "tags": ["wikipedia", "research", "writing"]
+        "tags": ["wikipedia", "research", "writing"],
+        "graph": wikipedia_agent_example_graph
     },
     {
         "filename": "learning_path_generator.py",
         "json_name": "Learning Path Generator.json",
         "name": "Learning Path Generator",
         "description": "Create a comprehensive learning path for a topic.",
-        "tags": ["education", "planning"]
+        "tags": ["education", "planning"],
+        "graph": learning_path_generator_graph
     },
     {
         "filename": "instagram_scraper_task.py",
         "json_name": "Instagram Scraper.json",
         "name": "Instagram Scraper",
         "description": "Analyze Instagram trends for a specific topic.",
-        "tags": ["instagram", "social-media", "trends"]
+        "tags": ["instagram", "social-media", "trends"],
+        "graph": instagram_scraper_task_graph
     },
     {
         "filename": "reddit_scraper_agent.py",
         "json_name": "Reddit Scraper.json",
         "name": "Reddit Scraper",
         "description": "Analyze a subreddit for specific issues.",
-        "tags": ["reddit", "research", "analysis"]
+        "tags": ["reddit", "research", "analysis"],
+        "graph": reddit_scraper_agent_graph
     },
     {
         "filename": "test_hackernews_agent.py",
         "json_name": "Hacker News Agent.json",
         "name": "Hacker News Agent",
         "description": "Scrape and analyze the front page of Hacker News.",
-        "tags": ["hackernews", "news", "analysis"]
+        "tags": ["hackernews", "news", "analysis"],
+        "graph": test_hackernews_agent_graph
     },
     {
         "filename": "chromadb_research_agent.py",
         "json_name": "ChromaDB Research Agent.json",
         "name": "ChromaDB Research Agent",
         "description": "Query a Chroma collection of papers.",
-        "tags": ["chromadb", "rag", "research"]
+        "tags": ["chromadb", "rag", "research"],
+        "graph": chromadb_research_agent_graph
     },
     {
         "filename": "product_hunt_ai_extractor_agent.py",
         "json_name": "Product Hunt AI Extractor.json",
         "name": "Product Hunt AI Extractor",
         "description": "Identify AI products from Product Hunt leaderboards.",
-        "tags": ["product-hunt", "ai", "extraction"]
+        "tags": ["product-hunt", "ai", "extraction"],
+        "graph": product_hunt_ai_extractor_agent_graph
+    },
+    {
+        "filename": "album_cover_creator.py",
+        "json_name": "Album Cover Creator.json",
+        "name": "Album Cover Creator",
+        "description": "Create an album cover for a given song.",
+        "tags": ["album-cover", "art", "design"],
+        "graph": album_cover_creator_graph
+    },
+    {
+        "filename": "brand_asset_generator.py",
+        "json_name": "Brand Asset Generator.json",
+        "name": "Brand Asset Generator",
+        "description": "Generate brand assets for a given brand.",
+        "tags": ["brand-asset", "branding", "design"],
+        "graph": brand_asset_generator_graph
+    },
+    {
+        "filename": "product_mockup_generator.py",
+        "json_name": "Product Mockup Generator.json",
+        "name": "Product Mockup Generator",
+        "description": "Generate product mockups for a given product.",
+        "tags": ["product-mockup", "mockup", "design"],
+        "graph": product_mockup_generator_graph
     }
 ]
 
-SOURCE_DIR = "/Users/mg/workspace/nodetool-base/examples"
-TARGET_DIR = "/Users/mg/workspace/nodetool-base/src/nodetool/examples/nodetool-base"
+TARGET_DIR: str = os.path.join(os.path.dirname(__file__), "..", "src", "nodetool", "examples", "nodetool-base")
 
 def generate_json():
     for example in EXAMPLES:
         print(f"Processing {example['filename']}...")
-        filepath = os.path.join(SOURCE_DIR, example['filename'])
         try:
-            graph = load_graph_from_file(filepath)
-            
             # Construct the full JSON object
             now = datetime.datetime.now().isoformat()
             full_json = {
@@ -141,7 +141,7 @@ def generate_json():
                 "tags": example["tags"],
                 "thumbnail": None,
                 "thumbnail_url": None,
-                "graph": graph.model_dump(),
+                "graph": example["graph"].model_dump(),
                 "input_schema": None,
                 "output_schema": None,
                 "settings": None,
@@ -152,7 +152,7 @@ def generate_json():
                 "required_models": None
             }
             
-            target_path = os.path.join(TARGET_DIR, example['json_name'])
+            target_path = os.path.join(TARGET_DIR, str(example['json_name']))
             with open(target_path, "w") as f:
                 json.dump(full_json, f, indent=2)
             print(f"Generated {target_path}")

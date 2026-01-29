@@ -14,6 +14,7 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 
 import asyncio
 import os
+import tempfile
 import uuid
 from urllib.parse import urlparse
 from abc import abstractmethod
@@ -24,7 +25,8 @@ import aiohttp
 from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
-from nodetool.metadata.types import ImageRef
+from nodetool.media.common.media_utils import FFMPEG_PATH
+from nodetool.metadata.types import ImageRef, VideoRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -50,6 +52,14 @@ class KieBaseNode(BaseNode):
     _poll_interval: float
     _max_poll_attempts: int
 
+    # User-configurable timeout (0 = use class default)
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=3600,
+        description="Timeout in seconds for API calls (0 = use default)",
+    )
+
     @classmethod
     def is_visible(cls) -> bool:
         return cls is not KieBaseNode
@@ -74,7 +84,7 @@ class KieBaseNode(BaseNode):
     def _check_response_status(self, response_data: dict) -> None:
         """Check response status code and raise nicer error."""
         try:
-            status = int(response_data.get("code"))
+            status = int(response_data.get("code"))  # type: ignore
         except (ValueError, TypeError):
             pass
 
@@ -147,7 +157,7 @@ class KieBaseNode(BaseNode):
                     response_data = await response.json()
                     if "code" in response_data:
                         self._check_response_status(response_data)
-                    
+
                     if response.status != 200 or not response_data.get("success"):
                         raise ValueError(
                             f"Failed to upload file: {response.status} - {response_data}"
@@ -162,20 +172,19 @@ class KieBaseNode(BaseNode):
             raise ValueError(f"No downloadUrl in upload response: {response_data}")
         return download_url
 
-    async def _upload_image(
-        self, context: ProcessingContext, image: ImageRef
-    ) -> str:
+    async def _upload_image(self, context: ProcessingContext, image: ImageRef) -> str:
         if image.uri and image.uri.startswith(("http://", "https://")):
-            if not "localhost" in image.uri and not "127.0.0.1" in image.uri:
+            if "localhost" not in image.uri and "127.0.0.1" not in image.uri:
                 return image.uri
-            
+
         return await self._upload_asset(
-            context, asset=image, upload_path="images/user-uploads", default_extension=".png"
+            context,
+            asset=image,
+            upload_path="images/user-uploads",
+            default_extension=".png",
         )
 
-    async def _upload_audio(
-        self, context: ProcessingContext, audio: Any
-    ) -> str:
+    async def _upload_audio(self, context: ProcessingContext, audio: Any) -> str:
         """Upload audio to Kie.ai after converting to MP3 format."""
         from io import BytesIO
         from nodetool.metadata.types import AudioRef
@@ -192,14 +201,88 @@ class KieBaseNode(BaseNode):
         mp3_audio = AudioRef(data=mp3_buffer.read())
 
         return await self._upload_asset(
-            context, asset=mp3_audio, upload_path="audio/user-uploads", default_extension=".mp3"
+            context,
+            asset=mp3_audio,
+            upload_path="audio/user-uploads",
+            default_extension=".mp3",
         )
 
-    async def _upload_video(
-        self, context: ProcessingContext, video: Any
-    ) -> str:
+    async def _convert_video_to_mp4(self, source_bytes: bytes) -> bytes:
+        """Convert input video bytes to MP4 using ffmpeg."""
+        input_path = None
+        output_path = None
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".input") as temp_in:
+                temp_in.write(source_bytes)
+                temp_in.flush()
+                input_path = temp_in.name
+
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".mp4") as temp_out:
+                output_path = temp_out.name
+
+            cmd = [
+                FFMPEG_PATH,
+                "-y",
+                "-i",
+                input_path,
+                "-c:v",
+                "libx264",
+                "-c:a",
+                "aac",
+                "-movflags",
+                "+faststart",
+                output_path,
+            ]
+
+            process = await asyncio.create_subprocess_exec(
+                *cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+            )
+            _stdout, stderr = await process.communicate()
+            if process.returncode != 0:
+                error_msg = stderr.decode(errors="ignore").strip()
+                raise ValueError(
+                    f"ffmpeg error (using {FFMPEG_PATH}): {error_msg or 'unknown error'}"
+                )
+
+            with open(output_path, "rb") as f:
+                return f.read()
+        finally:
+            if input_path and os.path.exists(input_path):
+                os.remove(input_path)
+            if output_path and os.path.exists(output_path):
+                os.remove(output_path)
+
+    async def _upload_video(self, context: ProcessingContext, video: Any) -> str:
+        file_obj = await context.asset_to_io(video)
+        try:
+            filename = self._resolve_upload_filename(
+                video, default_extension=".mp4", file_obj=file_obj
+            )
+            ext = os.path.splitext(filename)[1].lower()
+            format_hint = getattr(video, "format", None)
+            needs_conversion = ext != ".mp4" or (
+                isinstance(format_hint, str) and format_hint.lower() != "mp4"
+            )
+
+            if needs_conversion:
+                log.info(
+                    "Converting video to MP4 before upload for Kie.ai compatibility."
+                )
+                source_bytes = file_obj.read()
+                mp4_bytes = await self._convert_video_to_mp4(source_bytes)
+                video = VideoRef(data=mp4_bytes)
+        finally:
+            close_fn = getattr(file_obj, "close", None)
+            if callable(close_fn):
+                close_fn()
+
         return await self._upload_asset(
-            context, asset=video, upload_path="videos/user-uploads", default_extension=".mp4"
+            context,
+            asset=video,
+            upload_path="videos/user-uploads",
+            default_extension=".mp4",
         )
 
     @abstractmethod
@@ -299,9 +382,7 @@ class KieBaseNode(BaseNode):
         url = f"{KIE_API_BASE_URL}/api/v1/jobs/createTask"
         payload = await self._get_submit_payload(context)
         headers = self._get_headers(api_key)
-        print(payload)
-        log.debug(f"Submitting task to {url}")
-        log.debug(f"Payload: {payload}")
+        log.info(f"Submitting task to {url} with payload: {payload}")
         async with session.post(url, json=payload, headers=headers) as response:
             response_data = await response.json()
             if "code" in response_data:
@@ -324,7 +405,12 @@ class KieBaseNode(BaseNode):
         url = f"{KIE_API_BASE_URL}/api/v1/jobs/recordInfo?taskId={task_id}"
         headers = self._get_headers(api_key)
 
-        for attempt in range(self._max_poll_attempts):
+        # Calculate max attempts based on timeout_seconds if set, otherwise use class default
+        max_attempts = self._max_poll_attempts
+        if self.timeout_seconds > 0:
+            max_attempts = max(1, int(self.timeout_seconds / self._poll_interval))
+
+        for attempt in range(max_attempts):
             log.debug(
                 f"Polling task status (attempt {attempt + 1}/{self._max_poll_attempts})"
             )
@@ -344,7 +430,7 @@ class KieBaseNode(BaseNode):
             await asyncio.sleep(self._poll_interval)
 
         raise TimeoutError(
-            f"Task did not complete within {self._max_poll_attempts * self._poll_interval} seconds"
+            f"Task did not complete within {max_attempts * self._poll_interval} seconds"
         )
 
     async def _download_result(
@@ -422,10 +508,15 @@ class Flux2ProTextToImage(KieBaseNode):
     - Create professional visual content
     - Generate images with fine detail and artistic style
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Flux 2 Pro Text To Image"
 
     prompt: str = Field(
         default="",
@@ -485,7 +576,9 @@ class Flux2ProTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Flux2ProImageToImage(KieBaseNode):
@@ -499,10 +592,15 @@ class Flux2ProImageToImage(KieBaseNode):
     - Create variations of existing images
     - Enhance and modify images
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Flux 2 Pro Image To Image"
 
     prompt: str = Field(
         default="",
@@ -575,7 +673,9 @@ class Flux2ProImageToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Flux2FlexTextToImage(KieBaseNode):
@@ -588,10 +688,15 @@ class Flux2FlexTextToImage(KieBaseNode):
     - Create professional visual content
     - Generate images with fine detail and artistic style
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Flux 2 Flex Text To Image"
 
     prompt: str = Field(
         default="",
@@ -651,7 +756,9 @@ class Flux2FlexTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Flux2FlexImageToImage(KieBaseNode):
@@ -665,10 +772,15 @@ class Flux2FlexImageToImage(KieBaseNode):
     - Create variations of existing images
     - Enhance and modify images
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Flux 2 Flex Image To Image"
 
     prompt: str = Field(
         default="",
@@ -741,7 +853,9 @@ class Flux2FlexImageToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Seedream45TextToImage(KieBaseNode):
@@ -757,10 +871,15 @@ class Seedream45TextToImage(KieBaseNode):
     - Create diverse visual content up to 4K
     - Generate illustrations with unique styles
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedream 4.5 Text To Image"
 
     prompt: str = Field(
         default="",
@@ -804,7 +923,9 @@ class Seedream45TextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Seedream45Edit(KieBaseNode):
@@ -821,19 +942,22 @@ class Seedream45Edit(KieBaseNode):
     - Modify specific regions of images
     - Improve image quality and resolution
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedream 4.5 Edit"
 
     prompt: str = Field(
         default="",
         description="The text prompt describing how to edit the image.",
     )
 
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to edit.",
+    image_input: list[ImageRef] = Field(
+        default=[],
+        description="The source images to edit.",
     )
 
     class AspectRatio(str, Enum):
@@ -867,21 +991,28 @@ class Seedream45Edit(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-        if not self.image.is_set():
-            raise ValueError("Image is required")
-        input_url = await self._upload_image(context, self.image)
+
+        image_urls = []
+        for img in self.image_input:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                image_urls.append(url)
+
+        if not image_urls:
+            raise ValueError("At least one image is required")
+
         return {
             "prompt": self.prompt,
-            "input_urls": [
-                input_url,
-            ],
+            "image_urls": image_urls,
             "aspect_ratio": self.aspect_ratio.value,
             "quality": self.quality.value,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class ZImage(KieBaseNode):
@@ -898,10 +1029,15 @@ class ZImage(KieBaseNode):
     - Generate detailed illustrations with low latency
     - Product visualizations
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Z-Image Turbo"
 
     prompt: str = Field(
         default="",
@@ -935,7 +1071,9 @@ class ZImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class NanoBanana(KieBaseNode):
@@ -943,10 +1081,15 @@ class NanoBanana(KieBaseNode):
 
     kie, nano-banana, google, gemini, image generation, ai, text-to-image, fast
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Nano Banana"
 
     prompt: str = Field(
         default="",
@@ -987,7 +1130,9 @@ class NanoBanana(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class NanoBananaPro(KieBaseNode):
@@ -995,10 +1140,15 @@ class NanoBananaPro(KieBaseNode):
 
     kie, nano-banana-pro, google, gemini, image generation, ai, text-to-image, 4k, high-fidelity
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Nano Banana Pro"
 
     prompt: str = Field(
         default="",
@@ -1058,7 +1208,9 @@ class NanoBananaPro(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class FluxKontext(KieBaseNode):
@@ -1075,10 +1227,15 @@ class FluxKontext(KieBaseNode):
     - Create professional visual content
     - Generate images with fine detail and artistic style
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Flux Kontext"
 
     prompt: str = Field(
         default="",
@@ -1122,7 +1279,9 @@ class FluxKontext(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class GrokImagineTextToImage(KieBaseNode):
@@ -1137,10 +1296,15 @@ class GrokImagineTextToImage(KieBaseNode):
     - Generate images from text descriptions
     - Create visual content with AI
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Grok Imagine Text To Image"
 
     prompt: str = Field(
         default="",
@@ -1174,7 +1338,9 @@ class GrokImagineTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class GrokImagineUpscale(KieBaseNode):
@@ -1188,10 +1354,13 @@ class GrokImagineUpscale(KieBaseNode):
     Constraints:
     - Only images generated by Kie AI models (via Grok Imagine) are supported for upscaling.
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Grok Imagine Upscale"
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -1206,21 +1375,23 @@ class GrokImagineUpscale(KieBaseNode):
     ) -> dict[str, Any]:
         if not self.image.is_set():
             raise ValueError("Image is required")
-        
+
         task_id = self.image.metadata.get("task_id")
         if not task_id:
             raise ValueError(
                 "Image metadata does not contain a 'task_id'. "
                 "The image must be generated by a Kie.ai node to be upscaled."
             )
-            
+
         return {
             "task_id": task_id,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class QwenTextToImage(KieBaseNode):
@@ -1235,10 +1406,15 @@ class QwenTextToImage(KieBaseNode):
     - Create artistic and realistic images
     - Generate illustrations and artwork
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Qwen Text To Image"
 
     prompt: str = Field(
         default="",
@@ -1272,7 +1448,9 @@ class QwenTextToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class QwenImageToImage(KieBaseNode):
@@ -1280,18 +1458,23 @@ class QwenImageToImage(KieBaseNode):
 
     kie, qwen, alibaba, image transformation, ai, image-to-image
 
-    Qwen's image-to-image model transforms existing images based on text prompts.
+    Qwen's image-to-image model transforms images based on text prompts
+    while preserving the overall structure and style.
 
     Use cases:
-    - Transform and edit existing images
-    - Apply styles and effects to photos
-    - Create variations of images
-    - Enhance or modify image content
+    - Transform images with text guidance
+    - Apply artistic styles to photos
+    - Create variations of existing images
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Qwen Image To Image"
 
     prompt: str = Field(
         default="",
@@ -1336,18 +1519,31 @@ class QwenImageToImage(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class TopazImageUpscale(KieBaseNode):
     """Upscale and enhance images using Topaz Labs AI via Kie.ai.
 
     kie, topaz, upscale, enhance, image, ai, super-resolution
-    """
 
+    Topaz Image Upscale uses advanced AI models to enlarge images
+    while preserving and enhancing detail.
+
+    Use cases:
+    - Upscale low-resolution images
+    - Enhance image quality and detail
+    - Enlarge images for print or display
+    """
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Topaz Image Upscale"
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -1381,7 +1577,9 @@ class TopazImageUpscale(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class RecraftRemoveBackground(KieBaseNode):
@@ -1394,7 +1592,6 @@ class RecraftRemoveBackground(KieBaseNode):
     - Create transparent PNGs for design work
     - Isolate subjects in images
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.0
     _max_poll_attempts: int = 30
@@ -1421,7 +1618,9 @@ class RecraftRemoveBackground(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class IdeogramCharacterRemix(KieBaseNode):
@@ -1432,10 +1631,9 @@ class IdeogramCharacterRemix(KieBaseNode):
     Ideogram Character Remix allows you to remix images while maintaining character consistency
     using reference images and text prompts.
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1556,7 +1754,9 @@ class IdeogramCharacterRemix(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class IdeogramV3Reframe(KieBaseNode):
@@ -1568,10 +1768,9 @@ class IdeogramV3Reframe(KieBaseNode):
     - Reframe and rescale existing images
     - Change aspect ratio of images while maintaining quality
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -1639,7 +1838,9 @@ class IdeogramV3Reframe(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class RecraftCrispUpscale(KieBaseNode):
@@ -1647,7 +1848,6 @@ class RecraftCrispUpscale(KieBaseNode):
 
     kie, recraft, crisp-upscale, upscale, ai
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.0
     _max_poll_attempts: int = 30
@@ -1674,8 +1874,9 @@ class RecraftCrispUpscale(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
-
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Imagen4Fast(KieBaseNode):
@@ -1683,10 +1884,11 @@ class Imagen4Fast(KieBaseNode):
 
     kie, google, imagen, imagen4, fast, image generation, ai
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1722,12 +1924,14 @@ class Imagen4Fast(KieBaseNode):
             "prompt": self.prompt,
             "negative_prompt": self.negative_prompt,
             "aspect_ratio": self.aspect_ratio.value,
-            "num_images": "1"
+            "num_images": "1",
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Imagen4Ultra(KieBaseNode):
@@ -1735,10 +1939,11 @@ class Imagen4Ultra(KieBaseNode):
 
     kie, google, imagen, imagen4, ultra, image generation, ai
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1784,7 +1989,9 @@ class Imagen4Ultra(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class Imagen4(KieBaseNode):
@@ -1792,10 +1999,11 @@ class Imagen4(KieBaseNode):
 
     kie, google, imagen, imagen4, image generation, ai
     """
+    _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 2.0
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1842,7 +2050,9 @@ class Imagen4(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
 
 
 class NanoBananaEdit(KieBaseNode):
@@ -1850,10 +2060,9 @@ class NanoBananaEdit(KieBaseNode):
 
     kie, google, nano-banana, nano-banana-edit, image editing, ai
     """
-
     _expose_as_tool: ClassVar[bool] = True
     _poll_interval: float = 1.5
-    _max_poll_attempts: int = 60
+    _max_poll_attempts: int = 200  # 300 seconds default
 
     prompt: str = Field(
         default="",
@@ -1908,4 +2117,692 @@ class NanoBananaEdit(KieBaseNode):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         image_bytes, task_id = await self._execute_task(context)
-        return await context.image_from_bytes(image_bytes, metadata={"task_id": task_id})
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage4oTextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, openai, gpt-4o, 4o-image, image generation, ai, text-to-image
+
+    The GPT-Image-1 model (ChatGPT 4o Image) understands both text and visual
+    context, allowing precise image creation with accurate text rendering
+    and consistent styles.
+
+    Use cases:
+    - Generate high-quality images from text descriptions
+    - Create images with precise text rendering
+    - Generate design and marketing materials
+    - Produce creative visuals with strong instruction following
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT 4o Image Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "4o-image/text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage4oImageToImage(KieBaseNode):
+    """Edit images using OpenAI's GPT-4o Image model via Kie.ai.
+
+    kie, openai, gpt-4o, 4o-image, image editing, ai, image-to-image
+
+    The GPT-Image-1 model (ChatGPT 4o Image) enables precise image editing
+    with strong instruction following and accurate text rendering.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply specific modifications to images
+    - Add or modify text in images
+    - Create variations of existing visuals
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT 4o Image Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to edit the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "4o-image/image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15TextToImage(KieBaseNode):
+    """Generate images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+    kie, openai, gpt-image-1.5, image generation, ai, text-to-image
+
+    GPT Image 1.5 is OpenAI's flagship image generation model for high-quality
+    image creation and precise image editing, with strong instruction following
+    and improved text rendering.
+
+    Use cases:
+    - Generate high-quality images from text descriptions
+    - Create images with excellent text rendering
+    - Generate professional marketing and design materials
+    - Produce creative visuals with precise control
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image-1.5/text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GPTImage15ImageToImage(KieBaseNode):
+    """Edit images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+    kie, openai, gpt-image-1.5, image editing, ai, image-to-image
+
+    GPT Image 1.5 enables precise image editing with strong instruction following
+    and improved text rendering capabilities.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply specific modifications with precise control
+    - Add or modify text in images accurately
+    - Create variations with high fidelity
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "GPT Image 1.5 Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to edit the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to edit.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        AUTO = "auto"
+        HIGH = "high"
+        MEDIUM = "medium"
+        LOW = "low"
+
+    quality: Quality = Field(
+        default=Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    def _get_model(self) -> str:
+        return "gpt-image-1.5/image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramV3TextToImage(KieBaseNode):
+    """Generate images using Ideogram V3 model via Kie.ai.
+
+    kie, ideogram, v3, image generation, ai, text-to-image
+
+    Ideogram V3 is the latest generation of Ideogram's image generation model,
+    offering text-to-image with improved consistency and creative control.
+
+    Use cases:
+    - Generate creative images from text descriptions
+    - Create images with excellent text rendering
+    - Produce artistic and design content
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram V3 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the generated image.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        GENERAL = "GENERAL"
+        REALISTIC = "REALISTIC"
+        DESIGN = "DESIGN"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+        ULTRAWIDE = "21:9"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/v3-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "aspect_ratio": self.aspect_ratio.value,
+            "expand_prompt": self.expand_prompt,
+        }
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt
+        if self.seed >= 0:
+            params["seed"] = self.seed
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class IdeogramV3ImageToImage(KieBaseNode):
+    """Edit images using Ideogram V3 model via Kie.ai.
+
+    kie, ideogram, v3, image editing, ai, image-to-image
+
+    Ideogram V3 offers image editing capabilities with improved consistency
+    and creative control.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply style changes while maintaining structure
+    - Create variations of existing images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Ideogram V3 Image To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the output.",
+    )
+
+    class RenderingSpeed(str, Enum):
+        TURBO = "TURBO"
+        BALANCED = "BALANCED"
+        QUALITY = "QUALITY"
+
+    rendering_speed: RenderingSpeed = Field(
+        default=RenderingSpeed.BALANCED,
+        description="Rendering speed preference.",
+    )
+
+    class Style(str, Enum):
+        AUTO = "AUTO"
+        GENERAL = "GENERAL"
+        REALISTIC = "REALISTIC"
+        DESIGN = "DESIGN"
+
+    style: Style = Field(
+        default=Style.AUTO,
+        description="Generation style.",
+    )
+
+    image_weight: float = Field(
+        default=0.5,
+        description="How much to preserve from the original image (0-1).",
+        ge=0.0,
+        le=1.0,
+    )
+
+    expand_prompt: bool = Field(
+        default=True,
+        description="Whether to expand/augment the prompt.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    def _get_model(self) -> str:
+        return "ideogram/v3-image-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "rendering_speed": self.rendering_speed.value,
+            "style": self.style.value,
+            "image_weight": self.image_weight,
+            "expand_prompt": self.expand_prompt,
+        }
+        if self.negative_prompt:
+            params["negative_prompt"] = self.negative_prompt
+        if self.seed >= 0:
+            params["seed"] = self.seed
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class Seedream40TextToImage(KieBaseNode):
+    """Generate images using ByteDance's Seedream 4.0 model via Kie.ai.
+
+    kie, seedream, bytedance, seedream-4, image generation, ai, text-to-image
+
+    Seedream 4.0 is ByteDance's image generation model that combines text-to-image
+    with batch consistency, high speed, and professional-quality outputs.
+
+    Use cases:
+    - Generate creative and artistic images from text
+    - Create professional visual content
+    - Produce consistent batch images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedream 4.0 Text To Image"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class Quality(str, Enum):
+        BASIC = "basic"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
+
+    def _get_model(self) -> str:
+        return "seedream/4.0-text-to-image"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class Seedream40ImageToImage(KieBaseNode):
+    """Edit images using ByteDance's Seedream 4.0 model via Kie.ai.
+
+    kie, seedream, bytedance, seedream-4, image editing, ai, image-to-image
+
+    Seedream 4.0 offers image-to-image capabilities with batch consistency
+    and professional-quality outputs.
+
+    Use cases:
+    - Edit and transform existing images
+    - Apply style changes to photos
+    - Create variations of existing images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 1.5
+    _max_poll_attempts: int = 200
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Seedream 4.0 Edit"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing how to transform the image.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="The source image to transform.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+
+    class Quality(str, Enum):
+        BASIC = "basic"
+        HIGH = "high"
+
+    quality: Quality = Field(
+        default=Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
+
+    def _get_model(self) -> str:
+        return "seedream/4.0-edit"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if context is None:
+            raise ValueError("Context is required for image upload")
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "aspect_ratio": self.aspect_ratio.value,
+            "quality": self.quality.value,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )

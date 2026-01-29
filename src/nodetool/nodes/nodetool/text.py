@@ -9,7 +9,7 @@ from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.io import NodeInputs, NodeOutputs
 from pydantic import Field
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ASRModel, FolderRef, AudioRef, Provider
+from nodetool.metadata.types import ASRModel, FolderRef, AudioRef, Provider, EmbeddingModel, NPArray
 from nodetool.workflows.base_node import BaseNode
 import re
 from jsonpath_ng import parse
@@ -18,18 +18,13 @@ from enum import Enum
 import html2text
 from nodetool.io.uri_utils import create_file_uri
 from nodetool.workflows.types import SaveUpdate
+import aiofiles
 
 
 class ToString(BaseNode):
     """
     Converts any input value to its string representation.
     text, string, convert, repr, str, cast
-
-    Use cases:
-    - Convert numbers, objects, or complex types to strings
-    - Prepare data for text output or logging
-    - Debug values by viewing their representations
-    - Standardize data types in text workflows
     """
 
     class Mode(str, Enum):
@@ -56,13 +51,6 @@ class AutomaticSpeechRecognition(BaseNode):
     """
     Transcribe audio to text using automatic speech recognition models.
     audio, speech, recognition, transcription, ASR, whisper
-
-    Use cases:
-    - Transcribe recorded audio to text
-    - Generate subtitles from video audio
-    - Convert voice notes to written text
-    - Process meeting recordings
-    - Enable voice-based data entry
     """
 
     class OutputType(TypedDict):
@@ -81,6 +69,7 @@ class AutomaticSpeechRecognition(BaseNode):
         text = await provider.automatic_speech_recognition(
             audio_bytes,
             model=self.model.id,
+            context=context,
         )
         return {"text": text}
 
@@ -88,12 +77,7 @@ class AutomaticSpeechRecognition(BaseNode):
 class Concat(BaseNode):
     """
     Concatenates two text inputs into a single output.
-    text, concatenation, combine, +
-
-    Use cases:
-    - Joining outputs from multiple text processing nodes
-    - Combining parts of sentences or paragraphs
-    - Merging text data from different sources
+    text, combine, add, +, concatenate, merge, join, append
     """
 
     a: str = Field(default="")
@@ -110,12 +94,7 @@ class Concat(BaseNode):
 class Join(BaseNode):
     """
     Joins a list of strings into a single string using a specified separator.
-    text, join, combine, +, add, concatenate
-
-    Use cases:
-    - Combining multiple text elements with a consistent delimiter
-    - Creating comma-separated lists from individual items
-    - Assembling formatted text from array elements
+    text, join, combine, +, add, concatenate, merge
     """
 
     strings: list[Any] = Field(default=[])
@@ -135,12 +114,6 @@ class Collect(BaseNode):
     """
     Collects a stream of text inputs into a single concatenated string.
     text, collect, list, stream, aggregate
-
-    Use cases:
-    - Combine multiple streaming text outputs
-    - Accumulate results from iterative processes
-    - Build composite text from multiple sources
-    - Aggregate log messages or status updates
     """
 
     input_item: str = Field(default="")
@@ -169,29 +142,10 @@ class FormatText(BaseNode):
 
     This node is dynamic and can be used to format text with dynamic properties.
 
-    Use cases:
-    - Generating personalized messages with dynamic content
-    - Creating parameterized queries or commands
-    - Formatting and filtering text output based on variable inputs
-
     Examples:
     - text: "Hello, {{ name }}!"
     - text: "Title: {{ title|truncate(20) }}"
     - text: "Name: {{ name|upper }}"
-
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
     """
 
     _is_dynamic: ClassVar[bool] = True
@@ -199,24 +153,9 @@ class FormatText(BaseNode):
     template: str = Field(
         default="",
         description="""
-    Examples:
-    - text: "Hello, {{ name }}!"
-    - text: "Title: {{ title|truncate(20) }}"
-    - text: "Name: {{ name|upper }}" 
+    Example: Hello, {{ name }} or {{ title|truncate(20) }}
 
-    Available filters:
-    - truncate(length): Truncates text to given length
-    - upper: Converts text to uppercase
-    - lower: Converts text to lowercase
-    - title: Converts text to title case
-    - trim: Removes whitespace from start/end
-    - replace(old, new): Replaces substring
-    - default(value): Sets default if value is undefined
-    - first: Gets first character/item
-    - last: Gets last character/item
-    - length: Gets length of string/list
-    - sort: Sorts list
-    - join(delimiter): Joins list with delimiter
+    Available filters: truncate, upper, lower, title, trim, replace, default, first, last, length, sort, join
 """,
     )
 
@@ -378,7 +317,7 @@ class SaveTextFile(BaseNode):
 
     async def process(self, context: ProcessingContext) -> TextRef:
         filename = datetime.now().strftime(self.name)
-        file = BytesIO(self.text.encode("utf-8"))
+        file_data = self.text.encode("utf-8")
         if not self.folder:
             raise ValueError("folder cannot be empty")
         expanded_folder = os.path.expanduser(self.folder)
@@ -386,9 +325,11 @@ class SaveTextFile(BaseNode):
             raise ValueError(f"Folder does not exist: {expanded_folder}")
         filename = datetime.now().strftime(self.name)
         expanded_path = os.path.join(expanded_folder, filename)
-        with open(expanded_path, "wb") as f:
-            f.write(file.getvalue())
-        result = TextRef(uri=create_file_uri(expanded_path), data=file.getvalue())
+
+        async with aiofiles.open(expanded_path, "wb") as f:
+            await f.write(file_data)
+
+        result = TextRef(uri=create_file_uri(expanded_path), data=file_data)
 
         # Emit SaveUpdate event
         context.post_message(
@@ -451,15 +392,75 @@ class SaveText(BaseNode):
         return result
 
 
+class LoadTextFolder(BaseNode):
+    """
+    Load all text files from a folder, optionally including subfolders.
+    text, load, folder, files
+    """
+
+    folder: str = Field(default="", description="Folder to scan for text files")
+    include_subdirectories: bool = Field(
+        default=False, description="Include text files in subfolders"
+    )
+    extensions: list[str] = Field(
+        default=[".txt", ".csv", ".json", ".xml", ".md", ".html", ".pdf"],
+        description="Text file extensions to include",
+    )
+    pattern: str = Field(default="", description="Pattern to match text files")
+
+    @classmethod
+    def get_title(cls):
+        return "Load Text Folder"
+
+    class OutputType(TypedDict):
+        text: str
+        path: str
+
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
+        from nodetool.config.environment import Environment
+        import fnmatch
+
+        if Environment.is_production():
+            raise ValueError("This node is not available in production")
+        if not self.folder:
+            raise ValueError("folder cannot be empty")
+
+        expanded_folder = os.path.expanduser(self.folder)
+        if not os.path.isdir(expanded_folder):
+            raise ValueError(f"Folder does not exist: {expanded_folder}")
+
+        allowed_exts = {ext.lower() for ext in self.extensions}
+
+        def iter_files(base_folder: str):
+            if self.include_subdirectories:
+                for root, _, files in os.walk(base_folder):
+                    for f in files:
+                        yield os.path.join(root, f)
+            else:
+                for f in os.listdir(base_folder):
+                    yield os.path.join(base_folder, f)
+
+        for path in iter_files(expanded_folder):
+            if not os.path.isfile(path):
+                continue
+            _, ext = os.path.splitext(path)
+            if ext.lower() not in allowed_exts:
+                continue
+
+            if self.pattern and not fnmatch.fnmatch(path, self.pattern):
+                continue
+
+            async with aiofiles.open(path, "r") as f:
+                text_data = await f.read()
+
+            yield {"path": path, "text": text_data}
+
 class Split(BaseNode):
     """
     Separates text into a list of strings based on a specified delimiter.
     text, split, tokenize
-
-    Use cases:
-    - Parsing CSV or similar delimited data
-    - Breaking down sentences into words or phrases
-    - Extracting specific elements from structured text
     """
 
     text: str = Field(title="Text", default="")
@@ -477,11 +478,6 @@ class Extract(BaseNode):
     """
     Extracts a substring from input text.
     text, extract, substring
-
-    Use cases:
-    - Extracting specific portions of text for analysis
-    - Trimming unwanted parts from text data
-    - Focusing on relevant sections of longer documents
     """
 
     text: str = Field(title="Text", default="")
@@ -500,11 +496,6 @@ class Chunk(BaseNode):
     """
     Splits text into chunks of specified word length.
     text, chunk, split
-
-    Use cases:
-    - Preparing text for processing by models with input length limits
-    - Creating manageable text segments for parallel processing
-    - Generating summaries of text sections
     """
 
     text: str = Field(title="Text", default="")
@@ -564,11 +555,6 @@ class FindAllRegex(BaseNode):
     """
     Finds all regex matches in text as separate substrings.
     text, regex, find
-
-    Use cases:
-    - Identifying all occurrences of a pattern in text
-    - Extracting multiple instances of structured data
-    - Analyzing frequency and distribution of specific text patterns
     """
 
     text: str = Field(title="Text", default="")
@@ -597,11 +583,6 @@ class ParseJSON(BaseNode):
     """
     Parses a JSON string into a Python object.
     json, parse, convert
-
-    Use cases:
-    - Converting JSON API responses for further processing
-    - Preparing structured data for analysis or storage
-    - Extracting configuration or settings from JSON files
     """
 
     text: str = Field(title="JSON string", default="")
@@ -618,11 +599,6 @@ class ExtractJSON(BaseNode):
     """
     Extracts data from JSON using JSONPath expressions.
     json, extract, jsonpath
-
-    Use cases:
-    - Retrieving specific fields from complex JSON structures
-    - Filtering and transforming JSON data for analysis
-    - Extracting nested data from API responses or configurations
     """
 
     text: str = Field(title="JSON Text", default="")
@@ -793,11 +769,6 @@ class Equals(BaseNode):
     """
     Checks if two text inputs are equal.
     text, compare, equals, match, =
-
-    Use cases:
-    - Branching workflows when user input matches an expected value
-    - Guarding against duplicates before saving assets
-    - Quickly comparing normalized prompts or identifiers
     """
 
     text_a: str = Field(title="First Text", default="")
@@ -829,11 +800,6 @@ class ToUppercase(BaseNode):
     """
     Converts text to uppercase.
     text, transform, uppercase, format
-
-    Use cases:
-    - Normalizing identifiers before comparison
-    - Preparing titles that must display in all caps
-    - Converting prompts to a consistent casing convention
     """
 
     text: str = Field(title="Text", default="")
@@ -850,11 +816,6 @@ class ToLowercase(BaseNode):
     """
     Converts text to lowercase.
     text, transform, lowercase, format
-
-    Use cases:
-    - Preparing data for case-insensitive comparisons
-    - Generating lowercase filenames or IDs
-    - Normalizing prompts before hashing
     """
 
     text: str = Field(title="Text", default="")
@@ -987,11 +948,6 @@ class Contains(BaseNode):
     """
     Checks if text contains a specified substring.
     text, compare, validate, substring, string
-
-    Use cases:
-    - Ensuring safety or guard phrases appear
-    - Rejecting inputs when banned terms exist
-    - Matching multiple keywords with any/all logic
     """
 
     class MatchMode(str, Enum):
@@ -1037,11 +993,6 @@ class TrimWhitespace(BaseNode):
     """
     Trims whitespace from the start and/or end of text.
     text, whitespace, clean, remove
-
-    Use cases:
-    - Cleaning user input before validation
-    - Removing accidental spaces after concatenation
-    - Prepping prompts for exact comparisons
     """
 
     text: str = Field(title="Text", default="")
@@ -1066,11 +1017,6 @@ class CollapseWhitespace(BaseNode):
     """
     Collapses consecutive whitespace into single separators.
     text, whitespace, normalize, clean, remove
-
-    Use cases:
-    - Normalizing pasted text from PDFs or chat logs
-    - Cleaning prompts with erratic spacing
-    - Converting multi-line input into succinct sentences
     """
 
     text: str = Field(title="Text", default="")
@@ -1105,11 +1051,6 @@ class IsEmpty(BaseNode):
     """
     Checks if text is empty or contains only whitespace.
     text, check, empty, compare, validate, whitespace, string
-
-    Use cases:
-    - Validating required text fields
-    - Filtering out empty content
-    - Checking for meaningful input
     """
 
     text: str = Field(title="Text", default="")
@@ -1130,11 +1071,6 @@ class RemovePunctuation(BaseNode):
     """
     Removes punctuation characters from text.
     text, cleanup, punctuation, normalize
-
-    Use cases:
-    - Cleaning transcripts before keyword search
-    - Preparing identifiers for filesystem safe names
-    - Simplifying comparisons by stripping symbols
     """
 
     text: str = Field(title="Text", default="")
@@ -1162,11 +1098,6 @@ class StripAccents(BaseNode):
     """
     Removes accent marks while keeping base characters.
     text, cleanup, accents, normalize
-
-    Use cases:
-    - Creating ASCII-only identifiers from user input
-    - Normalizing prompts that mix accented and plain characters
-    - Simplifying comparisons against datasets lacking accents
     """
 
     text: str = Field(title="Text", default="")
@@ -1192,11 +1123,6 @@ class Slugify(BaseNode):
     """
     Converts text into a slug suitable for URLs or IDs.
     text, slug, normalize, id
-
-    Use cases:
-    - Generating workflow IDs from titles
-    - Creating asset filenames from prompts
-    - Producing URL-safe paths for mini apps
     """
 
     text: str = Field(title="Text", default="")
@@ -1227,11 +1153,6 @@ class HasLength(BaseNode):
     """
     Checks if text length meets specified conditions.
     text, check, length, compare, validate, whitespace, string
-
-    Use cases:
-    - Validating input length requirements
-    - Filtering text by length
-    - Checking content size constraints
     """
 
     text: str = Field(title="Text", default="")
@@ -1262,11 +1183,6 @@ class TruncateText(BaseNode):
     """
     Truncates text to a maximum length.
     text, truncate, length, clip
-
-    Use cases:
-    - Enforcing LLM input limits before sending prompts
-    - Creating previews in UI cards
-    - Guarding downstream systems that expect short strings
     """
 
     text: str = Field(title="Text", default="")
@@ -1296,11 +1212,6 @@ class PadText(BaseNode):
     """
     Pads text to a target length.
     text, pad, length, format
-
-    Use cases:
-    - Aligning tabular text outputs
-    - Creating fixed-width fields for legacy systems
-    - Left-padding numbers with zeros
     """
 
     class PadDirection(str, Enum):
@@ -1345,11 +1256,6 @@ class Length(BaseNode):
     """
     Measures text length as characters, words, or lines.
     text, analyze, length, count
-
-    Use cases:
-    - Quickly gating prompts by size before LLM calls
-    - Showing word or line counts in mini apps
-    - Tracking character budgets for UI copy
     """
 
     class Measure(str, Enum):
@@ -1395,11 +1301,6 @@ class IndexOf(BaseNode):
     """
     Finds the position of a substring in text.
     text, search, find, substring
-
-    Use cases:
-    - Locating markers to drive downstream slices
-    - Building quick validations before parsing
-    - Detecting repeated terms by scanning from the end
     """
 
     text: str = Field(title="Text", default="")
@@ -1445,11 +1346,6 @@ class SurroundWith(BaseNode):
     """
     Wraps text with the provided prefix and suffix.
     text, format, surround, decorate
-
-    Use cases:
-    - Adding quotes or brackets before exporting values
-    - Ensuring prompts include guard rails or markup tokens
-    - Building template strings without using Format nodes
     """
 
     text: str = Field(title="Text", default="")
@@ -1479,11 +1375,6 @@ class CountTokens(BaseNode):
     """
     Counts the number of tokens in text using tiktoken.
     text, tokens, count, encoding
-
-    Use cases:
-    - Checking text length for LLM input limits
-    - Estimating API costs
-    - Managing token budgets in text processing
     """
 
     class TiktokenEncoding(str, Enum):
@@ -1515,12 +1406,6 @@ class HtmlToText(BaseNode):
     """
     Converts HTML content to plain text using html2text.
     html, convert, text, parse, extract
-
-    Use cases:
-    - Converting HTML documents to readable plain text
-    - Extracting text content from web pages
-    - Cleaning HTML markup from text data
-    - Processing HTML emails or documents
     """
 
     html: str = Field(title="HTML", default="", description="HTML content to convert")
@@ -1558,11 +1443,6 @@ class LoadTextAssets(BaseNode):
     """
     Load text files from an asset folder.
     load, text, file, import
-
-    Use cases:
-    - Loading multiple text files for batch processing
-    - Importing text content from a directory
-    - Processing collections of text documents
     """
 
     folder: FolderRef = Field(
@@ -1602,11 +1482,6 @@ class FilterString(BaseNode):
     """
     Filters a stream of strings based on various criteria.
     filter, strings, text, stream
-
-    Use cases:
-    - Filter strings by length
-    - Filter strings containing specific text
-    - Filter strings by prefix/suffix
     """
 
     class FilterType(str, Enum):
@@ -1694,10 +1569,6 @@ class FilterRegexString(BaseNode):
     """
     Filters a stream of strings using regular expressions.
     filter, regex, pattern, text, stream
-
-    Use cases:
-    - Filter strings using complex patterns
-    - Extract strings matching specific formats (emails, dates, etc.)
     """
 
     value: str = Field(default="", description="Input string stream")
@@ -1767,3 +1638,149 @@ class FilterRegexString(BaseNode):
 
                 if matched:
                     yield {"output": val}
+
+
+class Embedding(BaseNode):
+    """
+    Generate vector representations of text using any supported embedding provider.
+    Automatically routes to the appropriate backend (OpenAI, Gemini, Mistral).
+    embeddings, similarity, search, clustering, classification, vectors, semantic
+
+    Uses embedding models to create dense vector representations of text.
+    These vectors capture semantic meaning, enabling:
+    - Semantic search
+    - Text clustering
+    - Document classification
+    - Recommendation systems
+    - Anomaly detection
+    - Measuring text similarity and diversity
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: EmbeddingModel = Field(
+        default=EmbeddingModel(
+            provider=Provider.OpenAI,
+            id="text-embedding-3-small",
+            name="Text Embedding 3 Small",
+        ),
+        description="The embedding model to use",
+    )
+    input: str = Field(
+        title="Input",
+        default="",
+        description="The text to embed",
+    )
+    chunk_size: int = Field(
+        default=4096,
+        ge=1,
+        le=8192,
+        description="Size of text chunks for embedding (used when input exceeds model limits)",
+    )
+
+    async def process(self, context: ProcessingContext) -> NPArray:
+        """
+        Generate embeddings for the input text using the specified model.
+
+        Returns:
+            NPArray: The embedding vector representation of the text
+        """
+        if not self.input:
+            raise ValueError("Input text cannot be empty")
+
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Please select an embedding model")
+
+        # Chunk the input into smaller pieces if necessary
+        chunks = [
+            self.input[i : i + self.chunk_size]
+            for i in range(0, len(self.input), self.chunk_size)
+        ]
+
+        if self.model.provider == Provider.OpenAI:
+            return await self._process_openai(context, chunks)
+        elif self.model.provider == Provider.Gemini:
+            return await self._process_gemini(context, chunks)
+        elif self.model.provider == Provider.Mistral:
+            return await self._process_mistral(context, chunks)
+        else:
+            raise ValueError(f"Unsupported embedding provider: {self.model.provider}")
+
+    async def _process_openai(
+        self, context: ProcessingContext, chunks: list[str]
+    ) -> NPArray:
+        """Process embedding using OpenAI provider."""
+        import numpy as np
+        from nodetool.providers.openai_prediction import run_openai
+        from openai.types.create_embedding_response import CreateEmbeddingResponse
+
+        response = await context.run_prediction(
+            self.id,
+            provider="openai",
+            params={"input": chunks},
+            model=self.model.id,
+            run_prediction_function=run_openai,
+        )
+
+        res = CreateEmbeddingResponse(**response)
+        all_embeddings = [i.embedding for i in res.data]
+        avg = np.mean(all_embeddings, axis=0)
+        return NPArray.from_numpy(avg)
+
+    async def _process_gemini(
+        self, context: ProcessingContext, chunks: list[str]
+    ) -> NPArray:
+        """Process embedding using Gemini provider."""
+        import numpy as np
+        from nodetool.providers.gemini_provider import GeminiProvider
+
+        provider = await context.get_provider(Provider.Gemini)
+        assert isinstance(provider, GeminiProvider)
+        client = provider.get_client()  # pyright: ignore[reportAttributeAccessIssue]
+
+        # Generate embeddings for each chunk and average them
+        all_embeddings = []
+        for chunk in chunks:
+            response = await client.models.embed_content(
+                model=self.model.id,
+                contents=chunk,
+            )
+
+            if not response.embeddings or not response.embeddings[0].values:
+                raise ValueError("No embedding generated from the input text")
+
+            all_embeddings.append(response.embeddings[0].values)
+
+        # Average all embeddings
+        avg_embedding = np.mean(all_embeddings, axis=0)
+        return NPArray.from_numpy(np.array(avg_embedding))
+
+    async def _process_mistral(
+        self, context: ProcessingContext, chunks: list[str]
+    ) -> NPArray:
+        """Process embedding using Mistral provider."""
+        import numpy as np
+
+        api_key = await context.get_secret("MISTRAL_API_KEY")
+        if not api_key:
+            raise ValueError("Mistral API key not configured")
+
+        from mistralai import Mistral
+
+        client = Mistral(api_key=api_key)
+
+        response = await client.embeddings.create_async(
+            model=self.model.id,
+            inputs=chunks,
+        )
+
+        if not response or not response.data:
+            raise ValueError("No embeddings received from Mistral API")
+
+        all_embeddings = [item.embedding for item in response.data]
+        avg_embedding = np.mean(all_embeddings, axis=0)
+        return NPArray.from_numpy(avg_embedding)
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["model", "input"]

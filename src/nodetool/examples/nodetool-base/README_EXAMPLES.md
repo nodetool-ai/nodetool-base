@@ -1,6 +1,6 @@
 # NodeTool Base DSL Examples
 
-This directory contains 23 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
+This directory contains 24 comprehensive examples demonstrating the capabilities of NodeTool's DSL for building AI-powered workflows.
 
 ## Original Examples (10)
 
@@ -21,7 +21,7 @@ This directory contains 23 comprehensive examples demonstrating the capabilities
 9. **categorize_mails_dsl.py** - Automatically classify emails with AI and apply labels
 10. **data_generator_dsl.py** - Generate synthetic datasets using AI models
 
-## New Examples (13)
+## New Examples (14)
 
 ### AI Content Generation
 11. **social_media_sentiment_dsl.py** - Analyze sentiment and emotions in social media posts
@@ -41,7 +41,10 @@ This directory contains 23 comprehensive examples demonstrating the capabilities
 23. **research_agent_market_analysis_dsl.py** - Run an autonomous ResearchAgent to gather market intelligence with dynamic outputs
 
 ### Media Generation
-23. **text_to_video_campaign_dsl.py** - Generate realistic marketing videos from campaign briefs using text-to-video
+24. **text_to_video_campaign_dsl.py** - Generate realistic marketing videos from campaign briefs using text-to-video
+
+### Language Learning
+25. **language_practice_coach_dsl.py** - Practice speaking a foreign language with AI-powered feedback and coaching using ASR and LLM
 
 ## How to Run Examples
 

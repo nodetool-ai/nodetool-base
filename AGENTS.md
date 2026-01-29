@@ -34,6 +34,11 @@ pip install -e .
 - Run tests: `pytest -q`
 - Specific test: `pytest tests/nodetool/test_audio.py::test_specific_function -v`
 - Lint/format: `black .` • `ruff check .` • `mypy .` • `flake8`
+
+## Validation
+
+- After making changes, always run `pytest -q` to execute tests and `ruff check .` to lint code.
+- Ensure all tests pass and linting is clean before considering the task complete.
 - Generate node metadata: `nodetool package scan`
 - Generate DSL code: `nodetool codegen`
 

@@ -4,14 +4,14 @@ build-backend = "hatchling.build"
 
 [project]
 name = "nodetool-base"
-version = "0.6.2-rc.17"
+version = "0.6.3-rc.8"
 description = "Nodetool Base nodes"
 readme = "README.md"
 authors = [{ name = "Matthias Georgi", email = "matti.georgi@gmail.com" }]
-requires-python = ">=3.10.13"
+requires-python = ">=3.11"
 
 dependencies = [
-    "nodetool-core==0.6.2-rc.17",
+    "nodetool-core==0.6.3-rc.8",
     "plyer==2.1.0",
     "selenium>=4.26.1",
     "trafilatura>=2.0.0",
@@ -21,6 +21,24 @@ dependencies = [
     "langchain-ollama",
     "langchain-anthropic",
     "discord.py>=2.3.2",
+    "trimesh>=4.0.0",
+    "fast-simplification>=0.1.0",
+    "yt-dlp>=2024.7.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-asyncio>=0.23.5",
+    "pytest-mock>=3.14.0",
+    "freezegun>=1.5.1",
+    "moto>=5.0.3",
+    "aioresponses>=0.7.8",
+    "black>=24.10.0",
+    "flake8>=7.0.0",
+    "mypy>=1.9.0",
+    "ruff>=0.3.4",
 ]
 
 [tool.hatch.metadata]
@@ -34,6 +52,20 @@ allow-direct-references = true
 "src/nodetool/dsl/**/*.py" = ["E402", "F401", "F821"]
 "evals/eval_runner.py" = ["E402"]
 "examples/generate_json_examples.py" = ["E402"]
+
+# Basedpyright configuration for type checking
+[tool.basedpyright]
+typeCheckingMode = "standard"
+reportUnknownMemberType = "none"
+reportUnknownVariableType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownParameterType = "none"
+reportUnknownLambdaType = "none"
+reportMissingTypeStubs = "none"
+reportUnusedImport = "none"
+reportUnusedVariable = "none"
+reportUnusedFunction = "none"
+reportUnusedClass = "none"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/nodetool"]
@@ -80,4 +112,24 @@ artifacts = [
     "assets/nodetool-base/Product Description Generator.jpg",
     "assets/nodetool-base/Instagram Scraper.jpg",
     "assets/nodetool-base/Image to Video Animation.jpg",
+    "assets/nodetool-base/Conditional Logic Engine.jpg",
+    "assets/nodetool-base/Reddit Scraper.jpg",
+    "assets/nodetool-base/Brand Asset Generator.jpg",
+    "assets/nodetool-base/Product Mockup Generator.jpg",
+    "assets/nodetool-base/Album Cover Creator.jpg",
+    "assets/nodetool-base/Social Media Calendar Filler.jpg",
+    "assets/nodetool-base/Learning Path Generator.jpg",
+    "assets/nodetool-base/Pokemon Maker.jpg",
+    "assets/nodetool-base/.DS_Store",
+    "assets/nodetool-base/Research Paper Summarizer.jpg",
+    "assets/nodetool-base/Chat with docs.jpg",
+    "assets/nodetool-base/thumbnail_prompts.jpg",
+    "assets/nodetool-base/Music Video Visualizer.jpg",
+    "assets/nodetool-base/Concept Art Iteration Board.jpg",
+    "assets/nodetool-base/Audio To Image.jpg",
+    "assets/nodetool-base/Photo Enhancement Suite.jpg",
+    "assets/nodetool-base/Hacker News Agent.jpg",
+    "assets/nodetool-base/YouTube Thumbnail Pipeline.jpg",
+    "assets/nodetool-base/Wikipedia Agent.jpg",
+    "assets/nodetool-base/Game Encounter Planner Agent.jpg",
 ]

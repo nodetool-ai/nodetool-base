@@ -1,5 +1,6 @@
 from enum import Enum
 import json
+import yaml
 from nodetool.config.logging_config import get_logger
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
 from nodetool.workflows.processing_context import ProcessingContext
@@ -10,6 +11,7 @@ import csv
 import datetime
 
 from nodetool.config.environment import Environment
+import aiofiles
 
 logger = get_logger(__name__)
 
@@ -283,8 +285,9 @@ class LoadCSVFile(BaseNode):
         if not self.path:
             raise ValueError("path cannot be empty")
         expanded_path = os.path.expanduser(self.path)
-        with open(expanded_path, "r") as f:
-            reader = csv.DictReader(f)
+        async with aiofiles.open(expanded_path, "r") as f:
+            content = await f.read()
+            reader = csv.DictReader(content.splitlines())
             return [row for row in reader]
 
 
@@ -323,11 +326,19 @@ class SaveCSVFile(BaseNode):
 
         filename = datetime.datetime.now().strftime(self.filename)
         expanded_path = os.path.join(expanded_folder, filename)
-        with open(expanded_path, "w") as f:
-            writer = csv.DictWriter(f, fieldnames=self.data[0].keys())
-            writer.writeheader()
-            for row in self.data:
-                writer.writerow(row)
+
+        # Use StringIO to build CSV content asynchronously
+        import io
+
+        output = io.StringIO()
+        writer = csv.DictWriter(output, fieldnames=self.data[0].keys())
+        writer.writeheader()
+        for row in self.data:
+            writer.writerow(row)
+
+        # Write the CSV content to file
+        async with aiofiles.open(expanded_path, "w") as f:
+            await f.write(output.getvalue())
 
 
 class FilterDictByValue(BaseNode):
@@ -372,7 +383,9 @@ class FilterDictByValue(BaseNode):
     class OutputType(TypedDict):
         output: dict
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         current_key = self.key
         current_filter_type = self.filter_type
         current_criteria = self.criteria
@@ -391,14 +404,14 @@ class FilterDictByValue(BaseNode):
                 d = item
                 if not isinstance(d, dict):
                     continue
-                
+
                 if current_key not in d:
                     continue
 
                 val = d[current_key]
                 value_str = str(val)
                 length_criteria = 0
-                
+
                 if current_filter_type in [
                     self.FilterType.LENGTH_GREATER,
                     self.FilterType.LENGTH_LESS,
@@ -434,7 +447,7 @@ class FilterDictByValue(BaseNode):
                 elif current_filter_type == self.FilterType.EXACT_LENGTH:
                     if hasattr(val, "__len__") and len(val) == length_criteria:
                         matched = True
-                
+
                 if matched:
                     yield {"output": d}
 
@@ -475,7 +488,9 @@ class FilterDictByRange(BaseNode):
     class OutputType(TypedDict):
         output: dict
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         current_key = self.key
         current_min = self.min_value
         current_max = self.max_value
@@ -498,7 +513,7 @@ class FilterDictByRange(BaseNode):
                 d = item
                 if not isinstance(d, dict):
                     continue
-                
+
                 if current_key not in d:
                     continue
 
@@ -513,7 +528,7 @@ class FilterDictByRange(BaseNode):
                 else:
                     if current_min < val < current_max:
                         matched = True
-                
+
                 if matched:
                     yield {"output": d}
 
@@ -553,7 +568,9 @@ class FilterDictByNumber(BaseNode):
     class OutputType(TypedDict):
         output: dict
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         current_key = self.key
         current_filter_type = self.filter_type
         current_compare_value = self.compare_value
@@ -572,23 +589,32 @@ class FilterDictByNumber(BaseNode):
                 d = item
                 if not isinstance(d, dict):
                     continue
-                
+
                 if current_key not in d:
                     continue
-                
+
                 num = d[current_key]
                 if not isinstance(num, (int, float)):
                     continue
 
                 matched = False
                 if current_filter_type == self.FilterDictNumberType.GREATER_THAN:
-                    if current_compare_value is not None and num > current_compare_value:
+                    if (
+                        current_compare_value is not None
+                        and num > current_compare_value
+                    ):
                         matched = True
                 elif current_filter_type == self.FilterDictNumberType.LESS_THAN:
-                    if current_compare_value is not None and num < current_compare_value:
+                    if (
+                        current_compare_value is not None
+                        and num < current_compare_value
+                    ):
                         matched = True
                 elif current_filter_type == self.FilterDictNumberType.EQUAL_TO:
-                    if current_compare_value is not None and num == current_compare_value:
+                    if (
+                        current_compare_value is not None
+                        and num == current_compare_value
+                    ):
                         matched = True
                 elif current_filter_type == self.FilterDictNumberType.EVEN:
                     if isinstance(num, int) and num % 2 == 0:
@@ -602,7 +628,7 @@ class FilterDictByNumber(BaseNode):
                 elif current_filter_type == self.FilterDictNumberType.NEGATIVE:
                     if num < 0:
                         matched = True
-                
+
                 if matched:
                     yield {"output": d}
 
@@ -633,18 +659,20 @@ class FilterDictRegex(BaseNode):
     class OutputType(TypedDict):
         output: dict
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         import re
-        
+
         current_key = self.key
         current_pattern = self.pattern
         current_full_match = self.full_match
         regex = None
 
         try:
-             regex = re.compile(current_pattern)
+            regex = re.compile(current_pattern)
         except re.error:
-             pass
+            pass
 
         async for handle, item in self.iter_any_input():
             if handle == "key":
@@ -664,16 +692,16 @@ class FilterDictRegex(BaseNode):
                 d = item
                 if not isinstance(d, dict):
                     continue
-                
+
                 if current_key not in d:
                     continue
-                
+
                 if regex is None:
                     try:
                         regex = re.compile(current_pattern)
                     except re.error:
                         continue
-                
+
                 val = str(d[current_key])
                 matched = False
                 if current_full_match:
@@ -682,7 +710,7 @@ class FilterDictRegex(BaseNode):
                 else:
                     if regex.search(val):
                         matched = True
-                
+
                 if matched:
                     yield {"output": d}
 
@@ -719,9 +747,11 @@ class FilterDictByQuery(BaseNode):
     class OutputType(TypedDict):
         output: dict
 
-    async def gen_process(self, context: ProcessingContext) -> AsyncGenerator[OutputType, None]:
+    async def gen_process(
+        self, context: ProcessingContext
+    ) -> AsyncGenerator[OutputType, None]:
         import pandas as pd
-        
+
         current_condition = self.condition
 
         async for handle, item in self.iter_any_input():
@@ -732,7 +762,7 @@ class FilterDictByQuery(BaseNode):
                 d = item
                 if not isinstance(d, dict):
                     continue
-                
+
                 if current_condition:
                     try:
                         df = pd.DataFrame([d])
@@ -740,6 +770,56 @@ class FilterDictByQuery(BaseNode):
                         if not filtered_df.empty:
                             yield {"output": d}
                     except Exception:
-                        pass # Query failure or other error, skip
+                        pass  # Query failure or other error, skip
                 else:
                     yield {"output": d}
+
+
+class ToJSON(BaseNode):
+    """
+    Converts a dictionary to a JSON string.
+    json, serialize, string, convert
+
+    Use cases:
+    - Serialize dictionaries for API payloads
+    - Store configuration data as JSON
+    - Prepare data for network transmission
+    """
+
+    _layout: ClassVar[str] = "small"
+
+    dictionary: dict[(str, Any)] = Field(default={})
+
+    def _serialize_obj(self, obj):
+        if isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
+            return obj.isoformat()
+        elif isinstance(obj, datetime.timedelta):
+            return str(obj)
+        elif hasattr(obj, "__dict__"):
+            return obj.__dict__
+        elif isinstance(obj, bytes):
+            return obj.decode("utf-8", errors="ignore")
+        else:
+            return str(obj)
+
+    async def process(self, context: ProcessingContext) -> str:
+        return json.dumps(self.dictionary, default=self._serialize_obj)
+
+
+class ToYAML(BaseNode):
+    """
+    Converts a dictionary to a YAML string.
+    yaml, serialize, string, convert
+
+    Use cases:
+    - Create configuration files in YAML format
+    - Generate human-readable data representations
+    - Prepare data for YAML-based systems
+    """
+
+    _layout: ClassVar[str] = "small"
+
+    dictionary: dict[(str, Any)] = Field(default={})
+
+    async def process(self, context: ProcessingContext) -> str:
+        return yaml.dump(self.dictionary)

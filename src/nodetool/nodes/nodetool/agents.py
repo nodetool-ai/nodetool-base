@@ -4,41 +4,36 @@ import json
 import re
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
 
-from nodetool.agents.tools.workflow_tool import GraphTool
-from nodetool.types.model import UnifiedModel
-from nodetool.workflows.types import (
-    TaskUpdate,
-    PlanningUpdate,
-    Chunk,
-)
-from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
 from pydantic import Field
 
 from nodetool.agents.tools.base import Tool
-
-from nodetool.workflows.types import (
-    ToolCallUpdate,
-)
-
-
+from nodetool.agents.tools.workflow_tool import GraphTool
+from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
+    AudioRef,
+    ImageRef,
+    LanguageModel,
     Message,
-    MessageTextContent,
-    MessageImageContent,
     MessageAudioContent,
     MessageContent,
-    ImageRef,
-    ToolName,
+    MessageImageContent,
+    MessageTextContent,
+    Provider,
     ToolCall,
-    AudioRef,
-    LanguageModel,
+    ToolName,
 )
-from nodetool.workflows.base_node import BaseNode
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.workflows.types import EdgeUpdate
-from nodetool.metadata.types import Provider
-from nodetool.config.logging_config import get_logger
 from nodetool.models.thread import Thread as ThreadModel
+from nodetool.types.model import UnifiedModel
+from nodetool.workflows.base_node import BaseNode
+from nodetool.workflows.graph_utils import find_node, get_downstream_subgraph
+from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.workflows.types import (
+    Chunk,
+    EdgeUpdate,
+    PlanningUpdate,
+    TaskUpdate,
+    ToolCallUpdate,
+)
 
 log = get_logger(__name__)
 # Log level is controlled by env (DEBUG/NODETOOL_LOG_LEVEL)
@@ -66,7 +61,7 @@ class Summarizer(BaseNode):
 
     system_prompt: str = Field(
         default="""
-        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring. 
+        You are an expert summarizer. Your task is to create clear, accurate, and concise summaries using Markdown for structuring.
         Follow these guidelines:
         1. Identify and include only the most important information.
         2. Maintain factual accuracy - do not add or modify information.
@@ -222,7 +217,9 @@ class CreateThread(BaseNode):
     async def process(self, context: ProcessingContext) -> OutputType:
         # Reuse an existing thread if the caller supplied an ID they own.
         if self.thread_id:
-            existing = await ThreadModel.find(user_id=context.user_id, id=self.thread_id)
+            existing = await ThreadModel.find(
+                user_id=context.user_id, id=self.thread_id
+            )
             if existing:
                 return {"thread_id": existing.id}
 
@@ -741,26 +738,7 @@ def _parse_or_infer_category(raw: str, categories: list[str]) -> str:
     return categories[0]
 
 
-DEFAULT_SYSTEM_PROMPT = """You are a an AI agent. 
-
-Behavior
-- Understand the user's intent and the context of the task.
-- Break down the task into smaller steps.
-- Be precise, concise, and actionable.
-- Use tools to accomplish your goal. 
-
-Tool preambles
-- Outline the next step(s) you will perform.
-- After acting, summarize the outcome.
-
-Rendering
-- Use Markdown to display media assets.
-- Display images, audio, and video assets using the appropriate Markdown.
-
-File handling
-- Inputs and outputs are files in the /workspace directory.
-- Write outputs of code execution to the /workspace directory.
-"""
+DEFAULT_SYSTEM_PROMPT = """You are a friendly assistant"""
 
 
 def serialize_tool_result(tool_result: Any) -> Any:
@@ -843,6 +821,70 @@ def serialize_tool_result(tool_result: Any) -> Any:
 GB = 1024 * 1024 * 1024
 
 
+def instantiate_tools_from_names(tool_names: list[ToolName]) -> list[Tool]:
+    """
+    Instantiate Tool objects from a list of ToolName objects.
+
+    This helper function maps tool names to their corresponding Tool classes
+    and instantiates them. It's shared between Agent and ResearchAgent.
+
+    Args:
+        tool_names: List of ToolName objects specifying which tools to enable.
+
+    Returns:
+        List of instantiated Tool objects.
+    """
+    from nodetool.agents.tools.browser_tools import BrowserTool
+    from nodetool.agents.tools.serp_tools import (
+        GoogleFinanceTool,
+        GoogleImagesTool,
+        GoogleJobsTool,
+        GoogleLensTool,
+        GoogleMapsTool,
+        GoogleNewsTool,
+        GoogleSearchTool,
+        GoogleShoppingTool,
+    )
+    from nodetool.agents.tools.workspace_tools import (
+        ListDirectoryTool,
+        ReadFileTool,
+        WriteFileTool,
+    )
+
+    # Map of tool names to their Tool classes
+    tool_map: dict[str, Tool] = {
+        "read_file": ReadFileTool(),
+        "write_file": WriteFileTool(),
+        "list_directory": ListDirectoryTool(),
+        "browser": BrowserTool(),
+        "google_search": GoogleSearchTool(),
+        "google_finance": GoogleFinanceTool(),
+        "google_jobs": GoogleJobsTool(),
+        "google_news": GoogleNewsTool(),
+        "google_images": GoogleImagesTool(),
+        "google_lens": GoogleLensTool(),
+        "google_maps": GoogleMapsTool(),
+        "google_shopping": GoogleShoppingTool(),
+    }
+
+    selected_tools: list[Tool] = []
+    added_tool_names: set[str] = set()
+
+    # Add requested tools (skip duplicates)
+    for tool_name in tool_names:
+        if tool_name.name in added_tool_names:
+            continue  # Skip duplicate
+        tool_instance = tool_map.get(tool_name.name)
+        if tool_instance:
+            selected_tools.append(tool_instance)
+            added_tool_names.add(tool_name.name)
+        else:
+            log.warning(f"Unknown tool requested: {tool_name.name}")
+
+    return selected_tools
+
+
+
 class Agent(BaseNode):
     """
     Generate natural language responses using LLM providers and streams output.
@@ -862,6 +904,11 @@ class Agent(BaseNode):
         title="Prompt",
         default="",
         description="The prompt for the LLM",
+    )
+    tools: list[ToolName] = Field(
+        title="Tools",
+        default=[ToolName(name="google_search"), ToolName(name="browser")],
+        description="Tools to enable for the agent. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
     image: ImageRef = Field(
         title="Image",
@@ -1054,10 +1101,43 @@ class Agent(BaseNode):
     class OutputType(TypedDict):
         text: str | None
         chunk: Chunk | None
+        thinking: Chunk | None
         audio: AudioRef | None
 
     def _resolve_tools(self, context: ProcessingContext) -> list[Tool]:
-        tools = []
+        """Resolve tools from tool names and dynamic outputs.
+
+        This method instantiates Tool objects from the configured tool names
+        and also creates GraphTools from any dynamic outputs that have
+        downstream node connections.
+
+        Args:
+            context: The processing context containing the workflow graph.
+
+        Returns:
+            List of Tool objects available for the agent to use.
+
+        Raises:
+            ValueError: If workspace tools are requested but no workspace is configured.
+        """
+        # Check if workspace tools are being requested
+        workspace_tool_names = {"read_file", "write_file", "list_directory"}
+        requested_workspace_tools = [
+            t.name for t in self.tools if t.name in workspace_tool_names
+        ]
+
+        # Validate workspace is set if workspace tools are requested
+        if requested_workspace_tools and not context.workspace_dir:
+            raise ValueError(
+                f"Workspace tools ({', '.join(requested_workspace_tools)}) require a workspace directory. "
+                "Please configure a workspace in your workflow settings before using file operations."
+            )
+
+        # Instantiate tools from tool names (without auto-including workspace tools)
+        # Only include workspace tools if the user explicitly selected them
+        tools = instantiate_tools_from_names(self.tools)
+
+        # Add GraphTools for dynamic outputs with downstream connections
         for name, type_meta in self._dynamic_outputs.items():
             initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
             initial_nodes = [find_node(graph, edge.target) for edge in initial_edges]
@@ -1074,7 +1154,7 @@ class Agent(BaseNode):
         This ensures the provider is fully resolved before use.
         """
         provider = await context.get_provider(self.model.provider)
-        
+
         # Defensive check: if provider is still a coroutine, await it again
         # This handles edge cases where get_provider might return a coroutine
         if inspect.isawaitable(provider):
@@ -1083,8 +1163,8 @@ class Agent(BaseNode):
                 f"type={type(provider)}"
             )
             provider = await provider
-        
-        if not hasattr(provider, 'generate_messages'):
+
+        if not hasattr(provider, "generate_messages"):
             log.error(
                 f"Provider missing generate_messages method. type={type(provider)}, "
                 f"attributes={[x for x in dir(provider) if not x.startswith('_')][:10]}"
@@ -1093,7 +1173,7 @@ class Agent(BaseNode):
                 f"Provider {type(provider)} does not have generate_messages method. "
                 f"Got provider type: {type(provider)}, class: {provider.__class__.__name__}"
             )
-        
+
         return provider
 
     @classmethod
@@ -1101,6 +1181,7 @@ class Agent(BaseNode):
         return [
             "prompt",
             "model",
+            "tools",
             "image",
             "audio",
         ]
@@ -1333,32 +1414,42 @@ class Agent(BaseNode):
                 tools=tools,
                 max_tokens=self.max_tokens,
                 context_window=self.context_window,
+                context=context,
             ):
                 chunk_count += 1
 
                 if messages[-1] != assistant_message:
                     messages.append(assistant_message)
                 if isinstance(chunk, Chunk):
+                    is_thinking = bool(getattr(chunk, "thinking", False))
                     log.debug(
                         f"_execute_agent_loop chunk received: iteration={iteration}, "
                         f"chunk_count={chunk_count}, content_type={chunk.content_type}, "
                         f"done={chunk.done}, content_len={len(chunk.content or '')}, "
                         f"current_text_len={len(message_text_content.text)}"
                     )
+                    if is_thinking:
+                        yield {
+                            "chunk": None,
+                            "thinking": chunk,
+                            "text": None,
+                            "audio": None,
+                        }
+                        continue
                     if chunk.content_type in ("text", None):
                         message_text_content.text += chunk.content
                         log.debug(
                             f"_execute_agent_loop accumulated text: iteration={iteration}, "
                             f"chunk_count={chunk_count}, total_text_len={len(message_text_content.text)}"
                         )
-                        yield {"chunk": chunk, "text": None, "audio": None}
+                        yield {"chunk": chunk, "thinking": None, "text": None, "audio": None}
                     elif chunk.content_type == "audio":
-                        yield {"chunk": chunk, "text": None, "audio": None}
+                        yield {"chunk": chunk, "thinking": None, "text": None, "audio": None}
                         import base64
 
                         audio_bytes = base64.b64decode(chunk.content or "")
                         audio_ref = AudioRef(data=audio_bytes)
-                        yield {"chunk": None, "text": None, "audio": audio_ref}
+                        yield {"chunk": None, "thinking": None, "text": None, "audio": audio_ref}
                     else:
                         log.warning(
                             "Agent received unsupported chunk type %s; ignoring",
@@ -1382,6 +1473,7 @@ class Agent(BaseNode):
                         )
                         yield {
                             "chunk": None,
+                            "thinking": None,
                             "text": final_text,
                             "audio": None,
                         }
@@ -1435,6 +1527,7 @@ class Agent(BaseNode):
                             for e in initial_edges:
                                 context.post_message(
                                     EdgeUpdate(
+                                        workflow_id=context.workflow_id,
                                         edge_id=e.id or "",
                                         status="message_sent",
                                     )
@@ -1488,6 +1581,7 @@ class Agent(BaseNode):
                 await self._save_message_to_thread(context, assistant_message)
                 yield {
                     "chunk": None,
+                    "thinking": None,
                     "text": message_text_content.text,
                     "audio": None,
                 }
@@ -1508,7 +1602,11 @@ class Agent(BaseNode):
                     )
                     for e in initial_edges:
                         context.post_message(
-                            EdgeUpdate(edge_id=e.id or "", status="drained")
+                            EdgeUpdate(
+                                workflow_id=context.workflow_id,
+                                edge_id=e.id or "",
+                                status="drained",
+                            )
                         )
                     tool_message = Message(
                         role="tool",
@@ -1573,6 +1671,7 @@ class Agent(BaseNode):
                 f"gen_process yielding item {item_count}: keys={list(item.keys())}, "
                 f"text_len={len(item.get('text', '') or '')}, "
                 f"has_chunk={item.get('chunk') is not None}, "
+                f"has_thinking={item.get('thinking') is not None}, "
                 f"has_audio={item.get('audio') is not None}"
             )
             yield item
@@ -1655,7 +1754,7 @@ class ResearchAgent(BaseNode):
 
     tools: list[ToolName] = Field(
         default=[ToolName(name="google_search"), ToolName(name="browser")],
-        description="Additional research tools to enable (workspace tools are always included)",
+        description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
 
     max_tokens: int = Field(
@@ -1713,57 +1812,39 @@ class ResearchAgent(BaseNode):
         return ["objective", "model", "tools"]
 
     def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
-        """Instantiate Tool objects from tool names."""
-        from nodetool.agents.tools.serp_tools import (
-            GoogleSearchTool,
-            GoogleFinanceTool,
-            GoogleJobsTool,
-            GoogleNewsTool,
-            GoogleImagesTool,
-            GoogleLensTool,
-            GoogleMapsTool,
-            GoogleShoppingTool,
-        )
-        from nodetool.agents.tools.browser_tools import BrowserTool
-        from nodetool.agents.tools.workspace_tools import (
-            WriteFileTool,
-            ReadFileTool,
-            ListDirectoryTool,
-        )
+        """Instantiate Tool objects from tool names.
 
-        # Always include workspace tools
-        tool_instances: list[Tool] = [
-            BrowserTool(),
-            GoogleSearchTool(),
-            GoogleFinanceTool(),
-            GoogleJobsTool(),
-            GoogleNewsTool(),
-            GoogleImagesTool(),
-            GoogleLensTool(),
-            GoogleMapsTool(),
-            GoogleShoppingTool(),
+        Uses the shared instantiate_tools_from_names helper function
+        to create Tool instances from the configured tool names.
+
+        Args:
+            context: The processing context for workspace validation.
+
+        Returns:
+            List of instantiated Tool objects for the research agent.
+
+        Raises:
+            ValueError: If workspace tools are requested but no workspace is configured.
+        """
+        # Check if workspace tools are being requested
+        workspace_tool_names = {"read_file", "write_file", "list_directory"}
+        requested_workspace_tools = [
+            t.name for t in self.tools if t.name in workspace_tool_names
         ]
 
-        # Add requested research tools
-        tool_map = {tool.name: tool for tool in tool_instances}
-        selected_tools = [
-            WriteFileTool(),
-            ReadFileTool(),
-            ListDirectoryTool(),
-        ]
+        # Validate workspace is set if workspace tools are requested
+        if requested_workspace_tools and not context.workspace_dir:
+            raise ValueError(
+                f"Workspace tools ({', '.join(requested_workspace_tools)}) require a workspace directory. "
+                "Please configure a workspace in your workflow settings before using file operations."
+            )
 
-        for tool_name in self.tools:
-            tool_instance = tool_map.get(tool_name.name)
-            if tool_instance:
-                selected_tools.append(tool_instance)
-            else:
-                log.warning(f"Unknown tool requested: {tool_name.name}")
-
-        return selected_tools
+        return instantiate_tools_from_names(self.tools)
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         """Execute research agent and return structured results."""
         import json
+
         from nodetool.agents.agent import Agent as CoreAgent
 
         if self.model.provider == Provider.Empty:

@@ -37,17 +37,38 @@ class Background(BaseNode):
 
 class RenderText(BaseNode):
     """
-    This node allows you to add text to images.
-    text, font, label, title, watermark, caption, image, overlay
-    This node takes text, font updates, coordinates (where to place the text), and an image to work with. A user can use the Render Text Node to add a label or title to an image, watermark an image, or place a caption directly on an image.
+    This node allows you to add text to images using system fonts or web fonts.
+    text, font, label, title, watermark, caption, image, overlay, google fonts
 
-    The Render Text Node offers customizable options, including the ability to choose the text's font, size, color, and alignment (left, center, or right). Text placement can also be defined, providing flexibility to place the text wherever you see fit.
+    This node takes text, font updates, coordinates (where to place the text), and an image to work with.
+    A user can use the Render Text Node to add a label or title to an image, watermark an image,
+    or place a caption directly on an image.
+
+    The Render Text Node offers customizable options, including the ability to choose the text's font,
+    size, color, and alignment (left, center, or right). Text placement can also be defined,
+    providing flexibility to place the text wherever you see fit.
+
+    ### Font Sources
+
+    The node supports three font sources:
+
+    1. **System Fonts** (default): Use fonts installed on the system
+       - `FontRef(name="Arial")` - Uses local Arial font
+
+    2. **Google Fonts**: Automatically download and cache fonts from Google Fonts
+       - `FontRef(name="Roboto", source=FontSource.GOOGLE_FONTS)`
+       - `FontRef(name="Open Sans", source=FontSource.GOOGLE_FONTS, weight="bold")`
+       - Supports 50+ popular fonts including Roboto, Open Sans, Lato, Montserrat, Poppins, etc.
+
+    3. **Custom URL**: Download fonts from any URL
+       - `FontRef(name="CustomFont", source=FontSource.URL, url="https://example.com/font.ttf")`
 
     #### Applications
-    - Labeling images in a image gallery or database.
+    - Labeling images in an image gallery or database.
     - Watermarking images for copyright protection.
     - Adding custom captions to photographs.
     - Creating instructional images to guide the reader's view.
+    - Using premium Google Fonts for professional typography.
     """
 
     class TextAlignment(str, Enum):
@@ -57,10 +78,11 @@ class RenderText(BaseNode):
 
     text: str = Field(default="", description="The text to render.")
     font: FontRef = Field(
-        default=FontRef(name="DejaVuSans"), description="The font to use."
+        default=FontRef(name="DejaVuSans"),
+        description="The font to use. Supports system fonts, Google Fonts, and custom URLs.",
     )
-    x: int = Field(default=0, ge=0, description="The x coordinate.")
-    y: int = Field(default=0, ge=0, description="The y coordinate.")
+    x: int = Field(default=0, description="The x coordinate.")
+    y: int = Field(default=0, description="The y coordinate.")
     size: int = Field(default=12, ge=1, le=512, description="The font size.")
     color: ColorRef = Field(
         default=ColorRef(value="#000000"), description="The font color."
@@ -74,8 +96,11 @@ class RenderText(BaseNode):
 
         image = await context.image_to_pil(self.image)
         draw = PIL.ImageDraw.Draw(image)
-        font_path = context.get_system_font_path(self.font.name)
+
+        # Use get_font_path which handles system fonts, Google Fonts, and URL fonts
+        font_path = context.get_font_path(self.font)
         font = PIL.ImageFont.truetype(font_path, self.size)
+
         draw.text(
             (self.x, self.y),
             self.text,

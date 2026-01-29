@@ -1,21 +1,33 @@
 from typing import TypedDict
+
 from pydantic import Field
+
+from nodetool.config.logging_config import get_logger
 from nodetool.metadata.types import (
+    ASRModel,
+    AudioRef,
     ColorRef,
+    DataframeRef,
     DocumentRef,
-    HuggingFaceModel,
-    LanguageModel,
-    ImageModel,
+    EmbeddingModel,
     FolderRef,
+    HuggingFaceModel,
+    ImageModel,
+    ImageRef,
+    LanguageModel,
     Message,
+    MessageAudioContent,
+    MessageImageContent,
+    MessageTextContent,
+    Model3DRef,
+    Provider,
+    TTSModel,
+    VideoModel,
+    VideoRef,
 )
+from nodetool.workflows.base_node import BaseNode, InputNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk
-from nodetool.metadata.types import AudioRef, DataframeRef
-from nodetool.metadata.types import ImageRef
-from nodetool.workflows.base_node import InputNode
-from nodetool.metadata.types import VideoRef
-from nodetool.config.logging_config import get_logger
 
 log = get_logger(__name__)
 
@@ -24,16 +36,11 @@ class FloatInput(InputNode):
     """
     Accepts a floating-point number as a parameter for workflows, typically constrained by a minimum and maximum value.  This input allows for precise numeric settings, such as adjustments, scores, or any value requiring decimal precision.
     input, parameter, float, number, decimal, range
-
-    Use cases:
-    - Specify a numeric value within a defined range (e.g., 0.0 to 1.0).
-    - Set thresholds, confidence scores, or scaling factors.
-    - Configure continuous parameters like opacity, volume, or temperature.
     """
 
     value: float = 0.0
     min: float = 0
-    max: float = 100
+    max: float = 99999
 
     @classmethod
     def return_type(cls):
@@ -47,11 +54,6 @@ class BooleanInput(InputNode):
     """
     Accepts a boolean (true/false) value as a parameter for workflows.  This input is used for binary choices, enabling or disabling features, or controlling conditional logic paths.
     input, parameter, boolean, bool, toggle, switch, flag
-
-    Use cases:
-    - Toggle features or settings on or off.
-    - Set binary flags to control workflow behavior.
-    - Make conditional choices within a workflow (e.g., proceed if true).
     """
 
     value: bool = False
@@ -68,16 +70,11 @@ class IntegerInput(InputNode):
     """
     Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.
     input, parameter, integer, number, count, index, whole_number
-
-    Use cases:
-    - Specify counts or quantities (e.g., number of items, iterations).
-    - Set index values for accessing elements in a list or array.
-    - Configure discrete numeric parameters like age, steps, or quantity.
     """
 
     value: int = 0
     min: int = 0
-    max: int = 100
+    max: int = 99999
 
     @classmethod
     def return_type(cls):
@@ -101,6 +98,62 @@ class StringInput(InputNode):
     """
 
     value: str = ""
+    max_length: int = Field(
+        0,
+        ge=0,
+        le=100000,
+        title="Max length",
+        description="Maximum number of characters allowed. Use 0 for unlimited.",
+    )
+    line_mode: str = Field(
+        "single_line",
+        title="Line mode",
+        description="Controls whether the UI should render the input as single-line or multiline.",
+        json_schema_extra={"type": "enum", "values": ["single_line", "multiline"]},
+    )
+
+    @classmethod
+    def return_type(cls):
+        return str
+
+    async def process(self, context: ProcessingContext) -> str:
+        if self.max_length and len(self.value) > self.max_length:
+            return self.value[: self.max_length]
+        return self.value
+
+
+class SelectInput(InputNode):
+    """
+    Accepts a selection from a predefined set of options as a parameter for workflows.
+    input, parameter, select, enum, dropdown, choice, options
+
+    Use cases:
+    - Let users choose from a fixed set of values in app mode
+    - Configure enum-like options for downstream nodes
+    - Provide dropdown selection for workflow parameters
+
+    The output is a string that can be connected to enum-typed inputs.
+    """
+
+    value: str = Field(
+        "",
+        description="The currently selected value.",
+        json_schema_extra={"type": "select"},
+    )
+    options: list[str] = Field(
+        default=[],
+        description="The list of available options to choose from.",
+    )
+    enum_type_name: str = Field(
+        default="",
+        description="The enum type name this select corresponds to (for type matching).",
+    )
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        # Only show 'value' in the UI; hide options and enum_type_name as plumbing
+        basic_fields = super().get_basic_fields()
+        return basic_fields + ["value"]
 
     @classmethod
     def return_type(cls):
@@ -123,6 +176,9 @@ class StringListInput(InputNode):
     @classmethod
     def return_type(cls):
         return list[str]
+
+    async def process(self, context: ProcessingContext) -> list[str]:
+        return self.value
 
 
 class FolderPathInput(InputNode):
@@ -200,6 +256,66 @@ class ImageModelInput(InputNode):
         return ImageModel
 
 
+class VideoModelInput(InputNode):
+    """
+    Accepts a video generation model as a parameter for workflows.
+    input, parameter, model, video, generation
+    """
+
+    value: VideoModel = Field(
+        VideoModel(), description="The video generation model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return VideoModel
+
+
+class TTSModelInput(InputNode):
+    """
+    Accepts a text-to-speech model as a parameter for workflows.
+    input, parameter, model, tts, speech, voice
+    """
+
+    value: TTSModel = Field(
+        TTSModel(), description="The text-to-speech model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return TTSModel
+
+
+class ASRModelInput(InputNode):
+    """
+    Accepts an automatic speech recognition model as a parameter for workflows.
+    input, parameter, model, asr, transcription, speech
+    """
+
+    value: ASRModel = Field(
+        ASRModel(), description="The speech recognition model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return ASRModel
+
+
+class EmbeddingModelInput(InputNode):
+    """
+    Accepts an embedding model as a parameter for workflows.
+    input, parameter, model, embedding, vector
+    """
+
+    value: EmbeddingModel = Field(
+        EmbeddingModel(), description="The embedding model to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return EmbeddingModel
+
+
 class DataframeInput(InputNode):
     """
     Accepts a reference to a dataframe asset for workflows.
@@ -240,12 +356,6 @@ class ImageInput(InputNode):
     """
     Accepts a reference to an image asset for workflows, specified by an 'ImageRef'.  An 'ImageRef' points to image data that can be used for display, analysis, or processing by vision models.
     input, parameter, image, picture, graphic, visual, asset
-
-    Use cases:
-    - Load an image for visual processing or analysis.
-    - Provide an image as input to computer vision models (e.g., object detection, image classification).
-    - Select an image for manipulation, enhancement, or inclusion in a document.
-    - Display an image within a workflow interface.
     """
 
     value: ImageRef = Field(ImageRef(), description="The image to use as input.")
@@ -258,16 +368,82 @@ class ImageInput(InputNode):
         return self.value
 
 
+class ImageListInput(InputNode):
+    """
+    Accepts a list of image references as a parameter for workflows.
+    input, parameter, image, picture, graphic, visual, asset, list
+    """
+
+    value: list[ImageRef] = Field(
+        default=[], description="The list of images to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[ImageRef]
+
+    async def process(self, context: ProcessingContext) -> list[ImageRef]:
+        return self.value
+
+
+class VideoListInput(InputNode):
+    """
+    Accepts a list of video references as a parameter for workflows.
+    input, parameter, video, movie, clip, visual, asset, list
+    """
+
+    value: list[VideoRef] = Field(
+        default=[], description="The list of videos to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[VideoRef]
+
+    async def process(self, context: ProcessingContext) -> list[VideoRef]:
+        return self.value
+
+
+class AudioListInput(InputNode):
+    """
+    Accepts a list of audio references as a parameter for workflows.
+    input, parameter, audio, sound, voice, speech, asset, list
+    """
+
+    value: list[AudioRef] = Field(
+        default=[], description="The list of audio files to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[AudioRef]
+
+    async def process(self, context: ProcessingContext) -> list[AudioRef]:
+        return self.value
+
+
+class TextListInput(InputNode):
+    """
+    Accepts a list of text strings as a parameter for workflows.
+    input, parameter, text, string, list
+    """
+
+    value: list[str] = Field(
+        default=[], description="The list of text strings to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return list[str]
+
+    async def process(self, context: ProcessingContext) -> list[str]:
+        return self.value
+
+
 class VideoInput(InputNode):
     """
     Accepts a reference to a video asset for workflows, specified by a 'VideoRef'.  A 'VideoRef' points to video data that can be used for playback, analysis, frame extraction, or processing by video-capable models.
     input, parameter, video, movie, clip, visual, asset
-
-    Use cases:
-    - Load a video file for processing or content analysis.
-    - Analyze video content for events, objects, or speech.
-    - Extract frames or audio tracks from a video.
-    - Provide video input to models that understand video data.
     """
 
     value: VideoRef = Field(VideoRef(), description="The video to use as input.")
@@ -284,12 +460,6 @@ class AudioInput(InputNode):
     """
     Accepts a reference to an audio asset for workflows, specified by an 'AudioRef'.  An 'AudioRef' points to audio data that can be used for playback, transcription, analysis, or processing by audio-capable models.
     input, parameter, audio, sound, voice, speech, asset
-
-    Use cases:
-    - Load an audio file for speech-to-text transcription.
-    - Analyze sound for specific events or characteristics.
-    - Provide audio input to models for tasks like voice recognition or music generation.
-    - Process audio for enhancement or feature extraction.
     """
 
     value: AudioRef = Field(AudioRef(), description="The audio to use as input.")
@@ -299,6 +469,24 @@ class AudioInput(InputNode):
         return AudioRef
 
     async def process(self, context: ProcessingContext) -> AudioRef:
+        return self.value
+
+
+class Model3DInput(InputNode):
+    """
+    Accepts a reference to a 3D model asset for workflows, specified by a 'Model3DRef'.
+    A 'Model3DRef' points to 3D model data that can be used for visualization, processing,
+    or conversion by 3D-capable nodes.
+    input, parameter, 3d, model, mesh, obj, glb, stl, ply, asset
+    """
+
+    value: Model3DRef = Field(Model3DRef(), description="The 3D model to use as input.")
+
+    @classmethod
+    def return_type(cls):
+        return Model3DRef
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
         return self.value
 
 
@@ -344,12 +532,6 @@ class FilePathInput(InputNode):
     """
     Accepts a local filesystem path (to a file or directory) as input for workflows.
     input, parameter, path, filepath, directory, local_file, filesystem
-
-    Use cases:
-    - Provide a local path to a specific file or directory for processing.
-    - Specify an input or output location on the local filesystem for a development task.
-    - Load local datasets or configuration files not managed as assets.
-    - Not available in production: raises an error if used in a production environment.
     """
 
     value: str = Field(
@@ -367,12 +549,6 @@ class DocumentFileInput(InputNode):
     """
     Accepts a local file path pointing to a document and converts it into a 'DocumentRef'.
     input, parameter, document, file, path, local_file, load
-
-    Use cases:
-    - Directly load a document (e.g., PDF, TXT, DOCX) from a specified local file path.
-    - Convert a local file path into a 'DocumentRef' that can be consumed by other document-processing nodes.
-    - Useful for development or workflows that have legitimate access to the local filesystem.
-    - To provide an existing 'DocumentRef', use 'DocumentInput'.
     """
 
     value: str = Field(
@@ -428,7 +604,7 @@ class MessageListInput(InputNode):
         return self.value
 
 
-class MessageDeconstructor(InputNode):
+class MessageDeconstructor(BaseNode):
     """
     Deconstructs a chat message object into its individual fields.
     extract, decompose, message, fields, chat
@@ -448,45 +624,40 @@ class MessageDeconstructor(InputNode):
         id: str | None
         thread_id: str | None
         role: str
-        content: str
+        text: str
         image: ImageRef | None
         audio: AudioRef | None
-        tools: list[str] | None
-        created_at: str | None
-        provider: str | None
-        model: str | None
-
-    @classmethod
-    def return_type(cls):
-        return cls.OutputType
+        model: LanguageModel | None
 
     async def process(self, context: ProcessingContext) -> OutputType:
         msg = self.value
-
+        model = None
         image = None
         audio = None
-        content = ""
+        text = ""
         if msg.content:
             if isinstance(msg.content, str):
                 image = None
                 audio = None
-                content = msg.content
+                text = msg.content
             elif isinstance(msg.content, list):
                 for item in msg.content:
-                    if isinstance(item, ImageRef):
-                        image = item
-                    elif isinstance(item, AudioRef):
-                        audio = item
+                    if isinstance(item, MessageTextContent):
+                        text = item.text
+                    elif isinstance(item, MessageAudioContent):
+                        audio = item.audio
+                    elif isinstance(item, MessageImageContent):
+                        image = item.image
+
+        if msg.provider and msg.model:
+            model = LanguageModel(provider=Provider(msg.provider), id=msg.model)
 
         return {
             "id": msg.id,
             "thread_id": msg.thread_id,
             "role": msg.role,
-            "content": content,
+            "text": text,
             "image": image,
             "audio": audio,
-            "tools": msg.tools,
-            "created_at": msg.created_at,
-            "provider": msg.provider,
-            "model": msg.model,
+            "model": model,
         }

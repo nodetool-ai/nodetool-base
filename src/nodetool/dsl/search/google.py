@@ -24,13 +24,6 @@ class GoogleFinance(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
     Retrieve financial market data and stock information from Google Finance.
     google, finance, stocks, market, serp, trading
-
-    Use cases:
-    - Track stock prices and market performance
-    - Monitor financial instruments and indices
-    - Gather historical market data
-    - Build financial analysis workflows
-    - Research investment opportunities
     """
 
     query: str | OutputHandle[str] = connect_field(
@@ -64,13 +57,6 @@ class GoogleImages(
 
     Search Google Images to find visual content or perform reverse image search.
     google, images, serp, visual, reverse, search
-
-    Use cases:
-    - Find images related to a topic or keyword
-    - Perform reverse image searches to find sources
-    - Gather visual assets for projects
-    - Identify similar or related images
-    - Research visual trends and styles
     """
 
     keyword: str | OutputHandle[str] = connect_field(
@@ -106,13 +92,6 @@ class GoogleJobs(
 
     Search Google Jobs for employment opportunities and job listings.
     google, jobs, employment, careers, serp, hiring
-
-    Use cases:
-    - Find job opportunities matching specific criteria
-    - Monitor job market trends
-    - Aggregate job listings for career sites
-    - Research salary ranges and requirements
-    - Track hiring patterns in industries
     """
 
     query: str | OutputHandle[str] = connect_field(
@@ -146,13 +125,6 @@ class GoogleLens(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
 
     Analyze images using Google Lens to find visual matches and related content.
     google, lens, visual, image, search, serp, identify
-
-    Use cases:
-    - Identify objects, products, or landmarks in images
-    - Find visually similar images
-    - Discover where images appear online
-    - Get information about items shown in photos
-    - Research products and shopping options
     """
 
     image_url: str | OutputHandle[str] = connect_field(
@@ -185,13 +157,6 @@ class GoogleMaps(
 
     Search Google Maps for places, businesses, and get location details.
     google, maps, places, locations, serp, geography
-
-    Use cases:
-    - Find businesses and points of interest
-    - Get location information and addresses
-    - Research geographic areas and neighborhoods
-    - Build location-based applications
-    - Gather place reviews and ratings
     """
 
     query: str | OutputHandle[str] = connect_field(
@@ -224,13 +189,6 @@ class GoogleNews(
 
     Search Google News to retrieve current news articles and headlines.
     google, news, serp, articles, journalism
-
-    Use cases:
-    - Monitor breaking news and current events
-    - Track news coverage on specific topics
-    - Gather articles for research and analysis
-    - Build news aggregation workflows
-    - Monitor brand mentions in media
     """
 
     keyword: str | OutputHandle[str] = connect_field(
@@ -264,13 +222,6 @@ class GoogleSearch(
 
     Search Google to retrieve organic search results from the web.
     google, search, serp, web, query
-
-    Use cases:
-    - Find relevant websites and pages on any topic
-    - Research information and gather sources
-    - Discover recent content and trending topics
-    - Gather search engine optimization (SEO) insights
-    - Automate web research workflows
     """
 
     keyword: str | OutputHandle[str] = connect_field(
@@ -304,13 +255,6 @@ class GoogleShopping(
 
     Search Google Shopping for products with filters and pricing information.
     google, shopping, products, ecommerce, serp, prices
-
-    Use cases:
-    - Find products and compare prices
-    - Research product availability and options
-    - Monitor pricing trends
-    - Build price comparison tools
-    - Gather product information for e-commerce
     """
 
     query: str | OutputHandle[str] = connect_field(

@@ -29,7 +29,7 @@
             "y": 18
           },
           "zIndex": 0,
-          "width": 407,
+          "width": 280,
           "height": 373,
           "selectable": true
         },
@@ -44,8 +44,7 @@
         "data": {
           "name": "audio",
           "description": "",
-          "value": {
-          }
+          "value": {}
         },
         "ui_properties": {
           "selected": false,
@@ -54,7 +53,7 @@
             "y": 50
           },
           "zIndex": 0,
-          "width": 164,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -72,11 +71,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 474,
+            "x": 670,
             "y": 96
           },
           "zIndex": 0,
-          "width": 159,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -98,11 +97,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 244,
+            "x": 360,
             "y": 79
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},

@@ -32,6 +32,7 @@ class ImageGeneration(BaseNode):
     - Explore AI-powered image synthesis
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     prompt: str = Field(

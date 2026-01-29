@@ -70,24 +70,28 @@ class Slice(BaseNode):
     Extracts a subset from a list using start, stop, and step indices.
     list, slice, subset, extract
 
+    Notes:
+    - stop=0 means "slice to end" (no upper limit)
+    - Negative indices work as in Python (e.g., start=-3 for last 3 items)
     Use cases:
-    - Get a portion of a list
+    - Extract a portion of a list
     - Implement pagination
-    - Extract every nth element
+    - Get every nth element
     """
-
-    values: list[Any] = Field(default=[])
-    start: int = Field(default=0)
-    stop: int = Field(default=0)
-    step: int = Field(default=1)
+    values: list[Any] = Field(default=[], description="The input list to slice.")
+    start: int = Field(default=0, description="Starting index (inclusive). Negative values count from end.")
+    stop: int = Field(default=0, description="Ending index (exclusive). 0 means slice to end of list.")
+    step: int = Field(default=1, description="Step between elements. Negative for reverse order.")
 
     async def process(self, context: ProcessingContext) -> list[Any]:
-        return self.values[self.start : self.stop : self.step]
+        # Treat stop=0 as "no limit" (slice to end), matching common user expectation
+        effective_stop = self.stop if self.stop != 0 else None
+        return self.values[self.start : effective_stop : self.step]
 
 
 class SelectElements(BaseNode):
     """
-    Selects specific values from a list using index positions.
+    Selects specific values from a list using index positions. Stop=0 selects elements until the end of the list.
     list, select, index, extract
 
     Use cases:

@@ -20,11 +20,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 469,
+            "x": 670,
             "y": 119
           },
           "zIndex": 0,
-          "width": 103,
+          "width": 280,
           "selectable": true,
           "title": "Convert Extracted Links to DataFrame"
         },
@@ -40,11 +40,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 602,
+            "x": 980,
             "y": 90
           },
           "zIndex": 0,
-          "width": 197,
+          "width": 280,
           "selectable": true,
           "title": "Filter DataFrame for Paper Entries Only"
         },
@@ -60,11 +60,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 829,
+            "x": 1290,
             "y": 90
           },
           "zIndex": 0,
-          "width": 197,
+          "width": 280,
           "selectable": true,
           "title": "Extract URL Column from Paper DataFrame"
         },
@@ -80,7 +80,7 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 1086,
+            "x": 1630,
             "y": 50
           },
           "zIndex": 0,
@@ -101,11 +101,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 243,
+            "x": 360,
             "y": 97
           },
           "zIndex": 0,
-          "width": 196,
+          "width": 280,
           "selectable": true,
           "title": "Extract Links from Markdown Content"
         },
@@ -123,11 +123,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 1086,
+            "x": 1630,
             "y": 269
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true,
           "title": "Download Paper Files to Local Folder"
         },
@@ -148,7 +148,7 @@
             "y": 109
           },
           "zIndex": 0,
-          "width": 163,
+          "width": 280,
           "selectable": true,
           "title": "Fetch Awesome Transformers README from GitHub"
         },
@@ -164,11 +164,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 69,
+            "x": 186,
             "y": -189
           },
           "zIndex": 0,
-          "width": 707,
+          "width": 280,
           "height": 300,
           "selectable": true,
           "title": "Workflow Documentation and Process Overview"

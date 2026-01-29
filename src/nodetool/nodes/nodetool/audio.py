@@ -2,6 +2,7 @@ import io
 import os
 import datetime
 import base64
+import asyncio
 from typing import AsyncGenerator, TypedDict, ClassVar
 from nodetool.config.environment import Environment
 from nodetool.config.logging_config import get_logger
@@ -12,11 +13,13 @@ from nodetool.metadata.types import FolderRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.types import Chunk, SaveUpdate
+from nodetool.workflows.io import NodeInputs, NodeOutputs
 from nodetool.media.audio.audio_helpers import normalize_audio, remove_silence
 
 import numpy as np
 from pydub import AudioSegment
 from nodetool.metadata.types import NPArray
+import aiofiles
 
 log = get_logger(__name__)
 
@@ -65,11 +68,6 @@ class LoadAudioFile(BaseNode):
     """
     Read an audio file from disk.
     audio, input, load, file
-
-    Use cases:
-    - Load audio for processing
-    - Import sound files for editing
-    - Read audio assets for a workflow
     """
 
     path: str = Field(default="", description="Path to the audio file to read")
@@ -83,8 +81,8 @@ class LoadAudioFile(BaseNode):
         if not os.path.exists(expanded_path):
             raise ValueError(f"Audio file not found: {expanded_path}")
 
-        with open(expanded_path, "rb") as f:
-            audio_data = f.read()
+        async with aiofiles.open(expanded_path, "rb") as f:
+            audio_data = await f.read()
 
         audio = await context.audio_from_bytes(audio_data)
         audio.uri = create_file_uri(expanded_path)
@@ -95,11 +93,6 @@ class LoadAudioFolder(BaseNode):
     """
     Load all audio files from a folder, optionally including subfolders.
     audio, load, folder, files
-
-    Use cases:
-    - Batch import audio for processing
-    - Build datasets from a directory tree
-    - Iterate over audio collections
     """
 
     folder: str = Field(default="", description="Folder to scan for audio files")
@@ -150,8 +143,8 @@ class LoadAudioFolder(BaseNode):
             if ext.lower() not in allowed_exts:
                 continue
 
-            with open(file_path, "rb") as f:
-                audio_data = f.read()
+            async with aiofiles.open(file_path, "rb") as f:
+                audio_data = await f.read()
 
             audio = await context.audio_from_bytes(audio_data)
             audio.uri = create_file_uri(file_path)
@@ -162,11 +155,6 @@ class SaveAudio(BaseNode):
     """
     Save an audio file to a specified asset folder.
     audio, folder, name
-
-    Use cases:
-    - Save generated audio files with timestamps
-    - Organize outputs into specific folders
-    - Create backups of generated audio
     """
 
     _expose_as_tool = True
@@ -206,12 +194,9 @@ class SaveAudio(BaseNode):
         result = await context.audio_from_segment(audio, name, parent_id=parent_id)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=name,
-            value=result,
-            output_type="audio"
-        ))
+        context.post_message(
+            SaveUpdate(node_id=self.id, name=name, value=result, output_type="audio")
+        )
 
         return result
 
@@ -224,6 +209,8 @@ class SaveAudioFile(BaseNode):
     The filename can include time and date variables:
     %Y - Year, %m - Month, %d - Day
     %H - Hour, %M - Minute, %S - Second
+
+    Supported formats: mp3, wav, ogg, flac, aac, m4a
     """
 
     audio: AudioRef = Field(default=AudioRef(), description="The audio to save")
@@ -242,6 +229,16 @@ class SaveAudioFile(BaseNode):
         """,
     )
 
+    # Mapping of file extensions to pydub export format names
+    FORMAT_MAP: dict[str, str] = {
+        ".mp3": "mp3",
+        ".wav": "wav",
+        ".ogg": "ogg",
+        ".flac": "flac",
+        ".aac": "adts",  # AAC in ADTS container
+        ".m4a": "ipod",  # M4A uses 'ipod' format in pydub/ffmpeg
+    }
+
     async def process(self, context: ProcessingContext) -> AudioRef:
         if Environment.is_production():
             raise ValueError("This node is not available in production")
@@ -258,19 +255,38 @@ class SaveAudioFile(BaseNode):
         expanded_path = os.path.join(expanded_folder, filename)
         os.makedirs(os.path.dirname(expanded_path), exist_ok=True)
 
-        audio_io = await context.asset_to_io(self.audio)
-        audio_data = audio_io.read()
-        with open(expanded_path, "wb") as f:
-            f.write(audio_data)
+        # Determine export format from file extension
+        _, ext = os.path.splitext(filename)
+        ext_lower = ext.lower()
+        if ext_lower not in self.FORMAT_MAP:
+            raise ValueError(
+                f"Unsupported audio format: {ext}. "
+                f"Supported formats: {', '.join(self.FORMAT_MAP.keys())}"
+            )
+        export_format = self.FORMAT_MAP[ext_lower]
+
+        # Load audio as AudioSegment and export with proper encoding
+        audio_segment = await context.audio_to_audio_segment(self.audio)
+
+        # Export to file in a thread to avoid blocking
+        def export_audio():
+            with open(expanded_path, "wb") as f:
+                audio_segment.export(f, format=export_format)
+
+        await asyncio.to_thread(export_audio)
+
+        # Read back the exported data for the AudioRef
+        async with aiofiles.open(expanded_path, "rb") as f:
+            audio_data = await f.read()
+
         result = AudioRef(uri=create_file_uri(expanded_path), data=audio_data)
 
         # Emit SaveUpdate event
-        context.post_message(SaveUpdate(
-            node_id=self.id,
-            name=filename,
-            value=result,
-            output_type="audio"
-        ))
+        context.post_message(
+            SaveUpdate(
+                node_id=self.id, name=filename, value=result, output_type="audio"
+            )
+        )
 
         return result
 
@@ -279,10 +295,6 @@ class Normalize(BaseNode):
     """
     Normalizes the volume of an audio file.
     audio, fix, dynamics, volume
-
-    Use cases:
-    - Ensure consistent volume across multiple audio files
-    - Adjust overall volume level before further processing
     """
 
     _expose_as_tool = True
@@ -301,10 +313,6 @@ class OverlayAudio(BaseNode):
     """
     Overlays two audio files together.
     audio, edit, transform
-
-    Use cases:
-    - Mix background music with voice recording
-    - Layer sound effects over an existing audio track
     """
 
     _expose_as_tool = True
@@ -323,11 +331,6 @@ class RemoveSilence(BaseNode):
     """
     Removes or shortens silence in an audio file with smooth transitions.
     audio, edit, clean
-
-    Use cases:
-    - Trim silent parts from beginning/end of recordings
-    - Remove or shorten long pauses between speech segments
-    - Apply crossfade for smooth transitions
     """
 
     _expose_as_tool = True
@@ -383,10 +386,6 @@ class SliceAudio(BaseNode):
     """
     Extracts a section of an audio file.
     audio, edit, trim
-
-    Use cases:
-    - Cut out a specific clip from a longer audio file
-    - Remove unwanted portions from beginning or end
     """
 
     _expose_as_tool = True
@@ -408,10 +407,6 @@ class MonoToStereo(BaseNode):
     """
     Converts a mono audio signal to stereo.
     audio, convert, channels
-
-    Use cases:
-    - Expand mono recordings for stereo playback systems
-    - Prepare audio for further stereo processing
     """
 
     _expose_as_tool = True
@@ -436,10 +431,6 @@ class StereoToMono(BaseNode):
     """
     Converts a stereo audio signal to mono.
     audio, convert, channels
-
-    Use cases:
-    - Reduce file size for mono-only applications
-    - Simplify audio for certain processing tasks
     """
 
     _expose_as_tool = True
@@ -477,10 +468,6 @@ class Reverse(BaseNode):
     """
     Reverses an audio file.
     audio, edit, transform
-
-    Use cases:
-    - Create reverse audio effects
-    - Generate backwards speech or music
     """
 
     _expose_as_tool = True
@@ -499,10 +486,6 @@ class FadeIn(BaseNode):
     """
     Applies a fade-in effect to the beginning of an audio file.
     audio, edit, transition
-
-    Use cases:
-    - Create smooth introductions to audio tracks
-    - Gradually increase volume at the start of a clip
     """
 
     _expose_as_tool = True
@@ -524,10 +507,6 @@ class FadeOut(BaseNode):
     """
     Applies a fade-out effect to the end of an audio file.
     audio, edit, transition
-
-    Use cases:
-    - Create smooth endings to audio tracks
-    - Gradually decrease volume at the end of a clip
     """
 
     _expose_as_tool = True
@@ -549,11 +528,6 @@ class Repeat(BaseNode):
     """
     Loops an audio file a specified number of times.
     audio, edit, repeat
-
-    Use cases:
-    - Create repeating background sounds or music
-    - Extend short audio clips to fill longer durations
-    - Generate rhythmic patterns from short samples
     """
 
     _expose_as_tool = True
@@ -579,12 +553,6 @@ class AudioMixer(BaseNode):
     """
     Mix up to 5 audio tracks together with individual volume controls.
     audio, mix, volume, combine, blend, layer, add, overlay
-
-    Use cases:
-    - Mix multiple audio tracks into a single output
-    - Create layered soundscapes
-    - Combine music, voice, and sound effects
-    - Adjust individual track volumes
     """
 
     track1: AudioRef = Field(
@@ -634,7 +602,6 @@ class AudioMixer(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> AudioRef:
-
         # Initialize mixed track
         mixed_track = None
 
@@ -673,11 +640,6 @@ class AudioToNumpy(BaseNode):
     """
     Convert audio to numpy array for processing.
     audio, numpy, convert, array
-
-    Use cases:
-    - Prepare audio for custom processing
-    - Convert audio for machine learning models
-    - Extract raw audio data for analysis
     """
 
     audio: AudioRef = Field(
@@ -702,11 +664,6 @@ class NumpyToAudio(BaseNode):
     """
     Convert numpy array to audio.
     audio, numpy, convert
-
-    Use cases:
-    - Convert processed audio data back to audio format
-    - Create audio from machine learning model outputs
-    - Generate audio from synthesized waveforms
     """
 
     array: NPArray = Field(
@@ -738,11 +695,6 @@ class Trim(BaseNode):
     """
     Trim an audio file to a specified duration.
     audio, trim, cut
-
-    Use cases:
-    - Remove silence from the beginning or end of audio files
-    - Extract specific segments from audio files
-    - Prepare audio data for machine learning models
     """
 
     _expose_as_tool = True
@@ -767,11 +719,6 @@ class ConvertToArray(BaseNode):
     """
     Converts an audio file to a Array for further processing.
     audio, conversion, tensor
-
-    Use cases:
-    - Prepare audio data for machine learning models
-    - Enable signal processing operations on audio
-    - Convert audio to a format suitable for spectral analysisr
     """
 
     audio: AudioRef = Field(
@@ -788,12 +735,9 @@ class CreateSilence(BaseNode):
     """
     Creates a silent audio file with a specified duration.
     audio, silence, empty
-
-    Use cases:
-    - Generate placeholder audio files
-    - Create audio segments for padding or spacing
-    - Add silence to the beginning or end of audio files
     """
+
+    _auto_save_asset: ClassVar[bool] = True
 
     duration: float = Field(
         default=1.0, ge=0.0, description="The duration of the silence in seconds."
@@ -808,10 +752,6 @@ class Concat(BaseNode):
     """
     Concatenates two audio files together.
     audio, edit, join, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from shorter segments
     """
 
     _expose_as_tool = True
@@ -830,11 +770,6 @@ class ConcatList(BaseNode):
     """
     Concatenates multiple audio files together in sequence.
     audio, edit, join, multiple, +
-
-    Use cases:
-    - Combine multiple audio clips into a single file
-    - Create longer audio tracks from multiple segments
-    - Chain multiple audio files in order
     """
 
     _expose_as_tool = True
@@ -868,15 +803,9 @@ class TextToSpeech(BaseNode):
     """
     Generate speech audio from text using any supported TTS provider. Automatically routes to the appropriate backend (OpenAI, HuggingFace, MLX).
     audio, generation, AI, text-to-speech, tts, voice
-
-    Use cases:
-    - Create voiceovers for videos and presentations
-    - Generate natural-sounding narration for content
-    - Build voice assistants and chatbots
-    - Convert written content to audio format
-    - Create accessible audio versions of text
     """
 
+    _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
 
     model: TTSModel = Field(
@@ -927,9 +856,7 @@ class TextToSpeech(BaseNode):
             audio_chunks.append(audio_chunk_array)
 
             # Yield audio chunk as base64-encoded int16 data
-            audio_base64 = base64.b64encode(audio_chunk_array.tobytes()).decode(
-                "utf-8"
-            )
+            audio_base64 = base64.b64encode(audio_chunk_array.tobytes()).decode("utf-8")
             chunk = Chunk(
                 content=audio_base64,
                 content_type="audio",
@@ -947,7 +874,9 @@ class TextToSpeech(BaseNode):
             raise ValueError("No audio data generated")
 
         # Concatenate all int16 numpy arrays
-        combined_array = np.concatenate(audio_chunks) if len(audio_chunks) > 1 else audio_chunks[0]
+        combined_array = (
+            np.concatenate(audio_chunks) if len(audio_chunks) > 1 else audio_chunks[0]
+        )
 
         # Yield final audio using audio_from_numpy at 24kHz
         yield {
@@ -1184,3 +1113,76 @@ class TextToSpeech(BaseNode):
 #         if final_text:
 #             log.info(f"Emitting final transcript: {len(final_text)} characters")
 #             await outputs.emit("text", final_text)
+
+
+class ChunkToAudio(BaseNode):
+    """
+    Aggregates audio chunks from an input stream into AudioRef objects.
+    audio, stream, chunk, aggregate, collect, batch
+    """
+
+    chunk: Chunk = Field(default=Chunk(), description="Stream of audio chunks")
+    batch_size: int = Field(
+        default=50, description="Number of chunks to aggregate per output"
+    )
+
+    @classmethod
+    def is_streaming_input(cls) -> bool:
+        return True
+
+    class OutputType(TypedDict):
+        audio: AudioRef
+
+    async def run(
+        self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs
+    ) -> None:
+        buffer = AudioSegment.empty()
+        count = 0
+
+        async for chunk in inputs.stream("chunk"):
+            log.info(
+                f"ChunkToAudio received chunk: content_type={chunk.content_type}, metadata={chunk.content_metadata}"
+            )
+            if chunk.content_type == "audio" and chunk.content:
+                try:
+                    # Check if content is base64 encoded string
+                    if not chunk.content:
+                        continue
+
+                    data = base64.b64decode(chunk.content)
+                    # Create AudioSegment from bytes
+                    # Use metadata if available to handle raw PCM
+                    meta = chunk.content_metadata or {}
+                    fmt = meta.get("format")
+
+                    if fmt == "pcm16le" or meta.get("encoding") == "pcm16le":
+                        segment = AudioSegment(
+                            data=data,
+                            sample_width=2,  # 16-bit
+                            frame_rate=meta.get("sample_rate", 44100),
+                            channels=meta.get("channels", 1),
+                        )
+                    else:
+                        # Fallback for container formats (mp3, wav, etc.) or unknown
+                        segment = AudioSegment.from_file(io.BytesIO(data))
+
+                    buffer += segment
+                    count += 1
+                except Exception as e:
+                    log.error(f"Error decoding chunk: {e}")
+                    continue
+
+            if count >= self.batch_size:
+                # Flush
+                if len(buffer) > 0:
+                    audio = await context.audio_from_segment(buffer)
+                    await outputs.emit("audio", audio)
+
+                # Reset
+                buffer = AudioSegment.empty()
+                count = 0
+
+        # Flush remaining
+        if count > 0 and len(buffer) > 0:
+            audio = await context.audio_from_segment(buffer)
+            await outputs.emit("audio", audio)

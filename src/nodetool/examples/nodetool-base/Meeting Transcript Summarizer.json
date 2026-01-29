@@ -31,7 +31,7 @@
             "y": 120
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "title": "Meeting Audio",
           "selectable": true
         },
@@ -54,11 +54,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 520,
+            "x": 680,
             "y": 120
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -76,11 +76,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 760,
+            "x": 1000,
             "y": 140
           },
           "zIndex": 0,
-          "width": 240,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},
@@ -191,7 +191,7 @@
             "y": -210
           },
           "zIndex": 0,
-          "width": 700,
+          "width": 280,
           "height": 180,
           "selectable": true
         },
@@ -214,11 +214,11 @@
         "ui_properties": {
           "selected": false,
           "position": {
-            "x": 287,
+            "x": 367,
             "y": 113
           },
           "zIndex": 0,
-          "width": 200,
+          "width": 280,
           "selectable": true
         },
         "dynamic_properties": {},

@@ -232,16 +232,6 @@ class TriggerNode(BaseNode, Generic[T]):
                     log.info(f"Trigger {self.get_title()} received stop signal")
                     break
 
-                # Emit the event
-                if isinstance(event, dict):
-                    event_type_value = (
-                        event.get("event_type") or event.get("event") or "unknown"
-                    )
-                    event_type = str(event_type_value)
-                else:
-                    event_type = getattr(event, "event_type", "unknown")
-                log.debug(f"Trigger {self.get_title()} emitting event: {event_type}")
-
                 yield event
 
                 events_processed += 1
@@ -282,17 +272,19 @@ class TriggerNode(BaseNode, Generic[T]):
                     # Same thread, same loop - use put_nowait directly
                     if running_loop is self._loop:
                         self._event_queue.put_nowait(event)
-                        log.debug(f"Event pushed directly to queue (same loop)")
+                        log.debug("Event pushed directly to queue (same loop)")
                         return
                 except RuntimeError:
                     # No running loop - check if we're in a different thread
-                    log.debug("No running loop in push_event, trying thread-safe method")
+                    log.debug(
+                        "No running loop in push_event, trying thread-safe method"
+                    )
                     pass
 
                 # Different thread or no running loop - use thread-safe method
                 if self._loop.is_running():
                     self._loop.call_soon_threadsafe(self._event_queue.put_nowait, event)
-                    log.debug(f"Event pushed via call_soon_threadsafe")
+                    log.debug("Event pushed via call_soon_threadsafe")
                     return
 
             # Fallback: direct put (e.g., loop not yet started)
@@ -463,16 +455,14 @@ class FileWatchTrigger(TriggerNode[FileWatchTriggerOutput]):
                 if self._debounce(src_path):
                     return
 
-                event = {
+                log.debug(f"File event: {event_type} - {src_path}")
+                trigger.push_event({
                     "event": event_type,
                     "path": src_path,
                     "dest_path": dest_path,
                     "is_directory": is_directory,
                     "timestamp": datetime.now(timezone.utc).isoformat(),
-                }
-
-                log.debug(f"File event: {event_type} - {src_path}")
-                trigger.push_event(event)
+                })
 
             def on_created(self, event):
                 if isinstance(event, (FileCreatedEvent, DirCreatedEvent)):
@@ -728,13 +718,12 @@ class ManualTrigger(TriggerNode[ManualTriggerOutput]):
             data: The data to include in the event.
             event_type: The type of event (default: "manual").
         """
-        event = {
+        self.push_event({
             "data": data,
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "source": self.name,
             "event_type": event_type,
-        }
-        self.push_event(event)
+        })
 
 
 class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
@@ -829,8 +818,8 @@ class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
                 log.warning(f"Failed to parse request body: {e}")
                 body = await request.text()
 
-            # Build event
-            event = {
+            # Push to queue
+            self.push_event({
                 "body": body,
                 "headers": dict(request.headers),
                 "query": dict(request.query),
@@ -839,10 +828,7 @@ class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
                 "timestamp": datetime.now(timezone.utc).isoformat(),
                 "source": f"{request.remote}",
                 "event_type": "webhook",
-            }
-
-            # Push to queue
-            self.push_event(event)
+            })
 
             return web.Response(
                 status=200,
@@ -894,10 +880,142 @@ class WebhookTrigger(TriggerNode[WebhookTriggerOutput]):
                 log.warning(f"Error cleaning up runner: {e}")
 
 
+class WaitOutput(TypedDict):
+    """Output from a WaitNode when resumed."""
+
+    data: Any
+    resumed_at: str
+    waited_seconds: float
+
+
+class WaitNode(BaseNode):
+    """
+    Node that suspends workflow execution until externally resumed.
+
+    This node pauses the workflow at this point and waits for an external
+    signal (via API call) to continue. When resumed, it outputs the input
+    data merged with any data provided during the resume call.
+
+    Use cases:
+    - Human-in-the-loop workflows requiring approval
+    - Waiting for external processes to complete
+    - Pausing workflows for manual data entry
+    - Synchronization points in multi-step processes
+    - Interactive chatbot-style workflows
+
+    The workflow is suspended (not running) while waiting, so it doesn't
+    consume resources. State is persisted and the workflow can be resumed
+    even after server restarts.
+    """
+
+    timeout_seconds: int = Field(
+        default=0,
+        description="Optional timeout in seconds (0 = wait indefinitely)",
+        ge=0,
+    )
+
+    input: Any = Field(
+        default="",
+        description="Input data to pass through to the output when resumed",
+    )
+
+    _suspended_at: datetime | None = None
+    _is_resuming_from_suspension: bool = False
+    _saved_suspension_state: dict[str, Any] | None = None
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        """WaitNode should never be cached."""
+        return False
+
+    def is_suspendable(self) -> bool:
+        """Indicate that this node can suspend workflow execution."""
+        return True
+
+    def is_resuming(self) -> bool:
+        """Check if this node is resuming from a previous suspension."""
+        return self._is_resuming_from_suspension
+
+    async def get_saved_state(self) -> dict[str, Any]:
+        """Get the state that was saved when the workflow was suspended."""
+        if not self._is_resuming_from_suspension:
+            raise ValueError(
+                "get_saved_state() can only be called when resuming from suspension"
+            )
+        return self._saved_suspension_state or {}
+
+    def _set_resuming_state(self, saved_state: dict[str, Any], event_seq: int) -> None:
+        """Internal method to set resumption state (called by workflow runner)."""
+        self._is_resuming_from_suspension = True
+        self._saved_suspension_state = saved_state
+        log.debug(
+            f"WaitNode {self._id} set to resuming mode "
+            f"(state_keys={list(saved_state.keys())})"
+        )
+
+    async def process(self, context: ProcessingContext) -> WaitOutput:
+        """
+        Process the wait node.
+
+        On first execution: suspends the workflow and waits for external resume.
+        On resumption: returns the data provided during resume.
+        """
+        # Import here to avoid circular imports
+        from nodetool.workflows.suspendable_node import WorkflowSuspendedException
+
+        # Check if we're resuming from suspension
+        if self.is_resuming():
+            saved_state = await self.get_saved_state()
+            suspended_at_str = saved_state.get("suspended_at", "")
+            resumed_at = datetime.now(timezone.utc)
+
+            # Calculate wait duration
+            waited_seconds = 0.0
+            if suspended_at_str:
+                try:
+                    suspended_at = datetime.fromisoformat(suspended_at_str)
+                    waited_seconds = (resumed_at - suspended_at).total_seconds()
+                except ValueError:
+                    pass
+
+            log.info(f"WaitNode {self._id} resuming after {waited_seconds:.1f}s")
+
+            # Merge input with resume_data
+            input_data = saved_state.get("input", "")
+
+            # Return the resume data along with wait metadata
+            return {
+                "data": input_data,
+                "resumed_at": resumed_at.isoformat(),
+                "waited_seconds": waited_seconds,
+            }
+
+        # First execution - suspend the workflow
+        self._suspended_at = datetime.now(timezone.utc)
+
+        log.info(f"WaitNode {self._id} suspending workflow")
+
+        # Raise the suspension exception with state to persist
+        raise WorkflowSuspendedException(
+            node_id=self._id,
+            reason="Waiting",
+            state={
+                "suspended_at": self._suspended_at.isoformat(),
+                "input": self.input,
+                "timeout_seconds": self.timeout_seconds,
+            },
+            metadata={
+                "wait_node": True,
+                "timeout_seconds": self.timeout_seconds,
+            },
+        )
+
+
 __all__ = [
     "TriggerNode",
     "WebhookTrigger",
     "FileWatchTrigger",
     "IntervalTrigger",
     "ManualTrigger",
+    "WaitNode",
 ]

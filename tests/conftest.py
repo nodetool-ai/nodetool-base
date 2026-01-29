@@ -7,6 +7,7 @@ from unittest.mock import MagicMock
 
 import pytest_asyncio
 
+
 def _mock_module_if_missing(name: str) -> None:
     """
     Mock optional dependencies only when they're not importable.
@@ -40,6 +41,7 @@ for module_name in [
     # API SDKs (used conditionally)
     "openai",
     "anthropic",
+    "mistralai",
     "boto3",
     "botocore",
     "botocore.exceptions",
@@ -78,11 +80,13 @@ SRC = ROOT / "src"
 if str(SRC) not in sys.path:
     sys.path.insert(0, str(SRC))
 
+
 # Ensure a ResourceScope is bound for all tests.
 # Many core APIs (assets, DB models, etc.) require an active scope.
 @pytest_asyncio.fixture(autouse=True)
 async def _resource_scope(tmp_path, monkeypatch):
     monkeypatch.setenv("HOME", str(tmp_path))
+    monkeypatch.setenv("DB_PATH", str(tmp_path / "nodetool-test.db"))
 
     # nodetool-core's Environment.get_db_path() intentionally raises under pytest.
     # For this repo's test suite we want an isolated sqlite DB per test.
@@ -104,6 +108,11 @@ async def _resource_scope(tmp_path, monkeypatch):
 
     async with ResourceScope():
         yield
+
+    # Clean up SQLite pools to avoid too many open files
+    from nodetool.runtime.db_sqlite import shutdown_all_sqlite_pools
+
+    await shutdown_all_sqlite_pools()
 
 
 # The workflow Property builder in nodetool-core treats `default=None` as missing.
@@ -127,9 +136,7 @@ def _patch_property_from_field() -> None:
             ge = metadata.get(annotated_types.Ge, None)
             le = metadata.get(annotated_types.Le, None)
             title = (
-                name.replace("_", " ").title()
-                if field.title is None
-                else field.title
+                name.replace("_", " ").title() if field.title is None else field.title
             )
             return Property(
                 name=name,
@@ -191,7 +198,8 @@ def pytest_sessionfinish(session, exitstatus):
     # Log any non-daemon threads that might prevent exit
     main_thread = threading.main_thread()
     non_daemon_threads = [
-        t for t in threading.enumerate()
+        t
+        for t in threading.enumerate()
         if t != main_thread and t.is_alive() and not t.daemon
     ]
 
@@ -200,6 +208,7 @@ def pytest_sessionfinish(session, exitstatus):
             f"Found {len(non_daemon_threads)} non-daemon threads that may prevent exit: "
             f"{[t.name for t in non_daemon_threads]}"
         )
+
         # Force exit if there are hanging threads
         # Give threads a brief moment to clean up, then force exit
         def force_exit_thread():

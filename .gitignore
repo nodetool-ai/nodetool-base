@@ -40,6 +40,7 @@ docs.chromadb
 # Testing
 /coverage
 *.lcov
+.coverage
 
 # Environment variables
 *.override.env

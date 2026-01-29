@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, date
+from datetime import datetime, timedelta, date, timezone
 from enum import Enum
 from pydantic import Field
 from typing import ClassVar, TypedDict
@@ -429,7 +429,7 @@ class RelativeTime(BaseNode):
     )
 
     async def process(self, context: ProcessingContext) -> Datetime:
-        current = datetime.now()
+        current = datetime.now(timezone.utc)
 
         if self.unit == TimeUnitType.HOURS:
             delta = timedelta(hours=self.amount)

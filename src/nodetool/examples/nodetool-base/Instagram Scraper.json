@@ -1,86 +1,42 @@
 {
-  "id": "",
-  "access": "private",
-  "created_at": "2025-12-21T13:35:54.275177",
-  "updated_at": "2025-12-21T13:35:57.383144",
+  "id": "a519d747-d864-411d-a2f9-f35c0261bf25",
+  "access": "public",
+  "created_at": "2026-01-09T22:48:14.856332",
+  "updated_at": "2026-01-09T22:48:14.856332",
   "name": "Instagram Scraper",
   "tool_name": null,
   "description": "Analyze Instagram trends for a specific topic.",
   "tags": [
     "instagram",
     "social-media",
-    "trends",
-    "example"
+    "trends"
   ],
-  "thumbnail": "",
+  "thumbnail": null,
   "thumbnail_url": null,
   "graph": {
-    "edges": [
-      {
-        "id": "1",
-        "source": "5",
-        "sourceHandle": "output",
-        "target": "4",
-        "targetHandle": "focus"
-      },
-      {
-        "id": "2",
-        "source": "4",
-        "sourceHandle": "output",
-        "target": "3",
-        "targetHandle": "objective"
-      },
-      {
-        "id": "3",
-        "source": "3",
-        "sourceHandle": "trends",
-        "target": "2",
-        "targetHandle": "trends"
-      },
-      {
-        "id": "4",
-        "source": "2",
-        "sourceHandle": "output",
-        "target": "1",
-        "targetHandle": "value"
-      }
-    ],
     "nodes": [
       {
         "id": "1",
+        "parent_id": null,
         "type": "nodetool.output.Output",
         "data": {
           "name": "instagram_trends_report",
+          "value": null,
           "description": ""
         },
-        "ui_properties": {
-          "position": {
-            "x": 920,
-            "y": 79
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
+        "ui_properties": {},
         "dynamic_properties": {},
         "dynamic_outputs": {},
         "sync_mode": "on_any"
       },
       {
         "id": "2",
+        "parent_id": null,
         "type": "nodetool.text.FormatText",
         "data": {
           "template": "\n# Instagram trend summary\n\n{% for t in trends %}\n## {{ t.hashtag }}\n{{ t.description }}\n\n{% endfor %}\n"
         },
-        "ui_properties": {
-          "position": {
-            "x": 690,
-            "y": 62
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
+        "ui_properties": {},
         "dynamic_properties": {
           "trends": null
         },
@@ -89,8 +45,10 @@
       },
       {
         "id": "3",
+        "parent_id": null,
         "type": "nodetool.agents.ResearchAgent",
         "data": {
+          "objective": "",
           "model": {
             "type": "language_model",
             "provider": "huggingface_cerebras",
@@ -113,15 +71,7 @@
           "max_tokens": 8192,
           "context_window": 8192
         },
-        "ui_properties": {
-          "position": {
-            "x": 460,
-            "y": 0
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
+        "ui_properties": {},
         "dynamic_properties": {},
         "dynamic_outputs": {
           "trends": {
@@ -159,19 +109,12 @@
       },
       {
         "id": "4",
+        "parent_id": null,
         "type": "nodetool.text.FormatText",
         "data": {
           "template": "\nUse google_search and browser tools to analyze Instagram trends.\n\nTasks:\n1) Identify top 5 to 10 trending hashtags that are relevant to:\n   {{ focus }}\n\n2) For each hashtag:\n   - Use google_search to find at least one example post.\n   - Use the browser tool to inspect the post details and any public engagement signals\n     such as likes, comments, and caption patterns.\n\n3) Synthesize trends:\n   - Describe what content style is winning for each hashtag.\n   - Highlight patterns in visuals, captions, and calls to action.\n\nOutput format (JSON object):\n{\n  \"trends\": [\n    {\n      \"hashtag\": \"<hashtag string>\",\n      \"description\": \"<short explanation of why this trend matters>\"\n    },\n    ...\n  ]\n}\n"
         },
-        "ui_properties": {
-          "position": {
-            "x": 230,
-            "y": 62
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
+        "ui_properties": {},
         "dynamic_properties": {
           "focus": null
         },
@@ -180,53 +123,57 @@
       },
       {
         "id": "5",
+        "parent_id": null,
         "type": "nodetool.input.StringInput",
         "data": {
           "name": "focus",
           "value": "current Instagram trends for tech and AI content",
           "description": "What to analyze trends for"
         },
-        "ui_properties": {
-          "position": {
-            "x": 0,
-            "y": 63
-          },
-          "zIndex": 0,
-          "width": 200,
-          "selectable": true
-        },
+        "ui_properties": {},
         "dynamic_properties": {},
         "dynamic_outputs": {},
         "sync_mode": "on_any"
       }
-    ]
-  },
-  "input_schema": {
-    "type": "object",
-    "properties": {
-      "focus": {
-        "type": "string",
-        "default": "current Instagram trends for tech and AI content",
-        "label": ""
+    ],
+    "edges": [
+      {
+        "id": "1",
+        "source": "5",
+        "sourceHandle": "output",
+        "target": "4",
+        "targetHandle": "focus",
+        "ui_properties": null
+      },
+      {
+        "id": "2",
+        "source": "4",
+        "sourceHandle": "output",
+        "target": "3",
+        "targetHandle": "objective",
+        "ui_properties": null
+      },
+      {
+        "id": "3",
+        "source": "3",
+        "sourceHandle": "trends",
+        "target": "2",
+        "targetHandle": "trends",
+        "ui_properties": null
+      },
+      {
+        "id": "4",
+        "source": "2",
+        "sourceHandle": "output",
+        "target": "1",
+        "targetHandle": "value",
+        "ui_properties": null
       }
-    },
-    "required": [
-      "focus"
     ]
   },
-  "output_schema": {
-    "type": "object",
-    "properties": {
-      "instagram_trends_report": {
-        "type": "string",
-        "label": ""
-      }
-    },
-    "required": [
-      "instagram_trends_report"
-    ]
-  },
-  "settings": {},
+  "input_schema": null,
+  "output_schema": null,
+  "settings": null,
   "package_name": "nodetool-base",
   "path": null,
   "run_mode": null,

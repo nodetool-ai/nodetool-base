@@ -279,6 +279,101 @@ import nodetool.nodes.lib.browser
 from nodetool.workflows.base_node import BaseNode
 
 
+class SpiderCrawl(GraphNode[nodetool.nodes.lib.browser.SpiderCrawl.OutputType]):
+    """
+
+    Crawls websites following links and emitting URLs with optional HTML content.
+    spider, crawler, web scraping, links, sitemap
+
+    Use cases:
+    - Build sitemaps and discover website structure
+    - Collect URLs for bulk processing
+    - Find all pages on a website
+    - Extract content from multiple pages
+    - Feed agentic workflows with discovered pages
+    - Analyze website content and structure
+    """
+
+    start_url: str | OutputHandle[str] = connect_field(
+        default="", description="The starting URL to begin crawling from"
+    )
+    max_depth: int | OutputHandle[int] = connect_field(
+        default=2,
+        description="Maximum depth to crawl (0 = start page only, 1 = start + linked pages, etc.)",
+    )
+    max_pages: int | OutputHandle[int] = connect_field(
+        default=50, description="Maximum number of pages to crawl (safety limit)"
+    )
+    same_domain_only: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Only follow links within the same domain as the start URL",
+    )
+    include_html: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Include the HTML content of each page in the output (increases bandwidth)",
+    )
+    respect_robots_txt: bool | OutputHandle[bool] = connect_field(
+        default=True,
+        description="Respect robots.txt rules (follows web crawler best practices)",
+    )
+    delay_ms: int | OutputHandle[int] = connect_field(
+        default=1000,
+        description="Delay in milliseconds between requests (politeness policy)",
+    )
+    timeout: int | OutputHandle[int] = connect_field(
+        default=30000, description="Timeout in milliseconds for each page load"
+    )
+    url_pattern: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Optional regex pattern to filter URLs (only crawl matching URLs)",
+    )
+    exclude_pattern: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Optional regex pattern to exclude URLs (skip matching URLs)",
+    )
+
+    @property
+    def out(self) -> "SpiderCrawlOutputs":
+        return SpiderCrawlOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.lib.browser.SpiderCrawl
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class SpiderCrawlOutputs(OutputsProxy):
+    @property
+    def url(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["url"])
+
+    @property
+    def depth(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["depth"])
+
+    @property
+    def html(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["html"])
+
+    @property
+    def title(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["title"])
+
+    @property
+    def status_code(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["status_code"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.lib.browser
+from nodetool.workflows.base_node import BaseNode
+
+
 class WebFetch(SingleOutputGraphNode[str], GraphNode[str]):
     """
 

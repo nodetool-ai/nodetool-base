@@ -4,6 +4,7 @@ from nodetool.metadata.types import (
     AudioRef,
     DataframeRef,
     ImageRef,
+    Model3DRef,
     VideoRef,
     JSONRef,
     DocumentRef,
@@ -16,15 +17,20 @@ from nodetool.nodes.nodetool.constant import (
     DataFrame,
     Dict,
     Image,
+    ImageList,
     Integer,
     List,
     Float,
     String,
     Video,
+    VideoList,
+    AudioList,
+    TextList,
     JSON,
     Document,
     Date,
     DateTime,
+    Model3D,
 )
 
 
@@ -42,15 +48,20 @@ def context():
         DataFrame,
         Dict,
         Image,
+        ImageList,
         Integer,
         List,
         Float,
         String,
         Video,
+        VideoList,
+        AudioList,
+        TextList,
         JSON,
         Document,
         Date,
         DateTime,
+        Model3D,
     ],
 )
 async def test_constant_node(context: ProcessingContext, node_class):
@@ -72,6 +83,8 @@ async def test_constant_node(context: ProcessingContext, node_class):
             assert isinstance(result, dict)
         elif node_class == Image:
             assert isinstance(result, ImageRef)
+        elif node_class == ImageList:
+            assert isinstance(result, list)
         elif node_class == Integer:
             assert isinstance(result, int)
         elif node_class == List:
@@ -82,6 +95,12 @@ async def test_constant_node(context: ProcessingContext, node_class):
             assert isinstance(result, str)
         elif node_class == Video:
             assert isinstance(result, VideoRef)
+        elif node_class == VideoList:
+            assert isinstance(result, list)
+        elif node_class == AudioList:
+            assert isinstance(result, list)
+        elif node_class == TextList:
+            assert isinstance(result, list)
         elif node_class == JSON:
             assert isinstance(result, JSONRef)
         elif node_class == Document:
@@ -90,6 +109,8 @@ async def test_constant_node(context: ProcessingContext, node_class):
             assert isinstance(result, DateType)
         elif node_class == DateTime:
             assert isinstance(result, DatetimeType)
+        elif node_class == Model3D:
+            assert isinstance(result, Model3DRef)
 
     except Exception as e:
         pytest.fail(f"Error processing {node_class.__name__}: {str(e)}")
