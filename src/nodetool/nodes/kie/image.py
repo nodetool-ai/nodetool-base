@@ -955,9 +955,9 @@ class Seedream45Edit(KieBaseNode):
         description="The text prompt describing how to edit the image.",
     )
 
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to edit.",
+    image_input: list[ImageRef] = Field(
+        default=[],
+        description="The source images to edit.",
     )
 
     class AspectRatio(str, Enum):
@@ -991,14 +991,19 @@ class Seedream45Edit(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-        if not self.image.is_set():
-            raise ValueError("Image is required")
-        input_url = await self._upload_image(context, self.image)
+
+        image_urls = []
+        for img in self.image_input:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                image_urls.append(url)
+
+        if not image_urls:
+            raise ValueError("At least one image is required")
+
         return {
             "prompt": self.prompt,
-            "input_urls": [
-                input_url,
-            ],
+            "image_urls": image_urls,
             "aspect_ratio": self.aspect_ratio.value,
             "quality": self.quality.value,
         }
