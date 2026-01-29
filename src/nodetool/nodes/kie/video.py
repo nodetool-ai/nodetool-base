@@ -2635,3 +2635,788 @@ class KlingMotionControl(KieVideoBaseNode):
             "character_orientation": self.character_orientation.value,
             "mode": self.mode.value,
         }
+
+
+class Kling21TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Kuaishou's Kling 2.1 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, text-to-video, 2.1
+
+    Kling 2.1 powers cutting-edge video generation with hyper-realistic motion,
+    advanced physics, and high-resolution outputs up to 1080p.
+
+    Use cases:
+    - Generate high-quality videos from text descriptions
+    - Create dynamic, professional-grade video content
+    - Produce videos with realistic motion and physics
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.1 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    duration: int = Field(
+        default=5,
+        description="Video duration in seconds.",
+        ge=1,
+        le=10,
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720P"
+        R1080P = "1080P"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="Video resolution.",
+    )
+
+    class Mode(str, Enum):
+        STANDARD = "standard"
+        PRO = "pro"
+
+    mode: Mode = Field(
+        default=Mode.STANDARD,
+        description="Generation mode: standard or pro for higher quality.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-1-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "resolution": self.resolution.value,
+            "duration": str(self.duration),
+            "mode": self.mode.value,
+            "seed": self.seed,
+        }
+
+
+class Kling21ImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Kuaishou's Kling 2.1 model via Kie.ai.
+
+    kie, kling, kuaishou, video generation, ai, image-to-video, 2.1
+
+    Kling 2.1 transforms static images into dynamic videos with hyper-realistic
+    motion and advanced physics simulation.
+
+    Use cases:
+    - Animate static images with realistic motion
+    - Create videos from photos and artwork
+    - Produce dynamic content from still images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Kling 2.1 Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text prompt to guide the video generation.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
+    )
+
+    sound: bool = Field(
+        default=False,
+        description="Whether to generate sound for the video.",
+    )
+
+    duration: int = Field(
+        default=5,
+        description="Video duration in seconds.",
+    )
+
+    class Mode(str, Enum):
+        STANDARD = "standard"
+        PRO = "pro"
+
+    mode: Mode = Field(
+        default=Mode.STANDARD,
+        description="Generation mode: standard or pro for higher quality.",
+    )
+
+    def _get_model(self) -> str:
+        return "kling/v2-1-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_urls = []
+        for img in [self.image1, self.image2, self.image3]:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "image_urls": image_urls,
+            "sound": self.sound,
+            "duration": str(self.duration),
+            "mode": self.mode.value,
+        }
+
+
+class Wan25TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Alibaba's Wan 2.5 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, 2.5
+
+    Wan 2.5 is designed for cinematic AI video generation with native audio
+    synchronization including dialogue, ambient sound, and background music.
+
+    Use cases:
+    - Generate cinematic videos from text descriptions
+    - Create videos with synchronized audio
+    - Produce content for social media and advertising
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.5 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5s"
+        D10 = "10s"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R1080P = "1080p"
+        R720P = "720p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R1080P,
+        description="The resolution of the video.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/2-5-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        return {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+
+class Wan25ImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Alibaba's Wan 2.5 model via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, image-to-video, 2.5
+
+    Wan 2.5 transforms images into cinematic videos with native audio
+    synchronization.
+
+    Use cases:
+    - Animate static images with cinematic quality
+    - Create videos from photos with audio
+    - Produce dynamic content from still images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.5 Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    image1: ImageRef = Field(
+        default=ImageRef(),
+        description="First source image for the video generation.",
+    )
+
+    image2: ImageRef = Field(
+        default=ImageRef(),
+        description="Second source image (optional).",
+    )
+
+    image3: ImageRef = Field(
+        default=ImageRef(),
+        description="Third source image (optional).",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5s"
+        D10 = "10s"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R1080P = "1080p"
+        R720P = "720p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R1080P,
+        description="The resolution of the video.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/2-5-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image1.is_set():
+            raise ValueError("At least one image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_urls = []
+        for img in [self.image1, self.image2, self.image3]:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                image_urls.append(url)
+
+        return {
+            "prompt": self.prompt,
+            "image_urls": image_urls,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+        }
+
+
+class WanAnimate(KieVideoBaseNode):
+    """Generate character animation videos using Alibaba's Wan 2.2 Animate via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, image-to-video, animate, character
+
+    Wan 2.2 Animate generates realistic character videos with motion, expressions,
+    and lighting from static images.
+
+    Use cases:
+    - Animate character images with realistic motion
+    - Create character-driven video content
+    - Produce animated videos from portraits or character art
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.2 Animate"
+
+    prompt: str = Field(
+        default="The character is moving naturally with realistic expressions.",
+        description="The text prompt describing the character animation.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Character image to animate.",
+    )
+
+    class Duration(str, Enum):
+        D3 = "3"
+        D5 = "5"
+
+    duration: Duration = Field(
+        default=Duration.D3,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/animate"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+        }
+
+
+class WanSpeechToVideo(KieVideoBaseNode):
+    """Generate videos from speech using Alibaba's Wan 2.2 A14B Turbo via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, speech-to-video, lip-sync
+
+    Wan 2.2 A14B Turbo Speech to Video turns static images and audio clips
+    into dynamic, expressive videos.
+
+    Use cases:
+    - Create talking head videos from images and audio
+    - Generate lip-synced content for presentations
+    - Produce dynamic videos from voice recordings
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.2 Speech To Video"
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Character/face image to animate.",
+    )
+
+    audio: AudioRef = Field(
+        default=AudioRef(),
+        description="Audio file for speech/lip-sync.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/speech-to-video-turbo"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if not self.audio.is_set():
+            raise ValueError("Audio is required")
+        if context is None:
+            raise ValueError("Context is required for media upload")
+
+        image_url, audio_url = await asyncio.gather(
+            self._upload_image(context, self.image),
+            self._upload_audio(context, self.audio),
+        )
+
+        return {
+            "image_url": image_url,
+            "audio_url": audio_url,
+            "resolution": self.resolution.value,
+        }
+
+
+class Wan22TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Alibaba's Wan 2.2 A14B Turbo via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, text-to-video, 2.2
+
+    Wan 2.2 A14B Turbo delivers smooth 720p@24fps clips with cinematic quality,
+    stable motion, and consistent visual style.
+
+    Use cases:
+    - Generate high-quality videos from text
+    - Create content for diverse creative uses
+    - Produce consistent video clips with stable motion
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.2 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D3 = "3"
+        D5 = "5"
+
+    duration: Duration = Field(
+        default=Duration.D3,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/v2-2-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        return {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+
+class Wan22ImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Alibaba's Wan 2.2 A14B Turbo via Kie.ai.
+
+    kie, wan, alibaba, video generation, ai, image-to-video, 2.2
+
+    Wan 2.2 A14B Turbo transforms images into smooth video clips with
+    cinematic quality and stable motion.
+
+    Use cases:
+    - Animate static images with smooth motion
+    - Create videos from photos or artwork
+    - Produce consistent video content from images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Wan 2.2 Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Source image for the video generation.",
+    )
+
+    class Duration(str, Enum):
+        D3 = "3"
+        D5 = "5"
+
+    duration: Duration = Field(
+        default=Duration.D3,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    def _get_model(self) -> str:
+        return "wan/v2-2-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+        }
+
+
+class Hailuo02TextToVideo(KieVideoBaseNode):
+    """Generate videos from text using Minimax's Hailuo 02 model via Kie.ai.
+
+    kie, hailuo, minimax, video generation, ai, text-to-video
+
+    Hailuo 02 is Minimax's advanced AI video generation model that produces
+    short, cinematic clips with realistic motion and physics simulation.
+
+    Use cases:
+    - Generate cinematic video clips from text
+    - Create videos with realistic motion and physics
+    - Produce high-quality content up to 1080P
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 02 Text To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    class AspectRatio(str, Enum):
+        V16_9 = "16:9"
+        V9_16 = "9:16"
+        V1_1 = "1:1"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    def _get_model(self) -> str:
+        return "hailuo/02-text-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        return {
+            "prompt": self.prompt,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+
+
+class Hailuo02ImageToVideo(KieVideoBaseNode):
+    """Generate videos from images using Minimax's Hailuo 02 model via Kie.ai.
+
+    kie, hailuo, minimax, video generation, ai, image-to-video
+
+    Hailuo 02 transforms images into cinematic clips with realistic motion
+    and physics simulation.
+
+    Use cases:
+    - Animate images with realistic motion
+    - Create videos from photos with physics simulation
+    - Produce dynamic content from still images
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Hailuo 02 Image To Video"
+
+    prompt: str = Field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Source image for the video generation.",
+    )
+
+    class Duration(str, Enum):
+        D5 = "5"
+        D10 = "10"
+
+    duration: Duration = Field(
+        default=Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+
+    class Resolution(str, Enum):
+        R720P = "720p"
+        R1080P = "1080p"
+
+    resolution: Resolution = Field(
+        default=Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    def _get_model(self) -> str:
+        return "hailuo/02-image-to-video"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt is required")
+        if not self.image.is_set():
+            raise ValueError("Image is required")
+        if context is None:
+            raise ValueError("Context is required for image upload")
+
+        image_url = await self._upload_image(context, self.image)
+        return {
+            "prompt": self.prompt,
+            "image_url": image_url,
+            "duration": self.duration.value,
+            "resolution": self.resolution.value,
+        }
+
+
+class Sora2WatermarkRemover(KieVideoBaseNode):
+    """Remove watermarks from Sora 2 videos using Kie.ai.
+
+    kie, sora, openai, video editing, watermark removal
+
+    Sora 2 Watermark Remover uses AI detection and motion tracking to remove
+    dynamic watermarks from Sora 2 videos while keeping frames smooth and natural.
+
+    Use cases:
+    - Remove watermarks from generated videos
+    - Clean up video content for final output
+    - Prepare videos for professional use
+    """
+    _auto_save_asset: ClassVar[bool] = True
+
+    _expose_as_tool: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Sora 2 Watermark Remover"
+
+    video: VideoRef = Field(
+        default=VideoRef(),
+        description="Video to remove watermark from. Must be publicly accessible.",
+    )
+
+    def _get_model(self) -> str:
+        return "sora-2-watermark-remover"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.video.is_set():
+            raise ValueError("Video is required")
+        if context is None:
+            raise ValueError("Context is required for video upload")
+
+        video_url = await self._upload_video(context, self.video)
+        return {
+            "video_url": video_url,
+        }

@@ -19,6 +19,14 @@ from nodetool.nodes.kie.image import (
     FluxKontext,
     GrokImagineTextToImage,
     TopazImageUpscale,
+    GPTImage4oTextToImage,
+    GPTImage4oImageToImage,
+    GPTImage15TextToImage,
+    GPTImage15ImageToImage,
+    IdeogramV3TextToImage,
+    IdeogramV3ImageToImage,
+    Seedream40TextToImage,
+    Seedream40ImageToImage,
 )
 from nodetool.nodes.kie.video import (
     Sora2TextToVideo,
@@ -42,8 +50,25 @@ from nodetool.nodes.kie.video import (
     Veo31TextToVideo,
     Veo31ImageToVideo,
     Veo31ReferenceToVideo,
+    Kling21TextToVideo,
+    Kling21ImageToVideo,
+    Wan25TextToVideo,
+    Wan25ImageToVideo,
+    WanAnimate,
+    WanSpeechToVideo,
+    Wan22TextToVideo,
+    Wan22ImageToVideo,
+    Hailuo02TextToVideo,
+    Hailuo02ImageToVideo,
+    Sora2WatermarkRemover,
 )
-from nodetool.nodes.kie.audio import Suno
+from nodetool.nodes.kie.audio import (
+    Suno,
+    ElevenLabsAudioIsolation,
+    ElevenLabsSoundEffect,
+    ElevenLabsSpeechToText,
+    ElevenLabsV3Dialogue,
+)
 from nodetool.metadata.types import VideoRef
 
 
@@ -158,6 +183,32 @@ class TestKieBaseNode:
         assert GrokImagineTextToVideo.is_visible()
         # Audio generation nodes
         assert Suno.is_visible()
+        # New image nodes
+        assert GPTImage4oTextToImage.is_visible()
+        assert GPTImage4oImageToImage.is_visible()
+        assert GPTImage15TextToImage.is_visible()
+        assert GPTImage15ImageToImage.is_visible()
+        assert IdeogramV3TextToImage.is_visible()
+        assert IdeogramV3ImageToImage.is_visible()
+        assert Seedream40TextToImage.is_visible()
+        assert Seedream40ImageToImage.is_visible()
+        # New video nodes
+        assert Kling21TextToVideo.is_visible()
+        assert Kling21ImageToVideo.is_visible()
+        assert Wan25TextToVideo.is_visible()
+        assert Wan25ImageToVideo.is_visible()
+        assert WanAnimate.is_visible()
+        assert WanSpeechToVideo.is_visible()
+        assert Wan22TextToVideo.is_visible()
+        assert Wan22ImageToVideo.is_visible()
+        assert Hailuo02TextToVideo.is_visible()
+        assert Hailuo02ImageToVideo.is_visible()
+        assert Sora2WatermarkRemover.is_visible()
+        # New audio nodes
+        assert ElevenLabsAudioIsolation.is_visible()
+        assert ElevenLabsSoundEffect.is_visible()
+        assert ElevenLabsSpeechToText.is_visible()
+        assert ElevenLabsV3Dialogue.is_visible()
 
     @pytest.mark.asyncio
     async def test_upload_video_transcodes_non_mp4(self, mock_context):
@@ -1115,3 +1166,211 @@ class TestKlingMotionControl:
                 "mode": "720p",
             },
         }
+
+
+# Tests for new image nodes
+class TestGPTImage4oTextToImage:
+    """Tests for GPTImage4oTextToImage node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = GPTImage4oTextToImage(prompt="test image")
+        assert node._get_model() == "4o-image/text-to-image"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test image"
+        assert params["aspect_ratio"] == "1:1"
+        assert params["quality"] == "auto"
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = GPTImage4oTextToImage(prompt="")
+        with pytest.raises(ValueError, match="Prompt cannot be empty"):
+            await node._get_input_params()
+
+
+class TestGPTImage15TextToImage:
+    """Tests for GPTImage15TextToImage node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = GPTImage15TextToImage(prompt="test image")
+        assert node._get_model() == "gpt-image-1.5/text-to-image"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test image"
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = GPTImage15TextToImage(prompt="")
+        with pytest.raises(ValueError, match="Prompt cannot be empty"):
+            await node._get_input_params()
+
+
+class TestIdeogramV3TextToImage:
+    """Tests for IdeogramV3TextToImage node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = IdeogramV3TextToImage(prompt="test image")
+        assert node._get_model() == "ideogram/v3-text-to-image"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test image"
+        assert params["rendering_speed"] == "BALANCED"
+        assert params["style"] == "AUTO"
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = IdeogramV3TextToImage(prompt="")
+        with pytest.raises(ValueError, match="Prompt cannot be empty"):
+            await node._get_input_params()
+
+
+class TestSeedream40TextToImage:
+    """Tests for Seedream40TextToImage node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = Seedream40TextToImage(prompt="test image")
+        assert node._get_model() == "seedream/4.0-text-to-image"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test image"
+        assert params["quality"] == "basic"
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = Seedream40TextToImage(prompt="")
+        with pytest.raises(ValueError, match="Prompt cannot be empty"):
+            await node._get_input_params()
+
+
+# Tests for new video nodes
+class TestKling21TextToVideo:
+    """Tests for Kling21TextToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = Kling21TextToVideo(prompt="test video")
+        assert node._get_model() == "kling/v2-1-text-to-video"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test video"
+        assert params["duration"] == "5"
+
+    @pytest.mark.asyncio
+    async def test_empty_prompt_raises_error(self):
+        """Test that empty prompt raises ValueError."""
+        node = Kling21TextToVideo(prompt="")
+        with pytest.raises(ValueError, match="Prompt cannot be empty"):
+            await node._get_input_params()
+
+
+class TestWan25TextToVideo:
+    """Tests for Wan25TextToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = Wan25TextToVideo(prompt="test video")
+        assert node._get_model() == "wan/2-5-text-to-video"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test video"
+        assert params["duration"] == "5s"
+
+
+class TestWan22TextToVideo:
+    """Tests for Wan22TextToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = Wan22TextToVideo(prompt="test video")
+        assert node._get_model() == "wan/v2-2-text-to-video"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test video"
+
+
+class TestHailuo02TextToVideo:
+    """Tests for Hailuo02TextToVideo node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = Hailuo02TextToVideo(prompt="test video")
+        assert node._get_model() == "hailuo/02-text-to-video"
+        params = await node._get_input_params()
+        assert params["prompt"] == "test video"
+
+
+class TestSora2WatermarkRemover:
+    """Tests for Sora2WatermarkRemover node."""
+
+    def test_model(self):
+        """Test model name."""
+        node = Sora2WatermarkRemover()
+        assert node._get_model() == "sora-2-watermark-remover"
+
+
+# Tests for new audio nodes
+class TestElevenLabsAudioIsolation:
+    """Tests for ElevenLabsAudioIsolation node."""
+
+    def test_model(self):
+        """Test model name."""
+        node = ElevenLabsAudioIsolation()
+        assert node._get_model() == "elevenlabs/audio-isolation"
+
+
+class TestElevenLabsSoundEffect:
+    """Tests for ElevenLabsSoundEffect node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = ElevenLabsSoundEffect(text="explosion sound")
+        assert node._get_model() == "elevenlabs/sound-effect"
+        params = await node._get_input_params()
+        assert params["text"] == "explosion sound"
+        assert params["duration_seconds"] == 5.0
+
+    @pytest.mark.asyncio
+    async def test_empty_text_raises_error(self):
+        """Test that empty text raises ValueError."""
+        node = ElevenLabsSoundEffect(text="")
+        with pytest.raises(ValueError, match="Text cannot be empty"):
+            await node._get_input_params()
+
+
+class TestElevenLabsSpeechToText:
+    """Tests for ElevenLabsSpeechToText node."""
+
+    def test_model(self):
+        """Test model name."""
+        node = ElevenLabsSpeechToText()
+        assert node._get_model() == "elevenlabs/speech-to-text"
+
+
+class TestElevenLabsV3Dialogue:
+    """Tests for ElevenLabsV3Dialogue node."""
+
+    @pytest.mark.asyncio
+    async def test_model_and_params(self):
+        """Test model name and input parameters."""
+        node = ElevenLabsV3Dialogue(text="Hello, how are you?")
+        assert node._get_model() == "elevenlabs/text-to-dialogue-v3"
+        params = await node._get_input_params()
+        assert params["text"] == "Hello, how are you?"
+        assert params["voice"] == "Rachel"
+
+    @pytest.mark.asyncio
+    async def test_empty_text_raises_error(self):
+        """Test that empty text raises ValueError."""
+        node = ElevenLabsV3Dialogue(text="")
+        with pytest.raises(ValueError, match="Text cannot be empty"):
+            await node._get_input_params()
