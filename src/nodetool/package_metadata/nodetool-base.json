@@ -24282,7 +24282,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 44759,
+          "downloads": 43241,
           "likes": 121
         },
         {
@@ -24333,7 +24333,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 26256,
+          "downloads": 26276,
           "likes": 49
         },
         {
@@ -24384,7 +24384,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 6741,
+          "downloads": 4642,
           "likes": 30
         },
         {
@@ -24404,7 +24404,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1283,
+          "downloads": 1285,
           "likes": 27
         },
         {
@@ -24430,7 +24430,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4691,
+          "downloads": 4597,
           "likes": 7
         },
         {
@@ -24451,7 +24451,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 37146,
+          "downloads": 36158,
           "likes": 12
         },
         {
@@ -24470,7 +24470,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 1031,
+          "downloads": 982,
           "likes": 19
         },
         {
@@ -24521,7 +24521,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2441,
+          "downloads": 2389,
           "likes": 23
         }
       ],
@@ -24735,7 +24735,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 26256,
+          "downloads": 26276,
           "likes": 49
         }
       ],
@@ -24964,7 +24964,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 26256,
+          "downloads": 26276,
           "likes": 49
         }
       ],
@@ -25094,7 +25094,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 44759,
+          "downloads": 43241,
           "likes": 121
         },
         {
@@ -25145,7 +25145,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 6741,
+          "downloads": 4642,
           "likes": 30
         }
       ],
@@ -25348,7 +25348,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 26256,
+          "downloads": 26276,
           "likes": 49
         }
       ],
@@ -30075,6 +30075,48 @@
         "dataframe"
       ],
       "expose_as_tool": true
+    },
+    {
+      "title": "Layout Canvas",
+      "description": "Visual layout editor node for composing designs with text, images, and shapes.\n    Uses Playwright + Konva.js for pixel-perfect rendering that matches the editor.\n    design, layout, canvas, image, compose, figma\n\n    Use cases:\n    - Create social media graphics with dynamic text\n    - Design banners and thumbnails\n    - Compose multi-element layouts\n    - Create image templates with replaceable content",
+      "namespace": "nodetool.design",
+      "node_type": "nodetool.design.LayoutCanvas",
+      "properties": [
+        {
+          "name": "canvas",
+          "type": {
+            "type": "layout_canvas"
+          },
+          "default": null,
+          "title": "Canvas",
+          "description": "Canvas layout data with elements and settings.",
+          "required": true
+        },
+        {
+          "name": "pixel_ratio",
+          "type": {
+            "type": "float"
+          },
+          "default": 2.0,
+          "title": "Pixel Ratio",
+          "description": "Pixel ratio for output quality. 2.0 = retina quality.",
+          "min": 0.5,
+          "max": 4.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "canvas",
+        "pixel_ratio"
+      ],
+      "is_dynamic": true
     },
     {
       "title": "Arg Max",
