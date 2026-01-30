@@ -2313,10 +2313,8 @@ class GPTImage15TextToImage(KieBaseNode):
 
     class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        PORTRAIT = "2:3"
+        LANDSCAPE = "3:2"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.SQUARE,
@@ -2324,14 +2322,12 @@ class GPTImage15TextToImage(KieBaseNode):
     )
 
     class Quality(str, Enum):
-        AUTO = "auto"
-        HIGH = "high"
         MEDIUM = "medium"
-        LOW = "low"
+        HIGH = "high"
 
     quality: Quality = Field(
-        default=Quality.AUTO,
-        description="Image quality setting.",
+        default=Quality.MEDIUM,
+        description="Image quality setting. Medium = balanced, High = slow/detailed.",
     )
 
     def _get_model(self) -> str:
@@ -2384,17 +2380,15 @@ class GPTImage15ImageToImage(KieBaseNode):
         description="The text prompt describing how to edit the image.",
     )
 
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to edit.",
+    images: list[ImageRef] = Field(
+        default=[],
+        description="Input images to edit (supports up to 16 images).",
     )
 
     class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        PORTRAIT = "2:3"
+        LANDSCAPE = "3:2"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.SQUARE,
@@ -2402,14 +2396,12 @@ class GPTImage15ImageToImage(KieBaseNode):
     )
 
     class Quality(str, Enum):
-        AUTO = "auto"
-        HIGH = "high"
         MEDIUM = "medium"
-        LOW = "low"
+        HIGH = "high"
 
     quality: Quality = Field(
-        default=Quality.AUTO,
-        description="Image quality setting.",
+        default=Quality.MEDIUM,
+        description="Image quality setting. Medium = balanced, High = slow/detailed.",
     )
 
     def _get_model(self) -> str:
@@ -2422,13 +2414,21 @@ class GPTImage15ImageToImage(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-        if not self.image.is_set():
-            raise ValueError("Image is required")
+        if not self.images:
+            raise ValueError("At least one image is required")
 
-        image_url = await self._upload_image(context, self.image)
+        input_urls = []
+        for img in self.images:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                input_urls.append(url)
+
+        if not input_urls:
+            raise ValueError("At least one valid image is required")
+
         return {
             "prompt": self.prompt,
-            "image_url": image_url,
+            "input_urls": input_urls,
             "aspect_ratio": self.aspect_ratio.value,
             "quality": self.quality.value,
         }
