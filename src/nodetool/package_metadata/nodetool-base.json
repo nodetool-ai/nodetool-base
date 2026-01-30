@@ -1976,19 +1976,18 @@
           "description": "The text prompt describing how to transform the image."
         },
         {
-          "name": "image",
+          "name": "images",
           "type": {
-            "type": "image"
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
           },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null,
-            "metadata": null
-          },
-          "title": "Image",
-          "description": "The source image to transform."
+          "default": [],
+          "title": "Images",
+          "description": "Source images to transform (1-8 images supported)."
         },
         {
           "name": "aspect_ratio",
@@ -2020,28 +2019,6 @@
           "default": "1K",
           "title": "Resolution",
           "description": "Output image resolution."
-        },
-        {
-          "name": "steps",
-          "type": {
-            "type": "int"
-          },
-          "default": 25,
-          "title": "Steps",
-          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
-          "min": 1.0,
-          "max": 50.0
-        },
-        {
-          "name": "guidance_scale",
-          "type": {
-            "type": "float"
-          },
-          "default": 7.5,
-          "title": "Guidance Scale",
-          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-          "min": 1.0,
-          "max": 20.0
         }
       ],
       "outputs": [
@@ -2055,11 +2032,9 @@
       "basic_fields": [
         "timeout_seconds",
         "prompt",
-        "image",
+        "images",
         "aspect_ratio",
-        "resolution",
-        "steps",
-        "guidance_scale"
+        "resolution"
       ],
       "expose_as_tool": true
     },
@@ -2119,28 +2094,6 @@
           "default": "1K",
           "title": "Resolution",
           "description": "Output image resolution."
-        },
-        {
-          "name": "steps",
-          "type": {
-            "type": "int"
-          },
-          "default": 25,
-          "title": "Steps",
-          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
-          "min": 1.0,
-          "max": 50.0
-        },
-        {
-          "name": "guidance_scale",
-          "type": {
-            "type": "float"
-          },
-          "default": 7.5,
-          "title": "Guidance Scale",
-          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-          "min": 1.0,
-          "max": 20.0
         }
       ],
       "outputs": [
@@ -2155,9 +2108,7 @@
         "timeout_seconds",
         "prompt",
         "aspect_ratio",
-        "resolution",
-        "steps",
-        "guidance_scale"
+        "resolution"
       ],
       "expose_as_tool": true
     },
@@ -2188,19 +2139,18 @@
           "description": "The text prompt describing how to transform the image."
         },
         {
-          "name": "image",
+          "name": "images",
           "type": {
-            "type": "image"
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
           },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null,
-            "metadata": null
-          },
-          "title": "Image",
-          "description": "The source image to transform."
+          "default": [],
+          "title": "Images",
+          "description": "Source images to transform (1-8 images supported)."
         },
         {
           "name": "aspect_ratio",
@@ -2232,28 +2182,6 @@
           "default": "1K",
           "title": "Resolution",
           "description": "Output image resolution."
-        },
-        {
-          "name": "steps",
-          "type": {
-            "type": "int"
-          },
-          "default": 25,
-          "title": "Steps",
-          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
-          "min": 1.0,
-          "max": 50.0
-        },
-        {
-          "name": "guidance_scale",
-          "type": {
-            "type": "float"
-          },
-          "default": 7.5,
-          "title": "Guidance Scale",
-          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-          "min": 1.0,
-          "max": 20.0
         }
       ],
       "outputs": [
@@ -2267,11 +2195,9 @@
       "basic_fields": [
         "timeout_seconds",
         "prompt",
-        "image",
+        "images",
         "aspect_ratio",
-        "resolution",
-        "steps",
-        "guidance_scale"
+        "resolution"
       ],
       "expose_as_tool": true
     },
@@ -2331,28 +2257,6 @@
           "default": "1K",
           "title": "Resolution",
           "description": "Output image resolution."
-        },
-        {
-          "name": "steps",
-          "type": {
-            "type": "int"
-          },
-          "default": 25,
-          "title": "Steps",
-          "description": "Number of inference steps. Higher values may produce better quality but take longer.",
-          "min": 1.0,
-          "max": 50.0
-        },
-        {
-          "name": "guidance_scale",
-          "type": {
-            "type": "float"
-          },
-          "default": 7.5,
-          "title": "Guidance Scale",
-          "description": "Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-          "min": 1.0,
-          "max": 20.0
         }
       ],
       "outputs": [
@@ -2367,9 +2271,7 @@
         "timeout_seconds",
         "prompt",
         "aspect_ratio",
-        "resolution",
-        "steps",
-        "guidance_scale"
+        "resolution"
       ],
       "expose_as_tool": true
     },
