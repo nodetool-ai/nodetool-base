@@ -51,7 +51,7 @@ class TextToSpeech(SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioR
         default="", description="The text to convert to speech."
     )
     model: nodetool.nodes.gemini.audio.TTSModel = Field(
-        default=nodetool.nodes.gemini.audio.TTSModel.GEMINI_2_5_FLASH_PREVIEW_TTS,
+        default=nodetool.nodes.gemini.audio.TTSModel.GEMINI_2_5_PRO_PREVIEW_TTS,
         description="The text-to-speech model to use",
     )
     voice_name: nodetool.nodes.gemini.audio.VoiceName = Field(

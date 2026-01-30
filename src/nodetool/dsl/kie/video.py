@@ -120,6 +120,131 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class Hailuo02ImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Minimax's Hailuo 02 model via Kie.ai.
+
+        kie, hailuo, minimax, video generation, ai, image-to-video
+
+        Hailuo 02 transforms images into cinematic clips with realistic motion
+        and physics simulation.
+
+        Use cases:
+        - Animate images with realistic motion
+        - Create videos from photos with physics simulation
+        - Produce dynamic content from still images
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Hailuo02ImageToVideo.Duration
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Hailuo02ImageToVideo.Resolution
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Source image for the video generation.",
+    )
+    duration: nodetool.nodes.kie.video.Hailuo02ImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Hailuo02ImageToVideo.Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.Hailuo02ImageToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Hailuo02ImageToVideo.Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Hailuo02ImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Hailuo02TextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Minimax's Hailuo 02 model via Kie.ai.
+
+        kie, hailuo, minimax, video generation, ai, text-to-video
+
+        Hailuo 02 is Minimax's advanced AI video generation model that produces
+        short, cinematic clips with realistic motion and physics simulation.
+
+        Use cases:
+        - Generate cinematic video clips from text
+        - Create videos with realistic motion and physics
+        - Produce high-quality content up to 1080P
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Hailuo02TextToVideo.Duration
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Hailuo02TextToVideo.Resolution
+    )
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Hailuo02TextToVideo.AspectRatio
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    duration: nodetool.nodes.kie.video.Hailuo02TextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Hailuo02TextToVideo.Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.Hailuo02TextToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Hailuo02TextToVideo.Resolution.R720P,
+        description="The resolution of the video.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Hailuo02TextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Hailuo02TextToVideo.AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Hailuo02TextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class HailuoImageToVideoPro(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -367,6 +492,145 @@ class InfinitalkV1(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.kie.video.InfinitalkV1
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Kling21ImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Kuaishou's Kling 2.1 model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, image-to-video, 2.1
+
+        Kling 2.1 transforms static images into dynamic videos with hyper-realistic
+        motion and advanced physics simulation.
+
+        Use cases:
+        - Animate static images with realistic motion
+        - Create videos from photos and artwork
+        - Produce dynamic content from still images
+    """
+
+    Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.Kling21ImageToVideo.Mode
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="Text prompt to guide the video generation.",
+    )
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First source image for the video generation.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second source image (optional).",
+    )
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Third source image (optional).",
+    )
+    sound: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Whether to generate sound for the video."
+    )
+    duration: int | OutputHandle[int] = connect_field(
+        default=5, description="Video duration in seconds."
+    )
+    mode: nodetool.nodes.kie.video.Kling21ImageToVideo.Mode = Field(
+        default=nodetool.nodes.kie.video.Kling21ImageToVideo.Mode.STANDARD,
+        description="Generation mode: standard or pro for higher quality.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Kling21ImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Kling21TextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Kuaishou's Kling 2.1 model via Kie.ai.
+
+        kie, kling, kuaishou, video generation, ai, text-to-video, 2.1
+
+        Kling 2.1 powers cutting-edge video generation with hyper-realistic motion,
+        advanced physics, and high-resolution outputs up to 1080p.
+
+        Use cases:
+        - Generate high-quality videos from text descriptions
+        - Create dynamic, professional-grade video content
+        - Produce videos with realistic motion and physics
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling21TextToVideo.AspectRatio
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Kling21TextToVideo.Resolution
+    )
+    Mode: typing.ClassVar[type] = nodetool.nodes.kie.video.Kling21TextToVideo.Mode
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Kling21TextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Kling21TextToVideo.AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+    duration: int | OutputHandle[int] = connect_field(
+        default=5, description="Video duration in seconds."
+    )
+    resolution: nodetool.nodes.kie.video.Kling21TextToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Kling21TextToVideo.Resolution.R720P,
+        description="Video resolution.",
+    )
+    mode: nodetool.nodes.kie.video.Kling21TextToVideo.Mode = Field(
+        default=nodetool.nodes.kie.video.Kling21TextToVideo.Mode.STANDARD,
+        description="Generation mode: standard or pro for higher quality.",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random seed.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Kling21TextToVideo
 
     @classmethod
     def get_node_type(cls):
@@ -1760,6 +2024,55 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class Sora2WatermarkRemover(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Remove watermarks from Sora 2 videos using Kie.ai.
+
+        kie, sora, openai, video editing, watermark removal
+
+        Sora 2 Watermark Remover uses AI detection and motion tracking to remove
+        dynamic watermarks from Sora 2 videos while keeping frames smooth and natural.
+
+        Use cases:
+        - Remove watermarks from generated videos
+        - Clean up video content for final output
+        - Prepare videos for professional use
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="Video to remove watermark from. Must be publicly accessible.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Sora2WatermarkRemover
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class TopazVideoUpscale(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -2042,6 +2355,264 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class Wan22ImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Alibaba's Wan 2.2 A14B Turbo via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, image-to-video, 2.2
+
+        Wan 2.2 A14B Turbo transforms images into smooth video clips with
+        cinematic quality and stable motion.
+
+        Use cases:
+        - Animate static images with smooth motion
+        - Create videos from photos or artwork
+        - Produce consistent video content from images
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan22ImageToVideo.Duration
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan22ImageToVideo.Resolution
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Source image for the video generation.",
+    )
+    duration: nodetool.nodes.kie.video.Wan22ImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Wan22ImageToVideo.Duration.D3,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.Wan22ImageToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Wan22ImageToVideo.Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Wan22ImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Wan22TextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Alibaba's Wan 2.2 A14B Turbo via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, text-to-video, 2.2
+
+        Wan 2.2 A14B Turbo delivers smooth 720p@24fps clips with cinematic quality,
+        stable motion, and consistent visual style.
+
+        Use cases:
+        - Generate high-quality videos from text
+        - Create content for diverse creative uses
+        - Produce consistent video clips with stable motion
+    """
+
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan22TextToVideo.Duration
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan22TextToVideo.Resolution
+    )
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan22TextToVideo.AspectRatio
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    duration: nodetool.nodes.kie.video.Wan22TextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Wan22TextToVideo.Duration.D3,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.Wan22TextToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Wan22TextToVideo.Resolution.R720P,
+        description="The resolution of the video.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Wan22TextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Wan22TextToVideo.AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Wan22TextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Wan25ImageToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from images using Alibaba's Wan 2.5 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, image-to-video, 2.5
+
+        Wan 2.5 transforms images into cinematic videos with native audio
+        synchronization.
+
+        Use cases:
+        - Animate static images with cinematic quality
+        - Create videos from photos with audio
+        - Produce dynamic content from still images
+    """
+
+    Duration: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan25ImageToVideo.Duration
+    )
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan25ImageToVideo.Resolution
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="First source image for the video generation.",
+    )
+    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Second source image (optional).",
+    )
+    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Third source image (optional).",
+    )
+    duration: nodetool.nodes.kie.video.Wan25ImageToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Wan25ImageToVideo.Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.Wan25ImageToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Wan25ImageToVideo.Resolution.R1080P,
+        description="The resolution of the video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Wan25ImageToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class Wan25TextToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from text using Alibaba's Wan 2.5 model via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, text-to-video, 2.5
+
+        Wan 2.5 is designed for cinematic AI video generation with native audio
+        synchronization including dialogue, ambient sound, and background music.
+
+        Use cases:
+        - Generate cinematic videos from text descriptions
+        - Create videos with synchronized audio
+        - Produce content for social media and advertising
+    """
+
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.Wan25TextToVideo.Duration
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan25TextToVideo.Resolution
+    )
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Wan25TextToVideo.AspectRatio
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="A cinematic video with smooth motion, natural lighting, and high detail.",
+        description="The text prompt describing the video.",
+    )
+    duration: nodetool.nodes.kie.video.Wan25TextToVideo.Duration = Field(
+        default=nodetool.nodes.kie.video.Wan25TextToVideo.Duration.D5,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.Wan25TextToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.Wan25TextToVideo.Resolution.R1080P,
+        description="The resolution of the video.",
+    )
+    aspect_ratio: nodetool.nodes.kie.video.Wan25TextToVideo.AspectRatio = Field(
+        default=nodetool.nodes.kie.video.Wan25TextToVideo.AspectRatio.V16_9,
+        description="The aspect ratio of the generated video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.Wan25TextToVideo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class Wan26ImageToVideo(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -2242,6 +2813,62 @@ import nodetool.nodes.kie.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class WanAnimate(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]):
+    """
+    Generate character animation videos using Alibaba's Wan 2.2 Animate via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, image-to-video, animate, character
+
+        Wan 2.2 Animate generates realistic character videos with motion, expressions,
+        and lighting from static images.
+
+        Use cases:
+        - Animate character images with realistic motion
+        - Create character-driven video content
+        - Produce animated videos from portraits or character art
+    """
+
+    Duration: typing.ClassVar[type] = nodetool.nodes.kie.video.WanAnimate.Duration
+    Resolution: typing.ClassVar[type] = nodetool.nodes.kie.video.WanAnimate.Resolution
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="The character is moving naturally with realistic expressions.",
+        description="The text prompt describing the character animation.",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Character image to animate.",
+    )
+    duration: nodetool.nodes.kie.video.WanAnimate.Duration = Field(
+        default=nodetool.nodes.kie.video.WanAnimate.Duration.D3,
+        description="The duration of the video in seconds.",
+    )
+    resolution: nodetool.nodes.kie.video.WanAnimate.Resolution = Field(
+        default=nodetool.nodes.kie.video.WanAnimate.Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.WanAnimate
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class WanMultiShotTextToVideoPro(
     SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
 ):
@@ -2292,6 +2919,63 @@ class WanMultiShotTextToVideoPro(
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.kie.video.WanMultiShotTextToVideoPro
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class WanSpeechToVideo(
+    SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRef]
+):
+    """
+    Generate videos from speech using Alibaba's Wan 2.2 A14B Turbo via Kie.ai.
+
+        kie, wan, alibaba, video generation, ai, speech-to-video, lip-sync
+
+        Wan 2.2 A14B Turbo Speech to Video turns static images and audio clips
+        into dynamic, expressive videos.
+
+        Use cases:
+        - Create talking head videos from images and audio
+        - Generate lip-synced content for presentations
+        - Produce dynamic videos from voice recordings
+    """
+
+    Resolution: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.WanSpeechToVideo.Resolution
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Character/face image to animate.",
+    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Audio file for speech/lip-sync.",
+    )
+    resolution: nodetool.nodes.kie.video.WanSpeechToVideo.Resolution = Field(
+        default=nodetool.nodes.kie.video.WanSpeechToVideo.Resolution.R720P,
+        description="The resolution of the video.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.video.WanSpeechToVideo
 
     @classmethod
     def get_node_type(cls):
