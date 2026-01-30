@@ -544,20 +544,6 @@ class Flux2ProTextToImage(KieBaseNode):
         description="Output image resolution.",
     )
 
-    steps: int = Field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-        ge=1,
-        le=50,
-    )
-
-    guidance_scale: float = Field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-        ge=1.0,
-        le=20.0,
-    )
-
     def _get_model(self) -> str:
         return "flux-2/pro-text-to-image"
 
@@ -570,8 +556,6 @@ class Flux2ProTextToImage(KieBaseNode):
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
-            "steps": self.steps,
-            "guidance_scale": self.guidance_scale,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
@@ -607,9 +591,9 @@ class Flux2ProImageToImage(KieBaseNode):
         description="The text prompt describing how to transform the image.",
     )
 
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to transform.",
+    images: list[ImageRef] = Field(
+        default=[],
+        description="Source images to transform (1-8 images supported).",
     )
 
     class AspectRatio(str, Enum):
@@ -633,20 +617,6 @@ class Flux2ProImageToImage(KieBaseNode):
         description="Output image resolution.",
     )
 
-    steps: int = Field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-        ge=1,
-        le=50,
-    )
-
-    guidance_scale: float = Field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-        ge=1.0,
-        le=20.0,
-    )
-
     def _get_model(self) -> str:
         return "flux-2/pro-image-to-image"
 
@@ -657,18 +627,23 @@ class Flux2ProImageToImage(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-        if not self.image.is_set():
-            raise ValueError("Image is required")
-        input_url = await self._upload_image(context, self.image)
+        if not self.images:
+            raise ValueError("At least one image is required")
+
+        input_urls = []
+        for img in self.images:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                input_urls.append(url)
+
+        if not input_urls:
+            raise ValueError("At least one valid image is required")
+
         return {
             "prompt": self.prompt,
-            "input_urls": [
-                input_url,
-            ],
+            "input_urls": input_urls,
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
-            "steps": self.steps,
-            "guidance_scale": self.guidance_scale,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
@@ -724,20 +699,6 @@ class Flux2FlexTextToImage(KieBaseNode):
         description="Output image resolution.",
     )
 
-    steps: int = Field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-        ge=1,
-        le=50,
-    )
-
-    guidance_scale: float = Field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-        ge=1.0,
-        le=20.0,
-    )
-
     def _get_model(self) -> str:
         return "flux-2/flex-text-to-image"
 
@@ -750,8 +711,6 @@ class Flux2FlexTextToImage(KieBaseNode):
             "prompt": self.prompt,
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
-            "steps": self.steps,
-            "guidance_scale": self.guidance_scale,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
@@ -787,9 +746,9 @@ class Flux2FlexImageToImage(KieBaseNode):
         description="The text prompt describing how to transform the image.",
     )
 
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to transform.",
+    images: list[ImageRef] = Field(
+        default=[],
+        description="Source images to transform (1-8 images supported).",
     )
 
     class AspectRatio(str, Enum):
@@ -813,20 +772,6 @@ class Flux2FlexImageToImage(KieBaseNode):
         description="Output image resolution.",
     )
 
-    steps: int = Field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-        ge=1,
-        le=50,
-    )
-
-    guidance_scale: float = Field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
-        ge=1.0,
-        le=20.0,
-    )
-
     def _get_model(self) -> str:
         return "flux-2/flex-image-to-image"
 
@@ -837,18 +782,23 @@ class Flux2FlexImageToImage(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-        if not self.image.is_set():
-            raise ValueError("Image is required")
-        input_url = await self._upload_image(context, self.image)
+        if not self.images:
+            raise ValueError("At least one image is required")
+
+        input_urls = []
+        for img in self.images:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                input_urls.append(url)
+
+        if not input_urls:
+            raise ValueError("At least one valid image is required")
+
         return {
             "prompt": self.prompt,
-            "input_urls": [
-                input_url,
-            ],
+            "input_urls": input_urls,
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
-            "steps": self.steps,
-            "guidance_scale": self.guidance_scale,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
