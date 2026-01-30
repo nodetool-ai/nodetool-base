@@ -2152,27 +2152,26 @@ class GPTImage4oTextToImage(KieBaseNode):
         description="The text prompt describing the image to generate.",
     )
 
-    class AspectRatio(str, Enum):
+    class Size(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        LANDSCAPE = "3:2"
+        PORTRAIT = "2:3"
 
-    aspect_ratio: AspectRatio = Field(
-        default=AspectRatio.SQUARE,
+    size: Size = Field(
+        default=Size.SQUARE,
         description="The aspect ratio of the generated image.",
     )
 
-    class Quality(str, Enum):
-        AUTO = "auto"
-        HIGH = "high"
-        MEDIUM = "medium"
-        LOW = "low"
+    n_variants: int = Field(
+        default=1,
+        ge=1,
+        le=4,
+        description="Number of image variants to generate (1, 2, or 4).",
+    )
 
-    quality: Quality = Field(
-        default=Quality.AUTO,
-        description="Image quality setting.",
+    is_enhance: bool = Field(
+        default=False,
+        description="Enable prompt enhancement for more refined effects.",
     )
 
     def _get_model(self) -> str:
@@ -2185,8 +2184,9 @@ class GPTImage4oTextToImage(KieBaseNode):
             raise ValueError("Prompt cannot be empty")
         return {
             "prompt": self.prompt,
-            "aspect_ratio": self.aspect_ratio.value,
-            "quality": self.quality.value,
+            "size": self.size.value,
+            "nVariants": self.n_variants,
+            "isEnhance": self.is_enhance,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
@@ -2225,32 +2225,26 @@ class GPTImage4oImageToImage(KieBaseNode):
         description="The text prompt describing how to edit the image.",
     )
 
-    image: ImageRef = Field(
-        default=ImageRef(),
-        description="The source image to edit.",
+    images: list[ImageRef] = Field(
+        default=[],
+        description="Input images to edit (supports up to 5 images).",
     )
 
-    class AspectRatio(str, Enum):
+    class Size(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        LANDSCAPE = "3:2"
+        PORTRAIT = "2:3"
 
-    aspect_ratio: AspectRatio = Field(
-        default=AspectRatio.SQUARE,
+    size: Size = Field(
+        default=Size.SQUARE,
         description="The aspect ratio of the output image.",
     )
 
-    class Quality(str, Enum):
-        AUTO = "auto"
-        HIGH = "high"
-        MEDIUM = "medium"
-        LOW = "low"
-
-    quality: Quality = Field(
-        default=Quality.AUTO,
-        description="Image quality setting.",
+    n_variants: int = Field(
+        default=1,
+        ge=1,
+        le=4,
+        description="Number of image variants to generate (1, 2, or 4).",
     )
 
     def _get_model(self) -> str:
@@ -2263,15 +2257,23 @@ class GPTImage4oImageToImage(KieBaseNode):
             raise ValueError("Context is required for image upload")
         if not self.prompt:
             raise ValueError("Prompt cannot be empty")
-        if not self.image.is_set():
-            raise ValueError("Image is required")
+        if not self.images:
+            raise ValueError("At least one image is required")
 
-        image_url = await self._upload_image(context, self.image)
+        files_url = []
+        for img in self.images:
+            if img.is_set():
+                url = await self._upload_image(context, img)
+                files_url.append(url)
+
+        if not files_url:
+            raise ValueError("At least one valid image is required")
+
         return {
             "prompt": self.prompt,
-            "image_url": image_url,
-            "aspect_ratio": self.aspect_ratio.value,
-            "quality": self.quality.value,
+            "filesUrl": files_url,
+            "size": self.size.value,
+            "nVariants": self.n_variants,
         }
 
     async def process(self, context: ProcessingContext) -> ImageRef:
@@ -2494,22 +2496,22 @@ class IdeogramV3TextToImage(KieBaseNode):
         description="Generation style.",
     )
 
-    class AspectRatio(str, Enum):
-        SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
-        ULTRAWIDE = "21:9"
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_3_4 = "portrait_4_3"
+        PORTRAIT_9_16 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
 
-    aspect_ratio: AspectRatio = Field(
-        default=AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE,
+        description="The resolution of the generated image.",
     )
 
     expand_prompt: bool = Field(
         default=True,
-        description="Whether to expand/augment the prompt.",
+        description="Whether to expand/augment the prompt with MagicPrompt.",
     )
 
     seed: int = Field(
@@ -2529,7 +2531,7 @@ class IdeogramV3TextToImage(KieBaseNode):
             "prompt": self.prompt,
             "rendering_speed": self.rendering_speed.value,
             "style": self.style.value,
-            "aspect_ratio": self.aspect_ratio.value,
+            "image_size": self.image_size.value,
             "expand_prompt": self.expand_prompt,
         }
         if self.negative_prompt:
@@ -2604,16 +2606,29 @@ class IdeogramV3ImageToImage(KieBaseNode):
         description="Generation style.",
     )
 
-    image_weight: float = Field(
+    class ImageSize(str, Enum):
+        SQUARE = "square"
+        SQUARE_HD = "square_hd"
+        PORTRAIT_3_4 = "portrait_4_3"
+        PORTRAIT_9_16 = "portrait_16_9"
+        LANDSCAPE_4_3 = "landscape_4_3"
+        LANDSCAPE_16_9 = "landscape_16_9"
+
+    image_size: ImageSize = Field(
+        default=ImageSize.SQUARE,
+        description="The resolution of the output image.",
+    )
+
+    strength: float = Field(
         default=0.5,
-        description="How much to preserve from the original image (0-1).",
+        description="Strength of the input image in the remix (0-1). Lower = more original preserved.",
         ge=0.0,
         le=1.0,
     )
 
     expand_prompt: bool = Field(
         default=True,
-        description="Whether to expand/augment the prompt.",
+        description="Whether to expand/augment the prompt with MagicPrompt.",
     )
 
     seed: int = Field(
@@ -2640,7 +2655,8 @@ class IdeogramV3ImageToImage(KieBaseNode):
             "image_url": image_url,
             "rendering_speed": self.rendering_speed.value,
             "style": self.style.value,
-            "image_weight": self.image_weight,
+            "image_size": self.image_size.value,
+            "strength": self.strength,
             "expand_prompt": self.expand_prompt,
         }
         if self.negative_prompt:
