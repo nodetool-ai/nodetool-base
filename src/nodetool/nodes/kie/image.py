@@ -525,14 +525,17 @@ class Flux2ProTextToImage(KieBaseNode):
 
     class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        LANDSCAPE_4_3 = "4:3"
+        PORTRAIT_3_4 = "3:4"
+        WIDESCREEN = "16:9"
+        VERTICAL = "9:16"
+        CLASSIC = "3:2"
+        CLASSIC_PORTRAIT = "2:3"
+        AUTO = "auto"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
 
     class Resolution(str, Enum):
@@ -598,14 +601,17 @@ class Flux2ProImageToImage(KieBaseNode):
 
     class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        LANDSCAPE_4_3 = "4:3"
+        PORTRAIT_3_4 = "3:4"
+        WIDESCREEN = "16:9"
+        VERTICAL = "9:16"
+        CLASSIC = "3:2"
+        CLASSIC_PORTRAIT = "2:3"
+        AUTO = "auto"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
 
     class Resolution(str, Enum):
@@ -680,14 +686,17 @@ class Flux2FlexTextToImage(KieBaseNode):
 
     class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        LANDSCAPE_4_3 = "4:3"
+        PORTRAIT_3_4 = "3:4"
+        WIDESCREEN = "16:9"
+        VERTICAL = "9:16"
+        CLASSIC = "3:2"
+        CLASSIC_PORTRAIT = "2:3"
+        AUTO = "auto"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
 
     class Resolution(str, Enum):
@@ -753,14 +762,17 @@ class Flux2FlexImageToImage(KieBaseNode):
 
     class AspectRatio(str, Enum):
         SQUARE = "1:1"
-        LANDSCAPE = "16:9"
-        PORTRAIT = "9:16"
-        WIDE = "4:3"
-        TALL = "3:4"
+        LANDSCAPE_4_3 = "4:3"
+        PORTRAIT_3_4 = "3:4"
+        WIDESCREEN = "16:9"
+        VERTICAL = "9:16"
+        CLASSIC = "3:2"
+        CLASSIC_PORTRAIT = "2:3"
+        AUTO = "auto"
 
     aspect_ratio: AspectRatio = Field(
         default=AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
 
     class Resolution(str, Enum):
