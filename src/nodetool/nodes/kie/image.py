@@ -2333,7 +2333,7 @@ class GPTImage15TextToImage(KieBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "gpt-image-1.5"
+        return "gpt-image/1.5-text-to-image"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -2407,7 +2407,7 @@ class GPTImage15ImageToImage(KieBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "gpt-image-1.5"
+        return "gpt-image/1.5-image-to-image"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
