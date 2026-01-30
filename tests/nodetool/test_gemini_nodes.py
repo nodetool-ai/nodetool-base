@@ -36,8 +36,8 @@ class TestTranscribeNode:
         """Test setting custom model."""
         if self.skip:
             pytest.skip("nodetool-core not available")
-        node = self.Transcribe(model=self.TranscriptionModel.GEMINI_2_5_PRO)
-        assert node.model == self.TranscriptionModel.GEMINI_2_5_PRO
+        node = self.Transcribe(model=self.TranscriptionModel.GEMINI_2_0_FLASH)
+        assert node.model == self.TranscriptionModel.GEMINI_2_0_FLASH
 
     def test_custom_prompt(self):
         """Test setting custom prompt."""
@@ -83,8 +83,8 @@ class TestEmbeddingNode:
         """Test setting custom model."""
         if self.skip:
             pytest.skip("nodetool-core not available")
-        node = self.Embedding(model=self.EmbeddingModel.TEXT_EMBEDDING_005)
-        assert node.model == self.EmbeddingModel.TEXT_EMBEDDING_005
+        node = self.Embedding(model=self.EmbeddingModel.GEMINI_EMBEDDING_001)
+        assert node.model == self.EmbeddingModel.GEMINI_EMBEDDING_001
 
     def test_custom_input(self):
         """Test setting custom input."""

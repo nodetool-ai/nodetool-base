@@ -333,6 +333,57 @@ import nodetool.nodes.nodetool.text
 from nodetool.workflows.base_node import BaseNode
 
 
+class Embedding(SingleOutputGraphNode[types.NPArray], GraphNode[types.NPArray]):
+    """
+
+    Generate vector representations of text using any supported embedding provider.
+    Automatically routes to the appropriate backend (OpenAI, Gemini, Mistral).
+    embeddings, similarity, search, clustering, classification, vectors, semantic
+
+    Uses embedding models to create dense vector representations of text.
+    These vectors capture semantic meaning, enabling:
+    - Semantic search
+    - Text clustering
+    - Document classification
+    - Recommendation systems
+    - Anomaly detection
+    - Measuring text similarity and diversity
+    """
+
+    model: types.EmbeddingModel | OutputHandle[types.EmbeddingModel] = connect_field(
+        default=types.EmbeddingModel(
+            type="embedding_model",
+            provider=nodetool.metadata.types.Provider.OpenAI,
+            id="text-embedding-3-small",
+            name="Text Embedding 3 Small",
+            dimensions=0,
+        ),
+        description="The embedding model to use",
+    )
+    input: str | OutputHandle[str] = connect_field(
+        default="", description="The text to embed"
+    )
+    chunk_size: int | OutputHandle[int] = connect_field(
+        default=4096,
+        description="Size of text chunks for embedding (used when input exceeds model limits)",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.text.Embedding
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.text
+from nodetool.workflows.base_node import BaseNode
+
+
 class EndsWith(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 

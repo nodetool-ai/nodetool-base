@@ -9,7 +9,8 @@ from pydantic import Field
 
 
 class VeoModel(str, Enum):
-    VEO_3_PREVIEW = "veo-3.1-generate-preview"
+    VEO_3_1_GENERATE_PREVIEW = "veo-3.1-generate-preview"
+    VEO_2_0_GENERATE_001 = "veo-2.0-generate-001"
 
 
 class VeoAspectRatio(str, Enum):
@@ -34,7 +35,7 @@ class TextToVideo(BaseNode):
     )
 
     model: VeoModel = Field(
-        default=VeoModel.VEO_3_PREVIEW,
+        default=VeoModel.VEO_3_1_GENERATE_PREVIEW,
         description="The Veo model to use for video generation",
     )
 
@@ -111,7 +112,7 @@ class ImageToVideo(BaseNode):
     )
 
     model: VeoModel = Field(
-        default=VeoModel.VEO_3_PREVIEW,
+        default=VeoModel.VEO_3_1_GENERATE_PREVIEW,
         description="The Veo model to use for video generation",
     )
 

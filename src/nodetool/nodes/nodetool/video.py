@@ -95,8 +95,8 @@ class TextToVideo(BaseNode):
     model: VideoModel = Field(
         default=VideoModel(
             provider=Provider.Gemini,
-            id="veo-3.0-fast-generate-001",
-            name="Veo 3.0 Fast",
+            id="veo-3.1-generate-preview",
+            name="Veo 3.1 Preview",
         ),
         description="The video generation model to use",
     )
@@ -208,8 +208,8 @@ class ImageToVideo(BaseNode):
     model: VideoModel = Field(
         default=VideoModel(
             provider=Provider.Gemini,
-            id="veo-3.0-fast-generate-001",
-            name="Veo 3.0 Fast",
+            id="veo-3.1-generate-preview",
+            name="Veo 3.1 Preview",
         ),
         description="The video generation model to use",
     )

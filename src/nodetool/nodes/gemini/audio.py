@@ -10,14 +10,10 @@ from pydantic import Field, field_validator
 
 class TranscriptionModel(str, Enum):
     GEMINI_2_5_FLASH = "gemini-2.5-flash"
-    GEMINI_2_5_PRO = "gemini-2.5-pro"
     GEMINI_2_0_FLASH = "gemini-2.0-flash"
-    GEMINI_1_5_PRO = "gemini-1.5-pro"
-    GEMINI_1_5_FLASH = "gemini-1.5-flash"
 
 
 class TTSModel(str, Enum):
-    GEMINI_2_5_FLASH_PREVIEW_TTS = "gemini-2.5-flash-preview-tts"
     GEMINI_2_5_PRO_PREVIEW_TTS = "gemini-2.5-pro-preview-tts"
 
 
@@ -84,7 +80,7 @@ class TextToSpeech(BaseNode):
     text: str = Field(default="", description="The text to convert to speech.")
 
     model: TTSModel = Field(
-        default=TTSModel.GEMINI_2_5_FLASH_PREVIEW_TTS,
+        default=TTSModel.GEMINI_2_5_PRO_PREVIEW_TTS,
         description="The text-to-speech model to use",
     )
 

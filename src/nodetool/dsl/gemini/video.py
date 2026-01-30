@@ -42,7 +42,7 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
         default="", description="Optional text prompt describing the desired animation"
     )
     model: nodetool.nodes.gemini.video.VeoModel = Field(
-        default=nodetool.nodes.gemini.video.VeoModel.VEO_3_PREVIEW,
+        default=nodetool.nodes.gemini.video.VeoModel.VEO_3_1_GENERATE_PREVIEW,
         description="The Veo model to use for video generation",
     )
     aspect_ratio: nodetool.nodes.gemini.video.VeoAspectRatio = Field(
@@ -86,7 +86,7 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
         default="", description="The text prompt describing the video to generate"
     )
     model: nodetool.nodes.gemini.video.VeoModel = Field(
-        default=nodetool.nodes.gemini.video.VeoModel.VEO_3_PREVIEW,
+        default=nodetool.nodes.gemini.video.VeoModel.VEO_3_1_GENERATE_PREVIEW,
         description="The Veo model to use for video generation",
     )
     aspect_ratio: nodetool.nodes.gemini.video.VeoAspectRatio = Field(

@@ -325,6 +325,244 @@ import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
 
+class GPTImage15ImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Edit images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+        kie, openai, gpt-image-1.5, image editing, ai, image-to-image
+
+        GPT Image 1.5 enables precise image editing with strong instruction following
+        and improved text rendering capabilities.
+
+        Use cases:
+        - Edit and transform existing images
+        - Apply specific modifications with precise control
+        - Add or modify text in images accurately
+        - Create variations with high fidelity
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage15ImageToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage15ImageToImage.Quality
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to edit the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to edit.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.GPTImage15ImageToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.GPTImage15ImageToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+    quality: nodetool.nodes.kie.image.GPTImage15ImageToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.GPTImage15ImageToImage.Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPTImage15ImageToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class GPTImage15TextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using OpenAI's GPT Image 1.5 model via Kie.ai.
+
+        kie, openai, gpt-image-1.5, image generation, ai, text-to-image
+
+        GPT Image 1.5 is OpenAI's flagship image generation model for high-quality
+        image creation and precise image editing, with strong instruction following
+        and improved text rendering.
+
+        Use cases:
+        - Generate high-quality images from text descriptions
+        - Create images with excellent text rendering
+        - Generate professional marketing and design materials
+        - Produce creative visuals with precise control
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage15TextToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage15TextToImage.Quality
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.GPTImage15TextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.GPTImage15TextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    quality: nodetool.nodes.kie.image.GPTImage15TextToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.GPTImage15TextToImage.Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPTImage15TextToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class GPTImage4oImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Edit images using OpenAI's GPT-4o Image model via Kie.ai.
+
+        kie, openai, gpt-4o, 4o-image, image editing, ai, image-to-image
+
+        The GPT-Image-1 model (ChatGPT 4o Image) enables precise image editing
+        with strong instruction following and accurate text rendering.
+
+        Use cases:
+        - Edit and transform existing images
+        - Apply specific modifications to images
+        - Add or modify text in images
+        - Create variations of existing visuals
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to edit the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to edit.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+    quality: nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPTImage4oImageToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class GPTImage4oTextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using OpenAI's GPT-4o Image model via Kie.ai.
+
+        kie, openai, gpt-4o, 4o-image, image generation, ai, text-to-image
+
+        The GPT-Image-1 model (ChatGPT 4o Image) understands both text and visual
+        context, allowing precise image creation with accurate text rendering
+        and consistent styles.
+
+        Use cases:
+        - Generate high-quality images from text descriptions
+        - Create images with precise text rendering
+        - Generate design and marketing materials
+        - Produce creative visuals with strong instruction following
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    quality: nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality.AUTO,
+        description="Image quality setting.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.GPTImage4oTextToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
 class GrokImagineTextToImage(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
@@ -496,6 +734,80 @@ import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
 
+class IdeogramV3ImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Edit images using Ideogram V3 model via Kie.ai.
+
+        kie, ideogram, v3, image editing, ai, image-to-image
+
+        Ideogram V3 offers image editing capabilities with improved consistency
+        and creative control.
+
+        Use cases:
+        - Edit and transform existing images
+        - Apply style changes while maintaining structure
+        - Create variations of existing images
+    """
+
+    RenderingSpeed: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3ImageToImage.RenderingSpeed
+    )
+    Style: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3ImageToImage.Style
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to transform the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to transform.",
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Elements to avoid in the output."
+    )
+    rendering_speed: nodetool.nodes.kie.image.IdeogramV3ImageToImage.RenderingSpeed = (
+        Field(
+            default=nodetool.nodes.kie.image.IdeogramV3ImageToImage.RenderingSpeed.BALANCED,
+            description="Rendering speed preference.",
+        )
+    )
+    style: nodetool.nodes.kie.image.IdeogramV3ImageToImage.Style = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3ImageToImage.Style.AUTO,
+        description="Generation style.",
+    )
+    image_weight: float | OutputHandle[float] = connect_field(
+        default=0.5, description="How much to preserve from the original image (0-1)."
+    )
+    expand_prompt: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Whether to expand/augment the prompt."
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.IdeogramV3ImageToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
 class IdeogramV3Reframe(
     SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
 ):
@@ -543,6 +855,78 @@ class IdeogramV3Reframe(
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.kie.image.IdeogramV3Reframe
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class IdeogramV3TextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using Ideogram V3 model via Kie.ai.
+
+        kie, ideogram, v3, image generation, ai, text-to-image
+
+        Ideogram V3 is the latest generation of Ideogram's image generation model,
+        offering text-to-image with improved consistency and creative control.
+
+        Use cases:
+        - Generate creative images from text descriptions
+        - Create images with excellent text rendering
+        - Produce artistic and design content
+    """
+
+    RenderingSpeed: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3TextToImage.RenderingSpeed
+    )
+    Style: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3TextToImage.Style
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Elements to avoid in the generated image."
+    )
+    rendering_speed: nodetool.nodes.kie.image.IdeogramV3TextToImage.RenderingSpeed = (
+        Field(
+            default=nodetool.nodes.kie.image.IdeogramV3TextToImage.RenderingSpeed.BALANCED,
+            description="Rendering speed preference.",
+        )
+    )
+    style: nodetool.nodes.kie.image.IdeogramV3TextToImage.Style = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3TextToImage.Style.AUTO,
+        description="Generation style.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    expand_prompt: bool | OutputHandle[bool] = connect_field(
+        default=True, description="Whether to expand/augment the prompt."
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.IdeogramV3TextToImage
 
     @classmethod
     def get_node_type(cls):
@@ -978,6 +1362,122 @@ import nodetool.nodes.kie.image
 from nodetool.workflows.base_node import BaseNode
 
 
+class Seedream40ImageToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Edit images using ByteDance's Seedream 4.0 model via Kie.ai.
+
+        kie, seedream, bytedance, seedream-4, image editing, ai, image-to-image
+
+        Seedream 4.0 offers image-to-image capabilities with batch consistency
+        and professional-quality outputs.
+
+        Use cases:
+        - Edit and transform existing images
+        - Apply style changes to photos
+        - Create variations of existing images
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream40ImageToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream40ImageToImage.Quality
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing how to transform the image."
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="The source image to transform.",
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Seedream40ImageToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Seedream40ImageToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the output image.",
+    )
+    quality: nodetool.nodes.kie.image.Seedream40ImageToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.Seedream40ImageToImage.Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.Seedream40ImageToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
+class Seedream40TextToImage(
+    SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
+):
+    """
+    Generate images using ByteDance's Seedream 4.0 model via Kie.ai.
+
+        kie, seedream, bytedance, seedream-4, image generation, ai, text-to-image
+
+        Seedream 4.0 is ByteDance's image generation model that combines text-to-image
+        with batch consistency, high speed, and professional-quality outputs.
+
+        Use cases:
+        - Generate creative and artistic images from text
+        - Create professional visual content
+        - Produce consistent batch images
+    """
+
+    AspectRatio: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream40TextToImage.AspectRatio
+    )
+    Quality: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.Seedream40TextToImage.Quality
+    )
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="The text prompt describing the image to generate."
+    )
+    aspect_ratio: nodetool.nodes.kie.image.Seedream40TextToImage.AspectRatio = Field(
+        default=nodetool.nodes.kie.image.Seedream40TextToImage.AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+    quality: nodetool.nodes.kie.image.Seedream40TextToImage.Quality = Field(
+        default=nodetool.nodes.kie.image.Seedream40TextToImage.Quality.BASIC,
+        description="Basic outputs 2K images, while High outputs 4K images.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.image.Seedream40TextToImage
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.image
+from nodetool.workflows.base_node import BaseNode
+
+
 class Seedream45Edit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
     Edit images using ByteDance's Seedream 4.5 Edit model via Kie.ai.
@@ -1005,11 +1505,8 @@ class Seedream45Edit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.Imag
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing how to edit the image."
     )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to edit.",
+    image_input: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = (
+        connect_field(default=[], description="The source images to edit.")
     )
     aspect_ratio: nodetool.nodes.kie.image.Seedream45Edit.AspectRatio = Field(
         default=nodetool.nodes.kie.image.Seedream45Edit.AspectRatio.SQUARE,

@@ -297,6 +297,150 @@ import nodetool.nodes.kie.audio
 from nodetool.workflows.base_node import BaseNode
 
 
+class ElevenLabsAudioIsolation(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Isolate speech from audio using ElevenLabs AI via Kie.ai.
+
+        kie, elevenlabs, audio-isolation, speech, noise-removal, ai
+
+        ElevenLabs Audio Isolation uses AI to remove background noise, music,
+        and interference while preserving clear, natural speech.
+
+        Use cases:
+        - Clean up podcast and interview recordings
+        - Remove background noise from audio
+        - Isolate speech for professional recordings
+        - Prepare audio for transcription or production
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Audio file to process for speech isolation.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsAudioIsolation
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
+class ElevenLabsSoundEffect(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Generate sound effects using ElevenLabs AI via Kie.ai.
+
+        kie, elevenlabs, sound-effect, sfx, audio, ai
+
+        ElevenLabs Sound Effect V2 generates audio from text descriptions,
+        supporting clips up to 20+ seconds with seamless looping and 48kHz audio.
+
+        Use cases:
+        - Generate custom sound effects for videos
+        - Create ambient sounds for games and applications
+        - Produce foley effects from text descriptions
+        - Generate audio elements for creative projects
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    text: str | OutputHandle[str] = connect_field(
+        default="", description="Text description of the sound effect to generate."
+    )
+    duration_seconds: float | OutputHandle[float] = connect_field(
+        default=5.0,
+        description="Duration of the sound effect in seconds (up to 22 seconds).",
+    )
+    prompt_influence: float | OutputHandle[float] = connect_field(
+        default=0.3, description="How strongly the prompt influences generation (0-1)."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsSoundEffect
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
+class ElevenLabsSpeechToText(
+    SingleOutputGraphNode[types.TextRef], GraphNode[types.TextRef]
+):
+    """
+    Transcribe speech to text using ElevenLabs AI via Kie.ai.
+
+        kie, elevenlabs, speech-to-text, transcription, stt, ai
+
+        ElevenLabs Speech to Text (Scribe v1) delivers state-of-the-art transcription
+        with multilingual support, speaker diarization, and audio-event tagging.
+
+        Use cases:
+        - Transcribe podcasts and interviews
+        - Create subtitles for videos
+        - Convert audio recordings to text
+        - Generate meeting transcripts with speaker labels
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    audio: types.AudioRef | OutputHandle[types.AudioRef] = connect_field(
+        default=types.AudioRef(
+            type="audio", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Audio file to transcribe.",
+    )
+    language_code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Language code (e.g., 'en', 'es', 'fr'). Leave empty for auto-detection.",
+    )
+    diarization: bool | OutputHandle[bool] = connect_field(
+        default=False,
+        description="Enable speaker diarization to identify different speakers.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsSpeechToText
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
 class ElevenLabsTextToSpeech(
     SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
 ):
@@ -354,6 +498,67 @@ class ElevenLabsTextToSpeech(
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.kie.audio.ElevenLabsTextToSpeech
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.kie.audio
+from nodetool.workflows.base_node import BaseNode
+
+
+class ElevenLabsV3Dialogue(
+    SingleOutputGraphNode[types.AudioRef], GraphNode[types.AudioRef]
+):
+    """
+    Generate expressive dialogue using ElevenLabs V3 via Kie.ai.
+
+        kie, elevenlabs, v3, dialogue, tts, text-to-speech, multi-speaker, ai
+
+        ElevenLabs Eleven V3 enables expressive multilingual Text to Dialogue
+        with audio tag control, multi-speaker support, and natural delivery.
+
+        Use cases:
+        - Generate dialogue for storytelling applications
+        - Create multi-speaker audio content
+        - Produce expressive voiceovers with audio tags
+        - Generate natural conversation audio
+    """
+
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=0, description="Timeout in seconds for API calls (0 = use default)"
+    )
+    text: str | OutputHandle[str] = connect_field(
+        default="",
+        description="The dialogue text to convert to speech. Supports audio tags for control.",
+    )
+    voice: str | OutputHandle[str] = connect_field(
+        default="Rachel", description="Primary voice ID to use for synthesis."
+    )
+    stability: float | OutputHandle[float] = connect_field(
+        default=0.5, description="Stability of the voice output (0-1)."
+    )
+    similarity_boost: float | OutputHandle[float] = connect_field(
+        default=0.75, description="Voice clone similarity (0-1)."
+    )
+    style: float | OutputHandle[float] = connect_field(
+        default=0.0, description="Style expression parameter (0-1)."
+    )
+    speed: float | OutputHandle[float] = connect_field(
+        default=1.0, description="Speech speed (0.5-1.5)."
+    )
+    language_code: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Language code for multilingual output. Leave empty for auto-detection.",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.kie.audio.ElevenLabsV3Dialogue
 
     @classmethod
     def get_node_type(cls):
