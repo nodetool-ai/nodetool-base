@@ -542,8 +542,8 @@ class ImageToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
         default=types.VideoModel(
             type="video_model",
             provider=nodetool.metadata.types.Provider.Gemini,
-            id="veo-3.0-fast-generate-001",
-            name="Veo 3.0 Fast",
+            id="veo-3.1-generate-preview",
+            name="Veo 3.1 Preview",
             path=None,
             supported_tasks=[],
         ),
@@ -1127,8 +1127,8 @@ class TextToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoRe
         default=types.VideoModel(
             type="video_model",
             provider=nodetool.metadata.types.Provider.Gemini,
-            id="veo-3.0-fast-generate-001",
-            name="Veo 3.0 Fast",
+            id="veo-3.1-generate-preview",
+            name="Veo 3.1 Preview",
             path=None,
             supported_tasks=[],
         ),
