@@ -2175,7 +2175,7 @@ class GPTImage4oTextToImage(KieBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "4o-image/text-to-image"
+        return "4o-image-api"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -2248,7 +2248,7 @@ class GPTImage4oImageToImage(KieBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "4o-image/image-to-image"
+        return "4o-image-api"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -2333,7 +2333,7 @@ class GPTImage15TextToImage(KieBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "gpt-image-1.5/text-to-image"
+        return "gpt-image-1.5"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
@@ -2407,7 +2407,7 @@ class GPTImage15ImageToImage(KieBaseNode):
     )
 
     def _get_model(self) -> str:
-        return "gpt-image-1.5/image-to-image"
+        return "gpt-image-1.5"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
