@@ -1471,16 +1471,23 @@ class Agent(BaseNode):
                             f"text_is_none={final_text is None}, text_is_empty={final_text == ''}, "
                             f"text_len={len(final_text) if final_text else 0}"
                         )
-                        yield {
-                            "chunk": None,
-                            "thinking": None,
-                            "text": final_text,
-                            "audio": None,
-                        }
-                        log.debug(
-                            f"_execute_agent_loop yielded final text: iteration={iteration}, "
-                            f"chunk_count={chunk_count}"
-                        )
+                        # Only yield text output if there's actual content
+                        # This prevents empty outputs when model only makes tool calls
+                        if final_text:
+                            yield {
+                                "chunk": None,
+                                "thinking": None,
+                                "text": final_text,
+                                "audio": None,
+                            }
+                            log.debug(
+                                f"_execute_agent_loop yielded final text: iteration={iteration}, "
+                                f"chunk_count={chunk_count}"
+                            )
+                        else:
+                            log.debug(
+                                f"_execute_agent_loop skipped empty text yield: iteration={iteration}"
+                            )
                     else:
                         log.debug(
                             f"_execute_agent_loop chunk.done=False: iteration={iteration}, "
