@@ -2633,52 +2633,44 @@
           "description": "The text prompt describing how to edit the image."
         },
         {
-          "name": "image",
+          "name": "images",
           "type": {
-            "type": "image"
+            "type": "list",
+            "type_args": [
+              {
+                "type": "image"
+              }
+            ]
           },
-          "default": {
-            "type": "image",
-            "uri": "",
-            "asset_id": null,
-            "data": null,
-            "metadata": null
-          },
-          "title": "Image",
-          "description": "The source image to edit."
+          "default": [],
+          "title": "Images",
+          "description": "Input images to edit (supports up to 5 images)."
         },
         {
-          "name": "aspect_ratio",
+          "name": "size",
           "type": {
             "type": "enum",
             "values": [
               "1:1",
-              "16:9",
-              "9:16",
-              "4:3",
-              "3:4"
+              "3:2",
+              "2:3"
             ],
-            "type_name": "nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio"
+            "type_name": "nodetool.nodes.kie.image.GPTImage4oImageToImage.Size"
           },
           "default": "1:1",
-          "title": "Aspect Ratio",
+          "title": "Size",
           "description": "The aspect ratio of the output image."
         },
         {
-          "name": "quality",
+          "name": "n_variants",
           "type": {
-            "type": "enum",
-            "values": [
-              "auto",
-              "high",
-              "medium",
-              "low"
-            ],
-            "type_name": "nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality"
+            "type": "int"
           },
-          "default": "auto",
-          "title": "Quality",
-          "description": "Image quality setting."
+          "default": 1,
+          "title": "N Variants",
+          "description": "Number of image variants to generate (1, 2, or 4).",
+          "min": 1.0,
+          "max": 4.0
         }
       ],
       "outputs": [
@@ -2692,9 +2684,9 @@
       "basic_fields": [
         "timeout_seconds",
         "prompt",
-        "image",
-        "aspect_ratio",
-        "quality"
+        "images",
+        "size",
+        "n_variants"
       ],
       "expose_as_tool": true
     },
@@ -2725,37 +2717,39 @@
           "description": "The text prompt describing the image to generate."
         },
         {
-          "name": "aspect_ratio",
+          "name": "size",
           "type": {
             "type": "enum",
             "values": [
               "1:1",
-              "16:9",
-              "9:16",
-              "4:3",
-              "3:4"
+              "3:2",
+              "2:3"
             ],
-            "type_name": "nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio"
+            "type_name": "nodetool.nodes.kie.image.GPTImage4oTextToImage.Size"
           },
           "default": "1:1",
-          "title": "Aspect Ratio",
+          "title": "Size",
           "description": "The aspect ratio of the generated image."
         },
         {
-          "name": "quality",
+          "name": "n_variants",
           "type": {
-            "type": "enum",
-            "values": [
-              "auto",
-              "high",
-              "medium",
-              "low"
-            ],
-            "type_name": "nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality"
+            "type": "int"
           },
-          "default": "auto",
-          "title": "Quality",
-          "description": "Image quality setting."
+          "default": 1,
+          "title": "N Variants",
+          "description": "Number of image variants to generate (1, 2, or 4).",
+          "min": 1.0,
+          "max": 4.0
+        },
+        {
+          "name": "is_enhance",
+          "type": {
+            "type": "bool"
+          },
+          "default": false,
+          "title": "Is Enhance",
+          "description": "Enable prompt enhancement for more refined effects."
         }
       ],
       "outputs": [
@@ -2769,8 +2763,9 @@
       "basic_fields": [
         "timeout_seconds",
         "prompt",
-        "aspect_ratio",
-        "quality"
+        "size",
+        "n_variants",
+        "is_enhance"
       ],
       "expose_as_tool": true
     },
@@ -3143,13 +3138,31 @@
           "description": "Generation style."
         },
         {
-          "name": "image_weight",
+          "name": "image_size",
+          "type": {
+            "type": "enum",
+            "values": [
+              "square",
+              "square_hd",
+              "portrait_4_3",
+              "portrait_16_9",
+              "landscape_4_3",
+              "landscape_16_9"
+            ],
+            "type_name": "nodetool.nodes.kie.image.IdeogramV3ImageToImage.ImageSize"
+          },
+          "default": "square",
+          "title": "Image Size",
+          "description": "The resolution of the output image."
+        },
+        {
+          "name": "strength",
           "type": {
             "type": "float"
           },
           "default": 0.5,
-          "title": "Image Weight",
-          "description": "How much to preserve from the original image (0-1).",
+          "title": "Strength",
+          "description": "Strength of the input image in the remix (0-1). Lower = more original preserved.",
           "min": 0.0,
           "max": 1.0
         },
@@ -3160,7 +3173,7 @@
           },
           "default": true,
           "title": "Expand Prompt",
-          "description": "Whether to expand/augment the prompt."
+          "description": "Whether to expand/augment the prompt with MagicPrompt."
         },
         {
           "name": "seed",
@@ -3187,7 +3200,8 @@
         "negative_prompt",
         "rendering_speed",
         "style",
-        "image_weight",
+        "image_size",
+        "strength",
         "expand_prompt",
         "seed"
       ],
@@ -3369,22 +3383,22 @@
           "description": "Generation style."
         },
         {
-          "name": "aspect_ratio",
+          "name": "image_size",
           "type": {
             "type": "enum",
             "values": [
-              "1:1",
-              "16:9",
-              "9:16",
-              "4:3",
-              "3:4",
-              "21:9"
+              "square",
+              "square_hd",
+              "portrait_4_3",
+              "portrait_16_9",
+              "landscape_4_3",
+              "landscape_16_9"
             ],
-            "type_name": "nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio"
+            "type_name": "nodetool.nodes.kie.image.IdeogramV3TextToImage.ImageSize"
           },
-          "default": "1:1",
-          "title": "Aspect Ratio",
-          "description": "The aspect ratio of the generated image."
+          "default": "square",
+          "title": "Image Size",
+          "description": "The resolution of the generated image."
         },
         {
           "name": "expand_prompt",
@@ -3393,7 +3407,7 @@
           },
           "default": true,
           "title": "Expand Prompt",
-          "description": "Whether to expand/augment the prompt."
+          "description": "Whether to expand/augment the prompt with MagicPrompt."
         },
         {
           "name": "seed",
@@ -3419,7 +3433,7 @@
         "negative_prompt",
         "rendering_speed",
         "style",
-        "aspect_ratio",
+        "image_size",
         "expand_prompt",
         "seed"
       ],
