@@ -78,7 +78,7 @@ class If(BaseNode):
 class ForEach(BaseNode):
     """
     Iterate over a list and emit each item sequentially.
-    iterator, loop, list, sequence
+    iterator, loop, list, sequence, repeat, enumerate, stream, collection
 
     Use cases:
     - Process each item of a collection in order
