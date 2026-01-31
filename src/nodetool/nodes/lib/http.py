@@ -765,7 +765,8 @@ class DownloadFiles(BaseNode):
                     return filepath
                 else:
                     return ""
-        except Exception:
+        except (aiohttp.ClientError, OSError, ValueError) as e:
+            logger.error(f"Error downloading file from {url}: {e}")
             return ""
 
     class OutputType(TypedDict):
