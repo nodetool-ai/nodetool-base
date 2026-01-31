@@ -2,7 +2,7 @@ import pytest
 from io import BytesIO
 from PIL import Image
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.metadata.types import ImageRef, ColorRef, FontRef
+from nodetool.metadata.types import ImageRef, ColorRef
 from nodetool.nodes.lib.pillow.draw import (
     Background,
     RenderText,
