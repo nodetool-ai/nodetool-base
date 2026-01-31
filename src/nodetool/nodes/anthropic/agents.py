@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import ClassVar, TypedDict, List
+from typing import ClassVar, TypedDict
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode

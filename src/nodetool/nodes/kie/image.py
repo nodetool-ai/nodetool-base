@@ -169,7 +169,10 @@ class KieBaseNode(BaseNode):
                 close_fn()
 
         if not response_data:
-            raise ValueError("Failed to get response from upload")
+            raise ValueError(
+                "Failed to get response from upload. The request may have failed, "
+                "timed out, or encountered a network error. Check logs for details."
+            )
         download_url = response_data.get("data", {}).get("downloadUrl")
         if not download_url:
             raise ValueError(f"No downloadUrl in upload response: {response_data}")

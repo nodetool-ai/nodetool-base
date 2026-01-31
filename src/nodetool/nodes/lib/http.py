@@ -744,10 +744,8 @@ class DownloadFiles(BaseNode):
                             filename = "unnamed_file"
 
                     # Sanitize filename to prevent path traversal attacks
-                    # Remove any directory separators and only keep the base filename
+                    # os.path.basename() removes all directory components
                     filename = os.path.basename(filename)
-                    # Additional safety: remove any remaining path components
-                    filename = filename.replace("..", "").replace("/", "").replace("\\", "")
                     if not filename:
                         filename = "unnamed_file"
 
