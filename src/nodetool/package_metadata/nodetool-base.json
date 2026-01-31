@@ -36513,6 +36513,205 @@
       ]
     },
     {
+      "title": "Text To 3D",
+      "description": "Generate 3D assets from text prompts using any supported 3D provider.\n    3d, generation, ai, text-to-3d, t2m",
+      "namespace": "nodetool.model3d",
+      "node_type": "nodetool.model3d.TextTo3D",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Model",
+          "description": "The 3D generation model to use (provider-specific id)"
+        },
+        {
+          "name": "provider",
+          "type": {
+            "type": "str"
+          },
+          "default": "huggingface_hf_inference",
+          "title": "Provider",
+          "description": "The provider to use for 3D generation"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "A low poly chair",
+          "title": "Prompt",
+          "description": "Text prompt describing the desired 3D model"
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Classifier-free guidance scale (higher = closer to prompt)",
+          "min": 0.0,
+          "max": 30.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "Number of denoising steps",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Timeout Seconds",
+          "description": "Timeout in seconds for API calls (0 = use provider default)",
+          "min": 0.0,
+          "max": 3600.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "model_3d"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "provider",
+        "model",
+        "prompt",
+        "seed"
+      ]
+    },
+    {
+      "title": "Image To 3D",
+      "description": "Generate 3D assets from images using any supported 3D provider.\n    3d, generation, ai, image-to-3d, i2m",
+      "namespace": "nodetool.model3d",
+      "node_type": "nodetool.model3d.ImageTo3D",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Model",
+          "description": "The 3D generation model to use (provider-specific id)"
+        },
+        {
+          "name": "provider",
+          "type": {
+            "type": "str"
+          },
+          "default": "huggingface_hf_inference",
+          "title": "Provider",
+          "description": "The provider to use for 3D generation"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "Input image to reconstruct into a 3D model"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional prompt describing the desired 3D model"
+        },
+        {
+          "name": "guidance_scale",
+          "type": {
+            "type": "float"
+          },
+          "default": 7.5,
+          "title": "Guidance Scale",
+          "description": "Classifier-free guidance scale (higher = closer to prompt)",
+          "min": 0.0,
+          "max": 30.0
+        },
+        {
+          "name": "num_inference_steps",
+          "type": {
+            "type": "int"
+          },
+          "default": 30,
+          "title": "Num Inference Steps",
+          "description": "Number of denoising steps",
+          "min": 1.0,
+          "max": 100.0
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 0,
+          "title": "Timeout Seconds",
+          "description": "Timeout in seconds for API calls (0 = use provider default)",
+          "min": 0.0,
+          "max": 3600.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "model_3d"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "provider",
+        "model",
+        "image",
+        "seed"
+      ]
+    },
+    {
       "title": "Filter Number",
       "description": "Filters a stream of numbers based on various numerical conditions.\n    filter, numbers, numeric, stream\n    \n    Use cases:\n    - Filter numbers by comparison (greater than, less than, equal to)\n    - Filter even/odd numbers\n    - Filter positive/negative numbers",
       "namespace": "nodetool.numbers",

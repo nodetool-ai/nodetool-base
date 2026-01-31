@@ -44,6 +44,8 @@ def node_is_generative(node_name):
         "ImageToImage", 
         "TextToVideo",
         "ImageToVideo",
+        "TextTo3D",
+        "ImageTo3D",
         "FrameToVideo",
         "TextToSpeech",
         "CreateSilence",
@@ -144,6 +146,7 @@ def test_auto_save_asset_sample_nodes():
     from nodetool.nodes.nodetool.image import TextToImage, ImageToImage
     from nodetool.nodes.nodetool.audio import CreateSilence, TextToSpeech
     from nodetool.nodes.nodetool.video import TextToVideo
+    from nodetool.nodes.nodetool.model3d import TextTo3D
 
     # Test core generative nodes
     assert (
@@ -161,6 +164,9 @@ def test_auto_save_asset_sample_nodes():
     assert (
         getattr(TextToVideo, "_auto_save_asset", False) is True
     ), "TextToVideo should have _auto_save_asset = True"
+    assert (
+        getattr(TextTo3D, "_auto_save_asset", False) is True
+    ), "TextTo3D should have _auto_save_asset = True"
 
 
 def test_auto_save_asset_not_on_editing_nodes():
@@ -241,4 +247,3 @@ def test_auto_save_asset_not_on_library_nodes():
     assert (
         getattr(Invert, "_auto_save_asset", False) is False
     ), "Invert (library node) should NOT have _auto_save_asset = True"
-
