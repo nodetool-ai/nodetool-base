@@ -419,7 +419,15 @@ class RealtimeAgent(BaseNode):
                     await outputs.emit(
                         "chunk",
                         Chunk(
-                            content=event.delta or "", done=False, content_type="audio"
+                            content=event.delta or "", 
+                            done=False, 
+                            content_type="audio",
+                            content_metadata={
+                                "sample_rate": 24000,
+                                "channels": 1,
+                                "encoding": "pcm16",
+                                "format": "pcm16",
+                            },
                         ),
                     )
             elif isinstance(event_type, str) and event_type in (
@@ -446,7 +454,18 @@ class RealtimeAgent(BaseNode):
             elif isinstance(event, ResponseAudioDoneEvent):
                 log.debug("Audio response completed")
                 await outputs.emit(
-                    "chunk", Chunk(content="", done=True, content_type="audio")
+                    "chunk", 
+                    Chunk(
+                        content="", 
+                        done=True, 
+                        content_type="audio",
+                        content_metadata={
+                            "sample_rate": 24000,
+                            "channels": 1,
+                            "encoding": "pcm16",
+                            "format": "pcm16",
+                        },
+                    )
                 )
             elif isinstance(event, ResponseDoneEvent):
                 try:
@@ -757,11 +776,7 @@ class RealtimeTranscription(BaseNode):
         log.info("Starting RealtimeTranscription")
         from openai import AsyncOpenAI
 
-        env = context.environment
-        api_key = env.get("OPENAI_API_KEY")
-        if not api_key:
-            log.error("OPENAI_API_KEY is not set in environment/secrets")
-            raise ValueError("OPENAI_API_KEY is not set in environment/secrets")
+        api_key = await context.get_secret_required("OPENAI_API_KEY")
 
         client = AsyncOpenAI(api_key=api_key)
         log.debug("OpenAI client initialized for transcription")
