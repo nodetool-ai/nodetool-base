@@ -396,16 +396,17 @@ Rules:
         provider = await context.get_provider(self.model.provider)
 
         # Collect the full response
-        full_response = ""
+        response_parts = []
         async for chunk in provider.generate_messages(
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
         ):
             if isinstance(chunk, Chunk):
-                full_response += chunk.content
+                response_parts.append(chunk.content)
                 print(chunk.content, end="", flush=True)
 
+        full_response = "".join(response_parts)
         # Parse the markdown table
         collected_rows = self._parse_markdown_table(full_response)
 
