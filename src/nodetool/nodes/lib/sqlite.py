@@ -4,6 +4,7 @@ SQLite database nodes for persistent storage and memory mechanisms.
 
 import sqlite3
 import json
+import re
 from typing import ClassVar, TypedDict
 from pathlib import Path
 from typing import Any
@@ -15,6 +16,32 @@ from nodetool.config.logging_config import get_logger
 
 
 log = get_logger(__name__)
+
+
+def validate_sql_identifier(identifier: str) -> bool:
+    """
+    Validate that a string is a safe SQL identifier (table or column name).
+    Returns True if valid, False otherwise.
+    
+    Valid identifiers must:
+    - Start with a letter or underscore
+    - Contain only letters, numbers, and underscores
+    - Not be empty
+    """
+    if not identifier:
+        return False
+    return bool(re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', identifier))
+
+
+def sanitize_sql_identifier(identifier: str) -> str:
+    """
+    Sanitize and validate a SQL identifier. Raises ValueError if invalid.
+    """
+    if not validate_sql_identifier(identifier):
+        raise ValueError(f"Invalid SQL identifier: {identifier!r}. "
+                       "Identifiers must start with a letter or underscore "
+                       "and contain only letters, numbers, and underscores.")
+    return identifier
 
 
 def column_type_to_sqlite(column_type: str) -> str:
@@ -72,17 +99,29 @@ class CreateTable(BaseNode):
         db_path = Path(context.workspace_dir) / self.database_name
         log.info(f"Creating table {self.table_name} in database {self.database_name} at {db_path}")
 
+        # Validate table name to prevent SQL injection
+        sanitize_sql_identifier(self.table_name)
+
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
-        table_exists = conn.execute(f"SELECT name FROM sqlite_master WHERE type='table' AND name='{self.table_name}'").fetchone() is not None
-        if table_exists:
-            return {
-                "database_name": self.database_name,
-                "table_name": self.table_name,
-                "columns": self.columns
-            }
         try:
+            # Use parameterized query for table name check
+            table_exists = conn.execute(
+                "SELECT name FROM sqlite_master WHERE type='table' AND name=?",
+                (self.table_name,)
+            ).fetchone() is not None
+            if table_exists:
+                return {
+                    "database_name": self.database_name,
+                    "table_name": self.table_name,
+                    "columns": self.columns
+                }
+
             cursor = conn.cursor()
+
+            # Validate all column names
+            for col in self.columns.columns:
+                sanitize_sql_identifier(col.name)
 
             column_defs = []
             for i, col in enumerate(self.columns.columns):
@@ -139,10 +178,17 @@ class Insert(BaseNode):
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
         db_path = Path(context.workspace_dir) / self.database_name
 
+        # Validate table name to prevent SQL injection
+        sanitize_sql_identifier(self.table_name)
+
         conn = sqlite3.connect(db_path)
         log.info(f"Inserting record into table {self.table_name} in database {self.database_name} at {db_path}")
         try:
             cursor = conn.cursor()
+
+            # Validate all column names
+            for col_name in self.data.keys():
+                sanitize_sql_identifier(col_name)
 
             columns = ", ".join(self.data.keys())
             placeholders = ", ".join(["?" for _ in self.data.values()])
@@ -171,6 +217,10 @@ class Query(BaseNode):
     """
     Query records from a SQLite table.
     sqlite, database, query, select, search, retrieve
+    
+    **Security Warning**: The WHERE and ORDER BY clauses are directly 
+    interpolated into SQL queries. Only use trusted input in these fields.
+    Consider using parameterized queries for user input.
 
     Use cases:
     - Retrieve flashcards for review
@@ -190,7 +240,7 @@ class Query(BaseNode):
     )
     where: str = Field(
         default="",
-        description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'"
+        description="WHERE clause (without 'WHERE' keyword), e.g., 'id = 1'. WARNING: Not parameterized - use trusted input only."
     )
     columns: RecordType = Field(
         default=RecordType(),
@@ -198,7 +248,7 @@ class Query(BaseNode):
     )
     order_by: str = Field(
         default="",
-        description="ORDER BY clause (without 'ORDER BY' keyword)"
+        description="ORDER BY clause (without 'ORDER BY' keyword). WARNING: Not parameterized - use trusted input only."
     )
     limit: int = Field(
         default=0,
@@ -212,6 +262,9 @@ class Query(BaseNode):
         if not db_path.exists():
             return []
 
+        # Validate table name to prevent SQL injection
+        sanitize_sql_identifier(self.table_name)
+
         conn = sqlite3.connect(db_path)
         conn.row_factory = sqlite3.Row
         try:
@@ -221,10 +274,16 @@ class Query(BaseNode):
             if not self.columns.columns:
                 columns = "*"
             else:
+                # Validate all column names
+                for col in self.columns.columns:
+                    sanitize_sql_identifier(col.name)
                 columns = ", ".join([f"{col.name}" for col in self.columns.columns])
 
             sql = f"SELECT {columns} FROM {self.table_name}"
 
+            # Note: WHERE and ORDER BY clauses are user-provided SQL expressions
+            # They cannot be fully parameterized while maintaining flexibility
+            # Users should only provide trusted input to these fields
             if self.where:
                 sql += f" WHERE {self.where}"
 

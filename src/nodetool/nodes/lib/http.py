@@ -743,6 +743,14 @@ class DownloadFiles(BaseNode):
                         if not filename:
                             filename = "unnamed_file"
 
+                    # Sanitize filename to prevent path traversal attacks
+                    # Remove any directory separators and only keep the base filename
+                    filename = os.path.basename(filename)
+                    # Additional safety: remove any remaining path components
+                    filename = filename.replace("..", "").replace("/", "").replace("\\", "")
+                    if not filename:
+                        filename = "unnamed_file"
+
                     if not self.output_folder:
                         raise ValueError("output_folder cannot be empty")
                     expanded_folder = os.path.expanduser(self.output_folder)
@@ -830,7 +838,7 @@ class JSONPostRequest(HTTPBaseNode):
         return "POST JSON"
 
     data: dict = Field(
-        default={},
+        default_factory=dict,
         description="The JSON data to send in the POST request.",
     )
 
