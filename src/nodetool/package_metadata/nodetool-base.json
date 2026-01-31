@@ -1995,16 +1995,19 @@
             "type": "enum",
             "values": [
               "1:1",
+              "4:3",
+              "3:4",
               "16:9",
               "9:16",
-              "4:3",
-              "3:4"
+              "3:2",
+              "2:3",
+              "auto"
             ],
             "type_name": "nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio"
           },
           "default": "1:1",
           "title": "Aspect Ratio",
-          "description": "The aspect ratio of the generated image."
+          "description": "The aspect ratio of the generated image. 'auto' matches the first input image ratio."
         },
         {
           "name": "resolution",
@@ -2070,16 +2073,19 @@
             "type": "enum",
             "values": [
               "1:1",
+              "4:3",
+              "3:4",
               "16:9",
               "9:16",
-              "4:3",
-              "3:4"
+              "3:2",
+              "2:3",
+              "auto"
             ],
             "type_name": "nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio"
           },
           "default": "1:1",
           "title": "Aspect Ratio",
-          "description": "The aspect ratio of the generated image."
+          "description": "The aspect ratio of the generated image. 'auto' matches the first input image ratio."
         },
         {
           "name": "resolution",
@@ -2158,16 +2164,19 @@
             "type": "enum",
             "values": [
               "1:1",
+              "4:3",
+              "3:4",
               "16:9",
               "9:16",
-              "4:3",
-              "3:4"
+              "3:2",
+              "2:3",
+              "auto"
             ],
             "type_name": "nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio"
           },
           "default": "1:1",
           "title": "Aspect Ratio",
-          "description": "The aspect ratio of the generated image."
+          "description": "The aspect ratio of the generated image. 'auto' matches the first input image ratio."
         },
         {
           "name": "resolution",
@@ -2233,16 +2242,19 @@
             "type": "enum",
             "values": [
               "1:1",
+              "4:3",
+              "3:4",
               "16:9",
               "9:16",
-              "4:3",
-              "3:4"
+              "3:2",
+              "2:3",
+              "auto"
             ],
             "type_name": "nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio"
           },
           "default": "1:1",
           "title": "Aspect Ratio",
-          "description": "The aspect ratio of the generated image."
+          "description": "The aspect ratio of the generated image. 'auto' matches the first input image ratio."
         },
         {
           "name": "resolution",
