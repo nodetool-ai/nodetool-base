@@ -783,3 +783,696 @@ class ExecuteCommand(BaseNode):
                 self._runner.stop()
         except Exception as e:
             log.debug(f"ExecuteCommand finalize: {e}")
+
+
+class PythonRunner(BaseNode):
+    """
+    Runs a Python REPL that executes code from a stream of commands.
+    python, code, execute, repl, stream, runner
+
+    Use cases:
+    - Execute multiple Python commands sequentially
+    - Create interactive Python workflows
+    - Process a stream of Python code snippets
+
+    Each input from the 'commands' stream is executed as Python code.
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class PythonImage(Enum):
+        PYTHON_3_11_SLIM = "python:3.11-slim"
+        JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
+
+    image: PythonImage = Field(
+        default=PythonImage.PYTHON_3_11_SLIM,
+        description="Docker image to use for execution",
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    commands: str = Field(
+        default="",
+        description=(
+            "Stream of Python commands to execute. Each command is executed separately. "
+            "Connect this to a streaming source for continuous execution."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return True
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    @classmethod
+    def is_streaming_output(cls):
+        return True
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Collect commands from the static field and streaming input
+        commands_to_execute = []
+
+        # Add static command if provided
+        if self.commands.strip():
+            commands_to_execute.append(self.commands)
+
+        # Collect streaming commands
+        async for value in inputs.stream("commands"):
+            if value is not None and str(value).strip():
+                commands_to_execute.append(str(value))
+
+        # Execute each command
+        for command in commands_to_execute:
+            runner = PythonDockerRunner(
+                image=self.image.value,
+                mode=self.execution_mode.value,
+            )
+            self._runner = runner
+            async for slot, value in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if value is None:
+                    continue
+                text_value = value if isinstance(value, str) else str(value)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"PythonRunner finalize: {e}")
+
+
+class JavaScriptRunner(BaseNode):
+    """
+    Runs a JavaScript REPL that executes code from a stream of commands.
+    javascript, nodejs, code, execute, repl, stream, runner
+
+    Use cases:
+    - Execute multiple JavaScript commands sequentially
+    - Create interactive JavaScript workflows
+    - Process a stream of JavaScript code snippets
+
+    Each input from the 'commands' stream is executed as JavaScript code.
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class JavaScriptImage(Enum):
+        NODE_22_ALPINE = "node:22-alpine"
+
+    image: JavaScriptImage = Field(
+        default=JavaScriptImage.NODE_22_ALPINE,
+        description="Docker image to use for execution",
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    commands: str = Field(
+        default="",
+        description=(
+            "Stream of JavaScript commands to execute. Each command is executed separately. "
+            "Connect this to a streaming source for continuous execution."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return True
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    @classmethod
+    def is_streaming_output(cls):
+        return True
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Collect commands from the static field and streaming input
+        commands_to_execute = []
+
+        # Add static command if provided
+        if self.commands.strip():
+            commands_to_execute.append(self.commands)
+
+        # Collect streaming commands
+        async for value in inputs.stream("commands"):
+            if value is not None and str(value).strip():
+                commands_to_execute.append(str(value))
+
+        # Execute each command
+        for command in commands_to_execute:
+            runner = JavaScriptDockerRunner(
+                image=self.image.value,
+                mode=self.execution_mode.value,
+            )
+            self._runner = runner
+            async for slot, value in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if value is None:
+                    continue
+                text_value = value if isinstance(value, str) else str(value)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"JavaScriptRunner finalize: {e}")
+
+
+class BashRunner(BaseNode):
+    """
+    Runs a Bash REPL that executes commands from a stream.
+    bash, shell, code, execute, repl, stream, runner
+
+    Use cases:
+    - Execute multiple shell commands sequentially
+    - Create interactive shell workflows
+    - Process a stream of Bash commands
+
+    Each input from the 'commands' stream is executed as a Bash command.
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class BashImage(Enum):
+        BASH_5_2 = "bash:5.2"
+        DEBIAN_12 = "debian:12"
+        UBUNTU_22_04 = "ubuntu:22.04"
+        UBUNTU_24_04 = "ubuntu:24.04"
+        JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
+
+    image: BashImage = Field(
+        default=BashImage.UBUNTU_22_04,
+        description="Docker image to use for execution",
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    commands: str = Field(
+        default="",
+        description=(
+            "Stream of Bash commands to execute. Each command is executed separately. "
+            "Connect this to a streaming source for continuous execution."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return True
+
+    @classmethod
+    def is_streaming_output(cls):
+        return True
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Collect commands from the static field and streaming input
+        commands_to_execute = []
+
+        # Add static command if provided
+        if self.commands.strip():
+            commands_to_execute.append(self.commands)
+
+        # Collect streaming commands
+        async for value in inputs.stream("commands"):
+            if value is not None and str(value).strip():
+                commands_to_execute.append(str(value))
+
+        # Execute each command
+        for command in commands_to_execute:
+            runner = BashDockerRunner(
+                image=self.image.value,
+                mode=self.execution_mode.value,
+            )
+            self._runner = runner
+            async for slot, value in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if value is None:
+                    continue
+                text_value = value if isinstance(value, str) else str(value)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"BashRunner finalize: {e}")
+
+
+class RubyRunner(BaseNode):
+    """
+    Runs a Ruby REPL that executes code from a stream of commands.
+    ruby, code, execute, repl, stream, runner
+
+    Use cases:
+    - Execute multiple Ruby commands sequentially
+    - Create interactive Ruby workflows
+    - Process a stream of Ruby code snippets
+
+    Each input from the 'commands' stream is executed as Ruby code.
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class RubyImage(Enum):
+        RUBY_3_3_ALPINE = "ruby:3.3-alpine"
+
+    image: RubyImage = Field(
+        default=RubyImage.RUBY_3_3_ALPINE,
+        description="Docker image to use for execution",
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    commands: str = Field(
+        default="",
+        description=(
+            "Stream of Ruby commands to execute. Each command is executed separately. "
+            "Connect this to a streaming source for continuous execution."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return True
+
+    @classmethod
+    def is_streaming_output(cls):
+        return True
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Collect commands from the static field and streaming input
+        commands_to_execute = []
+
+        # Add static command if provided
+        if self.commands.strip():
+            commands_to_execute.append(self.commands)
+
+        # Collect streaming commands
+        async for value in inputs.stream("commands"):
+            if value is not None and str(value).strip():
+                commands_to_execute.append(str(value))
+
+        # Execute each command
+        for command in commands_to_execute:
+            runner = RubyDockerRunner(
+                image=self.image.value,
+                mode=self.execution_mode.value,
+            )
+            self._runner = runner
+            async for slot, value in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if value is None:
+                    continue
+                text_value = value if isinstance(value, str) else str(value)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"RubyRunner finalize: {e}")
+
+
+class LuaRunnerNode(BaseNode):
+    """
+    Runs a Lua REPL that executes code from a stream of commands.
+    lua, code, execute, repl, stream, runner, sandbox
+
+    Use cases:
+    - Execute multiple Lua commands sequentially
+    - Create interactive Lua workflows
+    - Process a stream of Lua code snippets
+
+    Each input from the 'commands' stream is executed as Lua code.
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class LuaExecutable(Enum):
+        LUA = "lua"
+        LUAJIT = "luajit"
+
+    executable: LuaExecutable = Field(
+        default=LuaExecutable.LUA, description="Lua executable to use"
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.SUBPROCESS,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    timeout_seconds: int = Field(
+        default=10, description="Max seconds to allow execution before forced stop"
+    )
+
+    commands: str = Field(
+        default="",
+        description=(
+            "Stream of Lua commands to execute. Each command is executed separately. "
+            "Connect this to a streaming source for continuous execution."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return True
+
+    @classmethod
+    def is_streaming_output(cls):
+        return True
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Collect commands from the static field and streaming input
+        commands_to_execute = []
+
+        # Add static command if provided
+        if self.commands.strip():
+            commands_to_execute.append(self.commands)
+
+        # Collect streaming commands
+        async for value in inputs.stream("commands"):
+            if value is not None and str(value).strip():
+                commands_to_execute.append(str(value))
+
+        # Execute each command
+        for command in commands_to_execute:
+            if self.execution_mode == ExecutionMode.SUBPROCESS:
+                runner = LuaSubprocessRunner(
+                    executable=self.executable.value,
+                    timeout_seconds=int(self.timeout_seconds),
+                )
+            else:
+                runner = LuaRunner(
+                    image="nickblah/lua:5.2.4-luarocks-ubuntu",
+                    timeout_seconds=int(self.timeout_seconds),
+                    mode=self.execution_mode.value,
+                )
+            self._runner = runner
+            async for slot, value in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if value is None:
+                    continue
+                text_value = value if isinstance(value, str) else str(value)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner and hasattr(self._runner, "stop"):
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"LuaRunnerNode finalize: {e}")
+
+
+class ShellRunner(BaseNode):
+    """
+    Runs a shell command runner that executes commands from a stream.
+    command, execute, shell, bash, sh, stream, runner
+
+    Use cases:
+    - Execute multiple shell commands sequentially
+    - Create interactive command workflows
+    - Process a stream of shell commands
+
+    Each input from the 'commands' stream is executed as a shell command.
+    IMPORTANT: Only enabled in non-production environments
+    """
+
+    _is_dynamic: ClassVar[bool] = True
+    _supports_dynamic_outputs: ClassVar[bool] = True
+    _runner: StreamRunnerBase | None = None
+
+    class CommandImage(Enum):
+        BASH_5_2 = "bash:5.2"
+        ALPINE_3 = "alpine:3"
+        UBUNTU_22_04 = "ubuntu:22.04"
+        UBUNTU_24_04 = "ubuntu:24.04"
+
+    image: CommandImage = Field(
+        default=CommandImage.BASH_5_2,
+        description="Docker image to use for execution",
+    )
+
+    execution_mode: ExecutionMode = Field(
+        default=ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    commands: str = Field(
+        default="",
+        description=(
+            "Stream of shell commands to execute. Each command is executed separately. "
+            "Connect this to a streaming source for continuous execution."
+        ),
+    )
+
+    @classmethod
+    def is_streaming_input(cls):
+        return True
+
+    @classmethod
+    def is_streaming_output(cls):
+        return True
+
+    class OutputType(TypedDict):
+        stdout: str
+        stderr: str
+
+    @classmethod
+    def return_type(cls):
+        return cls.OutputType
+
+    async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
+        # Collect commands from the static field and streaming input
+        commands_to_execute = []
+
+        # Add static command if provided
+        if self.commands.strip():
+            commands_to_execute.append(self.commands)
+
+        # Collect streaming commands
+        async for value in inputs.stream("commands"):
+            if value is not None and str(value).strip():
+                commands_to_execute.append(str(value))
+
+        # Execute each command
+        for command in commands_to_execute:
+            runner = CommandDockerRunner(
+                image=self.image.value,
+                mode=self.execution_mode.value,
+            )
+            self._runner = runner
+            async for slot, value in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if value is None:
+                    continue
+                text_value = value if isinstance(value, str) else str(value)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+    async def finalize(self, context: ProcessingContext):  # type: ignore[override]
+        try:
+            if self._runner:
+                self._runner.stop()
+        except Exception as e:
+            log.debug(f"ShellRunner finalize: {e}")
