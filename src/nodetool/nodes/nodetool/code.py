@@ -854,13 +854,18 @@ class PythonRunner(BaseNode):
             if value is not None and str(value).strip():
                 commands_to_execute.append(str(value))
 
+        if not commands_to_execute:
+            return
+
+        # Create runner once and execute all commands
+        runner = PythonDockerRunner(
+            image=self.image.value,
+            mode=self.execution_mode.value,
+        )
+        self._runner = runner
+
         # Execute each command
         for command in commands_to_execute:
-            runner = PythonDockerRunner(
-                image=self.image.value,
-                mode=self.execution_mode.value,
-            )
-            self._runner = runner
             async for slot, value in runner.stream(
                 user_code=command,
                 env_locals=self._dynamic_properties,
@@ -966,13 +971,18 @@ class JavaScriptRunner(BaseNode):
             if value is not None and str(value).strip():
                 commands_to_execute.append(str(value))
 
+        if not commands_to_execute:
+            return
+
+        # Create runner once and execute all commands
+        runner = JavaScriptDockerRunner(
+            image=self.image.value,
+            mode=self.execution_mode.value,
+        )
+        self._runner = runner
+
         # Execute each command
         for command in commands_to_execute:
-            runner = JavaScriptDockerRunner(
-                image=self.image.value,
-                mode=self.execution_mode.value,
-            )
-            self._runner = runner
             async for slot, value in runner.stream(
                 user_code=command,
                 env_locals=self._dynamic_properties,
@@ -1082,13 +1092,18 @@ class BashRunner(BaseNode):
             if value is not None and str(value).strip():
                 commands_to_execute.append(str(value))
 
+        if not commands_to_execute:
+            return
+
+        # Create runner once and execute all commands
+        runner = BashDockerRunner(
+            image=self.image.value,
+            mode=self.execution_mode.value,
+        )
+        self._runner = runner
+
         # Execute each command
         for command in commands_to_execute:
-            runner = BashDockerRunner(
-                image=self.image.value,
-                mode=self.execution_mode.value,
-            )
-            self._runner = runner
             async for slot, value in runner.stream(
                 user_code=command,
                 env_locals=self._dynamic_properties,
@@ -1194,13 +1209,18 @@ class RubyRunner(BaseNode):
             if value is not None and str(value).strip():
                 commands_to_execute.append(str(value))
 
+        if not commands_to_execute:
+            return
+
+        # Create runner once and execute all commands
+        runner = RubyDockerRunner(
+            image=self.image.value,
+            mode=self.execution_mode.value,
+        )
+        self._runner = runner
+
         # Execute each command
         for command in commands_to_execute:
-            runner = RubyDockerRunner(
-                image=self.image.value,
-                mode=self.execution_mode.value,
-            )
-            self._runner = runner
             async for slot, value in runner.stream(
                 user_code=command,
                 env_locals=self._dynamic_properties,
@@ -1310,20 +1330,25 @@ class LuaRunnerNode(BaseNode):
             if value is not None and str(value).strip():
                 commands_to_execute.append(str(value))
 
+        if not commands_to_execute:
+            return
+
+        # Create runner once (reused for all commands)
+        if self.execution_mode == ExecutionMode.SUBPROCESS:
+            runner = LuaSubprocessRunner(
+                executable=self.executable.value,
+                timeout_seconds=int(self.timeout_seconds),
+            )
+        else:
+            runner = LuaRunner(
+                image="nickblah/lua:5.2.4-luarocks-ubuntu",
+                timeout_seconds=int(self.timeout_seconds),
+                mode=self.execution_mode.value,
+            )
+        self._runner = runner
+
         # Execute each command
         for command in commands_to_execute:
-            if self.execution_mode == ExecutionMode.SUBPROCESS:
-                runner = LuaSubprocessRunner(
-                    executable=self.executable.value,
-                    timeout_seconds=int(self.timeout_seconds),
-                )
-            else:
-                runner = LuaRunner(
-                    image="nickblah/lua:5.2.4-luarocks-ubuntu",
-                    timeout_seconds=int(self.timeout_seconds),
-                    mode=self.execution_mode.value,
-                )
-            self._runner = runner
             async for slot, value in runner.stream(
                 user_code=command,
                 env_locals=self._dynamic_properties,
@@ -1433,13 +1458,18 @@ class ShellRunner(BaseNode):
             if value is not None and str(value).strip():
                 commands_to_execute.append(str(value))
 
+        if not commands_to_execute:
+            return
+
+        # Create runner once and execute all commands
+        runner = CommandDockerRunner(
+            image=self.image.value,
+            mode=self.execution_mode.value,
+        )
+        self._runner = runner
+
         # Execute each command
         for command in commands_to_execute:
-            runner = CommandDockerRunner(
-                image=self.image.value,
-                mode=self.execution_mode.value,
-            )
-            self._runner = runner
             async for slot, value in runner.stream(
                 user_code=command,
                 env_locals=self._dynamic_properties,
