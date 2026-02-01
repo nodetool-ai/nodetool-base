@@ -6,6 +6,7 @@ This module provides nodes for loading, saving, and processing 3D models
 using the Model3DRef type from nodetool-core.
 
 Supports common 3D formats: GLB, GLTF, OBJ, STL, PLY, USDZ.
+Includes AI-powered 3D generation nodes (TextTo3D, ImageTo3D).
 """
 
 from __future__ import annotations
@@ -13,12 +14,13 @@ from __future__ import annotations
 import datetime
 import os
 from enum import Enum
-from typing import Any, TypedDict
+from typing import Any, ClassVar, TypedDict
 
 from pydantic import Field
 
 from nodetool.config.environment import Environment
-from nodetool.metadata.types import FolderRef, Model3DRef
+from nodetool.metadata.types import FolderRef, ImageRef, Model3DModel, Model3DRef, Provider
+from nodetool.providers.types import ImageTo3DParams, TextTo3DParams
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
 from nodetool.workflows.types import SaveUpdate
@@ -882,6 +884,181 @@ class MergeMeshes(BaseNode):
         )
 
 
+
+
+class TextTo3D(BaseNode):
+    """
+    Generate 3D models from text prompts using AI providers (Meshy, Rodin).
+    3d, generation, AI, text-to-3d, t3d, mesh, create
+
+    Use cases:
+    - Create 3D models from text descriptions
+    - Generate game assets from prompts
+    - Prototype 3D concepts quickly
+    - Create 3D content for AR/VR
+    """
+
+    _auto_save_asset: ClassVar[bool] = True
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: Model3DModel = Field(
+        default=Model3DModel(
+            provider=Provider.Meshy,
+            id="meshy-4",
+            name="Meshy-4 Text-to-3D",
+        ),
+        description="The 3D generation model to use",
+    )
+    prompt: str = Field(
+        default="",
+        description="Text description of the 3D model to generate",
+    )
+    negative_prompt: str = Field(
+        default="",
+        description="Elements to avoid in the generated model",
+    )
+    art_style: str = Field(
+        default="",
+        description="Art style for the model (e.g., 'realistic', 'cartoon', 'low-poly')",
+    )
+    output_format: OutputFormat = Field(
+        default=OutputFormat.GLB,
+        description="Output format for the 3D model",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+    timeout_seconds: int = Field(
+        default=600,
+        ge=0,
+        le=7200,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
+        if not self.prompt:
+            raise ValueError("Prompt is required for text-to-3D generation")
+
+        # Get the 3D provider for this model
+        provider_instance = await context.get_provider(self.model.provider)
+
+        params = TextTo3DParams(
+            model=self.model,
+            prompt=self.prompt,
+            negative_prompt=self.negative_prompt if self.negative_prompt else None,
+            art_style=self.art_style if self.art_style else None,
+            output_format=self.output_format.value,
+            seed=self.seed if self.seed != -1 else None,
+        )
+
+        # Generate 3D model
+        model_bytes = await provider_instance.text_to_3d(
+            params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+            context=context,
+            node_id=self.id,
+        )
+
+        # Convert to Model3DRef (creates asset to avoid large websocket payloads)
+        return await context.model3d_from_bytes(
+            model_bytes,
+            name=f"generated_{self.id}.{self.output_format.value}",
+            format=self.output_format.value,
+        )
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["model", "prompt", "output_format", "seed"]
+
+
+class ImageTo3D(BaseNode):
+    """
+    Generate 3D models from images using AI providers (Meshy, Rodin).
+    3d, generation, AI, image-to-3d, i3d, mesh, reconstruction
+
+    Use cases:
+    - Convert product photos to 3D models
+    - Create 3D assets from concept art
+    - Generate 3D characters from drawings
+    - Reconstruct objects from images
+    """
+
+    _auto_save_asset: ClassVar[bool] = True
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: Model3DModel = Field(
+        default=Model3DModel(
+            provider=Provider.Meshy,
+            id="meshy-4-image",
+            name="Meshy-4 Image-to-3D",
+        ),
+        description="The 3D generation model to use",
+    )
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Input image to convert to 3D",
+    )
+    prompt: str = Field(
+        default="",
+        description="Optional text prompt to guide the 3D generation",
+    )
+    output_format: OutputFormat = Field(
+        default=OutputFormat.GLB,
+        description="Output format for the 3D model",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+    timeout_seconds: int = Field(
+        default=600,
+        ge=0,
+        le=7200,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
+        if self.image.is_empty():
+            raise ValueError("Input image must be connected")
+
+        # Get the 3D provider for this model
+        provider_instance = await context.get_provider(self.model.provider)
+
+        # Read the image bytes from the ImageRef
+        image_io = await context.asset_to_io(self.image)
+        image_bytes = image_io.read()
+
+        params = ImageTo3DParams(
+            model=self.model,
+            prompt=self.prompt if self.prompt else None,
+            output_format=self.output_format.value,
+            seed=self.seed if self.seed != -1 else None,
+        )
+
+        # Generate 3D model
+        model_bytes = await provider_instance.image_to_3d(
+            image_bytes,
+            params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+            context=context,
+            node_id=self.id,
+        )
+
+        # Convert to Model3DRef (creates asset to avoid large websocket payloads)
+        return await context.model3d_from_bytes(
+            model_bytes,
+            name=f"generated_{self.id}.{self.output_format.value}",
+            format=self.output_format.value,
+        )
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["model", "image", "output_format", "seed"]
+
+
 __all__ = [
     "LoadModel3DFile",
     "SaveModel3DFile",
@@ -895,4 +1072,6 @@ __all__ = [
     "CenterMesh",
     "FlipNormals",
     "MergeMeshes",
+    "TextTo3D",
+    "ImageTo3D",
 ]
