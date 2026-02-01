@@ -374,3 +374,153 @@ async def test_node_json_schema(node_class):
     assert isinstance(schema, dict)
     assert "type" in schema
     assert "properties" in schema
+
+
+# Tests for TextTo3D and ImageTo3D nodes
+from unittest.mock import AsyncMock, MagicMock, patch
+
+from nodetool.metadata.types import ImageRef, Model3DModel, Provider
+from nodetool.nodes.nodetool.model3d import TextTo3D, ImageTo3D, OutputFormat
+
+
+# Sample GLB bytes (minimal valid GLB header)
+SAMPLE_GLB_BYTES = b'glTF\x02\x00\x00\x00\x00\x00\x00\x00'
+
+
+@pytest.fixture
+def mock_provider():
+    """Create a mock provider for 3D generation."""
+    provider = AsyncMock()
+    provider.text_to_3d = AsyncMock(return_value=SAMPLE_GLB_BYTES)
+    provider.image_to_3d = AsyncMock(return_value=SAMPLE_GLB_BYTES)
+    return provider
+
+
+@pytest.fixture
+def sample_image():
+    """Create a sample ImageRef for testing."""
+    import io
+    import PIL.Image
+    buffer = io.BytesIO()
+    PIL.Image.new("RGB", (100, 100), color="blue").save(buffer, format="PNG")
+    return ImageRef(data=buffer.getvalue())
+
+
+@pytest.mark.asyncio
+async def test_text_to_3d_empty_prompt(context):
+    """Test TextTo3D with empty prompt raises error."""
+    node = TextTo3D(
+        model=Model3DModel(provider=Provider.Meshy, id="meshy-4", name="Test"),
+        prompt="",
+    )
+    with pytest.raises(ValueError, match="Prompt is required"):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
+async def test_text_to_3d_basic_fields():
+    """Test TextTo3D basic fields."""
+    fields = TextTo3D.get_basic_fields()
+    assert "model" in fields
+    assert "prompt" in fields
+    assert "output_format" in fields
+    assert "seed" in fields
+
+
+@pytest.mark.asyncio
+async def test_image_to_3d_empty_image(context):
+    """Test ImageTo3D with empty image raises error."""
+    node = ImageTo3D(
+        model=Model3DModel(provider=Provider.Meshy, id="meshy-4-image", name="Test"),
+        image=ImageRef(),
+    )
+    with pytest.raises(ValueError, match="Input image must be connected"):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
+async def test_image_to_3d_basic_fields():
+    """Test ImageTo3D basic fields."""
+    fields = ImageTo3D.get_basic_fields()
+    assert "model" in fields
+    assert "image" in fields
+    assert "output_format" in fields
+    assert "seed" in fields
+
+
+@pytest.mark.asyncio
+async def test_text_to_3d_with_mock_provider(context, mock_provider, monkeypatch):
+    """Test TextTo3D node with mocked provider."""
+    # Mock context.get_provider to return our mock
+    async def mock_get_provider(provider):
+        return mock_provider
+    
+    # Mock model3d_from_bytes to return a Model3DRef
+    async def mock_model3d_from_bytes(data, name=None, format=None):
+        return Model3DRef(data=data, format=format)
+    
+    monkeypatch.setattr(context, "get_provider", mock_get_provider)
+    monkeypatch.setattr(context, "model3d_from_bytes", mock_model3d_from_bytes)
+    
+    node = TextTo3D(
+        model=Model3DModel(provider=Provider.Meshy, id="meshy-4", name="Test"),
+        prompt="A red cube",
+        output_format=OutputFormat.GLB,
+    )
+    
+    result = await node.process(context)
+    
+    assert isinstance(result, Model3DRef)
+    assert result.format == "glb"
+    mock_provider.text_to_3d.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_image_to_3d_with_mock_provider(context, mock_provider, sample_image, monkeypatch):
+    """Test ImageTo3D node with mocked provider."""
+    # Mock context.get_provider to return our mock
+    async def mock_get_provider(provider):
+        return mock_provider
+    
+    # Mock asset_to_io to return image bytes
+    async def mock_asset_to_io(asset):
+        import io
+        return io.BytesIO(sample_image.data)
+    
+    # Mock model3d_from_bytes to return a Model3DRef
+    async def mock_model3d_from_bytes(data, name=None, format=None):
+        return Model3DRef(data=data, format=format)
+    
+    monkeypatch.setattr(context, "get_provider", mock_get_provider)
+    monkeypatch.setattr(context, "asset_to_io", mock_asset_to_io)
+    monkeypatch.setattr(context, "model3d_from_bytes", mock_model3d_from_bytes)
+    
+    node = ImageTo3D(
+        model=Model3DModel(provider=Provider.Meshy, id="meshy-4-image", name="Test"),
+        image=sample_image,
+        output_format=OutputFormat.GLB,
+    )
+    
+    result = await node.process(context)
+    
+    assert isinstance(result, Model3DRef)
+    assert result.format == "glb"
+    mock_provider.image_to_3d.assert_called_once()
+
+
+# JSON schema tests for new nodes
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "node_class",
+    [
+        TextTo3D,
+        ImageTo3D,
+    ],
+)
+async def test_generation_node_json_schema(node_class):
+    """Test that generation nodes have valid JSON schema."""
+    node = node_class()
+    schema = node.get_json_schema()
+    assert isinstance(schema, dict)
+    assert "type" in schema
+    assert "properties" in schema
