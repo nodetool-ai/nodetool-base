@@ -284,10 +284,11 @@ class SaveModel3D(BaseNode):
         model_format = SUPPORTED_FORMATS.get(ext_lower, self.model.format)
 
         # Create asset
+        import io
         asset = await context.create_asset(
             name=filename,
             content_type=f"model/{model_format or 'gltf-binary'}",
-            data=model_data,
+            content=io.BytesIO(model_data),
             parent_id=parent_id,
         )
 
