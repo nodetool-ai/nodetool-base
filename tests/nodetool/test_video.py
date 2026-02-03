@@ -108,7 +108,7 @@ async def test_get_video_info(context: ProcessingContext):
     """Test GetVideoInfo node returns correct metadata structure."""
     node = GetVideoInfo(video=dummy_video)
     result = await node.process(context)
-    
+
     assert isinstance(result, dict)
     assert "duration" in result
     assert "width" in result
@@ -117,7 +117,7 @@ async def test_get_video_info(context: ProcessingContext):
     assert "frame_count" in result
     assert "codec" in result
     assert "has_audio" in result
-    
+
     # Check types
     assert isinstance(result["duration"], float)
     assert isinstance(result["width"], int)

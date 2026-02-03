@@ -2205,7 +2205,12 @@ class ExtractFrame(BaseNode):
                 # Extract a single frame at the specified time
                 (
                     ffmpeg.input(temp_input.name, ss=self.time)
-                    .output(temp_output.name, vframes=1, format="image2", loglevel="error")
+                    .output(
+                        temp_output.name,
+                        vframes=1,
+                        format="image2",
+                        loglevel="error",
+                    )
                     .overwrite_output()
                     .run(quiet=True)
                 )
@@ -2229,7 +2234,8 @@ class ExtractFrame(BaseNode):
 
 class GetVideoInfo(BaseNode):
     """
-    Get metadata information about a video file including duration, resolution, frame rate, and codec.
+    Get metadata information about a video file.
+    Includes duration, resolution, frame rate, and codec.
     video, info, metadata, duration, resolution, fps, codec, analysis
     """
 
@@ -2273,7 +2279,10 @@ class GetVideoInfo(BaseNode):
                     raise ValueError("No video stream found in the file.")
 
                 # Get FPS
-                rate = video_stream.get("avg_frame_rate") or video_stream.get("r_frame_rate")
+                rate = (
+                    video_stream.get("avg_frame_rate")
+                    or video_stream.get("r_frame_rate")
+                )
                 if rate and rate not in ("0/0", "0"):
                     fps = float(Fraction(rate))
                 else:
@@ -2291,7 +2300,7 @@ class GetVideoInfo(BaseNode):
                 if nb_frames:
                     frame_count = int(nb_frames)
                 elif duration > 0 and fps > 0:
-                    frame_count = int(duration * fps)
+                    frame_count = round(duration * fps)
                 else:
                     frame_count = 0
 
