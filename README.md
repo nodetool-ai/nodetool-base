@@ -1,10 +1,16 @@
 # nodetool-base
 
-A collection of reusable nodes for [Nodetool](https://github.com/nodetool-ai/nodetool). These nodes implement common functionality for text, audio, video, images and more. They build on the runtime provided by [nodetool-core](https://github.com/nodetool-ai/nodetool-core).
+[![Stars](https://img.shields.io/github/stars/nodetool-ai/nodetool-base?style=social)](https://github.com/nodetool-ai/nodetool-base/stargazers)
+[![Latest Release](https://img.shields.io/github/v/release/nodetool-ai/nodetool-base?display_name=tag&sort=semver)](https://github.com/nodetool-ai/nodetool-base/releases/latest)
+[![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-blue.svg)](LICENSE)
+
+A comprehensive collection of reusable nodes for [Nodetool](https://github.com/nodetool-ai/nodetool) — the visual AI workflow builder. These nodes provide essential functionality for text, audio, video, image processing, and integrations with leading AI providers.
 
 ## Overview
 
-Nodetool lets you compose AI workflows as graphs. `nodetool-base` ships with a rich set of nodes so you can build useful flows out of the box. The nodes are organised into several namespaces under `src/nodetool/nodes`:
+Nodetool lets you compose AI workflows as graphs. `nodetool-base` provides the foundational node library for building production-ready AI workflows. Whether you're processing media, building RAG systems, or integrating with cloud AI services, these nodes give you the essential building blocks.
+
+The nodes are organized into several namespaces under `src/nodetool/nodes`:
 
 - `anthropic` – Claude AI integration for chat and agent interactions
 - `gemini` – Google Gemini models for text, audio, images and video generation
@@ -23,10 +29,10 @@ Example workflows using these nodes can be found in `src/nodetool/examples/nodet
 ```bash
 git clone https://github.com/nodetool-ai/nodetool-base.git
 cd nodetool-base
-poetry install
+pip install .
 ```
 
-This installs `nodetool-core` and other dependencies.
+This installs `nodetool-core` and all dependencies. For development, see [Development Setup](#development-setup) below.
 
 ## Documentation
 
@@ -103,13 +109,27 @@ Detailed documentation for each node group lives in the [`docs/`](docs) folder. 
 
 For detailed documentation on each node, see [`docs/index.md`](docs/index.md).
 
-## Running tests
+## Running Tests
 
 ```bash
 pytest -q
 ```
 
-Most tests run without network access.
+Most tests run without network access. For specific tests:
+
+```bash
+pytest tests/nodetool/test_audio.py::test_specific_function -v
+```
+
+## Development Setup
+
+For development, install with optional dev dependencies:
+
+```bash
+pip install -e ".[dev]"
+```
+
+Then set up pre-commit hooks (see [Code Quality](#code-quality--pre-commit-hooks) below).
 
 ## Code Quality & Pre-Commit Hooks
 
@@ -145,5 +165,14 @@ Hooks run automatically on `git commit`. If they fail or make changes, stage the
 
 ## Contributing
 
-Contributions are welcome. Feel free to open issues or pull requests on GitHub.
+We welcome contributions including bug reports, feature requests, and new nodes. Please open an issue before starting major work.
+
+## License
+
+[AGPL-3.0 license](https://github.com/nodetool-ai/nodetool-base/blob/main/LICENSE).
+
+## Get in Touch
+
+- **Issues**: [GitHub Issues](https://github.com/nodetool-ai/nodetool-base/issues)
+- **Discord**: [NodeTool Discord](https://discord.gg/WmQTWZRcYE)
 
