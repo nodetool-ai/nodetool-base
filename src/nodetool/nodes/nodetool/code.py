@@ -842,32 +842,17 @@ class PythonRunner(BaseNode):
         return True
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Collect commands from the static field and streaming input
-        commands_to_execute = []
-
-        # Add static command if provided
-        if self.commands.strip():
-            commands_to_execute.append(self.commands)
-
-        # Collect streaming commands
-        async for value in inputs.stream("commands"):
-            if value is not None and str(value).strip():
-                commands_to_execute.append(str(value))
-
-        if not commands_to_execute:
-            return
-
-        # Create runner once and execute all commands
+        # Create runner once
         runner = PythonDockerRunner(
             image=self.image.value,
             mode=self.execution_mode.value,
         )
         self._runner = runner
 
-        # Execute each command
-        for command in commands_to_execute:
+        # Execute static command if provided
+        if self.commands.strip():
             async for slot, value in runner.stream(
-                user_code=command,
+                user_code=self.commands,
                 env_locals=self._dynamic_properties,
                 context=context,
                 node=self,
@@ -891,6 +876,41 @@ class PythonRunner(BaseNode):
                             node_id=self.id,
                             node_name=self.get_title(),
                             content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+        # Execute streaming commands one by one as they arrive
+        async for value in inputs.stream("commands"):
+            if value is None or not str(value).strip():
+                continue
+            command = str(value)
+            async for slot, val in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if val is None:
+                    continue
+                text_value = val if isinstance(val, str) else str(val)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
                             severity="error",
                         )
                     )
@@ -959,32 +979,17 @@ class JavaScriptRunner(BaseNode):
         return True
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Collect commands from the static field and streaming input
-        commands_to_execute = []
-
-        # Add static command if provided
-        if self.commands.strip():
-            commands_to_execute.append(self.commands)
-
-        # Collect streaming commands
-        async for value in inputs.stream("commands"):
-            if value is not None and str(value).strip():
-                commands_to_execute.append(str(value))
-
-        if not commands_to_execute:
-            return
-
-        # Create runner once and execute all commands
+        # Create runner once
         runner = JavaScriptDockerRunner(
             image=self.image.value,
             mode=self.execution_mode.value,
         )
         self._runner = runner
 
-        # Execute each command
-        for command in commands_to_execute:
+        # Execute static command if provided
+        if self.commands.strip():
             async for slot, value in runner.stream(
-                user_code=command,
+                user_code=self.commands,
                 env_locals=self._dynamic_properties,
                 context=context,
                 node=self,
@@ -1008,6 +1013,41 @@ class JavaScriptRunner(BaseNode):
                             node_id=self.id,
                             node_name=self.get_title(),
                             content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+        # Execute streaming commands one by one as they arrive
+        async for value in inputs.stream("commands"):
+            if value is None or not str(value).strip():
+                continue
+            command = str(value)
+            async for slot, val in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if val is None:
+                    continue
+                text_value = val if isinstance(val, str) else str(val)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
                             severity="error",
                         )
                     )
@@ -1080,32 +1120,17 @@ class BashRunner(BaseNode):
         return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Collect commands from the static field and streaming input
-        commands_to_execute = []
-
-        # Add static command if provided
-        if self.commands.strip():
-            commands_to_execute.append(self.commands)
-
-        # Collect streaming commands
-        async for value in inputs.stream("commands"):
-            if value is not None and str(value).strip():
-                commands_to_execute.append(str(value))
-
-        if not commands_to_execute:
-            return
-
-        # Create runner once and execute all commands
+        # Create runner once
         runner = BashDockerRunner(
             image=self.image.value,
             mode=self.execution_mode.value,
         )
         self._runner = runner
 
-        # Execute each command
-        for command in commands_to_execute:
+        # Execute static command if provided
+        if self.commands.strip():
             async for slot, value in runner.stream(
-                user_code=command,
+                user_code=self.commands,
                 env_locals=self._dynamic_properties,
                 context=context,
                 node=self,
@@ -1129,6 +1154,41 @@ class BashRunner(BaseNode):
                             node_id=self.id,
                             node_name=self.get_title(),
                             content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+        # Execute streaming commands one by one as they arrive
+        async for value in inputs.stream("commands"):
+            if value is None or not str(value).strip():
+                continue
+            command = str(value)
+            async for slot, val in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if val is None:
+                    continue
+                text_value = val if isinstance(val, str) else str(val)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
                             severity="error",
                         )
                     )
@@ -1197,32 +1257,17 @@ class RubyRunner(BaseNode):
         return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Collect commands from the static field and streaming input
-        commands_to_execute = []
-
-        # Add static command if provided
-        if self.commands.strip():
-            commands_to_execute.append(self.commands)
-
-        # Collect streaming commands
-        async for value in inputs.stream("commands"):
-            if value is not None and str(value).strip():
-                commands_to_execute.append(str(value))
-
-        if not commands_to_execute:
-            return
-
-        # Create runner once and execute all commands
+        # Create runner once
         runner = RubyDockerRunner(
             image=self.image.value,
             mode=self.execution_mode.value,
         )
         self._runner = runner
 
-        # Execute each command
-        for command in commands_to_execute:
+        # Execute static command if provided
+        if self.commands.strip():
             async for slot, value in runner.stream(
-                user_code=command,
+                user_code=self.commands,
                 env_locals=self._dynamic_properties,
                 context=context,
                 node=self,
@@ -1246,6 +1291,41 @@ class RubyRunner(BaseNode):
                             node_id=self.id,
                             node_name=self.get_title(),
                             content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+        # Execute streaming commands one by one as they arrive
+        async for value in inputs.stream("commands"):
+            if value is None or not str(value).strip():
+                continue
+            command = str(value)
+            async for slot, val in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if val is None:
+                    continue
+                text_value = val if isinstance(val, str) else str(val)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
                             severity="error",
                         )
                     )
@@ -1318,21 +1398,6 @@ class LuaRunnerNode(BaseNode):
         return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Collect commands from the static field and streaming input
-        commands_to_execute = []
-
-        # Add static command if provided
-        if self.commands.strip():
-            commands_to_execute.append(self.commands)
-
-        # Collect streaming commands
-        async for value in inputs.stream("commands"):
-            if value is not None and str(value).strip():
-                commands_to_execute.append(str(value))
-
-        if not commands_to_execute:
-            return
-
         # Create runner once (reused for all commands)
         if self.execution_mode == ExecutionMode.SUBPROCESS:
             runner = LuaSubprocessRunner(
@@ -1347,10 +1412,10 @@ class LuaRunnerNode(BaseNode):
             )
         self._runner = runner
 
-        # Execute each command
-        for command in commands_to_execute:
+        # Execute static command if provided
+        if self.commands.strip():
             async for slot, value in runner.stream(
-                user_code=command,
+                user_code=self.commands,
                 env_locals=self._dynamic_properties,
                 context=context,
                 node=self,
@@ -1374,6 +1439,41 @@ class LuaRunnerNode(BaseNode):
                             node_id=self.id,
                             node_name=self.get_title(),
                             content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+        # Execute streaming commands one by one as they arrive
+        async for value in inputs.stream("commands"):
+            if value is None or not str(value).strip():
+                continue
+            command = str(value)
+            async for slot, val in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if val is None:
+                    continue
+                text_value = val if isinstance(val, str) else str(val)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
                             severity="error",
                         )
                     )
@@ -1446,32 +1546,17 @@ class ShellRunner(BaseNode):
         return cls.OutputType
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
-        # Collect commands from the static field and streaming input
-        commands_to_execute = []
-
-        # Add static command if provided
-        if self.commands.strip():
-            commands_to_execute.append(self.commands)
-
-        # Collect streaming commands
-        async for value in inputs.stream("commands"):
-            if value is not None and str(value).strip():
-                commands_to_execute.append(str(value))
-
-        if not commands_to_execute:
-            return
-
-        # Create runner once and execute all commands
+        # Create runner once
         runner = CommandDockerRunner(
             image=self.image.value,
             mode=self.execution_mode.value,
         )
         self._runner = runner
 
-        # Execute each command
-        for command in commands_to_execute:
+        # Execute static command if provided
+        if self.commands.strip():
             async for slot, value in runner.stream(
-                user_code=command,
+                user_code=self.commands,
                 env_locals=self._dynamic_properties,
                 context=context,
                 node=self,
@@ -1495,6 +1580,41 @@ class ShellRunner(BaseNode):
                             node_id=self.id,
                             node_name=self.get_title(),
                             content=str(value).rstrip("\n"),
+                            severity="error",
+                        )
+                    )
+                await outputs.emit(slot, text_value)
+
+        # Execute streaming commands one by one as they arrive
+        async for value in inputs.stream("commands"):
+            if value is None or not str(value).strip():
+                continue
+            command = str(value)
+            async for slot, val in runner.stream(
+                user_code=command,
+                env_locals=self._dynamic_properties,
+                context=context,
+                node=self,
+                stdin_stream=None,
+            ):
+                if val is None:
+                    continue
+                text_value = val if isinstance(val, str) else str(val)
+                if slot == "stdout":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
+                            severity="info",
+                        )
+                    )
+                elif slot == "stderr":
+                    context.post_message(
+                        LogUpdate(
+                            node_id=self.id,
+                            node_name=self.get_title(),
+                            content=str(val).rstrip("\n"),
                             severity="error",
                         )
                     )
