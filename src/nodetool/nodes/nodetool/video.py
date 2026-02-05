@@ -1,6 +1,7 @@
 import datetime
 import enum
 from fractions import Fraction
+from io import BytesIO
 import os
 import tempfile
 import asyncio
@@ -2165,3 +2166,159 @@ class ExtractAudio(BaseNode):
             finally:
                 safe_unlink(temp_input.name)
                 safe_unlink(temp_audio.name)
+
+
+class ExtractFrame(BaseNode):
+    """
+    Extract a single frame from a video at a specific time position.
+    video, frame, extract, screenshot, thumbnail, capture
+    """
+
+    video: VideoRef = Field(
+        default=VideoRef(), description="The input video to extract a frame from."
+    )
+    time: float = Field(
+        default=0.0,
+        ge=0.0,
+        description="Time position in seconds to extract the frame from.",
+    )
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        if self.video.is_empty():
+            raise ValueError("Input video must be connected.")
+
+        video_file = await context.asset_to_io(self.video)
+
+        with (
+            tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input,
+            tempfile.NamedTemporaryFile(suffix=".png", delete=False) as temp_output,
+        ):
+            try:
+                temp_input.write(video_file.read())
+                temp_input.close()
+                temp_output.close()
+
+                # Set permissions for temporary files
+                os.chmod(temp_input.name, 0o644)
+                os.chmod(temp_output.name, 0o644)
+
+                # Extract a single frame at the specified time
+                (
+                    ffmpeg.input(temp_input.name, ss=self.time)
+                    .output(
+                        temp_output.name,
+                        vframes=1,
+                        format="image2",
+                        loglevel="error",
+                    )
+                    .overwrite_output()
+                    .run(quiet=True)
+                )
+
+                # Read the extracted frame and return it
+                async with aiofiles.open(temp_output.name, "rb") as f:
+                    image_data = await f.read()
+                    img = PIL.Image.open(BytesIO(image_data))
+                    return await context.image_from_pil(img)
+
+            except ffmpeg.Error as e:
+                error_message = (
+                    e.stderr.decode("utf-8") if e.stderr else "Unknown ffmpeg error."
+                )
+                raise RuntimeError(f"ffmpeg error: {error_message}") from e
+
+            finally:
+                safe_unlink(temp_input.name)
+                safe_unlink(temp_output.name)
+
+
+class GetVideoInfo(BaseNode):
+    """
+    Get metadata information about a video file.
+    Includes duration, resolution, frame rate, and codec.
+    video, info, metadata, duration, resolution, fps, codec, analysis
+    """
+
+    video: VideoRef = Field(
+        default=VideoRef(), description="The input video to analyze."
+    )
+
+    class OutputType(TypedDict):
+        duration: float
+        width: int
+        height: int
+        fps: float
+        frame_count: int
+        codec: str
+        has_audio: bool
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        if self.video.is_empty():
+            raise ValueError("Input video must be connected.")
+
+        video_file = await context.asset_to_io(self.video)
+
+        with tempfile.NamedTemporaryFile(suffix=".mp4", delete=False) as temp_input:
+            try:
+                temp_input.write(video_file.read())
+                temp_input.close()
+
+                probe = ffmpeg.probe(temp_input.name)
+                streams = probe.get("streams") or []
+
+                video_stream = next(
+                    (s for s in streams if s.get("codec_type") == "video"),
+                    None,
+                )
+                audio_stream = next(
+                    (s for s in streams if s.get("codec_type") == "audio"),
+                    None,
+                )
+
+                if not video_stream:
+                    raise ValueError("No video stream found in the file.")
+
+                # Get FPS
+                rate = (
+                    video_stream.get("avg_frame_rate")
+                    or video_stream.get("r_frame_rate")
+                )
+                if rate and rate not in ("0/0", "0"):
+                    fps = float(Fraction(rate))
+                else:
+                    fps = 0.0
+
+                # Get duration
+                duration = float(video_stream.get("duration", 0.0))
+                if duration == 0.0:
+                    # Try format duration
+                    format_info = probe.get("format", {})
+                    duration = float(format_info.get("duration", 0.0))
+
+                # Get frame count
+                nb_frames = video_stream.get("nb_frames")
+                if nb_frames:
+                    frame_count = int(nb_frames)
+                elif duration > 0 and fps > 0:
+                    frame_count = round(duration * fps)
+                else:
+                    frame_count = 0
+
+                return {
+                    "duration": duration,
+                    "width": int(video_stream.get("width", 0)),
+                    "height": int(video_stream.get("height", 0)),
+                    "fps": fps,
+                    "frame_count": frame_count,
+                    "codec": video_stream.get("codec_name", "unknown"),
+                    "has_audio": audio_stream is not None,
+                }
+
+            except ffmpeg.Error as e:
+                error_message = (
+                    e.stderr.decode("utf-8") if e.stderr else "Unknown ffmpeg error."
+                )
+                raise RuntimeError(f"ffmpeg error: {error_message}") from e
+
+            finally:
+                safe_unlink(temp_input.name)
