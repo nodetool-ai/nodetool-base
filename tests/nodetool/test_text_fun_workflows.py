@@ -516,11 +516,11 @@ class TestFortuneCookieAssemblerWorkflow:
     async def test_assemble_fortune(self):
         """Bake a fortune cookie message from template parts."""
         wisdom = String(value="patience")
-        object_ = String(value="rubber duck")
+        item = String(value="rubber duck")
         fortune = FormatText(
-            template="A great {{ wisdom }} begins with a single {{ object }}.",
+            template="A great {{ wisdom }} begins with a single {{ item }}.",
             wisdom=wisdom.output,
-            object=object_.output,
+            item=item.output,
         )
         sink = Output(name="fortune", value=fortune.output)
 
