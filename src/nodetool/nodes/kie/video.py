@@ -2,7 +2,7 @@
 
 This module provides nodes for generating videos using Kie.ai's various APIs.
 """
-
+from gradio import Dataframe
 import asyncio
 from enum import Enum
 from typing import Any, ClassVar
@@ -11,7 +11,7 @@ import aiohttp
 from pydantic import Field
 
 from nodetool.config.logging_config import get_logger
-from nodetool.metadata.types import AudioRef, ImageRef, VideoRef
+from nodetool.metadata.types import AudioRef, ImageRef, VideoRef, DataframeRef
 from nodetool.workflows.processing_context import ProcessingContext
 
 from .image import KieBaseNode, KIE_API_BASE_URL
@@ -27,7 +27,7 @@ class KieVideoBaseNode(KieBaseNode):
     Extends KieBaseNode with video-specific result handling.
     """
     _poll_interval: float = 8.0
-    _max_poll_attempts: int = 240
+    _max_poll_attempts: int = 450
 
     @classmethod
     def is_visible(cls) -> bool:
@@ -1143,11 +1143,6 @@ class Sora2BaseNode(KieVideoBaseNode):
         description="Whether to remove the watermark from the video.",
     )
 
-    n_frames: Sora2Frames = Field(
-        default=Sora2Frames._10s,
-        description="Number of frames for the video output.",
-    )
-
 
 class Sora2ProTextToVideo(Sora2BaseNode):
     """Generate videos from text using Sora 2 Pro via Kie.ai.
@@ -1160,6 +1155,11 @@ class Sora2ProTextToVideo(Sora2BaseNode):
     _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
+
+    n_frames: Sora2Frames = Field(
+        default=Sora2Frames._10s,
+        description="Number of frames for the video output.",
+    )
 
     @classmethod
     def get_title(cls) -> str:
@@ -1197,6 +1197,11 @@ class Sora2ProImageToVideo(Sora2BaseNode):
     _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
+
+    n_frames: Sora2Frames = Field(
+        default=Sora2Frames._10s,
+        description="Number of frames for the video output.",
+    )
 
     @classmethod
     def get_title(cls) -> str:
@@ -1248,45 +1253,60 @@ class Sora2ProStoryboard(Sora2BaseNode):
     def get_title(cls) -> str:
         return "Sora 2 Pro Storyboard"
 
-    prompt: str = Field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
+    class Sora2StoryboardFrames(str, Enum):
+        _10s = "10"
+        _15s = "15"
+        _25s = "25"
+
+    n_frames: Sora2StoryboardFrames = Field(
+        default=Sora2StoryboardFrames._10s,
+        description="Number of frames for the video output.",
     )
 
-    image1: ImageRef = Field(
-        default=ImageRef(),
-        description="First source image for the video generation.",
+    shots: DataframeRef = Field(
+        default=DataframeRef(),
+        description="The shots to generate, with columns: Scene, duration.",
     )
 
-    image2: ImageRef = Field(
-        default=ImageRef(),
-        description="Second source image (optional).",
-    )
-
-    image3: ImageRef = Field(
-        default=ImageRef(),
-        description="Third source image (optional).",
+    images: list[ImageRef] = Field(
+        default=[],
+        description="The images to use for the video generation.",
     )
 
     def _get_model(self) -> str:
-        return "sora-2-pro-story-board"
+        return "sora-2-pro-storyboard"
 
     async def _get_input_params(
         self, context: ProcessingContext | None = None
     ) -> dict[str, Any]:
-        if not self.prompt:
-            raise ValueError("Prompt is required")
         if context is None:
             raise ValueError("Context is required for image upload")
 
+        if self.shots.data is None:
+            raise ValueError("Shots data is required")
+        if self.shots.columns is None:
+            raise ValueError("Shots columns are required")
+
+        columns = [c.name.lower() for c in self.shots.columns]
+
+        if "scene" not in columns:
+            raise ValueError("Scene column is required in the shots DataFrame")
+        if "duration" not in columns:
+            raise ValueError("Duration column is required in the shots DataFrame")
+
+        shots = []
+        for row in self.shots.data:
+            scene = row[columns.index("scene")]
+            duration = row[columns.index("duration")]
+            shots.append({"scene": scene, "duration": duration})
+
         image_urls = []
-        for img in [self.image1, self.image2, self.image3]:
-            if img.is_set():
-                url = await self._upload_image(context, img)
-                image_urls.append(url)
+        for img in self.images:
+            url = await self._upload_image(context, img)
+            image_urls.append(url)
 
         return {
-            "prompt": self.prompt,
+            "shots": shots,
             "image_urls": image_urls,
             "n_frames": self.n_frames.value,
             "remove_watermark": self.remove_watermark,
@@ -1304,6 +1324,11 @@ class Sora2TextToVideo(Sora2BaseNode):
     _auto_save_asset: ClassVar[bool] = True
 
     _expose_as_tool: ClassVar[bool] = True
+
+    n_frames: Sora2Frames = Field(
+        default=Sora2Frames._10s,
+        description="Number of frames for the video output.",
+    )
 
     @classmethod
     def get_title(cls) -> str:
