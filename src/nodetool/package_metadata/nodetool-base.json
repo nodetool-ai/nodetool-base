@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.3-rc.12",
+  "version": "0.6.3-rc.15",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -2463,7 +2463,6 @@
         "commands"
       ],
       "is_dynamic": true,
-      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3003,7 +3002,6 @@
         "commands"
       ],
       "is_dynamic": true,
-      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3080,7 +3078,6 @@
         "commands"
       ],
       "is_dynamic": true,
-      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3147,7 +3144,6 @@
         "commands"
       ],
       "is_dynamic": true,
-      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3213,7 +3209,6 @@
         "commands"
       ],
       "is_dynamic": true,
-      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {
@@ -3282,7 +3277,6 @@
         "commands"
       ],
       "is_dynamic": true,
-      "is_streaming_output": true,
       "supports_dynamic_outputs": true
     },
     {

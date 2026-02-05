@@ -827,7 +827,7 @@ class PythonRunner(BaseNode):
 
     @classmethod
     def is_streaming_input(cls):
-        return True
+        return False
 
     class OutputType(TypedDict):
         stdout: str
@@ -839,7 +839,7 @@ class PythonRunner(BaseNode):
 
     @classmethod
     def is_streaming_output(cls):
-        return True
+        return False
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         # Create runner once
@@ -849,72 +849,52 @@ class PythonRunner(BaseNode):
         )
         self._runner = runner
 
-        # Execute static command if provided
-        if self.commands.strip():
-            async for slot, value in runner.stream(
-                user_code=self.commands,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                text_value = value if isinstance(value, str) else str(value)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="info",
-                        )
-                    )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="error",
-                        )
-                    )
-                await outputs.emit(slot, text_value)
+        command = self.commands
+        if not command.strip():
+            val = await inputs.first("commands")
+            if val:
+                command = str(val)
 
-        # Execute streaming commands one by one as they arrive
-        async for value in inputs.stream("commands"):
-            if value is None or not str(value).strip():
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
                 continue
-            command = str(value)
-            async for slot, val in runner.stream(
-                user_code=command,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if val is None:
-                    continue
-                text_value = val if isinstance(val, str) else str(val)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="info",
-                        )
+            text_value = value if isinstance(value, str) else str(value)
+            
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
                     )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="error",
-                        )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
                     )
-                await outputs.emit(slot, text_value)
+                )
+        
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
 
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         try:
@@ -964,7 +944,7 @@ class JavaScriptRunner(BaseNode):
 
     @classmethod
     def is_streaming_input(cls):
-        return True
+        return False
 
     class OutputType(TypedDict):
         stdout: str
@@ -976,7 +956,7 @@ class JavaScriptRunner(BaseNode):
 
     @classmethod
     def is_streaming_output(cls):
-        return True
+        return False
 
     async def run(self, context: ProcessingContext, inputs: NodeInputs, outputs: NodeOutputs) -> None:  # type: ignore[override]
         # Create runner once
@@ -986,72 +966,52 @@ class JavaScriptRunner(BaseNode):
         )
         self._runner = runner
 
-        # Execute static command if provided
-        if self.commands.strip():
-            async for slot, value in runner.stream(
-                user_code=self.commands,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                text_value = value if isinstance(value, str) else str(value)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="info",
-                        )
-                    )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="error",
-                        )
-                    )
-                await outputs.emit(slot, text_value)
+        command = self.commands
+        if not command.strip():
+            val = await inputs.first("commands")
+            if val:
+                command = str(val)
 
-        # Execute streaming commands one by one as they arrive
-        async for value in inputs.stream("commands"):
-            if value is None or not str(value).strip():
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
                 continue
-            command = str(value)
-            async for slot, val in runner.stream(
-                user_code=command,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if val is None:
-                    continue
-                text_value = val if isinstance(val, str) else str(val)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="info",
-                        )
+            text_value = value if isinstance(value, str) else str(value)
+            
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
                     )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="error",
-                        )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
                     )
-                await outputs.emit(slot, text_value)
+                )
+        
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
 
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         try:
@@ -1105,11 +1065,11 @@ class BashRunner(BaseNode):
 
     @classmethod
     def is_streaming_input(cls):
-        return True
+        return False
 
     @classmethod
     def is_streaming_output(cls):
-        return True
+        return False
 
     class OutputType(TypedDict):
         stdout: str
@@ -1127,72 +1087,52 @@ class BashRunner(BaseNode):
         )
         self._runner = runner
 
-        # Execute static command if provided
-        if self.commands.strip():
-            async for slot, value in runner.stream(
-                user_code=self.commands,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                text_value = value if isinstance(value, str) else str(value)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="info",
-                        )
-                    )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="error",
-                        )
-                    )
-                await outputs.emit(slot, text_value)
+        command = self.commands
+        if not command.strip():
+            val = await inputs.first("commands")
+            if val:
+                command = str(val)
 
-        # Execute streaming commands one by one as they arrive
-        async for value in inputs.stream("commands"):
-            if value is None or not str(value).strip():
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
                 continue
-            command = str(value)
-            async for slot, val in runner.stream(
-                user_code=command,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if val is None:
-                    continue
-                text_value = val if isinstance(val, str) else str(val)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="info",
-                        )
+            text_value = value if isinstance(value, str) else str(value)
+            
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
                     )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="error",
-                        )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
                     )
-                await outputs.emit(slot, text_value)
+                )
+        
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
 
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         try:
@@ -1242,11 +1182,11 @@ class RubyRunner(BaseNode):
 
     @classmethod
     def is_streaming_input(cls):
-        return True
+        return False
 
     @classmethod
     def is_streaming_output(cls):
-        return True
+        return False
 
     class OutputType(TypedDict):
         stdout: str
@@ -1264,72 +1204,52 @@ class RubyRunner(BaseNode):
         )
         self._runner = runner
 
-        # Execute static command if provided
-        if self.commands.strip():
-            async for slot, value in runner.stream(
-                user_code=self.commands,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                text_value = value if isinstance(value, str) else str(value)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="info",
-                        )
-                    )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="error",
-                        )
-                    )
-                await outputs.emit(slot, text_value)
+        command = self.commands
+        if not command.strip():
+            val = await inputs.first("commands")
+            if val:
+                command = str(val)
 
-        # Execute streaming commands one by one as they arrive
-        async for value in inputs.stream("commands"):
-            if value is None or not str(value).strip():
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
                 continue
-            command = str(value)
-            async for slot, val in runner.stream(
-                user_code=command,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if val is None:
-                    continue
-                text_value = val if isinstance(val, str) else str(val)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="info",
-                        )
+            text_value = value if isinstance(value, str) else str(value)
+            
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
                     )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="error",
-                        )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
                     )
-                await outputs.emit(slot, text_value)
+                )
+        
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
 
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         try:
@@ -1383,11 +1303,11 @@ class LuaRunnerNode(BaseNode):
 
     @classmethod
     def is_streaming_input(cls):
-        return True
+        return False
 
     @classmethod
     def is_streaming_output(cls):
-        return True
+        return False
 
     class OutputType(TypedDict):
         stdout: str
@@ -1412,72 +1332,52 @@ class LuaRunnerNode(BaseNode):
             )
         self._runner = runner
 
-        # Execute static command if provided
-        if self.commands.strip():
-            async for slot, value in runner.stream(
-                user_code=self.commands,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                text_value = value if isinstance(value, str) else str(value)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="info",
-                        )
-                    )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="error",
-                        )
-                    )
-                await outputs.emit(slot, text_value)
+        command = self.commands
+        if not command.strip():
+            val = await inputs.first("commands")
+            if val:
+                command = str(val)
 
-        # Execute streaming commands one by one as they arrive
-        async for value in inputs.stream("commands"):
-            if value is None or not str(value).strip():
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
                 continue
-            command = str(value)
-            async for slot, val in runner.stream(
-                user_code=command,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if val is None:
-                    continue
-                text_value = val if isinstance(val, str) else str(val)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="info",
-                        )
+            text_value = value if isinstance(value, str) else str(value)
+            
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
                     )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="error",
-                        )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
                     )
-                await outputs.emit(slot, text_value)
+                )
+        
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
 
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         try:
@@ -1531,11 +1431,11 @@ class ShellRunner(BaseNode):
 
     @classmethod
     def is_streaming_input(cls):
-        return True
+        return False
 
     @classmethod
     def is_streaming_output(cls):
-        return True
+        return False
 
     class OutputType(TypedDict):
         stdout: str
@@ -1553,72 +1453,52 @@ class ShellRunner(BaseNode):
         )
         self._runner = runner
 
-        # Execute static command if provided
-        if self.commands.strip():
-            async for slot, value in runner.stream(
-                user_code=self.commands,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if value is None:
-                    continue
-                text_value = value if isinstance(value, str) else str(value)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="info",
-                        )
-                    )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(value).rstrip("\n"),
-                            severity="error",
-                        )
-                    )
-                await outputs.emit(slot, text_value)
+        command = self.commands
+        if not command.strip():
+            val = await inputs.first("commands")
+            if val:
+                command = str(val)
 
-        # Execute streaming commands one by one as they arrive
-        async for value in inputs.stream("commands"):
-            if value is None or not str(value).strip():
+        if not command.strip():
+            return
+
+        stdout_buf = []
+        stderr_buf = []
+
+        async for slot, value in runner.stream(
+            user_code=command,
+            env_locals=self._dynamic_properties,
+            context=context,
+            node=self,
+            stdin_stream=None,
+        ):
+            if value is None:
                 continue
-            command = str(value)
-            async for slot, val in runner.stream(
-                user_code=command,
-                env_locals=self._dynamic_properties,
-                context=context,
-                node=self,
-                stdin_stream=None,
-            ):
-                if val is None:
-                    continue
-                text_value = val if isinstance(val, str) else str(val)
-                if slot == "stdout":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="info",
-                        )
+            text_value = value if isinstance(value, str) else str(value)
+            
+            if slot == "stdout":
+                stdout_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="info",
                     )
-                elif slot == "stderr":
-                    context.post_message(
-                        LogUpdate(
-                            node_id=self.id,
-                            node_name=self.get_title(),
-                            content=str(val).rstrip("\n"),
-                            severity="error",
-                        )
+                )
+            elif slot == "stderr":
+                stderr_buf.append(text_value)
+                context.post_message(
+                    LogUpdate(
+                        node_id=self.id,
+                        node_name=self.get_title(),
+                        content=str(value).rstrip("\n"),
+                        severity="error",
                     )
-                await outputs.emit(slot, text_value)
+                )
+        
+        await outputs.emit("stdout", "".join(stdout_buf))
+        await outputs.emit("stderr", "".join(stderr_buf))
 
     async def finalize(self, context: ProcessingContext):  # type: ignore[override]
         try:
