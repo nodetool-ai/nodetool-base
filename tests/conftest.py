@@ -7,6 +7,38 @@ from unittest.mock import MagicMock
 
 import pytest_asyncio
 
+# ---------------------------------------------------------------------------
+# Compatibility shims for types that may be missing in older nodetool-core.
+# pydantic_core and strenum are already transitive deps of nodetool-core,
+# so they are always available in our test environment.
+# ---------------------------------------------------------------------------
+import builtins
+from pydantic_core import PydanticUndefined  # noqa: E402
+
+# Some node modules reference PydanticUndefined as a builtin at import time.
+builtins.PydanticUndefined = PydanticUndefined  # type: ignore[attr-defined]
+
+import nodetool.metadata.types as _nt_types  # noqa: E402
+
+if not hasattr(_nt_types, "EmbeddingModel"):
+    from pydantic import BaseModel as _BM
+
+    class _EmbeddingModel(_BM):
+        id: str = ""
+        name: str = ""
+        provider: _nt_types.Provider = _nt_types.Provider.Empty
+        dimensions: int = 1536
+
+    _nt_types.EmbeddingModel = _EmbeddingModel  # type: ignore[attr-defined]
+
+if not hasattr(_nt_types.Provider, "Fake"):
+    import strenum as _strenum  # already a nodetool-core dependency
+
+    _nt_types.Provider = _strenum.StrEnum(  # type: ignore[misc]
+        "Provider",
+        {p.name: p.value for p in _nt_types.Provider} | {"Fake": "fake"},
+    )
+
 
 def _mock_module_if_missing(name: str) -> None:
     """
