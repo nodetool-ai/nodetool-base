@@ -785,17 +785,17 @@ class ExecuteCommand(BaseNode):
             log.debug(f"ExecuteCommand finalize: {e}")
 
 
-class PythonRunner(BaseNode):
+class RunPythonCommand(BaseNode):
     """
-    Runs a Python REPL that executes code from a stream of commands.
-    python, code, execute, repl, stream, runner
+    Executes a single Python command and buffers the output.
+    python, code, execute, command
 
     Use cases:
-    - Execute multiple Python commands sequentially
-    - Create interactive Python workflows
-    - Process a stream of Python code snippets
+    - Run a single Python script or command
+    - Execute Python code with buffered stdout/stderr output
+    - One-shot Python execution without streaming
 
-    Each input from the 'commands' stream is executed as Python code.
+    The command is executed once and the complete output is returned.
     IMPORTANT: Only enabled in non-production environments
     """
 
@@ -807,6 +807,11 @@ class PythonRunner(BaseNode):
         PYTHON_3_11_SLIM = "python:3.11-slim"
         JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
 
+    command: str = Field(
+        default="",
+        description="Python command to execute",
+    )
+
     image: PythonImage = Field(
         default=PythonImage.PYTHON_3_11_SLIM,
         description="Docker image to use for execution",
@@ -815,14 +820,6 @@ class PythonRunner(BaseNode):
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
-    )
-
-    commands: str = Field(
-        default="",
-        description=(
-            "Stream of Python commands to execute. Each command is executed separately. "
-            "Connect this to a streaming source for continuous execution."
-        ),
     )
 
     @classmethod
@@ -849,9 +846,9 @@ class PythonRunner(BaseNode):
         )
         self._runner = runner
 
-        command = self.commands
+        command = self.command
         if not command.strip():
-            val = await inputs.first("commands")
+            val = await inputs.first("command")
             if val:
                 command = str(val)
 
@@ -901,20 +898,20 @@ class PythonRunner(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            log.debug(f"PythonRunner finalize: {e}")
+            log.debug(f"RunPythonCommand finalize: {e}")
 
 
-class JavaScriptRunner(BaseNode):
+class RunJavaScriptCommand(BaseNode):
     """
-    Runs a JavaScript REPL that executes code from a stream of commands.
-    javascript, nodejs, code, execute, repl, stream, runner
+    Executes a single JavaScript command and buffers the output.
+    javascript, nodejs, code, execute, command
 
     Use cases:
-    - Execute multiple JavaScript commands sequentially
-    - Create interactive JavaScript workflows
-    - Process a stream of JavaScript code snippets
+    - Run a single JavaScript script or command
+    - Execute JavaScript code with buffered stdout/stderr output
+    - One-shot JavaScript execution without streaming
 
-    Each input from the 'commands' stream is executed as JavaScript code.
+    The command is executed once and the complete output is returned.
     """
 
     _is_dynamic: ClassVar[bool] = True
@@ -924,6 +921,11 @@ class JavaScriptRunner(BaseNode):
     class JavaScriptImage(Enum):
         NODE_22_ALPINE = "node:22-alpine"
 
+    command: str = Field(
+        default="",
+        description="JavaScript command to execute",
+    )
+
     image: JavaScriptImage = Field(
         default=JavaScriptImage.NODE_22_ALPINE,
         description="Docker image to use for execution",
@@ -932,14 +934,6 @@ class JavaScriptRunner(BaseNode):
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
-    )
-
-    commands: str = Field(
-        default="",
-        description=(
-            "Stream of JavaScript commands to execute. Each command is executed separately. "
-            "Connect this to a streaming source for continuous execution."
-        ),
     )
 
     @classmethod
@@ -966,9 +960,9 @@ class JavaScriptRunner(BaseNode):
         )
         self._runner = runner
 
-        command = self.commands
+        command = self.command
         if not command.strip():
-            val = await inputs.first("commands")
+            val = await inputs.first("command")
             if val:
                 command = str(val)
 
@@ -1018,20 +1012,20 @@ class JavaScriptRunner(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            log.debug(f"JavaScriptRunner finalize: {e}")
+            log.debug(f"RunJavaScriptCommand finalize: {e}")
 
 
-class BashRunner(BaseNode):
+class RunBashCommand(BaseNode):
     """
-    Runs a Bash REPL that executes commands from a stream.
-    bash, shell, code, execute, repl, stream, runner
+    Executes a single Bash command and buffers the output.
+    bash, shell, code, execute, command
 
     Use cases:
-    - Execute multiple shell commands sequentially
-    - Create interactive shell workflows
-    - Process a stream of Bash commands
+    - Run a single Bash script or command
+    - Execute shell commands with buffered stdout/stderr output
+    - One-shot Bash execution without streaming
 
-    Each input from the 'commands' stream is executed as a Bash command.
+    The command is executed once and the complete output is returned.
     """
 
     _is_dynamic: ClassVar[bool] = True
@@ -1045,6 +1039,11 @@ class BashRunner(BaseNode):
         UBUNTU_24_04 = "ubuntu:24.04"
         JUPYTER_SCIPY_NOTEBOOK = "jupyter/scipy-notebook:latest"
 
+    command: str = Field(
+        default="",
+        description="Bash command to execute",
+    )
+
     image: BashImage = Field(
         default=BashImage.UBUNTU_22_04,
         description="Docker image to use for execution",
@@ -1053,14 +1052,6 @@ class BashRunner(BaseNode):
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
-    )
-
-    commands: str = Field(
-        default="",
-        description=(
-            "Stream of Bash commands to execute. Each command is executed separately. "
-            "Connect this to a streaming source for continuous execution."
-        ),
     )
 
     @classmethod
@@ -1087,9 +1078,9 @@ class BashRunner(BaseNode):
         )
         self._runner = runner
 
-        command = self.commands
+        command = self.command
         if not command.strip():
-            val = await inputs.first("commands")
+            val = await inputs.first("command")
             if val:
                 command = str(val)
 
@@ -1139,20 +1130,20 @@ class BashRunner(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            log.debug(f"BashRunner finalize: {e}")
+            log.debug(f"RunBashCommand finalize: {e}")
 
 
-class RubyRunner(BaseNode):
+class RunRubyCommand(BaseNode):
     """
-    Runs a Ruby REPL that executes code from a stream of commands.
-    ruby, code, execute, repl, stream, runner
+    Executes a single Ruby command and buffers the output.
+    ruby, code, execute, command
 
     Use cases:
-    - Execute multiple Ruby commands sequentially
-    - Create interactive Ruby workflows
-    - Process a stream of Ruby code snippets
+    - Run a single Ruby script or command
+    - Execute Ruby code with buffered stdout/stderr output
+    - One-shot Ruby execution without streaming
 
-    Each input from the 'commands' stream is executed as Ruby code.
+    The command is executed once and the complete output is returned.
     """
 
     _is_dynamic: ClassVar[bool] = True
@@ -1162,6 +1153,11 @@ class RubyRunner(BaseNode):
     class RubyImage(Enum):
         RUBY_3_3_ALPINE = "ruby:3.3-alpine"
 
+    command: str = Field(
+        default="",
+        description="Ruby command to execute",
+    )
+
     image: RubyImage = Field(
         default=RubyImage.RUBY_3_3_ALPINE,
         description="Docker image to use for execution",
@@ -1170,14 +1166,6 @@ class RubyRunner(BaseNode):
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
-    )
-
-    commands: str = Field(
-        default="",
-        description=(
-            "Stream of Ruby commands to execute. Each command is executed separately. "
-            "Connect this to a streaming source for continuous execution."
-        ),
     )
 
     @classmethod
@@ -1204,9 +1192,9 @@ class RubyRunner(BaseNode):
         )
         self._runner = runner
 
-        command = self.commands
+        command = self.command
         if not command.strip():
-            val = await inputs.first("commands")
+            val = await inputs.first("command")
             if val:
                 command = str(val)
 
@@ -1256,20 +1244,20 @@ class RubyRunner(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            log.debug(f"RubyRunner finalize: {e}")
+            log.debug(f"RunRubyCommand finalize: {e}")
 
 
-class LuaRunnerNode(BaseNode):
+class RunLuaCommand(BaseNode):
     """
-    Runs a Lua REPL that executes code from a stream of commands.
-    lua, code, execute, repl, stream, runner, sandbox
+    Executes a single Lua command and buffers the output.
+    lua, code, execute, command, sandbox
 
     Use cases:
-    - Execute multiple Lua commands sequentially
-    - Create interactive Lua workflows
-    - Process a stream of Lua code snippets
+    - Run a single Lua script or command
+    - Execute Lua code with buffered stdout/stderr output
+    - One-shot Lua execution without streaming
 
-    Each input from the 'commands' stream is executed as Lua code.
+    The command is executed once and the complete output is returned.
     """
 
     _is_dynamic: ClassVar[bool] = True
@@ -1279,6 +1267,11 @@ class LuaRunnerNode(BaseNode):
     class LuaExecutable(Enum):
         LUA = "lua"
         LUAJIT = "luajit"
+
+    command: str = Field(
+        default="",
+        description="Lua command to execute",
+    )
 
     executable: LuaExecutable = Field(
         default=LuaExecutable.LUA, description="Lua executable to use"
@@ -1291,14 +1284,6 @@ class LuaRunnerNode(BaseNode):
 
     timeout_seconds: int = Field(
         default=10, description="Max seconds to allow execution before forced stop"
-    )
-
-    commands: str = Field(
-        default="",
-        description=(
-            "Stream of Lua commands to execute. Each command is executed separately. "
-            "Connect this to a streaming source for continuous execution."
-        ),
     )
 
     @classmethod
@@ -1332,9 +1317,9 @@ class LuaRunnerNode(BaseNode):
             )
         self._runner = runner
 
-        command = self.commands
+        command = self.command
         if not command.strip():
-            val = await inputs.first("commands")
+            val = await inputs.first("command")
             if val:
                 command = str(val)
 
@@ -1384,20 +1369,20 @@ class LuaRunnerNode(BaseNode):
             if self._runner and hasattr(self._runner, "stop"):
                 self._runner.stop()
         except Exception as e:
-            log.debug(f"LuaRunnerNode finalize: {e}")
+            log.debug(f"RunLuaCommand finalize: {e}")
 
 
-class ShellRunner(BaseNode):
+class RunShellCommand(BaseNode):
     """
-    Runs a shell command runner that executes commands from a stream.
-    command, execute, shell, bash, sh, stream, runner
+    Executes a single shell command and buffers the output.
+    command, execute, shell, bash, sh
 
     Use cases:
-    - Execute multiple shell commands sequentially
-    - Create interactive command workflows
-    - Process a stream of shell commands
+    - Run a single shell command
+    - Execute shell commands with buffered stdout/stderr output
+    - One-shot command execution without streaming
 
-    Each input from the 'commands' stream is executed as a shell command.
+    The command is executed once and the complete output is returned.
     IMPORTANT: Only enabled in non-production environments
     """
 
@@ -1411,6 +1396,11 @@ class ShellRunner(BaseNode):
         UBUNTU_22_04 = "ubuntu:22.04"
         UBUNTU_24_04 = "ubuntu:24.04"
 
+    command: str = Field(
+        default="",
+        description="Shell command to execute",
+    )
+
     image: CommandImage = Field(
         default=CommandImage.BASH_5_2,
         description="Docker image to use for execution",
@@ -1419,14 +1409,6 @@ class ShellRunner(BaseNode):
     execution_mode: ExecutionMode = Field(
         default=ExecutionMode.DOCKER,
         description="Execution mode: 'docker' or 'subprocess'",
-    )
-
-    commands: str = Field(
-        default="",
-        description=(
-            "Stream of shell commands to execute. Each command is executed separately. "
-            "Connect this to a streaming source for continuous execution."
-        ),
     )
 
     @classmethod
@@ -1453,9 +1435,9 @@ class ShellRunner(BaseNode):
         )
         self._runner = runner
 
-        command = self.commands
+        command = self.command
         if not command.strip():
-            val = await inputs.first("commands")
+            val = await inputs.first("command")
             if val:
                 command = str(val)
 
@@ -1505,4 +1487,4 @@ class ShellRunner(BaseNode):
             if self._runner:
                 self._runner.stop()
         except Exception as e:
-            log.debug(f"ShellRunner finalize: {e}")
+            log.debug(f"RunShellCommand finalize: {e}")

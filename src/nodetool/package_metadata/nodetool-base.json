@@ -2397,75 +2397,6 @@
       "is_streaming_output": true
     },
     {
-      "title": "Bash Runner",
-      "description": "Runs a Bash REPL that executes commands from a stream.\n    bash, shell, code, execute, repl, stream, runner\n\n    Use cases:\n    - Execute multiple shell commands sequentially\n    - Create interactive shell workflows\n    - Process a stream of Bash commands\n\n    Each input from the 'commands' stream is executed as a Bash command.",
-      "namespace": "nodetool.code",
-      "node_type": "nodetool.code.BashRunner",
-      "properties": [
-        {
-          "name": "image",
-          "type": {
-            "type": "enum",
-            "values": [
-              "bash:5.2",
-              "debian:12",
-              "ubuntu:22.04",
-              "ubuntu:24.04",
-              "jupyter/scipy-notebook:latest"
-            ],
-            "type_name": "nodetool.nodes.nodetool.code.BashRunner.BashImage"
-          },
-          "default": "ubuntu:22.04",
-          "title": "Image",
-          "description": "Docker image to use for execution"
-        },
-        {
-          "name": "execution_mode",
-          "type": {
-            "type": "enum",
-            "values": [
-              "docker",
-              "subprocess"
-            ],
-            "type_name": "nodetool.nodes.nodetool.code.ExecutionMode"
-          },
-          "default": "docker",
-          "title": "Execution Mode",
-          "description": "Execution mode: 'docker' or 'subprocess'"
-        },
-        {
-          "name": "commands",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Commands",
-          "description": "Stream of Bash commands to execute. Each command is executed separately. Connect this to a streaming source for continuous execution."
-        }
-      ],
-      "outputs": [
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "stdout"
-        },
-        {
-          "type": {
-            "type": "str"
-          },
-          "name": "stderr"
-        }
-      ],
-      "basic_fields": [
-        "image",
-        "execution_mode",
-        "commands"
-      ],
-      "is_dynamic": true,
-      "supports_dynamic_outputs": true
-    },
-    {
       "title": "Execute Bash",
       "description": "Executes Bash script with safety restrictions.\n    bash, shell, code, execute",
       "namespace": "nodetool.code",
@@ -2940,11 +2871,89 @@
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Java Script Runner",
-      "description": "Runs a JavaScript REPL that executes code from a stream of commands.\n    javascript, nodejs, code, execute, repl, stream, runner\n\n    Use cases:\n    - Execute multiple JavaScript commands sequentially\n    - Create interactive JavaScript workflows\n    - Process a stream of JavaScript code snippets\n\n    Each input from the 'commands' stream is executed as JavaScript code.",
+      "title": "Run Bash Command",
+      "description": "Executes a single Bash command and buffers the output.\n    bash, shell, code, execute, command\n\n    Use cases:\n    - Run a single Bash script or command\n    - Execute shell commands with buffered stdout/stderr output\n    - One-shot Bash execution without streaming\n\n    The command is executed once and the complete output is returned.",
       "namespace": "nodetool.code",
-      "node_type": "nodetool.code.JavaScriptRunner",
+      "node_type": "nodetool.code.RunBashCommand",
       "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Bash command to execute"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "enum",
+            "values": [
+              "bash:5.2",
+              "debian:12",
+              "ubuntu:22.04",
+              "ubuntu:24.04",
+              "jupyter/scipy-notebook:latest"
+            ],
+            "type_name": "nodetool.nodes.nodetool.code.RunBashCommand.BashImage"
+          },
+          "default": "ubuntu:22.04",
+          "title": "Image",
+          "description": "Docker image to use for execution"
+        },
+        {
+          "name": "execution_mode",
+          "type": {
+            "type": "enum",
+            "values": [
+              "docker",
+              "subprocess"
+            ],
+            "type_name": "nodetool.nodes.nodetool.code.ExecutionMode"
+          },
+          "default": "docker",
+          "title": "Execution Mode",
+          "description": "Execution mode: 'docker' or 'subprocess'"
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stdout"
+        },
+        {
+          "type": {
+            "type": "str"
+          },
+          "name": "stderr"
+        }
+      ],
+      "basic_fields": [
+        "command",
+        "image",
+        "execution_mode"
+      ],
+      "is_dynamic": true,
+      "supports_dynamic_outputs": true
+    },
+    {
+      "title": "Run Java Script Command",
+      "description": "Executes a single JavaScript command and buffers the output.\n    javascript, nodejs, code, execute, command\n\n    Use cases:\n    - Run a single JavaScript script or command\n    - Execute JavaScript code with buffered stdout/stderr output\n    - One-shot JavaScript execution without streaming\n\n    The command is executed once and the complete output is returned.",
+      "namespace": "nodetool.code",
+      "node_type": "nodetool.code.RunJavaScriptCommand",
+      "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "JavaScript command to execute"
+        },
         {
           "name": "image",
           "type": {
@@ -2952,7 +2961,7 @@
             "values": [
               "node:22-alpine"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.JavaScriptRunner.JavaScriptImage"
+            "type_name": "nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage"
           },
           "default": "node:22-alpine",
           "title": "Image",
@@ -2971,15 +2980,6 @@
           "default": "docker",
           "title": "Execution Mode",
           "description": "Execution mode: 'docker' or 'subprocess'"
-        },
-        {
-          "name": "commands",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Commands",
-          "description": "Stream of JavaScript commands to execute. Each command is executed separately. Connect this to a streaming source for continuous execution."
         }
       ],
       "outputs": [
@@ -2997,19 +2997,28 @@
         }
       ],
       "basic_fields": [
+        "command",
         "image",
-        "execution_mode",
-        "commands"
+        "execution_mode"
       ],
       "is_dynamic": true,
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Lua Runner",
-      "description": "Runs a Lua REPL that executes code from a stream of commands.\n    lua, code, execute, repl, stream, runner, sandbox\n\n    Use cases:\n    - Execute multiple Lua commands sequentially\n    - Create interactive Lua workflows\n    - Process a stream of Lua code snippets\n\n    Each input from the 'commands' stream is executed as Lua code.",
+      "title": "Run Lua Command",
+      "description": "Executes a single Lua command and buffers the output.\n    lua, code, execute, command, sandbox\n\n    Use cases:\n    - Run a single Lua script or command\n    - Execute Lua code with buffered stdout/stderr output\n    - One-shot Lua execution without streaming\n\n    The command is executed once and the complete output is returned.",
       "namespace": "nodetool.code",
-      "node_type": "nodetool.code.LuaRunner",
+      "node_type": "nodetool.code.RunLuaCommand",
       "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Lua command to execute"
+        },
         {
           "name": "executable",
           "type": {
@@ -3018,7 +3027,7 @@
               "lua",
               "luajit"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.LuaRunnerNode.LuaExecutable"
+            "type_name": "nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable"
           },
           "default": "lua",
           "title": "Executable",
@@ -3046,15 +3055,6 @@
           "default": 10,
           "title": "Timeout Seconds",
           "description": "Max seconds to allow execution before forced stop"
-        },
-        {
-          "name": "commands",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Commands",
-          "description": "Stream of Lua commands to execute. Each command is executed separately. Connect this to a streaming source for continuous execution."
         }
       ],
       "outputs": [
@@ -3072,20 +3072,29 @@
         }
       ],
       "basic_fields": [
+        "command",
         "executable",
         "execution_mode",
-        "timeout_seconds",
-        "commands"
+        "timeout_seconds"
       ],
       "is_dynamic": true,
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Python Runner",
-      "description": "Runs a Python REPL that executes code from a stream of commands.\n    python, code, execute, repl, stream, runner\n\n    Use cases:\n    - Execute multiple Python commands sequentially\n    - Create interactive Python workflows\n    - Process a stream of Python code snippets\n\n    Each input from the 'commands' stream is executed as Python code.\n    IMPORTANT: Only enabled in non-production environments",
+      "title": "Run Python Command",
+      "description": "Executes a single Python command and buffers the output.\n    python, code, execute, command\n\n    Use cases:\n    - Run a single Python script or command\n    - Execute Python code with buffered stdout/stderr output\n    - One-shot Python execution without streaming\n\n    The command is executed once and the complete output is returned.\n    IMPORTANT: Only enabled in non-production environments",
       "namespace": "nodetool.code",
-      "node_type": "nodetool.code.PythonRunner",
+      "node_type": "nodetool.code.RunPythonCommand",
       "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Python command to execute"
+        },
         {
           "name": "image",
           "type": {
@@ -3094,7 +3103,7 @@
               "python:3.11-slim",
               "jupyter/scipy-notebook:latest"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.PythonRunner.PythonImage"
+            "type_name": "nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage"
           },
           "default": "python:3.11-slim",
           "title": "Image",
@@ -3113,15 +3122,6 @@
           "default": "docker",
           "title": "Execution Mode",
           "description": "Execution mode: 'docker' or 'subprocess'"
-        },
-        {
-          "name": "commands",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Commands",
-          "description": "Stream of Python commands to execute. Each command is executed separately. Connect this to a streaming source for continuous execution."
         }
       ],
       "outputs": [
@@ -3139,19 +3139,28 @@
         }
       ],
       "basic_fields": [
+        "command",
         "image",
-        "execution_mode",
-        "commands"
+        "execution_mode"
       ],
       "is_dynamic": true,
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Ruby Runner",
-      "description": "Runs a Ruby REPL that executes code from a stream of commands.\n    ruby, code, execute, repl, stream, runner\n\n    Use cases:\n    - Execute multiple Ruby commands sequentially\n    - Create interactive Ruby workflows\n    - Process a stream of Ruby code snippets\n\n    Each input from the 'commands' stream is executed as Ruby code.",
+      "title": "Run Ruby Command",
+      "description": "Executes a single Ruby command and buffers the output.\n    ruby, code, execute, command\n\n    Use cases:\n    - Run a single Ruby script or command\n    - Execute Ruby code with buffered stdout/stderr output\n    - One-shot Ruby execution without streaming\n\n    The command is executed once and the complete output is returned.",
       "namespace": "nodetool.code",
-      "node_type": "nodetool.code.RubyRunner",
+      "node_type": "nodetool.code.RunRubyCommand",
       "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Ruby command to execute"
+        },
         {
           "name": "image",
           "type": {
@@ -3159,7 +3168,7 @@
             "values": [
               "ruby:3.3-alpine"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.RubyRunner.RubyImage"
+            "type_name": "nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage"
           },
           "default": "ruby:3.3-alpine",
           "title": "Image",
@@ -3178,15 +3187,6 @@
           "default": "docker",
           "title": "Execution Mode",
           "description": "Execution mode: 'docker' or 'subprocess'"
-        },
-        {
-          "name": "commands",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Commands",
-          "description": "Stream of Ruby commands to execute. Each command is executed separately. Connect this to a streaming source for continuous execution."
         }
       ],
       "outputs": [
@@ -3204,19 +3204,28 @@
         }
       ],
       "basic_fields": [
+        "command",
         "image",
-        "execution_mode",
-        "commands"
+        "execution_mode"
       ],
       "is_dynamic": true,
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Shell Runner",
-      "description": "Runs a shell command runner that executes commands from a stream.\n    command, execute, shell, bash, sh, stream, runner\n\n    Use cases:\n    - Execute multiple shell commands sequentially\n    - Create interactive command workflows\n    - Process a stream of shell commands\n\n    Each input from the 'commands' stream is executed as a shell command.\n    IMPORTANT: Only enabled in non-production environments",
+      "title": "Run Shell Command",
+      "description": "Executes a single shell command and buffers the output.\n    command, execute, shell, bash, sh\n\n    Use cases:\n    - Run a single shell command\n    - Execute shell commands with buffered stdout/stderr output\n    - One-shot command execution without streaming\n\n    The command is executed once and the complete output is returned.\n    IMPORTANT: Only enabled in non-production environments",
       "namespace": "nodetool.code",
-      "node_type": "nodetool.code.ShellRunner",
+      "node_type": "nodetool.code.RunShellCommand",
       "properties": [
+        {
+          "name": "command",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Command",
+          "description": "Shell command to execute"
+        },
         {
           "name": "image",
           "type": {
@@ -3227,7 +3236,7 @@
               "ubuntu:22.04",
               "ubuntu:24.04"
             ],
-            "type_name": "nodetool.nodes.nodetool.code.ShellRunner.CommandImage"
+            "type_name": "nodetool.nodes.nodetool.code.RunShellCommand.CommandImage"
           },
           "default": "bash:5.2",
           "title": "Image",
@@ -3246,15 +3255,6 @@
           "default": "docker",
           "title": "Execution Mode",
           "description": "Execution mode: 'docker' or 'subprocess'"
-        },
-        {
-          "name": "commands",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Commands",
-          "description": "Stream of shell commands to execute. Each command is executed separately. Connect this to a streaming source for continuous execution."
         }
       ],
       "outputs": [
@@ -3272,9 +3272,9 @@
         }
       ],
       "basic_fields": [
+        "command",
         "image",
-        "execution_mode",
-        "commands"
+        "execution_mode"
       ],
       "is_dynamic": true,
       "supports_dynamic_outputs": true
@@ -3991,7 +3991,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 49163,
+          "downloads": 50907,
           "likes": 123
         },
         {
@@ -4042,7 +4042,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 30765,
+          "downloads": 32503,
           "likes": 49
         },
         {
@@ -4093,7 +4093,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 39797,
+          "downloads": 57501,
           "likes": 30
         },
         {
@@ -4113,7 +4113,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1499,
+          "downloads": 1801,
           "likes": 27
         },
         {
@@ -4139,7 +4139,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4746,
+          "downloads": 4616,
           "likes": 7
         },
         {
@@ -4160,7 +4160,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 33987,
+          "downloads": 34341,
           "likes": 12
         },
         {
@@ -4179,7 +4179,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 1012,
+          "downloads": 993,
           "likes": 19
         },
         {
@@ -4230,7 +4230,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2424,
+          "downloads": 2488,
           "likes": 23
         }
       ],
@@ -4444,7 +4444,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 30765,
+          "downloads": 32503,
           "likes": 49
         }
       ],
@@ -4673,7 +4673,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 30765,
+          "downloads": 32503,
           "likes": 49
         }
       ],
@@ -4803,7 +4803,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 49163,
+          "downloads": 50907,
           "likes": 123
         },
         {
@@ -4854,7 +4854,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 39797,
+          "downloads": 57501,
           "likes": 30
         }
       ],
@@ -5057,7 +5057,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 30765,
+          "downloads": 32503,
           "likes": 49
         }
       ],
