@@ -2,7 +2,7 @@
 
 import pytest
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
+from nodetool.types.api_graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
 from nodetool.workflows.run_job_request import RunJobRequest
 from nodetool.workflows.run_workflow import run_workflow
 from nodetool.workflows.types import OutputUpdate

@@ -3,7 +3,7 @@ from nodetool.workflows.types import OutputUpdate
 from nodetool.workflows.run_workflow import run_workflow
 from nodetool.workflows.processing_context import ProcessingContext
 from nodetool.workflows.run_job_request import RunJobRequest
-from nodetool.types.graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
+from nodetool.types.api_graph import Node as APINode, Edge as APIEdge, Graph as APIGraph
 from nodetool.nodes.nodetool.output import Output
 from nodetool.nodes.nodetool.control import If, ForEach, Reroute, Collect
 from nodetool.nodes.nodetool.list import GenerateSequence

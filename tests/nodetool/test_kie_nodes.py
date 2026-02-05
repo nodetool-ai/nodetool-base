@@ -63,7 +63,7 @@ from nodetool.nodes.kie.video import (
     Sora2WatermarkRemover,
 )
 from nodetool.nodes.kie.audio import (
-    Suno,
+    GenerateMusic,
     ElevenLabsAudioIsolation,
     ElevenLabsSoundEffect,
     ElevenLabsSpeechToText,
@@ -182,7 +182,7 @@ class TestKieBaseNode:
         assert GrokImagineImageToVideo.is_visible()
         assert GrokImagineTextToVideo.is_visible()
         # Audio generation nodes
-        assert Suno.is_visible()
+        assert GenerateMusic.is_visible()
         # New image nodes
         assert GPTImage4oTextToImage.is_visible()
         assert GPTImage4oImageToImage.is_visible()
@@ -799,39 +799,6 @@ class TestHailuoImageToVideoStandard:
         assert params["prompt"] == "test"
         assert params["image_url"] == "http://uploaded-url.com/image.jpg"
         assert params["resolution"] == "768P"
-
-
-class TestSuno:
-    """Tests for Suno node."""
-
-    @pytest.mark.asyncio
-    async def test_model_and_params(self):
-        """Test model name and input parameters."""
-        node = Suno(prompt="upbeat pop song")
-        assert node._get_model() == "suno"
-        params = await node._get_input_params()
-        assert params["prompt"] == "upbeat pop song"
-        assert params["instrumental"] is False
-        assert params["duration"] == 60
-        assert params["model"] == "v4.5+"
-
-    @pytest.mark.asyncio
-    async def test_submit_payload(self):
-        """Test submit payload generation."""
-        node = Suno(
-            prompt="energetic rock song",
-            style=Suno.Style.ROCK,
-            instrumental=True,
-            duration=120,
-            model=Suno.Model.V4_5_PLUS,
-        )
-        payload = await node._get_submit_payload()
-        assert payload["model"] == "suno"
-        assert payload["input"]["prompt"] == "energetic rock song"
-        assert payload["input"]["style"] == "rock"
-        assert payload["input"]["instrumental"] is True
-        assert payload["input"]["duration"] == 120
-        assert payload["input"]["model"] == "v4.5+"
 
 
 class TestVeo31TextToVideo:

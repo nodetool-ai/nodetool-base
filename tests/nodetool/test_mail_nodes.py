@@ -3,31 +3,13 @@ from unittest.mock import AsyncMock, MagicMock
 from datetime import datetime, timedelta, timezone
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.lib.mail import EmailFields, get_date_condition, GmailSearch, MoveToArchive
+from nodetool.nodes.lib.mail import get_date_condition, GmailSearch, MoveToArchive
 from nodetool.metadata.types import Email, Datetime, DateCriteria, DateSearchCondition
 
 
 @pytest.fixture
 def context():
     return ProcessingContext(user_id="test", auth_token="test")
-
-
-@pytest.mark.asyncio
-async def test_email_fields_extracts(context: ProcessingContext):
-    email = Email(
-        id="m-1",
-        subject="Subject",
-        sender="from@example.com",
-        date=Datetime.from_datetime(datetime(2024, 1, 2, 3, 4, 5)),
-        body="Hello",
-    )
-    node = EmailFields(email=email)
-    out = await node.process(context)
-    assert out["id"] == "m-1"
-    assert out["subject"] == "Subject"
-    assert out["sender"] == "from@example.com"
-    assert out["date"].to_datetime().year == 2024
-    assert out["body"] == "Hello"
 
 
 def test_get_date_condition_since_one_day():
