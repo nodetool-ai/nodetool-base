@@ -27,7 +27,6 @@ from nodetool.nodes.nodetool.data import (
     Join as DataJoin,
     Merge,
     Rename,
-    SelectColumn,
     SortByColumn,
     ToList,
 )

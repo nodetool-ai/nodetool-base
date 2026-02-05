@@ -10,7 +10,7 @@ All DSL-graph-based except for list-input nodes which use direct calls.
 import pytest
 
 from nodetool.dsl.graph import create_graph, run_graph_async
-from nodetool.dsl.nodetool.constant import Integer, Float, Bool, String
+from nodetool.dsl.nodetool.constant import Integer, Float, Bool
 from nodetool.dsl.nodetool.boolean import (
     Compare,
     ConditionalSwitch,

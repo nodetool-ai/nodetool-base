@@ -13,16 +13,13 @@ import pytest
 from nodetool.workflows.processing_context import ProcessingContext
 
 from nodetool.nodes.nodetool.list import (
-    Append,
     Average,
     Chunk,
     Dedupe,
     Difference,
     Extend,
     Flatten,
-    GetElement,
     Intersection,
-    Length,
     ListRange,
     Maximum,
     Minimum,

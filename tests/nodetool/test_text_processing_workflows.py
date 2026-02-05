@@ -13,7 +13,6 @@ from nodetool.dsl.graph import create_graph, run_graph_async
 from nodetool.dsl.nodetool.constant import String, Integer
 from nodetool.dsl.nodetool.text import (
     Concat,
-    Extract,
     FormatText,
     Replace,
     Slugify,
@@ -163,11 +162,9 @@ class TestWhereClauseBuilder:
 class TestEmailDomainExtractor:
     @pytest.mark.asyncio
     async def test_split_and_pick(self):
-        """Split on '@', the second chunk is the domain."""
+        """Use regex to extract the domain part after '@'."""
         email = String(value="alice@example.org")
-        parts = Split(text=email.output, delimiter="@")
-        # We can't index a list via DSL easily, so let's use Replace
-        # to remove everything up to and including '@'
+        # Remove everything up to and including '@'
         domain = RegexReplace(
             text=email.output,
             pattern=r"^[^@]+@",
