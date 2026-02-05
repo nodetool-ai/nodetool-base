@@ -10,7 +10,7 @@ All tests use run_graph_async with real graphs.
 import pytest
 
 from nodetool.dsl.graph import create_graph, run_graph_async
-from nodetool.dsl.nodetool.constant import Integer, Float, Bool, String, List as ConstList
+from nodetool.dsl.nodetool.constant import Integer, Float, Bool, String as ConstString, List as ConstList
 from nodetool.dsl.nodetool.boolean import (
     All as BoolAll,
     Compare,
@@ -259,7 +259,7 @@ class TestBooleanHelpers:
 
     @pytest.mark.asyncio
     async def test_is_in_found(self):
-        val = String(value="banana")
+        val = ConstString(value="banana")
         opts = ConstList(value=["apple", "banana", "cherry"])
         check = IsIn(value=val.output, options=opts.output)
         sink = Output(name="r", value=check.output)
@@ -268,7 +268,7 @@ class TestBooleanHelpers:
 
     @pytest.mark.asyncio
     async def test_is_in_missing(self):
-        val = String(value="fig")
+        val = ConstString(value="fig")
         opts = ConstList(value=["apple", "banana"])
         check = IsIn(value=val.output, options=opts.output)
         sink = Output(name="r", value=check.output)
