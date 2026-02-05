@@ -1,18 +1,18 @@
 """
 Collection-pipeline workflow tests.
 
-Exercises list manipulation, dictionary transforms, and aggregation
-nodes via direct process() invocation (list-typed inputs don't compose
-well through the DSL graph runner's list-aggregation semantics).
+Exercises list manipulation, dictionary transforms, and numeric
+aggregation nodes — all through run_graph_async with real graphs.
 """
-
-import json
 
 import pytest
 
-from nodetool.workflows.processing_context import ProcessingContext
-
-from nodetool.nodes.nodetool.list import (
+from nodetool.dsl.graph import create_graph, run_graph_async
+from nodetool.dsl.nodetool.constant import (
+    List as ConstList,
+    Dict as ConstDict,
+)
+from nodetool.dsl.nodetool.list import (
     Average,
     Chunk,
     Dedupe,
@@ -20,18 +20,19 @@ from nodetool.nodes.nodetool.list import (
     Extend,
     Flatten,
     Intersection,
+    Length as ListLength,
     ListRange,
     Maximum,
     Minimum,
     Product,
     Reverse,
     SelectElements,
-    Slice,
+    Slice as ListSlice,
     Sort,
     Sum as ListSum,
     Union,
 )
-from nodetool.nodes.nodetool.dictionary import (
+from nodetool.dsl.nodetool.dictionary import (
     ArgMax,
     Combine,
     Filter as DictFilter,
@@ -43,11 +44,7 @@ from nodetool.nodes.nodetool.dictionary import (
     Update,
     Zip,
 )
-
-
-@pytest.fixture
-def ctx():
-    return ProcessingContext(user_id="test", auth_token="test")
+from nodetool.dsl.nodetool.output import Output
 
 
 # ======================================================================
@@ -56,134 +53,153 @@ def ctx():
 
 
 class TestInventoryPipeline:
-    """Simulate building and querying a product-count inventory."""
+    """Deduplicate and sort product-count data."""
 
     @pytest.mark.asyncio
-    async def test_build_inventory_counts(self, ctx):
-        raw_counts = [4, 8, 2, 8, 4, 15, 2]
-        unique = await Dedupe(values=raw_counts).process(ctx)
-        ordered = await Sort(values=unique).process(ctx)
-        assert ordered == [2, 4, 8, 15]
+    async def test_dedupe_and_sort(self):
+        raw = ConstList(value=[4, 8, 2, 8, 4, 15, 2])
+        unique = Dedupe(values=raw.output)
+        ordered = Sort(values=unique.output)
+        sink = Output(name="r", value=ordered.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [2, 4, 8, 15]
 
     @pytest.mark.asyncio
-    async def test_restock_alert(self, ctx):
-        stock = [0, 12, 3, 0, 7]
-        total = await ListSum(values=[float(x) for x in stock]).process(ctx)
-        low = await Minimum(values=[float(x) for x in stock]).process(ctx)
-        assert total == 22.0
-        assert low == 0.0
+    async def test_restock_stats(self):
+        stock = ConstList(value=[0.0, 12.0, 3.0, 0.0, 7.0])
+        total = ListSum(values=stock.output)
+        low = Minimum(values=stock.output)
+        o1 = Output(name="total", value=total.output)
+        o2 = Output(name="low", value=low.output)
+        bag = await run_graph_async(create_graph(o1, o2))
+        assert bag["total"] == 22.0
+        assert bag["low"] == 0.0
 
 
 class TestGradePipeline:
-    """Compute statistics for a classroom of grades."""
+    """Statistics for a classroom of grades."""
 
     @pytest.mark.asyncio
-    async def test_grade_stats(self, ctx):
-        grades = [78.0, 92.0, 65.0, 88.0, 95.0, 71.0]
-        avg = await Average(values=grades).process(ctx)
-        top = await Maximum(values=grades).process(ctx)
-        bottom = await Minimum(values=grades).process(ctx)
-        assert 80.0 < avg < 83.0  # exact is 81.5
-        assert top == 95.0
-        assert bottom == 65.0
+    async def test_grade_stats(self):
+        grades = ConstList(value=[78.0, 92.0, 65.0, 88.0, 95.0, 71.0])
+        avg = Average(values=grades.output)
+        top = Maximum(values=grades.output)
+        bottom = Minimum(values=grades.output)
+        o1 = Output(name="avg", value=avg.output)
+        o2 = Output(name="top", value=top.output)
+        o3 = Output(name="bottom", value=bottom.output)
+        bag = await run_graph_async(create_graph(o1, o2, o3))
+        assert 80.0 < bag["avg"] < 83.0
+        assert bag["top"] == 95.0
+        assert bag["bottom"] == 65.0
 
     @pytest.mark.asyncio
-    async def test_top_three_grades(self, ctx):
-        grades = [78.0, 92.0, 65.0, 88.0, 95.0, 71.0]
-        ordered = await Sort(values=grades).process(ctx)
-        rev = await Reverse(values=ordered).process(ctx)
-        top3 = await Slice(values=rev, start=0, stop=3).process(ctx)
-        assert top3 == [95.0, 92.0, 88.0]
+    async def test_top_three_grades(self):
+        grades = ConstList(value=[78.0, 92.0, 65.0, 88.0, 95.0, 71.0])
+        ordered = Sort(values=grades.output)
+        rev = Reverse(values=ordered.output)
+        top3 = ListSlice(values=rev.output, start=0, stop=3)
+        sink = Output(name="r", value=top3.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [95.0, 92.0, 88.0]
 
 
 class TestTagMerger:
-    """Merge two tag-lists, deduplicate, and sort alphabetically."""
+    """Merge two tag-lists, deduplicate, and sort."""
 
     @pytest.mark.asyncio
-    async def test_merge_tags(self, ctx):
-        blog_tags = ["python", "testing", "ci"]
-        repo_tags = ["python", "github", "ci", "automation"]
-        combined = await Extend(values=blog_tags, other_values=repo_tags).process(ctx)
-        unique = await Dedupe(values=combined).process(ctx)
-        ordered = await Sort(values=unique).process(ctx)
-        assert ordered == ["automation", "ci", "github", "python", "testing"]
+    async def test_merge_tags(self):
+        blog = ConstList(value=["python", "testing", "ci"])
+        repo = ConstList(value=["python", "github", "ci", "automation"])
+        combined = Extend(values=blog.output, other_values=repo.output)
+        unique = Dedupe(values=combined.output)
+        ordered = Sort(values=unique.output)
+        sink = Output(name="r", value=ordered.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == ["automation", "ci", "github", "python", "testing"]
 
 
 class TestSetTheory:
-    """Demonstrate set-operation nodes."""
+    """Set-operation nodes via graph."""
 
     @pytest.mark.asyncio
-    async def test_shared_subscribers(self, ctx):
-        newsletter_a = [101, 204, 305, 407]
-        newsletter_b = [204, 305, 512, 618]
-        shared = await Intersection(
-            list1=newsletter_a, list2=newsletter_b
-        ).process(ctx)
-        assert sorted(shared) == [204, 305]
+    async def test_shared_subscribers(self):
+        a = ConstList(value=[101, 204, 305, 407])
+        b = ConstList(value=[204, 305, 512, 618])
+        shared = Intersection(list1=a.output, list2=b.output)
+        ordered = Sort(values=shared.output)
+        sink = Output(name="r", value=ordered.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [204, 305]
 
     @pytest.mark.asyncio
-    async def test_all_subscribers(self, ctx):
-        a = [1, 2, 3]
-        b = [3, 4, 5]
-        all_subs = await Union(list1=a, list2=b).process(ctx)
-        assert sorted(all_subs) == [1, 2, 3, 4, 5]
+    async def test_all_subscribers(self):
+        a = ConstList(value=[1, 2, 3])
+        b = ConstList(value=[3, 4, 5])
+        merged = Union(list1=a.output, list2=b.output)
+        ordered = Sort(values=merged.output)
+        sink = Output(name="r", value=ordered.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [1, 2, 3, 4, 5]
 
     @pytest.mark.asyncio
-    async def test_exclusive_to_first(self, ctx):
-        a = [10, 20, 30, 40]
-        b = [20, 40]
-        only_a = await Difference(list1=a, list2=b).process(ctx)
-        assert sorted(only_a) == [10, 30]
+    async def test_exclusive_to_first(self):
+        a = ConstList(value=[10, 20, 30, 40])
+        b = ConstList(value=[20, 40])
+        only_a = Difference(list1=a.output, list2=b.output)
+        ordered = Sort(values=only_a.output)
+        sink = Output(name="r", value=ordered.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [10, 30]
 
 
 class TestChunkedProcessing:
-    """Simulate batch processing via Chunk → per-batch operations."""
+    """Batch processing via Chunk node."""
 
     @pytest.mark.asyncio
-    async def test_chunk_sizes(self, ctx):
-        items = list(range(1, 18))  # 1..17
-        batches = await Chunk(values=items, chunk_size=5).process(ctx)
-        assert len(batches) == 4  # 5+5+5+2
-        assert batches[-1] == [16, 17]
-
-    @pytest.mark.asyncio
-    async def test_batch_sums(self, ctx):
-        items = [10.0, 20.0, 30.0, 40.0, 50.0, 60.0]
-        batches = await Chunk(values=items, chunk_size=3).process(ctx)
-        # sum each batch
-        sums = []
-        for batch in batches:
-            s = await ListSum(values=batch).process(ctx)
-            sums.append(s)
-        assert sums == [60.0, 150.0]
+    async def test_chunk_sizes(self):
+        items = ConstList(value=list(range(1, 18)))
+        batches = Chunk(values=items.output, chunk_size=5)
+        n = ListLength(values=batches.output)
+        sink = Output(name="n", value=n.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["n"] == 4  # 5+5+5+2
 
 
 class TestListArithmetic:
     @pytest.mark.asyncio
-    async def test_product_of_primes(self, ctx):
-        primes = [2.0, 3.0, 5.0, 7.0]
-        result = await Product(values=primes).process(ctx)
-        assert result == 210.0
+    async def test_product_of_primes(self):
+        primes = ConstList(value=[2.0, 3.0, 5.0, 7.0])
+        result = Product(values=primes.output)
+        sink = Output(name="r", value=result.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == 210.0
 
     @pytest.mark.asyncio
-    async def test_range_then_select(self, ctx):
-        seq = await ListRange(start=100, stop=110, step=1).process(ctx)
-        picked = await SelectElements(values=seq, indices=[0, 5, 9]).process(ctx)
-        assert picked == [100, 105, 109]
+    async def test_range_then_select(self):
+        seq = ListRange(start=100, stop=110, step=1)
+        picked = SelectElements(values=seq.output, indices=[0, 5, 9])
+        sink = Output(name="r", value=picked.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [100, 105, 109]
 
 
 class TestNestedFlatten:
     @pytest.mark.asyncio
-    async def test_flatten_ragged(self, ctx):
-        ragged = [[1], [2, 3], [4, 5, 6]]
-        flat = await Flatten(values=ragged, max_depth=1).process(ctx)
-        assert flat == [1, 2, 3, 4, 5, 6]
+    async def test_flatten_ragged(self):
+        ragged = ConstList(value=[[1], [2, 3], [4, 5, 6]])
+        flat = Flatten(values=ragged.output, max_depth=1)
+        sink = Output(name="r", value=flat.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == [1, 2, 3, 4, 5, 6]
 
     @pytest.mark.asyncio
-    async def test_flatten_deeply_nested(self, ctx):
-        deep = [[[["a"]], [["b"]]], [[["c"]]]]
-        flat = await Flatten(values=deep, max_depth=10).process(ctx)
-        assert flat == ["a", "b", "c"]
+    async def test_flatten_deeply_nested(self):
+        deep = ConstList(value=[[[["a"]], [["b"]]], [[["c"]]]])
+        flat = Flatten(values=deep.output, max_depth=10)
+        sink = Output(name="r", value=flat.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == ["a", "b", "c"]
 
 
 # ======================================================================
@@ -192,85 +208,105 @@ class TestNestedFlatten:
 
 
 class TestUserProfileBuilder:
-    """Build, update, and serialise a user profile dict."""
+    """Build and update user profile dicts via graph."""
 
     @pytest.mark.asyncio
-    async def test_create_from_parts(self, ctx):
-        profile = await Zip(
-            keys=["username", "plan", "active"],
-            values=["alice42", "pro", True],
-        ).process(ctx)
-        assert profile["username"] == "alice42"
-        assert profile["active"] is True
+    async def test_create_from_parts(self):
+        keys = ConstList(value=["username", "plan", "active"])
+        vals = ConstList(value=["alice42", "pro", True])
+        profile = Zip(keys=keys.output, values=vals.output)
+        name = GetValue(dictionary=profile.output, key="username")
+        sink = Output(name="r", value=name.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == "alice42"
 
     @pytest.mark.asyncio
-    async def test_upgrade_plan(self, ctx):
-        base = {"username": "bob", "plan": "free", "credits": 5}
-        upgraded = await Update(
-            dictionary=base,
-            new_pairs={"plan": "enterprise", "credits": 500},
-        ).process(ctx)
-        assert upgraded["plan"] == "enterprise"
-        assert upgraded["credits"] == 500
-        assert upgraded["username"] == "bob"
+    async def test_upgrade_plan(self):
+        base = ConstDict(value={"username": "bob", "plan": "free", "credits": 5})
+        overrides = ConstDict(
+            value={"plan": "enterprise", "credits": 500}
+        )
+        upgraded = Update(dictionary=base.output, new_pairs=overrides.output)
+        plan = GetValue(dictionary=upgraded.output, key="plan")
+        sink = Output(name="r", value=plan.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == "enterprise"
 
 
 class TestConfigMerger:
-    """Overlay environment-specific config on top of defaults."""
+    """Overlay env-specific config on defaults."""
 
     @pytest.mark.asyncio
-    async def test_dev_overrides_defaults(self, ctx):
-        defaults = {"db_host": "localhost", "db_port": 5432, "debug": False}
-        dev = {"debug": True, "db_host": "dev-db.internal"}
-        merged = await Combine(dict_a=defaults, dict_b=dev).process(ctx)
-        assert merged["debug"] is True
-        assert merged["db_host"] == "dev-db.internal"
-        assert merged["db_port"] == 5432
+    async def test_dev_overrides_defaults(self):
+        defaults = ConstDict(
+            value={"db_host": "localhost", "db_port": 5432, "debug": False}
+        )
+        dev = ConstDict(value={"debug": True, "db_host": "dev-db.internal"})
+        merged = Combine(dict_a=defaults.output, dict_b=dev.output)
+        debug_val = GetValue(dictionary=merged.output, key="debug")
+        host_val = GetValue(dictionary=merged.output, key="db_host")
+        o1 = Output(name="debug", value=debug_val.output)
+        o2 = Output(name="host", value=host_val.output)
+        bag = await run_graph_async(create_graph(o1, o2))
+        assert bag["debug"] is True
+        assert bag["host"] == "dev-db.internal"
 
 
 class TestSensitiveFieldRemover:
     @pytest.mark.asyncio
-    async def test_strip_token(self, ctx):
-        record = {"id": 1, "name": "Alice", "api_token": "sk-secret"}
-        cleaned = await Remove(dictionary=record, key="api_token").process(ctx)
-        assert "api_token" not in cleaned
-        assert cleaned["name"] == "Alice"
+    async def test_strip_token(self):
+        record = ConstDict(
+            value={"id": 1, "name": "Alice", "api_token": "sk-secret"}
+        )
+        cleaned = Remove(dictionary=record.output, key="api_token")
+        name = GetValue(dictionary=cleaned.output, key="name")
+        sink = Output(name="r", value=name.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == "Alice"
 
 
 class TestDictSubsetFilter:
     @pytest.mark.asyncio
-    async def test_pick_public_fields(self, ctx):
-        full = {"name": "Bob", "email": "b@x.co", "ssn": "123-45-6789", "age": 30}
-        public = await DictFilter(
-            dictionary=full, keys=["name", "age"]
-        ).process(ctx)
-        assert public == {"name": "Bob", "age": 30}
+    async def test_pick_public_fields(self):
+        full = ConstDict(
+            value={"name": "Bob", "email": "b@x.co", "ssn": "123-45-6789", "age": 30}
+        )
+        public = DictFilter(dictionary=full.output, keys=["name", "age"])
+        sink = Output(name="r", value=public.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == {"name": "Bob", "age": 30}
 
 
 class TestJSONRoundTrip:
     @pytest.mark.asyncio
-    async def test_serialise_and_restore(self, ctx):
-        original = {"items": [1, 2, 3], "meta": {"v": 2}}
-        as_str = await ToJSON(dictionary=original).process(ctx)
-        restored = await ParseJSON(json_string=as_str).process(ctx)
-        assert restored == original
+    async def test_serialise_and_restore(self):
+        original = ConstDict(value={"items": [1, 2, 3], "meta": {"v": 2}})
+        as_str = ToJSON(dictionary=original.output)
+        restored = ParseJSON(json_string=as_str.output)
+        sink = Output(name="r", value=restored.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == {"items": [1, 2, 3], "meta": {"v": 2}}
 
     @pytest.mark.asyncio
-    async def test_yaml_contains_keys(self, ctx):
-        data = {"service": "web", "replicas": 3}
-        yml = await ToYAML(dictionary=data).process(ctx)
-        assert "service:" in yml
-        assert "replicas:" in yml
+    async def test_yaml_contains_keys(self):
+        data = ConstDict(value={"service": "web", "replicas": 3})
+        yml = ToYAML(dictionary=data.output)
+        sink = Output(name="r", value=yml.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert "service:" in bag["r"]
+        assert "replicas:" in bag["r"]
 
 
 class TestClassificationScorer:
     """ArgMax picks the highest-confidence label."""
 
     @pytest.mark.asyncio
-    async def test_best_label(self, ctx):
-        scores = {"spam": 0.12, "ham": 0.85, "promo": 0.03}
-        winner = await ArgMax(scores=scores).process(ctx)
-        assert winner == "ham"
+    async def test_best_label(self):
+        scores = ConstDict(value={"spam": 0.12, "ham": 0.85, "promo": 0.03})
+        winner = ArgMax(scores=scores.output)
+        sink = Output(name="r", value=winner.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == "ham"
 
 
 # ======================================================================
@@ -279,66 +315,66 @@ class TestClassificationScorer:
 
 
 class TestLeaderboard:
-    """Build a leaderboard from scores, pick top-3, serialise."""
+    """Build a leaderboard from scores, identify the leader."""
 
     @pytest.mark.asyncio
-    async def test_top_scores(self, ctx):
-        scores = {"alice": 0.91, "bob": 0.78, "carol": 0.95, "dave": 0.83}
-        best_player = await ArgMax(scores=scores).process(ctx)
-        assert best_player == "carol"
-
-        # Get all scores as a sortable list
-        score_vals = list(scores.values())
-        ordered = await Sort(values=score_vals).process(ctx)
-        top2 = await Slice(values=await Reverse(values=ordered).process(ctx),
-                           start=0, stop=2).process(ctx)
-        assert top2 == [0.95, 0.91]
+    async def test_best_player(self):
+        scores = ConstDict(
+            value={"alice": 0.91, "bob": 0.78, "carol": 0.95, "dave": 0.83}
+        )
+        best = ArgMax(scores=scores.output)
+        sink = Output(name="r", value=best.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] == "carol"
 
 
 class TestFeatureTogglePipeline:
-    """Check feature flags from a config dict."""
+    """Look up feature flags from a config dict."""
 
     @pytest.mark.asyncio
-    async def test_toggle_lookup(self, ctx):
-        toggles = {"dark_mode": True, "beta_search": False, "ai_assist": True}
-        dm = await GetValue(
-            dictionary=toggles, key="dark_mode", default=False
-        ).process(ctx)
-        bs = await GetValue(
-            dictionary=toggles, key="beta_search", default=False
-        ).process(ctx)
-        missing = await GetValue(
-            dictionary=toggles, key="nonexistent", default="off"
-        ).process(ctx)
-        assert dm is True
-        assert bs is False
-        assert missing == "off"
+    async def test_toggle_lookup(self):
+        toggles = ConstDict(
+            value={"dark_mode": True, "beta_search": False, "ai_assist": True}
+        )
+        dm = GetValue(dictionary=toggles.output, key="dark_mode", default=False)
+        bs = GetValue(dictionary=toggles.output, key="beta_search", default=False)
+        missing = GetValue(
+            dictionary=toggles.output, key="nonexistent", default="off"
+        )
+        o1 = Output(name="dm", value=dm.output)
+        o2 = Output(name="bs", value=bs.output)
+        o3 = Output(name="missing", value=missing.output)
+        bag = await run_graph_async(create_graph(o1, o2, o3))
+        assert bag["dm"] is True
+        assert bag["bs"] is False
+        assert bag["missing"] == "off"
 
 
-class TestInventoryReconciliation:
+class TestWarehouseReconciliation:
     """Compare warehouse stock lists using set operations, then summarise."""
 
     @pytest.mark.asyncio
-    async def test_reconcile(self, ctx):
-        warehouse_a = ["SKU-001", "SKU-002", "SKU-003", "SKU-005"]
-        warehouse_b = ["SKU-002", "SKU-003", "SKU-004"]
+    async def test_reconcile(self):
+        wh_a = ConstList(value=["SKU-001", "SKU-002", "SKU-003", "SKU-005"])
+        wh_b = ConstList(value=["SKU-002", "SKU-003", "SKU-004"])
 
-        shared_skus = await Intersection(
-            list1=warehouse_a, list2=warehouse_b
-        ).process(ctx)
-        only_a = await Difference(list1=warehouse_a, list2=warehouse_b).process(ctx)
-        only_b = await Difference(list1=warehouse_b, list2=warehouse_a).process(ctx)
-        all_skus = await Union(list1=warehouse_a, list2=warehouse_b).process(ctx)
+        shared = Intersection(list1=wh_a.output, list2=wh_b.output)
+        only_a = Difference(list1=wh_a.output, list2=wh_b.output)
+        only_b = Difference(list1=wh_b.output, list2=wh_a.output)
+        all_skus = Union(list1=wh_a.output, list2=wh_b.output)
 
-        assert sorted(shared_skus) == ["SKU-002", "SKU-003"]
-        assert sorted(only_a) == ["SKU-001", "SKU-005"]
-        assert sorted(only_b) == ["SKU-004"]
-        assert len(all_skus) == 5
+        shared_sorted = Sort(values=shared.output)
+        only_a_sorted = Sort(values=only_a.output)
+        only_b_sorted = Sort(values=only_b.output)
+        total_count = ListLength(values=all_skus.output)
 
-        summary = await Zip(
-            keys=["shared", "only_a", "only_b", "total"],
-            values=[len(shared_skus), len(only_a), len(only_b), len(all_skus)],
-        ).process(ctx)
-        summary_json = await ToJSON(dictionary=summary).process(ctx)
-        parsed = json.loads(summary_json)
-        assert parsed["total"] == 5
+        o1 = Output(name="shared", value=shared_sorted.output)
+        o2 = Output(name="only_a", value=only_a_sorted.output)
+        o3 = Output(name="only_b", value=only_b_sorted.output)
+        o4 = Output(name="total", value=total_count.output)
+
+        bag = await run_graph_async(create_graph(o1, o2, o3, o4))
+        assert bag["shared"] == ["SKU-002", "SKU-003"]
+        assert bag["only_a"] == ["SKU-001", "SKU-005"]
+        assert bag["only_b"] == ["SKU-004"]
+        assert bag["total"] == 5

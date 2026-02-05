@@ -4,34 +4,25 @@ Decision-engine workflow tests.
 These scenarios model the kind of conditional routing and scoring
 logic that users build in the visual editor: numeric thresholds,
 compound boolean gates, negations, and multi-branch outputs.
-All DSL-graph-based except for list-input nodes which use direct calls.
+All tests use run_graph_async with real graphs.
 """
 
 import pytest
 
 from nodetool.dsl.graph import create_graph, run_graph_async
-from nodetool.dsl.nodetool.constant import Integer, Float, Bool
+from nodetool.dsl.nodetool.constant import Integer, Float, Bool, String, List as ConstList
 from nodetool.dsl.nodetool.boolean import (
+    All as BoolAll,
     Compare,
     ConditionalSwitch,
+    IsIn,
+    IsNone,
     LogicalOperator,
     Not as BoolNot,
+    Some as BoolSome,
 )
 from nodetool.dsl.nodetool.text import FormatText, ToUppercase
 from nodetool.dsl.nodetool.output import Output
-
-from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.boolean import (
-    IsNone,
-    IsIn,
-    All as AllNode,
-    Some as SomeNode,
-)
-
-
-@pytest.fixture
-def ctx():
-    return ProcessingContext(user_id="test", auth_token="test")
 
 
 # ---------------------------------------------------------------------------
@@ -261,47 +252,75 @@ class TestNandGate:
 
 
 # ---------------------------------------------------------------------------
-# Direct-invocation tests for list-input boolean helpers
+# Membership, nullability & quantifiers — all via graph
 # ---------------------------------------------------------------------------
-class TestListBooleanHelpers:
-    """IsIn, IsNone, All, Some don't work well with DSL list-handles so
-    we test them via direct process() calls."""
+class TestBooleanHelpers:
+    """IsIn, IsNone, All, Some tested through run_graph_async."""
 
     @pytest.mark.asyncio
-    async def test_is_in_found(self, ctx):
-        assert await IsIn(
-            value="banana", options=["apple", "banana", "cherry"]
-        ).process(ctx) is True
+    async def test_is_in_found(self):
+        val = String(value="banana")
+        opts = ConstList(value=["apple", "banana", "cherry"])
+        check = IsIn(value=val.output, options=opts.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is True
 
     @pytest.mark.asyncio
-    async def test_is_in_missing(self, ctx):
-        assert await IsIn(
-            value="fig", options=["apple", "banana"]
-        ).process(ctx) is False
+    async def test_is_in_missing(self):
+        val = String(value="fig")
+        opts = ConstList(value=["apple", "banana"])
+        check = IsIn(value=val.output, options=opts.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is False
 
     @pytest.mark.asyncio
-    async def test_is_none_with_none(self, ctx):
-        assert await IsNone(value=None).process(ctx) is True
+    async def test_is_none_with_none(self):
+        check = IsNone()
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is True
 
     @pytest.mark.asyncio
-    async def test_is_none_with_value(self, ctx):
-        assert await IsNone(value=42).process(ctx) is False
+    async def test_is_none_with_value(self):
+        val = Integer(value=42)
+        check = IsNone(value=val.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is False
 
     @pytest.mark.asyncio
-    async def test_all_true(self, ctx):
-        assert await AllNode(values=[True, True, True]).process(ctx) is True
+    async def test_all_true(self):
+        bools = ConstList(value=[True, True, True])
+        check = BoolAll(values=bools.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is True
 
     @pytest.mark.asyncio
-    async def test_all_with_false(self, ctx):
-        assert await AllNode(values=[True, False, True]).process(ctx) is False
+    async def test_all_with_false(self):
+        bools = ConstList(value=[True, False, True])
+        check = BoolAll(values=bools.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is False
 
     @pytest.mark.asyncio
-    async def test_some_with_one_true(self, ctx):
-        assert await SomeNode(values=[False, True, False]).process(ctx) is True
+    async def test_some_with_one_true(self):
+        bools = ConstList(value=[False, True, False])
+        check = BoolSome(values=bools.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is True
 
     @pytest.mark.asyncio
-    async def test_some_all_false(self, ctx):
-        assert await SomeNode(values=[False, False]).process(ctx) is False
+    async def test_some_all_false(self):
+        bools = ConstList(value=[False, False])
+        check = BoolSome(values=bools.output)
+        sink = Output(name="r", value=check.output)
+        bag = await run_graph_async(create_graph(sink))
+        assert bag["r"] is False
 
 
 # ---------------------------------------------------------------------------
