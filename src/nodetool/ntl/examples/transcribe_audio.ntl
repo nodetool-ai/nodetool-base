@@ -1,0 +1,28 @@
+# Transcribe Audio Workflow
+# Convert speech to text using Whisper model
+
+@name "Transcribe Audio"
+@description "Convert speech to text using Whisper model with word-level timestamps"
+@tags start, audio, huggingface
+
+# Record your voice or upload an audio file
+audio_input: nodetool.input.AudioInput
+  name = "audio"
+  description = ""
+  value = {}
+
+# Process audio through Whisper model to generate transcription
+asr: nodetool.text.AutomaticSpeechRecognition
+  audio = @audio_input.output
+  model = {
+    type: "asr_model",
+    id: "whisper-1",
+    provider: "openai",
+    name: "Whisper"
+  }
+
+# Display the transcribed text
+output: nodetool.output.Output
+  name = "transcription"
+  description = ""
+  value = @asr.text

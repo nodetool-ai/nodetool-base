@@ -1,0 +1,31 @@
+# RSS Feed Summarizer
+# Fetch an RSS feed and summarize the titles
+
+@name "Summarize RSS"
+@description "Fetch RSS feed and summarize content using AI"
+@tags rss, summarize, ai
+
+# Fetch the RSS feed
+rss: lib.rss.FetchRSSFeed
+  url = "https://feeds.bbci.co.uk/news/world/europe/rss.xml"
+
+# Collect all titles
+collect: nodetool.text.Collect
+  input_item = @rss.title
+  separator = "---"
+
+# Summarize using AI
+summarizer: nodetool.agents.Summarizer
+  text = @collect.output
+  model = {
+    type: "language_model",
+    id: "openai/gpt-oss-120b",
+    provider: "huggingface_cerebras",
+    name: "gpt-oss-120b"
+  }
+  max_tokens = 1000
+  context_window = 4096
+
+# Preview the summary
+preview: nodetool.workflows.base_node.Preview
+  value = @summarizer.text
