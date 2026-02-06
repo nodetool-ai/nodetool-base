@@ -1869,7 +1869,7 @@ class Commander(Agent):
 
     enable_task_planning: bool = Field(
         default=True,
-        description="Task planning is always enabled for Commander.",
+        description="Task planning is always enabled for Commander. Use Agent with enable_task_planning=False for non-planning mode.",
     )
 
     @classmethod
