@@ -107,7 +107,7 @@
       },
       {
         "id": "3",
-        "type": "nodetool.agents.ResearchAgent",
+        "type": "nodetool.agents.Commander",
         "data": {
           "model": {
             "type": "language_model",

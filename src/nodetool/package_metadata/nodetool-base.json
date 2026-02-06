@@ -4686,10 +4686,10 @@
       "supports_dynamic_outputs": true
     },
     {
-      "title": "Research Agent",
+      "title": "Commander",
       "description": "Autonomous research agent that gathers information from the web and synthesizes findings.\n    research, web-search, data-gathering, agent, automation\n\n    Uses dynamic outputs to define the structure of research results.\n    The agent will:\n    - Search the web for relevant information\n    - Browse and extract content from web pages\n    - Organize findings in the workspace\n    - Return structured results matching your output schema\n\n    Perfect for:\n    - Market research and competitive analysis\n    - Literature reviews and fact-finding\n    - Data collection from multiple sources\n    - Automated research workflows",
       "namespace": "nodetool.agents",
-      "node_type": "nodetool.agents.ResearchAgent",
+      "node_type": "nodetool.agents.Commander",
       "properties": [
         {
           "name": "objective",
@@ -45319,7 +45319,7 @@
     {
       "id": "autonomous_research_agent",
       "name": "Autonomous Research Agent",
-      "description": "Use the ResearchAgent node to perform a lightweight market analysis with structured outputs defined through dynamic slots.",
+      "description": "Use the Commander node to perform a lightweight market analysis with structured outputs defined through dynamic slots.",
       "tags": [
         "agent",
         "business",

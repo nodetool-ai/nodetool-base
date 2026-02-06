@@ -2,7 +2,13 @@ import pytest
 from unittest.mock import MagicMock, patch
 
 from nodetool.workflows.processing_context import ProcessingContext
-from nodetool.nodes.nodetool.agents import Summarizer, Extractor, Classifier, Agent
+from nodetool.nodes.nodetool.agents import (
+    Summarizer,
+    Extractor,
+    Classifier,
+    Agent,
+    Commander,
+)
 from nodetool.metadata.types import (
     LanguageModel,
     MessageAudioContent,
@@ -739,6 +745,56 @@ class TestAgent:
 
             assert fake_provider.call_count == 2
             assert fake_provider.last_model == mock_model.id
+
+    @pytest.mark.asyncio
+    async def test_commander_forwards_skills_config(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        from unittest.mock import AsyncMock
+
+        node = Commander(
+            objective="Research local vector database options",
+            model=mock_model,
+            skills=["sql-research", "benchmarks"],
+            skill_dirs=["/tmp/skills", "~/.codex/skills"],
+        )
+
+        mock_slot = MagicMock()
+        mock_slot.name = "summary"
+        mock_slot.type.get_json_schema.return_value = {"type": "string"}
+
+        captured_kwargs: dict[str, object] = {}
+
+        class FakeCoreAgent:
+            def __init__(self, *args, **kwargs):
+                captured_kwargs.update(kwargs)
+
+            async def execute(self, _context):
+                if False:
+                    yield None
+
+            def get_results(self):
+                return {"summary": "ok"}
+
+        fake_provider = FakeProvider(text_response="unused", should_stream=False)
+
+        with (
+            patch.object(
+                context,
+                "get_provider",
+                new_callable=AsyncMock,
+                return_value=fake_provider,
+            ),
+            patch.object(
+                Commander, "get_dynamic_output_slots", return_value=[mock_slot]
+            ),
+            patch("nodetool.agents.agent.Agent", FakeCoreAgent),
+        ):
+            result = await node.process(context)
+
+        assert result == {"summary": "ok"}
+        assert captured_kwargs["skills"] == ["sql-research", "benchmarks"]
+        assert captured_kwargs["skill_dirs"] == ["/tmp/skills", "~/.codex/skills"]
 
 
     @pytest.mark.asyncio

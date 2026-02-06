@@ -152,7 +152,7 @@
       },
       {
         "id": "4",
-        "type": "nodetool.agents.ResearchAgent",
+        "type": "nodetool.agents.Commander",
         "data": {
           "model": {
             "type": "language_model",

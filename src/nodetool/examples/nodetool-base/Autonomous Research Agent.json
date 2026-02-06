@@ -5,7 +5,7 @@
   "updated_at": "2025-11-22T16:54:18.095690",
   "name": "Autonomous Research Agent",
   "tool_name": null,
-  "description": "Use the ResearchAgent node to perform a lightweight market analysis with structured outputs defined through dynamic slots.",
+  "description": "Use the Commander node to perform a lightweight market analysis with structured outputs defined through dynamic slots.",
   "tags": [
     "agent",
     "business",
@@ -52,7 +52,7 @@
       {
         "id": "3",
         "parent_id": null,
-        "type": "nodetool.agents.ResearchAgent",
+        "type": "nodetool.agents.Commander",
         "data": {
           "objective": "",
           "model": {

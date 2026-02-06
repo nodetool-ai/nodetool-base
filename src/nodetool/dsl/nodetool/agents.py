@@ -352,7 +352,7 @@ import nodetool.nodes.nodetool.agents
 from nodetool.workflows.base_node import BaseNode
 
 
-class ResearchAgent(GraphNode[dict[str, Any]]):
+class Commander(GraphNode[dict[str, Any]]):
     """
 
     Autonomous research agent that gathers information from the web and synthesizes findings.
@@ -411,7 +411,7 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
         **kwargs: typing.Any,
     ) -> None:
         """
-        Initialize a ResearchAgent node.
+        Initialize a Commander node.
 
         Dynamic outputs declared here will be forwarded to the underlying node
         so they are available when the workflow executes. Provide Python types
@@ -431,12 +431,11 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
-        return nodetool.nodes.nodetool.agents.ResearchAgent
+        return nodetool.nodes.nodetool.agents.Commander
 
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
-
 
 import typing
 from pydantic import Field

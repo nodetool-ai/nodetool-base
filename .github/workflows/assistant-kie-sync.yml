@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  opencode:
+  assistant:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -37,13 +37,17 @@ jobs:
             --index-strategy unsafe-best-match
           uv sync --extra dev --index-strategy unsafe-best-match
 
-      - name: Run OpenCode
-        uses: anomalyco/opencode/github@latest
+      - name: Run Assistant
+        uses: anthropics/claude-code-action@v1
         env:
           KIE_API_KEY: ${{ secrets.KIE_API_KEY }}
-          MINIMAX_API_KEY: ${{ secrets.MINIMAX_API_KEY }}
+          ANTHROPIC_BASE_URL: https://api.z.ai/api/anthropic
         with:
-          model: minimax/MiniMax-M2.1
+          anthropic_api_key: ${{ secrets.ZAI_API_KEY }}
+          additional_permissions: |
+            actions: read
+          claude_args: |
+            --allowedTools "Bash,WebFetch,Edit,Read,Replace"
           prompt: |
             # Kie Model Sync (Scheduled)
 
@@ -99,3 +103,7 @@ jobs:
             - Prefer models with complete API docs and stable versions
             - Skip models that require unsupported inputs or endpoints
             - If a model fails to implement, move to the next model
+
+            ## Pull Request Rule
+            - If `git status --porcelain` shows changed files, commit, push, and create or update a PR.
+            - If there are no file changes, do not commit, do not push, and do not create or update a PR.

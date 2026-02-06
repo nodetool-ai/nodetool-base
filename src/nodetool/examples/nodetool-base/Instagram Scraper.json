@@ -46,7 +46,7 @@
       {
         "id": "3",
         "parent_id": null,
-        "type": "nodetool.agents.ResearchAgent",
+        "type": "nodetool.agents.Commander",
         "data": {
           "objective": "",
           "model": {

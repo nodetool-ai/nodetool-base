@@ -826,7 +826,7 @@ def instantiate_tools_from_names(tool_names: list[ToolName]) -> list[Tool]:
     Instantiate Tool objects from a list of ToolName objects.
 
     This helper function maps tool names to their corresponding Tool classes
-    and instantiates them. It's shared between Agent and ResearchAgent.
+    and instantiates them. It's shared between Agent and Commander.
 
     Args:
         tool_names: List of ToolName objects specifying which tools to enable.
@@ -1717,7 +1717,7 @@ Output Format
 """
 
 
-class ResearchAgent(BaseNode):
+class Commander(BaseNode):
     """
     Autonomous research agent that gathers information from the web and synthesizes findings.
     research, web-search, data-gathering, agent, automation
@@ -1740,7 +1740,7 @@ class ResearchAgent(BaseNode):
 
     @classmethod
     def get_title(cls) -> str:
-        return "Research Agent"
+        return "Commander"
 
     @classmethod
     def is_cacheable(cls) -> bool:
@@ -1762,6 +1762,16 @@ class ResearchAgent(BaseNode):
     tools: list[ToolName] = Field(
         default=[ToolName(name="google_search"), ToolName(name="browser")],
         description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
+    )
+
+    skills: list[str] = Field(
+        default=[],
+        description="Optional skill names to activate for agent planning/execution. If empty, skills may still auto-match from objective text.",
+    )
+
+    skill_dirs: list[str] = Field(
+        default=[],
+        description="Optional directories to search for filesystem skills (SKILL.md). Combined with NODETOOL_AGENT_SKILL_DIRS and default skill paths.",
     )
 
     max_tokens: int = Field(
@@ -1816,7 +1826,7 @@ class ResearchAgent(BaseNode):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["objective", "model", "tools"]
+        return ["objective", "model", "tools", "skills", "skill_dirs"]
 
     def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
         """Instantiate Tool objects from tool names.
@@ -1849,7 +1859,7 @@ class ResearchAgent(BaseNode):
         return instantiate_tools_from_names(self.tools)
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
-        """Execute research agent and return structured results."""
+        """Execute commander agent and return structured results."""
         import json
 
         from nodetool.agents.agent import Agent as CoreAgent
@@ -1887,17 +1897,19 @@ class ResearchAgent(BaseNode):
 
         # Create core agent
         agent = CoreAgent(
-            name="Research Agent",
+            name="Commander",
             objective=self.objective,
             provider=provider,
             model=self.model.id,
             tools=tool_instances,
+            skills=self.skills,
+            skill_dirs=self.skill_dirs,
             output_schema=output_schema,
             verbose=False,
         )
 
         # Stream execution
-        log.info(f"Starting research: {self.objective}")
+        log.info(f"Starting orchestration: {self.objective}")
         log.debug(f"Tools enabled: {[t.name for t in tool_instances]}")
         log.info(f"Output schema: {json.dumps(output_schema, indent=2)}")
 
@@ -1931,7 +1943,7 @@ class ResearchAgent(BaseNode):
 
         # Validate results match schema
         if isinstance(results, dict):
-            log.info(f"Research complete. Results: {list(results.keys())}")
+            log.info(f"Orchestration complete. Results: {list(results.keys())}")
             return results
         else:
             first_key = list(self.get_dynamic_output_slots())[0].name
