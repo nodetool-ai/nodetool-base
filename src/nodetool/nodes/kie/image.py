@@ -10,6 +10,9 @@ This module provides nodes for generating images using Kie.ai's various APIs:
 - Flux Pro (Black Forest Labs text-to-image)
 - Topaz Image Upscaler (AI image upscaling and enhancement)
 - Grok Imagine (xAI multimodal image generation)
+- Google Imagen 4 (Google's latest image generation model)
+- Google Imagen 4 Fast (Speed-optimized variant)
+- Google Imagen 4 Ultra (High-quality variant)
 """
 
 import asyncio
@@ -83,10 +86,13 @@ class KieBaseNode(BaseNode):
 
     def _check_response_status(self, response_data: dict) -> None:
         """Check response status code and raise nicer error."""
-        try:
-            status = int(response_data.get("code"))  # type: ignore
-        except (ValueError, TypeError):
-            pass
+        status: int | None = None
+        code_value = response_data.get("code")
+        if code_value is not None:
+            try:
+                status = int(code_value)
+            except (ValueError, TypeError):
+                pass
 
         error_map = {
             401: "Unauthorized - Authentication credentials are missing or invalid",
@@ -99,7 +105,7 @@ class KieBaseNode(BaseNode):
             501: "Generation Failed - Content generation task failed",
             505: "Feature Disabled - The requested feature is currently disabled",
         }
-        if status in error_map:
+        if status is not None and status in error_map:
             raise ValueError(error_map[status] + str(response_data))
 
     def _resolve_upload_filename(
@@ -1338,7 +1344,8 @@ class GrokImagineUpscale(KieBaseNode):
         if not self.image.is_set():
             raise ValueError("Image is required")
 
-        task_id = self.image.metadata.get("task_id")
+        metadata = self.image.metadata or {}
+        task_id = metadata.get("task_id")
         if not task_id:
             raise ValueError(
                 "Image metadata does not contain a 'task_id'. "
