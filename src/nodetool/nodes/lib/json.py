@@ -175,7 +175,7 @@ class GetJSONPathList(BaseGetJSONPath):
     """
 
     default: list = Field(
-        default=[], description="Default value to return if path is not found"
+        default_factory=list, description="Default value to return if path is not found"
     )
 
     async def process(self, context: ProcessingContext) -> list:
@@ -190,7 +190,7 @@ class GetJSONPathDict(BaseGetJSONPath):
     """
 
     default: dict = Field(
-        default={}, description="Default value to return if path is not found"
+        default_factory=dict, description="Default value to return if path is not found"
     )
 
     async def process(self, context: ProcessingContext) -> dict:

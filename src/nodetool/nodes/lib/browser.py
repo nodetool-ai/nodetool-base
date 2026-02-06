@@ -98,11 +98,13 @@ class Browser(BaseNode):
                 meta = trafilatura.extract_metadata(html).as_dict()
                 meta.pop("body", None)
                 meta.pop("commentsbody", None)
-            except Exception:
+            except (AttributeError, KeyError, ValueError) as e:
+                logger.warning(f"Failed to extract metadata: {e}")
                 meta = {}
             try:
                 content = trafilatura.extract(html) or ""
-            except Exception:
+            except (AttributeError, ValueError) as e:
+                logger.warning(f"Failed to extract content: {e}")
                 content = ""
             await browser.close()
             return {"success": True, "metadata": meta, "content": content}
