@@ -1162,7 +1162,7 @@ class NanoBananaPro(KieBaseNode):
 
         return {
             "prompt": self.prompt,
-            "image_input": image_urls,
+            "image_urls": image_urls,
             "aspect_ratio": self.aspect_ratio.value,
             "resolution": self.resolution.value,
             "output_format": "png",
