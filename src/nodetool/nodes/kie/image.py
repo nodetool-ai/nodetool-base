@@ -1544,6 +1544,233 @@ class TopazImageUpscale(KieBaseNode):
         )
 
 
+class GoogleImagen4TextToImage(KieBaseNode):
+    """Generate images using Google's Imagen 4 model via Kie.ai.
+
+    kie, google, imagen, imagen4, image generation, ai, text-to-image
+
+    Imagen 4 produces high-quality images from text descriptions with
+    excellent detail, photorealism, and text rendering capabilities.
+
+    Use cases:
+    - Generate photorealistic images from text
+    - Create images with accurate text rendering
+    - Produce high-quality artistic content
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Google Imagen 4"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated image.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "google/imagen4"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "negative_prompt": self.negative_prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "seed": str(self.seed),
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GoogleImagen4FastTextToImage(KieBaseNode):
+    """Generate images using Google's Imagen 4 Fast model via Kie.ai.
+
+    kie, google, imagen, imagen4, imagen4-fast, image generation, ai, text-to-image, fast
+
+    Imagen 4 Fast provides faster image generation with good quality,
+    supporting multiple images per request.
+
+    Use cases:
+    - Generate images quickly for iterative workflows
+    - Create multiple variations from a single prompt
+    - Rapid prototyping of image concepts
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Google Imagen 4 Fast"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated image.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.LANDSCAPE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    class NumImages(str, Enum):
+        ONE = "1"
+        TWO = "2"
+        THREE = "3"
+        FOUR = "4"
+
+    num_images: NumImages = Field(
+        default=NumImages.ONE,
+        description="Number of images to generate (1-4).",
+    )
+
+    seed: int = Field(
+        default=-1,
+        description="Random seed for reproducible results. Use -1 for random seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "google/imagen4-fast"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        return {
+            "prompt": self.prompt,
+            "negative_prompt": self.negative_prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+            "num_images": self.num_images.value,
+            "seed": self.seed,
+        }
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
+class GoogleImagen4UltraTextToImage(KieBaseNode):
+    """Generate images using Google's Imagen 4 Ultra model via Kie.ai.
+
+    kie, google, imagen, imagen4, imagen4-ultra, image generation, ai, text-to-image, ultra
+
+    Imagen 4 Ultra provides the highest quality image generation with
+    enhanced detail and fidelity.
+
+    Use cases:
+    - Generate highest quality images for professional use
+    - Create detailed artwork and photorealistic content
+    - Production-ready image generation
+    """
+
+    _expose_as_tool: ClassVar[bool] = True
+    _poll_interval: float = 2.0
+    _max_poll_attempts: int = 60
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Google Imagen 4 Ultra"
+
+    prompt: str = Field(
+        default="",
+        description="The text prompt describing the image to generate.",
+    )
+
+    negative_prompt: str = Field(
+        default="",
+        description="Things to avoid in the generated image.",
+    )
+
+    class AspectRatio(str, Enum):
+        SQUARE = "1:1"
+        LANDSCAPE = "16:9"
+        PORTRAIT = "9:16"
+        WIDE = "4:3"
+        TALL = "3:4"
+
+    aspect_ratio: AspectRatio = Field(
+        default=AspectRatio.SQUARE,
+        description="The aspect ratio of the generated image.",
+    )
+
+    seed: str = Field(
+        default="",
+        description="Random seed for reproducible results. Leave empty for random seed.",
+    )
+
+    def _get_model(self) -> str:
+        return "google/imagen4-ultra"
+
+    async def _get_input_params(
+        self, context: ProcessingContext | None = None
+    ) -> dict[str, Any]:
+        if not self.prompt:
+            raise ValueError("Prompt cannot be empty")
+        params: dict[str, Any] = {
+            "prompt": self.prompt,
+            "negative_prompt": self.negative_prompt,
+            "aspect_ratio": self.aspect_ratio.value,
+        }
+        if self.seed:
+            params["seed"] = self.seed
+        return params
+
+    async def process(self, context: ProcessingContext) -> ImageRef:
+        image_bytes, task_id = await self._execute_task(context)
+        return await context.image_from_bytes(
+            image_bytes, metadata={"task_id": task_id}
+        )
+
+
 class RecraftRemoveBackground(KieBaseNode):
     """Remove background from images using Recraft's model via Kie.ai.
 

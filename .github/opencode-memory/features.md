@@ -14,18 +14,16 @@ Each entry should follow this format:
 
 ---
 
-## 2026-01-16 - Runway & Luma Video Models
+## 2026-01-22 - Google Imagen 4 Image Generation Models
 
 - **Model IDs:**
-  - `runway/gen-3-alpha-text-to-video`
-  - `runway/gen-3-alpha-image-to-video`
-  - `runway/gen-3-alpha-extend-video`
-  - `runway/generate-aleph-video`
-  - `luma/generate-luma-modify-video`
+  - `google/imagen4`
+  - `google/imagen4-fast`
+  - `google/imagen4-ultra`
 
-- **Category:** video
+- **Category:** `image`
 
-- **Description:** Added support for Runway Gen-3 Alpha video generation (text-to-video, image-to-video, extend-video) and Aleph model, plus Luma's video modification API via Kie.ai.
+- **Description:** Added support for Google's Imagen 4 image generation models via Kie.ai API. The standard Imagen 4 model provides high-quality photorealistic images with excellent detail and text rendering. Imagen 4 Fast offers faster generation with support for multiple images (1-4) per request. Imagen 4 Ultra provides the highest quality variant for professional production use. All variants support configurable aspect ratios (1:1, 16:9, 9:16, 4:3, 3:4), negative prompts, and seed values for reproducibility.
 
 ---
 
