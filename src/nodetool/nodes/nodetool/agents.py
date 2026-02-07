@@ -945,11 +945,6 @@ class Agent(BaseNode):
         description="Optional skill names to activate for agent planning/execution. Only used when enable_task_planning is True.",
     )
 
-    skill_dirs: list[str] = Field(
-        default=[],
-        description="Optional directories to search for filesystem skills (SKILL.md). Only used when enable_task_planning is True.",
-    )
-
     _supports_dynamic_outputs: ClassVar[bool] = True
 
     @classmethod
@@ -1106,11 +1101,9 @@ class Agent(BaseNode):
 
     def should_route_output(self, output_name: str) -> bool:
         """
-        In normal mode, do not route dynamic outputs (they are tool entry points).
-        In task planning mode, route all outputs (dynamic outputs are result fields).
+        Do not route dynamic outputs; they represent tool entry points.
+        Still route declared outputs like 'text', 'chunk', 'audio'.
         """
-        if self.enable_task_planning:
-            return True
         return output_name not in self._dynamic_outputs
 
     @classmethod
@@ -1128,8 +1121,7 @@ class Agent(BaseNode):
 
         This method instantiates Tool objects from the configured tool names
         and also creates GraphTools from any dynamic outputs that have
-        downstream node connections. In task planning mode, dynamic outputs
-        define the result schema and are not converted to GraphTools.
+        downstream node connections.
 
         Args:
             context: The processing context containing the workflow graph.
@@ -1157,17 +1149,15 @@ class Agent(BaseNode):
         # Only include workspace tools if the user explicitly selected them
         tools = instantiate_tools_from_names(self.tools)
 
-        # In task planning mode, dynamic outputs are result fields, not graph tools
-        if not self.enable_task_planning:
-            # Add GraphTools for dynamic outputs with downstream connections
-            for name, type_meta in self._dynamic_outputs.items():
-                initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
-                initial_nodes = [find_node(graph, edge.target) for edge in initial_edges]
-                nodes = graph.nodes
-                if len(nodes) == 0:
-                    continue
-                tool = GraphTool(graph, name, "", initial_edges, initial_nodes)
-                tools.append(tool)
+        # Add GraphTools for dynamic outputs with downstream connections
+        for name, type_meta in self._dynamic_outputs.items():
+            initial_edges, graph = get_downstream_subgraph(context.graph, self.id, name)
+            initial_nodes = [find_node(graph, edge.target) for edge in initial_edges]
+            nodes = graph.nodes
+            if len(nodes) == 0:
+                continue
+            tool = GraphTool(graph, name, "", initial_edges, initial_nodes)
+            tools.append(tool)
         return tools
 
     async def _get_provider_safe(self, context: ProcessingContext):
@@ -1208,7 +1198,6 @@ class Agent(BaseNode):
             "audio",
             "enable_task_planning",
             "skills",
-            "skill_dirs",
         ]
 
     @classmethod
@@ -1723,7 +1712,6 @@ class Agent(BaseNode):
             model=self.model.id,
             tools=tool_instances,
             skills=self.skills,
-            skill_dirs=self.skill_dirs,
             output_schema=output_schema,
             verbose=False,
         )
@@ -1929,7 +1917,7 @@ class Commander(Agent):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["objective", "model", "tools", "skills", "skill_dirs"]
+        return ["objective", "model", "tools", "skills"]
 
     async def gen_process(
         self,

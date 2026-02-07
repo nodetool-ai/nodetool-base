@@ -756,7 +756,6 @@ class TestAgent:
             objective="Research local vector database options",
             model=mock_model,
             skills=["sql-research", "benchmarks"],
-            skill_dirs=["/tmp/skills", "~/.codex/skills"],
         )
 
         mock_slot = MagicMock()
@@ -797,7 +796,6 @@ class TestAgent:
         assert len(results) == 1
         assert results[0] == {"summary": "ok"}
         assert captured_kwargs["skills"] == ["sql-research", "benchmarks"]
-        assert captured_kwargs["skill_dirs"] == ["/tmp/skills", "~/.codex/skills"]
 
 
     @pytest.mark.asyncio
@@ -1106,7 +1104,7 @@ class TestAgentTaskPlanning:
     async def test_task_planning_forwards_skills(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
-        """Test that skills and skill_dirs are forwarded to CoreAgent."""
+        """Test that skills are forwarded to CoreAgent."""
         from unittest.mock import AsyncMock
 
         node = Agent(
@@ -1114,7 +1112,6 @@ class TestAgentTaskPlanning:
             model=mock_model,
             enable_task_planning=True,
             skills=["db-expert", "benchmarks"],
-            skill_dirs=["/tmp/my-skills"],
         )
 
         mock_slot = MagicMock()
@@ -1152,7 +1149,6 @@ class TestAgentTaskPlanning:
                 pass
 
         assert captured_kwargs["skills"] == ["db-expert", "benchmarks"]
-        assert captured_kwargs["skill_dirs"] == ["/tmp/my-skills"]
         assert captured_kwargs["objective"] == "Research databases"
 
     @pytest.mark.asyncio
@@ -1337,13 +1333,13 @@ class TestAgentTaskPlanning:
         assert node.should_route_output("my_tool") is False
 
     def test_should_route_output_planning_mode(self):
-        """Test all outputs are routed in task planning mode."""
+        """Test dynamic outputs are not routed in task planning mode either."""
         from nodetool.metadata.types import TypeMetadata
 
         node = Agent(enable_task_planning=True)
         node._dynamic_outputs = {"summary": TypeMetadata(type="str")}
         assert node.should_route_output("text") is True
-        assert node.should_route_output("summary") is True
+        assert node.should_route_output("summary") is False
 
     @pytest.mark.asyncio
     async def test_commander_inherits_from_agent(self):
