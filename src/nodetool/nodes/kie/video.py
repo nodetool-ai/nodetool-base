@@ -2,7 +2,7 @@
 
 This module provides nodes for generating videos using Kie.ai's various APIs.
 """
-from gradio import Dataframe
+
 import asyncio
 from enum import Enum
 from typing import Any, ClassVar
