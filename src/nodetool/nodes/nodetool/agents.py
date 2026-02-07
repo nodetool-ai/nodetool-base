@@ -1717,16 +1717,18 @@ Output Format
 """
 
 
-class Commander(BaseNode):
+class TaskPlanner(BaseNode):
     """
-    Autonomous research agent that gathers information from the web and synthesizes findings.
-    research, web-search, data-gathering, agent, automation
+    Autonomous task planning agent that breaks down objectives and returns structured results.
+    task-planning, research, web-search, data-gathering, agent, automation
 
-    Uses dynamic outputs to define the structure of research results.
+    Uses dynamic outputs to define the structure of results (output schema).
+    Unlike Agent (where dynamic outputs trigger tool subgraphs), TaskPlanner
+    treats dynamic outputs as the desired result fields.
+
     The agent will:
-    - Search the web for relevant information
-    - Browse and extract content from web pages
-    - Organize findings in the workspace
+    - Plan tasks to achieve the given objective
+    - Execute tasks using available tools
     - Return structured results matching your output schema
 
     Perfect for:
@@ -1740,7 +1742,7 @@ class Commander(BaseNode):
 
     @classmethod
     def get_title(cls) -> str:
-        return "Commander"
+        return "Task Planner"
 
     @classmethod
     def is_cacheable(cls) -> bool:
@@ -1897,7 +1899,7 @@ class Commander(BaseNode):
 
         # Create core agent
         agent = CoreAgent(
-            name="Commander",
+            name="TaskPlanner",
             objective=self.objective,
             provider=provider,
             model=self.model.id,
@@ -1948,3 +1950,7 @@ class Commander(BaseNode):
         else:
             first_key = list(self.get_dynamic_output_slots())[0].name
             return {first_key: results}
+
+
+# Backward compatibility alias
+Commander = TaskPlanner
