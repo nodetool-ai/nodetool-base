@@ -1202,6 +1202,8 @@ class TestTaskExecutor:
         assert captured_kwargs["skills"] == ["db-expert", "benchmarks"]
         assert captured_kwargs["skill_dirs"] == ["/tmp/my-skills"]
         assert captured_kwargs["objective"] == "Research databases"
+        # Verify that task field maps to objective in CoreAgent
+        assert node.task == captured_kwargs["objective"]
 
     @pytest.mark.asyncio
     async def test_task_executor_no_task_error(

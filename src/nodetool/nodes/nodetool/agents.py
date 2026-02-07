@@ -1815,9 +1815,6 @@ Return the plan in a clear, structured format (e.g., JSON or markdown list).""",
         # Get provider
         provider = await context.get_provider(self.model.provider)
 
-        # Build the planning prompt
-        planning_prompt = f"{self.system_prompt}\n\nObjective: {self.objective}\n\nProvide a detailed task plan:"
-
         # Generate plan using the model
         messages: list[Message] = [
             Message(role="system", content=self.system_prompt),
@@ -2025,6 +2022,7 @@ class TaskExecutor(BaseNode):
         provider = await context.get_provider(self.model.provider)
 
         # Create core agent
+        # Note: CoreAgent uses 'objective' parameter, which corresponds to our 'task' field
         agent = CoreAgent(
             name="TaskExecutor",
             objective=self.task,
