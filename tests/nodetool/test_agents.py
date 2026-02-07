@@ -8,6 +8,7 @@ from nodetool.nodes.nodetool.agents import (
     Classifier,
     Agent,
     Commander,
+    TaskPlanner,
 )
 from nodetool.metadata.types import (
     LanguageModel,
@@ -756,6 +757,7 @@ class TestAgent:
             objective="Research local vector database options",
             model=mock_model,
             skills=["sql-research", "benchmarks"],
+            skill_dirs=["/tmp/skills", "~/.codex/skills"],
         )
 
         mock_slot = MagicMock()
@@ -789,13 +791,11 @@ class TestAgent:
             ),
             patch("nodetool.agents.agent.Agent", FakeCoreAgent),
         ):
-            results = []
-            async for item in node.gen_process(context):
-                results.append(item)
+            result = await node.process(context)
 
-        assert len(results) == 1
-        assert results[0] == {"summary": "ok"}
+        assert result == {"summary": "ok"}
         assert captured_kwargs["skills"] == ["sql-research", "benchmarks"]
+        assert captured_kwargs["skill_dirs"] == ["/tmp/skills", "~/.codex/skills"]
 
 
     @pytest.mark.asyncio
@@ -1037,31 +1037,19 @@ class TestAgentFields:
         assert Agent.return_type() == Agent.OutputType
 
 
-class TestAgentTaskPlanning:
-    """Tests for Agent with enable_task_planning toggle (Commander functionality)."""
+class TestTaskPlanner:
+    """Tests for TaskPlanner (autonomous task planning with structured output schema)."""
 
     @pytest.mark.asyncio
-    async def test_task_planning_toggle_default_off(
+    async def test_task_planner_basic_execution(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
-        """Test that task planning is disabled by default."""
-        node = Agent(
-            prompt="Hello",
-            model=mock_model,
-        )
-        assert node.enable_task_planning is False
-
-    @pytest.mark.asyncio
-    async def test_task_planning_basic_execution(
-        self, context: ProcessingContext, mock_model: LanguageModel
-    ):
-        """Test Agent with enable_task_planning=True using FakeProvider."""
+        """Test TaskPlanner executes and returns structured results."""
         from unittest.mock import AsyncMock
 
-        node = Agent(
-            prompt="Research vector databases",
+        node = TaskPlanner(
+            objective="Research vector databases",
             model=mock_model,
-            enable_task_planning=True,
         )
 
         mock_slot = MagicMock()
@@ -1089,29 +1077,26 @@ class TestAgentTaskPlanning:
                 return_value=fake_provider,
             ),
             patch.object(
-                Agent, "get_dynamic_output_slots", return_value=[mock_slot]
+                TaskPlanner, "get_dynamic_output_slots", return_value=[mock_slot]
             ),
             patch("nodetool.agents.agent.Agent", FakeCoreAgent),
         ):
-            results = []
-            async for item in node.gen_process(context):
-                results.append(item)
+            result = await node.process(context)
 
-        assert len(results) == 1
-        assert results[0] == {"summary": "Vector databases are great for similarity search."}
+        assert result == {"summary": "Vector databases are great for similarity search."}
 
     @pytest.mark.asyncio
-    async def test_task_planning_forwards_skills(
+    async def test_task_planner_forwards_skills(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
-        """Test that skills are forwarded to CoreAgent."""
+        """Test that skills and skill_dirs are forwarded to CoreAgent."""
         from unittest.mock import AsyncMock
 
-        node = Agent(
-            prompt="Research databases",
+        node = TaskPlanner(
+            objective="Research databases",
             model=mock_model,
-            enable_task_planning=True,
             skills=["db-expert", "benchmarks"],
+            skill_dirs=["/tmp/my-skills"],
         )
 
         mock_slot = MagicMock()
@@ -1141,65 +1126,66 @@ class TestAgentTaskPlanning:
                 return_value=fake_provider,
             ),
             patch.object(
-                Agent, "get_dynamic_output_slots", return_value=[mock_slot]
+                TaskPlanner, "get_dynamic_output_slots", return_value=[mock_slot]
             ),
             patch("nodetool.agents.agent.Agent", FakeCoreAgent),
         ):
-            async for _ in node.gen_process(context):
-                pass
+            await node.process(context)
 
         assert captured_kwargs["skills"] == ["db-expert", "benchmarks"]
+        assert captured_kwargs["skill_dirs"] == ["/tmp/my-skills"]
         assert captured_kwargs["objective"] == "Research databases"
 
     @pytest.mark.asyncio
-    async def test_task_planning_no_prompt_error(
+    async def test_task_planner_no_objective_error(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
-        """Test error when no prompt/objective is provided in planning mode."""
-        node = Agent(
-            prompt="",
+        """Test error when no objective is provided."""
+        node = TaskPlanner(
+            objective="",
             model=mock_model,
-            enable_task_planning=True,
         )
 
-        mock_slot = MagicMock()
-        mock_slot.name = "result"
-        mock_slot.type.get_json_schema.return_value = {"type": "string"}
-
-        with patch.object(
-            Agent, "get_dynamic_output_slots", return_value=[mock_slot]
-        ):
-            with pytest.raises(ValueError, match="Provide a prompt"):
-                async for _ in node.gen_process(context):
-                    pass
+        with pytest.raises(ValueError, match="Provide a research objective"):
+            await node.process(context)
 
     @pytest.mark.asyncio
-    async def test_task_planning_no_dynamic_outputs_error(
-        self, context: ProcessingContext, mock_model: LanguageModel
+    async def test_task_planner_no_model_error(
+        self, context: ProcessingContext
     ):
-        """Test error when no dynamic outputs are defined in planning mode."""
-        node = Agent(
-            prompt="Research something",
-            model=mock_model,
-            enable_task_planning=True,
+        """Test error when no model is selected."""
+        node = TaskPlanner(
+            objective="Research something",
+            model=LanguageModel(),
         )
 
-        with patch.object(Agent, "get_dynamic_output_slots", return_value=[]):
+        with pytest.raises(ValueError, match="Select a model"):
+            await node.process(context)
+
+    @pytest.mark.asyncio
+    async def test_task_planner_no_dynamic_outputs_error(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test error when no dynamic outputs are defined."""
+        node = TaskPlanner(
+            objective="Research something",
+            model=mock_model,
+        )
+
+        with patch.object(TaskPlanner, "get_dynamic_output_slots", return_value=[]):
             with pytest.raises(ValueError, match="Define at least one output field"):
-                async for _ in node.gen_process(context):
-                    pass
+                await node.process(context)
 
     @pytest.mark.asyncio
-    async def test_task_planning_null_results(
+    async def test_task_planner_null_results(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test handling when CoreAgent returns None results."""
         from unittest.mock import AsyncMock
 
-        node = Agent(
-            prompt="Research something",
+        node = TaskPlanner(
+            objective="Research something",
             model=mock_model,
-            enable_task_planning=True,
         )
 
         mock_slot = MagicMock()
@@ -1227,28 +1213,24 @@ class TestAgentTaskPlanning:
                 return_value=fake_provider,
             ),
             patch.object(
-                Agent, "get_dynamic_output_slots", return_value=[mock_slot]
+                TaskPlanner, "get_dynamic_output_slots", return_value=[mock_slot]
             ),
             patch("nodetool.agents.agent.Agent", FakeCoreAgent),
         ):
-            results = []
-            async for item in node.gen_process(context):
-                results.append(item)
+            result = await node.process(context)
 
-        assert len(results) == 1
-        assert results[0] == {"summary": ""}
+        assert result == {"summary": ""}
 
     @pytest.mark.asyncio
-    async def test_task_planning_non_dict_results(
+    async def test_task_planner_non_dict_results(
         self, context: ProcessingContext, mock_model: LanguageModel
     ):
         """Test handling when CoreAgent returns a non-dict result."""
         from unittest.mock import AsyncMock
 
-        node = Agent(
-            prompt="Research something",
+        node = TaskPlanner(
+            objective="Research something",
             model=mock_model,
-            enable_task_planning=True,
         )
 
         mock_slot = MagicMock()
@@ -1276,129 +1258,26 @@ class TestAgentTaskPlanning:
                 return_value=fake_provider,
             ),
             patch.object(
-                Agent, "get_dynamic_output_slots", return_value=[mock_slot]
+                TaskPlanner, "get_dynamic_output_slots", return_value=[mock_slot]
             ),
             patch("nodetool.agents.agent.Agent", FakeCoreAgent),
         ):
-            results = []
-            async for item in node.gen_process(context):
-                results.append(item)
+            result = await node.process(context)
 
-        assert len(results) == 1
-        assert results[0] == {"answer": "just a string result"}
+        assert result == {"answer": "just a string result"}
 
-    @pytest.mark.asyncio
-    async def test_normal_mode_still_works(
-        self, context: ProcessingContext, mock_model: LanguageModel
-    ):
-        """Test that Agent with enable_task_planning=False works as before."""
-        from unittest.mock import AsyncMock
+    def test_commander_is_task_planner_alias(self):
+        """Test that Commander is an alias for TaskPlanner."""
+        assert Commander is TaskPlanner
 
-        node = Agent(
-            prompt="Hello, how are you?",
-            model=mock_model,
-            enable_task_planning=False,
-        )
+    def test_task_planner_title(self):
+        """Test that TaskPlanner has correct title."""
+        assert TaskPlanner.get_title() == "Task Planner"
 
-        fake_provider = FakeProvider(
-            text_response="I'm doing well!", should_stream=False
-        )
+    def test_task_planner_not_cacheable(self):
+        """Test that TaskPlanner is not cacheable."""
+        assert TaskPlanner.is_cacheable() is False
 
-        with patch.object(
-            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
-        ):
-            runner = WorkflowRunner(job_id="test")
-            runner.context = context
-            outputs = NodeOutputs(runner, node, context, capture_only=True)
-
-            async def mock_any():
-                yield "prompt", "Hello, how are you?"
-
-            inbox = MagicMock()
-            inbox.iter_any = mock_any
-
-            await node.run(context, NodeInputs(inbox), outputs)
-
-            collected = outputs.collected()
-            assert "text" in collected
-            assert collected["text"] == "I'm doing well!"
-
-    def test_should_route_output_normal_mode(self):
-        """Test dynamic outputs are not routed in normal mode."""
-        from nodetool.metadata.types import TypeMetadata
-
-        node = Agent(enable_task_planning=False)
-        node._dynamic_outputs = {"my_tool": TypeMetadata(type="str")}
-        assert node.should_route_output("text") is True
-        assert node.should_route_output("my_tool") is False
-
-    def test_should_route_output_planning_mode(self):
-        """Test dynamic outputs are not routed in task planning mode either."""
-        from nodetool.metadata.types import TypeMetadata
-
-        node = Agent(enable_task_planning=True)
-        node._dynamic_outputs = {"summary": TypeMetadata(type="str")}
-        assert node.should_route_output("text") is True
-        assert node.should_route_output("summary") is False
-
-    @pytest.mark.asyncio
-    async def test_commander_inherits_from_agent(self):
-        """Test that Commander is a subclass of Agent."""
-        assert issubclass(Commander, Agent)
-
-    @pytest.mark.asyncio
-    async def test_commander_has_task_planning_enabled(self):
-        """Test that Commander has task planning enabled by default."""
-        node = Commander()
-        assert node.enable_task_planning is True
-
-    @pytest.mark.asyncio
-    async def test_commander_maps_objective_to_prompt(
-        self, context: ProcessingContext, mock_model: LanguageModel
-    ):
-        """Test that Commander's objective field maps to prompt for execution."""
-        from unittest.mock import AsyncMock
-
-        node = Commander(
-            objective="Research AI trends",
-            model=mock_model,
-        )
-
-        mock_slot = MagicMock()
-        mock_slot.name = "findings"
-        mock_slot.type.get_json_schema.return_value = {"type": "string"}
-
-        captured_kwargs: dict[str, object] = {}
-
-        class FakeCoreAgent:
-            def __init__(self, *args, **kwargs):
-                captured_kwargs.update(kwargs)
-
-            async def execute(self, _context):
-                if False:
-                    yield None
-
-            def get_results(self):
-                return {"findings": "AI is advancing rapidly."}
-
-        fake_provider = FakeProvider(text_response="unused", should_stream=False)
-
-        with (
-            patch.object(
-                context,
-                "get_provider",
-                new_callable=AsyncMock,
-                return_value=fake_provider,
-            ),
-            patch.object(
-                Commander, "get_dynamic_output_slots", return_value=[mock_slot]
-            ),
-            patch("nodetool.agents.agent.Agent", FakeCoreAgent),
-        ):
-            results = []
-            async for item in node.gen_process(context):
-                results.append(item)
-
-        assert captured_kwargs["objective"] == "Research AI trends"
-        assert len(results) == 1
-        assert results[0] == {"findings": "AI is advancing rapidly."}
+    def test_task_planner_supports_dynamic_outputs(self):
+        """Test that TaskPlanner supports dynamic outputs."""
+        assert TaskPlanner.supports_dynamic_outputs() is True

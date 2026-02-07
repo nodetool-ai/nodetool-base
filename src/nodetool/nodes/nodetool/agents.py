@@ -933,18 +933,6 @@ class Agent(BaseNode):
         title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
-    enable_task_planning: bool = Field(
-        title="Enable Task Planning",
-        default=False,
-        description="When enabled, the agent uses autonomous task planning and execution (Commander mode). "
-        "The prompt field is used as the objective, and dynamic outputs define the result schema.",
-    )
-
-    skills: list[str] = Field(
-        default=[],
-        description="Optional skill names to activate for agent planning/execution. Only used when enable_task_planning is True.",
-    )
-
     _supports_dynamic_outputs: ClassVar[bool] = True
 
     @classmethod
@@ -1196,8 +1184,6 @@ class Agent(BaseNode):
             "tools",
             "image",
             "audio",
-            "enable_task_planning",
-            "skills",
         ]
 
     @classmethod
@@ -1658,104 +1644,6 @@ class Agent(BaseNode):
             ),
         )
 
-    async def _execute_task_planning(
-        self,
-        context: ProcessingContext,
-    ) -> AsyncGenerator[dict[str, Any], None]:
-        """Execute task planning mode (Commander functionality).
-
-        Uses the CoreAgent from nodetool.agents.agent to plan and execute tasks
-        autonomously. Dynamic outputs define the result schema.
-
-        Args:
-            context: The processing context.
-
-        Yields:
-            Dict mapping dynamic output names to their values.
-        """
-        from nodetool.agents.agent import Agent as CoreAgent
-
-        objective = self.prompt
-        if not objective:
-            raise ValueError("Provide a prompt (used as the objective in task planning mode)")
-
-        # Build JSON schema from dynamic outputs
-        output_slots = self.get_dynamic_output_slots()
-
-        if len(output_slots) == 0:
-            raise ValueError("Define at least one output field for task planning results")
-
-        properties: dict[str, Any] = {
-            slot.name: slot.type.get_json_schema() for slot in output_slots
-        }
-        required: list[str] = [slot.name for slot in output_slots]
-
-        output_schema = {
-            "type": "object",
-            "title": "Research Results",
-            "additionalProperties": False,
-            "properties": properties,
-            "required": required,
-        }
-
-        # Instantiate tools
-        tool_instances = self._resolve_tools(context)
-
-        # Get provider
-        provider = await self._get_provider_safe(context)
-
-        # Create core agent
-        agent = CoreAgent(
-            name="Agent",
-            objective=objective,
-            provider=provider,
-            model=self.model.id,
-            tools=tool_instances,
-            skills=self.skills,
-            output_schema=output_schema,
-            verbose=False,
-        )
-
-        # Stream execution
-        log.info(f"Starting task planning: {objective}")
-        log.debug(f"Tools enabled: {[t.name for t in tool_instances]}")
-        log.info(f"Output schema: {json.dumps(output_schema, indent=2)}")
-
-        async for item in agent.execute(context):
-            if isinstance(item, TaskUpdate):
-                item.node_id = self.id
-                context.post_message(item)
-            elif isinstance(item, PlanningUpdate):
-                item.node_id = self.id
-                context.post_message(item)
-            elif isinstance(item, ToolCall):
-                context.post_message(
-                    ToolCallUpdate(
-                        node_id=self.id,
-                        name=item.name,
-                        args=item.args,
-                        message=item.message,
-                    )
-                )
-            elif isinstance(item, Chunk):
-                item.node_id = self.id
-                context.post_message(item)
-
-        # Get final results
-        results = agent.get_results()
-
-        if results is None:
-            log.warning("Agent completed but returned no results")
-            results = {key: "" for key in properties.keys()}
-
-        # Validate results match schema
-        if isinstance(results, dict):
-            log.info(f"Task planning complete. Results: {list(results.keys())}")
-            yield results
-        else:
-            first_key = list(self.get_dynamic_output_slots())[0].name
-            yield {first_key: results}
-
     async def gen_process(
         self,
         context: ProcessingContext,
@@ -1766,11 +1654,6 @@ class Agent(BaseNode):
         log.debug(
             f"gen_process starting: node_id={self.id}, node_title={self.get_title()}"
         )
-
-        if self.enable_task_planning:
-            async for item in self._execute_task_planning(context):
-                yield item  # type: ignore[misc]
-            return
 
         messages = await self._prepare_messages(context)
 
@@ -1834,18 +1717,18 @@ Output Format
 """
 
 
-class Commander(Agent):
+class TaskPlanner(BaseNode):
     """
-    Autonomous research agent that gathers information from the web and synthesizes findings.
-    research, web-search, data-gathering, agent, automation
+    Autonomous task planning agent that breaks down objectives and returns structured results.
+    task-planning, research, web-search, data-gathering, agent, automation
 
-    Deprecated: Use Agent with enable_task_planning=True instead.
+    Uses dynamic outputs to define the structure of results (output schema).
+    Unlike Agent (where dynamic outputs trigger tool subgraphs), TaskPlanner
+    treats dynamic outputs as the desired result fields.
 
-    Uses dynamic outputs to define the structure of research results.
     The agent will:
-    - Search the web for relevant information
-    - Browse and extract content from web pages
-    - Organize findings in the workspace
+    - Plan tasks to achieve the given objective
+    - Execute tasks using available tools
     - Return structured results matching your output schema
 
     Perfect for:
@@ -1855,18 +1738,46 @@ class Commander(Agent):
     - Automated research workflows
     """
 
-    enable_task_planning: bool = Field(
-        default=True,
-        description="Task planning is always enabled for Commander. Use Agent with enable_task_planning=False for non-planning mode.",
-    )
+    _supports_dynamic_outputs: ClassVar[bool] = True
 
     @classmethod
     def get_title(cls) -> str:
-        return "Commander"
+        return "Task Planner"
 
-    # Alias: Commander uses 'objective' as the prompt field name
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
     objective: str = Field(
         default="", description="The research objective or question to investigate"
+    )
+
+    model: LanguageModel = Field(
+        default=LanguageModel(), description="Model to use for research and synthesis"
+    )
+
+    system_prompt: str = Field(
+        default=DEFAULT_RESEARCH_SYSTEM_PROMPT,
+        description="System prompt guiding the agent's research behavior",
+    )
+
+    tools: list[ToolName] = Field(
+        default=[ToolName(name="google_search"), ToolName(name="browser")],
+        description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
+    )
+
+    skills: list[str] = Field(
+        default=[],
+        description="Optional skill names to activate for agent planning/execution. If empty, skills may still auto-match from objective text.",
+    )
+
+    skill_dirs: list[str] = Field(
+        default=[],
+        description="Optional directories to search for filesystem skills (SKILL.md). Combined with NODETOOL_AGENT_SKILL_DIRS and default skill paths.",
+    )
+
+    max_tokens: int = Field(
+        default=8192, ge=1, le=100000, description="Maximum tokens for agent responses"
     )
 
     context_window: int = Field(
@@ -1917,15 +1828,129 @@ class Commander(Agent):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["objective", "model", "tools", "skills"]
+        return ["objective", "model", "tools", "skills", "skill_dirs"]
 
-    async def gen_process(
-        self,
-        context: ProcessingContext,
-    ) -> AsyncGenerator[dict[str, Any], None]:
-        """Commander delegates to Agent with objective as the prompt."""
-        # Map objective to prompt for the parent class
-        if self.objective and not self.prompt:
-            self.prompt = self.objective
-        async for item in super().gen_process(context):
-            yield item
+    def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
+        """Instantiate Tool objects from tool names.
+
+        Uses the shared instantiate_tools_from_names helper function
+        to create Tool instances from the configured tool names.
+
+        Args:
+            context: The processing context for workspace validation.
+
+        Returns:
+            List of instantiated Tool objects for the research agent.
+
+        Raises:
+            ValueError: If workspace tools are requested but no workspace is configured.
+        """
+        # Check if workspace tools are being requested
+        workspace_tool_names = {"read_file", "write_file", "list_directory"}
+        requested_workspace_tools = [
+            t.name for t in self.tools if t.name in workspace_tool_names
+        ]
+
+        # Validate workspace is set if workspace tools are requested
+        if requested_workspace_tools and not context.workspace_dir:
+            raise ValueError(
+                f"Workspace tools ({', '.join(requested_workspace_tools)}) require a workspace directory. "
+                "Please configure a workspace in your workflow settings before using file operations."
+            )
+
+        return instantiate_tools_from_names(self.tools)
+
+    async def process(self, context: ProcessingContext) -> dict[str, Any]:
+        """Execute commander agent and return structured results."""
+        import json
+
+        from nodetool.agents.agent import Agent as CoreAgent
+
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
+        if not self.objective:
+            raise ValueError("Provide a research objective")
+
+        # Build JSON schema from dynamic outputs
+        output_slots = self.get_dynamic_output_slots()
+
+        if len(output_slots) == 0:
+            raise ValueError("Define at least one output field for research results")
+
+        properties: dict[str, Any] = {
+            slot.name: slot.type.get_json_schema() for slot in output_slots
+        }
+        required: list[str] = [slot.name for slot in output_slots]
+
+        output_schema = {
+            "type": "object",
+            "title": "Research Results",
+            "additionalProperties": False,
+            "properties": properties,
+            "required": required,
+        }
+
+        # Instantiate tools
+        tool_instances = self._instantiate_tools(context)
+
+        # Get provider
+        provider = await context.get_provider(self.model.provider)
+
+        # Create core agent
+        agent = CoreAgent(
+            name="TaskPlanner",
+            objective=self.objective,
+            provider=provider,
+            model=self.model.id,
+            tools=tool_instances,
+            skills=self.skills,
+            skill_dirs=self.skill_dirs,
+            output_schema=output_schema,
+            verbose=False,
+        )
+
+        # Stream execution
+        log.info(f"Starting orchestration: {self.objective}")
+        log.debug(f"Tools enabled: {[t.name for t in tool_instances]}")
+        log.info(f"Output schema: {json.dumps(output_schema, indent=2)}")
+
+        async for item in agent.execute(context):
+            if isinstance(item, TaskUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, PlanningUpdate):
+                item.node_id = self.id
+                context.post_message(item)
+            elif isinstance(item, ToolCall):
+                context.post_message(
+                    ToolCallUpdate(
+                        node_id=self.id,
+                        name=item.name,
+                        args=item.args,
+                        message=item.message,
+                    )
+                )
+            elif isinstance(item, Chunk):
+                item.node_id = self.id
+                context.post_message(item)
+
+        # Get final results
+        results = agent.get_results()
+
+        if results is None:
+            log.warning("Agent completed but returned no results")
+            # Return empty dict matching schema
+            results = {key: "" for key in properties.keys()}
+
+        # Validate results match schema
+        if isinstance(results, dict):
+            log.info(f"Orchestration complete. Results: {list(results.keys())}")
+            return results
+        else:
+            first_key = list(self.get_dynamic_output_slots())[0].name
+            return {first_key: results}
+
+
+# Backward compatibility alias
+Commander = TaskPlanner
