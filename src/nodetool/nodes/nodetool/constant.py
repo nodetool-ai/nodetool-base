@@ -12,6 +12,7 @@ from nodetool.metadata.types import (
     EmbeddingModel,
     ImageModel,
     ImageRef,
+    ImageSize as ImageSizeType,
     JSONRef,
     LanguageModel,
     Model3DRef,
@@ -142,6 +143,23 @@ class Image(Constant):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         await context.refresh_uri(self.value)
+        return self.value
+
+
+class ImageSize(Constant):
+    """Represents an image dimensions constant in the workflow.
+    resolution, width, height, size, preset
+    
+    Use cases:
+    - Set target resolution for image generation
+    - Define standard sizes for resizing
+    """
+
+    _expose_as_tool = True
+
+    value: ImageSizeType = Field(default_factory=ImageSizeType)
+
+    async def process(self, context: ProcessingContext) -> ImageSizeType:
         return self.value
 
 
