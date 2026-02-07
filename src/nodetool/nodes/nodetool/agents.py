@@ -1719,26 +1719,26 @@ Output Format
 
 class TaskPlanner(BaseNode):
     """
-    Autonomous task planning agent that breaks down objectives and returns structured results.
-    task-planning, research, web-search, data-gathering, agent, automation
+    Generates a structured task plan from an objective without executing it.
+    task-planning, planning, decomposition, strategy
 
-    Uses dynamic outputs to define the structure of results (output schema).
-    Unlike Agent (where dynamic outputs trigger tool subgraphs), TaskPlanner
-    treats dynamic outputs as the desired result fields.
+    Creates a detailed breakdown of tasks needed to achieve an objective.
+    Returns a structured task plan that can be fed to TaskExecutor.
 
-    The agent will:
-    - Plan tasks to achieve the given objective
-    - Execute tasks using available tools
-    - Return structured results matching your output schema
+    The planner will:
+    - Analyze the objective
+    - Break it down into actionable tasks
+    - Output a structured task plan
 
     Perfect for:
-    - Market research and competitive analysis
-    - Literature reviews and fact-finding
-    - Data collection from multiple sources
-    - Automated research workflows
+    - Creating execution plans
+    - Breaking down complex objectives
+    - Planning multi-step workflows
+    - Separating planning from execution
     """
 
-    _supports_dynamic_outputs: ClassVar[bool] = True
+    class OutputType(TypedDict):
+        task_plan: str
 
     @classmethod
     def get_title(cls) -> str:
@@ -1749,26 +1749,153 @@ class TaskPlanner(BaseNode):
         return False
 
     objective: str = Field(
-        default="", description="The research objective or question to investigate"
+        default="", description="The objective to plan for"
     )
 
     model: LanguageModel = Field(
-        default=LanguageModel(), description="Model to use for research and synthesis"
+        default=LanguageModel(), description="Model to use for planning"
+    )
+
+    system_prompt: str = Field(
+        default="""You are an expert task planner. Given an objective, break it down into a clear, structured plan of actionable tasks.
+
+Create a detailed task plan with:
+1. Individual tasks numbered and described clearly
+2. Dependencies between tasks when relevant
+3. Expected outcomes for each task
+4. Tools or resources needed
+
+Return the plan in a clear, structured format (e.g., JSON or markdown list).""",
+        description="System prompt guiding the planner's behavior",
+    )
+
+    max_tokens: int = Field(
+        default=4096, ge=1, le=100000, description="Maximum tokens for plan generation"
+    )
+
+    context_window: int = Field(
+        default=8192, ge=1, le=131072, description="Context window size"
+    )
+
+    @classmethod
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
+        return [
+            UnifiedModel(
+                id="gpt-oss:20b",
+                repo_id="gpt-oss:20b",
+                name="GPT - OSS",
+                description="Open-weight GPT-4o derivative for planning tasks.",
+                size_on_disk=34359738368,
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="qwen3:14b",
+                repo_id="qwen3:14b",
+                name="Qwen3 - 14B",
+                description="Qwen3 14B provides strong reasoning for task planning.",
+                size_on_disk=30064771072,
+                type="llama_model",
+            ),
+        ]
+
+    @classmethod
+    def get_basic_fields(cls) -> list[str]:
+        return ["objective", "model"]
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        """Generate a task plan from the objective."""
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
+        if not self.objective:
+            raise ValueError("Provide an objective to plan for")
+
+        # Get provider
+        provider = await context.get_provider(self.model.provider)
+
+        # Build the planning prompt
+        planning_prompt = f"{self.system_prompt}\n\nObjective: {self.objective}\n\nProvide a detailed task plan:"
+
+        # Generate plan using the model
+        messages: list[Message] = [
+            Message(role="system", content=self.system_prompt),
+            Message(role="user", content=f"Objective: {self.objective}\n\nProvide a detailed task plan:")
+        ]
+
+        plan_text = ""
+        async for chunk in provider.generate_messages(
+            messages=messages,
+            model=self.model.id,
+            tools=[],
+            max_tokens=self.max_tokens,
+            context_window=self.context_window,
+            context=context,
+        ):
+            if isinstance(chunk, Chunk):
+                if chunk.content:
+                    plan_text += chunk.content
+                if chunk.done:
+                    break
+
+        log.info(f"Generated task plan for objective: {self.objective}")
+        
+        return {"task_plan": plan_text}
+
+
+class TaskExecutor(BaseNode):
+    """
+    Executes tasks using tools and returns structured results with dynamic outputs.
+    task-execution, research, web-search, data-gathering, agent, automation, tool-calling
+
+    Takes a task or plan as input and executes it using available tools.
+    Uses dynamic outputs to define the structure of results (output schema).
+
+    The executor will:
+    - Take tasks/plans as input
+    - Execute tasks using available tools
+    - Return structured results matching your output schema
+
+    Perfect for:
+    - Executing planned tasks
+    - Market research and competitive analysis
+    - Literature reviews and fact-finding
+    - Data collection from multiple sources
+    - Automated research workflows
+    """
+
+    _supports_dynamic_outputs: ClassVar[bool] = True
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Task Executor"
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    task: str = Field(
+        default="", description="The task or plan to execute"
+    )
+
+    model: LanguageModel = Field(
+        default=LanguageModel(), description="Model to use for execution and synthesis"
     )
 
     system_prompt: str = Field(
         default=DEFAULT_RESEARCH_SYSTEM_PROMPT,
-        description="System prompt guiding the agent's research behavior",
+        description="System prompt guiding the executor's behavior",
     )
 
     tools: list[ToolName] = Field(
         default=[ToolName(name="google_search"), ToolName(name="browser")],
-        description="Tools to enable for research. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
+        description="Tools to enable for execution. Select workspace tools (read_file, write_file, list_directory) to enable file operations.",
     )
 
     skills: list[str] = Field(
         default=[],
-        description="Optional skill names to activate for agent planning/execution. If empty, skills may still auto-match from objective text.",
+        description="Optional skill names to activate for task execution. If empty, skills may still auto-match from task text.",
     )
 
     skill_dirs: list[str] = Field(
@@ -1793,7 +1920,7 @@ class TaskPlanner(BaseNode):
                 id="gpt-oss:20b",
                 repo_id="gpt-oss:20b",
                 name="GPT - OSS",
-                description="Open-weight GPT-4o derivative handles research workflows with tool calling.",
+                description="Open-weight GPT-4o derivative handles execution workflows with tool calling.",
                 size_on_disk=34359738368,
                 type="llama_model",
             ),
@@ -1801,7 +1928,7 @@ class TaskPlanner(BaseNode):
                 id="qwen3:14b",
                 repo_id="qwen3:14b",
                 name="Qwen3 - 14B",
-                description="Qwen3 14B provides strong tool use and synthesis for local research agents.",
+                description="Qwen3 14B provides strong tool use and synthesis for task execution.",
                 size_on_disk=30064771072,
                 type="llama_model",
             ),
@@ -1811,7 +1938,7 @@ class TaskPlanner(BaseNode):
                 repo_id="ggml-org/gpt-oss-20b-GGUF",
                 path="gpt-oss-20b-mxfp4.gguf",
                 name="GPT-OSS 20B (GGUF)",
-                description="OpenAI's open-weight model for research via llama.cpp.",
+                description="OpenAI's open-weight model for execution via llama.cpp.",
                 size_on_disk=int(8.56 * 1073741824),
                 type="llama_cpp_model",
             ),
@@ -1820,7 +1947,7 @@ class TaskPlanner(BaseNode):
                 repo_id="ggml-org/gemma-3-12b-it-GGUF",
                 path="gemma-3-12b-it-Q4_K_M.gguf",
                 name="Gemma 3 12B IT (GGUF)",
-                description="Google's Gemma 3 12B for research with strong reasoning.",
+                description="Google's Gemma 3 12B for execution with strong reasoning.",
                 size_on_disk=int(7.3 * 1073741824),
                 type="llama_cpp_model",
             ),
@@ -1828,7 +1955,7 @@ class TaskPlanner(BaseNode):
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
-        return ["objective", "model", "tools", "skills", "skill_dirs"]
+        return ["task", "model", "tools", "skills", "skill_dirs"]
 
     def _instantiate_tools(self, context: ProcessingContext) -> list[Tool]:
         """Instantiate Tool objects from tool names.
@@ -1840,7 +1967,7 @@ class TaskPlanner(BaseNode):
             context: The processing context for workspace validation.
 
         Returns:
-            List of instantiated Tool objects for the research agent.
+            List of instantiated Tool objects for the executor agent.
 
         Raises:
             ValueError: If workspace tools are requested but no workspace is configured.
@@ -1861,7 +1988,7 @@ class TaskPlanner(BaseNode):
         return instantiate_tools_from_names(self.tools)
 
     async def process(self, context: ProcessingContext) -> dict[str, Any]:
-        """Execute commander agent and return structured results."""
+        """Execute tasks and return structured results."""
         import json
 
         from nodetool.agents.agent import Agent as CoreAgent
@@ -1869,14 +1996,14 @@ class TaskPlanner(BaseNode):
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        if not self.objective:
-            raise ValueError("Provide a research objective")
+        if not self.task:
+            raise ValueError("Provide a task or plan to execute")
 
         # Build JSON schema from dynamic outputs
         output_slots = self.get_dynamic_output_slots()
 
         if len(output_slots) == 0:
-            raise ValueError("Define at least one output field for research results")
+            raise ValueError("Define at least one output field for execution results")
 
         properties: dict[str, Any] = {
             slot.name: slot.type.get_json_schema() for slot in output_slots
@@ -1885,7 +2012,7 @@ class TaskPlanner(BaseNode):
 
         output_schema = {
             "type": "object",
-            "title": "Research Results",
+            "title": "Execution Results",
             "additionalProperties": False,
             "properties": properties,
             "required": required,
@@ -1899,8 +2026,8 @@ class TaskPlanner(BaseNode):
 
         # Create core agent
         agent = CoreAgent(
-            name="TaskPlanner",
-            objective=self.objective,
+            name="TaskExecutor",
+            objective=self.task,
             provider=provider,
             model=self.model.id,
             tools=tool_instances,
@@ -1911,7 +2038,7 @@ class TaskPlanner(BaseNode):
         )
 
         # Stream execution
-        log.info(f"Starting orchestration: {self.objective}")
+        log.info(f"Starting task execution: {self.task}")
         log.debug(f"Tools enabled: {[t.name for t in tool_instances]}")
         log.info(f"Output schema: {json.dumps(output_schema, indent=2)}")
 
@@ -1945,7 +2072,7 @@ class TaskPlanner(BaseNode):
 
         # Validate results match schema
         if isinstance(results, dict):
-            log.info(f"Orchestration complete. Results: {list(results.keys())}")
+            log.info(f"Task execution complete. Results: {list(results.keys())}")
             return results
         else:
             first_key = list(self.get_dynamic_output_slots())[0].name
@@ -1953,4 +2080,4 @@ class TaskPlanner(BaseNode):
 
 
 # Backward compatibility alias
-Commander = TaskPlanner
+Commander = TaskExecutor
