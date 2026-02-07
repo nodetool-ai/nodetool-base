@@ -1,6 +1,6 @@
-# OpenCode Memory
+# Claude Memory
 
-This directory contains context and instructions for the OpenCode autonomous agent that maintains Kie.ai nodes in this repository.
+This directory contains context and instructions for the Claude Code autonomous agent that maintains Kie.ai nodes in this repository.
 
 ## Purpose
 
@@ -15,4 +15,4 @@ The agent periodically scans the Kie.ai marketplace to discover new models and c
 
 ## Related Workflows
 
-- `.github/workflows/opencode-kie-sync.yml` - Scheduled workflow that runs the agent
+- `.github/workflows/claude-kie-sync.yml` - Scheduled workflow that runs the agent
