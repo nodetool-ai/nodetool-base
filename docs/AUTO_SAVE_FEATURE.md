@@ -61,6 +61,7 @@ Auto-save is enabled for approximately **50 generative nodes**:
 - **Image**: TextToImage, ImageToImage
 - **Audio**: TextToSpeech, CreateSilence
 - **Video**: TextToVideo, ImageToVideo, FrameToVideo
+- **3D**: TextTo3D, ImageTo3D
 
 #### AI Provider Nodes (6 nodes)
 - **OpenAI**: CreateImage, TextToSpeech
@@ -138,4 +139,3 @@ pytest tests/nodetool/test_auto_save_asset.py -v
 - The actual auto-save infrastructure is implemented in `nodetool-core` (the base framework)
 - This repository (`nodetool-base`) contains the node implementations with the feature enabled for generative nodes only
 - Editing/transformation nodes do NOT have auto-save as they transform existing assets rather than generating new content
-

@@ -13,12 +13,12 @@ from __future__ import annotations
 import datetime
 import os
 from enum import Enum
-from typing import Any, TypedDict
+from typing import Any, TypedDict, ClassVar
 
 from pydantic import Field
 
 from nodetool.config.environment import Environment
-from nodetool.metadata.types import FolderRef, Model3DRef
+from nodetool.metadata.types import FolderRef, Model3DRef, ImageRef
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext, create_file_uri
 from nodetool.workflows.types import SaveUpdate
@@ -47,6 +47,30 @@ class OutputFormat(str, Enum):
     OBJ = "obj"
     STL = "stl"
     PLY = "ply"
+
+
+class ModelTask(str, Enum):
+    """Model task types for 3D generation."""
+
+    TEXT_TO_3D = "text_to_3d"
+    IMAGE_TO_3D = "image_to_3d"
+
+
+class TextTo3DParams(TypedDict, total=False):
+    prompt: str
+    guidance_scale: float | None
+    num_inference_steps: int | None
+    seed: int | None
+    output_format: str | None
+
+
+class ImageTo3DParams(TypedDict, total=False):
+    image: bytes
+    prompt: str | None
+    guidance_scale: float | None
+    num_inference_steps: int | None
+    seed: int | None
+    output_format: str | None
 
 
 class BooleanOperation(str, Enum):
@@ -882,6 +906,174 @@ class MergeMeshes(BaseNode):
         )
 
 
+class TextTo3D(BaseNode):
+    """
+    Generate 3D assets from text prompts using any supported 3D provider.
+    3d, generation, ai, text-to-3d, t2m
+    """
+
+    _auto_save_asset: ClassVar[bool] = True
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: str = Field(
+        default="",
+        description="The 3D generation model to use (provider-specific id)",
+    )
+    provider: str = Field(
+        default="huggingface_hf_inference",
+        description="The provider to use for 3D generation",
+    )
+    prompt: str = Field(
+        default="A low poly chair",
+        description="Text prompt describing the desired 3D model",
+    )
+    guidance_scale: float = Field(
+        default=7.5,
+        ge=0.0,
+        le=30.0,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int = Field(
+        default=30,
+        ge=1,
+        le=100,
+        description="Number of denoising steps",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=3600,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["provider", "model", "prompt", "seed"]
+
+    @classmethod
+    def get_model_info(cls):
+        return {"task": ModelTask.TEXT_TO_3D.value}
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
+        if not self.prompt:
+            raise ValueError("prompt cannot be empty")
+        if not self.model:
+            raise ValueError("model cannot be empty")
+
+        params: TextTo3DParams = {
+            "prompt": self.prompt,
+            "guidance_scale": self.guidance_scale,
+            "num_inference_steps": self.num_inference_steps,
+            "seed": self.seed if self.seed != -1 else None,
+            "output_format": "glb",
+        }
+
+        model_bytes = await context.run_provider_prediction(
+            node_id=self.id,
+            provider=self.provider,
+            model=self.model,
+            capability=ModelTask.TEXT_TO_3D.value,
+            params=params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+        )
+
+        return await context.model3d_from_bytes(
+            model_bytes, format=params.get("output_format") or "glb"
+        )
+
+
+class ImageTo3D(BaseNode):
+    """
+    Generate 3D assets from images using any supported 3D provider.
+    3d, generation, ai, image-to-3d, i2m
+    """
+
+    _auto_save_asset: ClassVar[bool] = True
+    _expose_as_tool: ClassVar[bool] = True
+
+    model: str = Field(
+        default="",
+        description="The 3D generation model to use (provider-specific id)",
+    )
+    provider: str = Field(
+        default="huggingface_hf_inference",
+        description="The provider to use for 3D generation",
+    )
+    image: ImageRef = Field(
+        default=ImageRef(),
+        description="Input image to reconstruct into a 3D model",
+    )
+    prompt: str = Field(
+        default="",
+        description="Optional prompt describing the desired 3D model",
+    )
+    guidance_scale: float = Field(
+        default=7.5,
+        ge=0.0,
+        le=30.0,
+        description="Classifier-free guidance scale (higher = closer to prompt)",
+    )
+    num_inference_steps: int = Field(
+        default=30,
+        ge=1,
+        le=100,
+        description="Number of denoising steps",
+    )
+    seed: int = Field(
+        default=-1,
+        ge=-1,
+        description="Random seed for reproducibility (-1 for random)",
+    )
+    timeout_seconds: int = Field(
+        default=0,
+        ge=0,
+        le=3600,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
+
+    @classmethod
+    def get_basic_fields(cls):
+        return ["provider", "model", "image", "seed"]
+
+    @classmethod
+    def get_model_info(cls):
+        return {"task": ModelTask.IMAGE_TO_3D.value}
+
+    async def process(self, context: ProcessingContext) -> Model3DRef:
+        if self.image.is_empty():
+            raise ValueError("Input image is required")
+        if not self.model:
+            raise ValueError("model cannot be empty")
+
+        image_bytes = await context.asset_to_bytes(self.image)
+        params: ImageTo3DParams = {
+            "image": image_bytes,
+            "prompt": self.prompt if self.prompt else None,
+            "guidance_scale": self.guidance_scale,
+            "num_inference_steps": self.num_inference_steps,
+            "seed": self.seed if self.seed != -1 else None,
+            "output_format": "glb",
+        }
+
+        model_bytes = await context.run_provider_prediction(
+            node_id=self.id,
+            provider=self.provider,
+            model=self.model,
+            capability=ModelTask.IMAGE_TO_3D.value,
+            params=params,
+            timeout_s=self.timeout_seconds if self.timeout_seconds > 0 else None,
+        )
+
+        return await context.model3d_from_bytes(
+            model_bytes, format=params.get("output_format") or "glb"
+        )
+
+
 __all__ = [
     "LoadModel3DFile",
     "SaveModel3DFile",
@@ -895,4 +1087,6 @@ __all__ = [
     "CenterMesh",
     "FlipNormals",
     "MergeMeshes",
+    "TextTo3D",
+    "ImageTo3D",
 ]

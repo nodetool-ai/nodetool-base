@@ -77,6 +77,45 @@ Use cases:
 - **aspect_ratio**: The aspect ratio of the generated video (VeoAspectRatio)
 - **negative_prompt**: Negative prompt to guide what to avoid in the video (str)
 
+## nodetool.nodes.nodetool.model3d
+
+## TextTo3D
+
+Generate 3D assets from text prompts using supported 3D providers.
+
+Use cases:
+- Create 3D mockups from text descriptions
+- Bootstrap 3D assets for AR/VR workflows
+
+**Tags:** 3d, generation, ai, text-to-3d
+
+**Fields:**
+- **provider**: Provider identifier (str)
+- **model**: Provider model id (str)
+- **prompt**: Text prompt describing the 3D asset (str)
+- **guidance_scale**: Classifier-free guidance scale (float)
+- **num_inference_steps**: Number of denoising steps (int)
+- **seed**: Random seed (-1 for random) (int)
+
+## ImageTo3D
+
+Generate 3D assets from images using supported 3D providers.
+
+Use cases:
+- Reconstruct 3D assets from reference images
+- Convert product photos into 3D models
+
+**Tags:** 3d, generation, ai, image-to-3d
+
+**Fields:**
+- **provider**: Provider identifier (str)
+- **model**: Provider model id (str)
+- **image**: Input image to reconstruct (ImageRef)
+- **prompt**: Optional prompt to guide generation (str)
+- **guidance_scale**: Classifier-free guidance scale (float)
+- **num_inference_steps**: Number of denoising steps (int)
+- **seed**: Random seed (-1 for random) (int)
+
 
 ## ImageGeneration
 
@@ -11419,5 +11458,3 @@ Use cases:
 
 **Fields:**
 - **values**: List of boolean values to check (list[bool])
-
-

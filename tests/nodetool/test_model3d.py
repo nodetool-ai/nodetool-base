@@ -3,8 +3,9 @@ Tests for 3D model nodes.
 """
 
 import pytest
+from unittest.mock import AsyncMock, MagicMock
 
-from nodetool.metadata.types import Model3DRef
+from nodetool.metadata.types import Model3DRef, ImageRef
 from nodetool.nodes.nodetool.input import Model3DInput
 from nodetool.nodes.nodetool.model3d import (
     FormatConverter,
@@ -17,6 +18,8 @@ from nodetool.nodes.nodetool.model3d import (
     MergeMeshes,
     OutputFormat,
     ShadingMode,
+    TextTo3D,
+    ImageTo3D,
 )
 from nodetool.workflows.processing_context import ProcessingContext
 
@@ -72,6 +75,82 @@ async def test_model3d_input(context):
 async def test_model3d_input_return_type():
     """Test Model3DInput return type."""
     assert Model3DInput.return_type() == Model3DRef
+
+
+@pytest.mark.asyncio
+async def test_text_to_3d_basic():
+    """Test TextTo3D node returns Model3DRef."""
+    node = TextTo3D(
+        provider="test-provider",
+        model="test-model",
+        prompt="a simple cube",
+    )
+
+    async def fake_run_provider_prediction(**kwargs):
+        assert kwargs["provider"] == "test-provider"
+        assert kwargs["model"] == "test-model"
+        assert kwargs["capability"] == "text_to_3d"
+        params = kwargs["params"]
+        assert params["prompt"] == "a simple cube"
+        return b"dummy-3d-data"
+
+    context = MagicMock(spec=ProcessingContext)
+    context.run_provider_prediction = AsyncMock(side_effect=fake_run_provider_prediction)
+    context.model3d_from_bytes = AsyncMock(
+        return_value=Model3DRef(format="glb", data=b"dummy-3d-data")
+    )
+
+    result = await node.process(context)
+    assert isinstance(result, Model3DRef)
+    assert result.format == "glb"
+
+
+@pytest.mark.asyncio
+async def test_text_to_3d_requires_prompt():
+    """Test TextTo3D validates prompt."""
+    node = TextTo3D(provider="test-provider", model="test-model", prompt="")
+    context = MagicMock(spec=ProcessingContext)
+    with pytest.raises(ValueError, match="prompt cannot be empty"):
+        await node.process(context)
+
+
+@pytest.mark.asyncio
+async def test_image_to_3d_basic():
+    """Test ImageTo3D node returns Model3DRef."""
+    image = ImageRef(data=b"dummy-image")
+    node = ImageTo3D(
+        provider="test-provider",
+        model="test-model",
+        image=image,
+    )
+
+    async def fake_run_provider_prediction(**kwargs):
+        assert kwargs["provider"] == "test-provider"
+        assert kwargs["model"] == "test-model"
+        assert kwargs["capability"] == "image_to_3d"
+        params = kwargs["params"]
+        assert params["image"] == b"dummy-image"
+        return b"dummy-3d-data"
+
+    context = MagicMock(spec=ProcessingContext)
+    context.run_provider_prediction = AsyncMock(side_effect=fake_run_provider_prediction)
+    context.asset_to_bytes = AsyncMock(return_value=b"dummy-image")
+    context.model3d_from_bytes = AsyncMock(
+        return_value=Model3DRef(format="glb", data=b"dummy-3d-data")
+    )
+
+    result = await node.process(context)
+    assert isinstance(result, Model3DRef)
+    assert result.format == "glb"
+
+
+@pytest.mark.asyncio
+async def test_image_to_3d_requires_image():
+    """Test ImageTo3D validates image input."""
+    node = ImageTo3D(provider="test-provider", model="test-model", image=ImageRef())
+    context = MagicMock(spec=ProcessingContext)
+    with pytest.raises(ValueError, match="Input image is required"):
+        await node.process(context)
 
 
 @pytest.mark.asyncio
