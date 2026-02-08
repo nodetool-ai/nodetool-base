@@ -114,3 +114,26 @@ async def test_constant_node(context: ProcessingContext, node_class):
 
     except Exception as e:
         pytest.fail(f"Error processing {node_class.__name__}: {str(e)}")
+
+
+class _ImageContextStub:
+    def __init__(self) -> None:
+        self.refreshed = False
+
+    async def refresh_uri(self, value: ImageRef) -> None:
+        self.refreshed = True
+
+    async def get_asset_url(self, asset_id: str) -> str:
+        return f"https://example.com/assets/{asset_id}"
+
+
+@pytest.mark.asyncio
+async def test_image_constant_populates_asset_uri():
+    node = Image(value=ImageRef(asset_id="asset-123"))
+    context = _ImageContextStub()
+
+    result = await node.process(context)
+
+    assert context.refreshed is True
+    assert result.uri == "https://example.com/assets/asset-123"
+    assert result.type == "image"

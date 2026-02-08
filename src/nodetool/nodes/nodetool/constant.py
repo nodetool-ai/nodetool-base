@@ -143,6 +143,10 @@ class Image(Constant):
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         await context.refresh_uri(self.value)
+        if getattr(self.value, "asset_id", None) and not getattr(self.value, "uri", None):
+            self.value.uri = await context.get_asset_url(self.value.asset_id)
+        if not getattr(self.value, "type", None):
+            self.value.type = "image"
         return self.value
 
 
