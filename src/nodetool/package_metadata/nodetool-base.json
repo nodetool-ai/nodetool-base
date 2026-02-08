@@ -28501,7 +28501,18 @@
       "outputs": [
         {
           "type": {
-            "type": "image_size"
+            "type": "tuple",
+            "type_args": [
+              {
+                "type": "image_size"
+              },
+              {
+                "type": "int"
+              },
+              {
+                "type": "int"
+              }
+            ]
           },
           "name": "output"
         }
