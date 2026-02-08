@@ -14,6 +14,7 @@ from nodetool.metadata.types import (
     HuggingFaceModel,
     ImageModel,
     ImageRef,
+    ImageSize,
     LanguageModel,
     Message,
     MessageAudioContent,
@@ -224,6 +225,24 @@ class ColorInput(InputNode):
     @classmethod
     def return_type(cls):
         return ColorRef
+
+
+class ImageSizeInput(InputNode):
+    """
+    Accepts image dimensions as a parameter for workflows.
+    input, parameter, image_size, resolution, width, height, dimensions
+    """
+
+    value: ImageSize = Field(
+        default_factory=ImageSize, description="The image size to use as input."
+    )
+
+    @classmethod
+    def return_type(cls):
+        return ImageSize
+
+    async def process(self, context: ProcessingContext) -> ImageSize:
+        return self.value
 
 
 class LanguageModelInput(InputNode):

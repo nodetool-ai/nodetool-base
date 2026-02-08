@@ -147,6 +147,7 @@ class Image(Constant):
 
 
 class ImageSize(Constant):
+    _ui_name = "Image Size"
     """Represents an image dimensions constant in the workflow.
     resolution, width, height, size, preset
     
