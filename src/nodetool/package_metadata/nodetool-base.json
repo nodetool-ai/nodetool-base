@@ -28501,20 +28501,21 @@
       "outputs": [
         {
           "type": {
-            "type": "tuple",
-            "type_args": [
-              {
-                "type": "image_size"
-              },
-              {
-                "type": "int"
-              },
-              {
-                "type": "int"
-              }
-            ]
+            "type": "image_size"
           },
-          "name": "output"
+          "name": "image_size"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "width"
+        },
+        {
+          "type": {
+            "type": "int"
+          },
+          "name": "height"
         }
       ],
       "basic_fields": [
