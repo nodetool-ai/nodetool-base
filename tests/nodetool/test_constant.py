@@ -119,10 +119,12 @@ async def test_constant_node(context: ProcessingContext, node_class):
 class _ImageContextStub:
     def __init__(self) -> None:
         self.refreshed = False
+        self.refreshed_value: ImageRef | None = None
         self.asset_url_calls: list[str] = []
 
     async def refresh_uri(self, value: ImageRef) -> None:
         self.refreshed = True
+        self.refreshed_value = value
 
     async def get_asset_url(self, asset_id: str) -> str:
         self.asset_url_calls.append(asset_id)
@@ -137,6 +139,7 @@ async def test_image_constant_populates_asset_uri():
     result = await node.process(context)
 
     assert context.refreshed is True
+    assert context.refreshed_value is node.value
     assert context.asset_url_calls == ["asset-123"]
     assert result.uri == "https://example.com/assets/asset-123"
     assert result.type == "image"
@@ -156,6 +159,7 @@ async def test_image_constant_keeps_existing_uri():
     result = await node.process(context)
 
     assert context.refreshed is True
+    assert context.refreshed_value is node.value
     assert context.asset_url_calls == []
     assert result.uri == "https://example.com/assets/existing"
     assert result.type == "image"
