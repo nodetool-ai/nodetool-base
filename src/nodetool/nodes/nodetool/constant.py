@@ -1,6 +1,6 @@
 from datetime import date
 import os
-from typing import Any
+from typing import Any, TypedDict
 
 from pydantic import Field
 
@@ -155,12 +155,21 @@ class ImageSize(Constant):
     - Define standard sizes for resizing
     """
 
+    class OutputType(TypedDict):
+        image_size: ImageSizeType
+        width: int
+        height: int
+
     _expose_as_tool = True
 
     value: ImageSizeType = Field(default_factory=ImageSizeType)
 
-    async def process(self, context: ProcessingContext) -> tuple[ImageSizeType, int, int]:
-        return self.value, self.value.width, self.value.height
+    async def process(self, context: ProcessingContext) -> OutputType:
+        return {
+            "image_size": self.value,
+            "width": self.value.width,
+            "height": self.value.height
+        }
 
 
 class ImageList(Constant):
