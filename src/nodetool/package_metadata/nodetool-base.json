@@ -28484,7 +28484,7 @@
     },
     {
       "title": "Image Size",
-      "description": "Represents an image dimensions constant in the workflow.\n    resolution, width, height, size, preset\n    \n    Use cases:\n    - Set target resolution for image generation\n    - Define standard sizes for resizing",
+      "description": "",
       "namespace": "nodetool.constant",
       "node_type": "nodetool.constant.ImageSize",
       "properties": [
@@ -28667,7 +28667,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Value"
         }
@@ -34283,6 +34285,54 @@
       ]
     },
     {
+      "title": "Image Size Input",
+      "description": "Accepts image dimensions as a parameter for workflows.\n    input, parameter, image_size, resolution, width, height, dimensions",
+      "namespace": "nodetool.input",
+      "node_type": "nodetool.input.ImageSizeInput",
+      "properties": [
+        {
+          "name": "name",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Name",
+          "description": "The parameter name for the workflow."
+        },
+        {
+          "name": "value",
+          "type": {
+            "type": "image_size"
+          },
+          "default": null,
+          "title": "Value",
+          "description": "The image size to use as input.",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Description",
+          "description": "The description of the input for the workflow."
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "image_size"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "name",
+        "value"
+      ]
+    },
+    {
       "title": "Integer Input",
       "description": "Accepts an integer (whole number) as a parameter for workflows, typically constrained by a minimum and maximum value.  This input is used for discrete numeric values like counts, indices, or iteration limits.\n    input, parameter, integer, number, count, index, whole_number",
       "namespace": "nodetool.input",
@@ -34636,7 +34686,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Value",
           "description": "The 3D model to use as input."
@@ -36219,7 +36271,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model A",
           "description": "First 3D model (base)"
@@ -36235,7 +36289,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model B",
           "description": "Second 3D model (tool)"
@@ -36287,7 +36343,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to center"
@@ -36332,7 +36390,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to decimate"
@@ -36379,7 +36439,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to process"
@@ -36414,7 +36476,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to convert"
@@ -36467,7 +36531,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to analyze"
@@ -36549,6 +36615,110 @@
       ]
     },
     {
+      "title": "Image To 3D",
+      "description": "Generate 3D models from images using AI providers (Meshy, Rodin).\n    3d, generation, AI, image-to-3d, i3d, mesh, reconstruction\n\n    Use cases:\n    - Convert product photos to 3D models\n    - Create 3D assets from concept art\n    - Generate 3D characters from drawings\n    - Reconstruct objects from images",
+      "namespace": "nodetool.model3d",
+      "node_type": "nodetool.model3d.ImageTo3D",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "model_3d_model"
+          },
+          "default": {
+            "type": "model_3d_model",
+            "provider": "meshy",
+            "id": "meshy-4-image",
+            "name": "Meshy-4 Image-to-3D",
+            "path": null,
+            "supported_tasks": [],
+            "output_formats": [
+              "glb"
+            ]
+          },
+          "title": "Model",
+          "description": "The 3D generation model to use"
+        },
+        {
+          "name": "image",
+          "type": {
+            "type": "image"
+          },
+          "default": {
+            "type": "image",
+            "uri": "",
+            "asset_id": null,
+            "data": null,
+            "metadata": null
+          },
+          "title": "Image",
+          "description": "Input image to convert to 3D"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Optional text prompt to guide the 3D generation"
+        },
+        {
+          "name": "output_format",
+          "type": {
+            "type": "enum",
+            "values": [
+              "glb",
+              "gltf",
+              "obj",
+              "stl",
+              "ply"
+            ],
+            "type_name": "nodetool.nodes.nodetool.model3d.OutputFormat"
+          },
+          "default": "glb",
+          "title": "Output Format",
+          "description": "Output format for the 3D model"
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 600,
+          "title": "Timeout Seconds",
+          "description": "Timeout in seconds for API calls (0 = use provider default)",
+          "min": 0.0,
+          "max": 7200.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "model_3d"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "image",
+        "output_format",
+        "seed"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Load Model 3D File",
       "description": "Load a 3D model file from disk.\n    3d, mesh, model, input, load, file, obj, glb, stl, ply\n\n    Use cases:\n    - Load 3D models for processing\n    - Import meshes from CAD software\n    - Read 3D assets for a workflow",
       "namespace": "nodetool.model3d",
@@ -36626,7 +36796,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to process"
@@ -36687,7 +36859,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to save."
@@ -36748,7 +36922,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to save"
@@ -36797,6 +36973,113 @@
       ]
     },
     {
+      "title": "Text To 3D",
+      "description": "Generate 3D models from text prompts using AI providers (Meshy, Rodin).\n    3d, generation, AI, text-to-3d, t3d, mesh, create\n\n    Use cases:\n    - Create 3D models from text descriptions\n    - Generate game assets from prompts\n    - Prototype 3D concepts quickly\n    - Create 3D content for AR/VR",
+      "namespace": "nodetool.model3d",
+      "node_type": "nodetool.model3d.TextTo3D",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "model_3d_model"
+          },
+          "default": {
+            "type": "model_3d_model",
+            "provider": "meshy",
+            "id": "meshy-4",
+            "name": "Meshy-4 Text-to-3D",
+            "path": null,
+            "supported_tasks": [],
+            "output_formats": [
+              "glb"
+            ]
+          },
+          "title": "Model",
+          "description": "The 3D generation model to use"
+        },
+        {
+          "name": "prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Prompt",
+          "description": "Text description of the 3D model to generate"
+        },
+        {
+          "name": "negative_prompt",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Negative Prompt",
+          "description": "Elements to avoid in the generated model"
+        },
+        {
+          "name": "art_style",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Art Style",
+          "description": "Art style for the model (e.g., 'realistic', 'cartoon', 'low-poly')"
+        },
+        {
+          "name": "output_format",
+          "type": {
+            "type": "enum",
+            "values": [
+              "glb",
+              "gltf",
+              "obj",
+              "stl",
+              "ply"
+            ],
+            "type_name": "nodetool.nodes.nodetool.model3d.OutputFormat"
+          },
+          "default": "glb",
+          "title": "Output Format",
+          "description": "Output format for the 3D model"
+        },
+        {
+          "name": "seed",
+          "type": {
+            "type": "int"
+          },
+          "default": -1,
+          "title": "Seed",
+          "description": "Random seed for reproducibility (-1 for random)",
+          "min": -1.0
+        },
+        {
+          "name": "timeout_seconds",
+          "type": {
+            "type": "int"
+          },
+          "default": 600,
+          "title": "Timeout Seconds",
+          "description": "Timeout in seconds for API calls (0 = use provider default)",
+          "min": 0.0,
+          "max": 7200.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "model_3d"
+          },
+          "name": "output"
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "prompt",
+        "output_format",
+        "seed"
+      ],
+      "expose_as_tool": true
+    },
+    {
       "title": "Transform 3D",
       "description": "Apply translation, rotation, and scaling to a 3D model.\n    3d, mesh, model, transform, translate, rotate, scale, move\n\n    Use cases:\n    - Position models in 3D space\n    - Scale models to specific dimensions\n    - Rotate models for proper orientation",
       "namespace": "nodetool.model3d",
@@ -36813,7 +37096,9 @@
             "asset_id": null,
             "data": null,
             "metadata": null,
-            "format": null
+            "format": null,
+            "material_file": null,
+            "texture_files": []
           },
           "title": "Model",
           "description": "The 3D model to transform"
