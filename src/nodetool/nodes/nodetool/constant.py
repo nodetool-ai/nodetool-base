@@ -159,8 +159,8 @@ class ImageSize(Constant):
 
     value: ImageSizeType = Field(default_factory=ImageSizeType)
 
-    async def process(self, context: ProcessingContext) -> ImageSizeType:
-        return self.value
+    async def process(self, context: ProcessingContext) -> tuple[ImageSizeType, int, int]:
+        return self.value, self.value.width, self.value.height
 
 
 class ImageList(Constant):
