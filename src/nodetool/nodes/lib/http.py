@@ -743,6 +743,12 @@ class DownloadFiles(BaseNode):
                         if not filename:
                             filename = "unnamed_file"
 
+                    # Sanitize filename to prevent path traversal attacks
+                    # os.path.basename() removes all directory components
+                    filename = os.path.basename(filename)
+                    if not filename:
+                        filename = "unnamed_file"
+
                     if not self.output_folder:
                         raise ValueError("output_folder cannot be empty")
                     expanded_folder = os.path.expanduser(self.output_folder)
@@ -757,7 +763,8 @@ class DownloadFiles(BaseNode):
                     return filepath
                 else:
                     return ""
-        except Exception:
+        except (aiohttp.ClientError, OSError, ValueError) as e:
+            logger.error(f"Error downloading file from {url}: {e}")
             return ""
 
     class OutputType(TypedDict):
@@ -830,7 +837,7 @@ class JSONPostRequest(HTTPBaseNode):
         return "POST JSON"
 
     data: dict = Field(
-        default={},
+        default_factory=dict,
         description="The JSON data to send in the POST request.",
     )
 
