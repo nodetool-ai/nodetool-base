@@ -505,75 +505,62 @@ class HSLAdjust(BaseNode):
         if self.image.is_empty():
             raise ValueError("Image is not connected.")
 
-        import colorsys
+        from matplotlib.colors import rgb_to_hsv, hsv_to_rgb
 
         image = await context.image_to_pil(self.image)
         arr = _to_float_rgb(image)
+        arr = np.clip(arr, 0, 1)
 
-        # Define hue ranges (0-1 scale, where 0 and 1 are red)
-        hue_ranges = {
-            self.ColorRange.REDS: (0.95, 0.05),  # Wraps around
-            self.ColorRange.ORANGES: (0.02, 0.10),
-            self.ColorRange.YELLOWS: (0.10, 0.18),
-            self.ColorRange.GREENS: (0.18, 0.45),
-            self.ColorRange.CYANS: (0.45, 0.55),
-            self.ColorRange.BLUES: (0.55, 0.72),
-            self.ColorRange.PURPLES: (0.72, 0.83),
-            self.ColorRange.MAGENTAS: (0.83, 0.95),
-        }
+        # Vectorized RGB -> HSV conversion (operates on entire array)
+        hsv = rgb_to_hsv(arr)
+        h_ch = hsv[:, :, 0]
+        s_ch = hsv[:, :, 1]
+        v_ch = hsv[:, :, 2]
 
         is_all = self.color_range == self.ColorRange.ALL
 
-        if not is_all:
+        if is_all:
+            blend = np.ones_like(h_ch)
+        else:
+            # Define hue ranges (0-1 scale, where 0 and 1 are red)
+            hue_ranges = {
+                self.ColorRange.REDS: (0.95, 0.05),  # Wraps around
+                self.ColorRange.ORANGES: (0.02, 0.10),
+                self.ColorRange.YELLOWS: (0.10, 0.18),
+                self.ColorRange.GREENS: (0.18, 0.45),
+                self.ColorRange.CYANS: (0.45, 0.55),
+                self.ColorRange.BLUES: (0.55, 0.72),
+                self.ColorRange.PURPLES: (0.72, 0.83),
+                self.ColorRange.MAGENTAS: (0.83, 0.95),
+            }
+
             hue_start, hue_end = hue_ranges[self.color_range]
 
-        # Convert to HSV for hue-based selection
-        h, w, _ = arr.shape
-        result = arr.copy()
+            # Build in-range mask
+            if hue_start > hue_end:  # Wraps around (e.g., reds)
+                in_range = (h_ch >= hue_start) | (h_ch <= hue_end)
+                center = (hue_start + hue_end + 1) / 2 % 1
+                range_width = 1 - hue_start + hue_end
+            else:
+                in_range = (h_ch >= hue_start) & (h_ch <= hue_end)
+                center = (hue_start + hue_end) / 2
+                range_width = hue_end - hue_start
 
-        for y in range(h):
-            for x in range(w):
-                r, g, b = arr[y, x]
-                h_val, s_val, v_val = colorsys.rgb_to_hsv(
-                    float(np.clip(r, 0, 1)),
-                    float(np.clip(g, 0, 1)),
-                    float(np.clip(b, 0, 1)),
-                )
+            # Only adjust sufficiently saturated pixels
+            in_range = in_range & (s_ch > 0.1)
 
-                if is_all:
-                    blend = 1.0
-                    in_range = True
-                else:
-                    # Check if pixel is in the target hue range
-                    if hue_start > hue_end:  # Wraps around (e.g., reds)
-                        in_range = h_val >= hue_start or h_val <= hue_end
-                    else:
-                        in_range = hue_start <= h_val <= hue_end
+            # Calculate blend factor based on distance from range center
+            dist = np.minimum(np.abs(h_ch - center), 1 - np.abs(h_ch - center))
+            blend = np.maximum(0, 1 - dist / (range_width / 2 + 0.01))
+            blend = np.where(in_range, blend, 0.0)
 
-                    if in_range and s_val > 0.1:
-                        # Calculate blend factor based on distance from range center
-                        if hue_start > hue_end:
-                            center = (hue_start + hue_end + 1) / 2 % 1
-                        else:
-                            center = (hue_start + hue_end) / 2
-                        dist = min(abs(h_val - center), 1 - abs(h_val - center))
-                        range_width = (
-                            (hue_end - hue_start) % 1
-                            if hue_start < hue_end
-                            else (1 - hue_start + hue_end)
-                        )
-                        blend = max(0, 1 - dist / (range_width / 2 + 0.01))
-                    else:
-                        in_range = False
+        # Apply adjustments
+        new_h = (h_ch + self.hue_shift * 0.5 * blend) % 1.0
+        new_s = np.clip(s_ch * (1 + self.saturation * blend), 0, 1)
+        new_v = np.clip(v_ch * (1 + self.luminance * blend), 0, 1)
 
-                if in_range:
-                    # Apply adjustments
-                    new_h = (h_val + self.hue_shift * 0.5 * blend) % 1.0
-                    new_s = np.clip(s_val * (1 + self.saturation * blend), 0, 1)
-                    new_v = np.clip(v_val * (1 + self.luminance * blend), 0, 1)
-
-                    new_r, new_g, new_b = colorsys.hsv_to_rgb(new_h, new_s, new_v)
-                    result[y, x] = [new_r, new_g, new_b]
+        new_hsv = np.stack([new_h, new_s, new_v], axis=2)
+        result = hsv_to_rgb(new_hsv)
 
         return await context.image_from_pil(_from_float_rgb(result))
 

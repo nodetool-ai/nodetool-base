@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.3-rc.19",
+  "version": "0.6.3-rc.21",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
