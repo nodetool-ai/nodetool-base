@@ -1,7 +1,7 @@
 {
   "name": "nodetool-base",
   "description": "Nodetool Base nodes",
-  "version": "0.6.3-rc.18",
+  "version": "0.6.3-rc.19",
   "authors": [
     "Matthias Georgi <matti.georgi@gmail.com>"
   ],
@@ -21164,6 +21164,7 @@
           "type": {
             "type": "enum",
             "values": [
+              "all",
               "reds",
               "oranges",
               "yellows",
@@ -21175,7 +21176,7 @@
             ],
             "type_name": "nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange"
           },
-          "default": "reds",
+          "default": "all",
           "title": "Color Range",
           "description": "The color range to adjust."
         },
@@ -24171,8 +24172,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 54221,
-          "likes": 126
+          "downloads": 57470,
+          "likes": 127
         },
         {
           "id": "ggml-org/gemma-3-4b-it-GGUF:gemma-3-4b-it-Q4_K_M.gguf",
@@ -24222,7 +24223,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35271,
+          "downloads": 39173,
           "likes": 49
         },
         {
@@ -24273,7 +24274,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 77188,
+          "downloads": 107052,
           "likes": 30
         },
         {
@@ -24293,7 +24294,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 1913,
+          "downloads": 2043,
           "likes": 27
         },
         {
@@ -24319,7 +24320,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 4539,
+          "downloads": 4438,
           "likes": 7
         },
         {
@@ -24340,7 +24341,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35189,
+          "downloads": 34273,
           "likes": 12
         },
         {
@@ -24359,7 +24360,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 984,
+          "downloads": 893,
           "likes": 19
         },
         {
@@ -24410,7 +24411,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2633,
+          "downloads": 2552,
           "likes": 23
         }
       ],
@@ -24624,7 +24625,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35271,
+          "downloads": 39173,
           "likes": 49
         }
       ],
@@ -24853,7 +24854,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35271,
+          "downloads": 39173,
           "likes": 49
         }
       ],
@@ -24983,8 +24984,8 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 54221,
-          "likes": 126
+          "downloads": 57470,
+          "likes": 127
         },
         {
           "id": "ggml-org/gemma-3-12b-it-GGUF:gemma-3-12b-it-Q4_K_M.gguf",
@@ -25034,7 +25035,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 77188,
+          "downloads": 107052,
           "likes": 30
         }
       ],
@@ -25237,7 +25238,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35271,
+          "downloads": 39173,
           "likes": 49
         }
       ],

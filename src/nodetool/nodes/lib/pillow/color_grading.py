@@ -463,6 +463,7 @@ class HSLAdjust(BaseNode):
     """
 
     class ColorRange(str, Enum):
+        ALL = "all"
         REDS = "reds"
         ORANGES = "oranges"
         YELLOWS = "yellows"
@@ -475,7 +476,7 @@ class HSLAdjust(BaseNode):
     image: ImageRef = Field(default=ImageRef(), description="The image to adjust.")
 
     color_range: ColorRange = Field(
-        default=ColorRange.REDS,
+        default=ColorRange.ALL,
         description="The color range to adjust.",
     )
 
@@ -521,7 +522,10 @@ class HSLAdjust(BaseNode):
             self.ColorRange.MAGENTAS: (0.83, 0.95),
         }
 
-        hue_start, hue_end = hue_ranges[self.color_range]
+        is_all = self.color_range == self.ColorRange.ALL
+
+        if not is_all:
+            hue_start, hue_end = hue_ranges[self.color_range]
 
         # Convert to HSV for hue-based selection
         h, w, _ = arr.shape
@@ -536,26 +540,33 @@ class HSLAdjust(BaseNode):
                     float(np.clip(b, 0, 1)),
                 )
 
-                # Check if pixel is in the target hue range
-                if hue_start > hue_end:  # Wraps around (e.g., reds)
-                    in_range = h_val >= hue_start or h_val <= hue_end
+                if is_all:
+                    blend = 1.0
+                    in_range = True
                 else:
-                    in_range = hue_start <= h_val <= hue_end
-
-                if in_range and s_val > 0.1:  # Only adjust saturated colors
-                    # Calculate blend factor based on distance from range center
-                    if hue_start > hue_end:
-                        center = (hue_start + hue_end + 1) / 2 % 1
+                    # Check if pixel is in the target hue range
+                    if hue_start > hue_end:  # Wraps around (e.g., reds)
+                        in_range = h_val >= hue_start or h_val <= hue_end
                     else:
-                        center = (hue_start + hue_end) / 2
-                    dist = min(abs(h_val - center), 1 - abs(h_val - center))
-                    range_width = (
-                        (hue_end - hue_start) % 1
-                        if hue_start < hue_end
-                        else (1 - hue_start + hue_end)
-                    )
-                    blend = max(0, 1 - dist / (range_width / 2 + 0.01))
+                        in_range = hue_start <= h_val <= hue_end
 
+                    if in_range and s_val > 0.1:
+                        # Calculate blend factor based on distance from range center
+                        if hue_start > hue_end:
+                            center = (hue_start + hue_end + 1) / 2 % 1
+                        else:
+                            center = (hue_start + hue_end) / 2
+                        dist = min(abs(h_val - center), 1 - abs(h_val - center))
+                        range_width = (
+                            (hue_end - hue_start) % 1
+                            if hue_start < hue_end
+                            else (1 - hue_start + hue_end)
+                        )
+                        blend = max(0, 1 - dist / (range_width / 2 + 0.01))
+                    else:
+                        in_range = False
+
+                if in_range:
                     # Apply adjustments
                     new_h = (h_val + self.hue_shift * 0.5 * blend) % 1.0
                     new_s = np.clip(s_val * (1 + self.saturation * blend), 0, 1)
