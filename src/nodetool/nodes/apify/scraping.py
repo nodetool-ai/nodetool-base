@@ -7,9 +7,15 @@ Provides nodes for popular Apify actors including web scraping, social media, an
 
 from pydantic import Field
 from typing import Any, Dict, List, ClassVar
+from urllib.parse import quote
 
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+
+# Constants
+DEFAULT_PAGE_FUNCTION = "async function pageFunction(context) { return context.request.loadedUrl; }"
+MIN_RESULTS_PER_PAGE = 10
+MAX_RESULTS_PER_PAGE = 100
 
 
 async def _get_apify_client(context: ProcessingContext):
@@ -67,7 +73,7 @@ class ApifyWebScraper(BaseNode):
         run_input = {
             "startUrls": [{"url": url} for url in self.start_urls],
             "linkSelector": self.link_selector,
-            "pageFunction": self.page_function or "async function pageFunction(context) { return context.request.loadedUrl; }",
+            "pageFunction": self.page_function or DEFAULT_PAGE_FUNCTION,
             "maxPagesPerCrawl": self.max_pages,
         }
 
@@ -136,7 +142,7 @@ class ApifyGoogleSearchScraper(BaseNode):
             "countryCode": self.country_code,
             "languageCode": self.language_code,
             "maxPagesPerQuery": self.max_pages,
-            "resultsPerPage": min(max(10, self.results_per_page), 100),
+            "resultsPerPage": min(max(MIN_RESULTS_PER_PAGE, self.results_per_page), MAX_RESULTS_PER_PAGE),
         }
 
         # Run the Google Search Scraper actor
@@ -357,7 +363,7 @@ class ApifyYouTubeScraper(BaseNode):
         
         if self.search_queries:
             for query in self.search_queries:
-                start_urls.append({"url": f"https://www.youtube.com/results?search_query={query}"})
+                start_urls.append({"url": f"https://www.youtube.com/results?search_query={quote(query)}"})
         
         if self.video_urls:
             for url in self.video_urls:
@@ -429,7 +435,7 @@ class ApifyTwitterScraper(BaseNode):
         
         if self.search_terms:
             for term in self.search_terms:
-                start_urls.append(f"https://twitter.com/search?q={term}")
+                start_urls.append(f"https://twitter.com/search?q={quote(term)}")
         
         if self.usernames:
             for username in self.usernames:
