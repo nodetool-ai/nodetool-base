@@ -29,6 +29,7 @@ class TextToVideo(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     prompt: str = Field(
         default="", description="The text prompt describing the video to generate"
@@ -102,6 +103,7 @@ class ImageToVideo(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     image: ImageRef = Field(
         default=ImageRef(), description="The image to animate into a video"

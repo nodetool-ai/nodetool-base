@@ -115,7 +115,10 @@
         "allowed_tools",
         "permission_mode"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": [
+        "ANTHROPIC_API_KEY"
+      ]
     },
     {
       "title": "Text To Speech",
@@ -211,7 +214,10 @@
         "voice_name",
         "style_prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Transcribe",
@@ -271,7 +277,10 @@
         "model",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Image Generation",
@@ -335,7 +344,10 @@
         "model",
         "image"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Embedding",
@@ -379,7 +391,10 @@
         "input",
         "model"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Grounded Search",
@@ -440,7 +455,10 @@
         "query",
         "model"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Image To Video",
@@ -525,7 +543,10 @@
         "aspect_ratio",
         "negative_prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Text To Video",
@@ -594,7 +615,10 @@
         "aspect_ratio",
         "negative_prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GEMINI_API_KEY"
+      ]
     },
     {
       "title": "Add Instrumental",
@@ -732,7 +756,10 @@
         "weirdness_constraint",
         "audio_weight"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Add Vocals",
@@ -890,7 +917,10 @@
         "weirdness_constraint",
         "audio_weight"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Cover Audio",
@@ -1071,7 +1101,10 @@
         "audio_weight",
         "persona_id"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "ElevenLabs Audio Isolation",
@@ -1118,7 +1151,10 @@
         "timeout_seconds",
         "audio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "ElevenLabs Sound Effect",
@@ -1183,7 +1219,10 @@
         "duration_seconds",
         "prompt_influence"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "ElevenLabs Speech To Text",
@@ -1250,7 +1289,10 @@
         "language_code",
         "diarization"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "ElevenLabs Text To Speech",
@@ -1374,7 +1416,10 @@
         "language_code",
         "model"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "ElevenLabs V3 Dialogue",
@@ -1483,7 +1528,10 @@
         "speed",
         "language_code"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Extend Music",
@@ -1659,7 +1707,10 @@
         "audio_weight",
         "persona_id"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Generate Music",
@@ -1824,7 +1875,10 @@
         "audio_weight",
         "persona_id"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Replace Music Section",
@@ -1947,7 +2001,10 @@
         "negative_tags",
         "full_lyrics"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Flux 2 Flex Image To Image",
@@ -2039,7 +2096,10 @@
         "aspect_ratio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Flux 2 Flex Text To Image",
@@ -2116,7 +2176,10 @@
         "aspect_ratio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Flux 2 Pro Image To Image",
@@ -2208,7 +2271,10 @@
         "aspect_ratio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Flux 2 Pro Text To Image",
@@ -2285,7 +2351,10 @@
         "aspect_ratio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Flux Kontext",
@@ -2359,7 +2428,10 @@
         "aspect_ratio",
         "mode"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "GPT Image 1.5 Edit",
@@ -2446,7 +2518,10 @@
         "aspect_ratio",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "GPT Image 1.5 Text To Image",
@@ -2518,7 +2593,10 @@
         "aspect_ratio",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "GPT 4o Image Edit",
@@ -2602,7 +2680,10 @@
         "size",
         "n_variants"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "GPT 4o Image Text To Image",
@@ -2681,7 +2762,10 @@
         "n_variants",
         "is_enhance"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Grok Imagine Text To Image",
@@ -2740,7 +2824,10 @@
         "prompt",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Grok Imagine Upscale",
@@ -2787,7 +2874,10 @@
         "timeout_seconds",
         "image"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Ideogram Character Remix",
@@ -2968,7 +3058,10 @@
         "additional_images",
         "reference_mask_urls"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Ideogram V3 Image To Image",
@@ -3119,7 +3212,10 @@
         "expand_prompt",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Ideogram V3 Reframe",
@@ -3228,7 +3324,10 @@
         "style",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Ideogram V3 Text To Image",
@@ -3351,7 +3450,10 @@
         "expand_prompt",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Imagen 4",
@@ -3430,7 +3532,10 @@
         "aspect_ratio",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Imagen 4 Fast",
@@ -3499,7 +3604,10 @@
         "negative_prompt",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Imagen 4 Ultra",
@@ -3578,7 +3686,10 @@
         "aspect_ratio",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Nano Banana",
@@ -3643,7 +3754,10 @@
         "prompt",
         "image_size"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Nano Banana Edit",
@@ -3723,7 +3837,10 @@
         "image_input",
         "image_size"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Nano Banana Pro",
@@ -3813,7 +3930,10 @@
         "aspect_ratio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Qwen Image To Image",
@@ -3888,7 +4008,10 @@
         "image",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Qwen Text To Image",
@@ -3947,7 +4070,10 @@
         "prompt",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Recraft Crisp Upscale",
@@ -3994,7 +4120,10 @@
         "timeout_seconds",
         "image"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Recraft Remove Background",
@@ -4041,7 +4170,10 @@
         "timeout_seconds",
         "image"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedream 4.0 Edit",
@@ -4131,7 +4263,10 @@
         "aspect_ratio",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedream 4.0 Text To Image",
@@ -4205,7 +4340,10 @@
         "aspect_ratio",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedream 4.5 Edit",
@@ -4294,7 +4432,10 @@
         "aspect_ratio",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedream 4.5 Text To Image",
@@ -4368,7 +4509,10 @@
         "aspect_ratio",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Topaz Image Upscale",
@@ -4430,7 +4574,10 @@
         "image",
         "upscale_factor"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Z-Image Turbo",
@@ -4489,7 +4636,10 @@
         "prompt",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Grok Imagine Image To Video",
@@ -4562,7 +4712,10 @@
         "image",
         "duration"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Grok Imagine Text To Video",
@@ -4634,7 +4787,10 @@
         "resolution",
         "duration"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Hailuo 02 Image To Video",
@@ -4721,7 +4877,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Hailuo 02 Text To Video",
@@ -4808,7 +4967,10 @@
         "resolution",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Hailuo 2.3 Pro Image To Video",
@@ -4895,7 +5057,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Hailuo 2.3 Standard Image To Video",
@@ -4982,7 +5147,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Hailuo 2.3 Pro Text To Video",
@@ -5053,7 +5221,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Hailuo 2.3 Standard Text To Video",
@@ -5124,7 +5295,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Infinitalk V1",
@@ -5211,7 +5385,10 @@
         "audio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.1 Image To Video",
@@ -5335,7 +5512,10 @@
         "duration",
         "mode"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.1 Text To Video",
@@ -5444,7 +5624,10 @@
         "mode",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.5 Turbo Image To Video",
@@ -5554,7 +5737,10 @@
         "negative_prompt",
         "cfg_scale"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.5 Turbo Text To Video",
@@ -5648,7 +5834,10 @@
         "negative_prompt",
         "cfg_scale"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling AIAvatar Pro",
@@ -5736,7 +5925,10 @@
         "prompt",
         "mode"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling AIAvatar Standard",
@@ -5824,7 +6016,10 @@
         "prompt",
         "mode"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.6 Image To Video",
@@ -5933,7 +6128,10 @@
         "sound",
         "duration"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.6 Motion Control",
@@ -6038,7 +6236,10 @@
         "character_orientation",
         "mode"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Kling 2.6 Text To Video",
@@ -6131,7 +6332,10 @@
         "resolution",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Luma Modify Video",
@@ -6221,7 +6425,10 @@
         "aspect_ratio",
         "duration"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Runway Aleph Video",
@@ -6328,7 +6535,10 @@
         "water_mark",
         "call_back_url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Runway Gen-3 Alpha Extend Video",
@@ -6429,7 +6639,10 @@
         "water_mark",
         "call_back_url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Runway Gen-3 Alpha Image To Video",
@@ -6536,7 +6749,10 @@
         "water_mark",
         "call_back_url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Runway Gen-3 Alpha Text To Video",
@@ -6645,7 +6861,10 @@
         "water_mark",
         "call_back_url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedance V1 Lite Image To Video",
@@ -6793,7 +7012,10 @@
         "image2",
         "image3"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedance V1 Lite Text To Video",
@@ -6893,7 +7115,10 @@
         "remove_watermark",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedance V1 Pro Fast Image To Video",
@@ -7031,7 +7256,10 @@
         "image2",
         "image3"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedance V1 Pro Image To Video",
@@ -7179,7 +7407,10 @@
         "image2",
         "image3"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Seedance V1 Pro Text To Video",
@@ -7279,7 +7510,10 @@
         "remove_watermark",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Sora 2 Pro Image To Video",
@@ -7377,7 +7611,10 @@
         "prompt",
         "image"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Sora 2 Pro Storyboard",
@@ -7482,7 +7719,10 @@
         "shots",
         "images"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Sora 2 Pro Text To Video",
@@ -7564,7 +7804,10 @@
         "n_frames",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Sora 2 Text To Video",
@@ -7646,7 +7889,10 @@
         "n_frames",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Sora 2 Watermark Remover",
@@ -7695,7 +7941,10 @@
         "timeout_seconds",
         "video"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Topaz Video Upscale",
@@ -7769,7 +8018,10 @@
         "resolution",
         "denoise"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Veo 3.1 Image To Video",
@@ -7882,7 +8134,10 @@
         "image1",
         "image2"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Veo 3.1 Reference To Video",
@@ -8011,7 +8266,10 @@
         "image2",
         "image3"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Veo 31 Text To Video",
@@ -8092,7 +8350,10 @@
         "call_back_url",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.2 Image To Video",
@@ -8178,7 +8439,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.2 Text To Video",
@@ -8264,7 +8528,10 @@
         "resolution",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.5 Image To Video",
@@ -8383,7 +8650,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.5 Text To Video",
@@ -8470,7 +8740,10 @@
         "resolution",
         "aspect_ratio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.6 Image To Video",
@@ -8589,7 +8862,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.6 Text To Video",
@@ -8660,7 +8936,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.6 Video To Video",
@@ -8785,7 +9064,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.2 Animate",
@@ -8872,7 +9154,10 @@
         "duration",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.1 Multi-Shot Text To Video",
@@ -8971,7 +9256,10 @@
         "duration",
         "remove_watermark"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Wan 2.2 Speech To Video",
@@ -9049,7 +9337,10 @@
         "audio",
         "resolution"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "KIE_API_KEY"
+      ]
     },
     {
       "title": "Base Url",
@@ -9077,7 +9368,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Audio",
@@ -9116,7 +9408,8 @@
         "html",
         "base_url"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Extract Images",
@@ -9155,7 +9448,8 @@
         "html",
         "base_url"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Extract Links",
@@ -9206,7 +9500,8 @@
         "html",
         "base_url"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Extract Metadata",
@@ -9246,7 +9541,8 @@
       ],
       "basic_fields": [
         "html"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Videos",
@@ -9285,7 +9581,8 @@
         "html",
         "base_url"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Convert HTML to Text",
@@ -9322,7 +9619,8 @@
       "basic_fields": [
         "text",
         "preserve_linebreaks"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Website Content Extractor",
@@ -9350,7 +9648,8 @@
       ],
       "basic_fields": [
         "html_content"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Browser",
@@ -9409,7 +9708,8 @@
         "url",
         "timeout"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Browser Navigation",
@@ -9521,7 +9821,8 @@
         "wait_for",
         "extract_type",
         "attribute"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Browser Use",
@@ -9605,7 +9906,10 @@
         "timeout",
         "use_remote_browser"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Download File",
@@ -9634,7 +9938,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Screenshot",
@@ -9701,7 +10006,8 @@
         "output_file",
         "timeout"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Spider Crawl",
@@ -9853,7 +10159,8 @@
         "exclude_pattern"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Web Fetch",
@@ -9892,7 +10199,8 @@
         "url",
         "selector"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Add Time Delta",
@@ -9968,7 +10276,8 @@
         "hours",
         "minutes"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Boundary Time",
@@ -10050,7 +10359,8 @@
         "boundary",
         "start_monday"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Date Difference",
@@ -10135,7 +10445,8 @@
         "start_date",
         "end_date"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Date Range",
@@ -10211,7 +10522,8 @@
         "end_date",
         "step_days"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Date To Datetime",
@@ -10245,7 +10557,8 @@
       "basic_fields": [
         "input_date"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Datetime To Date",
@@ -10285,7 +10598,8 @@
       "basic_fields": [
         "input_datetime"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Format Date Time",
@@ -10347,7 +10661,8 @@
         "input_datetime",
         "output_format"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Get Quarter",
@@ -10399,7 +10714,8 @@
       "basic_fields": [
         "input_datetime"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Get Weekday",
@@ -10457,7 +10773,8 @@
         "input_datetime",
         "as_name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Is Date In Range",
@@ -10549,7 +10866,8 @@
         "end_date",
         "inclusive"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Now",
@@ -10564,7 +10882,8 @@
           "name": "output"
         }
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Parse Date",
@@ -10615,7 +10934,8 @@
         "date_string",
         "input_format"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Parse Date Time",
@@ -10666,7 +10986,8 @@
         "datetime_string",
         "input_format"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Relative Time",
@@ -10727,7 +11048,8 @@
         "unit",
         "direction"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Today",
@@ -10742,7 +11064,8 @@
           "name": "output"
         }
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Add Heading",
@@ -10798,7 +11121,8 @@
         "document",
         "text",
         "level"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Image",
@@ -10868,7 +11192,8 @@
         "image",
         "width",
         "height"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Page Break",
@@ -10902,7 +11227,8 @@
       ],
       "basic_fields": [
         "document"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Paragraph",
@@ -10993,7 +11319,8 @@
         "bold",
         "italic",
         "font_size"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Table",
@@ -11044,7 +11371,8 @@
       "basic_fields": [
         "document",
         "data"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Document",
@@ -11058,7 +11386,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Load Word Document",
@@ -11086,7 +11415,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Document",
@@ -11135,7 +11465,8 @@
         "document",
         "path",
         "filename"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Set Document Properties",
@@ -11209,7 +11540,8 @@
         "author",
         "subject",
         "keywords"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Auto Fit Columns",
@@ -11253,7 +11585,8 @@
       "basic_fields": [
         "workbook",
         "sheet_name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Workbook",
@@ -11281,7 +11614,8 @@
       ],
       "basic_fields": [
         "sheet_name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Data Frame To Excel",
@@ -11362,7 +11696,8 @@
         "sheet_name",
         "start_cell",
         "include_header"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Excel To Data Frame",
@@ -11416,7 +11751,8 @@
         "workbook",
         "sheet_name",
         "has_header"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Format Cells",
@@ -11500,7 +11836,8 @@
         "bold",
         "background_color",
         "text_color"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Workbook",
@@ -11549,7 +11886,8 @@
         "workbook",
         "folder",
         "filename"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Combine Image Grid",
@@ -11593,7 +11931,8 @@
       "basic_fields": [
         "tiles",
         "columns"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Slice Image Grid",
@@ -11654,7 +11993,8 @@
         "image",
         "columns",
         "rows"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "DELETE Request",
@@ -11683,7 +12023,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Download Dataframe",
@@ -11759,7 +12100,8 @@
         "columns",
         "file_format"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Download Files",
@@ -11829,7 +12171,8 @@
         "output_folder",
         "max_concurrent_downloads"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Fetch Page",
@@ -11880,7 +12223,8 @@
         "url",
         "wait_time"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Filter Valid URLs",
@@ -11936,7 +12280,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "GET Request",
@@ -11965,7 +12310,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "GET Binary",
@@ -11994,7 +12340,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "GET Document",
@@ -12023,7 +12370,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "HEAD Request",
@@ -12059,7 +12407,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image Downloader",
@@ -12129,7 +12478,8 @@
         "base_url",
         "max_concurrent_downloads"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "GET JSON",
@@ -12157,7 +12507,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "PATCH JSON",
@@ -12194,7 +12545,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "POST JSON",
@@ -12231,7 +12583,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "PUT JSON",
@@ -12268,7 +12621,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "POST Request",
@@ -12306,7 +12660,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "POST Binary",
@@ -12352,7 +12707,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "PUT Request",
@@ -12390,7 +12746,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Filter JSON",
@@ -12448,7 +12805,8 @@
         "array",
         "key",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get JSONPath Bool",
@@ -12496,7 +12854,8 @@
         "data",
         "path",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get JSONPath Dict",
@@ -12544,7 +12903,8 @@
         "data",
         "path",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get JSONPath Float",
@@ -12592,7 +12952,8 @@
         "data",
         "path",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get JSONPath Int",
@@ -12640,7 +13001,8 @@
         "data",
         "path",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get JSONPath List",
@@ -12688,7 +13050,8 @@
         "data",
         "path",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get JSONPath Str",
@@ -12736,7 +13099,8 @@
         "data",
         "path",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "JSON Template",
@@ -12782,7 +13146,8 @@
       "basic_fields": [
         "template",
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Load JSON Folder",
@@ -12823,7 +13188,8 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Parse Dict",
@@ -12851,7 +13217,8 @@
       ],
       "basic_fields": [
         "json_string"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Parse List",
@@ -12879,7 +13246,8 @@
       ],
       "basic_fields": [
         "json_string"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Stringify JSON",
@@ -12917,7 +13285,8 @@
       "basic_fields": [
         "data",
         "indent"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Validate JSON",
@@ -12955,7 +13324,8 @@
       "basic_fields": [
         "data",
         "json_schema"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Label",
@@ -12994,7 +13364,11 @@
         "message_id",
         "label"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GOOGLE_MAIL_USER",
+        "GOOGLE_APP_PASSWORD"
+      ]
     },
     {
       "title": "Gmail Search",
@@ -13122,7 +13496,11 @@
         "max_results"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GOOGLE_MAIL_USER",
+        "GOOGLE_APP_PASSWORD"
+      ]
     },
     {
       "title": "Move To Archive",
@@ -13151,7 +13529,11 @@
       "basic_fields": [
         "message_id"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "GOOGLE_MAIL_USER",
+        "GOOGLE_APP_PASSWORD"
+      ]
     },
     {
       "title": "Send Email",
@@ -13250,7 +13632,8 @@
         "subject",
         "body"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Bullet Lists",
@@ -13292,7 +13675,8 @@
       "basic_fields": [
         "markdown"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Code Blocks",
@@ -13333,7 +13717,8 @@
       ],
       "basic_fields": [
         "markdown"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Headers",
@@ -13387,7 +13772,8 @@
         "markdown",
         "max_level"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Links",
@@ -13439,7 +13825,8 @@
         "markdown",
         "include_titles"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Numbered Lists",
@@ -13473,7 +13860,8 @@
       "basic_fields": [
         "markdown"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Tables",
@@ -13502,7 +13890,8 @@
       "basic_fields": [
         "markdown"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Convert To Markdown",
@@ -13537,7 +13926,8 @@
       "basic_fields": [
         "document"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Add",
@@ -13599,7 +13989,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Cosine",
@@ -13644,7 +14035,8 @@
       "basic_fields": [
         "angle_rad"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Divide",
@@ -13706,7 +14098,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Math Function",
@@ -13777,7 +14170,8 @@
         "input",
         "operation"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Modulus",
@@ -13839,7 +14233,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Multiply",
@@ -13901,7 +14296,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Power",
@@ -13963,7 +14359,8 @@
         "base",
         "exponent"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Sine",
@@ -14008,7 +14405,8 @@
       "basic_fields": [
         "angle_rad"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Sqrt",
@@ -14053,7 +14451,8 @@
       "basic_fields": [
         "x"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Subtract",
@@ -14115,7 +14514,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Paddle OCR",
@@ -14207,7 +14607,8 @@
       "basic_fields": [
         "image",
         "language"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Absolute Path",
@@ -14235,7 +14636,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Accessed Time",
@@ -14263,7 +14665,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Basename",
@@ -14301,7 +14704,8 @@
       "basic_fields": [
         "path",
         "remove_extension"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Copy File",
@@ -14331,7 +14735,8 @@
       "basic_fields": [
         "source_path",
         "destination_path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Directory",
@@ -14361,7 +14766,8 @@
       "basic_fields": [
         "path",
         "exist_ok"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Created Time",
@@ -14389,7 +14795,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Dirname",
@@ -14417,7 +14824,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "File Exists",
@@ -14445,7 +14853,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "File Extension",
@@ -14473,7 +14882,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "File Name",
@@ -14501,7 +14911,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "File Name Match",
@@ -14549,7 +14960,8 @@
         "filename",
         "pattern",
         "case_sensitive"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Filter File Names",
@@ -14607,7 +15019,8 @@
         "filenames",
         "pattern",
         "case_sensitive"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Directory",
@@ -14635,7 +15048,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get File Size",
@@ -14663,7 +15077,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Path Info",
@@ -14691,7 +15106,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is Directory",
@@ -14719,7 +15135,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is File",
@@ -14747,7 +15164,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Join Paths",
@@ -14780,7 +15198,8 @@
       ],
       "basic_fields": [
         "paths"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "List Files",
@@ -14829,7 +15248,8 @@
         "pattern",
         "include_subdirectories"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Modified Time",
@@ -14857,7 +15277,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Move File",
@@ -14887,7 +15308,8 @@
       "basic_fields": [
         "source_path",
         "destination_path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Normalize Path",
@@ -14915,7 +15337,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Open Workspace Directory",
@@ -14929,7 +15352,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Path To String",
@@ -14957,7 +15381,8 @@
       ],
       "basic_fields": [
         "file_path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Relative Path",
@@ -14995,7 +15420,8 @@
       "basic_fields": [
         "target_path",
         "start_path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Show Notification",
@@ -15043,7 +15469,8 @@
         "title",
         "message",
         "timeout"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Extension",
@@ -15071,7 +15498,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Path",
@@ -15099,7 +15527,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Workspace Directory",
@@ -15113,7 +15542,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Convert File",
@@ -15251,7 +15681,8 @@
         "input_format",
         "output_format",
         "extra_args"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Convert Text",
@@ -15386,7 +15817,8 @@
         "input_format",
         "output_format",
         "extra_args"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Images",
@@ -15439,7 +15871,8 @@
         "pdf",
         "start_page",
         "end_page"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Page Metadata",
@@ -15492,7 +15925,8 @@
         "pdf",
         "start_page",
         "end_page"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Tables",
@@ -15573,7 +16007,8 @@
         "start_page",
         "end_page",
         "table_settings"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Text",
@@ -15627,7 +16062,8 @@
         "pdf",
         "start_page",
         "end_page"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Page Count",
@@ -15655,7 +16091,8 @@
       ],
       "basic_fields": [
         "pdf"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Markdown",
@@ -15710,7 +16147,8 @@
         "start_page",
         "end_page"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Tables",
@@ -15770,7 +16208,8 @@
         "start_page",
         "end_page"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Text",
@@ -15825,7 +16264,8 @@
         "start_page",
         "end_page"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Text Blocks",
@@ -15885,7 +16325,8 @@
         "start_page",
         "end_page"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Text With Style",
@@ -15945,7 +16386,8 @@
         "start_page",
         "end_page"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Feed Metadata",
@@ -15973,7 +16415,8 @@
       ],
       "basic_fields": [
         "url"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Fetch RSS Feed",
@@ -16027,7 +16470,8 @@
         "url"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Chart Renderer",
@@ -16153,7 +16597,8 @@
         "data",
         "despine",
         "trim_margins"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Secret",
@@ -16192,7 +16637,8 @@
       "basic_fields": [
         "name",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Table",
@@ -16276,7 +16722,8 @@
         "add_primary_key",
         "if_not_exists"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Delete",
@@ -16333,7 +16780,8 @@
         "table_name",
         "where"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Execute SQL",
@@ -16395,7 +16843,8 @@
         "sql",
         "parameters"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Get Database Path",
@@ -16424,7 +16873,8 @@
       "basic_fields": [
         "database_name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Insert",
@@ -16491,7 +16941,8 @@
         "table_name",
         "data"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Query",
@@ -16586,7 +17037,8 @@
         "order_by",
         "limit"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Update",
@@ -16663,7 +17115,8 @@
         "data",
         "where"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Delete",
@@ -16738,7 +17191,8 @@
         "table_name",
         "filters"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Insert",
@@ -16816,7 +17270,8 @@
         "records",
         "return_rows"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "RPC",
@@ -16873,7 +17328,8 @@
         "params",
         "to_dataframe"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Select",
@@ -16993,7 +17449,8 @@
         "limit",
         "to_dataframe"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Update",
@@ -17088,7 +17545,8 @@
         "filters",
         "return_rows"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Upsert",
@@ -17166,7 +17624,8 @@
         "records",
         "return_rows"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Circle",
@@ -17250,7 +17709,8 @@
         "fill",
         "stroke",
         "stroke_width"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Clip Path",
@@ -17300,7 +17760,8 @@
       "basic_fields": [
         "clip_content",
         "content"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "SVG Document",
@@ -17378,7 +17839,8 @@
         "width",
         "height",
         "viewBox"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Drop Shadow",
@@ -17439,7 +17901,8 @@
         "dx",
         "dy",
         "color"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Ellipse",
@@ -17533,7 +17996,8 @@
         "fill",
         "stroke",
         "stroke_width"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Gaussian Blur",
@@ -17561,7 +18025,8 @@
       ],
       "basic_fields": [
         "std_deviation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Gradient",
@@ -17660,7 +18125,8 @@
         "y2",
         "color1",
         "color2"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Line",
@@ -17741,7 +18207,8 @@
         "y2",
         "stroke",
         "stroke_width"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Path",
@@ -17805,7 +18272,8 @@
         "fill",
         "stroke",
         "stroke_width"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Polygon",
@@ -17869,7 +18337,8 @@
         "fill",
         "stroke",
         "stroke_width"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Rectangle",
@@ -17963,7 +18432,8 @@
         "fill",
         "stroke",
         "stroke_width"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "SVG to Image",
@@ -18053,7 +18523,8 @@
         "height",
         "viewBox",
         "scale"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Text",
@@ -18150,7 +18621,8 @@
         "font_size",
         "fill",
         "text_anchor"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Transform",
@@ -18234,7 +18706,8 @@
         "rotate",
         "scale_x",
         "scale_y"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Format UUID",
@@ -18281,7 +18754,8 @@
         "uuid_string",
         "format"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Generate UUID1",
@@ -18296,7 +18770,8 @@
           "name": "output"
         }
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Generate UUID3",
@@ -18335,7 +18810,8 @@
         "namespace",
         "name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Generate UUID4",
@@ -18350,7 +18826,8 @@
           "name": "output"
         }
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Generate UUID5",
@@ -18389,7 +18866,8 @@
         "namespace",
         "name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Is Valid UUID",
@@ -18418,7 +18896,8 @@
       "basic_fields": [
         "uuid_string"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Parse UUID",
@@ -18447,7 +18926,8 @@
       "basic_fields": [
         "uuid_string"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "YouTube Downloader",
@@ -18588,7 +19068,8 @@
         "overwrite",
         "rate_limit_kbps",
         "timeout"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Array",
@@ -18658,7 +19139,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Divide Array",
@@ -18728,7 +19210,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Modulus Array",
@@ -18798,7 +19281,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Multiply Array",
@@ -18868,7 +19352,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Subtract Array",
@@ -18938,7 +19423,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Array To List",
@@ -18978,7 +19464,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Array To Scalar",
@@ -19021,7 +19508,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Convert To Array",
@@ -19055,7 +19543,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Convert To Audio",
@@ -19102,7 +19591,8 @@
       "basic_fields": [
         "values",
         "sample_rate"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Convert To Image",
@@ -19137,7 +19627,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "List To Array",
@@ -19170,7 +19661,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Scalar To Array",
@@ -19206,7 +19698,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Array",
@@ -19267,7 +19760,8 @@
         "values",
         "folder",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index Array",
@@ -19322,7 +19816,8 @@
         "values",
         "indices",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Mat Mul",
@@ -19375,7 +19870,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Slice Array",
@@ -19450,7 +19946,8 @@
         "stop",
         "step",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Array",
@@ -19510,7 +20007,8 @@
         "values",
         "num_splits",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Stack",
@@ -19554,7 +20052,8 @@
       "basic_fields": [
         "arrays",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Transpose Array",
@@ -19590,7 +20089,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Abs Array",
@@ -19625,7 +20125,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Cosine Array",
@@ -19672,7 +20173,8 @@
       ],
       "basic_fields": [
         "angle_rad"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Exp Array",
@@ -19718,7 +20220,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Log Array",
@@ -19764,7 +20267,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Power Array",
@@ -19834,7 +20338,8 @@
       "basic_fields": [
         "base",
         "exponent"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sine Array",
@@ -19881,7 +20386,8 @@
       ],
       "basic_fields": [
         "angle_rad"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sqrt Array",
@@ -19928,7 +20434,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reshape 1D",
@@ -19973,7 +20480,8 @@
       "basic_fields": [
         "values",
         "num_elements"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reshape 2D",
@@ -20028,7 +20536,8 @@
         "values",
         "num_rows",
         "num_cols"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reshape 3D",
@@ -20093,7 +20602,8 @@
         "num_rows",
         "num_cols",
         "num_depths"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reshape 4D",
@@ -20168,7 +20678,8 @@
         "num_cols",
         "num_depths",
         "num_channels"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Arg Max Array",
@@ -20221,7 +20732,8 @@
       "basic_fields": [
         "values",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Arg Min Array",
@@ -20274,7 +20786,8 @@
       "basic_fields": [
         "values",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Max Array",
@@ -20330,7 +20843,8 @@
       "basic_fields": [
         "values",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Mean Array",
@@ -20386,7 +20900,8 @@
       "basic_fields": [
         "values",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Min Array",
@@ -20442,7 +20957,8 @@
       "basic_fields": [
         "values",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sum Array",
@@ -20498,7 +21014,8 @@
       "basic_fields": [
         "values",
         "axis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Binary Operation",
@@ -20568,7 +21085,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Plot Array",
@@ -20619,7 +21137,8 @@
       "basic_fields": [
         "values",
         "plot_type"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "CDL",
@@ -20773,7 +21292,8 @@
         "power_g",
         "power_b",
         "saturation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Color Balance",
@@ -20831,7 +21351,8 @@
         "image",
         "temperature",
         "tint"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Curves",
@@ -20961,7 +21482,8 @@
         "red_midtones",
         "green_midtones",
         "blue_midtones"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Exposure",
@@ -21067,7 +21589,8 @@
         "shadows",
         "whites",
         "blacks"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Film Look",
@@ -21136,7 +21659,8 @@
         "image",
         "preset",
         "intensity"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "HSLAdjust",
@@ -21228,7 +21752,8 @@
         "hue_shift",
         "saturation",
         "luminance"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Lift Gamma Gain",
@@ -21406,7 +21931,8 @@
         "gain_g",
         "gain_b",
         "gain_master"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Saturation Vibrance",
@@ -21464,7 +21990,8 @@
         "image",
         "saturation",
         "vibrance"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Toning",
@@ -21558,7 +22085,8 @@
         "highlight_hue",
         "highlight_saturation",
         "balance"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Vignette",
@@ -21640,7 +22168,8 @@
         "midpoint",
         "roundness",
         "feather"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Background",
@@ -21692,7 +22221,8 @@
         "width",
         "height",
         "color"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Gaussian Noise",
@@ -21750,7 +22280,8 @@
         "stddev",
         "width",
         "height"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Render Text",
@@ -21870,7 +22401,8 @@
         "color",
         "align",
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Adaptive Contrast",
@@ -21928,7 +22460,8 @@
         "image",
         "clip_limit",
         "grid_size"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Auto Contrast",
@@ -21974,7 +22507,8 @@
       "basic_fields": [
         "image",
         "cutoff"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Brightness",
@@ -22026,7 +22560,8 @@
       "basic_fields": [
         "image",
         "factor"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Color",
@@ -22070,7 +22605,8 @@
       "basic_fields": [
         "image",
         "factor"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Contrast",
@@ -22114,7 +22650,8 @@
       "basic_fields": [
         "image",
         "factor"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Detail",
@@ -22148,7 +22685,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Edge Enhance",
@@ -22182,7 +22720,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Equalize",
@@ -22216,7 +22755,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Rank Filter",
@@ -22274,7 +22814,8 @@
         "image",
         "size",
         "rank"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sharpen",
@@ -22308,7 +22849,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sharpness",
@@ -22352,7 +22894,8 @@
       "basic_fields": [
         "image",
         "factor"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Unsharp Mask",
@@ -22422,7 +22965,8 @@
         "radius",
         "percent",
         "threshold"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Blur",
@@ -22468,7 +23012,8 @@
       "basic_fields": [
         "image",
         "radius"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Canny",
@@ -22526,7 +23071,8 @@
         "image",
         "low_threshold",
         "high_threshold"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Contour",
@@ -22560,7 +23106,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Convert To Grayscale",
@@ -22594,7 +23141,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Emboss",
@@ -22628,7 +23176,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Expand",
@@ -22686,7 +23235,8 @@
         "image",
         "border",
         "fill"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Find Edges",
@@ -22720,7 +23270,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Channel",
@@ -22769,7 +23320,8 @@
       "basic_fields": [
         "image",
         "channel"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Invert",
@@ -22803,7 +23355,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Posterize",
@@ -22849,7 +23402,8 @@
       "basic_fields": [
         "image",
         "bits"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Smooth",
@@ -22883,7 +23437,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Solarize",
@@ -22929,7 +23484,8 @@
       "basic_fields": [
         "image",
         "threshold"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Blend",
@@ -22991,7 +23547,8 @@
         "image1",
         "image2",
         "alpha"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Composite",
@@ -23057,7 +23614,8 @@
         "image1",
         "image2",
         "mask"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Discord Bot Trigger",
@@ -23203,7 +23761,8 @@
         "channel_id",
         "allow_bot_messages"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Discord Send Message",
@@ -23293,7 +23852,8 @@
         "content",
         "tts",
         "embeds"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Telegram Bot Trigger",
@@ -23495,7 +24055,8 @@
         "poll_timeout_seconds",
         "poll_interval_seconds"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Telegram Send Message",
@@ -23594,7 +24155,8 @@
         "disable_web_page_preview",
         "disable_notification",
         "reply_to_message_id"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Embedding",
@@ -23647,7 +24209,10 @@
       "basic_fields": [
         "input"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "MISTRAL_API_KEY"
+      ]
     },
     {
       "title": "Chat Complete",
@@ -23727,7 +24292,10 @@
         "prompt",
         "model"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "MISTRAL_API_KEY"
+      ]
     },
     {
       "title": "Code Complete",
@@ -23788,7 +24356,10 @@
         "prompt",
         "suffix"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "MISTRAL_API_KEY"
+      ]
     },
     {
       "title": "Image To Text",
@@ -23869,7 +24440,10 @@
         "image",
         "prompt"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "MISTRAL_API_KEY"
+      ]
     },
     {
       "title": "OCR",
@@ -23918,7 +24492,10 @@
       "basic_fields": [
         "image"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "MISTRAL_API_KEY"
+      ]
     },
     {
       "title": "Agent",
@@ -24423,7 +25000,8 @@
         "audio"
       ],
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Classifier",
@@ -24635,7 +25213,8 @@
         "model",
         "image",
         "audio"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Thread",
@@ -24674,7 +25253,8 @@
       "basic_fields": [
         "title",
         "thread_id"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extractor",
@@ -24864,7 +25444,8 @@
         "image",
         "audio"
       ],
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Research Agent",
@@ -25044,7 +25625,8 @@
         "model",
         "tools"
       ],
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Summarizer",
@@ -25248,7 +25830,8 @@
         "image",
         "audio"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Audio Mixer",
@@ -25406,7 +25989,8 @@
         "volume3",
         "volume4",
         "volume5"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Audio To Numpy",
@@ -25452,7 +26036,8 @@
       ],
       "basic_fields": [
         "audio"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Chunk To Audio",
@@ -25500,7 +26085,8 @@
       "basic_fields": [
         "chunk",
         "batch_size"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Concat",
@@ -25551,7 +26137,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Concat List",
@@ -25585,7 +26172,8 @@
       "basic_fields": [
         "audio_files"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Convert To Array",
@@ -25619,7 +26207,8 @@
       ],
       "basic_fields": [
         "audio"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Silence",
@@ -25648,7 +26237,8 @@
       ],
       "basic_fields": [
         "duration"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Fade In",
@@ -25694,7 +26284,8 @@
         "audio",
         "duration"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Fade Out",
@@ -25740,7 +26331,8 @@
         "audio",
         "duration"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Load Audio Assets",
@@ -25781,7 +26373,8 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Load Audio File",
@@ -25809,7 +26402,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Load Audio Folder",
@@ -25876,7 +26470,8 @@
         "include_subdirectories",
         "extensions"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Mono To Stereo",
@@ -25911,7 +26506,8 @@
       "basic_fields": [
         "audio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Normalize",
@@ -25946,7 +26542,8 @@
       "basic_fields": [
         "audio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Numpy To Audio",
@@ -26001,7 +26598,8 @@
         "array",
         "sample_rate",
         "channels"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Overlay Audio",
@@ -26052,7 +26650,8 @@
         "a",
         "b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Remove Silence",
@@ -26147,7 +26746,8 @@
         "crossfade",
         "min_silence_between_parts"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Repeat",
@@ -26194,7 +26794,8 @@
         "audio",
         "loops"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Reverse",
@@ -26229,7 +26830,8 @@
       "basic_fields": [
         "audio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Save Audio Asset",
@@ -26289,7 +26891,8 @@
         "folder",
         "name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Save Audio File",
@@ -26367,7 +26970,8 @@
         "folder",
         "filename",
         "FORMAT_MAP"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Slice Audio",
@@ -26424,7 +27028,8 @@
         "start",
         "end"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Stereo To Mono",
@@ -26469,7 +27074,8 @@
         "audio",
         "method"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Text To Speech",
@@ -26543,7 +27149,8 @@
         "speed"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Trim",
@@ -26600,7 +27207,8 @@
         "start",
         "end"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "All",
@@ -26633,7 +27241,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Compare",
@@ -26706,7 +27315,8 @@
         "a",
         "b",
         "comparison"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Conditional Switch",
@@ -26754,7 +27364,8 @@
         "condition",
         "if_true",
         "if_false"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is In",
@@ -26797,7 +27408,8 @@
       "basic_fields": [
         "value",
         "options"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is None",
@@ -26825,7 +27437,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Logical Operator",
@@ -26881,7 +27494,8 @@
         "a",
         "b",
         "operation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Not",
@@ -26909,7 +27523,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Some",
@@ -26942,7 +27557,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Execute Bash",
@@ -27022,7 +27638,8 @@
       ],
       "is_dynamic": true,
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Execute Command",
@@ -27101,7 +27718,8 @@
       ],
       "is_dynamic": true,
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Execute Java Script",
@@ -27176,7 +27794,8 @@
         "stdin"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Execute Lua",
@@ -27263,7 +27882,8 @@
       ],
       "is_dynamic": true,
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Execute Python",
@@ -27340,7 +27960,8 @@
       ],
       "is_dynamic": true,
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Execute Ruby",
@@ -27416,7 +28037,8 @@
       ],
       "is_dynamic": true,
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Run Bash Command",
@@ -27485,7 +28107,8 @@
         "execution_mode"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Run Java Script Command",
@@ -27550,7 +28173,8 @@
         "execution_mode"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Run Lua Command",
@@ -27626,7 +28250,8 @@
         "timeout_seconds"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Run Python Command",
@@ -27692,7 +28317,8 @@
         "execution_mode"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Run Ruby Command",
@@ -27757,7 +28383,8 @@
         "execution_mode"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Run Shell Command",
@@ -27825,7 +28452,8 @@
         "execution_mode"
       ],
       "is_dynamic": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Compare Images",
@@ -27893,7 +28521,8 @@
       "basic_fields": [
         "image_a",
         "image_b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "ASRModel Constant",
@@ -27922,7 +28551,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Audio",
@@ -27956,7 +28586,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Audio List",
@@ -27996,7 +28627,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Bool",
@@ -28024,13 +28656,15 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Constant",
       "description": "Base class for fixed-value nodes.\n\n    constant, parameter, default\n\n    Use cases:\n    - Provide static inputs to a workflow\n    - Hold configuration values\n    - Simplify testing with deterministic outputs",
       "namespace": "nodetool.constant",
-      "node_type": "nodetool.constant.Constant"
+      "node_type": "nodetool.constant.Constant",
+      "required_settings": []
     },
     {
       "title": "Data Frame",
@@ -28065,7 +28699,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Date",
@@ -28119,7 +28754,8 @@
         "year",
         "month",
         "day"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Date Time",
@@ -28244,7 +28880,8 @@
         "tzinfo",
         "utc_offset"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Dict",
@@ -28288,7 +28925,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Document",
@@ -28322,7 +28960,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Embedding Model Constant",
@@ -28351,7 +28990,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Float",
@@ -28378,7 +29018,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image",
@@ -28412,7 +29053,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Image List",
@@ -28452,7 +29094,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Image Model Constant",
@@ -28481,7 +29124,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Image Size",
@@ -28522,7 +29166,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Integer",
@@ -28549,7 +29194,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "JSON",
@@ -28583,7 +29229,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Language Model Constant",
@@ -28612,7 +29259,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "List",
@@ -28649,7 +29297,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Model 3D",
@@ -28686,7 +29335,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Select",
@@ -28740,7 +29390,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "String",
@@ -28767,7 +29418,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "TTSModel Constant",
@@ -28796,7 +29448,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Text List",
@@ -28836,7 +29489,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Video",
@@ -28872,7 +29526,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Video List",
@@ -28912,7 +29567,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Video Model Constant",
@@ -28941,7 +29597,8 @@
       "basic_fields": [
         "value"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Collect",
@@ -28974,7 +29631,8 @@
       ],
       "basic_fields": [
         "input_item"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "For Each",
@@ -29014,7 +29672,8 @@
       "basic_fields": [
         "input_list"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "If",
@@ -29059,7 +29718,8 @@
         "condition",
         "value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Reroute",
@@ -29088,7 +29748,8 @@
       "basic_fields": [
         "input_value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Add Column",
@@ -29149,7 +29810,8 @@
         "column_name",
         "values"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Aggregate",
@@ -29205,7 +29867,8 @@
         "columns",
         "aggregation"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Append",
@@ -29258,7 +29921,8 @@
         "dataframe_a",
         "dataframe_b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Drop Duplicates",
@@ -29294,7 +29958,8 @@
       "basic_fields": [
         "df"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Drop NA",
@@ -29330,7 +29995,8 @@
       "basic_fields": [
         "df"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Extract Column",
@@ -29381,7 +30047,8 @@
         "dataframe",
         "column_name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Fill NA",
@@ -29447,7 +30114,8 @@
         "method",
         "columns"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Filter",
@@ -29493,7 +30161,8 @@
         "df",
         "condition"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Filter None",
@@ -29522,7 +30191,8 @@
       "basic_fields": [
         "value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Find Row",
@@ -29568,7 +30238,8 @@
         "df",
         "condition"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "For Each Row",
@@ -29611,7 +30282,8 @@
         "dataframe"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "From List",
@@ -29645,7 +30317,8 @@
       "basic_fields": [
         "values"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Import CSV",
@@ -29674,7 +30347,8 @@
       "basic_fields": [
         "csv_data"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Convert JSON to DataFrame",
@@ -29702,7 +30376,8 @@
       "basic_fields": [
         "text"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Join",
@@ -29765,7 +30440,8 @@
         "dataframe_b",
         "join_on"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Load CSV Assets",
@@ -29807,7 +30483,8 @@
         "folder"
       ],
       "is_streaming_output": true,
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Load CSVFile",
@@ -29836,7 +30513,8 @@
       "basic_fields": [
         "file_path"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Load CSVURL",
@@ -29865,7 +30543,8 @@
       "basic_fields": [
         "url"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Merge",
@@ -29918,7 +30597,8 @@
         "dataframe_a",
         "dataframe_b"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Pivot",
@@ -29994,7 +30674,8 @@
         "values",
         "aggfunc"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Rename",
@@ -30040,7 +30721,8 @@
         "dataframe",
         "rename_map"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Row Iterator",
@@ -30082,7 +30764,8 @@
       "basic_fields": [
         "dataframe"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Save CSVDataframe File",
@@ -30137,7 +30820,8 @@
         "dataframe",
         "folder",
         "filename"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Dataframe",
@@ -30198,7 +30882,8 @@
         "folder",
         "name"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Schema",
@@ -30229,7 +30914,8 @@
       ],
       "basic_fields": [
         "columns"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Select Column",
@@ -30275,7 +30961,8 @@
         "dataframe",
         "columns"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Slice",
@@ -30331,7 +31018,8 @@
         "start_index",
         "end_index"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Sort By Column",
@@ -30375,7 +31063,8 @@
       "basic_fields": [
         "df",
         "column"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "To List",
@@ -30416,7 +31105,8 @@
       "basic_fields": [
         "dataframe"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Arg Max",
@@ -30453,7 +31143,8 @@
       ],
       "basic_fields": [
         "scores"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Combine",
@@ -30514,7 +31205,8 @@
       "basic_fields": [
         "dict_a",
         "dict_b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Filter",
@@ -30571,7 +31263,8 @@
       "basic_fields": [
         "dictionary",
         "keys"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Filter Dict By Number",
@@ -30639,7 +31332,8 @@
         "filter_type",
         "compare_value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Filter Dict By Query",
@@ -30678,7 +31372,8 @@
         "value",
         "condition"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Filter Dict By Range",
@@ -30747,7 +31442,8 @@
         "max_value",
         "inclusive"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Filter Dict By Value",
@@ -30817,7 +31513,8 @@
         "filter_type",
         "criteria"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Filter Dict Regex",
@@ -30876,7 +31573,8 @@
         "pattern",
         "full_match"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Get Value",
@@ -30930,7 +31628,8 @@
         "dictionary",
         "key",
         "default"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Load CSVFile",
@@ -30963,7 +31662,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Make Dictionary",
@@ -30987,7 +31687,8 @@
           "name": "output"
         }
       ],
-      "is_dynamic": true
+      "is_dynamic": true,
+      "required_settings": []
     },
     {
       "title": "Parse JSON",
@@ -31023,7 +31724,8 @@
       ],
       "basic_fields": [
         "json_string"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reduce Dictionaries",
@@ -31108,7 +31810,8 @@
         "key_field",
         "value_field",
         "conflict_resolution"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Remove",
@@ -31161,7 +31864,8 @@
       "basic_fields": [
         "dictionary",
         "key"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save CSVFile",
@@ -31206,7 +31910,8 @@
         "data",
         "folder",
         "filename"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "To JSON",
@@ -31242,7 +31947,8 @@
       ],
       "basic_fields": [
         "dictionary"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "To YAML",
@@ -31278,7 +31984,8 @@
       ],
       "basic_fields": [
         "dictionary"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Update",
@@ -31339,7 +32046,8 @@
       "basic_fields": [
         "dictionary",
         "new_pairs"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Zip",
@@ -31394,7 +32102,8 @@
       "basic_fields": [
         "keys",
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "List Documents",
@@ -31443,7 +32152,8 @@
         "pattern",
         "recursive"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Load Document File",
@@ -31471,7 +32181,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Document File",
@@ -31517,7 +32228,8 @@
         "document",
         "folder",
         "filename"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Document",
@@ -31642,7 +32354,8 @@
         "buffer_size",
         "threshold"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Split HTML",
@@ -31689,7 +32402,8 @@
       "basic_fields": [
         "document"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Split JSON",
@@ -31756,7 +32470,8 @@
         "include_metadata",
         "include_prev_next_rel"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Split Markdown",
@@ -31878,7 +32593,8 @@
         "chunk_size",
         "chunk_overlap"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Split Recursively",
@@ -31963,7 +32679,8 @@
         "chunk_overlap",
         "separators"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Chart Generator",
@@ -32036,7 +32753,8 @@
         "prompt",
         "data",
         "model"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Data Generator",
@@ -32127,7 +32845,8 @@
         "model",
         "columns"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "List Generator",
@@ -32199,7 +32918,8 @@
         "prompt",
         "model"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "SVGGenerator",
@@ -32292,7 +33012,8 @@
         "image",
         "audio",
         "model"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Structured Output Generator",
@@ -32370,7 +33091,8 @@
         "context",
         "model"
       ],
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": []
     },
     {
       "title": "Batch To List",
@@ -32409,7 +33131,8 @@
       ],
       "basic_fields": [
         "batch"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Crop",
@@ -32491,7 +33214,8 @@
         "top",
         "right",
         "bottom"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Fit",
@@ -32549,7 +33273,8 @@
         "image",
         "width",
         "height"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Metadata",
@@ -32607,7 +33332,8 @@
       ],
       "basic_fields": [
         "image"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image To Image",
@@ -32774,7 +33500,8 @@
         "strength",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Images To List",
@@ -32794,7 +33521,8 @@
           "name": "output"
         }
       ],
-      "is_dynamic": true
+      "is_dynamic": true,
+      "required_settings": []
     },
     {
       "title": "Load Image Assets",
@@ -32835,7 +33563,8 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Load Image File",
@@ -32863,7 +33592,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Load Image Folder",
@@ -32941,7 +33671,8 @@
         "extensions",
         "pattern"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Paste",
@@ -33015,7 +33746,8 @@
         "paste",
         "left",
         "top"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Resize",
@@ -33073,7 +33805,8 @@
         "image",
         "width",
         "height"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Image Asset",
@@ -33133,7 +33866,8 @@
         "image",
         "folder",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Image File",
@@ -33197,7 +33931,8 @@
         "folder",
         "filename",
         "overwrite"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Scale",
@@ -33243,7 +33978,8 @@
       "basic_fields": [
         "image",
         "scale"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Text To Image",
@@ -33375,7 +34111,8 @@
         "height",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "ASRModel Input",
@@ -33428,7 +34165,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Asset Folder Input",
@@ -33481,7 +34219,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Audio Input",
@@ -33534,7 +34273,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Audio List Input",
@@ -33591,7 +34331,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Boolean Input",
@@ -33637,7 +34378,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Color Input",
@@ -33687,7 +34429,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Dataframe Input",
@@ -33741,7 +34484,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Document File Input",
@@ -33797,7 +34541,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Document Input",
@@ -33850,7 +34595,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Embedding Model Input",
@@ -33903,7 +34649,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "File Path Input",
@@ -33953,7 +34700,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Float Input",
@@ -34015,7 +34763,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Folder Path Input",
@@ -34065,7 +34814,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Hugging Face Model Input",
@@ -34119,7 +34869,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image Input",
@@ -34172,7 +34923,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image List Input",
@@ -34229,7 +34981,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image Model Input",
@@ -34283,7 +35036,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image Size Input",
@@ -34331,7 +35085,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Integer Input",
@@ -34393,7 +35148,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Language Model Input",
@@ -34447,7 +35203,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Message Deconstructor",
@@ -34533,7 +35290,8 @@
       ],
       "basic_fields": [
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Message Input",
@@ -34602,7 +35360,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Message List Input",
@@ -34659,7 +35418,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Model 3D Input",
@@ -34715,7 +35475,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Realtime Audio Input",
@@ -34770,7 +35531,8 @@
         "value",
         "value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Select Input",
@@ -34844,7 +35606,8 @@
         "name",
         "value",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "String Input",
@@ -34917,7 +35680,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "String List Input",
@@ -34974,7 +35738,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "TTSModel Input",
@@ -35029,7 +35794,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Text List Input",
@@ -35086,7 +35852,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Video Input",
@@ -35141,7 +35908,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Video List Input",
@@ -35198,7 +35966,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Video Model Input",
@@ -35252,7 +36021,8 @@
       "basic_fields": [
         "name",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Append",
@@ -35299,7 +36069,8 @@
       "basic_fields": [
         "values",
         "value"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Average",
@@ -35331,7 +36102,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Chunk",
@@ -35382,7 +36154,8 @@
       "basic_fields": [
         "values",
         "chunk_size"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Dedupe",
@@ -35419,7 +36192,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Difference",
@@ -35470,7 +36244,8 @@
       "basic_fields": [
         "list1",
         "list2"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extend",
@@ -35521,7 +36296,8 @@
       "basic_fields": [
         "values",
         "other_values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Flatten",
@@ -35568,7 +36344,8 @@
       "basic_fields": [
         "values",
         "max_depth"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Generate Sequence",
@@ -35614,7 +36391,8 @@
         "stop",
         "step"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Get Element",
@@ -35655,7 +36433,8 @@
       "basic_fields": [
         "values",
         "index"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Intersection",
@@ -35706,7 +36485,8 @@
       "basic_fields": [
         "list1",
         "list2"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Length",
@@ -35738,7 +36518,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "List Range",
@@ -35788,7 +36569,8 @@
         "start",
         "stop",
         "step"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Maximum",
@@ -35820,7 +36602,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Minimum",
@@ -35852,7 +36635,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Product",
@@ -35884,7 +36668,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Randomize",
@@ -35921,7 +36706,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reverse",
@@ -35958,7 +36744,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save List",
@@ -36000,7 +36787,8 @@
       "basic_fields": [
         "values",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Select Elements",
@@ -36051,7 +36839,8 @@
       "basic_fields": [
         "values",
         "indices"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Slice",
@@ -36119,7 +36908,8 @@
         "start",
         "stop",
         "step"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sort",
@@ -36170,7 +36960,8 @@
       "basic_fields": [
         "values",
         "order"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sum",
@@ -36202,7 +36993,8 @@
       ],
       "basic_fields": [
         "values"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Union",
@@ -36253,7 +37045,8 @@
       "basic_fields": [
         "list1",
         "list2"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Boolean 3D",
@@ -36325,7 +37118,8 @@
         "model_a",
         "model_b",
         "operation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Center Mesh",
@@ -36372,7 +37166,8 @@
       "basic_fields": [
         "model",
         "use_centroid"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Decimate",
@@ -36421,7 +37216,8 @@
       "basic_fields": [
         "model",
         "target_ratio"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Flip Normals",
@@ -36458,7 +37254,8 @@
       ],
       "basic_fields": [
         "model"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Format Converter",
@@ -36513,7 +37310,8 @@
       "basic_fields": [
         "model",
         "output_format"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Model 3D Metadata",
@@ -36613,7 +37411,8 @@
       ],
       "basic_fields": [
         "model"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image To 3D",
@@ -36717,7 +37516,8 @@
         "output_format",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Load Model 3D File",
@@ -36745,7 +37545,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Merge Meshes",
@@ -36778,7 +37579,8 @@
       ],
       "basic_fields": [
         "models"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Recalculate Normals",
@@ -36841,7 +37643,8 @@
         "model",
         "mode",
         "fix_winding"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Model3D Asset",
@@ -36904,7 +37707,8 @@
         "model",
         "folder",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Model 3D File",
@@ -36971,7 +37775,8 @@
         "folder",
         "filename",
         "overwrite"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Text To 3D",
@@ -37078,7 +37883,8 @@
         "output_format",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Transform 3D",
@@ -37221,7 +38027,8 @@
         "scale_y",
         "scale_z",
         "uniform_scale"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Filter Number",
@@ -37280,7 +38087,8 @@
         "filter_type",
         "compare_value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Filter Number Range",
@@ -37339,7 +38147,8 @@
         "max_value",
         "inclusive"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Output",
@@ -37387,7 +38196,8 @@
         "name",
         "value"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Automatic Speech Recognition",
@@ -37437,7 +38247,8 @@
         "model",
         "audio"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Capitalize Text",
@@ -37464,7 +38275,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Text into Chunks",
@@ -37525,7 +38337,8 @@
         "length",
         "overlap",
         "separator"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Collapse Whitespace",
@@ -37582,7 +38395,8 @@
         "preserve_newlines",
         "replacement",
         "trim_edges"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Collect",
@@ -37618,7 +38432,8 @@
       "basic_fields": [
         "input_item",
         "separator"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Compare Text",
@@ -37674,7 +38489,8 @@
         "text_b",
         "case_sensitive",
         "trim_whitespace"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Concatenate Text",
@@ -37710,7 +38526,8 @@
       "basic_fields": [
         "a",
         "b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Contains Text",
@@ -37786,7 +38603,8 @@
         "search_values",
         "case_sensitive",
         "match_mode"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Count Tokens",
@@ -37829,7 +38647,8 @@
       "basic_fields": [
         "text",
         "encoding"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Embedding",
@@ -37885,7 +38704,8 @@
         "model",
         "input"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Ends With",
@@ -37921,7 +38741,8 @@
       "basic_fields": [
         "text",
         "suffix"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Equals",
@@ -37977,7 +38798,8 @@
         "text_b",
         "case_sensitive",
         "trim_whitespace"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Text",
@@ -38022,7 +38844,8 @@
         "text",
         "start",
         "end"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract JSON",
@@ -38067,7 +38890,8 @@
         "text",
         "json_path",
         "find_all"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Regex Groups",
@@ -38135,7 +38959,8 @@
         "dotall",
         "ignorecase",
         "multiline"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Filter Regex String",
@@ -38184,7 +39009,8 @@
         "pattern",
         "full_match"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Filter String",
@@ -38242,7 +39068,8 @@
         "filter_type",
         "criteria"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Find All Regex Matches",
@@ -38310,7 +39137,8 @@
         "dotall",
         "ignorecase",
         "multiline"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Format Text",
@@ -38339,7 +39167,8 @@
       "basic_fields": [
         "template"
       ],
-      "is_dynamic": true
+      "is_dynamic": true,
+      "required_settings": []
     },
     {
       "title": "Check Length",
@@ -38393,7 +39222,8 @@
         "min_length",
         "max_length",
         "exact_length"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "HTML to Text",
@@ -38461,7 +39291,8 @@
         "body_width",
         "ignore_images",
         "ignore_mailto_links"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index Of",
@@ -38537,7 +39368,8 @@
         "start_index",
         "end_index",
         "search_from_end"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is Empty",
@@ -38573,7 +39405,8 @@
       "basic_fields": [
         "text",
         "trim_whitespace"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Join",
@@ -38614,7 +39447,8 @@
       "basic_fields": [
         "strings",
         "separator"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Measure Length",
@@ -38667,7 +39501,8 @@
         "text",
         "measure",
         "trim_whitespace"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Load Text Assets",
@@ -38708,7 +39543,8 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Load Text Folder",
@@ -38786,7 +39622,8 @@
         "extensions",
         "pattern"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Pad Text",
@@ -38849,7 +39686,8 @@
         "length",
         "pad_character",
         "direction"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Parse JSON String",
@@ -38876,7 +39714,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Find Regex Matches",
@@ -38929,7 +39768,8 @@
         "text",
         "pattern",
         "group"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Replace with Regex",
@@ -38987,7 +39827,8 @@
         "pattern",
         "replacement",
         "count"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split with Regex",
@@ -39040,7 +39881,8 @@
         "text",
         "pattern",
         "maxsplit"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Validate with Regex",
@@ -39078,7 +39920,8 @@
       "basic_fields": [
         "text",
         "pattern"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Remove Punctuation",
@@ -39125,7 +39968,8 @@
         "text",
         "replacement",
         "punctuation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Replace Text",
@@ -39170,7 +40014,8 @@
         "text",
         "old",
         "new"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Text",
@@ -39223,7 +40068,8 @@
         "text",
         "folder",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Text File",
@@ -39270,7 +40116,8 @@
         "text",
         "folder",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Slice Text",
@@ -39324,7 +40171,8 @@
         "start",
         "stop",
         "step"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Slugify",
@@ -39379,7 +40227,8 @@
         "separator",
         "lowercase",
         "allow_unicode"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Split Text",
@@ -39420,7 +40269,8 @@
       "basic_fields": [
         "text",
         "delimiter"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Starts With",
@@ -39456,7 +40306,8 @@
       "basic_fields": [
         "text",
         "prefix"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Strip Accents",
@@ -39493,7 +40344,8 @@
       "basic_fields": [
         "text",
         "preserve_non_ascii"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Surround With",
@@ -39548,7 +40400,8 @@
         "prefix",
         "suffix",
         "skip_if_wrapped"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Template",
@@ -39587,7 +40440,8 @@
         "string",
         "values"
       ],
-      "is_dynamic": true
+      "is_dynamic": true,
+      "required_settings": []
     },
     {
       "title": "To Lowercase",
@@ -39614,7 +40468,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "To String",
@@ -39656,7 +40511,8 @@
       "basic_fields": [
         "value",
         "mode"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "To Title Case",
@@ -39683,7 +40539,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "To Uppercase",
@@ -39710,7 +40567,8 @@
       ],
       "basic_fields": [
         "text"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Trim Whitespace",
@@ -39755,7 +40613,8 @@
         "text",
         "trim_start",
         "trim_end"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Truncate Text",
@@ -39802,7 +40661,8 @@
         "text",
         "max_length",
         "ellipsis"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "File Watch Trigger",
@@ -39939,7 +40799,8 @@
         "events",
         "debounce_seconds"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Interval Trigger",
@@ -40040,7 +40901,8 @@
         "emit_on_start",
         "include_drift_compensation"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Manual Trigger",
@@ -40110,7 +40972,8 @@
         "name",
         "timeout_seconds"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Wait",
@@ -40161,7 +41024,8 @@
       "basic_fields": [
         "timeout_seconds",
         "input"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Webhook Trigger",
@@ -40308,7 +41172,8 @@
         "methods",
         "secret"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Add Audio",
@@ -40382,7 +41247,8 @@
         "audio",
         "volume",
         "mix"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Subtitles",
@@ -40490,7 +41356,8 @@
         "align",
         "font_size",
         "font_color"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Blur",
@@ -40538,7 +41405,8 @@
       "basic_fields": [
         "video",
         "strength"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Chroma Key",
@@ -40611,7 +41479,8 @@
         "key_color",
         "similarity",
         "blend"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Color Balance",
@@ -40683,7 +41552,8 @@
         "red_adjust",
         "green_adjust",
         "blue_adjust"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Concat",
@@ -40737,7 +41607,8 @@
       "basic_fields": [
         "video_a",
         "video_b"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Denoise",
@@ -40785,7 +41656,8 @@
       "basic_fields": [
         "video",
         "strength"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Audio",
@@ -40821,7 +41693,8 @@
       ],
       "basic_fields": [
         "video"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Extract Frame",
@@ -40868,7 +41741,8 @@
       "basic_fields": [
         "video",
         "time"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Fps",
@@ -40904,7 +41778,8 @@
       ],
       "basic_fields": [
         "video"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Frame Iterator",
@@ -40973,7 +41848,8 @@
         "start",
         "end"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Frame To Video",
@@ -41017,7 +41893,8 @@
       "basic_fields": [
         "frame",
         "fps"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Video Info",
@@ -41089,7 +41966,8 @@
       ],
       "basic_fields": [
         "video"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Image To Video",
@@ -41249,7 +42127,8 @@
         "resolution",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Load Video Folder",
@@ -41290,7 +42169,8 @@
       "basic_fields": [
         "folder"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Load Video File",
@@ -41318,7 +42198,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Overlay",
@@ -41414,7 +42295,8 @@
         "y",
         "scale",
         "overlay_audio_volume"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Resize",
@@ -41470,7 +42352,8 @@
         "video",
         "width",
         "height"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Reverse",
@@ -41506,7 +42389,8 @@
       ],
       "basic_fields": [
         "video"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Rotate",
@@ -41554,7 +42438,8 @@
       "basic_fields": [
         "video",
         "angle"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Saturation",
@@ -41602,7 +42487,8 @@
       "basic_fields": [
         "video",
         "saturation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Video Asset",
@@ -41664,7 +42550,8 @@
         "video",
         "folder",
         "name"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Video File",
@@ -41720,7 +42607,8 @@
         "video",
         "folder",
         "filename"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Set Speed",
@@ -41766,7 +42654,8 @@
       "basic_fields": [
         "video",
         "speed_factor"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Sharpness",
@@ -41826,7 +42715,8 @@
         "video",
         "luma_amount",
         "chroma_amount"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Stabilize",
@@ -41884,7 +42774,8 @@
         "video",
         "smoothing",
         "crop_black"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Text To Video",
@@ -42028,7 +42919,8 @@
         "resolution",
         "seed"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Transition",
@@ -42165,7 +43057,8 @@
         "video_b",
         "transition_type",
         "duration"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Trim",
@@ -42221,7 +43114,8 @@
         "video",
         "start_time",
         "end_time"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Copy Workspace File",
@@ -42259,7 +43153,8 @@
       "basic_fields": [
         "source",
         "destination"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Workspace Directory",
@@ -42287,7 +43182,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Delete Workspace File",
@@ -42325,7 +43221,8 @@
       "basic_fields": [
         "path",
         "recursive"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Workspace Dir",
@@ -42339,7 +43236,8 @@
           },
           "name": "output"
         }
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Workspace File Info",
@@ -42367,7 +43265,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Workspace File Size",
@@ -42395,7 +43294,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is Workspace Directory",
@@ -42423,7 +43323,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Is Workspace File",
@@ -42451,7 +43352,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Join Workspace Paths",
@@ -42484,7 +43386,8 @@
       ],
       "basic_fields": [
         "paths"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "List Workspace Files",
@@ -42533,7 +43436,8 @@
         "pattern",
         "recursive"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": []
     },
     {
       "title": "Move Workspace File",
@@ -42571,7 +43475,8 @@
       "basic_fields": [
         "source",
         "destination"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Read Binary File",
@@ -42599,7 +43504,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Read Text File",
@@ -42637,7 +43543,8 @@
       "basic_fields": [
         "path",
         "encoding"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Image File",
@@ -42701,7 +43608,8 @@
         "folder",
         "filename",
         "overwrite"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Save Video File",
@@ -42767,7 +43675,8 @@
         "folder",
         "filename",
         "overwrite"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Workspace File Exists",
@@ -42795,7 +43704,8 @@
       ],
       "basic_fields": [
         "path"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Write Binary File",
@@ -42833,7 +43743,8 @@
       "basic_fields": [
         "path",
         "content"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Write Text File",
@@ -42891,7 +43802,8 @@
         "content",
         "encoding",
         "append"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Realtime Agent",
@@ -43014,7 +43926,10 @@
         "speed"
       ],
       "is_streaming_output": true,
-      "supports_dynamic_outputs": true
+      "supports_dynamic_outputs": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Realtime Transcription",
@@ -43076,7 +43991,10 @@
         "system",
         "temperature"
       ],
-      "is_streaming_output": true
+      "is_streaming_output": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Text To Speech",
@@ -43152,7 +44070,10 @@
         "model",
         "voice"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Transcribe",
@@ -43329,7 +44250,10 @@
         "language",
         "timestamps"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Translate",
@@ -43374,7 +44298,10 @@
         "audio",
         "temperature"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Create Image",
@@ -43465,7 +44392,10 @@
         "background",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Edit Image",
@@ -43572,7 +44502,10 @@
         "size",
         "quality"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Embedding",
@@ -43623,7 +44556,10 @@
         "model",
         "chunk_size"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Moderation",
@@ -43696,7 +44632,10 @@
       "basic_fields": [
         "input"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": [
+        "OPENAI_API_KEY"
+      ]
     },
     {
       "title": "Web Search",
@@ -43724,6 +44663,9 @@
       ],
       "basic_fields": [
         "query"
+      ],
+      "required_settings": [
+        "OPENAI_API_KEY"
       ]
     },
     {
@@ -43771,7 +44713,8 @@
         "query",
         "window"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google Images",
@@ -43825,7 +44768,8 @@
         "image_url",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google Jobs",
@@ -43879,7 +44823,8 @@
         "location",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google Lens",
@@ -43910,7 +44855,8 @@
         "image_url",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google Maps",
@@ -43954,7 +44900,8 @@
         "query",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google News",
@@ -43998,7 +44945,8 @@
         "keyword",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google Search",
@@ -44042,7 +44990,8 @@
         "keyword",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Google Shopping",
@@ -44136,7 +45085,8 @@
         "sort_by",
         "num_results"
       ],
-      "expose_as_tool": true
+      "expose_as_tool": true,
+      "required_settings": []
     },
     {
       "title": "Collection",
@@ -44182,7 +45132,8 @@
       "basic_fields": [
         "name",
         "embedding_model"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Count",
@@ -44213,7 +45164,8 @@
       ],
       "basic_fields": [
         "collection"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Get Documents",
@@ -44284,7 +45236,8 @@
         "ids",
         "limit",
         "offset"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Hybrid Search",
@@ -44404,7 +45357,8 @@
         "n_results",
         "k_constant",
         "min_keyword_length"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index Aggregated Text",
@@ -44508,7 +45462,8 @@
         "text_chunks",
         "context_window",
         "aggregation"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index Embedding",
@@ -44568,7 +45523,8 @@
         "embedding",
         "index_id",
         "metadata"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index Image",
@@ -44631,7 +45587,8 @@
         "index_id",
         "metadata",
         "upsert"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index String",
@@ -44684,7 +45641,8 @@
         "text",
         "document_id",
         "metadata"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Index Text Chunk",
@@ -44737,7 +45695,8 @@
         "document_id",
         "text",
         "metadata"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Peek",
@@ -44783,7 +45742,8 @@
       "basic_fields": [
         "collection",
         "limit"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Query Image",
@@ -44878,7 +45838,8 @@
         "collection",
         "image",
         "n_results"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Query Text",
@@ -44967,7 +45928,8 @@
         "collection",
         "text",
         "n_results"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Remove Overlap",
@@ -45015,7 +45977,8 @@
       "basic_fields": [
         "documents",
         "min_overlap_words"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add Vectors",
@@ -45063,7 +46026,8 @@
       "basic_fields": [
         "index",
         "vectors"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Add With Ids",
@@ -45128,7 +46092,8 @@
         "index",
         "vectors",
         "ids"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Index Flat IP",
@@ -45157,7 +46122,8 @@
       ],
       "basic_fields": [
         "dim"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Index Flat L2",
@@ -45186,7 +46152,8 @@
       ],
       "basic_fields": [
         "dim"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Create Index IVFFlat",
@@ -45241,7 +46208,8 @@
         "dim",
         "nlist",
         "metric"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Search",
@@ -45317,7 +46285,8 @@
         "query",
         "k",
         "nprobe"
-      ]
+      ],
+      "required_settings": []
     },
     {
       "title": "Train Index",
@@ -45365,7 +46334,8 @@
       "basic_fields": [
         "index",
         "vectors"
-      ]
+      ],
+      "required_settings": []
     }
   ],
   "assets": [

@@ -37,6 +37,7 @@ class ChatComplete(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["MISTRAL_API_KEY"]
 
     model: MistralModel = Field(
         default=MistralModel.MISTRAL_SMALL,
@@ -127,6 +128,7 @@ class CodeComplete(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["MISTRAL_API_KEY"]
 
     prompt: str = Field(
         default="",

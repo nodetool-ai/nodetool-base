@@ -33,6 +33,7 @@ class ImageGeneration(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     prompt: str = Field(
         default="", description="The text prompt describing the image to generate."

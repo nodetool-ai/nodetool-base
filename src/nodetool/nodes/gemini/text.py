@@ -35,6 +35,7 @@ class GroundedSearch(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     query: str = Field(default="", description="The search query to execute")
 
@@ -135,6 +136,7 @@ class Embedding(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     input: str = Field(title="Input", default="", description="The text to embed.")
 

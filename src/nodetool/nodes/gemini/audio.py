@@ -76,6 +76,7 @@ class TextToSpeech(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     text: str = Field(default="", description="The text to convert to speech.")
 
@@ -185,6 +186,7 @@ class Transcribe(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GEMINI_API_KEY"]
 
     audio: AudioRef = Field(
         default=AudioRef(), description="The audio file to transcribe."
