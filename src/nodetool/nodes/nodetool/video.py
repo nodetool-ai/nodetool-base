@@ -2155,7 +2155,8 @@ class ExtractAudio(BaseNode):
 
                 # Read the extracted audio and return it
                 async with aiofiles.open(temp_audio.name, "rb") as f:
-                    return await context.audio_from_io(f, content_type="audio/opus")
+                    audio_bytes = await f.read()
+                return await context.audio_from_io(BytesIO(audio_bytes), content_type="audio/opus")
 
             except ffmpeg.Error as e:
                 error_message = (
