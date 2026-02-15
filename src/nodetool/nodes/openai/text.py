@@ -42,6 +42,7 @@ class Embedding(BaseNode):
     chunk_size: int = 4096
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     async def process(self, context: ProcessingContext) -> NPArray:
         import numpy as np
@@ -76,6 +77,8 @@ class WebSearch(BaseNode):
     (like gpt-4o with search preview) to answer queries based on current web information.
     Requires an OpenAI API key.
     """
+
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     query: str = Field(
         title="Query", default="", description="The search query to execute."
@@ -160,6 +163,7 @@ class Moderation(BaseNode):
     )
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     class OutputType(TypedDict):
         flagged: bool

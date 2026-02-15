@@ -35,6 +35,7 @@ class ImageToText(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["MISTRAL_API_KEY"]
 
     image: ImageRef = Field(
         default=ImageRef(),
@@ -139,6 +140,7 @@ class OCR(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["MISTRAL_API_KEY"]
 
     image: ImageRef = Field(
         default=ImageRef(),

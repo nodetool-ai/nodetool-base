@@ -63,6 +63,7 @@ class CreateImage(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         import PIL.Image
@@ -124,6 +125,7 @@ class EditImage(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     async def process(self, context: ProcessingContext) -> ImageRef:
         import PIL.Image

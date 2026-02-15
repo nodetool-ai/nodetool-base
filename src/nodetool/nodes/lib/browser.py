@@ -480,6 +480,7 @@ class BrowserUseNode(BaseNode):
     """
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     model: BrowserUseModel = Field(
         default=BrowserUseModel.GPT_4O,

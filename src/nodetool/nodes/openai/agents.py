@@ -77,6 +77,8 @@ class RealtimeAgent(BaseNode):
     - Streams back `response.text.delta` events until `response.done`
     """
 
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
+
     class Model(str, Enum):
         GPT_4O_REaltime = "gpt-4o-realtime-preview"
         GPT_4O_MINI_REaltime = "gpt-4o-mini-realtime-preview"
@@ -629,6 +631,8 @@ class RealtimeTranscription(BaseNode):
       - `chunk` Chunk(content="", done=True) to mark segment end
       - `text` final aggregated transcript when input ends
     """
+
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     @classmethod
     def is_cacheable(cls) -> bool:

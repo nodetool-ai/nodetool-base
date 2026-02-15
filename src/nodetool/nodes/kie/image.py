@@ -48,6 +48,8 @@ class KieBaseNode(BaseNode):
     3. Download the result
     """
 
+    _required_settings: ClassVar[list[str]] = ["KIE_API_KEY"]
+
     # Polling configuration - to be implemented by subclasses
     _poll_interval: float
     _max_poll_attempts: int

@@ -144,6 +144,7 @@ class GmailSearch(BaseNode):
     )
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GOOGLE_MAIL_USER", "GOOGLE_APP_PASSWORD"]
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -203,6 +204,7 @@ class MoveToArchive(BaseNode):
     )
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GOOGLE_MAIL_USER", "GOOGLE_APP_PASSWORD"]
 
     async def process(self, context: ProcessingContext) -> bool:
         gmail_connection = await get_gmail_connection(context.user_id)
@@ -234,6 +236,7 @@ class AddLabel(BaseNode):
     )
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["GOOGLE_MAIL_USER", "GOOGLE_APP_PASSWORD"]
 
     async def process(self, context: ProcessingContext) -> bool:
         if not self.message_id:

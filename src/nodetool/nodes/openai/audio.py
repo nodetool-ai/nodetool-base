@@ -41,6 +41,7 @@ class TextToSpeech(BaseNode):
 
     _auto_save_asset: ClassVar[bool] = True
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     async def process(self, context: ProcessingContext) -> AudioRef:
         from pydub import AudioSegment
@@ -80,6 +81,7 @@ class Translate(BaseNode):
     )
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     async def process(self, context: ProcessingContext) -> str:
         from openai.types.audio.translation import Translation
@@ -203,6 +205,7 @@ class Transcribe(BaseNode):
     )
 
     _expose_as_tool: ClassVar[bool] = True
+    _required_settings: ClassVar[list[str]] = ["OPENAI_API_KEY"]
 
     class OutputType(TypedDict):
         text: str

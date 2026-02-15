@@ -41,6 +41,7 @@ class ClaudeAgent(BaseNode):
 
     _is_dynamic: ClassVar[bool] = False
     _supports_dynamic_outputs: ClassVar[bool] = False
+    _required_settings: ClassVar[list[str]] = ["ANTHROPIC_API_KEY"]
 
     prompt: str = Field(
         default="",
