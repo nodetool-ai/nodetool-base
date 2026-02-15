@@ -317,7 +317,7 @@ class HSLAdjust(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]
         description="The image to adjust.",
     )
     color_range: nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange = Field(
-        default=nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange.REDS,
+        default=nodetool.nodes.lib.pillow.color_grading.HSLAdjust.ColorRange.ALL,
         description="The color range to adjust.",
     )
     hue_shift: float | OutputHandle[float] = connect_field(

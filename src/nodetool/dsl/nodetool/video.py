@@ -388,6 +388,45 @@ import nodetool.nodes.nodetool.video
 from nodetool.workflows.base_node import BaseNode
 
 
+class ExtractFrame(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
+    """
+
+    Extract a single frame from a video at a specific time position.
+    video, frame, extract, screenshot, thumbnail, capture
+    """
+
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to extract a frame from.",
+    )
+    time: float | OutputHandle[float] = connect_field(
+        default=0.0, description="Time position in seconds to extract the frame from."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.video.ExtractFrame
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+from nodetool.workflows.base_node import BaseNode
+
+
 class Fps(SingleOutputGraphNode[float], GraphNode[float]):
     """
 
@@ -508,6 +547,77 @@ class FrameToVideo(SingleOutputGraphNode[types.VideoRef], GraphNode[types.VideoR
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.video
+from nodetool.workflows.base_node import BaseNode
+
+
+class GetVideoInfo(GraphNode[nodetool.nodes.nodetool.video.GetVideoInfo.OutputType]):
+    """
+
+    Get metadata information about a video file.
+    Includes duration, resolution, frame rate, and codec.
+    video, info, metadata, duration, resolution, fps, codec, analysis
+    """
+
+    video: types.VideoRef | OutputHandle[types.VideoRef] = connect_field(
+        default=types.VideoRef(
+            type="video",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            duration=None,
+            format=None,
+        ),
+        description="The input video to analyze.",
+    )
+
+    @property
+    def out(self) -> "GetVideoInfoOutputs":
+        return GetVideoInfoOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.video.GetVideoInfo
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class GetVideoInfoOutputs(OutputsProxy):
+    @property
+    def duration(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self["duration"])
+
+    @property
+    def width(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["width"])
+
+    @property
+    def height(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["height"])
+
+    @property
+    def fps(self) -> OutputHandle[float]:
+        return typing.cast(OutputHandle[float], self["fps"])
+
+    @property
+    def frame_count(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["frame_count"])
+
+    @property
+    def codec(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["codec"])
+
+    @property
+    def has_audio(self) -> OutputHandle[bool]:
+        return typing.cast(OutputHandle[bool], self["has_audio"])
 
 
 import typing

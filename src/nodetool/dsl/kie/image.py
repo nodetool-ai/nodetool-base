@@ -47,27 +47,16 @@ class Flux2FlexImageToImage(
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing how to transform the image."
     )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to transform.",
+    images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="Source images to transform (1-8 images supported)."
     )
     aspect_ratio: nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio = Field(
         default=nodetool.nodes.kie.image.Flux2FlexImageToImage.AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
     resolution: nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution = Field(
         default=nodetool.nodes.kie.image.Flux2FlexImageToImage.Resolution.RES_1K,
         description="Output image resolution.",
-    )
-    steps: int | OutputHandle[int] = connect_field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-    )
-    guidance_scale: float | OutputHandle[float] = connect_field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
     )
 
     @classmethod
@@ -115,19 +104,11 @@ class Flux2FlexTextToImage(
     )
     aspect_ratio: nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio = Field(
         default=nodetool.nodes.kie.image.Flux2FlexTextToImage.AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
     resolution: nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution = Field(
         default=nodetool.nodes.kie.image.Flux2FlexTextToImage.Resolution.RES_1K,
         description="Output image resolution.",
-    )
-    steps: int | OutputHandle[int] = connect_field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-    )
-    guidance_scale: float | OutputHandle[float] = connect_field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
     )
 
     @classmethod
@@ -174,27 +155,16 @@ class Flux2ProImageToImage(
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing how to transform the image."
     )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to transform.",
+    images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="Source images to transform (1-8 images supported)."
     )
     aspect_ratio: nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio = Field(
         default=nodetool.nodes.kie.image.Flux2ProImageToImage.AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
     resolution: nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution = Field(
         default=nodetool.nodes.kie.image.Flux2ProImageToImage.Resolution.RES_1K,
         description="Output image resolution.",
-    )
-    steps: int | OutputHandle[int] = connect_field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-    )
-    guidance_scale: float | OutputHandle[float] = connect_field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
     )
 
     @classmethod
@@ -242,19 +212,11 @@ class Flux2ProTextToImage(
     )
     aspect_ratio: nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio = Field(
         default=nodetool.nodes.kie.image.Flux2ProTextToImage.AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+        description="The aspect ratio of the generated image. 'auto' matches the first input image ratio.",
     )
     resolution: nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution = Field(
         default=nodetool.nodes.kie.image.Flux2ProTextToImage.Resolution.RES_1K,
         description="Output image resolution.",
-    )
-    steps: int | OutputHandle[int] = connect_field(
-        default=25,
-        description="Number of inference steps. Higher values may produce better quality but take longer.",
-    )
-    guidance_scale: float | OutputHandle[float] = connect_field(
-        default=7.5,
-        description="Guidance scale for the generation. Higher values adhere more closely to the prompt.",
     )
 
     @classmethod
@@ -356,19 +318,16 @@ class GPTImage15ImageToImage(
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing how to edit the image."
     )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to edit.",
+    images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="Input images to edit (supports up to 16 images)."
     )
     aspect_ratio: nodetool.nodes.kie.image.GPTImage15ImageToImage.AspectRatio = Field(
         default=nodetool.nodes.kie.image.GPTImage15ImageToImage.AspectRatio.SQUARE,
         description="The aspect ratio of the output image.",
     )
     quality: nodetool.nodes.kie.image.GPTImage15ImageToImage.Quality = Field(
-        default=nodetool.nodes.kie.image.GPTImage15ImageToImage.Quality.AUTO,
-        description="Image quality setting.",
+        default=nodetool.nodes.kie.image.GPTImage15ImageToImage.Quality.MEDIUM,
+        description="Image quality setting. Medium = balanced, High = slow/detailed.",
     )
 
     @classmethod
@@ -424,8 +383,8 @@ class GPTImage15TextToImage(
         description="The aspect ratio of the generated image.",
     )
     quality: nodetool.nodes.kie.image.GPTImage15TextToImage.Quality = Field(
-        default=nodetool.nodes.kie.image.GPTImage15TextToImage.Quality.AUTO,
-        description="Image quality setting.",
+        default=nodetool.nodes.kie.image.GPTImage15TextToImage.Quality.MEDIUM,
+        description="Image quality setting. Medium = balanced, High = slow/detailed.",
     )
 
     @classmethod
@@ -462,12 +421,7 @@ class GPTImage4oImageToImage(
         - Create variations of existing visuals
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio
-    )
-    Quality: typing.ClassVar[type] = (
-        nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality
-    )
+    Size: typing.ClassVar[type] = nodetool.nodes.kie.image.GPTImage4oImageToImage.Size
 
     timeout_seconds: int | OutputHandle[int] = connect_field(
         default=0, description="Timeout in seconds for API calls (0 = use default)"
@@ -475,19 +429,15 @@ class GPTImage4oImageToImage(
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing how to edit the image."
     )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The source image to edit.",
+    images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="Input images to edit (supports up to 5 images)."
     )
-    aspect_ratio: nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio = Field(
-        default=nodetool.nodes.kie.image.GPTImage4oImageToImage.AspectRatio.SQUARE,
+    size: nodetool.nodes.kie.image.GPTImage4oImageToImage.Size = Field(
+        default=nodetool.nodes.kie.image.GPTImage4oImageToImage.Size.SQUARE,
         description="The aspect ratio of the output image.",
     )
-    quality: nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality = Field(
-        default=nodetool.nodes.kie.image.GPTImage4oImageToImage.Quality.AUTO,
-        description="Image quality setting.",
+    n_variants: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of image variants to generate (1, 2, or 4)."
     )
 
     @classmethod
@@ -525,12 +475,7 @@ class GPTImage4oTextToImage(
         - Produce creative visuals with strong instruction following
     """
 
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio
-    )
-    Quality: typing.ClassVar[type] = (
-        nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality
-    )
+    Size: typing.ClassVar[type] = nodetool.nodes.kie.image.GPTImage4oTextToImage.Size
 
     timeout_seconds: int | OutputHandle[int] = connect_field(
         default=0, description="Timeout in seconds for API calls (0 = use default)"
@@ -538,13 +483,15 @@ class GPTImage4oTextToImage(
     prompt: str | OutputHandle[str] = connect_field(
         default="", description="The text prompt describing the image to generate."
     )
-    aspect_ratio: nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio = Field(
-        default=nodetool.nodes.kie.image.GPTImage4oTextToImage.AspectRatio.SQUARE,
+    size: nodetool.nodes.kie.image.GPTImage4oTextToImage.Size = Field(
+        default=nodetool.nodes.kie.image.GPTImage4oTextToImage.Size.SQUARE,
         description="The aspect ratio of the generated image.",
     )
-    quality: nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality = Field(
-        default=nodetool.nodes.kie.image.GPTImage4oTextToImage.Quality.AUTO,
-        description="Image quality setting.",
+    n_variants: int | OutputHandle[int] = connect_field(
+        default=1, description="Number of image variants to generate (1, 2, or 4)."
+    )
+    is_enhance: bool | OutputHandle[bool] = connect_field(
+        default=False, description="Enable prompt enhancement for more refined effects."
     )
 
     @classmethod
@@ -755,6 +702,9 @@ class IdeogramV3ImageToImage(
         nodetool.nodes.kie.image.IdeogramV3ImageToImage.RenderingSpeed
     )
     Style: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3ImageToImage.Style
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3ImageToImage.ImageSize
+    )
 
     timeout_seconds: int | OutputHandle[int] = connect_field(
         default=0, description="Timeout in seconds for API calls (0 = use default)"
@@ -781,11 +731,17 @@ class IdeogramV3ImageToImage(
         default=nodetool.nodes.kie.image.IdeogramV3ImageToImage.Style.AUTO,
         description="Generation style.",
     )
-    image_weight: float | OutputHandle[float] = connect_field(
-        default=0.5, description="How much to preserve from the original image (0-1)."
+    image_size: nodetool.nodes.kie.image.IdeogramV3ImageToImage.ImageSize = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3ImageToImage.ImageSize.SQUARE,
+        description="The resolution of the output image.",
+    )
+    strength: float | OutputHandle[float] = connect_field(
+        default=0.5,
+        description="Strength of the input image in the remix (0-1). Lower = more original preserved.",
     )
     expand_prompt: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to expand/augment the prompt."
+        default=True,
+        description="Whether to expand/augment the prompt with MagicPrompt.",
     )
     seed: int | OutputHandle[int] = connect_field(
         default=-1,
@@ -889,8 +845,8 @@ class IdeogramV3TextToImage(
         nodetool.nodes.kie.image.IdeogramV3TextToImage.RenderingSpeed
     )
     Style: typing.ClassVar[type] = nodetool.nodes.kie.image.IdeogramV3TextToImage.Style
-    AspectRatio: typing.ClassVar[type] = (
-        nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio
+    ImageSize: typing.ClassVar[type] = (
+        nodetool.nodes.kie.image.IdeogramV3TextToImage.ImageSize
     )
 
     timeout_seconds: int | OutputHandle[int] = connect_field(
@@ -912,12 +868,13 @@ class IdeogramV3TextToImage(
         default=nodetool.nodes.kie.image.IdeogramV3TextToImage.Style.AUTO,
         description="Generation style.",
     )
-    aspect_ratio: nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio = Field(
-        default=nodetool.nodes.kie.image.IdeogramV3TextToImage.AspectRatio.SQUARE,
-        description="The aspect ratio of the generated image.",
+    image_size: nodetool.nodes.kie.image.IdeogramV3TextToImage.ImageSize = Field(
+        default=nodetool.nodes.kie.image.IdeogramV3TextToImage.ImageSize.SQUARE,
+        description="The resolution of the generated image.",
     )
     expand_prompt: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to expand/augment the prompt."
+        default=True,
+        description="Whether to expand/augment the prompt with MagicPrompt.",
     )
     seed: int | OutputHandle[int] = connect_field(
         default=-1,

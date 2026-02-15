@@ -669,6 +669,41 @@ import nodetool.nodes.nodetool.input
 from nodetool.workflows.base_node import BaseNode
 
 
+class ImageSizeInput(
+    SingleOutputGraphNode[types.ImageSize], GraphNode[types.ImageSize]
+):
+    """
+
+    Accepts image dimensions as a parameter for workflows.
+    input, parameter, image_size, resolution, width, height, dimensions
+    """
+
+    name: str | OutputHandle[str] = connect_field(
+        default="", description="The parameter name for the workflow."
+    )
+    value: types.ImageSize | OutputHandle[types.ImageSize] = connect_field(
+        default=PydanticUndefined, description="The image size to use as input."
+    )
+    description: str | OutputHandle[str] = connect_field(
+        default="", description="The description of the input for the workflow."
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.input.ImageSizeInput
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.input
+from nodetool.workflows.base_node import BaseNode
+
+
 class IntegerInput(SingleOutputGraphNode[int], GraphNode[int]):
     """
 
@@ -955,6 +990,8 @@ class Model3DInput(
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to use as input.",
     )

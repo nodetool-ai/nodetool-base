@@ -45,6 +45,8 @@ class Boolean3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3D
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="First 3D model (base)",
     )
@@ -56,6 +58,8 @@ class Boolean3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3D
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="Second 3D model (tool)",
     )
@@ -100,6 +104,8 @@ class CenterMesh(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to center",
     )
@@ -145,6 +151,8 @@ class Decimate(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DR
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to decimate",
     )
@@ -188,6 +196,8 @@ class FlipNormals(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to process",
     )
@@ -232,6 +242,8 @@ class FormatConverter(
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to convert",
     )
@@ -278,6 +290,8 @@ class GetModel3DMetadata(
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to analyze",
     )
@@ -331,6 +345,70 @@ class GetModel3DMetadataOutputs(OutputsProxy):
     @property
     def surface_area(self) -> OutputHandle[typing.Any]:
         return typing.cast(OutputHandle[typing.Any], self["surface_area"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.model3d
+from nodetool.workflows.base_node import BaseNode
+
+
+class ImageTo3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRef]):
+    """
+
+    Generate 3D models from images using AI providers (Meshy, Rodin).
+    3d, generation, AI, image-to-3d, i3d, mesh, reconstruction
+
+    Use cases:
+    - Convert product photos to 3D models
+    - Create 3D assets from concept art
+    - Generate 3D characters from drawings
+    - Reconstruct objects from images
+    """
+
+    OutputFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.model3d.OutputFormat
+
+    model: types.Model3DModel | OutputHandle[types.Model3DModel] = connect_field(
+        default=types.Model3DModel(
+            type="model_3d_model",
+            provider=nodetool.metadata.types.Provider.Meshy,
+            id="meshy-4-image",
+            name="Meshy-4 Image-to-3D",
+            path=None,
+            supported_tasks=[],
+            output_formats=["glb"],
+        ),
+        description="The 3D generation model to use",
+    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
+        default=types.ImageRef(
+            type="image", uri="", asset_id=None, data=None, metadata=None
+        ),
+        description="Input image to convert to 3D",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Optional text prompt to guide the 3D generation"
+    )
+    output_format: nodetool.nodes.nodetool.model3d.OutputFormat = Field(
+        default=nodetool.nodes.nodetool.model3d.OutputFormat.GLB,
+        description="Output format for the 3D model",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=600,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.model3d.ImageTo3D
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
 
 
 import typing
@@ -431,6 +509,8 @@ class RecalculateNormals(
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to process",
     )
@@ -478,6 +558,8 @@ class SaveModel3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to save.",
     )
@@ -530,6 +612,8 @@ class SaveModel3DFile(
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to save",
     )
@@ -548,6 +632,71 @@ class SaveModel3DFile(
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
         return nodetool.nodes.nodetool.model3d.SaveModel3DFile
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.model3d
+from nodetool.workflows.base_node import BaseNode
+
+
+class TextTo3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRef]):
+    """
+
+    Generate 3D models from text prompts using AI providers (Meshy, Rodin).
+    3d, generation, AI, text-to-3d, t3d, mesh, create
+
+    Use cases:
+    - Create 3D models from text descriptions
+    - Generate game assets from prompts
+    - Prototype 3D concepts quickly
+    - Create 3D content for AR/VR
+    """
+
+    OutputFormat: typing.ClassVar[type] = nodetool.nodes.nodetool.model3d.OutputFormat
+
+    model: types.Model3DModel | OutputHandle[types.Model3DModel] = connect_field(
+        default=types.Model3DModel(
+            type="model_3d_model",
+            provider=nodetool.metadata.types.Provider.Meshy,
+            id="meshy-4",
+            name="Meshy-4 Text-to-3D",
+            path=None,
+            supported_tasks=[],
+            output_formats=["glb"],
+        ),
+        description="The 3D generation model to use",
+    )
+    prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Text description of the 3D model to generate"
+    )
+    negative_prompt: str | OutputHandle[str] = connect_field(
+        default="", description="Elements to avoid in the generated model"
+    )
+    art_style: str | OutputHandle[str] = connect_field(
+        default="",
+        description="Art style for the model (e.g., 'realistic', 'cartoon', 'low-poly')",
+    )
+    output_format: nodetool.nodes.nodetool.model3d.OutputFormat = Field(
+        default=nodetool.nodes.nodetool.model3d.OutputFormat.GLB,
+        description="Output format for the 3D model",
+    )
+    seed: int | OutputHandle[int] = connect_field(
+        default=-1, description="Random seed for reproducibility (-1 for random)"
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=600,
+        description="Timeout in seconds for API calls (0 = use provider default)",
+    )
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.model3d.TextTo3D
 
     @classmethod
     def get_node_type(cls):
@@ -581,6 +730,8 @@ class Transform3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description="The 3D model to transform",
     )

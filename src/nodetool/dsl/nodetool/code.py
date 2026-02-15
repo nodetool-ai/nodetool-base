@@ -600,3 +600,602 @@ class ExecuteRubyOutputs(DynamicOutputsProxy):
     @property
     def stderr(self) -> OutputHandle[str]:
         return typing.cast(OutputHandle[str], self["stderr"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunBashCommand(GraphNode[nodetool.nodes.nodetool.code.RunBashCommand.OutputType]):
+    """
+
+        Executes a single Bash command and buffers the output.
+        bash, shell, code, execute, command
+
+        Use cases:
+        - Run a single Bash script or command
+        - Execute shell commands with buffered stdout/stderr output
+        - One-shot Bash execution without streaming
+
+        The command is executed once and the complete output is returned.
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = RunBashCommand(prop1=value1, prop2=value2)
+    """
+
+    BashImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunBashCommand.BashImage
+    )
+    ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Bash command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunBashCommand.BashImage = Field(
+        default=nodetool.nodes.nodetool.code.RunBashCommand.BashImage.UBUNTU_22_04,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RunBashCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values and dynamic properties.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
+    @property
+    def out(self) -> "RunBashCommandOutputs":
+        return RunBashCommandOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.RunBashCommand
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class RunBashCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunJavaScriptCommand(
+    GraphNode[nodetool.nodes.nodetool.code.RunJavaScriptCommand.OutputType]
+):
+    """
+
+        Executes a single JavaScript command and buffers the output.
+        javascript, nodejs, code, execute, command
+
+        Use cases:
+        - Run a single JavaScript script or command
+        - Execute JavaScript code with buffered stdout/stderr output
+        - One-shot JavaScript execution without streaming
+
+        The command is executed once and the complete output is returned.
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = RunJavaScriptCommand(prop1=value1, prop2=value2)
+    """
+
+    JavaScriptImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage
+    )
+    ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="JavaScript command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage = Field(
+        default=nodetool.nodes.nodetool.code.RunJavaScriptCommand.JavaScriptImage.NODE_22_ALPINE,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RunJavaScriptCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values and dynamic properties.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
+    @property
+    def out(self) -> "RunJavaScriptCommandOutputs":
+        return RunJavaScriptCommandOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.RunJavaScriptCommand
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class RunJavaScriptCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunLuaCommand(GraphNode[nodetool.nodes.nodetool.code.RunLuaCommand.OutputType]):
+    """
+
+        Executes a single Lua command and buffers the output.
+        lua, code, execute, command, sandbox
+
+        Use cases:
+        - Run a single Lua script or command
+        - Execute Lua code with buffered stdout/stderr output
+        - One-shot Lua execution without streaming
+
+        The command is executed once and the complete output is returned.
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = RunLuaCommand(prop1=value1, prop2=value2)
+    """
+
+    LuaExecutable: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable
+    )
+    ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Lua command to execute"
+    )
+    executable: nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable = Field(
+        default=nodetool.nodes.nodetool.code.RunLuaCommand.LuaExecutable.LUA,
+        description="Lua executable to use",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.SUBPROCESS,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+    timeout_seconds: int | OutputHandle[int] = connect_field(
+        default=10, description="Max seconds to allow execution before forced stop"
+    )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RunLuaCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values and dynamic properties.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
+    @property
+    def out(self) -> "RunLuaCommandOutputs":
+        return RunLuaCommandOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.RunLuaCommand
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class RunLuaCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunPythonCommand(
+    GraphNode[nodetool.nodes.nodetool.code.RunPythonCommand.OutputType]
+):
+    """
+
+        Executes a single Python command and buffers the output.
+        python, code, execute, command
+
+        Use cases:
+        - Run a single Python script or command
+        - Execute Python code with buffered stdout/stderr output
+        - One-shot Python execution without streaming
+
+        The command is executed once and the complete output is returned.
+        IMPORTANT: Only enabled in non-production environments
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = RunPythonCommand(prop1=value1, prop2=value2)
+    """
+
+    PythonImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage
+    )
+    ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Python command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage = Field(
+        default=nodetool.nodes.nodetool.code.RunPythonCommand.PythonImage.PYTHON_3_11_SLIM,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RunPythonCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values and dynamic properties.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
+    @property
+    def out(self) -> "RunPythonCommandOutputs":
+        return RunPythonCommandOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.RunPythonCommand
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class RunPythonCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunRubyCommand(GraphNode[nodetool.nodes.nodetool.code.RunRubyCommand.OutputType]):
+    """
+
+        Executes a single Ruby command and buffers the output.
+        ruby, code, execute, command
+
+        Use cases:
+        - Run a single Ruby script or command
+        - Execute Ruby code with buffered stdout/stderr output
+        - One-shot Ruby execution without streaming
+
+        The command is executed once and the complete output is returned.
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = RunRubyCommand(prop1=value1, prop2=value2)
+    """
+
+    RubyImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage
+    )
+    ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Ruby command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage = Field(
+        default=nodetool.nodes.nodetool.code.RunRubyCommand.RubyImage.RUBY_3_3_ALPINE,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RunRubyCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values and dynamic properties.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
+    @property
+    def out(self) -> "RunRubyCommandOutputs":
+        return RunRubyCommandOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.RunRubyCommand
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class RunRubyCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import (
+    OutputHandle,
+    OutputsProxy,
+    DynamicOutputsProxy,
+    connect_field,
+)
+import nodetool.nodes.nodetool.code
+from nodetool.workflows.base_node import BaseNode
+
+
+class RunShellCommand(
+    GraphNode[nodetool.nodes.nodetool.code.RunShellCommand.OutputType]
+):
+    """
+
+        Executes a single shell command and buffers the output.
+        command, execute, shell, bash, sh
+
+        Use cases:
+        - Run a single shell command
+        - Execute shell commands with buffered stdout/stderr output
+        - One-shot command execution without streaming
+
+        The command is executed once and the complete output is returned.
+        IMPORTANT: Only enabled in non-production environments
+
+    This node supports dynamic properties. Additional properties can be passed
+    as keyword arguments during initialization and will be stored in the node's
+    dynamic_properties dictionary.
+
+    Example:
+        node = RunShellCommand(prop1=value1, prop2=value2)
+    """
+
+    CommandImage: typing.ClassVar[type] = (
+        nodetool.nodes.nodetool.code.RunShellCommand.CommandImage
+    )
+    ExecutionMode: typing.ClassVar[type] = nodetool.nodes.nodetool.code.ExecutionMode
+
+    command: str | OutputHandle[str] = connect_field(
+        default="", description="Shell command to execute"
+    )
+    image: nodetool.nodes.nodetool.code.RunShellCommand.CommandImage = Field(
+        default=nodetool.nodes.nodetool.code.RunShellCommand.CommandImage.BASH_5_2,
+        description="Docker image to use for execution",
+    )
+    execution_mode: nodetool.nodes.nodetool.code.ExecutionMode = Field(
+        default=nodetool.nodes.nodetool.code.ExecutionMode.DOCKER,
+        description="Execution mode: 'docker' or 'subprocess'",
+    )
+
+    def __init__(
+        self,
+        *,
+        dynamic_outputs: dict[str, typing.Any] | None = None,
+        **kwargs: typing.Any,
+    ) -> None:
+        """
+        Initialize a RunShellCommand node.
+
+        Extra keyword arguments beyond the defined fields will be treated as
+        dynamic properties and automatically passed to the underlying BaseNode
+        as dynamic_properties.
+
+        Dynamic outputs declared here will be forwarded to the underlying node
+        so they are available when the workflow executes. Provide Python types
+        such as str or list[int] for each output.
+
+        Args:
+            dynamic_outputs: Optional mapping from output names to Python types.
+            **kwargs: Field values and dynamic properties.
+        """
+
+        outputs = {} if dynamic_outputs is None else dict(dynamic_outputs)
+        super().__init__(dynamic_outputs=outputs, **kwargs)
+
+    @property
+    def out(self) -> "RunShellCommandOutputs":
+        return RunShellCommandOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.code.RunShellCommand
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class RunShellCommandOutputs(DynamicOutputsProxy):
+    @property
+    def stdout(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stdout"])
+
+    @property
+    def stderr(self) -> OutputHandle[str]:
+        return typing.cast(OutputHandle[str], self["stderr"])

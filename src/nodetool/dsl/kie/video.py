@@ -1759,7 +1759,6 @@ class Sora2BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
-    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
 
     timeout_seconds: int | OutputHandle[int] = connect_field(
         default=0, description="Timeout in seconds for API calls (0 = use default)"
@@ -1770,10 +1769,6 @@ class Sora2BaseNode(SingleOutputGraphNode[types.VideoRef], GraphNode[types.Video
     )
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
-    )
-    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
-        default=nodetool.nodes.kie.video.Sora2Frames._10s,
-        description="Number of frames for the video output.",
     )
 
     @classmethod
@@ -1865,7 +1860,9 @@ class Sora2ProStoryboard(
     AspectRatio: typing.ClassVar[type] = (
         nodetool.nodes.kie.video.Sora2BaseNode.AspectRatio
     )
-    Sora2Frames: typing.ClassVar[type] = nodetool.nodes.kie.video.Sora2Frames
+    Sora2StoryboardFrames: typing.ClassVar[type] = (
+        nodetool.nodes.kie.video.Sora2ProStoryboard.Sora2StoryboardFrames
+    )
 
     timeout_seconds: int | OutputHandle[int] = connect_field(
         default=0, description="Timeout in seconds for API calls (0 = use default)"
@@ -1877,31 +1874,23 @@ class Sora2ProStoryboard(
     remove_watermark: bool | OutputHandle[bool] = connect_field(
         default=True, description="Whether to remove the watermark from the video."
     )
-    n_frames: nodetool.nodes.kie.video.Sora2Frames = Field(
-        default=nodetool.nodes.kie.video.Sora2Frames._10s,
+    n_frames: nodetool.nodes.kie.video.Sora2ProStoryboard.Sora2StoryboardFrames = Field(
+        default=nodetool.nodes.kie.video.Sora2ProStoryboard.Sora2StoryboardFrames._10s,
         description="Number of frames for the video output.",
     )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cinematic video with smooth motion, natural lighting, and high detail.",
-        description="The text prompt describing the video.",
-    )
-    image1: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
+    shots: types.DataframeRef | OutputHandle[types.DataframeRef] = connect_field(
+        default=types.DataframeRef(
+            type="dataframe",
+            uri="",
+            asset_id=None,
+            data=None,
+            metadata=None,
+            columns=None,
         ),
-        description="First source image for the video generation.",
+        description="The shots to generate, with columns: Scene, duration.",
     )
-    image2: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Second source image (optional).",
-    )
-    image3: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Third source image (optional).",
+    images: list[types.ImageRef] | OutputHandle[list[types.ImageRef]] = connect_field(
+        default=[], description="The images to use for the video generation."
     )
 
     @classmethod

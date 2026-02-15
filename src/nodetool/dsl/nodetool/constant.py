@@ -523,6 +523,45 @@ import nodetool.nodes.nodetool.constant
 from nodetool.workflows.base_node import BaseNode
 
 
+class ImageSize(GraphNode[nodetool.nodes.nodetool.constant.ImageSize.OutputType]):
+    value: types.ImageSize | OutputHandle[types.ImageSize] = connect_field(
+        default=PydanticUndefined, description=None
+    )
+
+    @property
+    def out(self) -> "ImageSizeOutputs":
+        return ImageSizeOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.constant.ImageSize
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class ImageSizeOutputs(OutputsProxy):
+    @property
+    def image_size(self) -> OutputHandle[types.ImageSize]:
+        return typing.cast(OutputHandle[types.ImageSize], self["image_size"])
+
+    @property
+    def width(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["width"])
+
+    @property
+    def height(self) -> OutputHandle[int]:
+        return typing.cast(OutputHandle[int], self["height"])
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.constant
+from nodetool.workflows.base_node import BaseNode
+
+
 class Integer(SingleOutputGraphNode[int], GraphNode[int]):
     """
     Represents an integer constant in the workflow.
@@ -664,6 +703,8 @@ class Model3D(SingleOutputGraphNode[types.Model3DRef], GraphNode[types.Model3DRe
             data=None,
             metadata=None,
             format=None,
+            material_file=None,
+            texture_files=[],
         ),
         description=None,
     )
