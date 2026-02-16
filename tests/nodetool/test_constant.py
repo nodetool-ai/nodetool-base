@@ -114,3 +114,52 @@ async def test_constant_node(context: ProcessingContext, node_class):
 
     except Exception as e:
         pytest.fail(f"Error processing {node_class.__name__}: {str(e)}")
+
+
+class _ImageContextStub:
+    def __init__(self) -> None:
+        self.refreshed = False
+        self.refreshed_value: ImageRef | None = None
+        self.asset_url_calls: list[str] = []
+
+    async def refresh_uri(self, value: ImageRef) -> None:
+        self.refreshed = True
+        self.refreshed_value = value
+
+    async def get_asset_url(self, asset_id: str) -> str:
+        self.asset_url_calls.append(asset_id)
+        return f"https://example.com/assets/{asset_id}"
+
+
+@pytest.mark.asyncio
+async def test_image_constant_populates_asset_uri():
+    node = Image(value=ImageRef(asset_id="asset-123"))
+    context = _ImageContextStub()
+
+    result = await node.process(context)
+
+    assert context.refreshed is True
+    assert context.refreshed_value is node.value
+    assert context.asset_url_calls == ["asset-123"]
+    assert result.uri == "https://example.com/assets/asset-123"
+    assert result.type == "image"
+
+
+@pytest.mark.asyncio
+async def test_image_constant_keeps_existing_uri():
+    node = Image(
+        value=ImageRef(
+            asset_id="asset-123",
+            uri="https://example.com/assets/existing",
+            type="image",
+        )
+    )
+    context = _ImageContextStub()
+
+    result = await node.process(context)
+
+    assert context.refreshed is True
+    assert context.refreshed_value is node.value
+    assert context.asset_url_calls == []
+    assert result.uri == "https://example.com/assets/existing"
+    assert result.type == "image"
