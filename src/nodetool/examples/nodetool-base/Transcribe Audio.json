@@ -88,10 +88,7 @@
         "type": "nodetool.text.AutomaticSpeechRecognition",
         "data": {
           "model": {
-            "type": "asr_model",
-            "id": "whisper-1",
-            "provider": "openai",
-            "name": "Whisper"
+            "type": "asr_model"
           }
         },
         "ui_properties": {

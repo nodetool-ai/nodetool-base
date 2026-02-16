@@ -37,9 +37,7 @@
         "type": "nodetool.generators.DataGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "gemma3:4b",
-            "provider": "ollama"
+            "type": "language_model"
           },
           "prompt": "Generate a table of veggies",
           "input_text": "",

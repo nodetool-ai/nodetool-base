@@ -45,9 +45,7 @@
         "type": "nodetool.agents.Summarizer",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "gpt-4o",
-            "provider": "openai"
+            "type": "language_model"
           },
           "max_words": 150
         },
@@ -205,10 +203,7 @@
         "type": "nodetool.text.AutomaticSpeechRecognition",
         "data": {
           "model": {
-            "type": "asr_model",
-            "provider": "fal_ai",
-            "id": "openai/whisper-large-v3",
-            "name": ""
+            "type": "asr_model"
           }
         },
         "ui_properties": {

@@ -56,10 +56,7 @@
         "type": "nodetool.text.AutomaticSpeechRecognition",
         "data": {
           "model": {
-            "type": "asr_model",
-            "provider": "falai",
-            "id": "openai/whisper-large-v3",
-            "name": "Whisper Large V3"
+            "type": "asr_model"
           }
         }
       },
@@ -78,9 +75,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini"
+            "type": "language_model"
           },
           "system": "You are a creative director specializing in music visualization."
         }
@@ -101,9 +96,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini"
+            "type": "language_model"
           },
           "max_tokens": 2048
         }
@@ -120,9 +113,7 @@
         "type": "nodetool.image.TextToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "huggingface-falai",
-            "id": "fal-ai/flux/schnell"
+            "type": "image_model"
           },
           "width": 1920,
           "height": 1080,

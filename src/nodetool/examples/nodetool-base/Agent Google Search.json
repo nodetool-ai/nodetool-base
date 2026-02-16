@@ -63,10 +63,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "gpt-4o",
-            "provider": "openai",
-            "name": "gpt-4o"
+            "type": "language_model"
           },
           "system": "You are a an AI agent. \n\nBehavior\n- Understand the user's intent and the context of the task.\n- Break down the task into smaller steps.\n- Be precise, concise, and actionable.\n- Use tools to accomplish your goal. \n\nTool preambles\n- Outline the next step(s) you will perform.\n- After acting, summarize the outcome.\n\nRendering\n- Use Markdown to display media assets.\n- Display images, audio, and video assets using the appropriate Markdown.\n\nFile handling\n- Inputs and outputs are files in the /workspace directory.\n- Write outputs of code execution to the /workspace directory.\n",
           "prompt": "search for agent libs",

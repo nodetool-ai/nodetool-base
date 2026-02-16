@@ -66,10 +66,7 @@
           "system": "You are a precise text classifier. Your task is to analyze the input text and assign one of the following categories: newsletter, work, family, friends.\n\nInstructions:\n1. Analyze the email content and briefly explain your reasoning.\n2. Select the most appropriate category.\n3. Use the 'apply_label' tool (dynamic output) to apply the category as a label.\n",
           "prompt": "",
           "model": {
-            "type": "language_model",
-            "id": "gpt-4o",
-            "provider": "openai",
-            "name": "gpt-4o"
+            "type": "language_model"
           },
           "image": {
             "type": "image",

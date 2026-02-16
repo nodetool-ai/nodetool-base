@@ -100,10 +100,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "openai/gpt-oss-120b",
-            "provider": "huggingface_cerebras",
-            "name": "gpt-oss-120b"
+            "type": "language_model"
           },
           "system": "You are a friendly assistant.",
           "image": {},
@@ -244,10 +241,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "openai/gpt-oss-120b",
-            "provider": "huggingface_cerebras",
-            "name": "gpt-oss-120b"
+            "type": "language_model"
           },
           "max_tokens": 4096
         },

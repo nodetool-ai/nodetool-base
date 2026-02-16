@@ -4224,7 +4224,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 65706,
+          "downloads": 76684,
           "likes": 132
         },
         {
@@ -4275,7 +4275,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35528,
+          "downloads": 34939,
           "likes": 49
         },
         {
@@ -4326,7 +4326,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 155194,
+          "downloads": 164345,
           "likes": 30
         },
         {
@@ -4346,7 +4346,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2255,
+          "downloads": 2314,
           "likes": 28
         },
         {
@@ -4372,7 +4372,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2340,
+          "downloads": 2291,
           "likes": 7
         },
         {
@@ -4393,7 +4393,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35405,
+          "downloads": 36303,
           "likes": 12
         },
         {
@@ -4412,7 +4412,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 801,
+          "downloads": 786,
           "likes": 19
         },
         {
@@ -4463,7 +4463,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2658,
+          "downloads": 2649,
           "likes": 23
         }
       ],
@@ -4677,7 +4677,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35528,
+          "downloads": 34939,
           "likes": 49
         }
       ],
@@ -4906,7 +4906,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35528,
+          "downloads": 34939,
           "likes": 49
         }
       ],
@@ -5036,7 +5036,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 65706,
+          "downloads": 76684,
           "likes": 132
         },
         {
@@ -5087,7 +5087,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 155194,
+          "downloads": 164345,
           "likes": 30
         }
       ],
@@ -5290,7 +5290,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 35528,
+          "downloads": 34939,
           "likes": 49
         }
       ],
@@ -46068,12 +46068,13 @@
       ]
     },
     {
-      "id": "7c89894e8ce411f083b10000284d49a0",
+      "id": "image_enhance",
       "name": "Image Enhance",
       "description": "Improve image quality with basic enhancement tools like sharpening, contrast and color adjustment",
       "tags": [
         "image",
-        "start"
+        "start",
+        "example"
       ]
     },
     {
@@ -46196,14 +46197,15 @@
       ]
     },
     {
-      "id": "beginner_template_story_ideas",
+      "id": "creative-story-ideas",
       "name": "Creative Story Ideas",
       "description": "A beginner-friendly template demonstrating core NodeTool concepts: inputs, templates, LLM agents, streaming, and outputs. Generate creative story ideas based on your preferences.",
       "tags": [
         "start",
         "beginner",
         "tutorial",
-        "template"
+        "template",
+        "example"
       ]
     },
     {

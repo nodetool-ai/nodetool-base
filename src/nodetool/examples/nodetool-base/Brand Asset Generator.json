@@ -247,12 +247,7 @@
         "type": "nodetool.image.TextToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "openai",
-            "id": "gpt-image-1",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "image_model"
           },
           "negative_prompt": "",
           "width": 1024,
@@ -281,12 +276,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-5-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "input_text": "",
           "max_tokens": 2048

@@ -160,9 +160,7 @@
         "type": "nodetool.generators.ChartGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "gemma3:4b",
-            "provider": "ollama"
+            "type": "language_model"
           },
           "prompt": "make a line graph of Value over Year",
           "max_tokens": 4096

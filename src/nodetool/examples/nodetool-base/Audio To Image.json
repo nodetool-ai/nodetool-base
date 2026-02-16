@@ -50,8 +50,7 @@
         "type": "huggingface.automatic_speech_recognition.Whisper",
         "data": {
           "model": {
-            "type": "hf.automatic_speech_recognition",
-            "repo_id": "openai/whisper-small"
+            "type": "hf.automatic_speech_recognition"
           },
           "task": "transcribe",
           "language": "auto_detect",
@@ -190,7 +189,7 @@
     ]
   },
   "settings": {},
-  "package_name": "nodetool-huggingface",
+  "package_name": "nodetool-base",
   "path": null,
   "run_mode": null,
   "workspace_id": null,

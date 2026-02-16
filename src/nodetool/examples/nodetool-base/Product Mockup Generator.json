@@ -203,12 +203,7 @@
         "type": "nodetool.image.ImageToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "openai",
-            "id": "gpt-image-1.5",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "image_model"
           },
           "negative_prompt": "",
           "strength": 0.65,
@@ -267,12 +262,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "input_text": "",
           "max_tokens": 2048
@@ -320,12 +310,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are a professional product photographer. Create compelling scene concepts.",
           "image": {
@@ -502,12 +487,7 @@
         "type": "nodetool.image.TextToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "openai",
-            "id": "gpt-image-1.5",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "image_model"
           },
           "negative_prompt": "",
           "width": 1200,

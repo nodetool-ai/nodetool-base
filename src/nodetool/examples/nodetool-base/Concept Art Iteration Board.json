@@ -59,12 +59,7 @@
         "type": "nodetool.image.TextToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "openai",
-            "id": "gpt-image-1.5",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "image_model"
           },
           "prompt": "A cat holding a sign that says hello world",
           "negative_prompt": "",
@@ -86,12 +81,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-5-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "prompt": "",
           "input_text": "",
@@ -140,12 +130,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-5-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are an experienced concept art director. Provide detailed, inspiring art direction.",
           "prompt": "",
@@ -279,12 +264,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are a senior concept art director providing feedback for iteration.",
           "prompt": "",

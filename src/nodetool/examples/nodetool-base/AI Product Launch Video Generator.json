@@ -99,12 +99,7 @@
         "type": "nodetool.video.TextToVideo",
         "data": {
           "model": {
-            "type": "video_model",
-            "provider": "openai",
-            "id": "sora-2",
-            "name": "Sora 2",
-            "path": null,
-            "supported_tasks": []
+            "type": "video_model"
           },
           "aspect_ratio": "16:9",
           "resolution": "720p",
@@ -131,12 +126,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are a senior video prompt engineer for OpenAI Sora. Follow Sora best practices: describe the shot like a storyboard\u2014subject, setting, action beats, and camera. Be specific about camera framing and movement (e.g., wide establishing, eye level, 50mm, slow push-in), depth cues, composition (rule of thirds, leading lines), lighting and color anchors (name 3\u20135 colors), and atmosphere/texture (mist, rain on asphalt). Keep motion simple and grounded with one clear camera move and one primary subject action. Support continuity and realism (plausible physics, natural motion, environmental interaction). Do not mention size/resolution or clip length; those are set via API, not prose. Use present tense and avoid abstract phrasing and meta commentary. If dialogue adds clarity, include a short 'Dialogue:' block; otherwise omit. End with constraints: no on-screen text, no logos, no watermarks, no glitches, no distorted anatomy.",
           "image": {

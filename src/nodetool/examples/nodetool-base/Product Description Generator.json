@@ -181,12 +181,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are an expert copywriter. Create compelling product descriptions that sell.",
           "image": {
@@ -289,12 +284,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are an SEO specialist. Create keyword-rich product descriptions.",
           "image": {

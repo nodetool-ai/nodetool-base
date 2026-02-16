@@ -362,12 +362,7 @@
         "type": "nodetool.image.TextToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "openai",
-            "id": "gpt-image-1.5",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "image_model"
           },
           "negative_prompt": "",
           "width": 1400,
@@ -396,12 +391,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "input_text": "",
           "max_tokens": 2048
@@ -475,12 +465,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are a creative director specializing in album artwork. Analyze music and suggest compelling visual concepts.",
           "image": {
@@ -569,11 +554,7 @@
         "type": "nodetool.text.AutomaticSpeechRecognition",
         "data": {
           "model": {
-            "type": "asr_model",
-            "provider": "fal_ai",
-            "id": "openai/whisper-large-v3",
-            "name": "Whisper Large V3",
-            "path": null
+            "type": "asr_model"
           }
         },
         "ui_properties": {

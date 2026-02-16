@@ -47,12 +47,7 @@
         "type": "nodetool.image.ImageToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "huggingface_fal_ai",
-            "id": "fal-ai/flux/dev",
-            "name": "FLUX.1 Dev",
-            "path": null,
-            "supported_tasks": []
+            "type": "image_model"
           },
           "image": {
             "type": "image",

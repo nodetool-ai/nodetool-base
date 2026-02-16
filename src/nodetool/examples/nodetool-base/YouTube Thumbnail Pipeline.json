@@ -129,10 +129,7 @@
         "type": "nodetool.generators.ListGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "GPT-4o-mini"
+            "type": "language_model"
           },
           "max_tokens": 2048
         },
@@ -175,10 +172,7 @@
         "type": "nodetool.image.TextToImage",
         "data": {
           "model": {
-            "type": "image_model",
-            "provider": "huggingface-falai",
-            "id": "fal-ai/flux/schnell",
-            "name": "FLUX.1 Schnell"
+            "type": "image_model"
           },
           "width": 1280,
           "height": 720,

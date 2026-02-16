@@ -35,12 +35,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "huggingface_cerebras",
-            "id": "openai/gpt-oss-120b",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are a friendly assistant",
           "prompt": "",

@@ -83,10 +83,7 @@
         "type": "nodetool.agents.Summarizer",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "gemma3:1b",
-            "provider": "ollama",
-            "name": "gemma3:1b"
+            "type": "language_model"
           },
           "prompt": "Create a summary following these rules:\n\u2022 Focus ONLY on the key information from the source text\n\u2022 Maintain a neutral, objective tone throughout\n\u2022 Present information in a logical flow\n\u2022 Remove any redundant points\n\u2022 Keep only the most important ideas and relationships\n* NO CONCLUSION\n* NO INTRODUCTION\n* NO EXPLANATION OR ADDITIONAL TEXT\n* ONLY RESPOND WITH THE SUMMARY\n* The output should be used with a TTS system",
           "num_predict": 256,

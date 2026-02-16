@@ -197,12 +197,7 @@
         "type": "nodetool.generators.StructuredOutputGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system_prompt": "You are a veteran encounter designer. Produce balanced, data-grounded plans that satisfy the requested schema. Validate your calculations before finalizing.",
           "context": "",
@@ -483,12 +478,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o-mini",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You are a sharp-eyed gameplay QA lead. Identify exploit risks, damage spikes, and tuning issues in encounter plans. Give concise, actionable feedback.",
           "image": {
@@ -570,12 +560,7 @@
         "type": "nodetool.agents.Agent",
         "data": {
           "model": {
-            "type": "language_model",
-            "provider": "openai",
-            "id": "gpt-4o",
-            "name": "",
-            "path": null,
-            "supported_tasks": []
+            "type": "language_model"
           },
           "system": "You assemble clear, production-ready briefs. Reformat supplied data, do not invent new enemies, and ensure markdown is clean and concise.",
           "image": {

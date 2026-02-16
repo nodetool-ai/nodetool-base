@@ -114,9 +114,7 @@
         "type": "nodetool.generators.DataGenerator",
         "data": {
           "model": {
-            "type": "language_model",
-            "id": "gpt-4o-mini",
-            "provider": "openai"
+            "type": "language_model"
           },
           "max_tokens": 4096,
           "columns": {
