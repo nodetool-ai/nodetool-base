@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import ClassVar, TypedDict, List
+from typing import ClassVar, TypedDict
 from pydantic import Field
 
 from nodetool.workflows.base_node import BaseNode
@@ -120,7 +120,7 @@ class ClaudeAgent(BaseNode):
 
         try:
             # Collect the full response text
-            full_text = ""
+            text_parts = []
 
             # Use the query() async iterator - the official SDK pattern
             async for message in query(prompt=self.prompt, options=options):
@@ -129,7 +129,7 @@ class ClaudeAgent(BaseNode):
                     for content in message.content:
                         if isinstance(content, TextBlock):
                             text_chunk = content.text
-                            full_text += text_chunk
+                            text_parts.append(text_chunk)
 
                             # Emit as chunk for streaming
                             chunk = Chunk(node_id=self.id, content=text_chunk)
@@ -146,6 +146,7 @@ class ClaudeAgent(BaseNode):
                             )
 
             # Emit the final full text
+            full_text = "".join(text_parts)
             await outputs.emit("text", full_text)
 
         except Exception as e:

@@ -151,6 +151,7 @@ class KieBaseNode(BaseNode):
         form.add_field("fileName", filename)
 
         headers = {"Authorization": f"Bearer {api_key}"}
+        response_data = None
         try:
             async with aiohttp.ClientSession() as session:
                 async with session.post(
@@ -169,6 +170,11 @@ class KieBaseNode(BaseNode):
             if callable(close_fn):
                 close_fn()
 
+        if not response_data:
+            raise ValueError(
+                "Failed to get response from upload. The request may have failed, "
+                "timed out, or encountered a network error. Check logs for details."
+            )
         download_url = response_data.get("data", {}).get("downloadUrl")
         if not download_url:
             raise ValueError(f"No downloadUrl in upload response: {response_data}")

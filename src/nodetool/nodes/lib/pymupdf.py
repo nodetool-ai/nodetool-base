@@ -41,12 +41,12 @@ class ExtractText(BaseNode):
         doc = _open_document(pdf_data)
 
         end = self.end_page if self.end_page != -1 else doc.page_count - 1
-        text = ""
+        text_parts = []
         for page_num in range(self.start_page, end + 1):
             page = doc[page_num]
-            text += page.get_text()  # type: ignore
+            text_parts.append(page.get_text())  # type: ignore
 
-        return text
+        return "".join(text_parts)
 
 
 class ExtractTextBlocks(BaseNode):
