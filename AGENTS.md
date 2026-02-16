@@ -73,3 +73,37 @@ pip install -e .
 
 - Use `ProcessingContext` for asset management and external access; avoid direct file/network ops where context helpers exist.
 - After adding nodes, run `nodetool package scan` and `nodetool codegen` to refresh metadata/DSL.
+
+## Agent Nodes
+
+### Available Agent Types
+
+The repository includes several specialized agent node types:
+
+- **Agent**: General-purpose LLM agent with tool use and streaming output
+- **ResearchAgent**: Autonomous research agent that gathers information from the web
+- **Summarizer**: Generates concise summaries of text content
+- **Extractor**: Extracts structured data from text
+- **Classifier**: Classifies text into predefined categories
+- **ControlAgent**: Analyzes context and outputs control parameters for dynamic workflow behavior
+
+### ControlAgent (Control Edges Support)
+
+The **ControlAgent** works with control edges from [nodetool-core PR #587](https://github.com/nodetool-ai/nodetool-core/pull/587) to enable dynamic parameter control:
+
+**Purpose**: Analyzes context using an LLM and outputs control parameters that can override downstream node inputs via control edges.
+
+**Key Features**:
+- Outputs control parameters via `__control_output__` handle
+- Control parameters are routed via control edges (`edge_type="control"`)
+- Control edges override normal data inputs on target nodes
+- Enables dynamic, context-aware workflow behavior
+
+**Example Use Cases**:
+- Dynamic image processing parameters based on content analysis
+- Adaptive text generation settings based on requirements
+- Context-aware workflow routing decisions
+
+**Documentation**: See `docs/control_agent.md` for detailed implementation notes.
+
+**Example**: See `examples/control_agent_example.py` for usage patterns.
