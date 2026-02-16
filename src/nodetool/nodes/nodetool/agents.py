@@ -1688,6 +1688,183 @@ class Agent(BaseNode):
         )
 
 
+DEFAULT_CONTROL_SYSTEM_PROMPT = """You are a control flow agent that analyzes context and determines parameters for downstream nodes.
+
+Your task is to:
+1. Analyze the provided context (text, data, or previous results)
+2. Reason about what parameters should be set for downstream workflow nodes
+3. Output a JSON object with parameter names as keys and their values
+
+Example output format:
+{
+  "parameter_name": "value",
+  "another_param": 123,
+  "flag": true
+}
+
+Guidelines:
+- Only output parameters that are relevant to the context
+- Use appropriate data types (strings, numbers, booleans)
+- Be concise and precise in your parameter choices
+- The output will be used to control downstream node behavior via control edges
+"""
+
+
+class ControlAgent(BaseNode):
+    """
+    Agent that analyzes context and outputs control parameters for downstream nodes via control edges.
+    control, agent, flow-control, parameters, automation, decision-making
+
+    This agent receives context as input, uses an LLM to analyze it, and outputs
+    control parameters that can be routed to other nodes via control edges.
+    Control edges override normal data inputs, enabling dynamic workflow behavior.
+
+    Use cases:
+    - Dynamic parameter setting based on content analysis
+    - Conditional workflow routing based on LLM reasoning
+    - Adaptive processing based on input characteristics
+    - Context-aware parameter optimization
+    """
+
+    model: LanguageModel = Field(
+        default=LanguageModel(),
+        description="Model to use for control decisions",
+    )
+    system: str = Field(
+        title="System",
+        default=DEFAULT_CONTROL_SYSTEM_PROMPT,
+        description="The system prompt for the control agent",
+    )
+    context: str = Field(
+        title="Context",
+        default="",
+        description="The context to analyze for control decisions",
+    )
+    schema_description: str = Field(
+        title="Schema Description",
+        default="",
+        description="Optional description of expected output parameters and their purpose",
+    )
+    max_tokens: int = Field(title="Max Tokens", default=2048, ge=1, le=100000)
+    context_window: int = Field(
+        title="Context Window (Ollama)", default=4096, ge=1, le=65536
+    )
+
+    @classmethod
+    def is_cacheable(cls) -> bool:
+        return False
+
+    class OutputType(TypedDict):
+        __control_output__: dict[str, Any]
+
+    @classmethod
+    def get_title(cls) -> str:
+        return "Control Agent"
+
+    @classmethod
+    def unified_recommended_models(
+        cls, include_model_info: bool = False
+    ) -> list[UnifiedModel]:
+        """Lightweight models optimized for control decisions."""
+        return [
+            UnifiedModel(
+                id="qwen3:4b",
+                repo_id="qwen3:4b",
+                name="Qwen3 - 4B",
+                description="Fast and efficient for control decisions with strong JSON output.",
+                size_on_disk=int(2.5 * GB),
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="gemma3:4b",
+                repo_id="gemma3:4b",
+                name="Gemma3 - 4B",
+                description="Compact model suitable for control flow decisions.",
+                size_on_disk=int(3.3 * GB),
+                type="llama_model",
+            ),
+            UnifiedModel(
+                id="llama3.2:3b",
+                repo_id="llama3.2:3b",
+                name="Llama 3.2 - 3B",
+                description="Lightweight Llama variant for fast control decisions.",
+                size_on_disk=2040109465,
+                type="llama_model",
+            ),
+        ]
+
+    async def process(self, context: ProcessingContext) -> OutputType:
+        """Analyze context and generate control parameters."""
+        if self.model.provider == Provider.Empty:
+            raise ValueError("Select a model")
+
+        if not self.context:
+            log.warning("No context provided to ControlAgent, returning empty control params")
+            return {"__control_output__": {}}
+
+        # Build the prompt
+        user_prompt = f"Context to analyze:\n\n{self.context}"
+        
+        if self.schema_description:
+            user_prompt += f"\n\nExpected parameters:\n{self.schema_description}"
+
+        user_prompt += "\n\nAnalyze the context and output a JSON object with appropriate control parameters."
+
+        # Prepare messages
+        messages = [
+            Message(
+                role="system",
+                content=[MessageTextContent(text=self.system)],
+            ),
+            Message(
+                role="user",
+                content=[MessageTextContent(text=user_prompt)],
+            ),
+        ]
+
+        # Get provider
+        provider = await context.get_provider(self.model.provider)
+
+        log.info(f"ControlAgent analyzing context for node {self.id}")
+        log.debug(f"Context length: {len(self.context)} chars")
+
+        # Request JSON response format
+        response_format = {"type": "json_object"}
+
+        # Generate response
+        response = await provider.generate_message(
+            messages=messages,
+            model=self.model.id,
+            max_tokens=self.max_tokens,
+            context_window=self.context_window,
+            response_format=response_format,
+        )
+
+        # Extract JSON from response
+        response_text = ""
+        if response.content:
+            for content_item in response.content:
+                if isinstance(content_item, MessageTextContent):
+                    response_text += content_item.text
+
+        log.debug(f"ControlAgent raw response: {response_text[:500]}")
+
+        # Parse JSON response
+        try:
+            control_params = json.loads(response_text)
+            if not isinstance(control_params, dict):
+                log.error(f"ControlAgent response is not a dict: {type(control_params)}")
+                control_params = {}
+        except json.JSONDecodeError as e:
+            log.error(f"Failed to parse ControlAgent JSON response: {e}")
+            log.error(f"Response text: {response_text}")
+            control_params = {}
+
+        log.info(f"ControlAgent output control params: {list(control_params.keys())}")
+        
+        return {"__control_output__": control_params}
+
+
 DEFAULT_RESEARCH_SYSTEM_PROMPT = """You are a research assistant.
 
 Goal

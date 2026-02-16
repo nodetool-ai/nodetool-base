@@ -978,3 +978,121 @@ class TestAgentFields:
     def test_agent_return_types(self):
         """Test Agent return types"""
         assert Agent.return_type() == Agent.OutputType
+
+
+class TestControlAgent:
+    """Test ControlAgent functionality for control edge support"""
+
+    @pytest.mark.asyncio
+    async def test_control_agent_basic(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test basic control agent functionality"""
+        from nodetool.nodes.nodetool.agents import ControlAgent
+        from unittest.mock import AsyncMock
+
+        node = ControlAgent(
+            context="The image is very dark and needs brightness adjustment of +30",
+            schema_description="brightness: int, contrast: int",
+            model=mock_model,
+        )
+
+        # Mock provider to return control parameters as JSON
+        json_response = '{"brightness": 30, "contrast": 10}'
+        fake_provider = JsonResponseFakeProvider(response_text=json_response)
+
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
+        ):
+            result = await node.process(context)
+
+            # Verify output structure
+            assert "__control_output__" in result
+            assert isinstance(result["__control_output__"], dict)
+            
+            # Verify control parameters
+            control_params = result["__control_output__"]
+            assert "brightness" in control_params
+            assert control_params["brightness"] == 30
+            assert "contrast" in control_params
+            assert control_params["contrast"] == 10
+
+    @pytest.mark.asyncio
+    async def test_control_agent_empty_context(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test control agent with empty context"""
+        from nodetool.nodes.nodetool.agents import ControlAgent
+
+        node = ControlAgent(
+            context="",
+            model=mock_model,
+        )
+
+        fake_provider = JsonResponseFakeProvider(response_text='{}')
+
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
+        ):
+            result = await node.process(context)
+
+            # Should return empty control params
+            assert "__control_output__" in result
+            assert result["__control_output__"] == {}
+
+    @pytest.mark.asyncio
+    async def test_control_agent_json_parse_error(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test control agent with invalid JSON response"""
+        from nodetool.nodes.nodetool.agents import ControlAgent
+        from unittest.mock import AsyncMock
+
+        node = ControlAgent(
+            context="Test context",
+            model=mock_model,
+        )
+
+        # Mock provider to return invalid JSON
+        fake_provider = JsonResponseFakeProvider(response_text='not valid json')
+
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
+        ):
+            result = await node.process(context)
+
+            # Should handle error gracefully and return empty params
+            assert "__control_output__" in result
+            assert result["__control_output__"] == {}
+
+    @pytest.mark.asyncio
+    async def test_control_agent_various_types(
+        self, context: ProcessingContext, mock_model: LanguageModel
+    ):
+        """Test control agent with various parameter types"""
+        from nodetool.nodes.nodetool.agents import ControlAgent
+        from unittest.mock import AsyncMock
+
+        node = ControlAgent(
+            context="Enable feature X, set threshold to 0.75, use 5 iterations",
+            schema_description="enabled: bool, threshold: float, iterations: int",
+            model=mock_model,
+        )
+
+        json_response = '{"enabled": true, "threshold": 0.75, "iterations": 5}'
+        fake_provider = JsonResponseFakeProvider(response_text=json_response)
+
+        with patch.object(
+            context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
+        ):
+            result = await node.process(context)
+
+            control_params = result["__control_output__"]
+            assert control_params["enabled"] is True
+            assert control_params["threshold"] == 0.75
+            assert control_params["iterations"] == 5
+
+    def test_control_agent_return_types(self):
+        """Test ControlAgent return types"""
+        from nodetool.nodes.nodetool.agents import ControlAgent
+        assert ControlAgent.return_type() == ControlAgent.OutputType
