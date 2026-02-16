@@ -4690,6 +4690,127 @@
       ]
     },
     {
+      "title": "Control Agent",
+      "description": "Agent that analyzes context and outputs control parameters for downstream nodes via control edges.\n    control, agent, flow-control, parameters, automation, decision-making\n\n    This agent receives context as input, uses an LLM to analyze it, and outputs\n    control parameters that can be routed to other nodes via control edges.\n    Control edges override normal data inputs, enabling dynamic workflow behavior.\n\n    Use cases:\n    - Dynamic parameter setting based on content analysis\n    - Conditional workflow routing based on LLM reasoning\n    - Adaptive processing based on input characteristics\n    - Context-aware parameter optimization",
+      "namespace": "nodetool.agents",
+      "node_type": "nodetool.agents.ControlAgent",
+      "properties": [
+        {
+          "name": "model",
+          "type": {
+            "type": "language_model"
+          },
+          "default": {
+            "type": "language_model",
+            "provider": "empty",
+            "id": "",
+            "name": "",
+            "path": null,
+            "supported_tasks": []
+          },
+          "title": "Model",
+          "description": "Model to use for control decisions"
+        },
+        {
+          "name": "system",
+          "type": {
+            "type": "str"
+          },
+          "default": "You are a control flow agent that analyzes context and determines parameters for downstream nodes.\n\nYour task is to:\n1. Analyze the provided context (text, data, or previous results)\n2. Reason about what parameters should be set for downstream workflow nodes\n3. Output a JSON object with parameter names as keys and their values\n\nExample output format:\n{\n  \"parameter_name\": \"value\",\n  \"another_param\": 123,\n  \"flag\": true\n}\n\nGuidelines:\n- Only output parameters that are relevant to the context\n- Use appropriate data types (strings, numbers, booleans)\n- Be concise and precise in your parameter choices\n- The output will be used to control downstream node behavior via control edges\n",
+          "title": "System",
+          "description": "The system prompt for the control agent"
+        },
+        {
+          "name": "context",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Context",
+          "description": "The context to analyze for control decisions"
+        },
+        {
+          "name": "schema_description",
+          "type": {
+            "type": "str"
+          },
+          "default": "",
+          "title": "Schema Description",
+          "description": "Optional description of expected output parameters and their purpose"
+        },
+        {
+          "name": "max_tokens",
+          "type": {
+            "type": "int"
+          },
+          "default": 2048,
+          "title": "Max Tokens",
+          "min": 1.0,
+          "max": 100000.0
+        },
+        {
+          "name": "context_window",
+          "type": {
+            "type": "int"
+          },
+          "default": 4096,
+          "title": "Context Window (Ollama)",
+          "min": 1.0,
+          "max": 65536.0
+        }
+      ],
+      "outputs": [
+        {
+          "type": {
+            "type": "dict",
+            "type_args": [
+              {
+                "type": "str"
+              },
+              {
+                "type": "any"
+              }
+            ]
+          },
+          "name": "__control_output__"
+        }
+      ],
+      "recommended_models": [
+        {
+          "id": "qwen3:4b",
+          "type": "llama_model",
+          "name": "Qwen3 - 4B",
+          "repo_id": "qwen3:4b",
+          "description": "Fast and efficient for control decisions with strong JSON output.",
+          "size_on_disk": 2684354560
+        },
+        {
+          "id": "gemma3:4b",
+          "type": "llama_model",
+          "name": "Gemma3 - 4B",
+          "repo_id": "gemma3:4b",
+          "description": "Compact model suitable for control flow decisions.",
+          "size_on_disk": 3543348019
+        },
+        {
+          "id": "llama3.2:3b",
+          "type": "llama_model",
+          "name": "Llama 3.2 - 3B",
+          "repo_id": "llama3.2:3b",
+          "description": "Lightweight Llama variant for fast control decisions.",
+          "size_on_disk": 2040109465
+        }
+      ],
+      "basic_fields": [
+        "model",
+        "system",
+        "context",
+        "schema_description",
+        "max_tokens",
+        "context_window"
+      ]
+    },
+    {
       "title": "Create Thread",
       "description": "Create a new conversation thread and return its ID.\n    threads, chat, conversation, context\n\n    Use this to seed a thread_id that downstream Agent nodes can reuse for\n    persistent history across the graph or multiple runs.",
       "namespace": "nodetool.agents",
@@ -46008,6 +46129,16 @@
       ]
     },
     {
+      "id": "add_subtitles_to_video",
+      "name": "Add Subtitles To Video",
+      "description": "This workflow automatically transcribes speech in videos and adds subtitles. It extracts audio from the input video, uses OpenAI's Whisper model to generate word-level timestamps and transcriptions, and then renders the subtitles back onto the original video. Perfect for creating accessible content, adding captions to social media videos, or transcribing presentations.",
+      "tags": [
+        "start",
+        "video",
+        "huggingface"
+      ]
+    },
+    {
       "id": "af5a2636a78211f09af400006952c72c",
       "name": "Chat with Docs",
       "description": "An intelligent document retrieval and question-answering system that leverages vector search and local LLMs to provide accurate, context-aware responses based on your document collection.",
@@ -46382,6 +46513,17 @@
         "ai",
         "storytelling",
         "creative"
+      ]
+    },
+    {
+      "id": "summarize-audio",
+      "name": "Summarize Audio",
+      "description": "Transcribe an audio file and summarize the text.",
+      "tags": [
+        "audio",
+        "start",
+        "huggingface",
+        "example"
       ]
     },
     {
