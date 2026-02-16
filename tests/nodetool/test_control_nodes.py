@@ -434,3 +434,63 @@ async def test_foreach_emits_last_item_and_index_only_in_current_engine(
 
     assert outputs.get("out_item") == 12
     assert outputs.get("out_index") == 2
+
+
+@pytest.mark.asyncio
+async def test_control_agent_outputs_control_params(context: ProcessingContext):
+    """
+    Test that ControlAgent outputs control parameters in the expected format.
+    
+    This test verifies the ControlAgent node produces __control_output__ that
+    can be used with control edges (edge_type="control") to override parameters
+    on downstream nodes.
+    
+    Note: This test verifies the ControlAgent output format. To actually test
+    control edge routing, you need the control edge infrastructure from 
+    nodetool-core PR #587.
+    """
+    from nodetool.nodes.nodetool.agents import ControlAgent
+    from nodetool.metadata.types import LanguageModel, Provider, Message, MessageTextContent
+    from unittest.mock import AsyncMock, MagicMock
+    
+    # Create a ControlAgent node that analyzes context
+    control_agent = ControlAgent(
+        id="control_agent",
+        context="The image is very dark and needs brightness adjustment",
+        schema_description="brightness: int, contrast: int",
+        model=LanguageModel(
+            provider=Provider.OpenAI,
+            id="gpt-4",
+        ),
+    )
+    
+    # Mock provider to return control parameters as JSON
+    mock_provider = MagicMock()
+    mock_response = Message(
+        role="assistant",
+        content=[MessageTextContent(text='{"brightness": 30, "contrast": 15}')],
+    )
+    mock_provider.generate_message = AsyncMock(return_value=mock_response)
+    
+    # Mock the context to return our fake provider
+    context.get_provider = AsyncMock(return_value=mock_provider)
+    
+    # Execute the control agent
+    result = await control_agent.process(context)
+    
+    # Verify the output structure for control edges
+    assert "__control_output__" in result
+    assert isinstance(result["__control_output__"], dict)
+    
+    # Verify the control parameters were parsed correctly
+    control_params = result["__control_output__"]
+    assert "brightness" in control_params
+    assert control_params["brightness"] == 30
+    assert "contrast" in control_params
+    assert control_params["contrast"] == 15
+    
+    # Verify the provider was called with JSON response format
+    assert mock_provider.generate_message.called
+    call_kwargs = mock_provider.generate_message.call_args[1]
+    assert "response_format" in call_kwargs
+    assert call_kwargs["response_format"]["type"] == "json_object"
