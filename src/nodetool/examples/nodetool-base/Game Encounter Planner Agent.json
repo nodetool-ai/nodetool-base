@@ -202,7 +202,6 @@
           "system_prompt": "You are a veteran encounter designer. Produce balanced, data-grounded plans that satisfy the requested schema. Validate your calculations before finalizing.",
           "context": "",
           "max_tokens": 2048,
-          "context_window": 4096
         },
         "ui_properties": {
           "position": {
@@ -496,7 +495,6 @@
           "history": [],
           "thread_id": null,
           "max_tokens": 600,
-          "context_window": 4096
         },
         "ui_properties": {
           "position": {
@@ -578,7 +576,6 @@
           "history": [],
           "thread_id": null,
           "max_tokens": 900,
-          "context_window": 4096
         },
         "ui_properties": {
           "position": {

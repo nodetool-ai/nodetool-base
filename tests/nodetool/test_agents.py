@@ -36,7 +36,6 @@ class JsonResponseFakeProvider(FakeProvider):
         model,
         tools=(),
         max_tokens: int = 8192,
-        context_window: int = 4096,
         response_format: dict | None = None,
         **kwargs,
     ) -> Message:
@@ -592,7 +591,6 @@ class TestAgent:
                 model,
                 tools=(),
                 max_tokens: int = 8192,
-                context_window: int = 4096,
                 response_format=None,
                 **kwargs,
             ):
@@ -740,7 +738,6 @@ class TestAgent:
             assert fake_provider.call_count == 2
             assert fake_provider.last_model == mock_model.id
 
-
     @pytest.mark.asyncio
     async def test_agent_thread_persistence_basic(
         self, context: ProcessingContext, mock_model: LanguageModel
@@ -855,9 +852,7 @@ class TestAgent:
             model=mock_model,
         )
 
-        fake_provider = FakeProvider(
-            text_response="Test response", should_stream=False
-        )
+        fake_provider = FakeProvider(text_response="Test response", should_stream=False)
 
         # Mock thread operations - no thread exists yet
         context.get_messages = AsyncMock(return_value={"messages": [], "next": None})
@@ -934,9 +929,7 @@ class TestAgent:
             model=mock_model,
         )
 
-        fake_provider = FakeProvider(
-            text_response="Test response", should_stream=False
-        )
+        fake_provider = FakeProvider(text_response="Test response", should_stream=False)
 
         # Mock thread operations that fail
         context.get_messages = AsyncMock(
@@ -1009,7 +1002,7 @@ class TestControlAgent:
             # Verify output structure
             assert "__control_output__" in result
             assert isinstance(result["__control_output__"], dict)
-            
+
             # Verify control parameters
             control_params = result["__control_output__"]
             assert "brightness" in control_params
@@ -1029,7 +1022,7 @@ class TestControlAgent:
             model=mock_model,
         )
 
-        fake_provider = JsonResponseFakeProvider(response_text='{}')
+        fake_provider = JsonResponseFakeProvider(response_text="{}")
 
         with patch.object(
             context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
@@ -1054,7 +1047,7 @@ class TestControlAgent:
         )
 
         # Mock provider to return invalid JSON
-        fake_provider = JsonResponseFakeProvider(response_text='not valid json')
+        fake_provider = JsonResponseFakeProvider(response_text="not valid json")
 
         with patch.object(
             context, "get_provider", new_callable=AsyncMock, return_value=fake_provider
@@ -1095,4 +1088,5 @@ class TestControlAgent:
     def test_control_agent_return_types(self):
         """Test ControlAgent return types"""
         from nodetool.nodes.nodetool.agents import ControlAgent
+
         assert ControlAgent.return_type() == ControlAgent.OutputType

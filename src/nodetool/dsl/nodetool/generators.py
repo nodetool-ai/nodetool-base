@@ -319,9 +319,6 @@ class StructuredOutputGenerator(GraphNode[dict[str, Any]]):
     max_tokens: int | OutputHandle[int] = connect_field(
         default=4096, description="The maximum number of tokens to generate."
     )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
 
     def __init__(
         self,

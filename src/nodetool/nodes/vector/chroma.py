@@ -289,11 +289,6 @@ class IndexAggregatedText(ChromaNode):
     text_chunks: list[TextChunk | str] = Field(
         default=[], description="List of text chunks to index"
     )
-    context_window: int = Field(
-        default=4096,
-        ge=1,
-        description="The context window size to use for the model",
-    )
     aggregation: EmbeddingAggregation = Field(
         default=EmbeddingAggregation.MEAN,
         description="The aggregation method to use for the embeddings.",
@@ -329,12 +324,16 @@ class IndexAggregatedText(ChromaNode):
         client = get_ollama_client()
 
         # Calculate embeddings for each chunk
+        # Use OLLAMA_CONTEXT_LENGTH env var if set, otherwise default to 4096
+        context_length_str = Environment.get("OLLAMA_CONTEXT_LENGTH")
+        context_window = int(context_length_str) if context_length_str else 4096
+
         embeddings = []
         for text in texts:
             response = await client.embeddings(
                 model=model,
                 prompt=text,
-                options={"num_ctx": self.context_window},
+                options={"num_ctx": context_window},
             )
             embeddings.append(response["embedding"])
 

@@ -144,7 +144,6 @@
           "history": [],
           "thread_id": null,
           "max_tokens": 600,
-          "context_window": 4096
         },
         "ui_properties": {
           "position": {

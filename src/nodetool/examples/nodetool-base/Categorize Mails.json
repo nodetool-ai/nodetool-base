@@ -83,7 +83,6 @@
           "history": [],
           "thread_id": "",
           "max_tokens": 8192,
-          "context_window": 4096
         },
         "ui_properties": {
           "selected": false,

@@ -70,7 +70,6 @@
             }
           ],
           "max_tokens": 8192,
-          "context_window": 8192
         },
         "ui_properties": {},
         "dynamic_properties": {},

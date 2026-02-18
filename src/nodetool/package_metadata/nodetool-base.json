@@ -4096,16 +4096,6 @@
           "title": "Max Tokens",
           "min": 1.0,
           "max": 100000.0
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window (Ollama)",
-          "min": 1.0,
-          "max": 65536.0
         }
       ],
       "outputs": [
@@ -4224,7 +4214,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 76684,
+          "downloads": 87939,
           "likes": 132
         },
         {
@@ -4275,7 +4265,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 34939,
+          "downloads": 34976,
           "likes": 49
         },
         {
@@ -4326,7 +4316,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 164345,
+          "downloads": 172690,
           "likes": 30
         },
         {
@@ -4346,7 +4336,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2314,
+          "downloads": 2331,
           "likes": 28
         },
         {
@@ -4372,7 +4362,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2291,
+          "downloads": 2304,
           "likes": 7
         },
         {
@@ -4393,7 +4383,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 36303,
+          "downloads": 37085,
           "likes": 12
         },
         {
@@ -4412,7 +4402,7 @@
             "region:us"
           ],
           "has_model_index": false,
-          "downloads": 786,
+          "downloads": 700,
           "likes": 19
         },
         {
@@ -4463,7 +4453,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 2649,
+          "downloads": 2623,
           "likes": 23
         }
       ],
@@ -4560,16 +4550,6 @@
           "default": [],
           "title": "Categories",
           "description": "List of possible categories. If empty, LLM will determine categories."
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window (Ollama)",
-          "min": 1.0,
-          "max": 65536.0
         }
       ],
       "outputs": [
@@ -4677,7 +4657,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 34939,
+          "downloads": 34976,
           "likes": 49
         }
       ],
@@ -4691,7 +4671,7 @@
     },
     {
       "title": "Control Agent",
-      "description": "Agent that analyzes context and outputs control parameters for downstream nodes via control edges.\n    control, agent, flow-control, parameters, automation, decision-making\n\n    This agent receives context as input, uses an LLM to analyze it, and outputs\n    control parameters that can be routed to other nodes via control edges.\n    Control edges override normal data inputs, enabling dynamic workflow behavior.\n\n    Use cases:\n    - Dynamic parameter setting based on content analysis\n    - Conditional workflow routing based on LLM reasoning\n    - Adaptive processing based on input characteristics\n    - Context-aware parameter optimization",
+      "description": "Agent that analyzes context and outputs control parameters for downstream nodes via control edges.\n    control, agent, flow-control, parameters, automation, decision-making\n\n    This agent receives _control_context as an auto-injected input when it has outgoing\n    control edges. It uses an LLM to analyze the context and controlled node properties,\n    then outputs control parameters that are routed to other nodes via control edges.\n    Control edges override normal data inputs, enabling dynamic workflow behavior.\n\n    The _control_context is automatically injected by the system and contains information\n    about which nodes this agent controls and their available properties.\n\n    Use cases:\n    - Dynamic parameter setting based on content analysis\n    - Conditional workflow routing based on LLM reasoning\n    - Adaptive processing based on input characteristics\n    - Context-aware parameter optimization",
       "namespace": "nodetool.agents",
       "node_type": "nodetool.agents.ControlAgent",
       "properties": [
@@ -4716,27 +4696,9 @@
           "type": {
             "type": "str"
           },
-          "default": "You are a control flow agent that analyzes context and determines parameters for downstream nodes.\n\nYour task is to:\n1. Analyze the provided context (text, data, or previous results)\n2. Reason about what parameters should be set for downstream workflow nodes\n3. Output a JSON object with parameter names as keys and their values\n\nExample output format:\n{\n  \"parameter_name\": \"value\",\n  \"another_param\": 123,\n  \"flag\": true\n}\n\nGuidelines:\n- Only output parameters that are relevant to the context\n- Use appropriate data types (strings, numbers, booleans)\n- Be concise and precise in your parameter choices\n- The output will be used to control downstream node behavior via control edges\n",
+          "default": "You are a control flow agent that analyzes context and determines parameters for downstream nodes.\n\nYour task is to:\n1. Analyze the provided context (text, data, or previous results)\n2. Review the controlled nodes and their available properties (provided in _control_context)\n3. Reason about what parameter values should be set for each controlled node\n4. Output a JSON object with property names as keys and their values\n\nThe _control_context will tell you:\n- Which nodes you control (by node_id)\n- Each node's type and available properties\n- Current property values, types, descriptions, and defaults\n\nExample _control_context:\n{\n  \"target_node_id\": {\n    \"node_id\": \"target_node_id\",\n    \"node_type\": \"nodetool.processing.SomeNode\",\n    \"properties\": {\n      \"threshold\": {\n        \"value\": 0.5,\n        \"type\": \"float\",\n        \"description\": \"Processing threshold\",\n        \"default\": 0.5\n      }\n    }\n  }\n}\n\nExample output format:\n{\n  \"threshold\": 0.95,\n  \"mode\": \"turbo\"\n}\n\nGuidelines:\n- Output ONLY properties that exist in the controlled nodes' schemas\n- Use appropriate data types matching the property types (strings, numbers, booleans)\n- Be concise and precise in your parameter choices\n- Control parameters override normal data edge inputs\n- If multiple controlled nodes exist, return parameters for the relevant node(s)\n",
           "title": "System",
           "description": "The system prompt for the control agent"
-        },
-        {
-          "name": "context",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Context",
-          "description": "The context to analyze for control decisions"
-        },
-        {
-          "name": "schema_description",
-          "type": {
-            "type": "str"
-          },
-          "default": "",
-          "title": "Schema Description",
-          "description": "Optional description of expected output parameters and their purpose"
         },
         {
           "name": "max_tokens",
@@ -4747,16 +4709,6 @@
           "title": "Max Tokens",
           "min": 1.0,
           "max": 100000.0
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window (Ollama)",
-          "min": 1.0,
-          "max": 65536.0
         }
       ],
       "outputs": [
@@ -4804,10 +4756,7 @@
       "basic_fields": [
         "model",
         "system",
-        "context",
-        "schema_description",
-        "max_tokens",
-        "context_window"
+        "max_tokens"
       ]
     },
     {
@@ -4918,16 +4867,6 @@
           },
           "title": "Audio",
           "description": "Optional audio to assist extraction"
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window (Ollama)",
-          "min": 1.0,
-          "max": 65536.0
         }
       ],
       "recommended_models": [
@@ -5027,7 +4966,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 34939,
+          "downloads": 34976,
           "likes": 49
         }
       ],
@@ -5110,17 +5049,6 @@
           "description": "Maximum tokens for agent responses",
           "min": 1.0,
           "max": 100000.0
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 8192,
-          "title": "Context Window",
-          "description": "Context window size",
-          "min": 1.0,
-          "max": 131072.0
         }
       ],
       "recommended_models": [
@@ -5157,7 +5085,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 76684,
+          "downloads": 87939,
           "likes": 132
         },
         {
@@ -5208,7 +5136,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 164345,
+          "downloads": 172690,
           "likes": 30
         }
       ],
@@ -5288,16 +5216,6 @@
           },
           "title": "Audio",
           "description": "Optional audio to condition the summary"
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window (Ollama)",
-          "min": 1.0,
-          "max": 65536.0
         }
       ],
       "outputs": [
@@ -5411,7 +5329,7 @@
             "conversational"
           ],
           "has_model_index": false,
-          "downloads": 34939,
+          "downloads": 34976,
           "likes": 49
         }
       ],
@@ -5811,16 +5729,6 @@
           "description": "The maximum number of tokens to generate.",
           "min": 1.0,
           "max": 16384.0
-        },
-        {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window (Ollama)",
-          "min": 1.0,
-          "max": 65536.0
         }
       ],
       "basic_fields": [
@@ -43557,16 +43465,6 @@
           "description": "List of text chunks to index"
         },
         {
-          "name": "context_window",
-          "type": {
-            "type": "int"
-          },
-          "default": 4096,
-          "title": "Context Window",
-          "description": "The context window size to use for the model",
-          "min": 1.0
-        },
-        {
           "name": "aggregation",
           "type": {
             "type": "enum",
@@ -43589,7 +43487,6 @@
         "document_id",
         "metadata",
         "text_chunks",
-        "context_window",
         "aggregation"
       ]
     },
@@ -46079,54 +45976,34 @@
   ],
   "examples": [
     {
-      "id": "0b43765f-3ad4-47f4-bfdc-818100b458fd",
-      "name": "Wikipedia Agent",
-      "description": "Wikipedia style research and documentation agent.",
-      "tags": [
-        "wikipedia",
-        "research",
-        "writing"
-      ]
-    },
-    {
-      "id": "summarize-newsletters",
-      "name": "Summarize Newsletters",
-      "description": "",
-      "tags": [
-        "email",
-        "start",
-        "example"
-      ]
+      "id": "",
+      "name": "[ERROR] Wikipedia Agent.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 53 column 9 (char 2326)",
+      "tags": []
     },
     {
       "id": "",
-      "name": "Product Description Generator",
-      "description": "Automatically generate marketing copy and product descriptions from product data.",
-      "tags": [
-        "business",
-        "data",
-        "research",
-        "example"
-      ]
-    },
-    {
-      "id": "research_paper_summarizer",
-      "name": "Research Paper Summarizer",
-      "description": "Extract and summarize key findings from research papers and technical documents.",
-      "tags": [
-        "research"
-      ]
+      "name": "[ERROR] Summarize Newsletters.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 131 column 9 (char 4399)",
+      "tags": []
     },
     {
       "id": "",
-      "name": "Product Mockup Generator",
-      "description": "Generate product mockups for a given product.",
-      "tags": [
-        "product-mockup",
-        "mockup",
-        "design",
-        "example"
-      ]
+      "name": "[ERROR] Product Description Generator.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 202 column 9 (char 5123)",
+      "tags": []
+    },
+    {
+      "id": "",
+      "name": "[ERROR] Research Paper Summarizer.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 70 column 9 (char 2415)",
+      "tags": []
+    },
+    {
+      "id": "",
+      "name": "[ERROR] Product Mockup Generator.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 333 column 9 (char 8286)",
+      "tags": []
     },
     {
       "id": "add_subtitles_to_video",
@@ -46139,24 +46016,16 @@
       ]
     },
     {
-      "id": "af5a2636a78211f09af400006952c72c",
-      "name": "Chat with Docs",
-      "description": "An intelligent document retrieval and question-answering system that leverages vector search and local LLMs to provide accurate, context-aware responses based on your document collection.",
-      "tags": [
-        "chat",
-        "rag"
-      ]
+      "id": "",
+      "name": "[ERROR] Chat with docs.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 116 column 9 (char 4501)",
+      "tags": []
     },
     {
       "id": "",
-      "name": "AI Product Launch Video Generator",
-      "description": "Create a realistic 16:9 marketing video for a new product launch using the TextToVideo node.",
-      "tags": [
-        "business",
-        "data",
-        "video",
-        "example"
-      ]
+      "name": "[ERROR] AI Product Launch Video Generator.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 147 column 9 (char 4378)",
+      "tags": []
     },
     {
       "id": "youtube_thumbnail_pipeline_001",
@@ -46171,32 +46040,21 @@
     },
     {
       "id": "",
-      "name": "Learning Path Generator",
-      "description": "Create a comprehensive learning path for a topic.",
-      "tags": [
-        "education",
-        "planning",
-        "example"
-      ]
+      "name": "[ERROR] Learning Path Generator.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 127 column 9 (char 4113)",
+      "tags": []
     },
     {
-      "id": "competitive_analysis",
-      "name": "Competitive Analysis",
-      "description": "Analyze competitor offerings and market positioning for strategic planning. Fetches competitor information from Google search results.",
-      "tags": [
-        "business",
-        "data"
-      ]
+      "id": "",
+      "name": "[ERROR] Competitive Analysis.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 86 column 9 (char 3999)",
+      "tags": []
     },
     {
-      "id": "a0173b98-2bf1-481a-a94e-090cba8da1c6",
-      "name": "ChromaDB Research Agent",
-      "description": "Query a Chroma collection of papers.",
-      "tags": [
-        "chromadb",
-        "rag",
-        "research"
-      ]
+      "id": "",
+      "name": "[ERROR] ChromaDB Research Agent.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 59 column 9 (char 1459)",
+      "tags": []
     },
     {
       "id": "image_enhance",
@@ -46227,14 +46085,10 @@
       ]
     },
     {
-      "id": "9ad58a63-abec-4196-bd53-9262bc1e7eb7",
-      "name": "Hacker News Agent",
-      "description": "Scrape and analyze the front page of Hacker News.",
-      "tags": [
-        "hackernews",
-        "news",
-        "analysis"
-      ]
+      "id": "",
+      "name": "[ERROR] Hacker News Agent.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 68 column 9 (char 2879)",
+      "tags": []
     },
     {
       "id": "d22725a09fc211f0b7bb00007bf02e69",
@@ -46246,30 +46100,21 @@
       ]
     },
     {
-      "id": "autonomous_research_agent",
-      "name": "Autonomous Research Agent",
-      "description": "Use the ResearchAgent node to perform a lightweight market analysis with structured outputs defined through dynamic slots.",
-      "tags": [
-        "agent",
-        "business",
-        "research"
-      ]
+      "id": "",
+      "name": "[ERROR] Autonomous Research Agent.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 73 column 9 (char 3263)",
+      "tags": []
     },
     {
       "id": "",
-      "name": "Game Encounter Planner Agent",
-      "description": "Coordinate a squad of AI agents to design, critique, and brief a Frostfang Tundra combat encounter using StructuredOutputGenerator for robust schema enforcement.",
-      "tags": [
-        "agent",
-        "data",
-        "rag",
-        "example"
-      ]
+      "name": "[ERROR] Game Encounter Planner Agent.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 205 column 9 (char 4821)",
+      "tags": []
     },
     {
-      "id": "bcbefdbea78311f09c5e000014a97b82",
-      "name": "Summarize RSS",
-      "description": "",
+      "id": "",
+      "name": "[ERROR] Summarize RSS.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 66 column 9 (char 2102)",
       "tags": []
     },
     {
@@ -46307,25 +46152,16 @@
       ]
     },
     {
-      "id": "1302ffe8a2f911f0b74c000014916b9c",
-      "name": "Categorize Mails",
-      "description": "Automatically categorize and organize emails using AI, showing the reasoning.",
-      "tags": [
-        "email",
-        "start",
-        "agent"
-      ]
+      "id": "",
+      "name": "[ERROR] Categorize Mails.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 86 column 9 (char 3197)",
+      "tags": []
     },
     {
       "id": "",
-      "name": "Reddit Scraper",
-      "description": "Analyze a subreddit for specific issues.",
-      "tags": [
-        "reddit",
-        "research",
-        "analysis",
-        "example"
-      ]
+      "name": "[ERROR] Reddit Scraper.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 172 column 9 (char 5221)",
+      "tags": []
     },
     {
       "id": "creative-story-ideas",
@@ -46358,43 +46194,27 @@
     },
     {
       "id": "",
-      "name": "Album Cover Creator",
-      "description": "Create an album cover for a given song.",
-      "tags": [
-        "album-cover",
-        "art",
-        "design",
-        "example"
-      ]
+      "name": "[ERROR] Album Cover Creator.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 488 column 9 (char 11879)",
+      "tags": []
     },
     {
-      "id": "movie-posters",
-      "name": "Movie Posters",
-      "description": "Create cinematic movie posters using AI image generation",
-      "tags": [
-        "start",
-        "image",
-        "example"
-      ]
+      "id": "",
+      "name": "[ERROR] Movie Posters.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 112 column 9 (char 3202)",
+      "tags": []
     },
     {
-      "id": "fac89302-e7ea-4415-b0a5-da2205da59d7",
-      "name": "Concept Art Iteration Board",
-      "description": "Create a comprehensive learning path for a topic.",
-      "tags": [
-        "concept-art",
-        "planning"
-      ]
+      "id": "",
+      "name": "[ERROR] Concept Art Iteration Board.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 154 column 9 (char 4445)",
+      "tags": []
     },
     {
-      "id": "56e546a6-3fb8-40d3-85e4-d283af718bde",
-      "name": "AI Workflows on Reddit",
-      "description": "Find examples of AI workflows on Reddit and compile a markdown report.",
-      "tags": [
-        "reddit",
-        "research",
-        "ai"
-      ]
+      "id": "",
+      "name": "[ERROR] AI Workflows on Reddit.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 53 column 9 (char 2349)",
+      "tags": []
     },
     {
       "id": "310d885a341811f0942e0000191c0ba5",
@@ -46427,15 +46247,10 @@
       ]
     },
     {
-      "id": "agent-google-search-example",
-      "name": "Agent Google Search",
-      "description": "Demonstrates an Agent using dynamic outputs to perform Google searches and display results.",
-      "tags": [
-        "agent",
-        "google",
-        "search",
-        "dynamic-outputs"
-      ]
+      "id": "",
+      "name": "[ERROR] Agent Google Search.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 85 column 9 (char 3313)",
+      "tags": []
     },
     {
       "id": "",
@@ -46475,14 +46290,10 @@
       ]
     },
     {
-      "id": "a519d747-d864-411d-a2f9-f35c0261bf25",
-      "name": "Instagram Scraper",
-      "description": "Analyze Instagram trends for a specific topic.",
-      "tags": [
-        "instagram",
-        "social-media",
-        "trends"
-      ]
+      "id": "",
+      "name": "[ERROR] Instagram Scraper.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 67 column 9 (char 2758)",
+      "tags": []
     },
     {
       "id": "data_visualization_pipeline",
@@ -46516,24 +46327,16 @@
       ]
     },
     {
-      "id": "summarize-audio",
-      "name": "Summarize Audio",
-      "description": "Transcribe an audio file and summarize the text.",
-      "tags": [
-        "audio",
-        "start",
-        "huggingface",
-        "example"
-      ]
+      "id": "",
+      "name": "[ERROR] Summarize Audio.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 147 column 9 (char 4161)",
+      "tags": []
     },
     {
       "id": "",
-      "name": "Data Validation Pipeline",
-      "description": "Validate and clean data for quality assurance before processing.",
-      "tags": [
-        "data",
-        "example"
-      ]
+      "name": "[ERROR] Data Validation Pipeline.json",
+      "description": "Error loading this workflow: Expecting property name enclosed in double quotes: line 113 column 9 (char 2744)",
+      "tags": []
     },
     {
       "id": "data_generator",

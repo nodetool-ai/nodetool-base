@@ -219,9 +219,6 @@ class IndexAggregatedText(SingleOutputGraphNode[typing.Any], GraphNode[typing.An
         list[nodetool.metadata.types.TextChunk | str]
         | OutputHandle[list[nodetool.metadata.types.TextChunk | str]]
     ) = connect_field(default=[], description="List of text chunks to index")
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description="The context window size to use for the model"
-    )
     aggregation: nodetool.nodes.vector.chroma.EmbeddingAggregation = Field(
         default=nodetool.nodes.vector.chroma.EmbeddingAggregation.MEAN,
         description="The aggregation method to use for the embeddings.",

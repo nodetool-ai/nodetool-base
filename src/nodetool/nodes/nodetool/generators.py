@@ -20,6 +20,7 @@ from nodetool.metadata.types import (
 from nodetool.workflows.types import Chunk
 from nodetool.workflows.base_node import BaseNode
 from nodetool.workflows.processing_context import ProcessingContext
+from nodetool.nodes.nodetool.agents import serialize_tool_result
 
 
 logger = get_logger(__name__)
@@ -166,9 +167,6 @@ class StructuredOutputGenerator(BaseNode):
         le=16384,
         description="The maximum number of tokens to generate.",
     )
-    context_window: int = Field(
-        title="Context Window (Ollama)", default=4096, ge=1, le=65536
-    )
 
     @classmethod
     def get_basic_fields(cls) -> list[str]:
@@ -204,7 +202,6 @@ class StructuredOutputGenerator(BaseNode):
             model=self.model.id,
             messages=messages,
             max_tokens=self.max_tokens,
-            context_window=self.context_window,
         )
 
         raw = str(assistant_message.content or "").strip()
@@ -808,10 +805,10 @@ Always return a single JSON object as your primary output, conforming to the sch
         user_message = Message(
             role="user",
             content=f"""Available columns in the dataset:
-{json.dumps([c.model_dump() for c in self.data.columns], indent=2)}
+{json.dumps(serialize_tool_result(self.data.columns), indent=2)}
 
 Input data:
-{json.dumps(self.data.data if self.data.data else [], indent=2)}
+{json.dumps(serialize_tool_result(self.data.data if self.data.data else []), indent=2)}
 
 User request: {self.prompt}
 

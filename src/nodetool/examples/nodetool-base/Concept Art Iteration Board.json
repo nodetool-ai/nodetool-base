@@ -151,7 +151,6 @@
           "history": [],
           "thread_id": "",
           "max_tokens": 1024,
-          "context_window": 4096
         },
         "ui_properties": {},
         "dynamic_properties": {},
@@ -285,7 +284,6 @@
           "history": [],
           "thread_id": "",
           "max_tokens": 1024,
-          "context_window": 4096
         },
         "ui_properties": {},
         "dynamic_properties": {},

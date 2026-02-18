@@ -109,7 +109,6 @@
           "tools": [],
           "messages": [],
           "max_tokens": 4096,
-          "context_window": 4096
         },
         "ui_properties": {
           "selected": false,

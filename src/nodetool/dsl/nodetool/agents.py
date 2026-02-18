@@ -76,9 +76,6 @@ class Agent(GraphNode[nodetool.nodes.nodetool.agents.Agent.OutputType]):
         description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
     )
     max_tokens: int | OutputHandle[int] = connect_field(default=8192, description=None)
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
 
     def __init__(
         self,
@@ -190,9 +187,6 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
     )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -201,6 +195,70 @@ class Classifier(SingleOutputGraphNode[str], GraphNode[str]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
+import typing
+from pydantic import Field
+from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
+import nodetool.nodes.nodetool.agents
+from nodetool.workflows.base_node import BaseNode
+
+
+class ControlAgent(GraphNode[nodetool.nodes.nodetool.agents.ControlAgent.OutputType]):
+    """
+
+    Agent that analyzes context and outputs control parameters for downstream nodes via control edges.
+    control, agent, flow-control, parameters, automation, decision-making
+
+    This agent receives _control_context as an auto-injected input when it has outgoing
+    control edges. It uses an LLM to analyze the context and controlled node properties,
+    then outputs control parameters that are routed to other nodes via control edges.
+    Control edges override normal data inputs, enabling dynamic workflow behavior.
+
+    The _control_context is automatically injected by the system and contains information
+    about which nodes this agent controls and their available properties.
+
+    Use cases:
+    - Dynamic parameter setting based on content analysis
+    - Conditional workflow routing based on LLM reasoning
+    - Adaptive processing based on input characteristics
+    - Context-aware parameter optimization
+    """
+
+    model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(
+        default=types.LanguageModel(
+            type="language_model",
+            provider=nodetool.metadata.types.Provider.Empty,
+            id="",
+            name="",
+            path=None,
+            supported_tasks=[],
+        ),
+        description="Model to use for control decisions",
+    )
+    system: str | OutputHandle[str] = connect_field(
+        default='You are a control flow agent that analyzes context and determines parameters for downstream nodes.\n\nYour task is to:\n1. Analyze the provided context (text, data, or previous results)\n2. Review the controlled nodes and their available properties (provided in _control_context)\n3. Reason about what parameter values should be set for each controlled node\n4. Output a JSON object with property names as keys and their values\n\nThe _control_context will tell you:\n- Which nodes you control (by node_id)\n- Each node\'s type and available properties\n- Current property values, types, descriptions, and defaults\n\nExample _control_context:\n{\n  "target_node_id": {\n    "node_id": "target_node_id",\n    "node_type": "nodetool.processing.SomeNode",\n    "properties": {\n      "threshold": {\n        "value": 0.5,\n        "type": "float",\n        "description": "Processing threshold",\n        "default": 0.5\n      }\n    }\n  }\n}\n\nExample output format:\n{\n  "threshold": 0.95,\n  "mode": "turbo"\n}\n\nGuidelines:\n- Output ONLY properties that exist in the controlled nodes\' schemas\n- Use appropriate data types matching the property types (strings, numbers, booleans)\n- Be concise and precise in your parameter choices\n- Control parameters override normal data edge inputs\n- If multiple controlled nodes exist, return parameters for the relevant node(s)\n',
+        description="The system prompt for the control agent",
+    )
+    max_tokens: int | OutputHandle[int] = connect_field(default=2048, description=None)
+
+    @property
+    def out(self) -> "ControlAgentOutputs":
+        return ControlAgentOutputs(self)
+
+    @classmethod
+    def get_node_class(cls) -> type[BaseNode]:
+        return nodetool.nodes.nodetool.agents.ControlAgent
+
+    @classmethod
+    def get_node_type(cls):
+        return cls.get_node_class().get_node_type()
+
+
+class ControlAgentOutputs(OutputsProxy):
+    @property
+    def __control_output__(self) -> OutputHandle[dict[str, Any]]:
+        return typing.cast(OutputHandle[dict[str, Any]], self["__control_output__"])
 
 
 import typing
@@ -302,9 +360,6 @@ class Extractor(GraphNode[dict[str, Any]]):
         ),
         description="Optional audio to assist extraction",
     )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
-    )
 
     def __init__(
         self,
@@ -400,9 +455,6 @@ class ResearchAgent(GraphNode[dict[str, Any]]):
     max_tokens: int | OutputHandle[int] = connect_field(
         default=8192, description="Maximum tokens for agent responses"
     )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=8192, description="Context window size"
-    )
 
     def __init__(
         self,
@@ -487,9 +539,6 @@ class Summarizer(GraphNode[nodetool.nodes.nodetool.agents.Summarizer.OutputType]
             type="audio", uri="", asset_id=None, data=None, metadata=None
         ),
         description="Optional audio to condition the summary",
-    )
-    context_window: int | OutputHandle[int] = connect_field(
-        default=4096, description=None
     )
 
     @property

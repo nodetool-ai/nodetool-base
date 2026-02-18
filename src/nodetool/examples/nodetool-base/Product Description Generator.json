@@ -199,7 +199,6 @@
           "history": [],
           "thread_id": null,
           "max_tokens": 500,
-          "context_window": 4096
         },
         "ui_properties": {
           "position": {
@@ -302,7 +301,6 @@
           "history": [],
           "thread_id": null,
           "max_tokens": 300,
-          "context_window": 4096
         },
         "ui_properties": {
           "position": {

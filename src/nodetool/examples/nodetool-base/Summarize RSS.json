@@ -63,7 +63,6 @@
             "type": "language_model"
           },
           "max_tokens": 1000,
-          "context_window": 4096
         },
         "ui_properties": {
           "selected": false,

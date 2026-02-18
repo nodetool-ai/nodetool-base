@@ -2,9 +2,10 @@ import asyncio
 import inspect
 import json
 import re
+import datetime
 from typing import Any, AsyncGenerator, ClassVar, TypedDict
 
-from pydantic import Field
+from pydantic import Field, PrivateAttr
 
 from nodetool.agents.tools.base import Tool
 from nodetool.agents.tools.workflow_tool import GraphTool
@@ -83,9 +84,6 @@ class Summarizer(BaseNode):
     audio: AudioRef = Field(
         default=AudioRef(),
         description="Optional audio to condition the summary",
-    )
-    context_window: int = Field(
-        title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
     @classmethod
@@ -181,7 +179,6 @@ class Summarizer(BaseNode):
         async for chunk in provider.generate_messages(
             messages=messages,
             model=self.model.id,
-            context_window=self.context_window,
         ):
             if isinstance(chunk, Chunk):
                 yield {"chunk": chunk, "text": None}
@@ -295,9 +292,6 @@ class Extractor(BaseNode):
     audio: AudioRef = Field(
         default=AudioRef(),
         description="Optional audio to assist extraction",
-    )
-    context_window: int = Field(
-        title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
     @classmethod
@@ -428,7 +422,6 @@ class Extractor(BaseNode):
         assistant_message = await provider.generate_message(
             model=self.model.id,
             messages=messages,
-            context_window=self.context_window,
         )
 
         raw = str(assistant_message.content or "").strip()
@@ -525,9 +518,6 @@ class Classifier(BaseNode):
     categories: list[str] = Field(
         default=[],
         description="List of possible categories. If empty, LLM will determine categories.",
-    )
-    context_window: int = Field(
-        title="Context Window (Ollama)", default=4096, ge=1, le=65536
     )
 
     @classmethod
@@ -643,7 +633,6 @@ class Classifier(BaseNode):
             assistant_message = await provider.generate_message(
                 model=self.model.id,
                 messages=messages,
-                context_window=self.context_window,
                 response_format={
                     "type": "json_schema",
                     "json_schema": {
@@ -660,7 +649,6 @@ class Classifier(BaseNode):
             assistant_message = await provider.generate_message(
                 model=self.model.id,
                 messages=messages,
-                context_window=self.context_window,
             )
             raw = str(assistant_message.content)
 
@@ -759,10 +747,12 @@ def serialize_tool_result(tool_result: Any) -> Any:
             }
         # Pydantic/BaseModel or BaseType
         if getattr(tool_result, "model_dump", None) is not None:
-            return tool_result.model_dump()
+            return tool_result.model_dump(mode="json")
         # Handle set/tuple
         if isinstance(tool_result, (set, tuple)):
             return [serialize_tool_result(v) for v in tool_result]
+        if isinstance(tool_result, (datetime.date, datetime.datetime)):
+            return tool_result.isoformat()
         # Numpy types
         try:
             import numpy as np  # type: ignore
@@ -884,7 +874,6 @@ def instantiate_tools_from_names(tool_names: list[ToolName]) -> list[Tool]:
     return selected_tools
 
 
-
 class Agent(BaseNode):
     """
     Generate natural language responses using LLM providers and streams output.
@@ -929,9 +918,6 @@ class Agent(BaseNode):
         description="Optional thread ID for persistent conversation history. If provided, messages will be loaded from and saved to this thread.",
     )
     max_tokens: int = Field(title="Max Tokens", default=8192, ge=1, le=100000)
-    context_window: int = Field(
-        title="Context Window (Ollama)", default=4096, ge=1, le=65536
-    )
 
     _supports_dynamic_outputs: ClassVar[bool] = True
 
@@ -1120,6 +1106,8 @@ class Agent(BaseNode):
         Raises:
             ValueError: If workspace tools are requested but no workspace is configured.
         """
+        from nodetool.agents.tools.control_tool import ControlNodeTool
+
         # Check if workspace tools are being requested
         workspace_tool_names = {"read_file", "write_file", "list_directory"}
         requested_workspace_tools = [
@@ -1146,6 +1134,14 @@ class Agent(BaseNode):
                 continue
             tool = GraphTool(graph, name, "", initial_edges, initial_nodes)
             tools.append(tool)
+
+        # Add control tools for nodes this agent controls
+        controlled_info = context.get_controlled_nodes_info(self.id)
+        for target_id, info in controlled_info.items():
+            control_tool = ControlNodeTool(target_id, info)
+            tools.append(control_tool)
+            log.debug(f"Added control tool for node {target_id}: {control_tool.name}")
+
         return tools
 
     async def _get_provider_safe(self, context: ProcessingContext):
@@ -1413,7 +1409,6 @@ class Agent(BaseNode):
                 model=self.model.id,
                 tools=tools,
                 max_tokens=self.max_tokens,
-                context_window=self.context_window,
                 context=context,
             ):
                 chunk_count += 1
@@ -1442,14 +1437,29 @@ class Agent(BaseNode):
                             f"_execute_agent_loop accumulated text: iteration={iteration}, "
                             f"chunk_count={chunk_count}, total_text_len={len(message_text_content.text)}"
                         )
-                        yield {"chunk": chunk, "thinking": None, "text": None, "audio": None}
+                        yield {
+                            "chunk": chunk,
+                            "thinking": None,
+                            "text": None,
+                            "audio": None,
+                        }
                     elif chunk.content_type == "audio":
-                        yield {"chunk": chunk, "thinking": None, "text": None, "audio": None}
+                        yield {
+                            "chunk": chunk,
+                            "thinking": None,
+                            "text": None,
+                            "audio": None,
+                        }
                         import base64
 
                         audio_bytes = base64.b64decode(chunk.content or "")
                         audio_ref = AudioRef(data=audio_bytes)
-                        yield {"chunk": None, "thinking": None, "text": None, "audio": audio_ref}
+                        yield {
+                            "chunk": None,
+                            "thinking": None,
+                            "text": None,
+                            "audio": audio_ref,
+                        }
                     else:
                         log.warning(
                             "Agent received unsupported chunk type %s; ignoring",
@@ -1519,6 +1529,45 @@ class Agent(BaseNode):
                     assistant_message.tool_calls.append(chunk)
                     for tool_instance in tools:
                         if tool_instance and tool_instance.name == chunk.name:
+                            # Check if this is a ControlNodeTool
+                            from nodetool.agents.tools.control_tool import (
+                                ControlNodeTool,
+                            )
+
+                            if isinstance(tool_instance, ControlNodeTool):
+                                # Emit control event instead of executing tool
+                                event = tool_instance.create_control_event(
+                                    chunk.args or {}
+                                )
+                                yield {"__control__": event}
+
+                                # Add tool result message
+                                result_msg = f"Triggered {event.event_type} on {tool_instance.node_info.get('node_title', tool_instance.target_node_id)}"
+                                tool_result_msg = Message(
+                                    role="tool",
+                                    tool_call_id=chunk.id,
+                                    content=result_msg,
+                                )
+                                messages.append(tool_result_msg)
+
+                                context.post_message(
+                                    ToolCallUpdate(
+                                        node_id=self.id,
+                                        name=chunk.name,
+                                        args=chunk.args,
+                                        message=tool_instance.user_message(
+                                            chunk.args or {}
+                                        ),
+                                    )
+                                )
+                                log.debug(
+                                    "Agent control tool call: emitted %s event to %s",
+                                    event.event_type,
+                                    tool_instance.target_node_id,
+                                )
+                                break
+
+                            # Normal tool handling for non-control tools
                             context.post_message(
                                 ToolCallUpdate(
                                     node_id=self.id,
@@ -1663,10 +1712,9 @@ class Agent(BaseNode):
         log.debug("Agent messages: %s", messages)
 
         log.debug(
-            "Agent setup (per-item): model=%s provider=%s context_window=%s max_tokens=%s tools=%s",
+            "Agent setup (per-item): model=%s provider=%s max_tokens=%s tools=%s",
             self.model.id,
             self.model.provider,
-            self.context_window,
             self.max_tokens,
             tool_names,
         )
@@ -1692,21 +1740,43 @@ DEFAULT_CONTROL_SYSTEM_PROMPT = """You are a control flow agent that analyzes co
 
 Your task is to:
 1. Analyze the provided context (text, data, or previous results)
-2. Reason about what parameters should be set for downstream workflow nodes
-3. Output a JSON object with parameter names as keys and their values
+2. Review the controlled nodes and their available properties (provided in _control_context)
+3. Reason about what parameter values should be set for each controlled node
+4. Output a JSON object with property names as keys and their values
+
+The _control_context will tell you:
+- Which nodes you control (by node_id)
+- Each node's type and available properties
+- Current property values, types, descriptions, and defaults
+
+Example _control_context:
+{
+  "target_node_id": {
+    "node_id": "target_node_id",
+    "node_type": "nodetool.processing.SomeNode",
+    "properties": {
+      "threshold": {
+        "value": 0.5,
+        "type": "float",
+        "description": "Processing threshold",
+        "default": 0.5
+      }
+    }
+  }
+}
 
 Example output format:
 {
-  "parameter_name": "value",
-  "another_param": 123,
-  "flag": true
+  "threshold": 0.95,
+  "mode": "turbo"
 }
 
 Guidelines:
-- Only output parameters that are relevant to the context
-- Use appropriate data types (strings, numbers, booleans)
+- Output ONLY properties that exist in the controlled nodes' schemas
+- Use appropriate data types matching the property types (strings, numbers, booleans)
 - Be concise and precise in your parameter choices
-- The output will be used to control downstream node behavior via control edges
+- Control parameters override normal data edge inputs
+- If multiple controlled nodes exist, return parameters for the relevant node(s)
 """
 
 
@@ -1715,9 +1785,13 @@ class ControlAgent(BaseNode):
     Agent that analyzes context and outputs control parameters for downstream nodes via control edges.
     control, agent, flow-control, parameters, automation, decision-making
 
-    This agent receives context as input, uses an LLM to analyze it, and outputs
-    control parameters that can be routed to other nodes via control edges.
+    This agent receives _control_context as an auto-injected input when it has outgoing
+    control edges. It uses an LLM to analyze the context and controlled node properties,
+    then outputs control parameters that are routed to other nodes via control edges.
     Control edges override normal data inputs, enabling dynamic workflow behavior.
+
+    The _control_context is automatically injected by the system and contains information
+    about which nodes this agent controls and their available properties.
 
     Use cases:
     - Dynamic parameter setting based on content analysis
@@ -1735,20 +1809,8 @@ class ControlAgent(BaseNode):
         default=DEFAULT_CONTROL_SYSTEM_PROMPT,
         description="The system prompt for the control agent",
     )
-    context: str = Field(
-        title="Context",
-        default="",
-        description="The context to analyze for control decisions",
-    )
-    schema_description: str = Field(
-        title="Schema Description",
-        default="",
-        description="Optional description of expected output parameters and their purpose",
-    )
     max_tokens: int = Field(title="Max Tokens", default=2048, ge=1, le=100000)
-    context_window: int = Field(
-        title="Context Window (Ollama)", default=4096, ge=1, le=65536
-    )
+    _control_context: dict[str, Any] = PrivateAttr(default_factory=dict)
 
     @classmethod
     def is_cacheable(cls) -> bool:
@@ -1794,21 +1856,32 @@ class ControlAgent(BaseNode):
         ]
 
     async def process(self, context: ProcessingContext) -> OutputType:
-        """Analyze context and generate control parameters."""
+        """Analyze _control_context and generate control parameters.
+
+        The _control_context is auto-injected by the system when this agent has
+        outgoing control edges. It contains information about controlled nodes and
+        their properties.
+        """
         if self.model.provider == Provider.Empty:
             raise ValueError("Select a model")
 
-        if not self.context:
-            log.warning("No context provided to ControlAgent, returning empty control params")
+        if not self._control_context:
+            log.warning(
+                "No _control_context provided to ControlAgent, returning empty control params"
+            )
+            log.warning("Ensure this agent has outgoing control edges to target nodes")
             return {"__control_output__": {}}
 
-        # Build the prompt
-        user_prompt = f"Context to analyze:\n\n{self.context}"
-        
-        if self.schema_description:
-            user_prompt += f"\n\nExpected parameters:\n{self.schema_description}"
+        # Build the prompt with control context
+        user_prompt = f"""_control_context (nodes and properties you control):
 
-        user_prompt += "\n\nAnalyze the context and output a JSON object with appropriate control parameters."
+```json
+{json.dumps(serialize_tool_result(self._control_context), indent=2)}
+```
+
+Based on the above control context, analyze the controlled nodes and their properties.
+Output a JSON object with property names as keys and appropriate values.
+"""
 
         # Prepare messages
         messages = [
@@ -1825,8 +1898,10 @@ class ControlAgent(BaseNode):
         # Get provider
         provider = await context.get_provider(self.model.provider)
 
-        log.info(f"ControlAgent analyzing context for node {self.id}")
-        log.debug(f"Context length: {len(self.context)} chars")
+        log.info(f"ControlAgent analyzing _control_context for node {self.id}")
+        log.debug(
+            f"Control context: {json.dumps(serialize_tool_result(self._control_context), indent=2)}"
+        )
 
         # Request JSON response format
         response_format = {"type": "json_object"}
@@ -1836,13 +1911,14 @@ class ControlAgent(BaseNode):
             messages=messages,
             model=self.model.id,
             max_tokens=self.max_tokens,
-            context_window=self.context_window,
             response_format=response_format,
         )
 
         # Extract JSON from response
         response_text = ""
-        if response.content:
+        if isinstance(response.content, str):
+            response_text = response.content
+        elif response.content:
             for content_item in response.content:
                 if isinstance(content_item, MessageTextContent):
                     response_text += content_item.text
@@ -1852,16 +1928,51 @@ class ControlAgent(BaseNode):
         # Parse JSON response
         try:
             control_params = json.loads(response_text)
+
+            # Unwrap common wrapper keys if present
+            # The model might wrap the output in "result", "output", etc.
+            if isinstance(control_params, dict) and len(control_params) == 1:
+                key = next(iter(control_params))
+                # If the key is plausibly a wrapper key AND the value is a dict (properties)
+                if key.lower() in (
+                    "result",
+                    "output",
+                    "json",
+                    "data",
+                    "properties",
+                    "response",
+                ) and isinstance(control_params[key], dict):
+                    log.info(f"Unwrapping ControlAgent response from key '{key}'")
+                    control_params = control_params[key]
+
+            # Extract properties if LLM included metadata fields
+            # LLMs sometimes return: {"node_id": "...", "node_type": "...", "properties": {...}}
+            # We only want the actual properties to apply to the controlled node
+            if isinstance(control_params, dict) and "properties" in control_params:
+                # Check if this looks like a metadata wrapper (has node_id, node_type, or analysis)
+                metadata_keys = {"node_id", "node_type", "analysis"}
+                if metadata_keys & control_params.keys():
+                    log.info(
+                        f"Extracting properties from response, ignoring metadata keys: "
+                        f"{metadata_keys & control_params.keys()}"
+                    )
+                    control_params = control_params["properties"]
+                    if not isinstance(control_params, dict):
+                        log.error(f"Extracted properties is not a dict: {type(control_params)}")
+                        control_params = {}
+
             if not isinstance(control_params, dict):
-                log.error(f"ControlAgent response is not a dict: {type(control_params)}")
+                log.error(
+                    f"ControlAgent response is not a dict: {type(control_params)}"
+                )
                 control_params = {}
         except json.JSONDecodeError as e:
             log.error(f"Failed to parse ControlAgent JSON response: {e}")
             log.error(f"Response text: {response_text}")
-            control_params = {}
+            raise e
 
         log.info(f"ControlAgent output control params: {list(control_params.keys())}")
-        
+
         return {"__control_output__": control_params}
 
 
@@ -1943,10 +2054,6 @@ class ResearchAgent(BaseNode):
 
     max_tokens: int = Field(
         default=8192, ge=1, le=100000, description="Maximum tokens for agent responses"
-    )
-
-    context_window: int = Field(
-        default=8192, ge=1, le=131072, description="Context window size"
     )
 
     @classmethod
