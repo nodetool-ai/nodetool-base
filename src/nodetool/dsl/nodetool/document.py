@@ -18,25 +18,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
-class ListDocuments(
-    GraphNode[nodetool.nodes.nodetool.document.ListDocuments.OutputType]
-):
+class ListDocuments(GraphNode[nodetool.nodes.nodetool.document.ListDocuments.OutputType]):
     """
 
-    List documents in a directory.
-    files, list, directory
+        List documents in a directory.
+        files, list, directory
     """
 
-    folder: str | OutputHandle[str] = connect_field(
-        default="~", description="Directory to scan"
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="*", description="File pattern to match (e.g. *.txt)"
-    )
-    recursive: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Search subdirectories"
-    )
+    folder: str | OutputHandle[str] = connect_field(default='~', description='Directory to scan')
+    pattern: str | OutputHandle[str] = connect_field(default='*', description='File pattern to match (e.g. *.txt)')
+    recursive: bool | OutputHandle[bool] = connect_field(default=False, description='Search subdirectories')
 
     @property
     def out(self) -> "ListDocumentsOutputs":
@@ -50,11 +41,10 @@ class ListDocuments(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class ListDocumentsOutputs(OutputsProxy):
     @property
     def document(self) -> OutputHandle[types.DocumentRef]:
-        return typing.cast(OutputHandle[types.DocumentRef], self["document"])
+        return typing.cast(OutputHandle[types.DocumentRef], self['document'])
 
 
 import typing
@@ -63,19 +53,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
-class LoadDocumentFile(
-    SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]
-):
+class LoadDocumentFile(SingleOutputGraphNode[types.DocumentRef], GraphNode[types.DocumentRef]):
     """
 
-    Read a document from disk.
-    files, document, read, input, load, file
+        Read a document from disk.
+        files, document, read, input, load, file
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to the document to read"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to the document to read')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -92,31 +77,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveDocumentFile(SingleOutputGraphNode[typing.Any], GraphNode[typing.Any]):
     """
 
-    Write a document to disk.
-    files, document, write, output, save, file
+        Write a document to disk.
+        files, document, write, output, save, file
 
-    The filename can include time and date variables:
-    %Y - Year, %m - Month, %d - Day
-    %H - Hour, %M - Minute, %S - Second
+        The filename can include time and date variables:
+        %Y - Year, %m - Month, %d - Day
+        %H - Hour, %M - Minute, %S - Second
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The document to save",
-    )
-    folder: str | OutputHandle[str] = connect_field(
-        default="", description="Folder where the file will be saved"
-    )
-    filename: str | OutputHandle[str] = connect_field(
-        default="",
-        description="Name of the file to save. Supports strftime format codes.",
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='The document to save')
+    folder: str | OutputHandle[str] = connect_field(default='', description='Folder where the file will be saved')
+    filename: str | OutputHandle[str] = connect_field(default='', description='Name of the file to save. Supports strftime format codes.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -133,41 +107,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
-class SplitDocument(
-    GraphNode[nodetool.nodes.nodetool.document.SplitDocument.OutputType]
-):
+class SplitDocument(GraphNode[nodetool.nodes.nodetool.document.SplitDocument.OutputType]):
     """
 
-    Split text semantically.
-    chroma, embedding, collection, RAG, index, text, markdown, semantic
+        Split text semantically.
+        chroma, embedding, collection, RAG, index, text, markdown, semantic
     """
 
-    embed_model: types.LanguageModel | OutputHandle[types.LanguageModel] = (
-        connect_field(
-            default=types.LanguageModel(
-                type="language_model",
-                provider=nodetool.metadata.types.Provider.Ollama,
-                id="embeddinggemma",
-                name="",
-                path=None,
-                supported_tasks=[],
-            ),
-            description="Embedding model to use",
-        )
-    )
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Document ID to associate with the text content",
-    )
-    buffer_size: int | OutputHandle[int] = connect_field(
-        default=1, description="Buffer size for semantic splitting"
-    )
-    threshold: int | OutputHandle[int] = connect_field(
-        default=95, description="Breakpoint percentile threshold for semantic splitting"
-    )
+    embed_model: types.LanguageModel | OutputHandle[types.LanguageModel] = connect_field(default=types.LanguageModel(type='language_model', provider=nodetool.metadata.types.Provider.Ollama, id='embeddinggemma', name='', path=None, supported_tasks=[]), description='Embedding model to use')
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='Document ID to associate with the text content')
+    buffer_size: int | OutputHandle[int] = connect_field(default=1, description='Buffer size for semantic splitting')
+    threshold: int | OutputHandle[int] = connect_field(default=95, description='Breakpoint percentile threshold for semantic splitting')
 
     @property
     def out(self) -> "SplitDocumentOutputs":
@@ -181,19 +131,18 @@ class SplitDocument(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SplitDocumentOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def source_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source_id"])
+        return typing.cast(OutputHandle[str], self['source_id'])
 
     @property
     def start_index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["start_index"])
+        return typing.cast(OutputHandle[int], self['start_index'])
 
 
 import typing
@@ -202,20 +151,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
 class SplitHTML(GraphNode[nodetool.nodes.nodetool.document.SplitHTML.OutputType]):
     """
 
-    Split HTML content into semantic chunks based on HTML tags.
-    html, text, semantic, tags, parsing
+        Split HTML content into semantic chunks based on HTML tags.
+        html, text, semantic, tags, parsing
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Document ID to associate with the HTML content",
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='Document ID to associate with the HTML content')
 
     @property
     def out(self) -> "SplitHTMLOutputs":
@@ -229,19 +172,18 @@ class SplitHTML(GraphNode[nodetool.nodes.nodetool.document.SplitHTML.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SplitHTMLOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def source_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source_id"])
+        return typing.cast(OutputHandle[str], self['source_id'])
 
     @property
     def start_index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["start_index"])
+        return typing.cast(OutputHandle[int], self['start_index'])
 
 
 import typing
@@ -250,26 +192,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
 class SplitJSON(GraphNode[nodetool.nodes.nodetool.document.SplitJSON.OutputType]):
     """
 
-    Split JSON content into semantic chunks.
-    json, parsing, semantic, structured
+        Split JSON content into semantic chunks.
+        json, parsing, semantic, structured
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Document ID to associate with the JSON content",
-    )
-    include_metadata: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to include metadata in nodes"
-    )
-    include_prev_next_rel: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to include prev/next relationships"
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description='Document ID to associate with the JSON content')
+    include_metadata: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to include metadata in nodes')
+    include_prev_next_rel: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to include prev/next relationships')
 
     @property
     def out(self) -> "SplitJSONOutputs":
@@ -283,19 +215,18 @@ class SplitJSON(GraphNode[nodetool.nodes.nodetool.document.SplitJSON.OutputType]
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SplitJSONOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def source_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source_id"])
+        return typing.cast(OutputHandle[str], self['source_id'])
 
     @property
     def start_index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["start_index"])
+        return typing.cast(OutputHandle[int], self['start_index'])
 
 
 import typing
@@ -304,46 +235,24 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
-class SplitMarkdown(
-    GraphNode[nodetool.nodes.nodetool.document.SplitMarkdown.OutputType]
-):
+class SplitMarkdown(GraphNode[nodetool.nodes.nodetool.document.SplitMarkdown.OutputType]):
     """
 
-    Splits markdown text by headers while preserving header hierarchy in metadata.
-    markdown, split, headers
+        Splits markdown text by headers while preserving header hierarchy in metadata.
+        markdown, split, headers
 
-    Use cases:
-    - Splitting markdown documentation while preserving structure
-    - Processing markdown files for semantic search
-    - Creating context-aware chunks from markdown content
+        Use cases:
+        - Splitting markdown documentation while preserving structure
+        - Processing markdown files for semantic search
+        - Creating context-aware chunks from markdown content
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description=None,
-    )
-    headers_to_split_on: list[tuple[str, str]] | OutputHandle[list[tuple[str, str]]] = (
-        connect_field(
-            default=[("#", "Header 1"), ("##", "Header 2"), ("###", "Header 3")],
-            description="List of tuples containing (header_symbol, header_name)",
-        )
-    )
-    strip_headers: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Whether to remove headers from the output content"
-    )
-    return_each_line: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Whether to split into individual lines instead of header sections",
-    )
-    chunk_size: int | OutputHandle[int] = connect_field(
-        default=1000, description="Optional maximum chunk size for further splitting"
-    )
-    chunk_overlap: int | OutputHandle[int] = connect_field(
-        default=30, description="Overlap size when using chunk_size"
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description=None)
+    headers_to_split_on: list[tuple[str, str]] | OutputHandle[list[tuple[str, str]]] = connect_field(default=[('#', 'Header 1'), ('##', 'Header 2'), ('###', 'Header 3')], description='List of tuples containing (header_symbol, header_name)')
+    strip_headers: bool | OutputHandle[bool] = connect_field(default=True, description='Whether to remove headers from the output content')
+    return_each_line: bool | OutputHandle[bool] = connect_field(default=False, description='Whether to split into individual lines instead of header sections')
+    chunk_size: int | OutputHandle[int] = connect_field(default=1000, description='Optional maximum chunk size for further splitting')
+    chunk_overlap: int | OutputHandle[int] = connect_field(default=30, description='Overlap size when using chunk_size')
 
     @property
     def out(self) -> "SplitMarkdownOutputs":
@@ -357,19 +266,18 @@ class SplitMarkdown(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SplitMarkdownOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def source_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source_id"])
+        return typing.cast(OutputHandle[str], self['source_id'])
 
     @property
     def start_index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["start_index"])
+        return typing.cast(OutputHandle[int], self['start_index'])
 
 
 import typing
@@ -378,37 +286,22 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.document
 from nodetool.workflows.base_node import BaseNode
 
-
-class SplitRecursively(
-    GraphNode[nodetool.nodes.nodetool.document.SplitRecursively.OutputType]
-):
+class SplitRecursively(GraphNode[nodetool.nodes.nodetool.document.SplitRecursively.OutputType]):
     """
 
-    Splits text recursively using LangChain's RecursiveCharacterTextSplitter.
-    text, split, chunks
+        Splits text recursively using LangChain's RecursiveCharacterTextSplitter.
+        text, split, chunks
 
-    Use cases:
-    - Splitting documents while preserving semantic relationships
-    - Creating chunks for language model processing
-    - Handling text in languages with/without word boundaries
+        Use cases:
+        - Splitting documents while preserving semantic relationships
+        - Creating chunks for language model processing
+        - Handling text in languages with/without word boundaries
     """
 
-    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(
-        default=types.DocumentRef(
-            type="document", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description=None,
-    )
-    chunk_size: int | OutputHandle[int] = connect_field(
-        default=1000, description="Maximum size of each chunk in characters"
-    )
-    chunk_overlap: int | OutputHandle[int] = connect_field(
-        default=200, description="Number of characters to overlap between chunks"
-    )
-    separators: list[str] | OutputHandle[list[str]] = connect_field(
-        default=["\n\n", "\n", "."],
-        description="List of separators to use for splitting, in order of preference",
-    )
+    document: types.DocumentRef | OutputHandle[types.DocumentRef] = connect_field(default=types.DocumentRef(type='document', uri='', asset_id=None, data=None, metadata=None), description=None)
+    chunk_size: int | OutputHandle[int] = connect_field(default=1000, description='Maximum size of each chunk in characters')
+    chunk_overlap: int | OutputHandle[int] = connect_field(default=200, description='Number of characters to overlap between chunks')
+    separators: list[str] | OutputHandle[list[str]] = connect_field(default=['\n\n', '\n', '.'], description='List of separators to use for splitting, in order of preference')
 
     @property
     def out(self) -> "SplitRecursivelyOutputs":
@@ -422,16 +315,17 @@ class SplitRecursively(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class SplitRecursivelyOutputs(OutputsProxy):
     @property
     def text(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["text"])
+        return typing.cast(OutputHandle[str], self['text'])
 
     @property
     def source_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["source_id"])
+        return typing.cast(OutputHandle[str], self['source_id'])
 
     @property
     def start_index(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["start_index"])
+        return typing.cast(OutputHandle[int], self['start_index'])
+
+

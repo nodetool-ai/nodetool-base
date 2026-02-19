@@ -18,23 +18,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class All(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if all boolean values in a list are True.
-    boolean, all, check, logic, condition, flow-control, branch
+        Checks if all boolean values in a list are True.
+        boolean, all, check, logic, condition, flow-control, branch
 
 
-    Use cases:
-    - Ensure all conditions in a set are met
-    - Implement comprehensive checks
-    - Validate multiple criteria simultaneously
+        Use cases:
+        - Ensure all conditions in a set are met
+        - Implement comprehensive checks
+        - Validate multiple criteria simultaneously
     """
 
-    values: list[bool] | OutputHandle[list[bool]] = connect_field(
-        default=[], description="List of boolean values to check"
-    )
+    values: list[bool] | OutputHandle[list[bool]] = connect_field(default=[], description='List of boolean values to check')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -51,33 +48,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class Compare(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Compares two values using a specified comparison operator.
-    compare, condition, logic
+        Compares two values using a specified comparison operator.
+        compare, condition, logic
 
-    Use cases:
-    - Implement decision points in workflows
-    - Filter data based on specific criteria
-    - Create dynamic thresholds or limits
+        Use cases:
+        - Implement decision points in workflows
+        - Filter data based on specific criteria
+        - Create dynamic thresholds or limits
     """
 
-    Comparison: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.boolean.Compare.Comparison
-    )
+    Comparison: typing.ClassVar[type] = nodetool.nodes.nodetool.boolean.Compare.Comparison
 
-    a: int | float | OutputHandle[int | float] = connect_field(
-        default=0, description="First value to compare"
-    )
-    b: int | float | OutputHandle[int | float] = connect_field(
-        default=0, description="Second value to compare"
-    )
-    comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(
-        default=nodetool.nodes.nodetool.boolean.Compare.Comparison.EQUAL,
-        description="Comparison operator to use",
-    )
+    a: int | float | OutputHandle[int | float] = connect_field(default=0, description='First value to compare')
+    b: int | float | OutputHandle[int | float] = connect_field(default=0, description='Second value to compare')
+    comparison: nodetool.nodes.nodetool.boolean.Compare.Comparison = Field(default=nodetool.nodes.nodetool.boolean.Compare.Comparison.EQUAL, description='Comparison operator to use')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -94,28 +81,21 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class ConditionalSwitch(SingleOutputGraphNode[Any], GraphNode[Any]):
     """
 
-    Performs a conditional check on a boolean input and returns a value based on the result.
-    if, condition, flow-control, branch, true, false, switch, toggle
+        Performs a conditional check on a boolean input and returns a value based on the result.
+        if, condition, flow-control, branch, true, false, switch, toggle
 
-    Use cases:
-    - Implement conditional logic in workflows
-    - Create dynamic branches in workflows
-    - Implement decision points in workflows
+        Use cases:
+        - Implement conditional logic in workflows
+        - Create dynamic branches in workflows
+        - Implement decision points in workflows
     """
 
-    condition: bool | OutputHandle[bool] = connect_field(
-        default=False, description="The condition to check"
-    )
-    if_true: Any | OutputHandle[Any] = connect_field(
-        default=(), description="The value to return if the condition is true"
-    )
-    if_false: Any | OutputHandle[Any] = connect_field(
-        default=(), description="The value to return if the condition is false"
-    )
+    condition: bool | OutputHandle[bool] = connect_field(default=False, description='The condition to check')
+    if_true: Any | OutputHandle[Any] = connect_field(default=(), description='The value to return if the condition is true')
+    if_false: Any | OutputHandle[Any] = connect_field(default=(), description='The value to return if the condition is false')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -132,25 +112,20 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class IsIn(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if a value is present in a list of options.
-    membership, contains, check
+        Checks if a value is present in a list of options.
+        membership, contains, check
 
-    Use cases:
-    - Validate input against a set of allowed values
-    - Implement category or group checks
-    - Filter data based on inclusion criteria
+        Use cases:
+        - Validate input against a set of allowed values
+        - Implement category or group checks
+        - Filter data based on inclusion criteria
     """
 
-    value: Any | OutputHandle[Any] = connect_field(
-        default=(), description="The value to check for membership"
-    )
-    options: list[Any] | OutputHandle[list[Any]] = connect_field(
-        default=[], description="The list of options to check against"
-    )
+    value: Any | OutputHandle[Any] = connect_field(default=(), description='The value to check for membership')
+    options: list[Any] | OutputHandle[list[Any]] = connect_field(default=[], description='The list of options to check against')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -167,22 +142,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class IsNone(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if a value is None.
-    null, none, check
+        Checks if a value is None.
+        null, none, check
 
-    Use cases:
-    - Validate input presence
-    - Handle optional parameters
-    - Implement null checks in data processing
+        Use cases:
+        - Validate input presence
+        - Handle optional parameters
+        - Implement null checks in data processing
     """
 
-    value: Any | OutputHandle[Any] = connect_field(
-        default=(), description="The value to check for None"
-    )
+    value: Any | OutputHandle[Any] = connect_field(default=(), description='The value to check for None')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -199,33 +171,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class LogicalOperator(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Performs logical operations on two boolean inputs.
-    boolean, logic, operator, condition, flow-control, branch, else, true, false, switch, toggle
+        Performs logical operations on two boolean inputs.
+        boolean, logic, operator, condition, flow-control, branch, else, true, false, switch, toggle
 
-    Use cases:
-    - Combine multiple conditions in decision-making
-    - Implement complex logical rules in workflows
-    - Create advanced filters or triggers
+        Use cases:
+        - Combine multiple conditions in decision-making
+        - Implement complex logical rules in workflows
+        - Create advanced filters or triggers
     """
 
-    BooleanOperation: typing.ClassVar[type] = (
-        nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
-    )
+    BooleanOperation: typing.ClassVar[type] = nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation
 
-    a: bool | OutputHandle[bool] = connect_field(
-        default=False, description="First boolean input"
-    )
-    b: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Second boolean input"
-    )
-    operation: nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation = Field(
-        default=nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation.AND,
-        description="Logical operation to perform",
-    )
+    a: bool | OutputHandle[bool] = connect_field(default=False, description='First boolean input')
+    b: bool | OutputHandle[bool] = connect_field(default=False, description='Second boolean input')
+    operation: nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation = Field(default=nodetool.nodes.nodetool.boolean.LogicalOperator.BooleanOperation.AND, description='Logical operation to perform')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -242,22 +204,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class Not(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Performs logical NOT operation on a boolean input.
-    boolean, logic, not, invert, !, negation, condition, else, true, false, switch, toggle, flow-control, branch
+        Performs logical NOT operation on a boolean input.
+        boolean, logic, not, invert, !, negation, condition, else, true, false, switch, toggle, flow-control, branch
 
-    Use cases:
-    - Invert a condition's result
-    - Implement toggle functionality
-    - Create opposite logic branches
+        Use cases:
+        - Invert a condition's result
+        - Implement toggle functionality
+        - Create opposite logic branches
     """
 
-    value: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Boolean input to negate"
-    )
+    value: bool | OutputHandle[bool] = connect_field(default=False, description='Boolean input to negate')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -274,22 +233,19 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.boolean
 from nodetool.workflows.base_node import BaseNode
 
-
 class Some(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Checks if any boolean value in a list is True.
-    boolean, any, check, logic, condition, flow-control, branch
+        Checks if any boolean value in a list is True.
+        boolean, any, check, logic, condition, flow-control, branch
 
-    Use cases:
-    - Check if at least one condition in a set is met
-    - Implement optional criteria checks
-    - Create flexible validation rules
+        Use cases:
+        - Check if at least one condition in a set is met
+        - Implement optional criteria checks
+        - Create flexible validation rules
     """
 
-    values: list[bool] | OutputHandle[list[bool]] = connect_field(
-        default=[], description="List of boolean values to check"
-    )
+    values: list[bool] | OutputHandle[list[bool]] = connect_field(default=[], description='List of boolean values to check')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -298,3 +254,5 @@ class Some(SingleOutputGraphNode[bool], GraphNode[bool]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

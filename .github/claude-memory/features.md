@@ -40,3 +40,19 @@ Repository configured with OpenCode memory and automated Kie.ai sync workflow.
 - Model ID: `elevenlabs/text-to-speech-turbo-2-5`
 - Category: `audio`
 - Description: Added ElevenLabs text-to-speech node supporting natural-sounding voice synthesis with multiple voices, stability controls, and multilingual output via Kie.ai API.
+
+---
+
+## 2026-02-19 - Ideogram Character Nodes
+
+- **Model IDs:**
+  - `ideogram/character`
+  - `ideogram/character-edit`
+
+- **Category:** image
+
+- **Description:** Added two new Ideogram character generation nodes:
+  - `IdeogramCharacter`: Generate character images in various settings while maintaining character consistency using reference images and text prompts
+  - `IdeogramCharacterEdit`: Edit masked parts of character images with inpainting while maintaining character consistency
+
+---

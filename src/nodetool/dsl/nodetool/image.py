@@ -18,22 +18,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
-class BatchToList(
-    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
-):
+class BatchToList(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
     """
 
-    Convert an image batch to a list of image references.
-    batch, list, images, processing
+        Convert an image batch to a list of image references.
+        batch, list, images, processing
     """
 
-    batch: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The batch of images to convert.",
-    )
+    batch: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The batch of images to convert.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -50,32 +42,18 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class Crop(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Crop an image to specified coordinates.
-    image, crop
+        Crop an image to specified coordinates.
+        image, crop
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to crop.",
-    )
-    left: int | OutputHandle[int] = connect_field(
-        default=0, description="The left coordinate."
-    )
-    top: int | OutputHandle[int] = connect_field(
-        default=0, description="The top coordinate."
-    )
-    right: int | OutputHandle[int] = connect_field(
-        default=512, description="The right coordinate."
-    )
-    bottom: int | OutputHandle[int] = connect_field(
-        default=512, description="The bottom coordinate."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to crop.')
+    left: int | OutputHandle[int] = connect_field(default=0, description='The left coordinate.')
+    top: int | OutputHandle[int] = connect_field(default=0, description='The top coordinate.')
+    right: int | OutputHandle[int] = connect_field(default=512, description='The right coordinate.')
+    bottom: int | OutputHandle[int] = connect_field(default=512, description='The bottom coordinate.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -92,26 +70,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class Fit(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Resize an image to fit within specified dimensions while preserving aspect ratio.
-    image, resize, fit
+        Resize an image to fit within specified dimensions while preserving aspect ratio.
+        image, resize, fit
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to fit.",
-    )
-    width: int | OutputHandle[int] = connect_field(
-        default=512, description="Width to fit to."
-    )
-    height: int | OutputHandle[int] = connect_field(
-        default=512, description="Height to fit to."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to fit.')
+    width: int | OutputHandle[int] = connect_field(default=512, description='Width to fit to.')
+    height: int | OutputHandle[int] = connect_field(default=512, description='Height to fit to.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -128,20 +96,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType]):
     """
 
-    Get metadata about the input image.
-    metadata, properties, analysis, information
+        Get metadata about the input image.
+        metadata, properties, analysis, information
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The input image.",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The input image.')
 
     @property
     def out(self) -> "GetMetadataOutputs":
@@ -155,27 +117,26 @@ class GetMetadata(GraphNode[nodetool.nodes.nodetool.image.GetMetadata.OutputType
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class GetMetadataOutputs(OutputsProxy):
     @property
     def format(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["format"])
+        return typing.cast(OutputHandle[str], self['format'])
 
     @property
     def mode(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["mode"])
+        return typing.cast(OutputHandle[str], self['mode'])
 
     @property
     def width(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["width"])
+        return typing.cast(OutputHandle[int], self['width'])
 
     @property
     def height(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["height"])
+        return typing.cast(OutputHandle[int], self['height'])
 
     @property
     def channels(self) -> OutputHandle[int]:
-        return typing.cast(OutputHandle[int], self["channels"])
+        return typing.cast(OutputHandle[int], self['channels'])
 
 
 import typing
@@ -184,67 +145,26 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class ImageToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
-    image, transformation, AI, image-to-image, i2i
+        Transform images using text prompts with any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+        image, transformation, AI, image-to-image, i2i
     """
 
-    model: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
-        default=types.ImageModel(
-            type="image_model",
-            provider=nodetool.metadata.types.Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/dev",
-            name="FLUX.1 Dev",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="The image generation model to use",
-    )
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="Input image to transform",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A photorealistic version of the input image",
-        description="Text prompt describing the desired transformation",
-    )
-    negative_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Text prompt describing what to avoid"
-    )
-    strength: float | OutputHandle[float] = connect_field(
-        default=0.8,
-        description="How much to transform the input image (0.0 = no change, 1.0 = maximum change)",
-    )
-    guidance_scale: float | OutputHandle[float] = connect_field(
-        default=7.5, description="Classifier-free guidance scale"
-    )
-    num_inference_steps: int | OutputHandle[int] = connect_field(
-        default=30, description="Number of denoising steps"
-    )
-    target_width: int | OutputHandle[int] = connect_field(
-        default=512, description="Target width of the output image"
-    )
-    target_height: int | OutputHandle[int] = connect_field(
-        default=512, description="Target height of the output image"
-    )
-    seed: int | OutputHandle[int] = connect_field(
-        default=-1, description="Random seed for reproducibility (-1 for random)"
-    )
-    scheduler: str | OutputHandle[str] = connect_field(
-        default="", description="Scheduler to use (provider-specific)"
-    )
-    safety_check: bool | OutputHandle[bool] = connect_field(
-        default=True, description="Enable safety checker"
-    )
-    timeout_seconds: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Timeout in seconds for API calls (0 = use provider default)",
-    )
+    model: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(default=types.ImageModel(type='image_model', provider=nodetool.metadata.types.Provider.HuggingFaceFalAI, id='fal-ai/flux/dev', name='FLUX.1 Dev', path=None, supported_tasks=[]), description='The image generation model to use')
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='Input image to transform')
+    prompt: str | OutputHandle[str] = connect_field(default='A photorealistic version of the input image', description='Text prompt describing the desired transformation')
+    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Text prompt describing what to avoid')
+    strength: float | OutputHandle[float] = connect_field(default=0.8, description='How much to transform the input image (0.0 = no change, 1.0 = maximum change)')
+    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Classifier-free guidance scale')
+    num_inference_steps: int | OutputHandle[int] = connect_field(default=30, description='Number of denoising steps')
+    target_width: int | OutputHandle[int] = connect_field(default=512, description='Target width of the output image')
+    target_height: int | OutputHandle[int] = connect_field(default=512, description='Target height of the output image')
+    seed: int | OutputHandle[int] = connect_field(default=-1, description='Random seed for reproducibility (-1 for random)')
+    scheduler: str | OutputHandle[str] = connect_field(default='', description='Scheduler to use (provider-specific)')
+    safety_check: bool | OutputHandle[bool] = connect_field(default=True, description='Enable safety checker')
+    timeout_seconds: int | OutputHandle[int] = connect_field(default=0, description='Timeout in seconds for API calls (0 = use provider default)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -261,10 +181,7 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
-class ImagesToList(
-    SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]
-):
+class ImagesToList(SingleOutputGraphNode[list[types.ImageRef]], GraphNode[list[types.ImageRef]]):
     """
 
         Convert all dynamic properties to a list of image references.
@@ -307,22 +224,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
-class LoadImageAssets(
-    GraphNode[nodetool.nodes.nodetool.image.LoadImageAssets.OutputType]
-):
+class LoadImageAssets(GraphNode[nodetool.nodes.nodetool.image.LoadImageAssets.OutputType]):
     """
 
-    Load images from an asset folder.
-    load, image, file, import
+        Load images from an asset folder.
+        load, image, file, import
     """
 
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(
-            type="folder", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The asset folder to load the images from.",
-    )
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to load the images from.')
 
     @property
     def out(self) -> "LoadImageAssetsOutputs":
@@ -336,15 +245,14 @@ class LoadImageAssets(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class LoadImageAssetsOutputs(OutputsProxy):
     @property
     def image(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self["image"])
+        return typing.cast(OutputHandle[types.ImageRef], self['image'])
 
     @property
     def name(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["name"])
+        return typing.cast(OutputHandle[str], self['name'])
 
 
 import typing
@@ -353,17 +261,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class LoadImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Read an image file from disk.
-    image, input, load, file
+        Read an image file from disk.
+        image, input, load, file
     """
 
-    path: str | OutputHandle[str] = connect_field(
-        default="", description="Path to the image file to read"
-    )
+    path: str | OutputHandle[str] = connect_field(default='', description='Path to the image file to read')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -380,29 +285,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
-class LoadImageFolder(
-    GraphNode[nodetool.nodes.nodetool.image.LoadImageFolder.OutputType]
-):
+class LoadImageFolder(GraphNode[nodetool.nodes.nodetool.image.LoadImageFolder.OutputType]):
     """
 
-    Load all images from a folder, optionally including subfolders.
-    image, load, folder, files
+        Load all images from a folder, optionally including subfolders.
+        image, load, folder, files
     """
 
-    folder: str | OutputHandle[str] = connect_field(
-        default="", description="Folder to scan for images"
-    )
-    include_subdirectories: bool | OutputHandle[bool] = connect_field(
-        default=False, description="Include images in subfolders"
-    )
-    extensions: list[str] | OutputHandle[list[str]] = connect_field(
-        default=[".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp", ".tiff"],
-        description="Image file extensions to include",
-    )
-    pattern: str | OutputHandle[str] = connect_field(
-        default="", description="Pattern to match image files"
-    )
+    folder: str | OutputHandle[str] = connect_field(default='', description='Folder to scan for images')
+    include_subdirectories: bool | OutputHandle[bool] = connect_field(default=False, description='Include images in subfolders')
+    extensions: list[str] | OutputHandle[list[str]] = connect_field(default=['.png', '.jpg', '.jpeg', '.bmp', '.gif', '.webp', '.tiff'], description='Image file extensions to include')
+    pattern: str | OutputHandle[str] = connect_field(default='', description='Pattern to match image files')
 
     @property
     def out(self) -> "LoadImageFolderOutputs":
@@ -416,15 +309,14 @@ class LoadImageFolder(
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class LoadImageFolderOutputs(OutputsProxy):
     @property
     def image(self) -> OutputHandle[types.ImageRef]:
-        return typing.cast(OutputHandle[types.ImageRef], self["image"])
+        return typing.cast(OutputHandle[types.ImageRef], self['image'])
 
     @property
     def path(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["path"])
+        return typing.cast(OutputHandle[str], self['path'])
 
 
 import typing
@@ -433,32 +325,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class Paste(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Paste one image onto another at specified coordinates.
-    paste, composite, positioning, overlay
+        Paste one image onto another at specified coordinates.
+        paste, composite, positioning, overlay
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to paste into.",
-    )
-    paste: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to paste.",
-    )
-    left: int | OutputHandle[int] = connect_field(
-        default=0, description="The left coordinate."
-    )
-    top: int | OutputHandle[int] = connect_field(
-        default=0, description="The top coordinate."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to paste into.')
+    paste: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to paste.')
+    left: int | OutputHandle[int] = connect_field(default=0, description='The left coordinate.')
+    top: int | OutputHandle[int] = connect_field(default=0, description='The top coordinate.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -475,26 +352,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class Resize(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Change image dimensions to specified width and height.
-    image, resize
+        Change image dimensions to specified width and height.
+        image, resize
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to resize.",
-    )
-    width: int | OutputHandle[int] = connect_field(
-        default=512, description="The target width."
-    )
-    height: int | OutputHandle[int] = connect_field(
-        default=512, description="The target height."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to resize.')
+    width: int | OutputHandle[int] = connect_field(default=512, description='The target width.')
+    height: int | OutputHandle[int] = connect_field(default=512, description='The target height.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -511,30 +378,16 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Save an image to specified asset folder with customizable name format.
-    save, image, folder, naming
+        Save an image to specified asset folder with customizable name format.
+        save, image, folder, naming
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to save.",
-    )
-    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(
-        default=types.FolderRef(
-            type="folder", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The asset folder to save the image in.",
-    )
-    name: str | OutputHandle[str] = connect_field(
-        default="%Y-%m-%d_%H-%M-%S.png",
-        description="\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to save.')
+    folder: types.FolderRef | OutputHandle[types.FolderRef] = connect_field(default=types.FolderRef(type='folder', uri='', asset_id=None, data=None, metadata=None), description='The asset folder to save the image in.')
+    name: str | OutputHandle[str] = connect_field(default='%Y-%m-%d_%H-%M-%S.png', description='\n        Name of the output file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -551,31 +404,17 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class SaveImageFile(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Write an image to disk.
-    image, output, save, file
+        Write an image to disk.
+        image, output, save, file
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to save",
-    )
-    folder: str | OutputHandle[str] = connect_field(
-        default="", description="Folder where the file will be saved"
-    )
-    filename: str | OutputHandle[str] = connect_field(
-        default="",
-        description="\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ",
-    )
-    overwrite: bool | OutputHandle[bool] = connect_field(
-        default=False,
-        description="Overwrite the file if it already exists, otherwise file will be renamed",
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to save')
+    folder: str | OutputHandle[str] = connect_field(default='', description='Folder where the file will be saved')
+    filename: str | OutputHandle[str] = connect_field(default='', description='\n        The name of the image file.\n        You can use time and date variables to create unique names:\n        %Y - Year\n        %m - Month\n        %d - Day\n        %H - Hour\n        %M - Minute\n        %S - Second\n        ')
+    overwrite: bool | OutputHandle[bool] = connect_field(default=False, description='Overwrite the file if it already exists, otherwise file will be renamed')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -592,23 +431,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class Scale(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Enlarge or shrink an image by a scale factor.
-    image, resize, scale
+        Enlarge or shrink an image by a scale factor.
+        image, resize, scale
     """
 
-    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(
-        default=types.ImageRef(
-            type="image", uri="", asset_id=None, data=None, metadata=None
-        ),
-        description="The image to scale.",
-    )
-    scale: float | OutputHandle[float] = connect_field(
-        default=1.0, description="The scale factor."
-    )
+    image: types.ImageRef | OutputHandle[types.ImageRef] = connect_field(default=types.ImageRef(type='image', uri='', asset_id=None, data=None, metadata=None), description='The image to scale.')
+    scale: float | OutputHandle[float] = connect_field(default=1.0, description='The scale factor.')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -625,56 +456,23 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.nodetool.image
 from nodetool.workflows.base_node import BaseNode
 
-
 class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRef]):
     """
 
-    Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
-    image, generation, AI, text-to-image, t2i
+        Generate images from text prompts using any supported image provider. Automatically routes to the appropriate backend (HuggingFace, FAL, MLX).
+        image, generation, AI, text-to-image, t2i
     """
 
-    model: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(
-        default=types.ImageModel(
-            type="image_model",
-            provider=nodetool.metadata.types.Provider.HuggingFaceFalAI,
-            id="fal-ai/flux/schnell",
-            name="FLUX.1 Schnell",
-            path=None,
-            supported_tasks=[],
-        ),
-        description="The image generation model to use",
-    )
-    prompt: str | OutputHandle[str] = connect_field(
-        default="A cat holding a sign that says hello world",
-        description="Text prompt describing the desired image",
-    )
-    negative_prompt: str | OutputHandle[str] = connect_field(
-        default="", description="Text prompt describing what to avoid in the image"
-    )
-    width: int | OutputHandle[int] = connect_field(
-        default=512, description="Width of the generated image"
-    )
-    height: int | OutputHandle[int] = connect_field(
-        default=512, description="Height of the generated image"
-    )
-    guidance_scale: float | OutputHandle[float] = connect_field(
-        default=7.5,
-        description="Classifier-free guidance scale (higher = closer to prompt)",
-    )
-    num_inference_steps: int | OutputHandle[int] = connect_field(
-        default=30, description="Number of denoising steps"
-    )
-    seed: int | OutputHandle[int] = connect_field(
-        default=-1, description="Random seed for reproducibility (-1 for random)"
-    )
-    safety_check: bool | OutputHandle[bool] = connect_field(
-        default=True,
-        description="Enable safety checker to filter inappropriate content",
-    )
-    timeout_seconds: int | OutputHandle[int] = connect_field(
-        default=0,
-        description="Timeout in seconds for API calls (0 = use provider default)",
-    )
+    model: types.ImageModel | OutputHandle[types.ImageModel] = connect_field(default=types.ImageModel(type='image_model', provider=nodetool.metadata.types.Provider.HuggingFaceFalAI, id='fal-ai/flux/schnell', name='FLUX.1 Schnell', path=None, supported_tasks=[]), description='The image generation model to use')
+    prompt: str | OutputHandle[str] = connect_field(default='A cat holding a sign that says hello world', description='Text prompt describing the desired image')
+    negative_prompt: str | OutputHandle[str] = connect_field(default='', description='Text prompt describing what to avoid in the image')
+    width: int | OutputHandle[int] = connect_field(default=512, description='Width of the generated image')
+    height: int | OutputHandle[int] = connect_field(default=512, description='Height of the generated image')
+    guidance_scale: float | OutputHandle[float] = connect_field(default=7.5, description='Classifier-free guidance scale (higher = closer to prompt)')
+    num_inference_steps: int | OutputHandle[int] = connect_field(default=30, description='Number of denoising steps')
+    seed: int | OutputHandle[int] = connect_field(default=-1, description='Random seed for reproducibility (-1 for random)')
+    safety_check: bool | OutputHandle[bool] = connect_field(default=True, description='Enable safety checker to filter inappropriate content')
+    timeout_seconds: int | OutputHandle[int] = connect_field(default=0, description='Timeout in seconds for API calls (0 = use provider default)')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -683,3 +481,5 @@ class TextToImage(SingleOutputGraphNode[types.ImageRef], GraphNode[types.ImageRe
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+

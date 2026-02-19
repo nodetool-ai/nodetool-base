@@ -18,20 +18,15 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
 from nodetool.workflows.base_node import BaseNode
 
-
 class AddLabel(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Adds a label to a Gmail message.
-    email, gmail, label
+        Adds a label to a Gmail message.
+        email, gmail, label
     """
 
-    message_id: str | OutputHandle[str] = connect_field(
-        default="", description="Message ID to label"
-    )
-    label: str | OutputHandle[str] = connect_field(
-        default="", description="Label to add to the message"
-    )
+    message_id: str | OutputHandle[str] = connect_field(default='', description='Message ID to label')
+    label: str | OutputHandle[str] = connect_field(default='', description='Label to add to the message')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -48,51 +43,30 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
 from nodetool.workflows.base_node import BaseNode
 
-
 class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
     """
 
-    Searches Gmail using Gmail-specific search operators and yields matching emails.
-    email, gmail, search
+        Searches Gmail using Gmail-specific search operators and yields matching emails.
+        email, gmail, search
 
-    Use cases:
-    - Search for emails based on specific criteria
-    - Retrieve emails from a specific sender
-    - Filter emails by subject, sender, or date
+        Use cases:
+        - Search for emails based on specific criteria
+        - Retrieve emails from a specific sender
+        - Filter emails by subject, sender, or date
     """
 
     DateFilter: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.DateFilter
     GmailFolder: typing.ClassVar[type] = nodetool.nodes.lib.mail.GmailSearch.GmailFolder
 
-    from_address: str | OutputHandle[str] = connect_field(
-        default="", description="Sender's email address to search for"
-    )
-    to_address: str | OutputHandle[str] = connect_field(
-        default="", description="Recipient's email address to search for"
-    )
-    subject: str | OutputHandle[str] = connect_field(
-        default="", description="Text to search for in email subject"
-    )
-    body: str | OutputHandle[str] = connect_field(
-        default="", description="Text to search for in email body"
-    )
-    date_filter: nodetool.nodes.lib.mail.GmailSearch.DateFilter = Field(
-        default=nodetool.nodes.lib.mail.GmailSearch.DateFilter.SINCE_ONE_DAY,
-        description="Date filter to search for",
-    )
-    keywords: str | OutputHandle[str] = connect_field(
-        default="", description="Custom keywords or labels to search for"
-    )
-    folder: nodetool.nodes.lib.mail.GmailSearch.GmailFolder = Field(
-        default=nodetool.nodes.lib.mail.GmailSearch.GmailFolder.INBOX,
-        description="Email folder to search in",
-    )
-    text: str | OutputHandle[str] = connect_field(
-        default="", description="General text to search for anywhere in the email"
-    )
-    max_results: int | OutputHandle[int] = connect_field(
-        default=50, description="Maximum number of emails to return"
-    )
+    from_address: str | OutputHandle[str] = connect_field(default='', description="Sender's email address to search for")
+    to_address: str | OutputHandle[str] = connect_field(default='', description="Recipient's email address to search for")
+    subject: str | OutputHandle[str] = connect_field(default='', description='Text to search for in email subject')
+    body: str | OutputHandle[str] = connect_field(default='', description='Text to search for in email body')
+    date_filter: nodetool.nodes.lib.mail.GmailSearch.DateFilter = Field(default=nodetool.nodes.lib.mail.GmailSearch.DateFilter.SINCE_ONE_DAY, description='Date filter to search for')
+    keywords: str | OutputHandle[str] = connect_field(default='', description='Custom keywords or labels to search for')
+    folder: nodetool.nodes.lib.mail.GmailSearch.GmailFolder = Field(default=nodetool.nodes.lib.mail.GmailSearch.GmailFolder.INBOX, description='Email folder to search in')
+    text: str | OutputHandle[str] = connect_field(default='', description='General text to search for anywhere in the email')
+    max_results: int | OutputHandle[int] = connect_field(default=50, description='Maximum number of emails to return')
 
     @property
     def out(self) -> "GmailSearchOutputs":
@@ -106,15 +80,14 @@ class GmailSearch(GraphNode[nodetool.nodes.lib.mail.GmailSearch.OutputType]):
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
 
-
 class GmailSearchOutputs(OutputsProxy):
     @property
     def email(self) -> OutputHandle[dict]:
-        return typing.cast(OutputHandle[dict], self["email"])
+        return typing.cast(OutputHandle[dict], self['email'])
 
     @property
     def message_id(self) -> OutputHandle[str]:
-        return typing.cast(OutputHandle[str], self["message_id"])
+        return typing.cast(OutputHandle[str], self['message_id'])
 
 
 import typing
@@ -123,17 +96,14 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
 from nodetool.workflows.base_node import BaseNode
 
-
 class MoveToArchive(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
 
-    Moves specified emails to Gmail archive.
-    email, gmail, archive
+        Moves specified emails to Gmail archive.
+        email, gmail, archive
     """
 
-    message_id: str | OutputHandle[str] = connect_field(
-        default="", description="Message ID to archive"
-    )
+    message_id: str | OutputHandle[str] = connect_field(default='', description='Message ID to archive')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -150,7 +120,6 @@ from nodetool.dsl.handles import OutputHandle, OutputsProxy, connect_field
 import nodetool.nodes.lib.mail
 from nodetool.workflows.base_node import BaseNode
 
-
 class SendEmail(SingleOutputGraphNode[bool], GraphNode[bool]):
     """
     Send a plain text email via SMTP.
@@ -161,28 +130,14 @@ class SendEmail(SingleOutputGraphNode[bool], GraphNode[bool]):
         - Automate email reports
     """
 
-    smtp_server: str | OutputHandle[str] = connect_field(
-        default="smtp.gmail.com", description="SMTP server hostname"
-    )
-    smtp_port: int | OutputHandle[int] = connect_field(
-        default=587, description="SMTP server port"
-    )
-    username: str | OutputHandle[str] = connect_field(
-        default="", description="SMTP username"
-    )
-    password: str | OutputHandle[str] = connect_field(
-        default="", description="SMTP password"
-    )
-    from_address: str | OutputHandle[str] = connect_field(
-        default="", description="Sender email address"
-    )
-    to_address: str | OutputHandle[str] = connect_field(
-        default="", description="Recipient email address"
-    )
-    subject: str | OutputHandle[str] = connect_field(
-        default="", description="Email subject"
-    )
-    body: str | OutputHandle[str] = connect_field(default="", description="Email body")
+    smtp_server: str | OutputHandle[str] = connect_field(default='smtp.gmail.com', description='SMTP server hostname')
+    smtp_port: int | OutputHandle[int] = connect_field(default=587, description='SMTP server port')
+    username: str | OutputHandle[str] = connect_field(default='', description='SMTP username')
+    password: str | OutputHandle[str] = connect_field(default='', description='SMTP password')
+    from_address: str | OutputHandle[str] = connect_field(default='', description='Sender email address')
+    to_address: str | OutputHandle[str] = connect_field(default='', description='Recipient email address')
+    subject: str | OutputHandle[str] = connect_field(default='', description='Email subject')
+    body: str | OutputHandle[str] = connect_field(default='', description='Email body')
 
     @classmethod
     def get_node_class(cls) -> type[BaseNode]:
@@ -191,3 +146,5 @@ class SendEmail(SingleOutputGraphNode[bool], GraphNode[bool]):
     @classmethod
     def get_node_type(cls):
         return cls.get_node_class().get_node_type()
+
+
